@@ -20,11 +20,11 @@ package appeng.init.worldgen;
 
 import java.util.Locale;
 
+import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
@@ -34,7 +34,7 @@ public final class InitStructures {
     private InitStructures() {
     }
 
-    public static void init(IForgeRegistry<StructureFeature<?>> registry) {
+    public static void init(Registry<StructureFeature<?>> registry) {
         MeteoriteStructurePiece.register();
 
         // Registering into the registry alone is INSUFFICIENT!
@@ -54,14 +54,13 @@ public final class InitStructures {
 
     // This mirrors the Vanilla registration method for structures, but uses the
     // Forge registry instead
-    private static <F extends StructureFeature<?>> void registerStructure(IForgeRegistry<StructureFeature<?>> registry,
+    private static <F extends StructureFeature<?>> void registerStructure(Registry<StructureFeature<?>> registry,
             String name,
             F structure,
             Decoration stage) {
         StructureFeature.STRUCTURES_REGISTRY.put(name.toLowerCase(Locale.ROOT), structure);
         StructureFeature.STEP.put(structure, stage);
-        structure.setRegistryName(name.toLowerCase(Locale.ROOT));
-        registry.register(structure);
+        Registry.register(registry, name.toLowerCase(Locale.ROOT), structure);
     }
 
 }

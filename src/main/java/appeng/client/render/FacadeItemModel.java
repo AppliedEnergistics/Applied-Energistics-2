@@ -22,14 +22,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
@@ -38,23 +36,23 @@ import appeng.core.AppEng;
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
  * the cable anchor.
  */
-public class FacadeItemModel implements BasicUnbakedModel<FacadeItemModel> {
+public class FacadeItemModel implements BasicUnbakedModel {
 
     // We use this to get the default item transforms and make our lives easier
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/facade_base");
 
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+    public BakedModel bake(ModelBakery bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ItemOverrides overrides, ResourceLocation modelLocation) {
-        BakedModel bakedBaseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
-        FacadeBuilder facadeBuilder = new FacadeBuilder();
+            ResourceLocation modelLocation) {
+        BakedModel bakedBaseModel = bakery.bake(MODEL_BASE, modelTransform);
+        FacadeBuilder facadeBuilder = new FacadeBuilder(bakery, null);
 
-        return new FacadeDispatcherBakedModel(bakedBaseModel, facadeBuilder);
+        return new FacadeBakedItemModel(bakedBaseModel, facadeBuilder);
     }
 
     @Override
-    public Collection<ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return Collections.singleton(MODEL_BASE);
     }
 }

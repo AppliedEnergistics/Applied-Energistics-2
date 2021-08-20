@@ -20,6 +20,8 @@ package appeng.parts;
 
 import java.util.Random;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -29,8 +31,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
@@ -58,7 +58,7 @@ public interface ICableBusContainer {
 
     boolean isLadder(LivingEntity entity);
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     void animateTick(Level level, BlockPos pos, Random r);
 
     int getLightValue();

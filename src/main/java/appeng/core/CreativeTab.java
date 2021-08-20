@@ -18,12 +18,45 @@
 
 package appeng.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.ItemDefinition;
+
 public final class CreativeTab {
 
-    public static AEItemGroup INSTANCE;
+    private static final List<ItemDefinition<?>> itemDefs = new ArrayList<>();
+
+    public static CreativeModeTab INSTANCE;
 
     public static void init() {
-        INSTANCE = new AEItemGroup("appliedenergistics2.main");
+        INSTANCE = FabricItemGroupBuilder.create(AppEng.makeId("main"))
+                .icon(() -> AEBlocks.CONTROLLER.stack(1))
+                .appendItems(CreativeTab::fill)
+                .build();
+    }
+
+    public static void add(ItemDefinition<?> itemDef) {
+        itemDefs.add(itemDef);
+    }
+
+    private static void fill(List<ItemStack> items) {
+        for (ItemDefinition<?> itemDef : itemDefs) {
+            itemDef.asItem().fillItemCategory(INSTANCE, new ListWrapper(items));
+        }
+    }
+
+    private static class ListWrapper extends NonNullList<ItemStack> {
+
+        public ListWrapper(List<ItemStack> items) {
+            super(items, ItemStack.EMPTY);
+        }
     }
 
 }

@@ -18,112 +18,19 @@
 
 package appeng.integration.modules.jei;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import me.shedaniel.rei.api.common.display.Display;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-
-import appeng.api.storage.data.IAEItemStack;
 import appeng.menu.me.items.CraftingTermMenu;
-import appeng.util.item.AEItemStack;
 
-public class CraftingRecipeTransferHandler
-        extends RecipeTransferHandler<CraftingTermMenu, CraftingRecipe> {
+public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermMenu> {
 
-    CraftingRecipeTransferHandler(Class<CraftingTermMenu> menuClass,
-            Class<CraftingRecipe> recipeClass, IRecipeTransferHandlerHelper helper) {
-        super(menuClass, recipeClass, helper);
+    public CraftingRecipeTransferHandler() {
+        super(CraftingTermMenu.class);
     }
 
     @Override
-    protected IRecipeTransferError doTransferRecipe(CraftingTermMenu menu, CraftingRecipe recipe,
-            IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
-
-        // Try to figure out if any slots have missing ingredients
-        // Find every "slot" (in JEI parlance) that has no equivalent item in the item repo or player inventory
-        List<Integer> missingSlots = new ArrayList<>();
-
-        // We need to track how many of a given item stack we've already used for other slots in the recipe.
-        // Otherwise recipes that need 4x<item> will not correctly show missing items if at least 1 of <item> is in
-        // the grid.
-        Map<IAEItemStack, Integer> reservedGridAmounts = new HashMap<>();
-
-        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : recipeLayout.getItemStacks()
-                .getGuiIngredients().entrySet()) {
-            IGuiIngredient<ItemStack> ingredient = entry.getValue();
-            List<ItemStack> ingredients = ingredient.getAllIngredients();
-            if (!ingredient.isInput() || ingredients.isEmpty()) {
-                continue;
-            }
-            boolean found = false;
-            // Player inventory is cheaper to check
-            for (ItemStack itemStack : ingredients) {
-                if (itemStack != null && player.getInventory().findSlotMatchingItem(itemStack) != -1) {
-                    found = true;
-                    break;
-                }
-            }
-            // Then check the terminal screen's repository of network items
-            if (!found) {
-                for (ItemStack itemStack : ingredients) {
-                    if (itemStack != null) {
-                        // We use AE stacks to get an easily comparable item type key that ignores stack size
-                        IAEItemStack aeStack = AEItemStack.fromItemStack(itemStack);
-                        int reservedAmount = reservedGridAmounts.getOrDefault(aeStack, 0) + 1;
-                        if (menu.hasItemType(itemStack, reservedAmount)) {
-                            reservedGridAmounts.put(aeStack, reservedAmount);
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!found) {
-                missingSlots.add(entry.getKey());
-            }
-        }
-
-        if (!missingSlots.isEmpty()) {
-            Component message = new TranslatableComponent("jei.appliedenergistics2.missing_items");
-            return new TransferWarning(helper.createUserErrorForSlots(message, missingSlots));
-        }
-
+    protected Result doTransferRecipe(CraftingTermMenu container, Display recipe, Context context) {
         return null;
-    }
-
-    private static class TransferWarning implements IRecipeTransferError {
-
-        private final IRecipeTransferError parent;
-
-        public TransferWarning(IRecipeTransferError parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        public Type getType() {
-            return Type.COSMETIC;
-        }
-
-        @Override
-        public void showError(PoseStack poseStack, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX,
-                int recipeY) {
-            this.parent.showError(poseStack, mouseX, mouseY, recipeLayout, recipeX, recipeY);
-        }
-
     }
 
 }

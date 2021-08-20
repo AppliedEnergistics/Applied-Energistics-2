@@ -32,14 +32,14 @@ import com.google.common.collect.Lists;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -50,11 +50,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -77,7 +73,15 @@ import appeng.util.fluid.AEFluidInventory;
 import appeng.util.inv.AppEngInternalAEInventory;
 
 public class AEBaseBlockEntity extends BlockEntity
-        implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory {
+        implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory,
+        BlockEntityClientSerializable, RenderAttachmentBlockEntity {
+
+    static {
+        DeferredBlockEntityUnloader.register();
+    }
+
+    protected void onChunkUnloaded() {
+    }
 
     private static final ThreadLocal<WeakReference<AEBaseBlockEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
@@ -154,19 +158,6 @@ public class AEBaseBlockEntity extends BlockEntity
         return data;
     }
 
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(this.worldPosition, 64, this.getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt) {
-        // / pkt.actionType
-        if (pkt.getType() == 64) {
-            this.handleUpdateTag(pkt.getTag());
-        }
-    }
-
     /**
      * Deferred initialization when block entities actually start first ticking in a chunk. The block entity needs to
      * override {@link #clearRemoved()} and call <code>TickHandler.instance().addInit(this);</code> to make this work.
@@ -178,9 +169,7 @@ public class AEBaseBlockEntity extends BlockEntity
      * This builds a tag with the actual data that should be sent to the client for update syncs. If the block entity
      * doesn't need update syncs, it returns null.
      */
-    private CompoundTag writeUpdateData() {
-        final CompoundTag data = new CompoundTag();
-
+    private CompoundTag writeUpdateData(CompoundTag data) {
         final FriendlyByteBuf stream = new FriendlyByteBuf(Unpooled.buffer());
 
         try {
@@ -220,24 +209,15 @@ public class AEBaseBlockEntity extends BlockEntity
      * Handles block entities that are being sent to the client as part of a full chunk.
      */
     @Override
-    public CompoundTag getUpdateTag() {
-        final CompoundTag data = this.writeUpdateData();
-
-        if (data == null) {
-            return new CompoundTag();
-        }
-
-        data.putInt("x", this.worldPosition.getX());
-        data.putInt("y", this.worldPosition.getY());
-        data.putInt("z", this.worldPosition.getZ());
-        return data;
+    public CompoundTag toClientTag(CompoundTag tag) {
+        return this.writeUpdateData(tag);
     }
 
     /**
      * Handles block entities that are being received by the client as part of a full chunk.
      */
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void fromClientTag(CompoundTag tag) {
         final FriendlyByteBuf stream = new FriendlyByteBuf(Unpooled.copiedBuffer(tag.getByteArray("X")));
 
         if (this.readUpdateData(stream)) {
@@ -270,8 +250,6 @@ public class AEBaseBlockEntity extends BlockEntity
         if (this.renderFragment > 0) {
             this.renderFragment |= 1;
         } else {
-            // Clearing the cached model-data is always harmless regardless of status
-            this.requestModelDataUpdate();
 
             // TODO: Optimize Network Load
             if (this.level != null && !this.isRemoved() && !notLoaded()) {
@@ -477,20 +455,10 @@ public class AEBaseBlockEntity extends BlockEntity
         return null;
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public IModelData getModelData() {
+    public Object getRenderAttachmentData() {
         return new AEModelData(up, forward);
-    }
-
-    /**
-     * AE Block entities will generally confine themselves to rendering within the bounding block. Forge however would
-     * retrieve the collision box here, which is very expensive.
-     */
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
     /**

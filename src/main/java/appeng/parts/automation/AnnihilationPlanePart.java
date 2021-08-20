@@ -23,11 +23,11 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -40,8 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.util.FakePlayerFactory;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -75,9 +73,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/item_annihilation_plane");
 
-    private static final Tag.Named<Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
+    private static final Tag<Block> BLOCK_BLACKLIST = TagRegistry.block(TAG_BLACKLIST);
 
-    private static final Tag.Named<Item> ITEM_BLACKLIST = ItemTags.createOptional(TAG_BLACKLIST);
+    private static final Tag<Item> ITEM_BLACKLIST = TagRegistry.item(TAG_BLACKLIST);
 
     private static final PlaneModels MODELS = new PlaneModels("part/item_annihilation_plane",
             "part/item_annihilation_plane_on");
@@ -370,9 +368,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     protected List<ItemStack> obtainBlockDrops(final ServerLevel level, final BlockPos pos) {
-        final Entity fakePlayer = FakePlayerFactory.getMinecraft(level);
-        final BlockState state = level.getBlockState(pos);
-        final BlockEntity te = level.getBlockEntity(pos);
+        var fakePlayer = Platform.getPlayer(level);
+        var state = level.getBlockState(pos);
+        var blockEntity = level.getBlockEntity(pos);
 
         var harvestTool = createHarvestTool(state);
         var harvestToolItem = harvestTool.item();
@@ -382,7 +380,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             harvestToolItem = ItemStack.EMPTY;
         }
 
-        return Block.getDrops(state, level, pos, te, fakePlayer, harvestToolItem);
+        return Block.getDrops(state, level, pos, blockEntity, fakePlayer, harvestToolItem);
     }
 
     /**
@@ -451,8 +449,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private void refresh() {
         this.isAccepting = true;
 
-        getBlockEntity().requestModelDataUpdate();
-
         getMainNode().ifPresent((g, n) -> g.getTickManager().alertDevice(n));
     }
 
@@ -463,13 +459,13 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
-        return new PlaneModelData(getConnections());
+    public Object getRenderAttachmentData() {
+        return getConnections();
     }
 
     /**
      * Creates the fake (and temporary) tool based on the provided hints in case a loot table relies on it.
-     * 
+     * <p>
      * Generally could use a stick as tool or anything else which can be enchanted. {@link ItemStack#EMPTY} is not an
      * option as at least anything having a fortune effect need something enchantable even without the enchantment,
      * otherwise it will not drop anything.

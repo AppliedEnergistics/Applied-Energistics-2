@@ -22,6 +22,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,18 +32,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
+import appeng.hooks.ICustomDurabilityBar;
 import appeng.items.AEBaseItem;
 
-public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
+public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage, ICustomDurabilityBar {
     private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
     private final DoubleSupplier powerCapacity;
 
@@ -52,7 +52,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         this.powerCapacity = powerCapacity;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
@@ -141,8 +141,4 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         return AccessRestriction.WRITE;
     }
 
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new PoweredItemCapabilities(stack, this);
-    }
 }

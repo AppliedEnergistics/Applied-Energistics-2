@@ -26,6 +26,11 @@ import appeng.client.EffectType;
  * Contains mod functionality specific to a dedicated server.
  */
 public class AppEngServer extends AppEngBase {
+    public AppEngServer() {
+        super();
+        notifyAddons("server");
+    }
+
     @Override
     public Level getClientLevel() {
         return null;

@@ -18,6 +18,11 @@
 
 package appeng.parts.automation;
 
+import javax.annotation.Nullable;
+
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -26,9 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
@@ -42,6 +45,7 @@ import appeng.api.util.AECableType;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.parts.PartAdjacentApi;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
@@ -55,6 +59,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     private final AEFluidInventory config = new AEFluidInventory(null, 9);
     private boolean lastRedstone;
+    private PartAdjacentApi<Storage<FluidVariant>> targetApiCache = new PartAdjacentApi<>(this, FluidStorage.SIDED);
 
     public SharedFluidBusPart(ItemStack is) {
         super(is);
@@ -105,9 +110,9 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
         bch.addBox(4, 4, 14, 12, 12, 16);
     }
 
-    protected BlockEntity getConnectedTE() {
-        BlockEntity self = this.getHost().getBlockEntity();
-        return Platform.getTickingBlockEntity(getLevel(), self.getBlockPos().relative(this.getSide()));
+    @Nullable
+    protected final Storage<FluidVariant> getConnectedTE() {
+        return targetApiCache.find();
     }
 
     protected int calculateAmountToSend() {
@@ -144,7 +149,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     @Override
-    public IFluidHandler getFluidInventoryByName(final String name) {
+    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }

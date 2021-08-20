@@ -19,22 +19,11 @@
 package appeng.items.tools.quartz;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ToolAction;
 
-import appeng.api.features.AEToolActions;
 import appeng.items.AEBaseItem;
 
 public class QuartzWrenchItem extends AEBaseItem {
     public QuartzWrenchItem(Item.Properties props) {
         super(props);
-    }
-
-    @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        if (toolAction == AEToolActions.WRENCH_DISASSEMBLE || toolAction == AEToolActions.WRENCH_ROTATE) {
-            return true;
-        }
-        return super.canPerformAction(stack, toolAction);
     }
 }

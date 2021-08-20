@@ -23,13 +23,11 @@
 
 package appeng.api.storage.data;
 
-import java.util.Objects;
-
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.items.misc.WrappedFluidStack;
 import appeng.util.fluid.AEFluidStack;
@@ -46,28 +44,13 @@ import appeng.util.fluid.AEFluidStack;
  * )
  */
 public interface IAEFluidStack extends IAEStack {
-    @Nullable
-    static IAEFluidStack of(FluidStack stack) {
-        Objects.requireNonNull(stack, "stack");
-        return AEFluidStack.fromFluidStack(stack);
+    static IAEFluidStack of(FluidVariant fluid, long amount) {
+        return AEFluidStack.of(fluid, amount);
     }
 
-    @Nullable
-    static IAEFluidStack of(FluidStack stack, long amount) {
-        Objects.requireNonNull(stack, "stack");
-        var fs = AEFluidStack.fromFluidStack(stack);
-        if (fs != null) {
-            fs.setStackSize(amount);
-        }
-        return fs;
+    static IAEFluidStack of(ResourceAmount<FluidVariant> fluidStack) {
+        return AEFluidStack.of(fluidStack.resource(), fluidStack.amount());
     }
-
-    /**
-     * creates a standard Forge FluidStack for the fluid.
-     *
-     * @return new FluidStack
-     */
-    FluidStack getFluidStack();
 
     /**
      * create a AE Fluid clone.
@@ -81,7 +64,11 @@ public interface IAEFluidStack extends IAEStack {
      *
      * @return fluid definition
      */
-    Fluid getFluid();
+    FluidVariant getFluid();
+
+    default ResourceAmount<FluidVariant> getFluidStack() {
+        return new ResourceAmount<>(getFluid(), getStackSize());
+    }
 
     /**
      * Wraps the FluidStack in an item. Equivalent to {@link #asItemStackRepresentation()}, but will maintain

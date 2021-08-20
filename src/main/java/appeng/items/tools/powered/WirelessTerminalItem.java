@@ -21,6 +21,8 @@ package appeng.items.tools.powered;
 import java.util.List;
 import java.util.OptionalLong;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -32,8 +34,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -46,10 +46,11 @@ import appeng.api.features.WirelessTerminals;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
+import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 
-public class WirelessTerminalItem extends AEBasePoweredItem {
+public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomReequipAnimation {
 
     public static final IWirelessTerminalHandler TERMINAL_HANDLER = new TerminalHandler();
 
@@ -69,7 +70,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);

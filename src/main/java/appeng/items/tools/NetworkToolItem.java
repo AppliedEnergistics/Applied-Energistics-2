@@ -27,14 +27,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ToolAction;
 
-import appeng.api.features.AEToolActions;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.networking.GridHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAware;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.menu.MenuLocator;
@@ -43,7 +42,7 @@ import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.util.Platform;
 
-public class NetworkToolItem extends AEBaseItem implements IGuiItem {
+public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem {
 
     public NetworkToolItem(Item.Properties properties) {
         super(properties);
@@ -128,11 +127,4 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem {
         return true;
     }
 
-    @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        if (toolAction == AEToolActions.WRENCH_DISASSEMBLE || toolAction == AEToolActions.WRENCH_ROTATE) {
-            return true;
-        }
-        return super.canPerformAction(stack, toolAction);
-    }
 }

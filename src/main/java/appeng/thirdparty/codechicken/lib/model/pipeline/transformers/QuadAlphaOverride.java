@@ -18,43 +18,29 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-
-import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
-import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
-import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 
 /**
- * This transformer simply overrides the alpha of the quad. Only operates if the format has color.
+ * This transformer simply overrides the alpha of the quad.
  *
  * @author covers1624
  */
-public class QuadAlphaOverride extends QuadTransformer {
+public class QuadAlphaOverride implements RenderContext.QuadTransform {
 
-    public static final IPipelineElementFactory<QuadAlphaOverride> FACTORY = QuadAlphaOverride::new;
+    private static final int INV_ALPHA_MASK = 0x00_FF_FF_FF;
 
-    private float alphaOverride;
+    private final int alphaOverride;
 
-    QuadAlphaOverride() {
-        super();
-    }
-
-    public QuadAlphaOverride(IVertexConsumer consumer, float alphaOverride) {
-        super(consumer);
-        this.alphaOverride = alphaOverride;
-    }
-
-    public QuadAlphaOverride setAlphaOverride(float alphaOverride) {
-        this.alphaOverride = alphaOverride;
-        return this;
+    public QuadAlphaOverride(float alphaOverride) {
+        this.alphaOverride = (int) (alphaOverride * 255) << 24;
     }
 
     @Override
-    public boolean transform() {
-        if (this.format.hasColor) {
-            for (Vertex v : this.quad.vertices) {
-                v.color[3] = this.alphaOverride;
-            }
+    public boolean transform(MutableQuadView quad) {
+        for (int i = 0; i < 4; i++) {
+            int color = (quad.spriteColor(i, 0) & INV_ALPHA_MASK) | alphaOverride;
+            quad.spriteColor(i, 0, color);
         }
         return true;
     }

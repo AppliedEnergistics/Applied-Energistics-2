@@ -21,12 +21,12 @@ package appeng.client.render.model;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -35,41 +35,39 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.api.client.StorageCellModels;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.init.internal.InitStorageCells;
 
-public class DriveModel implements BasicUnbakedModel<DriveModel> {
+public class DriveModel implements BasicUnbakedModel {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_base");
     private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_cell_empty");
 
+    @Nullable
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-            ItemOverrides overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+            ModelState modelTransform, ResourceLocation modelLocation) {
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
-        for (Entry<Item, ResourceLocation> entry : StorageCellModels.models().entrySet()) {
-            BakedModel cellModel = bakery.bake(entry.getValue(), modelTransform, spriteGetter);
+        for (var entry : StorageCellModels.models().entrySet()) {
+            BakedModel cellModel = bakery.bake(entry.getValue(), modelTransform);
             cellModels.put(entry.getKey(), cellModel);
         }
 
-        final BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
-        final BakedModel defaultCell = bakery.bake(StorageCellModels.getDefaultModel(), modelTransform,
-                spriteGetter);
-        cellModels.put(Items.AIR, bakery.bake(MODEL_CELL_EMPTY, modelTransform, spriteGetter));
+        final BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform);
+        final BakedModel defaultCell = bakery.bake(StorageCellModels.getDefaultModel(), modelTransform);
+        cellModels.put(Items.AIR, bakery.bake(MODEL_CELL_EMPTY, modelTransform));
 
         return new DriveBakedModel(baseModel, cellModels, defaultCell);
     }
 
     @Override
-    public Collection<ResourceLocation> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return ImmutableSet.<ResourceLocation>builder().add(StorageCellModels.getDefaultModel())
                 .addAll(InitStorageCells.getModels())
                 .addAll(StorageCellModels.models().values()).build();

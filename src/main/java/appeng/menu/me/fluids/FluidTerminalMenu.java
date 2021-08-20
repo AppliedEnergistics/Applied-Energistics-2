@@ -20,14 +20,13 @@ package appeng.menu.me.fluids;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -39,7 +38,6 @@ import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEMonitorableMenu;
-import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.FluidSoundHelper;
 
 /**
@@ -76,95 +74,86 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
             return;
         }
 
-        var carried = getCarried();
-        if (carried.getCount() != 1) {
-            // only support stacksize 1 for now, since filled items are _usually_ not stackable
+        var fh = ContainerItemContext.ofPlayerCursor(player, this).find(FluidStorage.ITEM);
+        if (fh == null) {
             return;
         }
-
-        final LazyOptional<IFluidHandlerItem> fhOpt = FluidUtil.getFluidHandler(carried);
-        if (!fhOpt.isPresent()) {
-            // only fluid handlers items
-            return;
-        }
-        IFluidHandlerItem fh = fhOpt.orElse(null);
 
         if (action == InventoryAction.FILL_ITEM && stack != null) {
             // Check how much we can store in the item
-            stack.setStackSize(Integer.MAX_VALUE);
-            int amountAllowed = fh.fill(stack.getFluidStack(), FluidAction.SIMULATE);
-            stack.setStackSize(amountAllowed);
+            try (var tx = Transaction.openOuter()) {
+                long amountAllowed = fh.insert(stack.getFluid(), Long.MAX_VALUE, tx);
+                if (amountAllowed == 0) {
+                    return; // Nothing.
+                }
+                stack.setStackSize(amountAllowed);
+            }
 
             // Check if we can pull out of the system
-            final IAEFluidStack canPull = StorageHelper.poweredExtraction(this.powerSource, this.monitor, stack,
+            var canPull = StorageHelper.poweredExtraction(this.powerSource, this.monitor, stack,
                     this.getActionSource(), Actionable.SIMULATE);
             if (canPull == null || canPull.getStackSize() < 1) {
                 return;
             }
 
-            // How much could fit into the menu
-            final int canFill = fh.fill(canPull.getFluidStack(), FluidAction.SIMULATE);
-            if (canFill == 0) {
-                return;
+            // How much could fit into the carried container
+            try (var tx = Transaction.openOuter()) {
+                long canFill = fh.insert(canPull.getFluid(), canPull.getStackSize(), tx);
+                if (canFill == 0) {
+                    return;
+                }
+
+                // Now actually pull out of the system
+                stack.setStackSize(canFill);
+                final IAEFluidStack pulled = StorageHelper.poweredExtraction(this.powerSource, this.monitor, stack,
+                        this.getActionSource());
+                if (pulled == null || pulled.getStackSize() < 1) {
+                    // Something went wrong
+                    AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
+                    return;
+                }
+
+                tx.commit();
             }
 
-            // Now actually pull out of the system
-            stack.setStackSize(canFill);
-            final IAEFluidStack pulled = StorageHelper.poweredExtraction(this.powerSource, this.monitor, stack,
-                    this.getActionSource());
-            if (pulled == null || pulled.getStackSize() < 1) {
-                // Something went wrong
-                AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
-                return;
-            }
-
-            // Actually fill
-            final int used = fh.fill(pulled.getFluidStack(), FluidAction.EXECUTE);
-
-            if (used != canFill) {
-                AELog.error("Fluid item [%s] reported a different possible amount than it actually accepted.",
-                        carried.getHoverName());
-            }
-
-            setCarried(fh.getContainer());
-            FluidSoundHelper.playFillSound(player, pulled.getFluidStack());
+            FluidSoundHelper.playFillSound(player, stack.getFluid());
         } else if (action == InventoryAction.EMPTY_ITEM) {
             // See how much we can drain from the item
-            final FluidStack extract = fh.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
-            if (extract.isEmpty() || extract.getAmount() < 1) {
+            var content = StorageUtil.findExtractableContent(fh, null);
+            if (content == null) {
                 return;
             }
 
+            var extract = IAEFluidStack.of(content);
+
             // Check if we can push into the system
-            final IAEFluidStack notStorable = StorageHelper.poweredInsert(this.powerSource, this.monitor,
-                    AEFluidStack.fromFluidStack(extract),
+            var notStorable = StorageHelper.poweredInsert(this.powerSource, this.monitor, extract,
                     this.getActionSource(), Actionable.SIMULATE);
 
             if (notStorable != null && notStorable.getStackSize() > 0) {
-                final int toStore = (int) (extract.getAmount() - notStorable.getStackSize());
-                final FluidStack storable = fh.drain(toStore, FluidAction.SIMULATE);
-
-                if (storable.isEmpty() || storable.getAmount() == 0) {
-                    return;
-                } else {
-                    extract.setAmount(storable.getAmount());
-                }
+                extract.decStackSize(notStorable.getStackSize());
             }
 
             // Actually drain
-            final FluidStack drained = fh.drain(extract, FluidAction.EXECUTE);
-            extract.setAmount(drained.getAmount());
+            try (var tx = Transaction.openOuter()) {
+                var amount = fh.extract(extract.getFluid(), extract.getStackSize(), tx);
+                if (amount != extract.getStackSize()) {
+                    AELog.error(
+                            "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
+                            getCarried());
+                    return;
+                }
 
-            final IAEFluidStack notInserted = StorageHelper.poweredInsert(this.powerSource, this.monitor,
-                    AEFluidStack.fromFluidStack(extract), this.getActionSource());
+                if (StorageHelper.poweredInsert(this.powerSource, this.monitor, extract,
+                        this.getActionSource()) != null) {
+                    AELog.error("Failed to insert previously simulated %s into ME system", extract);
+                    return;
+                }
 
-            if (notInserted != null && notInserted.getStackSize() > 0) {
-                AELog.error("Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                        carried.getHoverName());
+                tx.commit();
             }
 
-            setCarried(fh.getContainer());
-            FluidSoundHelper.playEmptySound(player, extract);
+            FluidSoundHelper.playEmptySound(player, extract.getFluid());
         }
     }
 

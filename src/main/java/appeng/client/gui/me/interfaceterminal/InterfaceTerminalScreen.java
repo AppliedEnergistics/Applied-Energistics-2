@@ -247,7 +247,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
 
             if (action != null) {
                 InterfaceSlot machineSlot = (InterfaceSlot) slot;
-                final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.getSlotIndex(),
+                final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.slot,
                         machineSlot.getMachineInv().getServerId());
                 NetworkHandler.instance().sendToServer(p);
             }

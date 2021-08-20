@@ -20,16 +20,16 @@ package appeng.spatial;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.DimensionSpecialEffects.SkyType;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Defines properties for how the sky in the spatial storage level is rendered.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class SpatialStorageSkyProperties {
 
     // See the fabric version of this to get any idea what its doing

@@ -25,12 +25,14 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -39,8 +41,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.inventories.InternalInventory;
@@ -145,8 +145,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         byte[] bm = new byte[getCellCount()];
         for (int x = 0; x < this.getCellCount(); x++) {
             Item item = getCellItem(x);
-            if (item != null && item.getRegistryName() != null) {
-                ResourceLocation itemId = item.getRegistryName();
+            if (item != null && !Objects.equals(Registry.ITEM.getKey(item), Registry.ITEM.getDefaultKey())) {
+                ResourceLocation itemId = Registry.ITEM.getKey(item);
                 int idx = cellItemIds.indexOf(itemId);
                 if (idx == -1) {
                     cellItemIds.add(itemId);
@@ -195,7 +195,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             if (idx > 0) {
                 --idx;
                 String itemId = uniqueStrs[idx];
-                item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemId));
+                item = Registry.ITEM.get(new ResourceLocation(itemId));
             }
             if (cellItems[i] != item) {
                 changed = true;
@@ -437,7 +437,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
+    public DriveModelData getRenderAttachmentData() {
         return new DriveModelData(getUp(), getForward(), DriveSlotsState.fromChestOrDrive(this));
     }
 

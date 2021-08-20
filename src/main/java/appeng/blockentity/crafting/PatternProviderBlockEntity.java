@@ -22,9 +22,6 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,8 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
@@ -162,12 +157,6 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             return EnumSet.allOf(Direction.class);
         }
         return EnumSet.of(this.getForward());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return duality.getCapability(cap);
     }
 
     public boolean isOmniDirectional() {

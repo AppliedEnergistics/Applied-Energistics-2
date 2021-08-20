@@ -33,16 +33,11 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
@@ -62,7 +57,6 @@ import appeng.util.Platform;
 public class PartPlacement {
 
     private static float eyeHeight = 0.0f;
-    private final ThreadLocal<Object> placing = new ThreadLocal<>();
 
     public static InteractionResult place(final ItemStack held, final BlockPos pos, Direction side,
             final Player player, final InteractionHand hand, final Level level, PlaceType pass, final int depth) {
@@ -103,7 +97,6 @@ public class PartPlacement {
                                 if (held.getCount() == 0) {
                                     player.getInventory().items.set(player.getInventory().selected,
                                             ItemStack.EMPTY);
-                                    MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                                 }
                             }
                             return InteractionResult.CONSUME;
@@ -140,7 +133,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final BlockDefinition multiPart = AEBlocks.MULTI_PART;
+        final BlockDefinition<?> multiPart = AEBlocks.MULTI_PART;
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 
@@ -163,7 +156,7 @@ public class PartPlacement {
 
             ItemStack multiPartStack = multiPart.stack();
             Block multiPartBlock = multiPart.block();
-            BlockItem multiPartBlockItem = (BlockItem) multiPart.asItem();
+            BlockItem multiPartBlockItem = multiPart.asItem();
 
             boolean hostIsNotPresent = host == null;
             BlockState multiPartBlockState = multiPartBlock.defaultBlockState();
@@ -237,7 +230,7 @@ public class PartPlacement {
             final var partAdded = host.addPart(held, side, player, hand);
             if (partAdded) {
                 BlockState blockState = level.getBlockState(pos);
-                final SoundType ss = multiPart.block().getSoundType(blockState, level, pos, player);
+                var ss = multiPart.block().getSoundType(blockState);
 
                 level.playSound(null, pos, ss.getPlaceSound(), SoundSource.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
                         ss.getPitch() * 0.8F);
@@ -246,7 +239,6 @@ public class PartPlacement {
                     held.grow(-1);
                     if (held.getCount() == 0) {
                         player.setItemInHand(hand, ItemStack.EMPTY);
-                        MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                     }
                 }
             }
@@ -281,23 +273,24 @@ public class PartPlacement {
         return null;
     }
 
-    @SubscribeEvent
-    public void playerInteract(PlayerInteractEvent.RightClickBlock event) {
-        // Only handle the main hand event
-        if (event.getHand() != InteractionHand.MAIN_HAND) {
-            return;
+    public static InteractionResult onPlayerUseBlock(Player player, Level level, InteractionHand hand,
+            BlockHitResult hitResult) {
+        if (level.isClientSide() || player.isSpectator()) {
+            return InteractionResult.PASS;
         }
 
-        if (!event.getPlayer().level.isClientSide) {
-            final ItemStack held = event.getPlayer().getItemInHand(event.getHand());
-            Level level = event.getWorld();
-            var placeResult = place(held, event.getPos(), event.getFace(), event.getPlayer(), event.getHand(),
-                    level, PlaceType.INTERACT_FIRST_PASS, 0);
-            if (placeResult.consumesAction()) {
-                event.setCanceled(true);
-                event.setCancellationResult(placeResult);
-            }
+        // Only handle the main hand event
+        if (hand != InteractionHand.MAIN_HAND) {
+            return InteractionResult.PASS;
         }
+
+        final ItemStack held = player.getItemInHand(hand);
+        if (place(held, hitResult.getBlockPos(), hitResult.getDirection(), player, hand,
+                level, PlaceType.INTERACT_FIRST_PASS, 0) == InteractionResult.sidedSuccess(level.isClientSide())) {
+            return InteractionResult.SUCCESS;
+        }
+
+        return InteractionResult.PASS;
     }
 
     private static float getEyeHeight() {

@@ -24,8 +24,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.BlockPos;
@@ -36,9 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.util.AEColor;
 import appeng.block.paint.PaintSplotches;
@@ -48,8 +43,6 @@ import appeng.helpers.Splotch;
 import appeng.items.misc.PaintBallItem;
 
 public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
-
-    public static final ModelProperty<PaintSplotches> SPLOTCHES = new ModelProperty<>();
 
     private List<Splotch> dots = null;
 
@@ -213,10 +206,9 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         return this.dots;
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData() {
-        // FIXME update trigger
-        return new ModelDataMap.Builder().withInitial(SPLOTCHES, new PaintSplotches(getDots())).build();
+    public Object getRenderAttachmentData() {
+        return new PaintSplotches(getDots());
     }
+
 }

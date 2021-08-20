@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,11 +31,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullConsumer;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -55,16 +52,15 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
@@ -72,6 +68,7 @@ import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.parts.PartAdjacentApi;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
@@ -81,7 +78,6 @@ import appeng.util.prioritylist.PrecisePriorityList;
  */
 public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends UpgradeablePart
         implements IGridTickable, ICellProvider, IMEMonitorHandlerReceiver<T>, IPriorityHost {
-    private final Capability<A> handlerCapability;
     protected final IActionSource source;
     private final TickRates tickRates;
     private boolean wasActive = false;
@@ -89,18 +85,14 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     private boolean cached = false;
     private ITickingMonitor monitor = null;
     private MEInventoryHandler<T> handler = null;
-    /**
-     * Last target (the IItemHandler, IFluidHandler or IMEMonitor). If it changes we need to rebuild the handler.
-     */
-    @Nullable
-    private Object lastTargetObject = null;
     private byte resetCacheLogic = 0;
-    private static final Object NO_TARGET = new Object();
-    private final NonNullConsumer<LazyOptional<A>> apiInvalidationListener = this::apiInvalidated;
+    private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
+    private final PartAdjacentApi<A> adjacentExternalApi;
 
-    public AbstractStorageBusPart(TickRates tickRates, ItemStack is, Capability<A> handlerCapability) {
+    public AbstractStorageBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup) {
         super(is);
-        this.handlerCapability = handlerCapability;
+        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, IStorageMonitorableAccessor.SIDED);
+        this.adjacentExternalApi = new PartAdjacentApi<>(this, apiLookup);
         this.tickRates = tickRates;
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
@@ -230,16 +222,6 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         }
     }
 
-    private void apiInvalidated(LazyOptional<A> aLazyOptional) {
-        // Make sure this storage bus still exists.
-        if (this.getMainNode().isReady()) {
-            // Do a full cache reset if the LazyOptional was invalidated.
-            // This is useful in case the tile doesn't trigger a neighbor change event for some reason.
-            this.scheduleCacheReset(true);
-            this.doCacheReset();
-        }
-    }
-
     @Override
     public final TickingRequest getTickingRequest(final IGridNode node) {
         return new TickingRequest(tickRates.getMin(), tickRates.getMax(), this.monitor == null, true);
@@ -269,9 +251,6 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         }
 
         this.cached = false;
-        if (fullReset) {
-            this.lastTargetObject = null;
-        }
 
         final IMEInventory<T> out = this.getInternalHandler();
 
@@ -284,15 +263,12 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         }
     }
 
-    private IMEInventory<T> getInventoryWrapper(BlockEntity target) {
-
-        var targetSide = this.getSide().getOpposite();
+    private IMEInventory<T> getInventoryWrapper() {
 
         // Prioritize a handler to directly link to another ME network
-        var accessorOpt = target.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);
+        var accessor = adjacentStorageAccessor.find();
 
-        if (accessorOpt.isPresent()) {
-            var accessor = accessorOpt.orElse(null);
+        if (accessor != null) {
             var inventory = accessor.getInventory(this.source);
             if (inventory != null) {
                 return inventory.getInventory(getStorageChannel());
@@ -309,7 +285,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         }
 
         // Check via cap adapter
-        var handler = target.getCapability(this.handlerCapability, targetSide).orElse(null);
+        var handler = adjacentExternalApi.find();
 
         if (handler != null) {
             return getHandlerAdapter(handler, () -> {
@@ -322,46 +298,6 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         }
     }
 
-    // TODO, LazyOptionals are cacheable this might need changing?
-    private Object getTargetObject(BlockEntity target) {
-        if (target == null) {
-            return 0;
-        }
-
-        var targetSide = this.getSide().getOpposite();
-
-        var accessor = target.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide).orElse(null);
-
-        if (accessor != null) {
-            // The accessor might be the same, but the monitor might have changed (e.g. interface suddenly has config).
-            // So we have to return the monitor and not the accessor.
-            IMEMonitor<T> targetMonitor = null;
-            var monitorable = accessor.getInventory(this.source);
-
-            if (monitorable != null) {
-                targetMonitor = monitorable.getInventory(getStorageChannel());
-            }
-
-            // Always return: if an IStorageMonitorableAccessor is exposed, we never query the handler capability.
-            // Even if the IMEMonitor is null.
-            if (targetMonitor == null) {
-                // Marks a null monitor - to prevent frequent rebuilds if null is returned.
-                return NO_TARGET;
-            } else {
-                return targetMonitor;
-            }
-        }
-
-        LazyOptional<A> adjCap = target.getCapability(this.handlerCapability, targetSide);
-
-        if (adjCap.isPresent()) {
-            adjCap.addListener(apiInvalidationListener);
-            return adjCap.resolve().get();
-        }
-
-        return null;
-    }
-
     public final MEInventoryHandler<T> getInternalHandler() {
         if (this.cached) {
             return this.handler;
@@ -371,18 +307,12 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
 
         this.cached = true;
         var self = this.getHost().getBlockEntity();
-        var target = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide()));
-        var newTargetObject = this.getTargetObject(target);
+        var targetState = self.getLevel().getBlockState(self.getBlockPos().relative(this.getSide()));
 
-        if (newTargetObject != null && newTargetObject == this.lastTargetObject) {
-            return this.handler;
-        }
-
-        this.lastTargetObject = newTargetObject;
         this.handler = null;
         this.monitor = null;
-        if (target != null) {
-            var inv = this.getInventoryWrapper(target);
+        if (!targetState.isAir()) {
+            var inv = this.getInventoryWrapper();
 
             if (inv instanceof ITickingMonitor tickingMonitor) {
                 this.monitor = tickingMonitor;
@@ -390,7 +320,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
             }
 
             if (inv != null) {
-                this.checkInterfaceVsStorageBus(target, this.getSide());
+                this.checkInterfaceVsStorageBus();
 
                 this.handler = new MEInventoryHandler<>(inv, getStorageChannel());
 
@@ -440,13 +370,17 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         return this.handler;
     }
 
-    private void checkInterfaceVsStorageBus(final BlockEntity target, final Direction side) {
+    private void checkInterfaceVsStorageBus() {
         IGridNode targetNode = null;
+
+        var oppositeSide = getSide().getOpposite();
+        var targetPos = getBlockEntity().getBlockPos().relative(oppositeSide);
+        var target = getLevel().getBlockEntity(targetPos);
 
         if (target instanceof ItemInterfaceBlockEntity interfaceBlockEntity) {
             targetNode = interfaceBlockEntity.getMainNode().getNode();
         } else if (target instanceof IPartHost) {
-            var part = ((IPartHost) target).getPart(side);
+            var part = ((IPartHost) target).getPart(oppositeSide);
             if (part instanceof ItemInterfacePart interfacePart) {
                 targetNode = interfacePart.getMainNode().getNode();
             }
