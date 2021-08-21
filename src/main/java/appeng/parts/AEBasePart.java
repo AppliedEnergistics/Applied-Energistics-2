@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.CrashReportCategory;
@@ -81,6 +83,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     private final ItemStack is;
     private BlockEntity blockEntity = null;
     private IPartHost host = null;
+    @Nullable
     private Direction side;
 
     public AEBasePart(final ItemStack is) {

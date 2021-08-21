@@ -23,6 +23,9 @@
 
 package appeng.api.parts;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.core.Direction;
 
 /**
@@ -42,8 +45,9 @@ public class SelectedPart {
     public final IFacadePart facade;
 
     /**
-     * side the part is mounted too, or {@link AEPartLocation}.UNKNOWN for cables.
+     * side the part is mounted too, or null for cables.
      */
+    @Nullable
     public final Direction side;
 
     public SelectedPart() {
@@ -58,7 +62,7 @@ public class SelectedPart {
         this.side = side;
     }
 
-    public SelectedPart(final IFacadePart facade, final Direction side) {
+    public SelectedPart(final IFacadePart facade, @Nonnull Direction side) {
         this.part = null;
         this.facade = facade;
         this.side = side;

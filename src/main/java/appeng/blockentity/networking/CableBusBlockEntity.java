@@ -163,7 +163,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List drops) {
+    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
         this.getCableBus().getDrops(drops);
     }
 
@@ -206,7 +206,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void removePart(final Direction side, final boolean suppressUpdate) {
+    public void removePart(@Nullable Direction side, final boolean suppressUpdate) {
         this.getCableBus().removePart(side, suppressUpdate);
     }
 

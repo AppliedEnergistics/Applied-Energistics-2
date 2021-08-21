@@ -29,7 +29,6 @@ import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 
-
 public class EnergyParticleData implements ParticleOptions {
 
     public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, null);

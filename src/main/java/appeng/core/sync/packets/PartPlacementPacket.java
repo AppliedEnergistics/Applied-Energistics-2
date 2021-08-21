@@ -67,12 +67,11 @@ public class PartPlacementPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
-        final ServerPlayer sender = (ServerPlayer) player;
-        AppEng.instance().setPartInteractionPlayer(sender);
+        AppEng.instance().setPartInteractionPlayer(player);
         try {
             PartPlacement.setEyeHeight(this.eyeHeight);
-            PartPlacement.place(sender.getItemInHand(this.hand), new BlockPos(this.x, this.y, this.z),
-                    Direction.values()[this.face], sender, this.hand, sender.level,
+            PartPlacement.place(player.getItemInHand(this.hand), new BlockPos(this.x, this.y, this.z),
+                    Direction.values()[this.face], player, this.hand, player.level,
                     PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0);
         } finally {
             AppEng.instance().setPartInteractionPlayer(null);

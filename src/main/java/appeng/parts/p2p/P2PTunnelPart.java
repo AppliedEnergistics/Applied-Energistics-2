@@ -24,7 +24,6 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;

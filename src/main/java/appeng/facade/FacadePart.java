@@ -18,6 +18,10 @@
 
 package appeng.facade;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,10 +37,9 @@ public class FacadePart implements IFacadePart {
     private final ItemStack facade;
     private final Direction side;
 
-    public FacadePart(final ItemStack facade, final Direction side) {
-        if (facade == null) {
-            throw new IllegalArgumentException("Facade Part constructed on null item.");
-        }
+    public FacadePart(@Nonnull ItemStack facade, @Nonnull Direction side) {
+        Objects.requireNonNull(side, "side");
+        Objects.requireNonNull(facade, "facade");
         this.facade = facade.copy();
         this.facade.setCount(1);
         this.side = side;

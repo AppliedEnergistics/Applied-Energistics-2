@@ -48,12 +48,13 @@ public interface IFacadeContainer {
     /**
      * Removed the facade on the given side, or does nothing.
      */
-    void removeFacade(IPartHost host, @Nullable Direction side);
+    void removeFacade(IPartHost host, Direction side);
 
     /**
      * @return the {@link IFacadePart} for a given side, or null.
      */
-    IFacadePart getFacade(@Nullable Direction s);
+    @Nullable
+    IFacadePart getFacade(Direction s);
 
     /**
      * rotate the facades left.

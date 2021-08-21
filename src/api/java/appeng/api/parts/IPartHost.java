@@ -50,11 +50,11 @@ public interface IPartHost extends ICustomCableConnection {
     IFacadeContainer getFacadeContainer();
 
     /**
-     * Test if you can add a part to the specified side of the Part Host, {@link AEPartLocation}.UNKNOWN is used to
-     * represent the cable in the middle.
+     * Test if you can add a part to the specified side of the Part Host. A null side represents the center of the part
+     * host, where a cable would normally be.
      *
      * @param part to be added part
-     * @param side part placed onto side
+     * @param side onto side or null for center of host.
      *
      * @return returns false if the part cannot be added.
      */
@@ -64,22 +64,20 @@ public interface IPartHost extends ICustomCableConnection {
      * try to add a new part to the specified side, returns false if it failed to be added.
      *
      * @param is    new part
-     * @param side  onto side
+     * @param side  onto side or null for center of host.
      * @param owner with owning player
-     *
-     * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
-     *         {@link AEPartLocation}.UNKNOWN )
+     * @return If the part could be placed.
      */
     boolean addPart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand);
 
-
     /**
-     * Get part by side, this method cannot aquire the center part, you must use the other varient of getPart.
+     * Get a part attached to the host based on the location it's attached to.
      *
-     * @param side side of part
+     * @param side side of host or null for center.
      *
      * @return the part located on the specified side, or null if there is no part.
      */
+    @Nullable
     IPart getPart(@Nullable Direction side);
 
     /**
@@ -88,10 +86,10 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * if you want to drop the part you must request it prior to removing it.
      *
-     * @param side           side of part
+     * @param side           onto side or null for center of host
      * @param suppressUpdate - used if you need to replace a part's INSTANCE, without really removing it first.
      */
-    void removePart(Direction side, boolean suppressUpdate);
+    void removePart(@Nullable Direction side, boolean suppressUpdate);
 
     /**
      * something changed, might want to send a packet to clients to update state.

@@ -136,7 +136,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             return true;
         }
 
-        if (is.getItem()instanceof IPartItem<?> bi) {
+        if (is.getItem() instanceof IPartItem<?>bi) {
 
             is = is.copy();
             is.setCount(1);
@@ -173,7 +173,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     @Override
     public boolean addPart(ItemStack is, final Direction side, final @Nullable Player player,
             final @Nullable InteractionHand hand) {
-        if (this.canAddPart(is, side) && is.getItem()instanceof IPartItem<?> bi) {
+        if (this.canAddPart(is, side) && is.getItem() instanceof IPartItem<?>bi) {
 
             is = is.copy();
             is.setCount(1);
@@ -289,7 +289,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     }
 
     @Override
-    public void removePart(final Direction side, final boolean suppressUpdate) {
+    public void removePart(@Nullable Direction side, final boolean suppressUpdate) {
         if (side == null) {
             if (this.getCenter() != null) {
                 this.getCenter().removeFromWorld();

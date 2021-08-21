@@ -18,6 +18,7 @@
 
 package appeng.parts;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
@@ -43,7 +44,7 @@ public class CableBusStorage {
         this.center = center;
     }
 
-    protected IPart getSide(final Direction side) {
+    protected IPart getSide(@Nonnull Direction side) {
         final int x = side.ordinal();
         if (this.sides != null && this.sides.length > x) {
             return this.sides[x];
@@ -52,7 +53,7 @@ public class CableBusStorage {
         return null;
     }
 
-    protected void setSide(final Direction side, final IPart part) {
+    protected void setSide(@Nonnull Direction side, final IPart part) {
         final int x = side.ordinal();
 
         if (this.sides != null && this.sides.length > x && part == null) {

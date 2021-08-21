@@ -23,7 +23,7 @@
 
 package appeng.api.parts;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -51,9 +51,9 @@ public interface IFacadePart {
     void getBoxes(IPartCollisionHelper ch, boolean itemEntity);
 
     /**
-     * @return side the facade is in
+     * @return The side the facade is attached to.
      */
-    @Nullable
+    @Nonnull
     Direction getSide();
 
     Item getItem();

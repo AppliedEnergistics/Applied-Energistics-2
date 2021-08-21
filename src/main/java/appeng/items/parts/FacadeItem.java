@@ -126,7 +126,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     @Override
-    public FacadePart createPartFromItemStack(final ItemStack is, final Direction side) {
+    public FacadePart createPartFromItemStack(ItemStack is, Direction side) {
         final ItemStack in = this.getTextureItem(is);
         if (!in.isEmpty()) {
             return new FacadePart(is, side);
