@@ -98,7 +98,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     @Override
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
+        if (pos.relative(this.getSide()).equals(neighbor)) {
             this.refresh();
         } else {
             connectionHelper.updateConnections();
@@ -127,7 +127,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
         final BlockEntity te = this.getBlockEntity();
         final Level level = te.getLevel();
-        final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
+        final BlockPos pos = te.getBlockPos().relative(this.getSide());
 
         BlockState blockstate = level.getBlockState(pos);
         if (blockstate.getBlock() instanceof BucketPickup) {

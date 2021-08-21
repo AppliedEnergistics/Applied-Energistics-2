@@ -59,7 +59,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 
 public interface IPart extends ICustomCableConnection {
 
@@ -219,7 +218,7 @@ public interface IPart extends ICustomCableConnection {
      * @param host        part side
      * @param blockEntity block entity of part
      */
-    void setPartHostInfo(AEPartLocation side, IPartHost host, BlockEntity blockEntity);
+    void setPartHostInfo(Direction side, IPartHost host, BlockEntity blockEntity);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -301,7 +300,7 @@ public interface IPart extends ICustomCableConnection {
      * @param held   held item
      * @param side   placing side
      */
-    void onPlacement(Player player, InteractionHand hand, ItemStack held, AEPartLocation side);
+    void onPlacement(Player player, InteractionHand hand, ItemStack held, Direction side);
 
     /**
      * Used to determine which parts can be placed on what cables.

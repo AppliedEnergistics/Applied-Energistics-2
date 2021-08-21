@@ -20,6 +20,7 @@ package appeng.util;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -91,7 +92,6 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -129,6 +129,9 @@ public class Platform {
     }
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
+
+    public static final Direction[] DIRECTIONS_WITH_NULL = new Direction[] { Direction.DOWN, Direction.UP,
+            Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null };
 
     public static P2PHelper p2p() {
         return P2P_HELPER;
@@ -421,104 +424,6 @@ public class Platform {
 
         int index = RANDOM_GENERATOR.nextInt(outs.size());
         return Iterables.get(outs, index, null);
-    }
-
-    public static AEPartLocation rotateAround(final AEPartLocation forward, final AEPartLocation axis) {
-        if (axis == AEPartLocation.INTERNAL || forward == AEPartLocation.INTERNAL) {
-            return forward;
-        }
-
-        switch (forward) {
-            case DOWN:
-                switch (axis) {
-                    case DOWN:
-                        return forward;
-                    case UP:
-                        return forward;
-                    case NORTH:
-                        return AEPartLocation.EAST;
-                    case SOUTH:
-                        return AEPartLocation.WEST;
-                    case EAST:
-                        return AEPartLocation.NORTH;
-                    case WEST:
-                        return AEPartLocation.SOUTH;
-                    default:
-                        break;
-                }
-                break;
-            case UP:
-                switch (axis) {
-                    case NORTH:
-                        return AEPartLocation.WEST;
-                    case SOUTH:
-                        return AEPartLocation.EAST;
-                    case EAST:
-                        return AEPartLocation.SOUTH;
-                    case WEST:
-                        return AEPartLocation.NORTH;
-                    default:
-                        break;
-                }
-                break;
-            case NORTH:
-                switch (axis) {
-                    case UP:
-                        return AEPartLocation.WEST;
-                    case DOWN:
-                        return AEPartLocation.EAST;
-                    case EAST:
-                        return AEPartLocation.UP;
-                    case WEST:
-                        return AEPartLocation.DOWN;
-                    default:
-                        break;
-                }
-                break;
-            case SOUTH:
-                switch (axis) {
-                    case UP:
-                        return AEPartLocation.EAST;
-                    case DOWN:
-                        return AEPartLocation.WEST;
-                    case EAST:
-                        return AEPartLocation.DOWN;
-                    case WEST:
-                        return AEPartLocation.UP;
-                    default:
-                        break;
-                }
-                break;
-            case EAST:
-                switch (axis) {
-                    case UP:
-                        return AEPartLocation.NORTH;
-                    case DOWN:
-                        return AEPartLocation.SOUTH;
-                    case NORTH:
-                        return AEPartLocation.UP;
-                    case SOUTH:
-                        return AEPartLocation.DOWN;
-                    default:
-                        break;
-                }
-            case WEST:
-                switch (axis) {
-                    case UP:
-                        return AEPartLocation.SOUTH;
-                    case DOWN:
-                        return AEPartLocation.NORTH;
-                    case NORTH:
-                        return AEPartLocation.DOWN;
-                    case SOUTH:
-                        return AEPartLocation.UP;
-                    default:
-                        break;
-                }
-            default:
-                break;
-        }
-        return forward;
     }
 
     public static Direction rotateAround(final Direction forward, final Direction axis) {
@@ -835,7 +740,7 @@ public class Platform {
         return gs.hasPermission(playerID, SecurityPermissions.BUILD);
     }
 
-    public static void configurePlayer(final Player player, final AEPartLocation side, final BlockEntity blockEntity) {
+    public static void configurePlayer(final Player player, final Direction side, final BlockEntity blockEntity) {
         float pitch = 0.0f;
         float yaw = 0.0f;
         // player.yOffset = 1.8f;
@@ -854,13 +759,13 @@ public class Platform {
             case SOUTH:
                 yaw = 0.0f;
                 break;
-            case INTERNAL:
-                break;
             case UP:
                 pitch = 90.0f;
                 break;
             case WEST:
                 yaw = 90.0f;
+                break;
+            default:
                 break;
         }
 

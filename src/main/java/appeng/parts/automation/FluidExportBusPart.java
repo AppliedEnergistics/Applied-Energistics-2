@@ -99,7 +99,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
         LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
         if (te != null) {
             fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getDirection().getOpposite());
+                    this.getSide().getOpposite());
         }
         if (fhOpt.isPresent()) {
             var grid = getMainNode().getGrid();

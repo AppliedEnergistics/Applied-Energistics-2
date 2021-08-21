@@ -18,14 +18,15 @@
 
 package appeng.facade;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.util.AEPartLocation;
-
 public interface IFacadeItem {
 
-    FacadePart createPartFromItemStack(ItemStack is, AEPartLocation side);
+    FacadePart createPartFromItemStack(ItemStack is, @Nullable Direction side);
 
     ItemStack getTextureItem(ItemStack is);
 

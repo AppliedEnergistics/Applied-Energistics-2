@@ -24,6 +24,7 @@
 package appeng.api.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
@@ -53,10 +54,10 @@ public class WorldCoord {
         this.z = pos.getZ();
     }
 
-    public WorldCoord subtract(final AEPartLocation direction, final int length) {
-        this.x -= direction.xOffset * length;
-        this.y -= direction.yOffset * length;
-        this.z -= direction.zOffset * length;
+    public WorldCoord subtract(final Direction direction, final int length) {
+        this.x -= direction.getStepX() * length;
+        this.y -= direction.getStepY() * length;
+        this.z -= direction.getStepZ() * length;
         return this;
     }
 
@@ -95,7 +96,7 @@ public class WorldCoord {
     /**
      * Will Return NULL if it's at some diagonal!
      */
-    public AEPartLocation directionTo(final WorldCoord loc) {
+    public Direction directionTo(final WorldCoord loc) {
         final int ox = this.x - loc.x;
         final int oy = this.y - loc.y;
         final int oz = this.z - loc.z;
@@ -104,28 +105,28 @@ public class WorldCoord {
         final int ylen = Math.abs(oy);
         final int zlen = Math.abs(oz);
 
-        if (loc.isEqual(this.copy().add(AEPartLocation.EAST, xlen))) {
-            return AEPartLocation.EAST;
+        if (loc.isEqual(this.copy().add(Direction.EAST, xlen))) {
+            return Direction.EAST;
         }
 
-        if (loc.isEqual(this.copy().add(AEPartLocation.WEST, xlen))) {
-            return AEPartLocation.WEST;
+        if (loc.isEqual(this.copy().add(Direction.WEST, xlen))) {
+            return Direction.WEST;
         }
 
-        if (loc.isEqual(this.copy().add(AEPartLocation.NORTH, zlen))) {
-            return AEPartLocation.NORTH;
+        if (loc.isEqual(this.copy().add(Direction.NORTH, zlen))) {
+            return Direction.NORTH;
         }
 
-        if (loc.isEqual(this.copy().add(AEPartLocation.SOUTH, zlen))) {
-            return AEPartLocation.SOUTH;
+        if (loc.isEqual(this.copy().add(Direction.SOUTH, zlen))) {
+            return Direction.SOUTH;
         }
 
-        if (loc.isEqual(this.copy().add(AEPartLocation.UP, ylen))) {
-            return AEPartLocation.UP;
+        if (loc.isEqual(this.copy().add(Direction.UP, ylen))) {
+            return Direction.UP;
         }
 
-        if (loc.isEqual(this.copy().add(AEPartLocation.DOWN, ylen))) {
-            return AEPartLocation.DOWN;
+        if (loc.isEqual(this.copy().add(Direction.DOWN, ylen))) {
+            return Direction.DOWN;
         }
 
         return null;
@@ -135,10 +136,10 @@ public class WorldCoord {
         return this.x == c.x && this.y == c.y && this.z == c.z;
     }
 
-    public WorldCoord add(final AEPartLocation direction, final int length) {
-        this.x += direction.xOffset * length;
-        this.y += direction.yOffset * length;
-        this.z += direction.zOffset * length;
+    public WorldCoord add(final Direction direction, final int length) {
+        this.x += direction.getStepX() * length;
+        this.y += direction.getStepY() * length;
+        this.z += direction.getStepZ() * length;
         return this;
     }
 

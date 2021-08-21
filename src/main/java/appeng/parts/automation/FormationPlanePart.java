@@ -62,7 +62,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEPartLocation;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
@@ -193,9 +192,9 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         final BlockEntity te = this.getHost().getBlockEntity();
         final Level level = te.getLevel();
-        final AEPartLocation side = this.getSide();
+        final Direction side = this.getSide();
 
-        final BlockPos placePos = te.getBlockPos().relative(side.getDirection());
+        final BlockPos placePos = te.getBlockPos().relative(side);
 
         if (level.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES) {
@@ -210,7 +209,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 if (type == Actionable.MODULATE) {
                     // The side the plane is attached to will be considered the look direction
                     // in terms of placing an item
-                    Direction lookDirection = side.getDirection();
+                    Direction lookDirection = side;
                     PlaneDirectionalPlaceContext context = new PlaneDirectionalPlaceContext(level, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
@@ -256,7 +255,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return input;
     }
 
-    private static boolean spawnItemEntity(Level level, BlockEntity te, AEPartLocation side, ItemStack is) {
+    private static boolean spawnItemEntity(Level level, BlockEntity te, Direction side, ItemStack is) {
         // The center of the block the plane is located in
         final double centerX = te.getBlockPos().getX() + .5;
         final double centerY = te.getBlockPos().getY();
@@ -280,7 +279,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         // When spawning downwards, we have to take into account that it spawns it at
         // their "feet" and not center like x or z. So we move it up to be flush with
         // the plane
-        final double additionalYOffset = side.yOffset == -1 ? 1 - entity.getBbHeight() : 0;
+        final double additionalYOffset = side.getStepY() == -1 ? 1 - entity.getBbHeight() : 0;
 
         // Calculate the maximum spawn area so an entity hitbox will always be inside
         // the block.
@@ -292,15 +291,15 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         // Spawn it 0.8 blocks away from the center pos when facing in this direction
         // Every other direction will select a position in a .5 block area around the
         // block center.
-        final double offsetX = side.xOffset == 0 //
+        final double offsetX = side.getStepX() == 0 //
                 ? RANDOM_OFFSET.nextFloat() * spawnAreaWidth - spawnAreaWidth / 2
-                : side.xOffset * (.525 + entity.getBbWidth() / 2);
-        final double offsetY = side.yOffset == 0 //
+                : side.getStepX() * (.525 + entity.getBbWidth() / 2);
+        final double offsetY = side.getStepY() == 0 //
                 ? RANDOM_OFFSET.nextFloat() * spawnAreaHeight
-                : side.yOffset + additionalYOffset;
-        final double offsetZ = side.zOffset == 0 //
+                : side.getStepY() + additionalYOffset;
+        final double offsetZ = side.getStepZ() == 0 //
                 ? RANDOM_OFFSET.nextFloat() * spawnAreaWidth - spawnAreaWidth / 2
-                : side.zOffset * (.525 + entity.getBbWidth() / 2);
+                : side.getStepZ() * (.525 + entity.getBbWidth() / 2);
 
         final double absoluteX = centerX + offsetX;
         final double absoluteY = centerY + offsetY;
@@ -308,7 +307,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         // Set to correct position and slow the motion down a bit
         entity.setPos(absoluteX, absoluteY, absoluteZ);
-        entity.setDeltaMovement(side.xOffset * .1, side.yOffset * 0.1, side.zOffset * 0.1);
+        entity.setDeltaMovement(side.getStepX() * .1, side.getStepY() * 0.1, side.getStepZ() * 0.1);
 
         // Try to spawn it and destroy it in case it's not possible
         if (!level.addFreshEntity(entity)) {

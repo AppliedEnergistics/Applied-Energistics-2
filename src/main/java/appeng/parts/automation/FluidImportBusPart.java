@@ -99,7 +99,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
         final BlockEntity te = this.getConnectedTE();
         if (te != null) {
             LazyOptional<IFluidHandler> fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getDirection().getOpposite());
+                    this.getSide().getOpposite());
 
             if (fhOpt.isPresent()) {
                 var grid = getMainNode().getGrid();

@@ -23,6 +23,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -37,7 +38,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.GameData;
 
-import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AELog;
 import appeng.core.AppEngClient;
@@ -53,14 +53,14 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
     private final BlockPos pos;
     private final BlockState blockState;
-    private final AEPartLocation direction;
+    private final Direction direction;
     private final SoundMode soundMode;
 
     public enum SoundMode {
         BLOCK, FLUID, NONE
     }
 
-    public BlockTransitionEffectPacket(BlockPos pos, BlockState blockState, AEPartLocation direction,
+    public BlockTransitionEffectPacket(BlockPos pos, BlockState blockState, Direction direction,
             SoundMode soundMode) {
         this.pos = pos;
         this.blockState = blockState;
@@ -91,7 +91,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
             blockState = Blocks.AIR.defaultBlockState();
         }
         this.blockState = blockState;
-        this.direction = AEPartLocation.fromOrdinal(stream.readByte());
+        this.direction = Direction.values()[stream.readByte()];
         this.soundMode = SoundMode.values()[stream.readByte()];
     }
 
@@ -113,9 +113,9 @@ public class BlockTransitionEffectPacket extends BasePacket {
                 double x = pos.getX() + Platform.getRandomFloat();
                 double y = pos.getY() + Platform.getRandomFloat();
                 double z = pos.getZ() + Platform.getRandomFloat();
-                double speedX = 0.1f * this.direction.xOffset;
-                double speedY = 0.1f * this.direction.yOffset;
-                double speedZ = 0.1f * this.direction.zOffset;
+                double speedX = 0.1f * this.direction.getStepX();
+                double speedY = 0.1f * this.direction.getStepY();
+                double speedZ = 0.1f * this.direction.getStepZ();
 
                 Minecraft.getInstance().particleEngine.createParticle(data, x, y, z, speedX, speedY, speedZ);
             }

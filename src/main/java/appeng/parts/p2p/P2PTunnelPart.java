@@ -24,6 +24,7 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
@@ -45,7 +46,6 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
@@ -182,8 +182,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 final IPart testPart = ((IPartItem<?>) newType.getItem()).createPart(newType);
                 if (testPart instanceof P2PTunnelPart) {
                     this.getHost().removePart(this.getSide(), true);
-                    final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
-                    final IPart newBus = this.getHost().getPart(dir);
+                    final boolean dir = this.getHost().addPart(newType, this.getSide(), player, hand);
+                    final IPart newBus = this.getHost().getPart(this.getSide());
 
                     if (newBus instanceof P2PTunnelPart<?>newTunnel) {
                         newTunnel.setOutput(true);
@@ -223,8 +223,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 final short myFreq = this.getFrequency();
 
                 this.getHost().removePart(this.getSide(), true);
-                final AEPartLocation dir = this.getHost().addPart(newType, this.getSide(), player, hand);
-                final IPart newBus = this.getHost().getPart(dir);
+                final var partAdded = this.getHost().addPart(newType, this.getSide(), player, hand);
+                final IPart newBus = this.getHost().getPart(this.getSide());
 
                 if (newBus instanceof P2PTunnelPart newTunnel) {
                     newTunnel.setOutput(oldOutput);

@@ -207,7 +207,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                 if (!newItems.isEmpty()) {
                     final BlockEntity te = this.getBlockEntity();
                     final List<ItemStack> list = Collections.singletonList(newItems);
-                    Platform.spawnDrops(player.level, te.getBlockPos().relative(this.getSide().getDirection()), list);
+                    Platform.spawnDrops(player.level, te.getBlockPos().relative(this.getSide()), list);
                 }
 
                 if (player.containerMenu != null) {

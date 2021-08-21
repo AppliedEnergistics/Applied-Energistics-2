@@ -21,6 +21,7 @@ package appeng.items.parts;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -43,7 +44,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import appeng.api.AEApi;
 import appeng.api.ids.AETags;
 import appeng.api.parts.IAlphaPassItem;
-import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
@@ -126,7 +126,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     @Override
-    public FacadePart createPartFromItemStack(final ItemStack is, final AEPartLocation side) {
+    public FacadePart createPartFromItemStack(final ItemStack is, final Direction side) {
         final ItemStack in = this.getTextureItem(is);
         if (!in.isEmpty()) {
             return new FacadePart(is, side);

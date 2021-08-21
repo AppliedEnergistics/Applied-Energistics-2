@@ -52,7 +52,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
@@ -87,7 +86,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private final IItemHandler internalInv = new WrapperChainedItemHandler(this.gridInv, this.patternInv);
     private final UpgradeInventory upgrades;
     private boolean isPowered = false;
-    private AEPartLocation pushDirection = AEPartLocation.INTERNAL;
+    private Direction pushDirection = null;
     private ItemStack myPattern = ItemStack.EMPTY;
     private ICraftingPatternDetails myPlan = null;
     private double progress = 0;
@@ -122,7 +121,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             if (isEmpty && patternDetails.isCraftable()) {
                 this.forcePlan = true;
                 this.myPlan = patternDetails;
-                this.pushDirection = AEPartLocation.fromFacing(where);
+                this.pushDirection = where;
 
                 for (int x = 0; x < table.getContainerSize(); x++) {
                     this.gridInv.setStackInSlot(x, table.getItem(x));
@@ -219,7 +218,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 if (ph != null && ph.isCraftable()) {
                     this.forcePlan = true;
                     this.myPlan = ph;
-                    this.pushDirection = AEPartLocation.fromOrdinal(data.getInt("pushDirection"));
+                    this.pushDirection = Direction.values()[data.getInt("pushDirection")];
                 }
             }
         }
@@ -253,7 +252,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             this.forcePlan = false;
             this.myPlan = null;
             this.myPattern = ItemStack.EMPTY;
-            this.pushDirection = AEPartLocation.INTERNAL;
+            this.pushDirection = null;
         }
 
         this.updateSleepiness();
@@ -382,7 +381,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 if (ItemHandlerUtil.isEmpty(this.patternInv)) {
                     this.forcePlan = false;
                     this.myPlan = null;
-                    this.pushDirection = AEPartLocation.INTERNAL;
+                    this.pushDirection = null;
                 }
 
                 this.ejectHeldItems();
@@ -431,12 +430,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     private void pushOut(ItemStack output) {
-        if (this.pushDirection == AEPartLocation.INTERNAL) {
+        if (this.pushDirection == null) {
             for (final Direction d : Direction.values()) {
                 output = this.pushTo(output, d);
             }
         } else {
-            output = this.pushTo(output, this.pushDirection.getDirection());
+            output = this.pushTo(output, this.pushDirection);
         }
 
         if (output.isEmpty() && this.forcePlan) {

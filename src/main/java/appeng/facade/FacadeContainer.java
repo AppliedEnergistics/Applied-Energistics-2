@@ -20,6 +20,7 @@ package appeng.facade;
 
 import java.io.IOException;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
@@ -28,7 +29,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
-import appeng.api.util.AEPartLocation;
 import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 import appeng.parts.CableBusStorage;
@@ -55,8 +55,8 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void removeFacade(final IPartHost host, final AEPartLocation side) {
-        if (side != null && side != AEPartLocation.INTERNAL && this.storage.getFacade(side.ordinal()) != null) {
+    public void removeFacade(final IPartHost host, final Direction side) {
+        if (side != null && side != null && this.storage.getFacade(side.ordinal()) != null) {
             this.storage.setFacade(side.ordinal(), null);
             this.notifyChange();
             if (host != null) {
@@ -66,7 +66,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public IFacadePart getFacade(final AEPartLocation s) {
+    public IFacadePart getFacade(final Direction s) {
         return this.storage.getFacade(s.ordinal());
     }
 
@@ -74,14 +74,14 @@ public class FacadeContainer implements IFacadeContainer {
     public void rotateLeft() {
         final IFacadePart[] newFacades = new FacadePart[6];
 
-        newFacades[AEPartLocation.UP.ordinal()] = this.storage.getFacade(AEPartLocation.UP.ordinal());
-        newFacades[AEPartLocation.DOWN.ordinal()] = this.storage.getFacade(AEPartLocation.DOWN.ordinal());
+        newFacades[Direction.UP.ordinal()] = this.storage.getFacade(Direction.UP.ordinal());
+        newFacades[Direction.DOWN.ordinal()] = this.storage.getFacade(Direction.DOWN.ordinal());
 
-        newFacades[AEPartLocation.EAST.ordinal()] = this.storage.getFacade(AEPartLocation.NORTH.ordinal());
-        newFacades[AEPartLocation.SOUTH.ordinal()] = this.storage.getFacade(AEPartLocation.EAST.ordinal());
+        newFacades[Direction.EAST.ordinal()] = this.storage.getFacade(Direction.NORTH.ordinal());
+        newFacades[Direction.SOUTH.ordinal()] = this.storage.getFacade(Direction.EAST.ordinal());
 
-        newFacades[AEPartLocation.WEST.ordinal()] = this.storage.getFacade(AEPartLocation.SOUTH.ordinal());
-        newFacades[AEPartLocation.NORTH.ordinal()] = this.storage.getFacade(AEPartLocation.WEST.ordinal());
+        newFacades[Direction.WEST.ordinal()] = this.storage.getFacade(Direction.SOUTH.ordinal());
+        newFacades[Direction.NORTH.ordinal()] = this.storage.getFacade(Direction.WEST.ordinal());
 
         for (int x = 0; x < this.facades; x++) {
             this.storage.setFacade(x, newFacades[x]);
@@ -107,7 +107,7 @@ public class FacadeContainer implements IFacadeContainer {
         boolean changed = false;
 
         for (int x = 0; x < this.facades; x++) {
-            final AEPartLocation side = AEPartLocation.fromOrdinal(x);
+            final Direction side = Direction.values()[x];
             final int ix = 1 << x;
             if ((facadeSides & ix) == ix) {
                 final int id = Math.abs(out.readInt());
@@ -139,7 +139,7 @@ public class FacadeContainer implements IFacadeContainer {
                     final Item i = is.getItem();
                     if (i instanceof IFacadeItem) {
                         this.storage.setFacade(x,
-                                ((IFacadeItem) i).createPartFromItemStack(is, AEPartLocation.fromOrdinal(x)));
+                                ((IFacadeItem) i).createPartFromItemStack(is, Direction.values()[x]));
                     }
                 }
             }
@@ -150,14 +150,14 @@ public class FacadeContainer implements IFacadeContainer {
     public void writeToStream(final FriendlyByteBuf out) throws IOException {
         int facadeSides = 0;
         for (int x = 0; x < this.facades; x++) {
-            if (this.getFacade(AEPartLocation.fromOrdinal(x)) != null) {
+            if (this.getFacade(Direction.values()[x]) != null) {
                 facadeSides |= 1 << x;
             }
         }
         out.writeByte((byte) facadeSides);
 
         for (int x = 0; x < this.facades; x++) {
-            final IFacadePart part = this.getFacade(AEPartLocation.fromOrdinal(x));
+            final IFacadePart part = this.getFacade(Direction.values()[x]);
             if (part != null) {
                 final int itemID = Item.getId(part.getItem());
                 out.writeInt(itemID * (part.notAEFacade() ? -1 : 1));

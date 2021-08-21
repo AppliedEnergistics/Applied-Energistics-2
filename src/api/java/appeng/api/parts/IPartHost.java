@@ -25,6 +25,8 @@ package appeng.api.parts;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +35,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 
 /**
@@ -57,7 +58,7 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @return returns false if the part cannot be added.
      */
-    boolean canAddPart(ItemStack part, AEPartLocation side);
+    boolean canAddPart(ItemStack part, @Nullable Direction side);
 
     /**
      * try to add a new part to the specified side, returns false if it failed to be added.
@@ -69,16 +70,8 @@ public interface IPartHost extends ICustomCableConnection {
      * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
      *         {@link AEPartLocation}.UNKNOWN )
      */
-    AEPartLocation addPart(ItemStack is, AEPartLocation side, Player owner, InteractionHand hand);
+    boolean addPart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand);
 
-    /**
-     * Get part by side ( center is {@link AEPartLocation}.UNKNOWN )
-     *
-     * @param side side of part
-     *
-     * @return the part located on the specified side, or null if there is no part.
-     */
-    IPart getPart(AEPartLocation side);
 
     /**
      * Get part by side, this method cannot aquire the center part, you must use the other varient of getPart.
@@ -87,7 +80,7 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @return the part located on the specified side, or null if there is no part.
      */
-    IPart getPart(Direction side);
+    IPart getPart(@Nullable Direction side);
 
     /**
      * removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
@@ -98,7 +91,7 @@ public interface IPartHost extends ICustomCableConnection {
      * @param side           side of part
      * @param suppressUpdate - used if you need to replace a part's INSTANCE, without really removing it first.
      */
-    void removePart(AEPartLocation side, boolean suppressUpdate);
+    void removePart(Direction side, boolean suppressUpdate);
 
     /**
      * something changed, might want to send a packet to clients to update state.
@@ -156,7 +149,7 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @return true of the part host is receiving redstone from an external source.
      */
-    boolean hasRedstone(AEPartLocation side);
+    boolean hasRedstone(@Nullable Direction side);
 
     /**
      * returns false if this block contains any parts or facades, true other wise.

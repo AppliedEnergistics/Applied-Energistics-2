@@ -21,6 +21,7 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -38,7 +39,6 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
@@ -137,9 +137,9 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
         super.setPartHostInfo(side, host, blockEntity);
-        this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
+        this.outerNode.setExposedOnSides(EnumSet.of(side));
     }
 
     @Override
@@ -154,7 +154,7 @@ public class ToggleBusPart extends BasicStatePart {
 
     @Override
     public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final AEPartLocation side) {
+            final Direction side) {
         super.onPlacement(player, hand, held, side);
         this.getOuterNode().setOwningPlayer(player);
     }

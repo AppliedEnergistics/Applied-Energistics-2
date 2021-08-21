@@ -116,9 +116,9 @@ public class EnergyFx extends TextureSheetParticle {
             result.setMotionY((float) ySpeed);
             result.setMotionZ((float) zSpeed);
             if (data.forItem) {
-                result.x += -0.2 * data.direction.xOffset;
-                result.y += -0.2 * data.direction.yOffset;
-                result.z += -0.2 * data.direction.zOffset;
+                result.x += -0.2 * data.direction.getStepX();
+                result.y += -0.2 * data.direction.getStepY();
+                result.z += -0.2 * data.direction.getStepZ();
                 result.quadSize *= 0.8f;
             }
             return result;

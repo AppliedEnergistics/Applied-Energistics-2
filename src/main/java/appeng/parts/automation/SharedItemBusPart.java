@@ -84,9 +84,9 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     protected InventoryAdaptor getHandler() {
         final BlockEntity self = this.getHost().getBlockEntity();
         final BlockEntity target = Platform.getTickingBlockEntity(getLevel(),
-                self.getBlockPos().relative(this.getSide().getDirection()));
+                self.getBlockPos().relative(this.getSide()));
 
-        return InventoryAdaptor.getAdaptor(target, this.getSide().getDirection().getOpposite());
+        return InventoryAdaptor.getAdaptor(target, this.getSide().getOpposite());
     }
 
     protected int availableSlots() {
@@ -122,7 +122,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
         }
 
         var self = this.getHost().getBlockEntity();
-        var targetPos = self.getBlockPos().relative(getSide().getDirection());
+        var targetPos = self.getBlockPos().relative(getSide());
 
         return Platform.areBlockEntitiesTicking(self.getLevel(), targetPos);
     }

@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +41,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
@@ -116,9 +116,9 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
         super.setPartHostInfo(side, host, blockEntity);
-        this.outerNode.setExposedOnSides(EnumSet.of(side.getDirection()));
+        this.outerNode.setExposedOnSides(EnumSet.of(side));
     }
 
     @Override
@@ -128,7 +128,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
     @Override
     public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final AEPartLocation side) {
+            final Direction side) {
         super.onPlacement(player, hand, held, side);
         this.outerNode.setOwningPlayer(player);
     }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Random;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -65,7 +66,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AppEng;
@@ -159,7 +159,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             final BlockEntity te = this.getHost().getBlockEntity();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
-            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos().relative(this.getSide().getDirection()));
+            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos().relative(this.getSide()));
         }
     }
 
@@ -364,11 +364,11 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     @Override
     public void animateTick(final Level level, final BlockPos pos, final Random r) {
         if (this.isLevelEmitterOn()) {
-            final AEPartLocation d = this.getSide();
+            final Direction d = this.getSide();
 
-            final double d0 = d.xOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
-            final double d1 = d.yOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
-            final double d2 = d.zOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
+            final double d0 = d.getStepX() * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
+            final double d1 = d.getStepY() * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
+            final double d2 = d.getStepZ() * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
 
             level.addParticle(DustParticleOptions.REDSTONE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
                     0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D);

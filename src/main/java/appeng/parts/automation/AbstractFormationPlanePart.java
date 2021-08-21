@@ -19,6 +19,7 @@
 package appeng.parts.automation;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -34,7 +35,6 @@ import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IPriorityHost;
 
@@ -94,11 +94,11 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
 
     @Override
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
+        if (pos.relative(this.getSide()).equals(neighbor)) {
             final BlockEntity te = this.getHost().getBlockEntity();
-            final AEPartLocation side = this.getSide();
+            final Direction side = this.getSide();
 
-            final BlockPos tePos = te.getBlockPos().relative(side.getDirection());
+            final BlockPos tePos = te.getBlockPos().relative(side);
 
             this.blocked = !level.getBlockState(tePos).getMaterial().isReplaceable();
         } else {

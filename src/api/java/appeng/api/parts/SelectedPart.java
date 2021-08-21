@@ -23,7 +23,7 @@
 
 package appeng.api.parts;
 
-import appeng.api.util.AEPartLocation;
+import net.minecraft.core.Direction;
 
 /**
  * Reports a selected part from the IPartHost
@@ -44,21 +44,21 @@ public class SelectedPart {
     /**
      * side the part is mounted too, or {@link AEPartLocation}.UNKNOWN for cables.
      */
-    public final AEPartLocation side;
+    public final Direction side;
 
     public SelectedPart() {
         this.part = null;
         this.facade = null;
-        this.side = AEPartLocation.INTERNAL;
+        this.side = null;
     }
 
-    public SelectedPart(final IPart part, final AEPartLocation side) {
+    public SelectedPart(final IPart part, final Direction side) {
         this.part = part;
         this.facade = null;
         this.side = side;
     }
 
-    public SelectedPart(final IFacadePart facade, final AEPartLocation side) {
+    public SelectedPart(final IFacadePart facade, final Direction side) {
         this.part = null;
         this.facade = facade;
         this.side = side;

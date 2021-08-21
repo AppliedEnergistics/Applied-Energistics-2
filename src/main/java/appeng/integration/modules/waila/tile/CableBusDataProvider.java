@@ -23,6 +23,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -46,7 +47,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEPartLocation;
 import appeng.block.networking.CableBusBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.integration.modules.waila.part.ChannelDataProvider;
@@ -54,6 +54,7 @@ import appeng.integration.modules.waila.part.GridNodeStateProvider;
 import appeng.integration.modules.waila.part.IPartDataProvider;
 import appeng.integration.modules.waila.part.P2PStateDataProvider;
 import appeng.integration.modules.waila.part.StorageMonitorDataProvider;
+import appeng.util.Platform;
 
 public final class CableBusDataProvider {
 
@@ -162,7 +163,7 @@ public final class CableBusDataProvider {
             }
 
             var partTag = new CompoundTag();
-            for (var location : AEPartLocation.values()) {
+            for (var location : Platform.DIRECTIONS_WITH_NULL) {
                 var part = cableBus.getPart(location);
                 if (part == null) {
                     continue;
@@ -182,8 +183,8 @@ public final class CableBusDataProvider {
         }
     }
 
-    private static String getPartDataName(AEPartLocation location) {
-        return "cableBusPart" + location.name();
+    private static String getPartDataName(@Nullable Direction location) {
+        return "cableBusPart" + (location == null ? "center" : location.name());
     }
 
     @FunctionalInterface

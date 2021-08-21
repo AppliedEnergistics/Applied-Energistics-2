@@ -22,11 +22,11 @@ import java.lang.ref.WeakReference;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 
 public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
@@ -176,7 +176,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
     public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
 
     private boolean verifyUnownedRegion(final ServerLevel level, final BlockPos min, final BlockPos max) {
-        for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
+        for (final Direction side : Direction.values()) {
             if (this.verifyUnownedRegionInner(level, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(),
                     max.getZ(),
                     side)) {
@@ -225,8 +225,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
     public abstract boolean isValidBlockEntity(BlockEntity te);
 
     private boolean verifyUnownedRegionInner(final ServerLevel level, int minX, int minY, int minZ, int maxX, int maxY,
-            int maxZ,
-            final AEPartLocation side) {
+            int maxZ, final Direction side) {
         switch (side) {
             case WEST:
                 minX -= 1;
@@ -252,7 +251,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
                 maxY += 1;
                 minY = maxY;
                 break;
-            case INTERNAL:
+            default:
                 return false;
         }
 

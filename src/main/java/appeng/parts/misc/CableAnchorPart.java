@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +45,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
@@ -61,7 +61,7 @@ public class CableAnchorPart implements IPart {
 
     private ItemStack is = ItemStack.EMPTY;
     private IPartHost host = null;
-    private AEPartLocation mySide = AEPartLocation.UP;
+    private Direction mySide = Direction.UP;
 
     public CableAnchorPart(final ItemStack is) {
         this.is = is;
@@ -113,7 +113,7 @@ public class CableAnchorPart implements IPart {
 
     @Override
     public boolean isLadder(final LivingEntity entity) {
-        return this.mySide.yOffset == 0 && (entity.horizontalCollision || !entity.isOnGround());
+        return this.mySide.getStepY() == 0 && (entity.horizontalCollision || !entity.isOnGround());
     }
 
     @Override
@@ -167,7 +167,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
         this.host = host;
         this.mySide = side;
     }
@@ -199,7 +199,7 @@ public class CableAnchorPart implements IPart {
 
     @Override
     public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final AEPartLocation side) {
+            final Direction side) {
 
     }
 

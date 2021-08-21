@@ -23,11 +23,12 @@
 
 package appeng.api.parts;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-
-import appeng.api.util.AEPartLocation;
 
 /**
  * Used Internally.
@@ -52,7 +53,8 @@ public interface IFacadePart {
     /**
      * @return side the facade is in
      */
-    AEPartLocation getSide();
+    @Nullable
+    Direction getSide();
 
     Item getItem();
 

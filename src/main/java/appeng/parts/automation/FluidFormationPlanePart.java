@@ -25,6 +25,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -56,7 +57,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEPartLocation;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
@@ -118,8 +118,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
         final BlockEntity te = this.getHost().getBlockEntity();
         final Level level = te.getLevel();
-        final AEPartLocation side = this.getSide();
-        final BlockPos pos = te.getBlockPos().relative(side.getDirection());
+        final Direction side = this.getSide();
+        final BlockPos pos = te.getBlockPos().relative(side);
         final BlockState state = level.getBlockState(pos);
 
         if (this.canReplace(level, state, pos)) {

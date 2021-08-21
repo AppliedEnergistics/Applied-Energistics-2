@@ -49,7 +49,6 @@ import appeng.api.storage.*;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
@@ -202,7 +201,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
 
     @Override
     public final void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
+        if (pos.relative(this.getSide()).equals(neighbor)) {
             var te = level.getBlockEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
@@ -261,7 +260,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
 
     private IMEInventory<T> getInventoryWrapper(BlockEntity target) {
 
-        var targetSide = this.getSide().getDirection().getOpposite();
+        var targetSide = this.getSide().getOpposite();
 
         // Prioritize a handler to directly link to another ME network
         var accessorOpt = target.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);
@@ -297,7 +296,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
             return 0;
         }
 
-        var targetSide = this.getSide().getDirection().getOpposite();
+        var targetSide = this.getSide().getOpposite();
 
         var accessorOpt = target.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);
 
@@ -318,7 +317,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
         this.cached = true;
         var self = this.getHost().getBlockEntity();
         var target = self.getLevel()
-                .getBlockEntity(self.getBlockPos().relative(this.getSide().getDirection()));
+                .getBlockEntity(self.getBlockPos().relative(this.getSide()));
         var newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -341,7 +340,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
             }
 
             if (inv != null) {
-                this.checkInterfaceVsStorageBus(target, this.getSide().getOpposite());
+                this.checkInterfaceVsStorageBus(target, this.getSide());
 
                 this.handler = new MEInventoryHandler<>(inv, getStorageChannel());
 
@@ -391,7 +390,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
         return this.handler;
     }
 
-    private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
+    private void checkInterfaceVsStorageBus(final BlockEntity target, final Direction side) {
         IGridNode targetNode = null;
 
         if (target instanceof ItemInterfaceBlockEntity interfaceBlockEntity) {

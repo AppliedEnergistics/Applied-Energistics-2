@@ -232,7 +232,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5); // Move into the center of the block
 
-        Direction facing = this.getSide().getDirection();
+        Direction facing = this.getSide();
 
         TesrRenderHelper.rotateToFace(poseStack, facing, this.getSpin());
 

@@ -21,12 +21,12 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
 import appeng.core.sync.BasePacket;
@@ -41,9 +41,9 @@ public class ItemTransitionEffectPacket extends BasePacket {
     private final double x;
     private final double y;
     private final double z;
-    private final AEPartLocation d;
+    private final Direction d;
 
-    public ItemTransitionEffectPacket(double x, double y, double z, AEPartLocation direction) {
+    public ItemTransitionEffectPacket(double x, double y, double z, Direction direction) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -64,7 +64,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
-        this.d = AEPartLocation.fromOrdinal(stream.readByte());
+        this.d = Direction.values()[stream.readByte()];
     }
 
     @Override
@@ -77,9 +77,9 @@ public class ItemTransitionEffectPacket extends BasePacket {
                 double x = this.x + Platform.getRandomFloat() * 0.5 - 0.25;
                 double y = this.y + Platform.getRandomFloat() * 0.5 - 0.25;
                 double z = this.z + Platform.getRandomFloat() * 0.5 - 0.25;
-                double speedX = 0.1f * this.d.xOffset;
-                double speedY = 0.1f * this.d.yOffset;
-                double speedZ = 0.1f * this.d.zOffset;
+                double speedX = 0.1f * this.d.getStepX();
+                double speedY = 0.1f * this.d.getStepY();
+                double speedZ = 0.1f * this.d.getStepZ();
                 Minecraft.getInstance().particleEngine.createParticle(data, x, y, z, speedX, speedY, speedZ);
             }
         }

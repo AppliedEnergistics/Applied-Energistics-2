@@ -19,12 +19,12 @@
 package appeng.hooks;
 
 import net.minecraft.core.BlockSource;
+import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
 
-import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.util.Platform;
 
@@ -35,10 +35,10 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
         final Item i = dispensedItem.getItem();
         if (i instanceof MatterCannonItem tm) {
             var direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
-            AEPartLocation dir = AEPartLocation.INTERNAL;
-            for (var d : AEPartLocation.SIDE_LOCATIONS) {
-                if (direction.getStepX() == d.xOffset && direction.getStepY() == d.yOffset
-                        && direction.getStepZ() == d.zOffset) {
+            Direction dir = null;
+            for (var d : Direction.values()) {
+                if (direction.getStepX() == d.getStepX() && direction.getStepY() == d.getStepY()
+                        && direction.getStepZ() == d.getStepZ()) {
                     dir = d;
                 }
             }
@@ -47,7 +47,7 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
             var p = Platform.getPlayer(level);
             Platform.configurePlayer(p, dir, dispenser.getEntity());
 
-            p.setPos(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
+            p.setPos(p.getX() + dir.getStepX(), p.getY() + dir.getStepY(), p.getZ() + dir.getStepZ());
 
             dispensedItem = tm.use(level, p, null).getObject();
         }

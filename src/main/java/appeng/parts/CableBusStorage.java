@@ -20,10 +20,11 @@ package appeng.parts;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Direction;
+
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
-import appeng.api.util.AEPartLocation;
 
 /**
  * Thin data storage to optimize memory usage for cables.
@@ -42,7 +43,7 @@ public class CableBusStorage {
         this.center = center;
     }
 
-    protected IPart getSide(final AEPartLocation side) {
+    protected IPart getSide(final Direction side) {
         final int x = side.ordinal();
         if (this.sides != null && this.sides.length > x) {
             return this.sides[x];
@@ -51,7 +52,7 @@ public class CableBusStorage {
         return null;
     }
 
-    protected void setSide(final AEPartLocation side, final IPart part) {
+    protected void setSide(final Direction side, final IPart part) {
         final int x = side.ordinal();
 
         if (this.sides != null && this.sides.length > x && part == null) {
