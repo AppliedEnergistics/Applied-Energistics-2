@@ -209,10 +209,17 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 				fluidInTank = fluidHandlerItem.drain( Integer.MAX_VALUE, false );
 			}
 
-			if (fluidInTank == null)
+			if( fluidInTank == null )
 			{
 				this.configuredFluid = null;
-				this.configuredItem = AEItemStack.fromItemStack( eq ).setStackSize( 0 );
+				if( !eq.isEmpty() )
+				{
+					this.configuredItem = AEItemStack.fromItemStack( eq ).setStackSize( 0 );
+				}
+				else
+				{
+					this.configuredItem = null;
+				}
 			}
 			else if( fluidInTank.amount > 0 )
 			{

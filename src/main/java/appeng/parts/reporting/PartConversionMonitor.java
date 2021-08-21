@@ -160,11 +160,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		{
 			this.insertItem( player, hand, false );
 		}
-		else if( !player.getHeldItem( hand ).isEmpty() )
-		{
-			return super.onPartActivate( player, hand, pos );
-		}
-		return true;
+		return super.onPartActivate( player, hand, pos );
 	}
 
 	@Override
