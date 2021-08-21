@@ -60,6 +60,15 @@ repositories {
         }
     }
     maven { url = 'https://repo.spongepowered.org/maven' }
+    ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN AND JEI ARE BACK
+    maven {
+        url = 'https://storage.bhs.cloud.ovh.net/v1/AUTH_5f0553a5313d4e93b3ecd2520d172e98/appliedenergistics2-temp-dependencies'
+        content {
+            includeGroup "mixin"
+            includeGroup "mezz.jei"
+        }
+    }
+    ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN AND JEI ARE BACK
 }
 
 ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
@@ -74,7 +83,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // compile against provided APIs
-// TODO-117    compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
+    compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
 // TODO-117    compileOnly "mcjty.theoneprobe:TheOneProbe-${top_minecraft_release}:${top_minecraft_release}-${top_version}:api"
     compileOnly files("jei-1.17.1-7.7.1.9999-api.jar")
 //    compileOnly files("theoneprobe-1.17-0.0.0-api.jar")
@@ -105,7 +114,7 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:3.9.0")
 
 ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
-    library files('mixin-0.0.0.jar')
+    library "mixin:mixin-runtime:0.0.0-9999"
 ///////////////////// TODO-117 END TEMP FIX UNTIL MIXIN IS BACK
 
     // Annotation Processors
