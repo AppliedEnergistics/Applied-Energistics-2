@@ -108,12 +108,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
 
     @Override
     public int availableUpgrades() {
-        final ItemStack is = getWorkbenchItem();
-        if (this.prevStack != is) {
-            this.prevStack = is;
-            this.lastUpgrades = this.getCellUpgradeInventory().getSlots();
-        }
-        return this.lastUpgrades;
+        return getCellUpgradeInventory().getSlots();
     }
 
     public ItemStack getWorkbenchItem() {
@@ -128,7 +123,6 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
             this.setFuzzyMode(this.getWorkBenchFuzzyMode());
         }
 
-        this.prevStack = is;
         this.standardDetectAndSendChanges();
     }
 

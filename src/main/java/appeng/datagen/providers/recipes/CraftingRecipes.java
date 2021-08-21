@@ -45,7 +45,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(AEItems.BASIC_CARD)
                 .unlockedBy("has_basic_card", has(AEItems.BASIC_CARD))
                 .save(consumer, AppEng.makeId("materials/cardcapacity"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CARD_CRAFTING)
+        ShapelessRecipeBuilder.shapeless(AEItems.CRAFTING_CARD)
                 .requires(Items.CRAFTING_TABLE)
                 .requires(AEItems.BASIC_CARD)
                 .unlockedBy("has_basic_card", has(AEItems.BASIC_CARD))

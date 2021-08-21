@@ -201,7 +201,7 @@ public final class AEItemIds {
     public static final ResourceLocation FUZZY_CARD = id("fuzzy_card");
     public static final ResourceLocation SPEED_CARD = id("speed_card");
     public static final ResourceLocation INVERTER_CARD = id("inverter_card");
-    public static final ResourceLocation CARD_CRAFTING = id("crafting_card");
+    public static final ResourceLocation CRAFTING_CARD = id("crafting_card");
     public static final ResourceLocation SPATIAL_2_CELL_COMPONENT = id("2_cubed_spatial_cell_component");
     public static final ResourceLocation SPATIAL_16_CELL_COMPONENT = id("16_cubed_spatial_cell_component");
     public static final ResourceLocation SPATIAL_128_CELL_COMPONENT = id("128_cubed_spatial_cell_component");
