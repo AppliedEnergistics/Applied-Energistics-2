@@ -32,7 +32,9 @@ public final class CellUpgrades extends StackUpgradeInventory {
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    public void saveChanges() {
         this.writeToNBT(this.is.getOrCreateTag(), "upgrades");
+
+        super.saveChanges();
     }
 }
