@@ -18,6 +18,8 @@
 
 package appeng.me.service.helpers;
 
+import java.util.LongSummaryStatistics;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.CrashReportCategory;
@@ -35,6 +37,7 @@ public class TickTracker implements Comparable<TickTracker> {
 
     private long lastTick;
     private int currentRate;
+    private LongSummaryStatistics statistics;
 
     public TickTracker(final TickingRequest req, final IGridNode node, final IGridTickable gt, final long currentTick) {
         this.request = req;
@@ -42,6 +45,7 @@ public class TickTracker implements Comparable<TickTracker> {
         this.node = node;
         this.setCurrentRate((req.minTickRate + req.maxTickRate) / 2);
         this.setLastTick(currentTick);
+        this.statistics = new LongSummaryStatistics();
     }
 
     @Override
@@ -105,5 +109,9 @@ public class TickTracker implements Comparable<TickTracker> {
 
     public TickingRequest getRequest() {
         return this.request;
+    }
+
+    public LongSummaryStatistics getStatistics() {
+        return statistics;
     }
 }

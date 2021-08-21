@@ -136,7 +136,7 @@ public class CraftingService
     }
 
     @Override
-    public void onUpdateTick() {
+    public void onServerEndTick() {
         if (this.updateList) {
             this.updateList = false;
             this.updateCPUClusters();

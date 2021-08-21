@@ -185,7 +185,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     }
 
     @Override
-    public void onUpdateTick() {
+    public void onServerEndTick() {
         if (!this.interests.isEmpty()) {
             final double oldPower = this.lastStoredPower;
             this.lastStoredPower = this.getStoredPower();

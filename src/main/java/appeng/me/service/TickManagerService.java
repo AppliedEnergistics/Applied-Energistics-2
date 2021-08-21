@@ -19,13 +19,22 @@
 package appeng.me.service;
 
 import java.util.HashMap;
+import java.util.LongSummaryStatistics;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
 
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -33,92 +42,79 @@ import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
+import appeng.me.GridNode;
 import appeng.me.service.helpers.TickTracker;
 
 public class TickManagerService implements ITickManager, IGridServiceProvider {
 
-    private final HashMap<IGridNode, TickTracker> alertable = new HashMap<>();
-    private final HashMap<IGridNode, TickTracker> sleeping = new HashMap<>();
-    private final HashMap<IGridNode, TickTracker> awake = new HashMap<>();
-    private final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<>();
+    private static final int TICK_RATE_SPEED_UP_FACTOR = 2;
+    private static final int TICK_RATE_SLOW_DOWN_FACTOR = 1;
+
+    private final Map<IGridNode, TickTracker> alertable = new HashMap<>();
+    private final Map<IGridNode, TickTracker> sleeping = new HashMap<>();
+    private final Map<IGridNode, TickTracker> awake = new HashMap<>();
+    private final Map<Level, PriorityQueue<TickTracker>> upcomingTicks = new HashMap<>();
 
     private long currentTick = 0;
+    private Stopwatch stopWatch = Stopwatch.createUnstarted();
 
     public TickManagerService(@SuppressWarnings("unused") final IGrid g) {
     }
 
-    public long getAvgNanoTime(final IGridNode node) {
-        TickTracker tt = this.awake.get(node);
-
-        if (tt == null) {
-            tt = this.sleeping.get(node);
-        }
-
-        if (tt == null) {
-            return -1;
-        }
-
-        return 0;
+    @Override
+    public void onServerStartTick() {
+        this.currentTick++;
     }
 
     @Override
-    public void onUpdateTick() {
-        TickTracker tt = null;
-
-        try {
-            this.currentTick++;
-
-            while (!this.upcomingTicks.isEmpty()) {
-                tt = this.upcomingTicks.peek();
-
-                // Stop once it reaches a TickTracker running at a later tick
-                if (tt.getNextTick() > this.currentTick) {
-                    break;
-                }
-
-                this.upcomingTicks.poll();
-
-                final int diff = (int) (this.currentTick - tt.getLastTick());
-                final TickRateModulation mod = tt.getGridTickable().tickingRequest(tt.getNode(), diff);
-
-                switch (mod) {
-                    case FASTER:
-                        tt.setCurrentRate(tt.getCurrentRate() - 2);
-                        break;
-                    case IDLE:
-                        tt.setCurrentRate(tt.getRequest().maxTickRate);
-                        break;
-                    case SAME:
-                        break;
-                    case SLEEP:
-                        this.sleepDevice(tt.getNode());
-                        break;
-                    case SLOWER:
-                        tt.setCurrentRate(tt.getCurrentRate() + 1);
-                        break;
-                    case URGENT:
-                        tt.setCurrentRate(0);
-                        break;
-                    default:
-                        break;
-                }
-
-                if (this.awake.containsKey(tt.getNode())) {
-                    this.addToQueue(tt);
-                }
-            }
-        } catch (final Throwable t) {
-            final CrashReport crashreport = CrashReport.forThrowable(t, "Ticking GridNode");
-            final CrashReportCategory crashreportcategory = crashreport
-                    .addCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
-            tt.addEntityCrashInfo(crashreportcategory);
-            throw new ReportedException(crashreport);
-        }
+    public void onLevelStartTick(Level level) {
     }
 
-    private void addToQueue(final TickTracker tt) {
-        tt.setLastTick(this.currentTick);
-        this.upcomingTicks.add(tt);
+    @Override
+    public void onLevelEndTick(Level level) {
+        var queue = this.getQueue(level);
+        this.tickQueue(queue);
+    }
+
+    @Override
+    public void onServerEndTick() {
+        var queue = this.getQueue(null);
+        this.tickQueue(queue);
+    }
+
+    private void tickQueue(PriorityQueue<TickTracker> queue) {
+        TickTracker tt = null;
+
+        while (!queue.isEmpty()) {
+            // Peek and stop once it reaches a TickTracker running at a later tick
+            tt = queue.peek();
+            if (tt.getNextTick() > this.currentTick) {
+                break;
+            }
+
+            queue.poll();
+            final int diff = (int) (this.currentTick - tt.getLastTick());
+            final TickRateModulation mod = this.unsafeTickingRequest(tt, diff);
+
+            switch (mod) {
+                case URGENT -> tt.setCurrentRate(0);
+                case FASTER -> tt.setCurrentRate(tt.getCurrentRate() - TICK_RATE_SPEED_UP_FACTOR);
+                case IDLE -> tt.setCurrentRate(tt.getRequest().maxTickRate);
+                case SLOWER -> tt.setCurrentRate(tt.getCurrentRate() + TICK_RATE_SLOW_DOWN_FACTOR);
+                case SLEEP -> this.sleepDevice(tt.getNode());
+                default -> {
+                    return;
+                }
+            }
+
+            // Update the last time this node was ticked
+            tt.setLastTick(this.currentTick);
+
+            if (this.awake.containsKey(tt.getNode())) {
+                // Queue already known, no need to use addToQueue() to resolve it again.
+                queue.add(tt);
+            }
+        }
     }
 
     @Override
@@ -127,7 +123,10 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         if (tickable != null) {
             this.alertable.remove(gridNode);
             this.sleeping.remove(gridNode);
-            this.awake.remove(gridNode);
+
+            // Also remove the tracker from the queue to not tick it again.
+            var tt = this.awake.remove(gridNode);
+            this.removeFromQueue(gridNode, tt);
         }
     }
 
@@ -149,7 +148,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
                 this.sleeping.put(gridNode, tt);
             } else {
                 this.awake.put(gridNode, tt);
-                this.addToQueue(tt);
+                this.addToQueue(gridNode, tt);
             }
         }
     }
@@ -172,8 +171,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         tt.setCurrentRate(tt.getRequest().minTickRate);
 
         // prevent dupes and tick build up.
-        this.upcomingTicks.remove(tt);
-        this.upcomingTicks.add(tt);
+        this.updateQueuePosition(node, tt);
 
         return true;
     }
@@ -197,15 +195,113 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         Preconditions.checkNotNull(node);
 
         if (this.sleeping.containsKey(node)) {
-            final TickTracker gt = this.sleeping.get(node);
+            final TickTracker tt = this.sleeping.get(node);
             this.sleeping.remove(node);
-            this.awake.put(node, gt);
-            this.upcomingTicks.remove(gt);
-            this.addToQueue(gt);
+            this.awake.put(node, tt);
+            this.updateQueuePosition(node, tt);
 
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Reports the average time for a gridnode
+     * <p>
+     * There is no overflow handling for the internal counter.
+     * 
+     * @param node
+     * @return average time or 0 for an unknown node
+     */
+    public long getAverageTime(final IGridNode node) {
+        var stats = this.getStatistics(node);
+        if (stats == null) {
+            return 0;
+        }
+
+        return (long) stats.getAverage();
+    }
+
+    /**
+     * The maximum time a {@link GridNode} across its existence.
+     * 
+     * @param node
+     * @return maximum time or 0 for an unknown node
+     */
+    public long getMaximumTime(final IGridNode node) {
+        var stats = this.getStatistics(node);
+        if (stats == null) {
+            return 0;
+        }
+
+        return stats.getMax();
+    }
+
+    private LongSummaryStatistics getStatistics(final IGridNode node) {
+        TickTracker tt = this.awake.get(node);
+
+        if (tt == null) {
+            tt = this.sleeping.get(node);
+        }
+
+        if (tt == null) {
+            return null;
+        }
+
+        return tt.getStatistics();
+    }
+
+    /**
+     * null as level could be used for virtual nodes.
+     */
+    private PriorityQueue<TickTracker> getQueue(@Nullable Level level) {
+        return this.upcomingTicks.computeIfAbsent(level, (key) -> new PriorityQueue<>());
+    }
+
+    private void addToQueue(IGridNode node, TickTracker tt) {
+        var queue = getQueue(node.getLevel());
+        queue.add(tt);
+    }
+
+    private void removeFromQueue(IGridNode node, TickTracker tt) {
+        var level = node.getLevel();
+        var queue = getQueue(level);
+        queue.remove(tt);
+
+        // cleanup once the queue is empty, e.g. once a level is fully unloaded.
+        if (queue.isEmpty()) {
+            this.upcomingTicks.remove(level);
+        }
+    }
+
+    private void updateQueuePosition(IGridNode node, TickTracker tt) {
+        this.removeFromQueue(node, tt);
+        this.addToQueue(node, tt);
+    }
+
+    /**
+     * Helper method to handle exceptions and report them without polluting the queue loop.
+     * 
+     * Also tracks time statistics.
+     */
+    private TickRateModulation unsafeTickingRequest(TickTracker tt, int diff) {
+        try {
+            // Reset the stop watch and start it
+            stopWatch.reset().start();
+            var mod = tt.getGridTickable().tickingRequest(tt.getNode(), diff);
+            stopWatch.stop();
+
+            var elapsedTime = stopWatch.elapsed(TimeUnit.NANOSECONDS);
+            tt.getStatistics().accept(elapsedTime);
+
+            return mod;
+        } catch (final Throwable t) {
+            final CrashReport crashreport = CrashReport.forThrowable(t, "Ticking GridNode");
+            final CrashReportCategory crashreportcategory = crashreport
+                    .addCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
+            tt.addEntityCrashInfo(crashreportcategory);
+            throw new ReportedException(crashreport);
+        }
     }
 }

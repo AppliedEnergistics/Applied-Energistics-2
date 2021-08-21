@@ -25,6 +25,8 @@ package appeng.api.networking;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.world.level.Level;
+
 /**
  * Allows you to create a grid-wide service. AE2 uses these for providing item, spatial, and tunnel services.
  * <p>
@@ -33,8 +35,34 @@ import javax.annotation.Nonnull;
 public interface IGridServiceProvider {
     /**
      * Called each tick for the network, allows you to have active network wide behaviors.
+     * <p>
+     * Called at the beginning of a server tick.
      */
-    default void onUpdateTick() {
+    default void onServerStartTick() {
+    }
+
+    /**
+     * Called each tick for the network, allows you to have active network wide behaviors.
+     * <p>
+     * Called at the beginning of a level tick. Will happen for each {@link Level} separately.
+     */
+    default void onLevelStartTick(Level level) {
+    }
+
+    /**
+     * Called each tick for the network, allows you to have active network wide behaviors.
+     * <p>
+     * Called at the end of a level tick. Will happen for each {@link Level} separately.
+     */
+    default void onLevelEndTick(Level level) {
+    }
+
+    /**
+     * Called each tick for the network, allows you to have active network wide behaviors.
+     * <p>
+     * Called at the end of a server tick.
+     */
+    default void onServerEndTick() {
     }
 
     /**

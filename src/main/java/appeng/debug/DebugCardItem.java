@@ -20,6 +20,7 @@ package appeng.debug;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.Iterables;
 
@@ -85,34 +86,61 @@ public class DebugCardItem extends AEBaseItem {
                 totalNodes += g.size();
             }
 
-            this.outputMsg(player, "Grids: " + grids);
-            this.outputMsg(player, "Total Nodes: " + totalNodes);
+            this.outputSecondaryMessage(player, "Grids", Integer.toString(grids));
+            this.outputSecondaryMessage(player, "Total Nodes", Integer.toString(totalNodes));
         } else {
             var gh = AEApi.grid().getNodeHost(level, pos);
             if (gh != null) {
-                this.outputMsg(player, "---------------------------------------------------");
+                this.outputMessage(player, "---------------------------------------------", ChatFormatting.BOLD,
+                        ChatFormatting.DARK_PURPLE);
                 var node = (GridNode) gh.getGridNode(side);
                 // If we couldn't get a world-accessible node, fall back to getting it via internal APIs
                 if (node == null) {
                     if (gh instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
                         node = (GridNode) gridConnectedBlockEntity.getMainNode().getNode();
-                        this.outputMsg(player, "Main node of IGridConnectedBlockEntity");
+                        this.outputMessage(player, "Main node of IGridConnectedBlockEntity");
                     }
-                } else {
-                    this.outputMsg(player, "Node exposed on side " + side);
                 }
                 if (node != null) {
+                    this.outputMessage(player, "-- Grid Details");
                     final Grid g = node.getInternalGrid();
                     final IGridNode center = g.getPivot();
-                    this.outputMsg(player, "Grid Powered:",
+                    this.outputPrimaryMessage(player, "Grid Powered",
                             String.valueOf(g.getService(IEnergyService.class).isNetworkPowered()));
-                    this.outputMsg(player, "Grid Booted:",
+                    this.outputPrimaryMessage(player, "Grid Booted",
                             String.valueOf(!g.getService(IPathingService.class).isNetworkBooting()));
-                    this.outputMsg(player, "Nodes in grid:", String.valueOf(Iterables.size(g.getNodes())));
-                    this.outputMsg(player, "Grid Pivot Node:", String.valueOf(center));
+                    this.outputPrimaryMessage(player, "Nodes in grid", String.valueOf(Iterables.size(g.getNodes())));
+                    this.outputSecondaryMessage(player, "Grid Pivot Node", String.valueOf(center));
 
-                    this.outputMsg(player, "This Node:", String.valueOf(node));
-                    this.outputMsg(player, "This Node Active:", String.valueOf(node.isActive()));
+                    var tmc = (TickManagerService) g.getService(ITickManager.class);
+                    for (var c : g.getMachineClasses()) {
+                        int o = 0;
+                        long totalAverageTime = 0;
+                        long singleMaximumTime = 0;
+
+                        for (var oj : g.getMachineNodes(c)) {
+                            o++;
+                            totalAverageTime += tmc.getAverageTime(oj);
+                            singleMaximumTime = Math.max(singleMaximumTime, tmc.getMaximumTime(oj));
+                        }
+
+                        String message = "#: " + o;
+
+                        if (totalAverageTime > 0) {
+                            message += "; average: " + this.timeMeasurement(totalAverageTime);
+                        }
+                        if (singleMaximumTime > 0) {
+                            message += "; max: " + this.timeMeasurement(singleMaximumTime);
+                        }
+
+                        this.outputSecondaryMessage(player, c.getSimpleName(), message);
+                    }
+
+                    this.outputMessage(player, "-- Node Details");
+
+                    this.outputPrimaryMessage(player, "This Node", String.valueOf(node));
+                    this.outputPrimaryMessage(player, "This Node Active", String.valueOf(node.isActive()));
+                    this.outputSecondaryMessage(player, "Node exposed on side", side.getName());
 
                     var pg = g.getService(IPathingService.class);
                     if (pg.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
@@ -144,57 +172,44 @@ public class DebugCardItem extends AEBaseItem {
                             }
                         }
 
-                        this.outputMsg(player, "Cable Distance: " + length);
+                        this.outputSecondaryMessage(player, "Cable Distance", Integer.toString(length));
                     }
 
                     if (center.getOwner() instanceof P2PTunnelPart<?>tunnelPart) {
-                        this.outputMsg(player, "Freq: " + tunnelPart.getFrequency());
-                    }
-
-                    var tmc = (TickManagerService) g.getService(ITickManager.class);
-                    for (var c : g.getMachineClasses()) {
-                        int o = 0;
-                        long nanos = 0;
-                        for (var oj : g.getMachineNodes(c)) {
-                            o++;
-                            nanos += tmc.getAvgNanoTime(oj);
-                        }
-
-                        if (nanos < 0) {
-                            this.outputMsg(player, c.getSimpleName() + " - " + o);
-                        } else {
-                            this.outputMsg(player, c.getSimpleName() + " - " + o + "; " + this.timeMeasurement(nanos));
-                        }
+                        this.outputSecondaryMessage(player, "Freq", Integer.toString(tunnelPart.getFrequency()));
                     }
                 } else {
-                    this.outputMsg(player, "No Node Available.");
+                    this.outputMessage(player, "No Node Available.");
                 }
             } else {
-                this.outputMsg(player, "Not Networked Block");
+                this.outputMessage(player, "Not Networked Block");
             }
 
             var te = level.getBlockEntity(pos);
             if (te instanceof IPartHost partHost) {
+                this.outputMessage(player, "-- CableBus Details");
                 final IPart center = partHost.getPart(null);
                 partHost.markForUpdate();
                 if (center != null) {
                     final GridNode n = (GridNode) center.getGridNode();
-                    this.outputMsg(player, "Node Channels: " + n.usedChannels());
+                    this.outputSecondaryMessage(player, "Node Channels", Integer.toString(n.usedChannels()));
                     for (var entry : n.getInWorldConnections().entrySet()) {
-                        this.outputMsg(player, entry.getKey() + ": " + entry.getValue().getUsedChannels());
+                        this.outputSecondaryMessage(player, "Channels " + entry.getKey().getName(),
+                                Integer.toString(entry.getValue().getUsedChannels()));
                     }
                 }
             }
 
             if (te instanceof IAEPowerStorage ps) {
-                this.outputMsg(player, "Energy: " + ps.getAECurrentPower() + " / " + ps.getAEMaxPower());
+                this.outputMessage(player, "-- EnergyStorage Details");
+                this.outputSecondaryMessage(player, "Energy", ps.getAECurrentPower() + " / " + ps.getAEMaxPower());
 
                 if (gh != null) {
                     final IGridNode node = gh.getGridNode(side);
                     if (node != null && node.getGrid() != null) {
                         final IEnergyService eg = node.getGrid().getService(IEnergyService.class);
-                        this.outputMsg(player,
-                                "GridEnergy: " + eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
+                        this.outputSecondaryMessage(player,
+                                "GridEnergy", +eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
                     }
                 }
             }
@@ -202,22 +217,36 @@ public class DebugCardItem extends AEBaseItem {
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    private void outputMsg(final Entity player, final String string) {
+    private void outputMessage(final Entity player, final String string, ChatFormatting... chatFormattings) {
+        player.sendMessage(new TextComponent(string).withStyle(chatFormattings), Util.NIL_UUID);
+    }
+
+    private void outputMessage(final Entity player, final String string) {
         player.sendMessage(new TextComponent(string), Util.NIL_UUID);
     }
 
-    private void outputMsg(final Entity player, String label, String value) {
+    private void outputPrimaryMessage(final Entity player, String label, String value) {
+        this.outputLabeledMessage(player, label, value, ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE);
+    }
+
+    private void outputSecondaryMessage(final Entity player, String label, String value) {
+        this.outputLabeledMessage(player, label, value, ChatFormatting.GRAY);
+    }
+
+    private void outputLabeledMessage(final Entity player, String label, String value,
+            ChatFormatting... chatFormattings) {
         player.sendMessage(new TextComponent("")
-                .append(
-                        new TextComponent(label).withStyle(ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE))
+                .append(new TextComponent(label + ": ").withStyle(chatFormattings))
                 .append(value), Util.NIL_UUID);
     }
 
     private String timeMeasurement(final long nanos) {
-        final long ms = nanos / 100000;
-        if (nanos <= 100000) {
-            return nanos + "ns";
+        if (nanos <= 1000 * 1000) {
+            final long ms = TimeUnit.MICROSECONDS.convert(nanos, TimeUnit.NANOSECONDS);
+            return ms + "µs";
         }
-        return (ms / 10.0f) + "ms";
+
+        final long ms = TimeUnit.MILLISECONDS.convert(nanos, TimeUnit.NANOSECONDS);
+        return ms + "ms";
     }
 }

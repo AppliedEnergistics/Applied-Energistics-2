@@ -79,7 +79,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @Override
-    public void onUpdateTick() {
+    public void onServerEndTick() {
         this.storageMonitors.forEach((channel, monitor) -> monitor.onTick());
     }
 
