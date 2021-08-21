@@ -59,8 +59,6 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
     private final CellWorkbenchBlockEntity workBench;
     @GuiSync(2)
     public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
-    private ItemStack prevStack = ItemStack.EMPTY;
-    private int lastUpgrades = 0;
 
     public CellWorkbenchMenu(int id, final Inventory ip, final CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
@@ -117,7 +115,6 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
 
     @Override
     public void broadcastChanges() {
-        final ItemStack is = getWorkbenchItem();
         if (isServer()) {
             this.setCopyMode(this.getWorkBenchCopyMode());
             this.setFuzzyMode(this.getWorkBenchFuzzyMode());
