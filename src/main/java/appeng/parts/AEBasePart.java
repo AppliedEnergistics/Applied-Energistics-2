@@ -475,7 +475,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             var is = nodeOwner.getItemStack();
             if (is.getCount() > 0 && nodeOwner.getGridNode() != null) {
                 var items = List.of(is.copy());
-                nodeOwner.getHost().removePart(nodeOwner.getSide(), false);
+                nodeOwner.getHost().removePart(nodeOwner.getSide());
                 var blockEntity = nodeOwner.getBlockEntity();
                 Platform.spawnDrops(blockEntity.getLevel(), blockEntity.getBlockPos(), items);
                 is.setCount(0);

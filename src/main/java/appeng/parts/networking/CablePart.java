@@ -135,8 +135,7 @@ public class CablePart extends AEBasePart implements ICablePart {
                     return true;
                 }
 
-                this.getHost().removePart(null, true);
-                this.getHost().addPart(newPart, null, who, null);
+                this.getHost().replacePart(newPart, null, who, null);
                 return true;
             }
         }

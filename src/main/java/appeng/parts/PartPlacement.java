@@ -112,7 +112,7 @@ public class PartPlacement {
                         if (sp.part != null) {
                             is.add(sp.part.getItemStack(PartItemStack.WRENCH));
                             sp.part.getDrops(is, true);
-                            host.removePart(sp.side, false);
+                            host.removePart(sp.side);
                         }
 
                         // A facade cannot exist without a cable part, no host cleanup needed.
@@ -145,7 +145,7 @@ public class PartPlacement {
         }
 
         if (!held.isEmpty()) {
-            final IFacadePart fp = isFacade(held, side);
+            final IFacadePart fp = createFacade(held, side);
             if (fp != null) {
                 if (host != null) {
                     if (!level.isClientSide) {
@@ -333,7 +333,7 @@ public class PartPlacement {
         }
     }
 
-    public static IFacadePart isFacade(final ItemStack held, final Direction side) {
+    public static IFacadePart createFacade(final ItemStack held, final Direction side) {
         if (held.getItem() instanceof IFacadeItem) {
             return ((IFacadeItem) held.getItem()).createPartFromItemStack(held, side);
         }
