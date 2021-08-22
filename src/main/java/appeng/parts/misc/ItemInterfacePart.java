@@ -60,10 +60,9 @@ import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
 
-public class ItemInterfacePart extends BasicStatePart implements IStorageMonitorable, IInventoryDestination,
+public class ItemInterfacePart extends BasicStatePart implements IStorageMonitorable,
         IInterfaceHost, IAEAppEngInventory, IPriorityHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
@@ -166,11 +165,6 @@ public class ItemInterfacePart extends BasicStatePart implements IStorageMonitor
             MenuOpener.open(ItemInterfaceMenu.TYPE, p, MenuLocator.forPart(this));
         }
         return true;
-    }
-
-    @Override
-    public boolean canInsert(final ItemStack stack) {
-        return this.duality.canInsert(stack);
     }
 
     @Override

@@ -51,10 +51,11 @@ import appeng.menu.implementations.ItemIOBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.IInventoryDestination;
 import appeng.util.item.AEItemStack;
 
-public class ImportBusPart extends SharedItemBusPart implements IInventoryDestination {
+import java.util.function.Predicate;
+
+public class ImportBusPart extends SharedItemBusPart {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_base");
     @PartModels
@@ -70,6 +71,8 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     private final IActionSource source;
     private int itemsToSend; // used in tickingRequest
     private boolean worked; // used in tickingRequest
+    // Used for extract calls to InventoryAdaptor.
+    private final Predicate<ItemStack> insertionPredicate = this::canInsert;
 
     public ImportBusPart(final ItemStack is) {
         super(is);
@@ -79,7 +82,6 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         this.source = new MachineSource(this);
     }
 
-    @Override
     public boolean canInsert(final ItemStack stack) {
         if (stack.isEmpty() || stack.getItem() == Items.AIR) {
             return false;
@@ -181,10 +183,10 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
 
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             newItems = myAdaptor.removeSimilarItems(toSend,
-                    whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, this);
+                    whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, insertionPredicate);
         } else {
             newItems = myAdaptor.removeItems(toSend,
-                    whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), this);
+                    whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), insertionPredicate);
         }
 
         if (!newItems.isEmpty()) {
@@ -225,9 +227,9 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         final IAEItemStack itemAmountNotStorable;
         final ItemStack simResult;
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            simResult = myAdaptor.simulateSimilarRemove(toSend, itemStackToImport, fzMode, this);
+            simResult = myAdaptor.simulateSimilarRemove(toSend, itemStackToImport, fzMode, insertionPredicate);
         } else {
-            simResult = myAdaptor.simulateRemove(toSend, itemStackToImport, this);
+            simResult = myAdaptor.simulateRemove(toSend, itemStackToImport, insertionPredicate);
         }
         itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
                 this.source);

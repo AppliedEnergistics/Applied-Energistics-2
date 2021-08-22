@@ -102,12 +102,11 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class DualityItemInterface
-        implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
+        implements IGridTickable, IStorageMonitorable, IAEAppEngInventory,
         IConfigManagerHost, ICraftingProvider, ICraftingRequester, IUpgradeableHost {
 
     public static final int NUMBER_OF_STORAGE_SLOTS = 9;
@@ -412,21 +411,6 @@ public class DualityItemInterface
 
     private boolean hasItemsToSend() {
         return this.waitingToSend != null && !this.waitingToSend.isEmpty();
-    }
-
-    @Override
-    public boolean canInsert(final ItemStack stack) {
-        final IAEItemStack out = this.destination.injectItems(
-                StorageChannels.items().createStack(stack),
-                Actionable.SIMULATE, null);
-        if (out == null) {
-            return true;
-        }
-        return out.getStackSize() != stack.getCount();
-        // ItemStack after = adaptor.simulateAdd( stack );
-        // if ( after == null )
-        // return true;
-        // return after.stackSize != stack.stackSize;
     }
 
     public IItemHandler getConfig() {

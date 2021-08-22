@@ -29,9 +29,9 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.FuzzyMode;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.AdaptorItemHandlerPlayerInv;
-import appeng.util.inv.IInventoryDestination;
 
 import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
 /**
  * Universal Facade for other inventories. Used to conveniently interact with various types of inventories. This is not
@@ -66,24 +66,24 @@ public abstract class InventoryAdaptor {
      * @param destination Null to match anything, otherwise the extracted item will match this predicate.
      * @return What was extracted.
      */
-    public abstract ItemStack removeItems(int amount, ItemStack filter, @Nullable IInventoryDestination destination);
+    public abstract ItemStack removeItems(int amount, ItemStack filter, @Nullable Predicate<ItemStack> destination);
 
     /**
      * Like {@link #removeItems} but only simulating.
      */
-    public abstract ItemStack simulateRemove(int amount, ItemStack filter, @Nullable IInventoryDestination destination);
+    public abstract ItemStack simulateRemove(int amount, ItemStack filter, @Nullable Predicate<ItemStack> destination);
 
     /**
      * Like {@link #removeItems} but with fuzzy support.
      */
     public abstract ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-            @Nullable IInventoryDestination destination);
+                                                 @Nullable Predicate<ItemStack> destination);
 
     /**
      * Like {@link #simulateRemove} but with fuzzy support.
      */
     public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-            @Nullable IInventoryDestination destination);
+                                                    @Nullable Predicate<ItemStack> destination);
 
     /**
      * Insert items.

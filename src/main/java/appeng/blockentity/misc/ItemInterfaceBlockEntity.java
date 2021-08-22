@@ -53,11 +53,10 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.util.Platform;
-import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
 
 public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
-        implements IInventoryDestination, IInterfaceHost, IPriorityHost {
+        implements IInterfaceHost, IPriorityHost {
 
     private static final IGridNodeListener<ItemInterfaceBlockEntity> NODE_LISTENER = new BlockEntityNodeListener<>() {
         @Override
@@ -174,11 +173,6 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return this.duality.getCableConnectionType(dir);
-    }
-
-    @Override
-    public boolean canInsert(final ItemStack stack) {
-        return this.duality.canInsert(stack);
     }
 
     @Override
