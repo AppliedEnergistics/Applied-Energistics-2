@@ -45,6 +45,8 @@ import appeng.me.service.helpers.TickTracker;
 
 public class TickManagerService implements ITickManager, IGridServiceProvider {
 
+    public static boolean MONITORING_ENABLED = false;
+
     private static final int TICK_RATE_SPEED_UP_FACTOR = 2;
     private static final int TICK_RATE_SLOW_DOWN_FACTOR = 1;
 
@@ -298,11 +300,16 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
      */
     private TickRateModulation unsafeTickingRequest(TickTracker tt, int diff) {
         try {
-            // Reset the stop watch and start it
-            stopWatch.reset().start();
-            var mod = tt.getGridTickable().tickingRequest(tt.getNode(), diff);
-            stopWatch.stop();
+            // Shortcut to immediately return when monitoring is disabled.
+            if (!MONITORING_ENABLED) {
+                return tt.getGridTickable().tickingRequest(tt.getNode(), diff);
+            }
 
+            stopWatch.reset().start();
+
+            var mod = tt.getGridTickable().tickingRequest(tt.getNode(), diff);
+
+            stopWatch.stop();
             var elapsedTime = stopWatch.elapsed(TimeUnit.NANOSECONDS);
             tt.getStatistics().accept(elapsedTime);
 
