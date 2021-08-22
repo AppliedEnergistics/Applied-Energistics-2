@@ -55,6 +55,8 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     private final Map<IGridNode, TickTracker> awake = new HashMap<>();
     private final Map<Level, PriorityQueue<TickTracker>> upcomingTicks = new HashMap<>();
 
+    private PriorityQueue<TickTracker> currentlyIterating = null;
+
     private long currentTick = 0;
     private Stopwatch stopWatch = Stopwatch.createUnstarted();
 
@@ -72,18 +74,29 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     @Override
     public void onLevelEndTick(Level level) {
-        var queue = this.getQueue(level);
-        this.tickQueue(queue);
+        this.tickLevelQueue(level);
     }
 
     @Override
     public void onServerEndTick() {
-        var queue = this.getQueue(null);
-        this.tickQueue(queue);
+        this.tickLevelQueue(null);
+    }
+
+    private void tickLevelQueue(@Nullable Level level) {
+        var queue = this.upcomingTicks.get(level);
+
+        if (queue != null) {
+            tickQueue(queue);
+
+            if (queue.isEmpty()) {
+                this.upcomingTicks.remove(level);
+            }
+        }
     }
 
     private void tickQueue(PriorityQueue<TickTracker> queue) {
-        TickTracker tt = null;
+        TickTracker tt;
+        currentlyIterating = queue;
 
         while (!queue.isEmpty()) {
             // Peek and stop once it reaches a TickTracker running at a later tick
@@ -115,6 +128,8 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
                 queue.add(tt);
             }
         }
+
+        currentlyIterating = null;
     }
 
     @Override
@@ -282,8 +297,9 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         var queue = getQueue(level);
         queue.remove(tt);
 
-        // cleanup once the queue is empty, e.g. once a level is fully unloaded.
-        if (queue.isEmpty()) {
+        // Make sure we don't cleanup a queue we are iterating over,
+        // as something might be added to it later even if it's empty now.
+        if (currentlyIterating != queue && queue.isEmpty()) {
             this.upcomingTicks.remove(level);
         }
     }
