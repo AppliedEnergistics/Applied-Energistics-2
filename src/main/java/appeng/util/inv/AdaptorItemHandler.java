@@ -18,7 +18,7 @@
 
 package appeng.util.inv;
 
-import java.util.Iterator;
+import java.util.function.Predicate;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -40,7 +40,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination) {
+    public ItemStack removeItems(int amount, ItemStack filter, Predicate<ItemStack> destination) {
         int slots = this.itemHandler.getSlots();
         ItemStack rv = ItemStack.EMPTY;
 
@@ -56,7 +56,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
                     continue;
                 }
 
-                if (!destination.canInsert(extracted)) {
+                if (!destination.test(extracted)) {
                     continue;
                 }
             }
@@ -83,7 +83,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
     }
 
     @Override
-    public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination) {
+    public ItemStack simulateRemove(int amount, ItemStack filter, Predicate<ItemStack> destination) {
         int slots = this.itemHandler.getSlots();
         ItemStack rv = ItemStack.EMPTY;
 
@@ -96,7 +96,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
                     continue;
                 }
 
-                if (destination != null && !destination.canInsert(extracted)) {
+                if (destination != null && !destination.test(extracted)) {
                     continue;
                 }
 
@@ -121,7 +121,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
      */
     @Override
     public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-            IInventoryDestination destination) {
+            Predicate<ItemStack> destination) {
         int slots = this.itemHandler.getSlots();
         ItemStack extracted = ItemStack.EMPTY;
 
@@ -138,7 +138,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
                     continue;
                 }
 
-                if (!destination.canInsert(simulated)) {
+                if (!destination.test(simulated)) {
                     continue;
                 }
             }
@@ -152,7 +152,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
 
     @Override
     public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-            IInventoryDestination destination) {
+            Predicate<ItemStack> destination) {
         int slots = this.itemHandler.getSlots();
         ItemStack extracted = ItemStack.EMPTY;
 
@@ -166,7 +166,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
             // Attempt extracting it
             extracted = this.itemHandler.extractItem(slot, amount, true);
 
-            if (!extracted.isEmpty() && destination != null && !destination.canInsert(extracted)) {
+            if (!extracted.isEmpty() && destination != null && !destination.test(extracted)) {
                 extracted = ItemStack.EMPTY; // Keep on looking...
             }
         }
@@ -200,21 +200,5 @@ public class AdaptorItemHandler extends InventoryAdaptor {
         }
 
         return left;
-    }
-
-    @Override
-    public boolean containsItems() {
-        int slots = this.itemHandler.getSlots();
-        for (int slot = 0; slot < slots; slot++) {
-            if (!this.itemHandler.getStackInSlot(slot).isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Iterator<ItemSlot> iterator() {
-        return new ItemHandlerIterator(this.itemHandler);
     }
 }

@@ -54,13 +54,14 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
-import appeng.me.storage.MEMonitorIFluidHandler;
+import appeng.me.storage.FluidHandlerAdapter;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
@@ -90,9 +91,9 @@ public class DualityFluidInterface
     private int priority;
 
     private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(
-            new NullInventory<IAEItemStack>(), StorageChannels.items());
+            new NullInventory<>(StorageChannels.items()), StorageChannels.items());
     private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
-            new NullInventory<IAEFluidStack>(), StorageChannels.fluids());
+            new NullInventory<>(StorageChannels.fluids()), StorageChannels.fluids());
 
     public DualityFluidInterface(final IManagedGridNode mainNode, final IFluidInterfaceHost ih) {
         this.gridProxy = mainNode
@@ -187,8 +188,8 @@ public class DualityFluidInterface
             this.fluids.setInternal(grid.getStorageService()
                     .getInventory(StorageChannels.fluids()));
         } else {
-            this.items.setInternal(new NullInventory<>());
-            this.fluids.setInternal(new NullInventory<>());
+            this.items.setInternal(new NullInventory<>(StorageChannels.items()));
+            this.fluids.setInternal(new NullInventory<>(StorageChannels.fluids()));
         }
 
         this.notifyNeighbors();
@@ -447,7 +448,7 @@ public class DualityFluidInterface
         }
     }
 
-    private class InterfaceInventory extends MEMonitorIFluidHandler {
+    private class InterfaceInventory extends FluidHandlerAdapter implements IMEMonitor<IAEFluidStack> {
 
         InterfaceInventory(final DualityFluidInterface iface) {
             super(iface.tanks);
@@ -477,6 +478,17 @@ public class DualityFluidInterface
             }
 
             return super.extractItems(request, type, src);
+        }
+
+        @Override
+        protected void onInjectOrExtract() {
+            // Rebuild cache immediately
+            this.onTick();
+        }
+
+        @Override
+        public IItemList<IAEFluidStack> getStorageList() {
+            return getAvailableItems();
         }
     }
 

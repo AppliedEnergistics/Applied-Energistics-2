@@ -18,8 +18,6 @@
 
 package appeng.me.storage;
 
-import java.util.function.IntConsumer;
-
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -34,14 +32,14 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
     private CellState oldStatus = CellState.EMPTY;
     private final ItemStack is;
     private final ICellHandler handler;
-    private final IntConsumer cellActivityCallback;
+    private final Runnable activityCallback;
 
     public DriveWatcher(final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han,
-            IntConsumer cellActivityCallback) {
+            Runnable activityCallback) {
         super(i, i.getChannel());
         this.is = is;
         this.handler = han;
-        this.cellActivityCallback = cellActivityCallback;
+        this.activityCallback = activityCallback;
     }
 
     public CellState getStatus() {
@@ -58,7 +56,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
             final CellState newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
-                this.cellActivityCallback.accept(this.getSlot());
+                this.activityCallback.run();
                 this.oldStatus = newStatus;
             }
         }
@@ -74,7 +72,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
             final CellState newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
-                this.cellActivityCallback.accept(this.getSlot());
+                this.activityCallback.run();
                 this.oldStatus = newStatus;
             }
         }

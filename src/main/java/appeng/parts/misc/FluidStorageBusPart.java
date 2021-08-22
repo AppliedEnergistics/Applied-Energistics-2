@@ -42,6 +42,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
+import appeng.me.storage.FluidHandlerAdapter;
 import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.fluid.AEFluidInventory;
@@ -80,7 +81,12 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack>
         var handlerExtOpt = target
                 .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide);
         if (handlerExtOpt.isPresent()) {
-            return new FluidHandlerAdapter(handlerExtOpt.orElse(null), alertDevice);
+            return new FluidHandlerAdapter(handlerExtOpt.orElse(null)) {
+                @Override
+                protected void onInjectOrExtract() {
+                    alertDevice.run();
+                }
+            };
         }
 
         return null;

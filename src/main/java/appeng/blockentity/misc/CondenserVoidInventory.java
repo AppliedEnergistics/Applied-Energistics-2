@@ -75,28 +75,8 @@ class CondenserVoidInventory<T extends IAEStack<T>> implements IMEMonitor<T> {
     }
 
     @Override
-    public boolean isPrioritized(final T input) {
-        return false;
-    }
-
-    @Override
-    public boolean canAccept(final T input) {
-        return true;
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return i == 2;
+    public boolean validForPass(final int pass) {
+        return pass == 2;
     }
 
     @Override

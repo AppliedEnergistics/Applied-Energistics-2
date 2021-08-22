@@ -20,7 +20,6 @@ package appeng.me.storage;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
@@ -86,11 +85,6 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> 
     }
 
     @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.READ_WRITE;
-    }
-
-    @Override
     public boolean isPrioritized(final IAEItemStack input) {
         return this.itemListCache.findPrecise(input) != null;
     }
@@ -100,18 +94,4 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> 
         return this.itemListCache.findPrecise(input) != null;
     }
 
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return true;
-    }
 }

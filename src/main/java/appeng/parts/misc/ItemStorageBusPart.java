@@ -41,6 +41,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
+import appeng.me.storage.ItemHandlerAdapter;
 import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.inv.InvOperation;
@@ -79,7 +80,12 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
         var itemHandlerOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (itemHandlerOpt.isPresent()) {
-            return new ItemHandlerAdapter(itemHandlerOpt.orElse(null), alertDevice);
+            return new ItemHandlerAdapter(itemHandlerOpt.orElse(null)) {
+                @Override
+                protected void onInjectOrExtract() {
+                    alertDevice.run();
+                }
+            };
         }
 
         return null;

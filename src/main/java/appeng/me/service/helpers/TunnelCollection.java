@@ -19,10 +19,10 @@
 package appeng.me.service.helpers;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import appeng.parts.p2p.P2PTunnelPart;
-import appeng.util.iterators.NullIterator;
 
 public class TunnelCollection<T extends P2PTunnelPart> implements Iterable<T> {
 
@@ -45,7 +45,7 @@ public class TunnelCollection<T extends P2PTunnelPart> implements Iterable<T> {
     @Override
     public Iterator<T> iterator() {
         if (this.tunnelSources == null) {
-            return new NullIterator<>();
+            return Collections.emptyIterator();
         }
         return new TunnelIterator<>(this.tunnelSources, this.clz);
     }

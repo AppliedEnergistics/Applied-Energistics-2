@@ -70,31 +70,6 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
         return AccessRestriction.READ_WRITE;
     }
 
-    @Override
-    public boolean isPrioritized(final T input) {
-        return false;
-    }
-
-    @Override
-    public boolean canAccept(final T input) {
-        return true;
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return true;
-    }
-
     IStorageChannel<T> getWrappedChannel() {
         return this.wrappedChannel;
     }

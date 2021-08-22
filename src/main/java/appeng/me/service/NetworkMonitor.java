@@ -116,11 +116,6 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
         return this.getHandler().getPriority();
     }
 
-    @Override
-    public int getSlot() {
-        return this.getHandler().getSlot();
-    }
-
     @Nonnull
     @Override
     public IItemList<T> getStorageList() {
@@ -161,8 +156,8 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
     }
 
     @Override
-    public boolean validForPass(final int i) {
-        return this.getHandler().validForPass(i);
+    public boolean validForPass(final int pass) {
+        return this.getHandler().validForPass(pass);
     }
 
     @Nullable

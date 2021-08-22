@@ -18,6 +18,7 @@
 
 package appeng.menu.implementations;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 import net.minecraft.world.entity.player.Inventory;
@@ -40,7 +41,6 @@ import appeng.menu.slot.FakeTypeOnlySlot;
 import appeng.menu.slot.OptionalTypeOnlyFakeSlot;
 import appeng.parts.misc.ItemStorageBusPart;
 import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.iterators.NullIterator;
 
 /**
  * @see ItemStorageBusScreen
@@ -124,7 +124,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu {
 
         final IMEInventory<IAEItemStack> cellInv = this.storageBus.getInternalHandler();
 
-        Iterator<IAEItemStack> i = new NullIterator<>();
+        Iterator<IAEItemStack> i = Collections.emptyIterator();
         if (cellInv != null) {
             i = cellInv.getAvailableItems().iterator();
         }

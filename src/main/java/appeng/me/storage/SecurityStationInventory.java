@@ -20,7 +20,6 @@ package appeng.me.storage;
 
 import com.mojang.authlib.GameProfile;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
@@ -103,16 +102,6 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
     }
 
     @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.READ_WRITE;
-    }
-
-    @Override
-    public boolean isPrioritized(final IAEItemStack input) {
-        return false;
-    }
-
-    @Override
     public boolean canAccept(final IAEItemStack input) {
         if (input.getItem() instanceof IBiometricCard tbc) {
             final GameProfile newUser = tbc.getProfile(input.createItemStack());
@@ -144,21 +133,6 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
             return true;
         }
         return false;
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return true;
     }
 
     public IItemList<IAEItemStack> getStoredItems() {

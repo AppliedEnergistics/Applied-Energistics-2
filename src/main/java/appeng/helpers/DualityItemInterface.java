@@ -85,6 +85,7 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
@@ -93,7 +94,7 @@ import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
-import appeng.me.storage.MEMonitorIInventory;
+import appeng.me.storage.ItemHandlerAdapter;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.StackUpgradeInventory;
@@ -104,12 +105,11 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class DualityItemInterface
-        implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
+        implements IGridTickable, IAEAppEngInventory,
         IConfigManagerHost, ICraftingProvider, ICraftingRequester, IUpgradeableHost {
 
     public static final int NUMBER_OF_STORAGE_SLOTS = 9;
@@ -127,10 +127,12 @@ public class DualityItemInterface
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, NUMBER_OF_CONFIG_SLOTS);
     private final AppEngInternalInventory storage = new AppEngInternalInventory(this, NUMBER_OF_STORAGE_SLOTS);
     private final AppEngInternalInventory patterns = new AppEngInternalInventory(this, NUMBER_OF_PATTERN_SLOTS);
+    @Nullable
+    private InterfaceInventory localInvHandler;
     private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(
-            new NullInventory<IAEItemStack>(), StorageChannels.items());
+            new NullInventory<>(StorageChannels.items()), StorageChannels.items());
     private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
-            new NullInventory<IAEFluidStack>(), StorageChannels.fluids());
+            new NullInventory<>(StorageChannels.fluids()), StorageChannels.fluids());
     private final UpgradeInventory upgrades;
     private boolean hasConfig = false;
     private int priority;
@@ -416,21 +418,6 @@ public class DualityItemInterface
         return this.waitingToSend != null && !this.waitingToSend.isEmpty();
     }
 
-    @Override
-    public boolean canInsert(final ItemStack stack) {
-        final IAEItemStack out = this.destination.injectItems(
-                StorageChannels.items().createStack(stack),
-                Actionable.SIMULATE, null);
-        if (out == null) {
-            return true;
-        }
-        return out.getStackSize() != stack.getCount();
-        // ItemStack after = adaptor.simulateAdd( stack );
-        // if ( after == null )
-        // return true;
-        // return after.stackSize != stack.stackSize;
-    }
-
     public IItemHandler getConfig() {
         return this.config;
     }
@@ -447,8 +434,8 @@ public class DualityItemInterface
             this.fluids.setInternal(grid.getStorageService()
                     .getInventory(StorageChannels.fluids()));
         } else {
-            this.items.setInternal(new NullInventory<>());
-            this.fluids.setInternal(new NullInventory<>());
+            this.items.setInternal(new NullInventory<>(StorageChannels.items()));
+            this.fluids.setInternal(new NullInventory<>(StorageChannels.fluids()));
         }
 
         this.notifyNeighbors();
@@ -648,27 +635,39 @@ public class DualityItemInterface
         return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
     }
 
-    @Override
-    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    /**
+     * Gets the inventory that is exposed to an ME compatible API user if they have access to the grid this interface is
+     * a part of. This is normally accessed by storage buses.
+     * <p/>
+     * If the interface has configured slots, it will <b>always</b> expose its local inventory instead of the grid's
+     * inventory.
+     */
+    private <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+        if (this.hasConfig) {
+            return getLocalInventory(channel);
+        }
+
         if (channel == StorageChannels.items()) {
-            if (this.hasConfig()) {
-                return (IMEMonitor<T>) new InterfaceInventory(this);
-            }
-
-            return (IMEMonitor<T>) this.items;
+            return this.items.cast(channel);
         } else if (channel == StorageChannels.fluids()) {
-            if (this.hasConfig()) {
-                return null;
-            }
-
-            return (IMEMonitor<T>) this.fluids;
+            return this.fluids.cast(channel);
         }
 
         return null;
     }
 
-    private boolean hasConfig() {
-        return this.hasConfig;
+    /**
+     * Returns an ME compatible monitor for the interfaces local storage.
+     */
+    private <T extends IAEStack<T>> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
+        if (channel == StorageChannels.items()) {
+            if (localInvHandler == null) {
+                localInvHandler = new InterfaceInventory();
+            }
+            return localInvHandler.cast(channel);
+        }
+
+        return null;
     }
 
     @Override
@@ -711,25 +710,6 @@ public class DualityItemInterface
 
     private void cancelCrafting() {
         this.craftingTracker.cancel();
-    }
-
-    public IStorageMonitorable getMonitorable(final IActionSource src, final IStorageMonitorable myInterface) {
-        if (Platform.canAccess(this.gridProxy, src)) {
-            return myInterface;
-        }
-
-        final DualityItemInterface di = this;
-
-        return new IStorageMonitorable() {
-
-            @Override
-            public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-                if (channel == StorageChannels.items()) {
-                    return (IMEMonitor<T>) new InterfaceInventory(di);
-                }
-                return null;
-            }
-        };
     }
 
     @Override
@@ -1042,19 +1022,23 @@ public class DualityItemInterface
         }
     }
 
-    private class InterfaceInventory extends MEMonitorIInventory {
+    /**
+     * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
+     */
+    private class InterfaceInventory extends ItemHandlerAdapter implements IMEMonitor<IAEItemStack> {
 
-        public InterfaceInventory(final DualityItemInterface iface) {
-            super(new AdaptorItemHandler(iface.storage));
+        public InterfaceInventory() {
+            super(storage);
             this.setActionSource(mySource);
         }
 
         @Override
         public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
-            final Optional<InterfaceRequestContext> context = src.context(InterfaceRequestContext.class);
-            final boolean isInterface = context.isPresent();
-
-            if (isInterface) {
+            // Prevents other interfaces from injecting their items into this interface when they push
+            // their local inventory into the network. This prevents items from bouncing back and forth
+            // between interfaces.
+            var context = src.context(InterfaceRequestContext.class);
+            if (context.isPresent()) {
                 return input;
             }
 
@@ -1063,8 +1047,11 @@ public class DualityItemInterface
 
         @Override
         public IAEItemStack extractItems(final IAEItemStack request, final Actionable type, final IActionSource src) {
-            final Optional<InterfaceRequestContext> context = src.context(InterfaceRequestContext.class);
-            final boolean hasLowerOrEqualPriority = context
+            // Prevents interfaces of lower priority fullfilling their item stocking requests from this interface
+            // Otherwise we'd see a "ping-pong" effect where two interfaces could start pulling items back and
+            // forth of they wanted to stock the same item and happened to have storage buses on them.
+            var context = src.context(InterfaceRequestContext.class);
+            var hasLowerOrEqualPriority = context
                     .map(c -> c.compareTo(DualityItemInterface.this.priority) <= 0)
                     .orElse(false);
 
@@ -1074,16 +1061,33 @@ public class DualityItemInterface
 
             return super.extractItems(request, type, src);
         }
+
+        @Override
+        protected void onInjectOrExtract() {
+            // Rebuild cache immediately
+            this.onTick();
+        }
+
+        @Override
+        public IItemList<IAEItemStack> getStorageList() {
+            return getAvailableItems();
+        }
     }
 
     private class Accessor implements IStorageMonitorableAccessor {
-
         @Nullable
         @Override
         public IStorageMonitorable getInventory(IActionSource src) {
-            return DualityItemInterface.this.getMonitorable(src, DualityItemInterface.this);
-        }
+            var self = DualityItemInterface.this;
 
+            // If the given action source can access the grid, return the real inventory
+            if (Platform.canAccess(gridProxy, src)) {
+                return self::getInventory;
+            }
+
+            // Otherwise return a fallback that only exposes the local interface inventory
+            return self::getLocalInventory;
+        }
     }
 
     @Override
