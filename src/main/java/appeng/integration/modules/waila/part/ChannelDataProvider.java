@@ -19,6 +19,7 @@ package appeng.integration.modules.waila.part;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 
 import mcp.mobius.waila.api.ITooltip;
 
@@ -43,7 +44,7 @@ public final class ChannelDataProvider implements IPartDataProvider {
     }
 
     @Override
-    public void appendServerData(IPart part, CompoundTag partTag) {
+    public void appendServerData(ServerPlayer player, IPart part, CompoundTag partTag) {
         if (part instanceof IUsedChannelProvider usedChannelProvider) {
             partTag.putInt(TAG_USED_CHANNELS, usedChannelProvider.getUsedChannelsInfo());
             partTag.putInt(TAG_MAX_CHANNELS, usedChannelProvider.getMaxChannelsInfo());

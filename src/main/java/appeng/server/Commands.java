@@ -18,32 +18,56 @@
 
 package appeng.server;
 
+import java.util.Locale;
+
 import appeng.server.subcommands.ChunkLogger;
 import appeng.server.subcommands.SpatialStorageCommand;
 import appeng.server.subcommands.Supporters;
 import appeng.server.subcommands.TestMeteoritesCommand;
 import appeng.server.subcommands.TestOreGenCommand;
+import appeng.server.subcommands.TickMonitoring;
 import appeng.services.compass.TestCompassCommand;
 
 public enum Commands {
-    Chunklogger(4, new ChunkLogger(), false), Supporters(0, new Supporters(), false),
-    TestOreGen(4, new TestOreGenCommand(), true), TestMeteorites(4, new TestMeteoritesCommand(), true),
-    Spatial(4, new SpatialStorageCommand(), false),
-    Compass(4, new TestCompassCommand(), true);
+    // Unrestricted
+    Supporters(0, new Supporters()),
+
+    // Admin
+    Chunklogger(4, new ChunkLogger()),
+    Spatial(4, new SpatialStorageCommand()),
+    TICK_MONITORING(4, "tickmonitor", new TickMonitoring()),
+
+    // Testing
+    Compass(4, new TestCompassCommand(), true),
+    TestOreGen(4, new TestOreGenCommand(), true),
+    TestMeteorites(4, new TestMeteoritesCommand(), true);
 
     public final int level;
     public final ISubCommand command;
     public boolean test;
+    public final String literal;
+
+    Commands(final int level, final ISubCommand w) {
+        this(level, null, w, false);
+    }
+
+    Commands(final int level, String literal, final ISubCommand w) {
+        this(level, literal, w, false);
+    }
 
     Commands(final int level, final ISubCommand w, boolean test) {
+        this(level, null, w, test);
+    }
+
+    Commands(final int level, String literal, final ISubCommand w, boolean test) {
         this.level = level;
         this.command = w;
         this.test = test;
+        this.literal = literal != null ? literal : this.name();
     }
 
-    @Override
-    public String toString() {
-        return this.name();
+    public String literal() {
+        return literal.toLowerCase(Locale.ROOT);
     }
 
 }

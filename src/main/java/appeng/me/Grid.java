@@ -27,6 +27,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
+import net.minecraft.world.level.Level;
+
 import appeng.api.networking.GridServicesInternal;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -221,11 +223,34 @@ public class Grid implements IGrid {
         this.pivot = pivot;
     }
 
-    public void update() {
+    public void onServerStartTick() {
         for (var gc : this.services.values()) {
-            // are there any nodes left?
             if (this.pivot != null) {
-                gc.onUpdateTick();
+                gc.onServerStartTick();
+            }
+        }
+    }
+
+    public void onLevelStartTick(Level level) {
+        for (var gc : this.services.values()) {
+            if (this.pivot != null) {
+                gc.onLevelStartTick(level);
+            }
+        }
+    }
+
+    public void onLevelEndTick(Level level) {
+        for (var gc : this.services.values()) {
+            if (this.pivot != null) {
+                gc.onLevelEndTick(level);
+            }
+        }
+    }
+
+    public void onServerEndTick() {
+        for (var gc : this.services.values()) {
+            if (this.pivot != null) {
+                gc.onServerEndTick();
             }
         }
     }

@@ -22,6 +22,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
 
 import mcp.mobius.waila.api.ITooltip;
 
@@ -61,7 +62,7 @@ public final class P2PStateDataProvider implements IPartDataProvider {
     }
 
     @Override
-    public void appendServerData(IPart part, CompoundTag partTag) {
+    public void appendServerData(ServerPlayer player, IPart part, CompoundTag partTag) {
         if (part instanceof P2PTunnelPart<?>p2pTunnel) {
             if (!p2pTunnel.isPowered()) {
                 return;

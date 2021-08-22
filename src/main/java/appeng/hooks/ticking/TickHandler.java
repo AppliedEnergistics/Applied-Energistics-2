@@ -75,7 +75,7 @@ public class TickHandler {
      * <p>
      * This cumulative for all queues of one server tick.
      */
-    private final Stopwatch sw = Stopwatch.createUnstarted();
+    private final Stopwatch stopWatch = Stopwatch.createUnstarted();
     private int processQueueElementsProcessed = 0;
     private int processQueueElementsRemaining = 0;
 
@@ -88,12 +88,12 @@ public class TickHandler {
 
     public void init() {
         MinecraftForge.EVENT_BUS.addListener(this::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(this::onWorldTick);
+        MinecraftForge.EVENT_BUS.addListener(this::onLevelTick);
         MinecraftForge.EVENT_BUS.addListener(this::onUnloadChunk);
         // Try to go first for level loads since we use it to initialize state
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, this::onLoadWorld);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, this::onLoadLevel);
         // Try to go last for level unloads since we use it to clean-up state
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onUnloadWorld);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onUnloadLevel);
     }
 
     public void addCallable(final LevelAccessor level, Runnable c) {
@@ -197,7 +197,7 @@ public class TickHandler {
     /**
      * Handle a newly loaded level and setup defaults when necessary.
      */
-    public void onLoadWorld(final WorldEvent.Load ev) {
+    public void onLoadLevel(final WorldEvent.Load ev) {
         var level = ev.getWorld();
 
         if (level.isClientSide()) {
@@ -210,7 +210,7 @@ public class TickHandler {
     /**
      * Handle a level unload and tear down related data structures.
      */
-    public void onUnloadWorld(final WorldEvent.Unload ev) {
+    public void onUnloadLevel(final WorldEvent.Unload ev) {
         var level = ev.getWorld();
 
         if (level.isClientSide()) {
@@ -241,7 +241,7 @@ public class TickHandler {
      * <p>
      * This can happen multiple times per level, but each level should only be ticked once per minecraft tick.
      */
-    public void onWorldTick(final WorldTickEvent ev) {
+    public void onLevelTick(final WorldTickEvent ev) {
         var level = ev.world;
 
         if (!(level instanceof ServerLevel serverLevel) || ev.side != LogicalSide.SERVER) {
@@ -251,9 +251,30 @@ public class TickHandler {
         }
 
         if (ev.phase == Phase.START) {
-            onServerWorldTickStart(serverLevel);
+            onServerLevelTickStart(serverLevel);
         } else if (ev.phase == Phase.END) {
-            onServerWorldTickEnd(serverLevel);
+            onServerLevelTickEnd(serverLevel);
+        }
+    }
+
+    private void onServerLevelTickStart(ServerLevel level) {
+        var queue = this.callQueue.get(level);
+        processQueueElementsRemaining += this.processQueue(queue, level);
+
+        // tick networks
+        this.grids.updateNetworks();
+        for (var g : this.grids.getNetworks()) {
+            g.onLevelStartTick(level);
+        }
+    }
+
+    private void onServerLevelTickEnd(ServerLevel level) {
+        this.simulateCraftingJobs(level);
+        this.readyBlockEntities(level);
+
+        // tick networks
+        for (var g : this.grids.getNetworks()) {
+            g.onLevelEndTick(level);
         }
     }
 
@@ -268,34 +289,28 @@ public class TickHandler {
         }
     }
 
-    private void onServerWorldTickStart(ServerLevel level) {
-        var queue = this.callQueue.get(level);
-        processQueueElementsRemaining += this.processQueue(queue, level);
-    }
-
-    private void onServerWorldTickEnd(ServerLevel level) {
-        this.simulateCraftingJobs(level);
-        this.readyBlockEntities(level);
-    }
-
     private void onServerTickStart() {
         // Reset the stop watch on the start of each server tick.
         this.processQueueElementsProcessed = 0;
         this.processQueueElementsRemaining = 0;
-        this.sw.reset();
+        this.stopWatch.reset();
+
+        // tick networks
+        for (var g : this.grids.getNetworks()) {
+            g.onServerStartTick();
+        }
     }
 
     private void onServerTickEnd() {
-        // tick networks.
-        this.grids.updateNetworks();
+        // tick networks
         for (var g : this.grids.getNetworks()) {
-            g.update();
+            g.onServerEndTick();
         }
 
         // cross level queue.
         processQueueElementsRemaining += this.processQueue(this.serverQueue, null);
 
-        if (this.sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
+        if (this.stopWatch.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
             AELog.warn("Exceeded time limit of %d ms after processing %d queued tick callbacks (%d remain)",
                     TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS, processQueueElementsProcessed,
                     processQueueElementsRemaining);
@@ -342,8 +357,7 @@ public class TickHandler {
 
         var levelQueue = blockEntities.getBlockEntities(level);
 
-        // Make a copy because this set may be modified
-        // when new chunks are loaded by an onReady call below
+        // Make a copy because this set may be modified when new chunks are loaded by an onReady call below
         long[] workSet = levelQueue.keySet().toLongArray();
 
         for (long packedChunkPos : workSet) {
@@ -351,9 +365,8 @@ public class TickHandler {
             // The following test is equivalent to ServerLevel#isPositionTickingWithEntitiesLoaded
             if (level.areEntitiesLoaded(packedChunkPos) && chunkProvider.isPositionTicking(packedChunkPos)) {
                 // Take the currently waiting block entities for this chunk and ready them all. Should more block
-                // entities be added to
-                // this chunk while we're working on it, a new list will be added automatically and we'll work on this
-                // chunk again next tick.
+                // entities be added to this chunk while we're working on it, a new list will be added automatically and
+                // we'll work on this chunk again next tick.
                 var chunkQueue = levelQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
                     AELog.warn("Chunk %s was unloaded while we were readying block entities",
@@ -364,8 +377,7 @@ public class TickHandler {
                 for (var bt : chunkQueue) {
                     // Only ready block entities which weren't destroyed in the meantime.
                     if (!bt.isRemoved()) {
-                        // Note that this can load more chunks, but they'll at the earliest
-                        // be initialized on the next tick
+                        // This could load more chunks, but the the earliest time to be initialized is the next tick.
                         bt.onReady();
                     }
                 }
@@ -388,7 +400,7 @@ public class TickHandler {
         }
 
         // start the clock
-        sw.start();
+        stopWatch.start();
 
         while (!queue.isEmpty()) {
             try {
@@ -396,7 +408,7 @@ public class TickHandler {
                 queue.poll().call(level);
                 this.processQueueElementsProcessed++;
 
-                if (sw.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
+                if (stopWatch.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
                     break;
                 }
             } catch (final Exception e) {
@@ -405,7 +417,7 @@ public class TickHandler {
         }
 
         // stop watch for the next call
-        sw.stop();
+        stopWatch.stop();
 
         return queue.size();
     }

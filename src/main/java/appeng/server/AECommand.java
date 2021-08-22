@@ -20,8 +20,6 @@ package appeng.server;
 
 import static net.minecraft.commands.Commands.literal;
 
-import java.util.Locale;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -46,10 +44,8 @@ public final class AECommand {
     }
 
     private void add(LiteralArgumentBuilder<CommandSourceStack> builder, Commands subCommand) {
-
-        LiteralArgumentBuilder<CommandSourceStack> subCommandBuilder = literal(
-                subCommand.name().toLowerCase(Locale.ROOT))
-                        .requires(src -> src.hasPermission(subCommand.level));
+        LiteralArgumentBuilder<CommandSourceStack> subCommandBuilder = literal(subCommand.literal())
+                .requires(src -> src.hasPermission(subCommand.level));
         subCommand.command.addArguments(subCommandBuilder);
         subCommandBuilder.executes(ctx -> {
             subCommand.command.call(AppEng.instance().getCurrentServer(), ctx, ctx.getSource());

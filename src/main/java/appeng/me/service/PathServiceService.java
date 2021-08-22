@@ -79,7 +79,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
     }
 
     @Override
-    public void onUpdateTick() {
+    public void onServerEndTick() {
         if (this.recalculateControllerNextTick) {
             this.recalcController();
         }

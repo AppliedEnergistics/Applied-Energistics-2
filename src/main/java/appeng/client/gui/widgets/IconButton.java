@@ -26,7 +26,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
