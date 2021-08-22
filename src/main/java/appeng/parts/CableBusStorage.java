@@ -32,8 +32,11 @@ import appeng.api.parts.IPart;
  */
 public class CableBusStorage {
 
+    @Nullable
     private ICablePart center;
+    @Nullable
     private IPart[] parts;
+    @Nullable
     private IFacadePart[] facades;
 
     protected ICablePart getCenter() {
@@ -55,7 +58,7 @@ public class CableBusStorage {
 
     protected void setPart(@Nonnull Direction side, final IPart part) {
         if (this.parts == null) {
-            this.parts = new IPart[6];
+            this.parts = new IPart[Direction.values().length];
         }
 
         var index = side.ordinal();
@@ -70,7 +73,7 @@ public class CableBusStorage {
         var index = side.ordinal();
         this.parts[index] = null;
 
-        if (this.isNullArray(this.parts)) {
+        if (isNullArray(this.parts)) {
             this.parts = null;
         }
     }
@@ -85,8 +88,13 @@ public class CableBusStorage {
     }
 
     public void setFacade(@Nonnull Direction side, @Nullable final IFacadePart facade) {
+        if (facade == null) {
+            removeFacade(side);
+            return;
+        }
+
         if (facades == null) {
-            this.facades = new IFacadePart[6];
+            this.facades = new IFacadePart[Direction.values().length];
         }
 
         var index = side.ordinal();
@@ -101,18 +109,18 @@ public class CableBusStorage {
         var index = side.ordinal();
         this.facades[index] = null;
 
-        if (this.isNullArray(this.facades)) {
+        if (isNullArray(this.facades)) {
             this.facades = null;
         }
     }
 
-    private boolean isNullArray(Object[] array) {
+    private static <T> boolean isNullArray(T[] array) {
         if (array == null) {
             return true;
         }
 
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] != null) {
+        for (var o : array) {
+            if (o != null) {
                 return false;
             }
         }
