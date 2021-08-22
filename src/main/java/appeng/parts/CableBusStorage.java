@@ -33,7 +33,7 @@ import appeng.api.parts.IPart;
 public class CableBusStorage {
 
     private ICablePart center;
-    private IPart[] sides;
+    private IPart[] parts;
     private IFacadePart[] facades;
 
     protected ICablePart getCenter() {
@@ -44,80 +44,79 @@ public class CableBusStorage {
         this.center = center;
     }
 
-    protected IPart getSide(@Nonnull Direction side) {
-        final int x = side.ordinal();
-        if (this.sides != null && this.sides.length > x) {
-            return this.sides[x];
-        }
-
-        return null;
-    }
-
-    protected void setSide(@Nonnull Direction side, final IPart part) {
-        final int x = side.ordinal();
-
-        if (this.sides != null && this.sides.length > x && part == null) {
-            this.sides[x] = null;
-            this.sides = this.shrink(this.sides, true);
-        } else if (part != null) {
-            this.sides = this.grow(this.sides, x, true);
-            this.sides[x] = part;
-        }
-    }
-
-    private <T> T[] shrink(final T[] in, final boolean parts) {
-        int newSize = -1;
-        for (int x = 0; x < in.length; x++) {
-            if (in[x] != null) {
-                newSize = x;
-            }
-        }
-
-        if (newSize == -1) {
+    protected IPart getPart(@Nonnull Direction side) {
+        if (this.parts == null) {
             return null;
         }
 
-        newSize++;
-        if (newSize == in.length) {
-            return in;
-        }
-
-        final T[] newArray = (T[]) (parts ? new IPart[newSize] : new IFacadePart[newSize]);
-        System.arraycopy(in, 0, newArray, 0, newSize);
-
-        return newArray;
+        var index = side.ordinal();
+        return this.parts[index];
     }
 
-    private <T> T[] grow(final T[] in, final int newValue, final boolean parts) {
-        if (in != null && in.length > newValue) {
-            return in;
+    protected void setPart(@Nonnull Direction side, final IPart part) {
+        if (this.parts == null) {
+            this.parts = new IPart[6];
         }
 
-        final int newSize = newValue + 1;
-
-        final T[] newArray = (T[]) (parts ? new IPart[newSize] : new IFacadePart[newSize]);
-        if (in != null) {
-            System.arraycopy(in, 0, newArray, 0, in.length);
-        }
-
-        return newArray;
+        var index = side.ordinal();
+        this.parts[index] = part;
     }
 
-    public IFacadePart getFacade(final int x) {
-        if (this.facades != null && this.facades.length > x) {
-            return this.facades[x];
+    protected void removePart(@Nonnull Direction side) {
+        if (this.parts == null) {
+            return;
         }
 
-        return null;
+        var index = side.ordinal();
+        this.parts[index] = null;
+
+        if (this.isNullArray(this.parts)) {
+            this.parts = null;
+        }
     }
 
-    public void setFacade(final int x, @Nullable final IFacadePart facade) {
-        if (this.facades != null && this.facades.length > x && facade == null) {
-            this.facades[x] = null;
-            this.facades = this.shrink(this.facades, false);
-        } else {
-            this.facades = this.grow(this.facades, x, false);
-            this.facades[x] = facade;
+    public IFacadePart getFacade(@Nonnull Direction side) {
+        if (this.facades == null) {
+            return null;
         }
+
+        var index = side.ordinal();
+        return this.facades[index];
+    }
+
+    public void setFacade(@Nonnull Direction side, @Nullable final IFacadePart facade) {
+        if (facades == null) {
+            this.facades = new IFacadePart[6];
+        }
+
+        var index = side.ordinal();
+        this.facades[index] = facade;
+    }
+
+    public void removeFacade(@Nonnull Direction side) {
+        if (this.facades == null) {
+            return;
+        }
+
+        var index = side.ordinal();
+        this.facades[index] = null;
+
+        if (this.isNullArray(this.facades)) {
+            this.facades = null;
+        }
+    }
+
+    private boolean isNullArray(Object[] array) {
+        if (array == null) {
+            return true;
+        }
+
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

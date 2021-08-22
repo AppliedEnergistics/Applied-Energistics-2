@@ -76,11 +76,6 @@ public class FacadePart implements IFacadePart {
     }
 
     @Override
-    public boolean notAEFacade() {
-        return !(this.facade.getItem() instanceof IFacadeItem);
-    }
-
-    @Override
     public ItemStack getTextureItem() {
         final Item maybeFacade = this.facade.getItem();
 

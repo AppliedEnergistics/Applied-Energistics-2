@@ -57,11 +57,6 @@ public interface IFacadeContainer {
     IFacadePart getFacade(Direction s);
 
     /**
-     * rotate the facades left.
-     */
-    void rotateLeft();
-
-    /**
      * write nbt data
      *
      * @param data to be written data

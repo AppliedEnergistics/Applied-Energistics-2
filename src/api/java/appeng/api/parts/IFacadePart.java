@@ -58,8 +58,6 @@ public interface IFacadePart {
 
     Item getItem();
 
-    boolean notAEFacade();
-
     /**
      * The item that this facade masquerades as.
      */

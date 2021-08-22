@@ -35,7 +35,6 @@ import appeng.parts.CableBusStorage;
 
 public class FacadeContainer implements IFacadeContainer {
 
-    private final int facades = 6;
     private final CableBusStorage storage;
     private final Runnable changeCallback;
 
@@ -47,7 +46,7 @@ public class FacadeContainer implements IFacadeContainer {
     @Override
     public boolean addFacade(final IFacadePart a) {
         if (this.getFacade(a.getSide()) == null) {
-            this.storage.setFacade(a.getSide().ordinal(), a);
+            this.storage.setFacade(a.getSide(), a);
             this.notifyChange();
             return true;
         }
@@ -56,8 +55,8 @@ public class FacadeContainer implements IFacadeContainer {
 
     @Override
     public void removeFacade(final IPartHost host, final Direction side) {
-        if (side != null && side != null && this.storage.getFacade(side.ordinal()) != null) {
-            this.storage.setFacade(side.ordinal(), null);
+        if (side != null && this.storage.getFacade(side) != null) {
+            this.storage.removeFacade(side);
             this.notifyChange();
             if (host != null) {
                 host.markForUpdate();
@@ -66,36 +65,18 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public IFacadePart getFacade(final Direction s) {
-        return this.storage.getFacade(s.ordinal());
-    }
-
-    @Override
-    public void rotateLeft() {
-        final IFacadePart[] newFacades = new FacadePart[6];
-
-        newFacades[Direction.UP.ordinal()] = this.storage.getFacade(Direction.UP.ordinal());
-        newFacades[Direction.DOWN.ordinal()] = this.storage.getFacade(Direction.DOWN.ordinal());
-
-        newFacades[Direction.EAST.ordinal()] = this.storage.getFacade(Direction.NORTH.ordinal());
-        newFacades[Direction.SOUTH.ordinal()] = this.storage.getFacade(Direction.EAST.ordinal());
-
-        newFacades[Direction.WEST.ordinal()] = this.storage.getFacade(Direction.SOUTH.ordinal());
-        newFacades[Direction.NORTH.ordinal()] = this.storage.getFacade(Direction.WEST.ordinal());
-
-        for (int x = 0; x < this.facades; x++) {
-            this.storage.setFacade(x, newFacades[x]);
-        }
-        this.notifyChange();
+    public IFacadePart getFacade(final Direction side) {
+        return this.storage.getFacade(side);
     }
 
     @Override
     public void writeToNBT(final CompoundTag c) {
-        for (int x = 0; x < this.facades; x++) {
-            if (this.storage.getFacade(x) != null) {
+        for (Direction side : Direction.values()) {
+            if (this.storage.getFacade(side) != null) {
+                var index = side.ordinal();
                 final CompoundTag data = new CompoundTag();
-                this.storage.getFacade(x).getItemStack().save(data);
-                c.put("facade:" + x, data);
+                this.storage.getFacade(side).getItemStack().save(data);
+                c.put("facade:" + index, data);
             }
         }
     }
@@ -106,21 +87,20 @@ public class FacadeContainer implements IFacadeContainer {
 
         boolean changed = false;
 
-        for (int x = 0; x < this.facades; x++) {
-            final Direction side = Direction.values()[x];
-            final int ix = 1 << x;
+        for (Direction side : Direction.values()) {
+            final int ix = 1 << side.ordinal();
             if ((facadeSides & ix) == ix) {
-                final int id = Math.abs(out.readInt());
+                final int id = out.readVarInt();
 
                 final FacadeItem ifa = AEItems.FACADE.asItem();
                 final ItemStack facade = ifa.createFromID(id);
                 if (facade != null) {
-                    changed = changed || this.storage.getFacade(x) == null;
-                    this.storage.setFacade(x, ifa.createPartFromItemStack(facade, side));
+                    changed = changed || this.storage.getFacade(side) == null;
+                    this.storage.setFacade(side, ifa.createPartFromItemStack(facade, side));
                 }
             } else {
-                changed = changed || this.storage.getFacade(x) != null;
-                this.storage.setFacade(x, null);
+                changed = changed || this.storage.getFacade(side) != null;
+                this.storage.removeFacade(side);
             }
         }
 
@@ -128,18 +108,37 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(final CompoundTag c) {
-        for (int x = 0; x < this.facades; x++) {
-            this.storage.setFacade(x, null);
+    public void writeToStream(final FriendlyByteBuf out) throws IOException {
+        int facadeSides = 0;
+        for (Direction side : Direction.values()) {
+            if (this.getFacade(side) != null) {
+                facadeSides |= 1 << side.ordinal();
+            }
+        }
+        out.writeByte((byte) facadeSides);
 
-            final CompoundTag t = c.getCompound("facade:" + x);
+        for (Direction side : Direction.values()) {
+            final IFacadePart part = this.getFacade(side);
+            if (part != null) {
+                final int itemID = Item.getId(part.getItem());
+                out.writeVarInt(itemID);
+            }
+        }
+    }
+
+    @Override
+    public void readFromNBT(final CompoundTag c) {
+        for (Direction side : Direction.values()) {
+            var index = side.ordinal();
+            this.storage.removeFacade(side);
+
+            final CompoundTag t = c.getCompound("facade:" + index);
             if (t != null) {
                 final ItemStack is = ItemStack.of(t);
                 if (!is.isEmpty()) {
                     final Item i = is.getItem();
-                    if (i instanceof IFacadeItem) {
-                        this.storage.setFacade(x,
-                                ((IFacadeItem) i).createPartFromItemStack(is, Direction.values()[x]));
+                    if (i instanceof IFacadeItem facadeItem) {
+                        this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
                     }
                 }
             }
@@ -147,28 +146,9 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf out) throws IOException {
-        int facadeSides = 0;
-        for (int x = 0; x < this.facades; x++) {
-            if (this.getFacade(Direction.values()[x]) != null) {
-                facadeSides |= 1 << x;
-            }
-        }
-        out.writeByte((byte) facadeSides);
-
-        for (int x = 0; x < this.facades; x++) {
-            final IFacadePart part = this.getFacade(Direction.values()[x]);
-            if (part != null) {
-                final int itemID = Item.getId(part.getItem());
-                out.writeInt(itemID * (part.notAEFacade() ? -1 : 1));
-            }
-        }
-    }
-
-    @Override
     public boolean isEmpty() {
-        for (int x = 0; x < this.facades; x++) {
-            if (this.storage.getFacade(x) != null) {
+        for (Direction side : Direction.values()) {
+            if (this.storage.getFacade(side) != null) {
                 return false;
             }
         }
