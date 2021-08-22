@@ -20,7 +20,6 @@ package appeng.debug;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.Iterables;
 
@@ -55,6 +54,7 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.InteractionUtil;
+import appeng.util.Platform;
 
 public class DebugCardItem extends AEBaseItem {
 
@@ -127,10 +127,10 @@ public class DebugCardItem extends AEBaseItem {
                         String message = "#: " + o;
 
                         if (totalAverageTime > 0) {
-                            message += "; average: " + this.timeMeasurement(totalAverageTime);
+                            message += "; average: " + Platform.formatTimeMeasurement((long) totalAverageTime);
                         }
                         if (singleMaximumTime > 0) {
-                            message += "; max: " + this.timeMeasurement(singleMaximumTime);
+                            message += "; max: " + Platform.formatTimeMeasurement(singleMaximumTime);
                         }
 
                         this.outputSecondaryMessage(player, c.getSimpleName(), message);
@@ -240,13 +240,4 @@ public class DebugCardItem extends AEBaseItem {
                 .append(value), Util.NIL_UUID);
     }
 
-    private String timeMeasurement(final long nanos) {
-        if (nanos <= 1000 * 1000) {
-            final long ms = TimeUnit.MICROSECONDS.convert(nanos, TimeUnit.NANOSECONDS);
-            return ms + "µs";
-        }
-
-        final long ms = TimeUnit.MILLISECONDS.convert(nanos, TimeUnit.NANOSECONDS);
-        return ms + "ms";
-    }
 }

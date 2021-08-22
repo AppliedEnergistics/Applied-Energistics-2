@@ -62,7 +62,8 @@ public final class CableBusDataProvider {
             new ChannelDataProvider(),
             new StorageMonitorDataProvider(),
             new GridNodeStateProvider(),
-            new P2PStateDataProvider());
+            new P2PStateDataProvider(),
+            new DebugDataProvider());
 
     private static IElementHelper elementHelper;
 
@@ -170,7 +171,7 @@ public final class CableBusDataProvider {
                 }
 
                 for (var provider : PROVIDERS) {
-                    provider.appendServerData(part, partTag);
+                    provider.appendServerData(serverPlayer, part, partTag);
                 }
 
                 // Send it to the client if there's some data for it

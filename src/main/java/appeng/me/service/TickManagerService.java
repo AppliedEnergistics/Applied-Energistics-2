@@ -32,8 +32,6 @@ import com.google.common.base.Stopwatch;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
-import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGrid;
@@ -211,8 +209,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
      * <p>
      * There is no overflow handling for the internal counter.
      * 
-     * @param node
-     * @return average time or 0 for an unknown node
+     * @return average time spent ticking this node in nanoseconds, or 0 for an unknown node
      */
     public long getAverageTime(final IGridNode node) {
         var stats = this.getStatistics(node);
@@ -221,6 +218,20 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         }
 
         return (long) stats.getAverage();
+    }
+
+    /**
+     * Gets the overall time spent ticking this grid node in nanoseconds.
+     * 
+     * @return 0 if the node isn't ticking or doesn't belong to this grid.
+     */
+    public long getOverallTime(final IGridNode node) {
+        var stats = this.getStatistics(node);
+        if (stats == null) {
+            return 0;
+        }
+
+        return stats.getSum();
     }
 
     /**

@@ -34,6 +34,7 @@ import mcp.mobius.waila.api.config.IPluginConfig;
 
 import appeng.integration.modules.waila.tile.ChargerDataProvider;
 import appeng.integration.modules.waila.tile.CraftingMonitorDataProvider;
+import appeng.integration.modules.waila.tile.DebugDataProvider;
 import appeng.integration.modules.waila.tile.GridNodeStateDataProvider;
 import appeng.integration.modules.waila.tile.PowerStorageDataProvider;
 
@@ -58,7 +59,8 @@ public final class BlockEntityDataProvider implements IComponentProvider, IServe
                 new ChargerDataProvider(),
                 new PowerStorageDataProvider(),
                 new GridNodeStateDataProvider(),
-                new CraftingMonitorDataProvider());
+                new CraftingMonitorDataProvider(),
+                new DebugDataProvider());
     }
 
     @Override

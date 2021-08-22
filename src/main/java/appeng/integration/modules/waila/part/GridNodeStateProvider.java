@@ -21,6 +21,7 @@ package appeng.integration.modules.waila.part;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 
 import mcp.mobius.waila.api.ITooltip;
 
@@ -42,7 +43,7 @@ public final class GridNodeStateProvider implements IPartDataProvider {
     }
 
     @Override
-    public void appendServerData(IPart part, CompoundTag partTag) {
+    public void appendServerData(ServerPlayer player, IPart part, CompoundTag partTag) {
         var state = GridNodeState.fromNode(part.getGridNode());
         partTag.putByte(TAG_STATE, (byte) state.ordinal());
     }

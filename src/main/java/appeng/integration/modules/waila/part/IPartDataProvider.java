@@ -18,6 +18,7 @@
 package appeng.integration.modules.waila.part;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 
 import mcp.mobius.waila.api.ITooltip;
 
@@ -30,6 +31,6 @@ public interface IPartDataProvider {
     default void appendBodyTooltip(IPart part, CompoundTag partTag, ITooltip tooltip) {
     }
 
-    default void appendServerData(IPart part, CompoundTag partTag) {
+    default void appendServerData(ServerPlayer player, IPart part, CompoundTag partTag) {
     }
 }

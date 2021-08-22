@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.WeakHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
@@ -172,6 +173,20 @@ public class Platform {
 
         final DecimalFormat df = new DecimalFormat("#.##");
         return df.format(p) + ' ' + level + unitName + (isRate ? "/t" : "");
+    }
+
+    public static String formatTimeMeasurement(long nanos) {
+        if (nanos <= 0) {
+            return "0 ns";
+        } else if (nanos < 1000) {
+            return "<1 µs";
+        } else if (nanos <= 1000 * 1000) {
+            final long ms = TimeUnit.MICROSECONDS.convert(nanos, TimeUnit.NANOSECONDS);
+            return ms + "µs";
+        }
+
+        final long ms = TimeUnit.MILLISECONDS.convert(nanos, TimeUnit.NANOSECONDS);
+        return ms + "ms";
     }
 
     public static Direction crossProduct(final Direction forward, final Direction up) {

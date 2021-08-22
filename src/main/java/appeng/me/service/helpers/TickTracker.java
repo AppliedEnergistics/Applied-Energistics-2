@@ -34,10 +34,10 @@ public class TickTracker implements Comparable<TickTracker> {
     private final TickingRequest request;
     private final IGridTickable gt;
     private final IGridNode node;
+    private final LongSummaryStatistics statistics;
 
     private long lastTick;
     private int currentRate;
-    private LongSummaryStatistics statistics;
 
     public TickTracker(final TickingRequest req, final IGridNode node, final IGridTickable gt, final long currentTick) {
         this.request = req;
