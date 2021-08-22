@@ -95,7 +95,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
                     var te = self.getLevel().getBlockEntity(getFacingPos());
 
                     if (te != null) {
-                        return te.getCapability(capability, getSide().getOpposite().getDirection())
+                        return te.getCapability(capability, getSide().getOpposite())
                                 .orElse(emptyHandler);
                     }
                 }
@@ -120,7 +120,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
      * The position right in front of this P2P tunnel.
      */
     private BlockPos getFacingPos() {
-        return getHost().getLocation().getPos().relative(getSide().getDirection());
+        return getHost().getLocation().getPos().relative(getSide());
     }
 
     /**

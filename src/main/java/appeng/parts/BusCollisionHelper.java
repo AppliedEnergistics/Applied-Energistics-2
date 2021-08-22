@@ -24,7 +24,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.util.AEPartLocation;
 
 public class BusCollisionHelper implements IPartCollisionHelper {
 
@@ -45,47 +44,54 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         this.isVisual = visual;
     }
 
-    public BusCollisionHelper(final List<AABB> boxes, final AEPartLocation s, final boolean visual) {
+    public BusCollisionHelper(final List<AABB> boxes, final Direction s, final boolean visual) {
         this.boxes = boxes;
         this.isVisual = visual;
 
-        switch (s) {
-            case DOWN -> {
-                this.x = Direction.EAST;
-                this.y = Direction.NORTH;
-                this.z = Direction.DOWN;
-            }
-            case UP -> {
-                this.x = Direction.EAST;
-                this.y = Direction.SOUTH;
-                this.z = Direction.UP;
-            }
-            case EAST -> {
-                this.x = Direction.SOUTH;
-                this.y = Direction.UP;
-                this.z = Direction.EAST;
-            }
-            case WEST -> {
-                this.x = Direction.NORTH;
-                this.y = Direction.UP;
-                this.z = Direction.WEST;
-            }
-            case NORTH -> {
-                this.x = Direction.WEST;
-                this.y = Direction.UP;
-                this.z = Direction.NORTH;
-            }
-            case SOUTH -> {
-                this.x = Direction.EAST;
-                this.y = Direction.UP;
-                this.z = Direction.SOUTH;
-            }
-            default -> {
-                this.x = Direction.EAST;
-                this.y = Direction.UP;
-                this.z = Direction.SOUTH;
+        if (s == null) {
+            this.x = Direction.EAST;
+            this.y = Direction.UP;
+            this.z = Direction.SOUTH;
+        } else {
+            switch (s) {
+                case DOWN -> {
+                    this.x = Direction.EAST;
+                    this.y = Direction.NORTH;
+                    this.z = Direction.DOWN;
+                }
+                case UP -> {
+                    this.x = Direction.EAST;
+                    this.y = Direction.SOUTH;
+                    this.z = Direction.UP;
+                }
+                case EAST -> {
+                    this.x = Direction.SOUTH;
+                    this.y = Direction.UP;
+                    this.z = Direction.EAST;
+                }
+                case WEST -> {
+                    this.x = Direction.NORTH;
+                    this.y = Direction.UP;
+                    this.z = Direction.WEST;
+                }
+                case NORTH -> {
+                    this.x = Direction.WEST;
+                    this.y = Direction.UP;
+                    this.z = Direction.NORTH;
+                }
+                case SOUTH -> {
+                    this.x = Direction.EAST;
+                    this.y = Direction.UP;
+                    this.z = Direction.SOUTH;
+                }
+                default -> {
+                    this.x = Direction.EAST;
+                    this.y = Direction.UP;
+                    this.z = Direction.SOUTH;
+                }
             }
         }
+
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
@@ -41,7 +42,6 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.util.AEPartLocation;
 import appeng.parts.AEBasePart;
 import appeng.util.InteractionUtil;
 
@@ -99,7 +99,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
+        if (pos.relative(this.getSide()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         }
@@ -178,11 +178,11 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public final void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final AEPartLocation side) {
+            final Direction side) {
         super.onPlacement(player, hand, held, side);
 
         final byte rotation = (byte) (Mth.floor(player.getYRot() * 4F / 360F + 2.5D) & 3);
-        if (side == AEPartLocation.UP || side == AEPartLocation.DOWN) {
+        if (side == Direction.UP || side == Direction.DOWN) {
             this.spin = rotation;
         }
     }
@@ -191,7 +191,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         if (this.opacity < 0) {
             final BlockEntity te = this.getBlockEntity();
             Level level = te.getLevel();
-            BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
+            BlockPos pos = te.getBlockPos().relative(this.getSide());
             this.opacity = 255 - level.getBlockState(pos).getLightBlock(level, pos);
         }
 

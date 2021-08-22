@@ -37,7 +37,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
-import appeng.api.util.AEPartLocation;
 import appeng.items.AEBaseItem;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
@@ -77,7 +76,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
                     Util.NIL_UUID);
             return InteractionResult.FAIL;
         }
-        IPart cable = center.getPart(AEPartLocation.INTERNAL);
+        IPart cable = center.getPart(null);
         if (cable == null) {
             player.sendMessage(new TextComponent("Clicked part host must have an INSIDE part"), Util.NIL_UUID);
             return InteractionResult.FAIL;
@@ -108,13 +107,12 @@ public class DebugPartPlacerItem extends AEBaseItem {
                 continue;
             }
 
-            if (partHost.addPart(cable.getItemStack(PartItemStack.PICK), AEPartLocation.INTERNAL, player,
-                    null) == null) {
+            if (!partHost.addPart(cable.getItemStack(PartItemStack.PICK), null, player, null)) {
                 continue;
             }
             for (Direction dir : perpendicularFaces) {
                 ItemStack itemStack = new ItemStack(item, 1);
-                partHost.addPart(itemStack, AEPartLocation.fromFacing(dir), player, null);
+                partHost.addPart(itemStack, dir, player, null);
             }
         }
 

@@ -24,11 +24,10 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import appeng.api.util.AEPartLocation;
 
 public class MatterCannonFX extends TextureSheetParticle {
 
@@ -47,7 +46,7 @@ public class MatterCannonFX extends TextureSheetParticle {
         this.pickSprite(sprite);
     }
 
-    public void fromItem(final AEPartLocation d) {
+    public void fromItem(final Direction d) {
         this.quadSize *= 1.2f;
     }
 

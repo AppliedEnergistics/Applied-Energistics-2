@@ -34,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.parts.IPartHost;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.parts.AEBasePart;
 
@@ -67,14 +66,14 @@ public final class MenuLocator {
     private final int itemIndex;
     private final ResourceLocation worldId;
     private final BlockPos blockPos;
-    private final AEPartLocation side;
+    private final Direction side;
 
-    private MenuLocator(Type type, int itemIndex, Level level, BlockPos blockPos, AEPartLocation side) {
+    private MenuLocator(Type type, int itemIndex, Level level, BlockPos blockPos, Direction side) {
         this(type, itemIndex, level.dimension().location(), blockPos, side);
     }
 
     private MenuLocator(Type type, int itemIndex, ResourceLocation worldId, BlockPos blockPos,
-            AEPartLocation side) {
+            Direction side) {
         this.type = type;
         this.itemIndex = itemIndex;
         this.worldId = worldId;
@@ -93,7 +92,7 @@ public final class MenuLocator {
         if (te.getLevel() == null) {
             throw new IllegalArgumentException("Cannot open a block entity that is not in a level");
         }
-        return new MenuLocator(Type.PART, -1, te.getLevel(), te.getBlockPos(), AEPartLocation.fromFacing(side));
+        return new MenuLocator(Type.PART, -1, te.getLevel(), te.getBlockPos(), side);
     }
 
     /**
@@ -106,7 +105,7 @@ public final class MenuLocator {
             throw new IllegalArgumentException("Cannot open a menu without a player");
         }
         int slot = getPlayerInventorySlotFromHand(player, context.getHand());
-        AEPartLocation side = AEPartLocation.fromFacing(context.getClickedFace());
+        Direction side = context.getClickedFace();
         return new MenuLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, player.level,
                 context.getClickedPos(),
                 side);
@@ -167,7 +166,7 @@ public final class MenuLocator {
         return type == Type.PART || type == Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT;
     }
 
-    public AEPartLocation getSide() {
+    public Direction getSide() {
         Preconditions.checkState(hasSide());
         return side;
     }
@@ -205,10 +204,10 @@ public final class MenuLocator {
         return switch (type) {
             case 0 -> new MenuLocator(Type.PLAYER_INVENTORY, buf.readInt(), (ResourceLocation) null, null, null);
             case 1 -> new MenuLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(),
-                    buf.readResourceLocation(), buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
+                    buf.readResourceLocation(), buf.readBlockPos(), Direction.values()[buf.readByte()]);
             case 2 -> new MenuLocator(Type.BLOCK, -1, buf.readResourceLocation(), buf.readBlockPos(), null);
             case 3 -> new MenuLocator(Type.PART, -1, buf.readResourceLocation(), buf.readBlockPos(),
-                    AEPartLocation.values()[buf.readByte()]);
+                    Direction.values()[buf.readByte()]);
             default -> throw new DecoderException("ContainerLocator type out of range: " + type);
         };
     }

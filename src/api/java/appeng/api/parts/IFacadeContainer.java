@@ -25,10 +25,11 @@ package appeng.api.parts;
 
 import java.io.IOException;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-
-import appeng.api.util.AEPartLocation;
 
 /**
  * Used Internally.
@@ -47,17 +48,13 @@ public interface IFacadeContainer {
     /**
      * Removed the facade on the given side, or does nothing.
      */
-    void removeFacade(IPartHost host, AEPartLocation side);
+    void removeFacade(IPartHost host, Direction side);
 
     /**
      * @return the {@link IFacadePart} for a given side, or null.
      */
-    IFacadePart getFacade(AEPartLocation s);
-
-    /**
-     * rotate the facades left.
-     */
-    void rotateLeft();
+    @Nullable
+    IFacadePart getFacade(Direction s);
 
     /**
      * write nbt data

@@ -55,7 +55,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -146,15 +145,15 @@ public class PartPlacement {
         }
 
         if (!held.isEmpty()) {
-            final IFacadePart fp = isFacade(held, AEPartLocation.fromFacing(side));
+            final IFacadePart fp = isFacade(held, side);
             if (fp != null) {
                 if (host != null) {
                     if (!level.isClientSide) {
-                        if (host.getPart(AEPartLocation.INTERNAL) == null) {
+                        if (host.getPart(null) == null) {
                             return InteractionResult.FAIL;
                         }
 
-                        if (host.canAddPart(held, AEPartLocation.fromFacing(side))
+                        if (host.canAddPart(held, side)
                                 && host.getFacadeContainer().addFacade(fp)) {
                             host.markForSave();
                             host.markForUpdate();
@@ -252,7 +251,7 @@ public class PartPlacement {
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                     return InteractionResult.sidedSuccess(level.isClientSide());
                 }
-            } else if (host != null && !host.canAddPart(held, AEPartLocation.fromFacing(side))) {
+            } else if (host != null && !host.canAddPart(held, side)) {
                 return InteractionResult.FAIL;
             }
         }
@@ -261,7 +260,7 @@ public class PartPlacement {
             return InteractionResult.PASS;
         }
 
-        if (!host.canAddPart(held, AEPartLocation.fromFacing(side))) {
+        if (!host.canAddPart(held, side)) {
             if (pass == PlaceType.INTERACT_FIRST_PASS || pass == PlaceType.PLACE_ITEM) {
                 te_pos = pos.relative(side);
 
@@ -295,8 +294,8 @@ public class PartPlacement {
                 return InteractionResult.FAIL;
             }
 
-            final AEPartLocation mySide = host.addPart(held, AEPartLocation.fromFacing(side), player, hand);
-            if (mySide != null) {
+            final var partAdded = host.addPart(held, side, player, hand);
+            if (partAdded) {
                 BlockState blockState = level.getBlockState(pos);
                 final SoundType ss = multiPart.block().getSoundType(blockState, level, pos, player);
 
@@ -334,7 +333,7 @@ public class PartPlacement {
         }
     }
 
-    public static IFacadePart isFacade(final ItemStack held, final AEPartLocation side) {
+    public static IFacadePart isFacade(final ItemStack held, final Direction side) {
         if (held.getItem() instanceof IFacadeItem) {
             return ((IFacadeItem) held.getItem()).createPartFromItemStack(held, side);
         }

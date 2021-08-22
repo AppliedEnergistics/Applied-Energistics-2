@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.CrashReportCategory;
@@ -61,7 +63,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.definitions.AEBlocks;
@@ -82,7 +83,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     private final ItemStack is;
     private BlockEntity blockEntity = null;
     private IPartHost host = null;
-    private AEPartLocation side = null;
+    @Nullable
+    private Direction side;
 
     public AEBasePart(final ItemStack is) {
         Preconditions.checkNotNull(is);
@@ -241,7 +243,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
         this.setSide(side);
         this.blockEntity = blockEntity;
         this.host = host;
@@ -435,7 +437,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final AEPartLocation side) {
+            final Direction side) {
         this.mainNode.setOwningPlayer(player);
     }
 
@@ -449,11 +451,11 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return false;
     }
 
-    public AEPartLocation getSide() {
+    public Direction getSide() {
         return this.side;
     }
 
-    private void setSide(final AEPartLocation side) {
+    private void setSide(final Direction side) {
         this.side = side;
     }
 

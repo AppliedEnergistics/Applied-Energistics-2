@@ -126,7 +126,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     @Override
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide().getDirection()).equals(neighbor)) {
+        if (pos.relative(this.getSide()).equals(neighbor)) {
             this.refresh();
         } else {
             connectionHelper.updateConnections();
@@ -276,7 +276,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 final BlockEntity te = this.getBlockEntity();
                 final ServerLevel level = (ServerLevel) te.getLevel();
 
-                final BlockPos pos = te.getBlockPos().relative(this.getSide().getDirection());
+                final BlockPos pos = te.getBlockPos().relative(this.getSide());
                 final IEnergyService energy = grid.getEnergyService();
 
                 final BlockState blockState = level.getBlockState(pos);

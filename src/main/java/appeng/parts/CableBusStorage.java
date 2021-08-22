@@ -18,20 +18,25 @@
 
 package appeng.parts;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import net.minecraft.core.Direction;
 
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
-import appeng.api.util.AEPartLocation;
 
 /**
  * Thin data storage to optimize memory usage for cables.
  */
 public class CableBusStorage {
 
+    @Nullable
     private ICablePart center;
-    private IPart[] sides;
+    @Nullable
+    private IPart[] parts;
+    @Nullable
     private IFacadePart[] facades;
 
     protected ICablePart getCenter() {
@@ -42,80 +47,84 @@ public class CableBusStorage {
         this.center = center;
     }
 
-    protected IPart getSide(final AEPartLocation side) {
-        final int x = side.ordinal();
-        if (this.sides != null && this.sides.length > x) {
-            return this.sides[x];
-        }
-
-        return null;
-    }
-
-    protected void setSide(final AEPartLocation side, final IPart part) {
-        final int x = side.ordinal();
-
-        if (this.sides != null && this.sides.length > x && part == null) {
-            this.sides[x] = null;
-            this.sides = this.shrink(this.sides, true);
-        } else if (part != null) {
-            this.sides = this.grow(this.sides, x, true);
-            this.sides[x] = part;
-        }
-    }
-
-    private <T> T[] shrink(final T[] in, final boolean parts) {
-        int newSize = -1;
-        for (int x = 0; x < in.length; x++) {
-            if (in[x] != null) {
-                newSize = x;
-            }
-        }
-
-        if (newSize == -1) {
+    protected IPart getPart(@Nonnull Direction side) {
+        if (this.parts == null) {
             return null;
         }
 
-        newSize++;
-        if (newSize == in.length) {
-            return in;
-        }
-
-        final T[] newArray = (T[]) (parts ? new IPart[newSize] : new IFacadePart[newSize]);
-        System.arraycopy(in, 0, newArray, 0, newSize);
-
-        return newArray;
+        var index = side.ordinal();
+        return this.parts[index];
     }
 
-    private <T> T[] grow(final T[] in, final int newValue, final boolean parts) {
-        if (in != null && in.length > newValue) {
-            return in;
+    protected void setPart(@Nonnull Direction side, final IPart part) {
+        if (this.parts == null) {
+            this.parts = new IPart[Direction.values().length];
         }
 
-        final int newSize = newValue + 1;
-
-        final T[] newArray = (T[]) (parts ? new IPart[newSize] : new IFacadePart[newSize]);
-        if (in != null) {
-            System.arraycopy(in, 0, newArray, 0, in.length);
-        }
-
-        return newArray;
+        var index = side.ordinal();
+        this.parts[index] = part;
     }
 
-    public IFacadePart getFacade(final int x) {
-        if (this.facades != null && this.facades.length > x) {
-            return this.facades[x];
+    protected void removePart(@Nonnull Direction side) {
+        if (this.parts == null) {
+            return;
         }
 
-        return null;
+        var index = side.ordinal();
+        this.parts[index] = null;
+
+        if (isNullArray(this.parts)) {
+            this.parts = null;
+        }
     }
 
-    public void setFacade(final int x, @Nullable final IFacadePart facade) {
-        if (this.facades != null && this.facades.length > x && facade == null) {
-            this.facades[x] = null;
-            this.facades = this.shrink(this.facades, false);
-        } else {
-            this.facades = this.grow(this.facades, x, false);
-            this.facades[x] = facade;
+    public IFacadePart getFacade(@Nonnull Direction side) {
+        if (this.facades == null) {
+            return null;
         }
+
+        var index = side.ordinal();
+        return this.facades[index];
+    }
+
+    public void setFacade(@Nonnull Direction side, @Nullable final IFacadePart facade) {
+        if (facade == null) {
+            removeFacade(side);
+            return;
+        }
+
+        if (facades == null) {
+            this.facades = new IFacadePart[Direction.values().length];
+        }
+
+        var index = side.ordinal();
+        this.facades[index] = facade;
+    }
+
+    public void removeFacade(@Nonnull Direction side) {
+        if (this.facades == null) {
+            return;
+        }
+
+        var index = side.ordinal();
+        this.facades[index] = null;
+
+        if (isNullArray(this.facades)) {
+            this.facades = null;
+        }
+    }
+
+    private static <T> boolean isNullArray(T[] array) {
+        if (array == null) {
+            return true;
+        }
+
+        for (var o : array) {
+            if (o != null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

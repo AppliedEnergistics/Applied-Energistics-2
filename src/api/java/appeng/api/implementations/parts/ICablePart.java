@@ -33,11 +33,9 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 
 /**
- * Implemented on the {@link IPart}s cable objects that can be placed at {@link AEPartLocation}.UNKNOWN in
- * {@link IPartHost}s
+ * Implemented on the {@link IPart}s cable objects that can be placed at the center of {@link IPartHost}s.
  */
 public interface ICablePart extends IPart {
 

@@ -45,7 +45,6 @@ import appeng.api.networking.pathing.IPathingService;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.api.util.AEPartLocation;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.AEBaseItem;
@@ -176,7 +175,7 @@ public class DebugCardItem extends AEBaseItem {
 
             var te = level.getBlockEntity(pos);
             if (te instanceof IPartHost partHost) {
-                final IPart center = partHost.getPart(AEPartLocation.INTERNAL);
+                final IPart center = partHost.getPart(null);
                 partHost.markForUpdate();
                 if (center != null) {
                     final GridNode n = (GridNode) center.getGridNode();

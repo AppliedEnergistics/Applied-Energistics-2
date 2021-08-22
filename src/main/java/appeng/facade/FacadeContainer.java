@@ -20,7 +20,9 @@ package appeng.facade;
 
 import java.io.IOException;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -28,14 +30,12 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
-import appeng.api.util.AEPartLocation;
 import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 import appeng.parts.CableBusStorage;
 
 public class FacadeContainer implements IFacadeContainer {
 
-    private final int facades = 6;
     private final CableBusStorage storage;
     private final Runnable changeCallback;
 
@@ -47,7 +47,7 @@ public class FacadeContainer implements IFacadeContainer {
     @Override
     public boolean addFacade(final IFacadePart a) {
         if (this.getFacade(a.getSide()) == null) {
-            this.storage.setFacade(a.getSide().ordinal(), a);
+            this.storage.setFacade(a.getSide(), a);
             this.notifyChange();
             return true;
         }
@@ -55,9 +55,9 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void removeFacade(final IPartHost host, final AEPartLocation side) {
-        if (side != null && side != AEPartLocation.INTERNAL && this.storage.getFacade(side.ordinal()) != null) {
-            this.storage.setFacade(side.ordinal(), null);
+    public void removeFacade(final IPartHost host, final Direction side) {
+        if (side != null && this.storage.getFacade(side) != null) {
+            this.storage.removeFacade(side);
             this.notifyChange();
             if (host != null) {
                 host.markForUpdate();
@@ -66,36 +66,38 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public IFacadePart getFacade(final AEPartLocation s) {
-        return this.storage.getFacade(s.ordinal());
+    public IFacadePart getFacade(final Direction side) {
+        return this.storage.getFacade(side);
+    }
+
+    private String getNbtKey(Direction side) {
+        return "facade:" + side.ordinal();
     }
 
     @Override
-    public void rotateLeft() {
-        final IFacadePart[] newFacades = new FacadePart[6];
+    public void readFromNBT(final CompoundTag c) {
+        for (var side : Direction.values()) {
+            this.storage.removeFacade(side);
 
-        newFacades[AEPartLocation.UP.ordinal()] = this.storage.getFacade(AEPartLocation.UP.ordinal());
-        newFacades[AEPartLocation.DOWN.ordinal()] = this.storage.getFacade(AEPartLocation.DOWN.ordinal());
-
-        newFacades[AEPartLocation.EAST.ordinal()] = this.storage.getFacade(AEPartLocation.NORTH.ordinal());
-        newFacades[AEPartLocation.SOUTH.ordinal()] = this.storage.getFacade(AEPartLocation.EAST.ordinal());
-
-        newFacades[AEPartLocation.WEST.ordinal()] = this.storage.getFacade(AEPartLocation.SOUTH.ordinal());
-        newFacades[AEPartLocation.NORTH.ordinal()] = this.storage.getFacade(AEPartLocation.WEST.ordinal());
-
-        for (int x = 0; x < this.facades; x++) {
-            this.storage.setFacade(x, newFacades[x]);
+            String key = getNbtKey(side);
+            if (c.contains(key, Tag.TAG_COMPOUND)) {
+                var is = ItemStack.of(c.getCompound(key));
+                if (!is.isEmpty()) {
+                    if (is.getItem() instanceof IFacadeItem facadeItem) {
+                        this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
+                    }
+                }
+            }
         }
-        this.notifyChange();
     }
 
     @Override
     public void writeToNBT(final CompoundTag c) {
-        for (int x = 0; x < this.facades; x++) {
-            if (this.storage.getFacade(x) != null) {
-                final CompoundTag data = new CompoundTag();
-                this.storage.getFacade(x).getItemStack().save(data);
-                c.put("facade:" + x, data);
+        for (var side : Direction.values()) {
+            if (this.storage.getFacade(side) != null) {
+                var data = new CompoundTag();
+                this.storage.getFacade(side).getItemStack().save(data);
+                c.put(getNbtKey(side), data);
             }
         }
     }
@@ -106,21 +108,20 @@ public class FacadeContainer implements IFacadeContainer {
 
         boolean changed = false;
 
-        for (int x = 0; x < this.facades; x++) {
-            final AEPartLocation side = AEPartLocation.fromOrdinal(x);
-            final int ix = 1 << x;
+        for (var side : Direction.values()) {
+            final int ix = 1 << side.ordinal();
             if ((facadeSides & ix) == ix) {
-                final int id = Math.abs(out.readInt());
+                final int id = out.readVarInt();
 
                 final FacadeItem ifa = AEItems.FACADE.asItem();
                 final ItemStack facade = ifa.createFromID(id);
                 if (facade != null) {
-                    changed = changed || this.storage.getFacade(x) == null;
-                    this.storage.setFacade(x, ifa.createPartFromItemStack(facade, side));
+                    changed = changed || this.storage.getFacade(side) == null;
+                    this.storage.setFacade(side, ifa.createPartFromItemStack(facade, side));
                 }
             } else {
-                changed = changed || this.storage.getFacade(x) != null;
-                this.storage.setFacade(x, null);
+                changed = changed || this.storage.getFacade(side) != null;
+                this.storage.removeFacade(side);
             }
         }
 
@@ -128,47 +129,28 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(final CompoundTag c) {
-        for (int x = 0; x < this.facades; x++) {
-            this.storage.setFacade(x, null);
-
-            final CompoundTag t = c.getCompound("facade:" + x);
-            if (t != null) {
-                final ItemStack is = ItemStack.of(t);
-                if (!is.isEmpty()) {
-                    final Item i = is.getItem();
-                    if (i instanceof IFacadeItem) {
-                        this.storage.setFacade(x,
-                                ((IFacadeItem) i).createPartFromItemStack(is, AEPartLocation.fromOrdinal(x)));
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     public void writeToStream(final FriendlyByteBuf out) throws IOException {
         int facadeSides = 0;
-        for (int x = 0; x < this.facades; x++) {
-            if (this.getFacade(AEPartLocation.fromOrdinal(x)) != null) {
-                facadeSides |= 1 << x;
+        for (var side : Direction.values()) {
+            if (this.getFacade(side) != null) {
+                facadeSides |= 1 << side.ordinal();
             }
         }
         out.writeByte((byte) facadeSides);
 
-        for (int x = 0; x < this.facades; x++) {
-            final IFacadePart part = this.getFacade(AEPartLocation.fromOrdinal(x));
+        for (var side : Direction.values()) {
+            final IFacadePart part = this.getFacade(side);
             if (part != null) {
                 final int itemID = Item.getId(part.getItem());
-                out.writeInt(itemID * (part.notAEFacade() ? -1 : 1));
+                out.writeVarInt(itemID);
             }
         }
     }
 
     @Override
     public boolean isEmpty() {
-        for (int x = 0; x < this.facades; x++) {
-            if (this.storage.getFacade(x) != null) {
+        for (var side : Direction.values()) {
+            if (this.storage.getFacade(side) != null) {
                 return false;
             }
         }

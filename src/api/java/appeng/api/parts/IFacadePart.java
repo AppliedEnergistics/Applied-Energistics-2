@@ -23,11 +23,12 @@
 
 package appeng.api.parts;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-
-import appeng.api.util.AEPartLocation;
 
 /**
  * Used Internally.
@@ -50,13 +51,12 @@ public interface IFacadePart {
     void getBoxes(IPartCollisionHelper ch, boolean itemEntity);
 
     /**
-     * @return side the facade is in
+     * @return The side the facade is attached to.
      */
-    AEPartLocation getSide();
+    @Nonnull
+    Direction getSide();
 
     Item getItem();
-
-    boolean notAEFacade();
 
     /**
      * The item that this facade masquerades as.

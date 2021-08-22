@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +41,6 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
 import appeng.api.ids.AETags;
 import appeng.api.movable.BlockEntityMoveStrategies;
 import appeng.api.movable.IBlockEntityMoveStrategy;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
@@ -230,8 +230,8 @@ public class CachedPlane {
 
     private void markForUpdate(final int x, final int y, final int z) {
         this.updates.add(new WorldCoord(x, y, z));
-        for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
-            this.updates.add(new WorldCoord(x + d.xOffset, y + d.yOffset, z + d.zOffset));
+        for (final Direction d : Direction.values()) {
+            this.updates.add(new WorldCoord(x + d.getStepX(), y + d.getStepY(), z + d.getStepZ()));
         }
     }
 

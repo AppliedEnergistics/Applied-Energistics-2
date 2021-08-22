@@ -29,6 +29,7 @@ import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -59,7 +60,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 
 public interface IPart extends ICustomCableConnection {
 
@@ -216,10 +216,10 @@ public interface IPart extends ICustomCableConnection {
     /**
      * called by the Part host to keep your part informed.
      *
-     * @param host        part side
+     * @param side        The side the part is attached to, or null to indicate the part is at the center.
      * @param blockEntity block entity of part
      */
-    void setPartHostInfo(AEPartLocation side, IPartHost host, BlockEntity blockEntity);
+    void setPartHostInfo(@Nullable Direction side, IPartHost host, BlockEntity blockEntity);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -301,7 +301,7 @@ public interface IPart extends ICustomCableConnection {
      * @param held   held item
      * @param side   placing side
      */
-    void onPlacement(Player player, InteractionHand hand, ItemStack held, AEPartLocation side);
+    void onPlacement(Player player, InteractionHand hand, ItemStack held, Direction side);
 
     /**
      * Used to determine which parts can be placed on what cables.

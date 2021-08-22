@@ -145,7 +145,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public EnumSet<Direction> getTargets() {
-        return EnumSet.of(this.getSide().getDirection());
+        return EnumSet.of(this.getSide());
     }
 
     @Override
@@ -176,7 +176,7 @@ public class FluidInterfacePart extends BasicStatePart
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return this.duality.getCapability(capabilityClass, this.getSide().getDirection());
+        return this.duality.getCapability(capabilityClass, this.getSide());
     }
 
     @Override

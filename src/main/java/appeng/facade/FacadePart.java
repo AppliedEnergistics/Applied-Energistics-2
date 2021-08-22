@@ -18,6 +18,11 @@
 
 package appeng.facade;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,17 +31,15 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.util.AEPartLocation;
 
 public class FacadePart implements IFacadePart {
 
     private final ItemStack facade;
-    private final AEPartLocation side;
+    private final Direction side;
 
-    public FacadePart(final ItemStack facade, final AEPartLocation side) {
-        if (facade == null) {
-            throw new IllegalArgumentException("Facade Part constructed on null item.");
-        }
+    public FacadePart(@Nonnull ItemStack facade, @Nonnull Direction side) {
+        Objects.requireNonNull(side, "side");
+        Objects.requireNonNull(facade, "facade");
         this.facade = facade.copy();
         this.facade.setCount(1);
         this.side = side;
@@ -59,7 +62,7 @@ public class FacadePart implements IFacadePart {
     }
 
     @Override
-    public AEPartLocation getSide() {
+    public Direction getSide() {
         return this.side;
     }
 
@@ -70,11 +73,6 @@ public class FacadePart implements IFacadePart {
             return Items.AIR;
         }
         return is.getItem();
-    }
-
-    @Override
-    public boolean notAEFacade() {
-        return !(this.facade.getItem() instanceof IFacadeItem);
     }
 
     @Override

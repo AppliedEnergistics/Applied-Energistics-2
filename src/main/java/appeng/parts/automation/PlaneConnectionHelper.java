@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.util.AEPartLocation;
 import appeng.parts.AEBasePart;
 
 /**
@@ -48,7 +47,7 @@ public final class PlaneConnectionHelper {
      */
     public PlaneConnections getConnections() {
         BlockEntity hostBlockEntity = getHostBlockEntity();
-        AEPartLocation side = part.getSide();
+        Direction side = part.getSide();
 
         final Direction facingRight, facingUp;
         switch (side) {
@@ -77,7 +76,6 @@ public final class PlaneConnectionHelper {
                 facingUp = Direction.UP;
                 break;
             default:
-            case INTERNAL:
                 return PlaneConnections.of(false, false, false, false);
         }
 

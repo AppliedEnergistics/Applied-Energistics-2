@@ -49,7 +49,6 @@ import appeng.api.parts.LayerFlags;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.client.render.cablebus.CableBusRenderState;
@@ -164,7 +163,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List drops) {
+    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
         this.getCableBus().getDrops(drops);
     }
 
@@ -191,28 +190,23 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean canAddPart(final ItemStack is, final AEPartLocation side) {
+    public boolean canAddPart(final ItemStack is, final Direction side) {
         return this.getCableBus().canAddPart(is, side);
     }
 
     @Override
-    public AEPartLocation addPart(final ItemStack is, final AEPartLocation side, final Player player,
+    public boolean addPart(final ItemStack is, final Direction side, final Player player,
             final InteractionHand hand) {
         return this.getCableBus().addPart(is, side, player, hand);
     }
 
     @Override
-    public IPart getPart(final AEPartLocation side) {
+    public IPart getPart(final Direction side) {
         return this.cb.getPart(side);
     }
 
     @Override
-    public IPart getPart(final Direction side) {
-        return this.getCableBus().getPart(side);
-    }
-
-    @Override
-    public void removePart(final AEPartLocation side, final boolean suppressUpdate) {
+    public void removePart(@Nullable Direction side, final boolean suppressUpdate) {
         this.getCableBus().removePart(side, suppressUpdate);
     }
 
@@ -253,7 +247,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean hasRedstone(final AEPartLocation side) {
+    public boolean hasRedstone(final Direction side) {
         return this.getCableBus().hasRedstone(side);
     }
 
@@ -298,9 +292,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction fromSide) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction partLocation) {
         // Note that null will be translated to INTERNAL here
-        AEPartLocation partLocation = AEPartLocation.fromFacing(fromSide);
 
         IPart part = this.getPart(partLocation);
         LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
@@ -309,7 +302,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             return result;
         }
 
-        return super.getCapability(capabilityClass, fromSide);
+        return super.getCapability(capabilityClass, partLocation);
     }
 
     @Nonnull

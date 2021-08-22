@@ -72,7 +72,6 @@ import appeng.api.parts.IFacadePart;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -281,7 +280,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         if (side != null) {
             IFacadeContainer container = this.fc(level, pos);
             if (container != null) {
-                IFacadePart facade = container.getFacade(AEPartLocation.fromFacing(side));
+                IFacadePart facade = container.getFacade(side);
                 if (facade != null) {
                     return facade.getBlockState();
                 }

@@ -66,7 +66,6 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.client.render.cablebus.CableCoreType;
@@ -80,10 +79,11 @@ import appeng.parts.networking.CablePart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class CableBusContainer extends CableBusStorage implements AEMultiBlockEntity, ICableBusContainer {
+public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer {
 
     private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<>();
     private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf(LayerFlags.class);
+    private final CableBusStorage storage = new CableBusStorage();
     private YesNo hasRedstone = YesNo.UNDECIDED;
     private IPartHost tcb;
     private boolean requiresDynamicRender = false;
@@ -108,31 +108,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
         this.tcb = host;
     }
 
-    public void rotateLeft() {
-        final IPart[] newSides = new IPart[6];
-
-        newSides[AEPartLocation.UP.ordinal()] = this.getSide(AEPartLocation.UP);
-        newSides[AEPartLocation.DOWN.ordinal()] = this.getSide(AEPartLocation.DOWN);
-
-        newSides[AEPartLocation.EAST.ordinal()] = this.getSide(AEPartLocation.NORTH);
-        newSides[AEPartLocation.SOUTH.ordinal()] = this.getSide(AEPartLocation.EAST);
-        newSides[AEPartLocation.WEST.ordinal()] = this.getSide(AEPartLocation.SOUTH);
-        newSides[AEPartLocation.NORTH.ordinal()] = this.getSide(AEPartLocation.WEST);
-
-        for (final AEPartLocation dir : AEPartLocation.SIDE_LOCATIONS) {
-            this.setSide(dir, newSides[dir.ordinal()]);
-        }
-
-        this.getFacadeContainer().rotateLeft();
-    }
-
     @Override
     public IFacadeContainer getFacadeContainer() {
-        return new FacadeContainer(this, this::invalidateShapes);
+        return new FacadeContainer(this.storage, this::invalidateShapes);
     }
 
     @Override
-    public boolean canAddPart(ItemStack is, final AEPartLocation side) {
+    public boolean canAddPart(ItemStack is, final Direction side) {
         if (PartPlacement.isFacade(is, side) != null) {
             return true;
         }
@@ -146,7 +128,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             if (bp != null) {
                 if (bp instanceof ICablePart) {
                     boolean canPlace = true;
-                    for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
+                    for (final Direction d : Direction.values()) {
                         if (this.getPart(d) != null
                                 && !this.getPart(d).canBePlacedOn(((ICablePart) bp).supportsBuses())) {
                             canPlace = false;
@@ -157,9 +139,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                         return false;
                     }
 
-                    return this.getPart(AEPartLocation.INTERNAL) == null;
-                } else if (!(bp instanceof ICablePart) && side != AEPartLocation.INTERNAL) {
-                    final IPart cable = this.getPart(AEPartLocation.INTERNAL);
+                    return this.getPart(null) == null;
+                } else if (!(bp instanceof ICablePart) && side != null) {
+                    final IPart cable = this.getPart(null);
                     if (cable != null && !bp.canBePlacedOn(((ICablePart) cable).supportsBuses())) {
                         return false;
                     }
@@ -172,7 +154,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     }
 
     @Override
-    public AEPartLocation addPart(ItemStack is, final AEPartLocation side, final @Nullable Player player,
+    public boolean addPart(ItemStack is, final Direction side, final @Nullable Player player,
             final @Nullable InteractionHand hand) {
         if (this.canAddPart(is, side) && is.getItem() instanceof IPartItem<?>bi) {
 
@@ -182,7 +164,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             final IPart bp = bi.createPart(is);
             if (bp instanceof ICablePart) {
                 boolean canPlace = true;
-                for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
+                for (final Direction d : Direction.values()) {
                     if (this.getPart(d) != null
                             && !this.getPart(d).canBePlacedOn(((ICablePart) bp).supportsBuses())) {
                         canPlace = false;
@@ -190,15 +172,15 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                 }
 
                 if (!canPlace) {
-                    return null;
+                    return false;
                 }
 
-                if (this.getPart(AEPartLocation.INTERNAL) != null) {
-                    return null;
+                if (this.getPart(null) != null) {
+                    return false;
                 }
 
-                this.setCenter((ICablePart) bp);
-                bp.setPartHostInfo(AEPartLocation.INTERNAL, this, this.tcb.getBlockEntity());
+                this.storage.setCenter((ICablePart) bp);
+                bp.setPartHostInfo(null, this, this.tcb.getBlockEntity());
 
                 if (player != null) {
                     bp.onPlacement(player, hand, is, side);
@@ -208,9 +190,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                     bp.addToWorld();
                 }
 
-                final IGridNode cn = this.getCenter().getGridNode();
+                final IGridNode cn = this.storage.getCenter().getGridNode();
                 if (cn != null) {
-                    for (final AEPartLocation ins : AEPartLocation.SIDE_LOCATIONS) {
+                    for (final Direction ins : Direction.values()) {
                         final IPart sbp = this.getPart(ins);
                         if (sbp != null) {
                             final IGridNode sn = sbp.getGridNode();
@@ -221,8 +203,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                                     AELog.debug(e);
 
                                     bp.removeFromWorld();
-                                    this.setCenter(null);
-                                    return null;
+                                    this.storage.setCenter(null);
+                                    return false;
                                 }
                             }
                         }
@@ -234,14 +216,14 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                 this.markForUpdate();
                 this.markForSave();
                 this.partChanged();
-                return AEPartLocation.INTERNAL;
-            } else if (bp != null && !(bp instanceof ICablePart) && side != AEPartLocation.INTERNAL) {
-                final IPart cable = this.getPart(AEPartLocation.INTERNAL);
+                return true;
+            } else if (bp != null && !(bp instanceof ICablePart) && side != null) {
+                final IPart cable = this.getPart(null);
                 if (cable != null && !bp.canBePlacedOn(((ICablePart) cable).supportsBuses())) {
-                    return null;
+                    return false;
                 }
 
-                this.setSide(side, bp);
+                this.storage.setPart(side, bp);
                 bp.setPartHostInfo(side, this, this.getBlockEntity());
 
                 if (player != null) {
@@ -252,8 +234,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                     bp.addToWorld();
                 }
 
-                if (this.getCenter() != null) {
-                    final IGridNode cn = this.getCenter().getGridNode();
+                if (this.storage.getCenter() != null) {
+                    final IGridNode cn = this.storage.getCenter().getGridNode();
                     final IGridNode sn = bp.getGridNode();
 
                     if (cn != null && sn != null) {
@@ -263,8 +245,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                             AELog.debug(e);
 
                             bp.removeFromWorld();
-                            this.setSide(side, null);
-                            return null;
+                            this.storage.removePart(side);
+                            return false;
                         }
                     }
                 }
@@ -275,37 +257,32 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                 this.markForUpdate();
                 this.markForSave();
                 this.partChanged();
-                return side;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     @Override
-    public IPart getPart(final AEPartLocation partLocation) {
-        if (partLocation == AEPartLocation.INTERNAL) {
-            return this.getCenter();
+    public IPart getPart(final Direction partLocation) {
+        if (partLocation == null) {
+            return this.storage.getCenter();
         }
-        return this.getSide(partLocation);
+        return this.storage.getPart(partLocation);
     }
 
     @Override
-    public IPart getPart(final Direction side) {
-        return this.getSide(AEPartLocation.fromFacing(side));
-    }
-
-    @Override
-    public void removePart(final AEPartLocation side, final boolean suppressUpdate) {
-        if (side == AEPartLocation.INTERNAL) {
-            if (this.getCenter() != null) {
-                this.getCenter().removeFromWorld();
+    public void removePart(@Nullable Direction side, final boolean suppressUpdate) {
+        if (side == null) {
+            if (this.storage.getCenter() != null) {
+                this.storage.getCenter().removeFromWorld();
             }
-            this.setCenter(null);
+            this.storage.setCenter(null);
         } else {
-            if (this.getSide(side) != null) {
-                this.getSide(side).removeFromWorld();
+            if (this.getPart(side) != null) {
+                this.getPart(side).removeFromWorld();
             }
-            this.setSide(side, null);
+            this.storage.removePart(side);
         }
 
         if (!suppressUpdate) {
@@ -341,8 +318,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public AEColor getColor() {
-        if (this.getCenter() != null) {
-            final ICablePart c = this.getCenter();
+        if (this.storage.getCenter() != null) {
+            final ICablePart c = this.storage.getCenter();
             return c.getCableColor();
         }
         return AEColor.TRANSPARENT;
@@ -360,7 +337,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public SelectedPart selectPart(final Vec3 pos) {
-        for (final AEPartLocation side : AEPartLocation.values()) {
+        for (final Direction side : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(side);
             if (p != null) {
                 final List<AABB> boxes = new ArrayList<>();
@@ -378,7 +355,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
         if (AEApi.partHelper().getCableRenderMode().opaqueFacades) {
             final IFacadeContainer fc = this.getFacadeContainer();
-            for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
+            for (final Direction side : Direction.values()) {
                 final IFacadePart p = fc.getFacade(side);
                 if (p != null) {
                     final List<AABB> boxes = new ArrayList<>();
@@ -405,11 +382,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public void partChanged() {
-        if (this.getCenter() == null) {
+        if (this.storage.getCenter() == null) {
             final List<ItemStack> facades = new ArrayList<>();
 
             final IFacadeContainer fc = this.getFacadeContainer();
-            for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
+            for (final Direction d : Direction.values()) {
                 final IFacadePart fp = fc.getFacade(d);
                 if (fp != null) {
                     facades.add(fp.getItemStack());
@@ -438,7 +415,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     }
 
     @Override
-    public boolean hasRedstone(final AEPartLocation side) {
+    public boolean hasRedstone(final Direction side) {
         if (this.hasRedstone == YesNo.UNDECIDED) {
             this.updateRedstone();
         }
@@ -449,13 +426,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     @Override
     public boolean isEmpty() {
         final IFacadeContainer fc = this.getFacadeContainer();
-        for (final AEPartLocation s : AEPartLocation.values()) {
+        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 return false;
             }
 
-            if (s != AEPartLocation.INTERNAL) {
+            if (s != null) {
                 final IFacadePart fp = fc.getFacade(s);
                 if (fp != null) {
                     return false;
@@ -492,7 +469,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     private void updateDynamicRender() {
         this.requiresDynamicRender = false;
-        for (final AEPartLocation s : AEPartLocation.SIDE_LOCATIONS) {
+        for (final Direction s : Direction.values()) {
             final IPart p = this.getPart(s);
             if (p != null) {
                 this.setRequiresDynamicRender(this.isRequiresDynamicRender() || p.requireDynamicRender());
@@ -501,7 +478,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     }
 
     public void updateConnections() {
-        if (this.getCenter() != null) {
+        if (this.storage.getCenter() != null) {
             var sides = EnumSet.allOf(Direction.class);
 
             for (final Direction s : Direction.values()) {
@@ -510,7 +487,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                 }
             }
 
-            this.getCenter().setExposedOnSides(sides);
+            this.storage.getCenter().setExposedOnSides(sides);
         }
     }
 
@@ -526,21 +503,21 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
         // start with the center, then install the side parts into the grid.
         for (int x = 6; x >= 0; x--) {
-            final AEPartLocation s = AEPartLocation.fromOrdinal(x);
+            final Direction s = Platform.DIRECTIONS_WITH_NULL[x];
             final IPart part = this.getPart(s);
 
             if (part != null) {
                 part.setPartHostInfo(s, this, te);
                 part.addToWorld();
 
-                if (s != AEPartLocation.INTERNAL) {
+                if (s != null) {
                     final IGridNode sn = part.getGridNode();
                     if (sn != null) {
                         // this is a really stupid if statement, why was this
                         // here?
                         // if ( !sn.getConnections().iterator().hasNext() )
 
-                        final IPart center = this.getPart(AEPartLocation.INTERNAL);
+                        final IPart center = this.getPart(null);
                         if (center != null) {
                             final IGridNode cn = center.getGridNode();
                             if (cn != null) {
@@ -569,7 +546,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
         this.inWorld = false;
 
-        for (final AEPartLocation s : AEPartLocation.values()) {
+        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 part.removeFromWorld();
@@ -590,8 +567,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             }
         }
 
-        if (this.getCenter() != null) {
-            return this.getCenter().getGridNode();
+        if (this.storage.getCenter() != null) {
+            return this.storage.getCenter().getGridNode();
         }
 
         return null;
@@ -605,8 +582,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             return part.getExternalCableConnectionType();
         }
 
-        if (this.getCenter() != null) {
-            final ICablePart c = this.getCenter();
+        if (this.storage.getCenter() != null) {
+            final ICablePart c = this.storage.getCenter();
             return c.getCableConnectionType();
         }
         return AECableType.NONE;
@@ -614,8 +591,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public float getCableConnectionLength(AECableType cable) {
-        return this.getPart(AEPartLocation.INTERNAL) instanceof ICablePart
-                ? this.getPart(AEPartLocation.INTERNAL).getCableConnectionLength(cable)
+        return this.getPart(null) instanceof ICablePart
+                ? this.getPart(null).getCableConnectionLength(cable)
                 : -1;
     }
 
@@ -639,7 +616,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public void onEntityCollision(final Entity entity) {
-        for (final AEPartLocation s : AEPartLocation.values()) {
+        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 part.onEntityCollision(entity);
@@ -678,7 +655,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         this.hasRedstone = YesNo.UNDECIDED;
 
-        for (final AEPartLocation s : AEPartLocation.values()) {
+        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 part.onNeighborChanged(level, pos, neighbor);
@@ -691,7 +668,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public boolean isLadder(final LivingEntity entity) {
-        for (final AEPartLocation side : AEPartLocation.values()) {
+        for (final Direction side : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(side);
             if (p != null && p.isLadder(entity)) {
                 return true;
@@ -703,7 +680,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public void animateTick(final Level level, final BlockPos pos, final Random r) {
-        for (final AEPartLocation side : AEPartLocation.values()) {
+        for (final Direction side : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(side);
             if (p != null) {
                 p.animateTick(level, pos, r);
@@ -715,7 +692,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     public int getLightValue() {
         int light = 0;
 
-        for (final AEPartLocation d : AEPartLocation.values()) {
+        for (final Direction d : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(d);
             if (p != null) {
                 light = Math.max(p.getLightLevel(), light);
@@ -728,7 +705,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     public void writeToStream(final FriendlyByteBuf data) throws IOException {
         int sides = 0;
         for (int x = 0; x < 7; x++) {
-            final IPart p = this.getPart(AEPartLocation.fromOrdinal(x));
+            final IPart p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
             if (p != null) {
                 sides |= 1 << x;
             }
@@ -737,7 +714,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
         data.writeByte((byte) sides);
 
         for (int x = 0; x < 7; x++) {
-            final IPart p = this.getPart(AEPartLocation.fromOrdinal(x));
+            final IPart p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
             if (p != null) {
                 final ItemStack is = p.getItemStack(PartItemStack.NETWORK);
 
@@ -755,8 +732,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
         boolean updateBlock = false;
 
-        for (int x = 0; x < 7; x++) {
-            AEPartLocation side = AEPartLocation.fromOrdinal(x);
+        for (int x = 0; x <= Direction.values().length; x++) {
+            Direction side = Platform.DIRECTIONS_WITH_NULL[x];
             if ((sides & 1 << x) == 1 << x) {
                 IPart p = this.getPart(side);
 
@@ -771,8 +748,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                     }
                 } else {
                     this.removePart(side, false);
-                    side = this.addPart(new ItemStack(myItem, 1), side, null, null);
-                    if (side != null) {
+                    var partAdded = this.addPart(new ItemStack(myItem, 1), side, null, null);
+                    if (partAdded) {
                         p = this.getPart(side);
                         p.readFromStream(data);
                     } else {
@@ -796,7 +773,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
         data.putInt("hasRedstone", this.hasRedstone.ordinal());
 
         final IFacadeContainer fc = this.getFacadeContainer();
-        for (final AEPartLocation s : AEPartLocation.values()) {
+        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             fc.writeToNBT(data);
 
             final IPart part = this.getPart(s);
@@ -807,18 +784,21 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                 final CompoundTag extra = new CompoundTag();
                 part.writeToNBT(extra);
 
-                data.put("def:" + this.getSide(part).ordinal(), def);
-                data.put("extra:" + this.getSide(part).ordinal(), extra);
+                var side = this.getSide(part);
+                var id = side == null ? "center" : side.name();
+
+                data.put("def:" + id, def);
+                data.put("extra:" + id, extra);
             }
         }
     }
 
-    private AEPartLocation getSide(final IPart part) {
-        if (this.getCenter() == part) {
-            return AEPartLocation.INTERNAL;
+    private Direction getSide(final IPart part) {
+        if (this.storage.getCenter() == part) {
+            return null;
         } else {
-            for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
-                if (this.getSide(side) == part) {
+            for (final Direction side : Direction.values()) {
+                if (this.getPart(side) == part) {
                     return side;
                 }
             }
@@ -834,11 +814,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             this.hasRedstone = YesNo.values()[data.getInt("hasRedstone")];
         }
 
-        for (int x = 0; x < 7; x++) {
-            AEPartLocation side = AEPartLocation.fromOrdinal(x);
+        for (var side : Platform.DIRECTIONS_WITH_NULL) {
+            var id = side == null ? "center" : side.name();
 
-            String defKey = "def:" + side.ordinal();
-            String extraKey = "extra:" + side.ordinal();
+            String defKey = "def:" + id;
+            String extraKey = "extra:" + id;
             if (data.contains(defKey, Tag.TAG_COMPOUND)
                     && data.contains(extraKey, Tag.TAG_COMPOUND)) {
                 final CompoundTag def = data.getCompound(defKey);
@@ -855,8 +835,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
                     p.readFromNBT(extra);
                 } else {
                     this.removePart(side, true);
-                    side = this.addPart(iss, side, null, null);
-                    if (side != null) {
+                    var partAdded = this.addPart(iss, side, null, null);
+                    if (partAdded) {
                         p = this.getPart(side);
                         p.readFromNBT(extra);
                     } else {
@@ -873,14 +853,14 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     }
 
     public List<ItemStack> getDrops(final List<ItemStack> drops) {
-        for (final AEPartLocation s : AEPartLocation.values()) {
+        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 drops.add(part.getItemStack(PartItemStack.BREAK));
                 part.getDrops(drops, false);
             }
 
-            if (s != AEPartLocation.INTERNAL) {
+            if (s != null) {
                 final IFacadePart fp = this.getFacadeContainer().getFacade(s);
                 if (fp != null) {
                     drops.add(fp.getItemStack());
@@ -892,7 +872,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
     }
 
     public List<ItemStack> getNoDrops(final List<ItemStack> drops) {
-        for (final AEPartLocation s : AEPartLocation.values()) {
+        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 part.getDrops(drops, false);
@@ -904,7 +884,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public boolean recolourBlock(final Direction side, final AEColor colour, final Player who) {
-        final IPart cable = this.getPart(AEPartLocation.INTERNAL);
+        final IPart cable = this.getPart(null);
         if (cable != null) {
             final ICablePart pc = (ICablePart) cable;
             return pc.changeColor(colour, who);
@@ -922,7 +902,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     @Override
     public CableBusRenderState getRenderState() {
-        final CablePart cable = (CablePart) this.getCenter();
+        final CablePart cable = (CablePart) this.storage.getCenter();
 
         final CableBusRenderState renderState = new CableBusRenderState();
 
@@ -989,8 +969,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
             // This will add the part's bounding boxes to the render state, which is
             // required for facades
-            final AEPartLocation loc = AEPartLocation.fromFacing(facing);
-            final IPartCollisionHelper bch = new BusCollisionHelper(renderState.getBoundingBoxes(), loc, true);
+            final IPartCollisionHelper bch = new BusCollisionHelper(renderState.getBoundingBoxes(), facing, true);
             part.getBoxes(bch);
 
             // Some attachments want a thicker cable than glass, account for that
@@ -1013,7 +992,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
 
     private FacadeRenderState getFacadeRenderState(Direction side) {
         // Store the "masqueraded" itemstack for the given side, if there is a facade
-        final IFacadePart facade = this.getFacade(side.ordinal());
+        final IFacadePart facade = this.storage.getFacade(side);
 
         if (facade != null) {
             final ItemStack textureItem = facade.getTextureItem();
@@ -1065,7 +1044,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
         final List<AABB> boxes = new ArrayList<>();
 
         final IFacadeContainer fc = this.getFacadeContainer();
-        for (final AEPartLocation s : AEPartLocation.values()) {
+        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPartCollisionHelper bch = new BusCollisionHelper(boxes, s, !forCollision);
 
             final IPart part = this.getPart(s);
@@ -1074,7 +1053,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiBlockEn
             }
 
             if ((AEApi.partHelper().getCableRenderMode().opaqueFacades || forCollision)
-                    && s != AEPartLocation.INTERNAL) {
+                    && s != null) {
                 final IFacadePart fp = fc.getFacade(s);
                 if (fp != null) {
                     fp.getBoxes(bch, forItemEntity);

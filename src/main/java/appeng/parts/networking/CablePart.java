@@ -41,7 +41,6 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.parts.AEBasePart;
@@ -136,8 +135,8 @@ public class CablePart extends AEBasePart implements ICablePart {
                     return true;
                 }
 
-                this.getHost().removePart(AEPartLocation.INTERNAL, true);
-                this.getHost().addPart(newPart, AEPartLocation.INTERNAL, who, null);
+                this.getHost().removePart(null, true);
+                this.getHost().addPart(newPart, null, who, null);
                 return true;
             }
         }
@@ -166,7 +165,7 @@ public class CablePart extends AEBasePart implements ICablePart {
 
         final IPartHost ph = this.getHost();
         if (ph != null) {
-            for (final AEPartLocation dir : AEPartLocation.SIDE_LOCATIONS) {
+            for (final Direction dir : Direction.values()) {
                 var p = ph.getPart(dir);
                 if (p != null) {
                     var dist = p.getCableConnectionLength(this.getCableConnectionType());
@@ -266,7 +265,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
 
             if (n.isPowered()) {
-                flags |= 1 << AEPartLocation.INTERNAL.ordinal();
+                flags |= 1 << Direction.values().length;
             }
         }
 
@@ -288,7 +287,7 @@ public class CablePart extends AEBasePart implements ICablePart {
 
         boolean channelsChanged = false;
 
-        this.powered = (cs & (1 << AEPartLocation.INTERNAL.ordinal())) != 0;
+        this.powered = (cs & (1 << Direction.values().length)) != 0;
 
         var connections = EnumSet.noneOf(Direction.class);
         for (var d : Direction.values()) {

@@ -23,22 +23,21 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.api.util.AEPartLocation;
-
 public class EnergyParticleData implements ParticleOptions {
 
-    public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, AEPartLocation.INTERNAL);
+    public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, null);
 
     public final boolean forItem;
 
-    public final AEPartLocation direction;
+    public final Direction direction;
 
-    public EnergyParticleData(boolean forItem, AEPartLocation direction) {
+    public EnergyParticleData(boolean forItem, Direction direction) {
         this.forItem = forItem;
         this.direction = direction;
     }
@@ -50,14 +49,14 @@ public class EnergyParticleData implements ParticleOptions {
             reader.expect(' ');
             boolean forItem = reader.readBoolean();
             reader.expect(' ');
-            AEPartLocation direction = AEPartLocation.valueOf(reader.readString().toUpperCase(Locale.ROOT));
+            Direction direction = Direction.valueOf(reader.readString().toUpperCase(Locale.ROOT));
             return new EnergyParticleData(forItem, direction);
         }
 
         @Override
         public EnergyParticleData fromNetwork(ParticleType<EnergyParticleData> particleTypeIn, FriendlyByteBuf buffer) {
             boolean forItem = buffer.readBoolean();
-            AEPartLocation direction = AEPartLocation.values()[buffer.readByte()];
+            Direction direction = Direction.values()[buffer.readByte()];
             return new EnergyParticleData(forItem, direction);
         }
     };
