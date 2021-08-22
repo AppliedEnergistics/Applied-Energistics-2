@@ -250,6 +250,7 @@ public final class AEConfig {
             case PRIORITY -> priorityByStacks;
             case LEVEL_ITEM_COUNT -> levelByStacks;
             case LEVEL_FLUID_VOLUME -> levelByMillibuckets;
+            case LEVEL_ENERGY_AMOUNT -> levelByStacks;
             default -> throw new IllegalArgumentException("Unknown number entry: " + type);
         };
     }
