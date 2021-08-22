@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -69,14 +70,34 @@ public class FacadeContainer implements IFacadeContainer {
         return this.storage.getFacade(side);
     }
 
+    private String getNbtKey(Direction side) {
+        return "facade:" + side.ordinal();
+    }
+
+    @Override
+    public void readFromNBT(final CompoundTag c) {
+        for (var side : Direction.values()) {
+            this.storage.removeFacade(side);
+
+            String key = getNbtKey(side);
+            if (c.contains(key, Tag.TAG_COMPOUND)) {
+                var is = ItemStack.of(c.getCompound(key));
+                if (!is.isEmpty()) {
+                    if (is.getItem() instanceof IFacadeItem facadeItem) {
+                        this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void writeToNBT(final CompoundTag c) {
-        for (Direction side : Direction.values()) {
+        for (var side : Direction.values()) {
             if (this.storage.getFacade(side) != null) {
-                var index = side.ordinal();
-                final CompoundTag data = new CompoundTag();
+                var data = new CompoundTag();
                 this.storage.getFacade(side).getItemStack().save(data);
-                c.put("facade:" + index, data);
+                c.put(getNbtKey(side), data);
             }
         }
     }
@@ -87,7 +108,7 @@ public class FacadeContainer implements IFacadeContainer {
 
         boolean changed = false;
 
-        for (Direction side : Direction.values()) {
+        for (var side : Direction.values()) {
             final int ix = 1 << side.ordinal();
             if ((facadeSides & ix) == ix) {
                 final int id = out.readVarInt();
@@ -110,14 +131,14 @@ public class FacadeContainer implements IFacadeContainer {
     @Override
     public void writeToStream(final FriendlyByteBuf out) throws IOException {
         int facadeSides = 0;
-        for (Direction side : Direction.values()) {
+        for (var side : Direction.values()) {
             if (this.getFacade(side) != null) {
                 facadeSides |= 1 << side.ordinal();
             }
         }
         out.writeByte((byte) facadeSides);
 
-        for (Direction side : Direction.values()) {
+        for (var side : Direction.values()) {
             final IFacadePart part = this.getFacade(side);
             if (part != null) {
                 final int itemID = Item.getId(part.getItem());
@@ -127,27 +148,8 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(final CompoundTag c) {
-        for (Direction side : Direction.values()) {
-            var index = side.ordinal();
-            this.storage.removeFacade(side);
-
-            final CompoundTag t = c.getCompound("facade:" + index);
-            if (t != null) {
-                final ItemStack is = ItemStack.of(t);
-                if (!is.isEmpty()) {
-                    final Item i = is.getItem();
-                    if (i instanceof IFacadeItem facadeItem) {
-                        this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     public boolean isEmpty() {
-        for (Direction side : Direction.values()) {
+        for (var side : Direction.values()) {
             if (this.storage.getFacade(side) != null) {
                 return false;
             }
