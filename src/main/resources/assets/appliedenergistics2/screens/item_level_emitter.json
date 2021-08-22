@@ -14,20 +14,11 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.LevelEmitter"
+        "translate": "gui.appliedenergistics2.ItemLevelEmitter"
       },
       "position": {
         "left": 8,
         "top": 6
-      }
-    },
-    "energy_unit": {
-      "text": {
-        "translate": "gui.appliedenergistics2.units.appliedenergstics"
-      },
-      "position": {
-        "left": 110,
-        "top": 44
       }
     }
   },

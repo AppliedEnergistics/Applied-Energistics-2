@@ -192,7 +192,7 @@
   "gui.appliedenergistics2.InterfaceTerminalHint": "Zeige oder verstecke die Schnittstelle in der Konsole.",
   "gui.appliedenergistics2.InvalidPattern": "Ungültige Schablone",
   "gui.appliedenergistics2.LargeFontCraft": "+",
-  "gui.appliedenergistics2.LevelEmitter": "ME-Füllstandsemitter",
+  "gui.appliedenergistics2.ItemLevelEmitter": "ME-Füllstandsemitter",
   "gui.appliedenergistics2.LightBlue": "Hellblau",
   "gui.appliedenergistics2.LightGray": "Hellgrau",
   "gui.appliedenergistics2.Lime": "Hellgrün",

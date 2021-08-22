@@ -35,6 +35,7 @@ import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMouseWheelItem;
 import appeng.menu.implementations.CellWorkbenchMenu;
+import appeng.menu.implementations.EnergyLevelEmitterMenu;
 import appeng.menu.implementations.FluidLevelEmitterMenu;
 import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.menu.implementations.ItemLevelEmitterMenu;
@@ -110,6 +111,8 @@ public class ConfigValuePacket extends BasePacket {
         } else if (this.Name.equals("LevelEmitter.Value") && c instanceof ItemLevelEmitterMenu lvc) {
             lvc.setReportingValue(Long.parseLong(this.Value));
         } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterMenu lvc) {
+            lvc.setReportingValue(Long.parseLong(this.Value));
+        } else if (this.Name.equals("EnergyLevelEmitter.Value") && c instanceof EnergyLevelEmitterMenu lvc) {
             lvc.setReportingValue(Long.parseLong(this.Value));
         } else if (this.Name.startsWith("PatternTerminal.") && c instanceof PatternTermMenu cpt) {
             if (this.Name.equals("PatternTerminal.CraftMode")) {

@@ -37,6 +37,7 @@ import appeng.client.gui.implementations.CellWorkbenchScreen;
 import appeng.client.gui.implementations.ChestScreen;
 import appeng.client.gui.implementations.CondenserScreen;
 import appeng.client.gui.implementations.DriveScreen;
+import appeng.client.gui.implementations.EnergyLevelEmitterScreen;
 import appeng.client.gui.implementations.FluidFormationPlaneScreen;
 import appeng.client.gui.implementations.FluidIOBusScreen;
 import appeng.client.gui.implementations.FluidInterfaceScreen;
@@ -78,6 +79,7 @@ import appeng.menu.implementations.CellWorkbenchMenu;
 import appeng.menu.implementations.ChestMenu;
 import appeng.menu.implementations.CondenserMenu;
 import appeng.menu.implementations.DriveMenu;
+import appeng.menu.implementations.EnergyLevelEmitterMenu;
 import appeng.menu.implementations.FluidFormationPlaneMenu;
 import appeng.menu.implementations.FluidIOBusMenu;
 import appeng.menu.implementations.FluidInterfaceMenu;
@@ -156,8 +158,9 @@ public final class InitScreens {
         register(FluidFormationPlaneMenu.TYPE, FluidFormationPlaneScreen::new,
                 "/screens/fluid_formation_plane.json");
         register(PriorityMenu.TYPE, PriorityScreen::new, "/screens/priority.json");
-        register(ItemLevelEmitterMenu.TYPE, ItemLevelEmitterScreen::new, "/screens/level_emitter.json");
+        register(ItemLevelEmitterMenu.TYPE, ItemLevelEmitterScreen::new, "/screens/item_level_emitter.json");
         register(FluidLevelEmitterMenu.TYPE, FluidLevelEmitterScreen::new, "/screens/fluid_level_emitter.json");
+        register(EnergyLevelEmitterMenu.TYPE, EnergyLevelEmitterScreen::new, "/screens/energy_level_emitter.json");
         register(SpatialIOPortMenu.TYPE, SpatialIOPortScreen::new, "/screens/spatial_io_port.json");
         register(InscriberMenu.TYPE, InscriberScreen::new, "/screens/inscriber.json");
         register(CellWorkbenchMenu.TYPE, CellWorkbenchScreen::new, "/screens/cell_workbench.json");

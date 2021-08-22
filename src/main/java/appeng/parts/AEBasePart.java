@@ -71,7 +71,7 @@ import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.FluidLevelEmitterPart;
-import appeng.parts.automation.LevelEmitterPart;
+import appeng.parts.automation.ItemLevelEmitterPart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -313,7 +313,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             for (int x = 0; x < tmp.getSlots(); x++) {
                 target.setStackInSlot(x, tmp.getStackInSlot(x));
             }
-            if (this instanceof LevelEmitterPart partLevelEmitter) {
+            if (this instanceof ItemLevelEmitterPart partLevelEmitter) {
                 partLevelEmitter.setReportingValue(compound.getLong("reportingValue"));
             }
         }
@@ -354,7 +354,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         final IItemHandler inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
-            if (this instanceof LevelEmitterPart partLevelEmitter) {
+            if (this instanceof ItemLevelEmitterPart partLevelEmitter) {
                 output.putLong("reportingValue", partLevelEmitter.getReportingValue());
             }
         }

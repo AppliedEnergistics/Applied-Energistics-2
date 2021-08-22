@@ -39,7 +39,6 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
 import appeng.api.config.OperationMode;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
@@ -176,11 +175,6 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.SearchMode_JEIAutoKeep);
             registerApp(Icon.SEARCH_MANUAL_JEI_KEEP, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP,
                     ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_JEIStandardKeep);
-
-            registerApp(Icon.LEVEL_ENERGY, Settings.LEVEL_TYPE, LevelType.ENERGY_LEVEL, ButtonToolTips.LevelType,
-                    ButtonToolTips.LevelType_Energy);
-            registerApp(Icon.LEVEL_ITEM, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL, ButtonToolTips.LevelType,
-                    ButtonToolTips.LevelType_Item);
 
             registerApp(Icon.TERMINAL_STYLE_TALL, Settings.TERMINAL_STYLE, TerminalStyle.TALL,
                     ButtonToolTips.TerminalStyle,

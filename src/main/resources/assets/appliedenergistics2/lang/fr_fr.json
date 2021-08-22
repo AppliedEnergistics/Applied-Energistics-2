@@ -194,7 +194,7 @@
   "gui.appliedenergistics2.InterfaceTerminalHint": "Montrer ou cacher sur le terminal d'interface.",
   "gui.appliedenergistics2.InvalidPattern": "Modèle non valide",
   "gui.appliedenergistics2.LargeFontCraft": "+",
-  "gui.appliedenergistics2.LevelEmitter": "Emetteur de niveau ME",
+  "gui.appliedenergistics2.ItemLevelEmitter": "Emetteur de niveau ME",
   "gui.appliedenergistics2.LightBlue": "Bleu clair",
   "gui.appliedenergistics2.LightGray": "Gris clair",
   "gui.appliedenergistics2.Lime": "Vert citron",

@@ -20,7 +20,6 @@ package appeng.menu.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -29,32 +28,26 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.menu.SlotSemantic;
-import appeng.menu.guisync.GuiSync;
-import appeng.menu.slot.FakeTypeOnlySlot;
-import appeng.parts.automation.ItemLevelEmitterPart;
+import appeng.parts.automation.EnergyLevelEmitterPart;
 
-public class ItemLevelEmitterMenu extends UpgradeableMenu {
+public class EnergyLevelEmitterMenu extends UpgradeableMenu {
 
-    public static final MenuType<ItemLevelEmitterMenu> TYPE = MenuTypeBuilder
-            .create(ItemLevelEmitterMenu::new, ItemLevelEmitterPart.class)
+    public static final MenuType<EnergyLevelEmitterMenu> TYPE = MenuTypeBuilder
+            .create(EnergyLevelEmitterMenu::new, EnergyLevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarLong(host.getReportingValue());
             }, (host, menu, buffer) -> {
                 menu.reportingValue = buffer.readVarLong();
             })
-            .build("item_level_emitter");
+            .build("energy_level_emitter");
 
-    private final ItemLevelEmitterPart lvlEmitter;
-
-    @GuiSync(3)
-    public YesNo cmType;
+    private final EnergyLevelEmitterPart lvlEmitter;
 
     // Only synced once on menu-open, and only used on client
     private long reportingValue;
 
-    public ItemLevelEmitterMenu(int id, final Inventory ip, final ItemLevelEmitterPart te) {
+    public EnergyLevelEmitterMenu(int id, final Inventory ip, final EnergyLevelEmitterPart te) {
         super(TYPE, id, ip, te);
         this.lvlEmitter = te;
     }
@@ -68,7 +61,8 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
             if (reportingValue != this.reportingValue) {
                 this.reportingValue = reportingValue;
                 NetworkHandler.instance()
-                        .sendToServer(new ConfigValuePacket("LevelEmitter.Value", String.valueOf(reportingValue)));
+                        .sendToServer(
+                                new ConfigValuePacket("EnergyLevelEmitter.Value", String.valueOf(reportingValue)));
             }
         } else {
             this.lvlEmitter.setReportingValue(reportingValue);
@@ -78,9 +72,6 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
     @Override
     protected void setupConfig() {
         this.setupUpgrades();
-
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
-        this.addSlot(new FakeTypeOnlySlot(inv, 0), SlotSemantic.CONFIG);
     }
 
     @Override
@@ -106,16 +97,6 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
         }
 
         this.standardDetectAndSendChanges();
-    }
-
-    @Override
-    public YesNo getCraftingMode() {
-        return this.cmType;
-    }
-
-    @Override
-    public void setCraftingMode(final YesNo cmType) {
-        this.cmType = cmType;
     }
 
 }

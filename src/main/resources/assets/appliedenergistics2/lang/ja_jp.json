@@ -142,7 +142,7 @@
   "gui.appliedenergistics2.ImportBusFluids": "ME液体インポートバス",
   "gui.appliedenergistics2.Interface": "MEインターフェース",
   "gui.appliedenergistics2.FluidInterface": "ME液体インターフェース",
-  "gui.appliedenergistics2.LevelEmitter": "MEレベルエミッター",
+  "gui.appliedenergistics2.ItemLevelEmitter": "MEレベルエミッター",
   "gui.appliedenergistics2.FluidLevelEmitter": "ME液体レベルエミッター",
   "gui.appliedenergistics2.Of": "の",
   "gui.appliedenergistics2.Patterns": "パターン",
