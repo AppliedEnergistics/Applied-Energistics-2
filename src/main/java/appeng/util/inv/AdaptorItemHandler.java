@@ -18,7 +18,6 @@
 
 package appeng.util.inv;
 
-import java.util.Iterator;
 import java.util.function.Predicate;
 
 import net.minecraft.world.item.ItemStack;
@@ -122,7 +121,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
      */
     @Override
     public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-                                        Predicate<ItemStack> destination) {
+            Predicate<ItemStack> destination) {
         int slots = this.itemHandler.getSlots();
         ItemStack extracted = ItemStack.EMPTY;
 
@@ -153,7 +152,7 @@ public class AdaptorItemHandler extends InventoryAdaptor {
 
     @Override
     public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-                                           Predicate<ItemStack> destination) {
+            Predicate<ItemStack> destination) {
         int slots = this.itemHandler.getSlots();
         ItemStack extracted = ItemStack.EMPTY;
 

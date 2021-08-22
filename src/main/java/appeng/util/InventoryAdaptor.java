@@ -18,6 +18,10 @@
 
 package appeng.util;
 
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -29,9 +33,6 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.FuzzyMode;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.AdaptorItemHandlerPlayerInv;
-
-import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 /**
  * Universal Facade for other inventories. Used to conveniently interact with various types of inventories. This is not
@@ -61,8 +62,8 @@ public abstract class InventoryAdaptor {
     /**
      * Extract items.
      *
-     * @param amount How much to extract at most.
-     * @param filter Empty to match anything, otherwise the extracted item will match the stack.
+     * @param amount      How much to extract at most.
+     * @param filter      Empty to match anything, otherwise the extracted item will match the stack.
      * @param destination Null to match anything, otherwise the extracted item will match this predicate.
      * @return What was extracted.
      */
@@ -77,16 +78,17 @@ public abstract class InventoryAdaptor {
      * Like {@link #removeItems} but with fuzzy support.
      */
     public abstract ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-                                                 @Nullable Predicate<ItemStack> destination);
+            @Nullable Predicate<ItemStack> destination);
 
     /**
      * Like {@link #simulateRemove} but with fuzzy support.
      */
     public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-                                                    @Nullable Predicate<ItemStack> destination);
+            @Nullable Predicate<ItemStack> destination);
 
     /**
      * Insert items.
+     * 
      * @param toBeAdded What to inesrt. Won't be mutated.
      * @return The leftover.
      */

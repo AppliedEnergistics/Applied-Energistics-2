@@ -155,16 +155,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     }
 
     @Override
-    public int getSlot() {
-        if (this.itemStorage != null) {
-            return this.itemStorage.getSlot();
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return this.itemStorage.validForPass(i);
+    public boolean validForPass(final int pass) {
+        return this.itemStorage.validForPass(pass);
     }
 
     @Override

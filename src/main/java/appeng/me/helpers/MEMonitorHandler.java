@@ -174,13 +174,8 @@ public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T> {
     }
 
     @Override
-    public int getSlot() {
-        return this.getHandler().getSlot();
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return this.getHandler().validForPass(i);
+    public boolean validForPass(final int pass) {
+        return this.getHandler().validForPass(pass);
     }
 
 }

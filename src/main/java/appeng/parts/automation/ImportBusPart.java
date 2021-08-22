@@ -18,6 +18,8 @@
 
 package appeng.parts.automation;
 
+import java.util.function.Predicate;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -52,8 +54,6 @@ import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-
-import java.util.function.Predicate;
 
 public class ImportBusPart extends SharedItemBusPart {
 

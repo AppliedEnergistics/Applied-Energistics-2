@@ -29,6 +29,7 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
@@ -114,6 +115,9 @@ import appeng.util.prioritylist.IPartitionList;
 public class Platform {
 
     public static final int DEF_OFFSET = 16;
+
+    @VisibleForTesting
+    public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
 
     /*
      * random source, use it for item drop locations...
@@ -287,7 +291,7 @@ public class Platform {
      * Throws an exception if the current thread is not one of the server threads.
      */
     public static void assertServerThread() {
-        if (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER) {
+        if (Thread.currentThread().getThreadGroup() != serverThreadGroup) {
             throw new UnsupportedOperationException(
                     "This code can only be called server-side and this is most likely a bug.");
         }

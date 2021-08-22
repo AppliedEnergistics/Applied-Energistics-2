@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -95,33 +94,8 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
     }
 
     @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.READ_WRITE;
-    }
-
-    @Override
-    public boolean isPrioritized(final IAEItemStack input) {
-        return false;
-    }
-
-    @Override
-    public boolean canAccept(final IAEItemStack input) {
-        return true;
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return i == 2;
+    public boolean validForPass(final int pass) {
+        return pass == 2;
     }
 
     @Override

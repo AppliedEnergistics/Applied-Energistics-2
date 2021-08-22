@@ -20,9 +20,6 @@ package appeng.helpers;
 
 import java.util.Optional;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.storage.data.IItemList;
-import appeng.me.storage.FluidHandlerAdapter;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -57,12 +54,14 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
+import appeng.me.storage.FluidHandlerAdapter;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
@@ -92,9 +91,9 @@ public class DualityFluidInterface
     private int priority;
 
     private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(
-            new NullInventory<IAEItemStack>(), StorageChannels.items());
+            new NullInventory<>(StorageChannels.items()), StorageChannels.items());
     private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
-            new NullInventory<IAEFluidStack>(), StorageChannels.fluids());
+            new NullInventory<>(StorageChannels.fluids()), StorageChannels.fluids());
 
     public DualityFluidInterface(final IManagedGridNode mainNode, final IFluidInterfaceHost ih) {
         this.gridProxy = mainNode
@@ -189,8 +188,8 @@ public class DualityFluidInterface
             this.fluids.setInternal(grid.getStorageService()
                     .getInventory(StorageChannels.fluids()));
         } else {
-            this.items.setInternal(new NullInventory<>());
-            this.fluids.setInternal(new NullInventory<>());
+            this.items.setInternal(new NullInventory<>(StorageChannels.items()));
+            this.fluids.setInternal(new NullInventory<>(StorageChannels.fluids()));
         }
 
         this.notifyNeighbors();
@@ -485,36 +484,6 @@ public class DualityFluidInterface
         protected void onInjectOrExtract() {
             // Rebuild cache immediately
             this.onTick();
-        }
-
-        @Override
-        public AccessRestriction getAccess() {
-            return AccessRestriction.READ_WRITE;
-        }
-
-        @Override
-        public boolean isPrioritized(IAEFluidStack input) {
-            return false;
-        }
-
-        @Override
-        public boolean canAccept(IAEFluidStack input) {
-            return true;
-        }
-
-        @Override
-        public int getPriority() {
-            return 0;
-        }
-
-        @Override
-        public int getSlot() {
-            return 0;
-        }
-
-        @Override
-        public boolean validForPass(int i) {
-            return true;
         }
 
         @Override

@@ -151,16 +151,6 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
         this.myPriority = myPriority;
     }
 
-    @Override
-    public int getSlot() {
-        return this.internal.getSlot();
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return true;
-    }
-
     public IMEInventory<T> getInternal() {
         return this.internal;
     }

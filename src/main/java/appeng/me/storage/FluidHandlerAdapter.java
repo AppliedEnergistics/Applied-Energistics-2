@@ -43,7 +43,8 @@ import appeng.util.fluid.AEFluidStack;
 /**
  * Wraps an Fluid Handler in such a way that it can be used as an IMEInventory for fluids.
  */
-public abstract class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMonitor<IAEFluidStack>, ITickingMonitor {
+public abstract class FluidHandlerAdapter
+        implements IMEInventory<IAEFluidStack>, IBaseMonitor<IAEFluidStack>, ITickingMonitor {
     private final Map<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
     private IActionSource source;
     private final IFluidHandler fluidHandler;
@@ -55,8 +56,8 @@ public abstract class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>
     }
 
     /**
-     * Called after successful inject or extract, use to schedule a cache rebuild (storage bus),
-     * or rebuild it directly (interface).
+     * Called after successful inject or extract, use to schedule a cache rebuild (storage bus), or rebuild it directly
+     * (interface).
      */
     protected abstract void onInjectOrExtract();
 

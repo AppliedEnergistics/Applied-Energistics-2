@@ -23,11 +23,16 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler<T> {
+
+    private final IStorageChannel<T> storageChannel;
+
+    public NullInventory(IStorageChannel<T> storageChannel) {
+        this.storageChannel = storageChannel;
+    }
 
     @Override
     public T injectItems(final T input, final Actionable mode, final IActionSource src) {
@@ -40,23 +45,18 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
     }
 
     @Override
-    public IItemList<T> getAvailableItems(final IItemList out) {
+    public IItemList<T> getAvailableItems(IItemList<T> out) {
         return out;
     }
 
     @Override
-    public IStorageChannel getChannel() {
-        return StorageChannels.items();
+    public IStorageChannel<T> getChannel() {
+        return storageChannel;
     }
 
     @Override
     public AccessRestriction getAccess() {
-        return AccessRestriction.READ;
-    }
-
-    @Override
-    public boolean isPrioritized(final T input) {
-        return false;
+        return AccessRestriction.NO_ACCESS;
     }
 
     @Override
@@ -65,17 +65,7 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
     }
 
     @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return i == 2;
+    public boolean validForPass(final int pass) {
+        return pass == 2;
     }
 }

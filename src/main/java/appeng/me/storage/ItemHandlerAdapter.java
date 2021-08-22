@@ -41,13 +41,13 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
-import appeng.me.storage.ITickingMonitor;
 import appeng.util.item.AEItemStack;
 
 /**
  * Wraps an Item Handler in such a way that it can be used as an IMEInventory for items.
  */
-public abstract class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor {
+public abstract class ItemHandlerAdapter
+        implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor {
     private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private IActionSource mySource;
     private final IItemHandler itemHandler;
@@ -59,8 +59,8 @@ public abstract class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, 
     }
 
     /**
-     * Called after successful inject or extract, use to schedule a cache rebuild (storage bus),
-     * or rebuild it directly (interface).
+     * Called after successful inject or extract, use to schedule a cache rebuild (storage bus), or rebuild it directly
+     * (interface).
      */
     protected abstract void onInjectOrExtract();
 

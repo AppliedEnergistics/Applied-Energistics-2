@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import appeng.me.storage.ItemHandlerAdapter;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -42,6 +41,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
+import appeng.me.storage.ItemHandlerAdapter;
 import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.inv.InvOperation;

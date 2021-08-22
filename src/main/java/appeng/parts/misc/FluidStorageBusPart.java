@@ -23,7 +23,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.me.storage.FluidHandlerAdapter;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -43,6 +42,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
+import appeng.me.storage.FluidHandlerAdapter;
 import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.fluid.AEFluidInventory;

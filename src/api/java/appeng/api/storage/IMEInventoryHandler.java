@@ -24,6 +24,8 @@
 package appeng.api.storage;
 
 import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEStack;
 
 /**
@@ -39,7 +41,9 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
      *
      * @return the access
      */
-    AccessRestriction getAccess();
+    default AccessRestriction getAccess() {
+        return AccessRestriction.READ_WRITE;
+    }
 
     /**
      * determine if a particular item is prioritized for this inventory handler, if it is, then it will be added to this
@@ -49,7 +53,9 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
      *
      * @return if its prioritized
      */
-    boolean isPrioritized(T input);
+    default boolean isPrioritized(T input) {
+        return false;
+    }
 
     /**
      * determine if an item can be accepted and stored.
@@ -58,34 +64,34 @@ public interface IMEInventoryHandler<T extends IAEStack<T>> extends IMEInventory
      *
      * @return if the item can be added
      */
-    boolean canAccept(T input);
+    default boolean canAccept(T input) {
+        return true;
+    }
 
     /**
      * determine what the priority of the inventory is.
      *
      * @return the priority, zero is default, positive and negative are supported.
      */
-    int getPriority();
+    default int getPriority() {
+        return 0;
+    }
 
     /**
-     * pass back value for blinkCell.
+     * AE will first attempt to insert items into inventories that already have the same type of item. This is done in
+     * the first pass (pass=1), and uses a simulated {@link #extractItems(IAEStack, Actionable, IActionSource)
+     * extraction} to find inventories with matching items.
+     * <p/>
+     * Any leftovers will then be inserted in a second pass where the current contents of the inventory are ignored.
+     * It's possible to limit an inventory to participate only in the first or second pass by overriding this method.
      *
-     * @return the slot index for the cell that this represents in the storage unit, the method on the
-     *         {@link ICellContainer} will be called with this value, only trust the return value of this method if you
-     *         are the implementer of this.
+     * @param pass - pass number ( 1 or 2 )
+     *
+     * @return true, if this inventory should be considered for inserting items into the network during the given pass.
      */
-    int getSlot();
-
-    /**
-     * AE Uses a two pass placement system, the first pass checks contents and tries to find a place where the item
-     * belongs, however in some cases you can save processor time, or require that the second, or first pass is simply
-     * ignored, this allows you to do that.
-     *
-     * @param i - pass number ( 1 or 2 )
-     *
-     * @return true, if this inventory is valid for this pass.
-     */
-    boolean validForPass(int i);
+    default boolean validForPass(int pass) {
+        return true;
+    }
 
     /**
      * Convenience method to cast inventory handlers with wildcard generic types to the concrete type used by the given

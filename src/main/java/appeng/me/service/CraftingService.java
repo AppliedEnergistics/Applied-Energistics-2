@@ -336,13 +336,8 @@ public class CraftingService
     }
 
     @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return i == 1;
+    public boolean validForPass(final int pass) {
+        return pass == 1;
     }
 
     @Override

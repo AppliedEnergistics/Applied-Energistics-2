@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -234,33 +233,4 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
         return this.myChannel;
     }
 
-    @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.READ_WRITE;
-    }
-
-    @Override
-    public boolean isPrioritized(final T input) {
-        return false;
-    }
-
-    @Override
-    public boolean canAccept(final T input) {
-        return true;
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int i) {
-        return true;
-    }
 }
