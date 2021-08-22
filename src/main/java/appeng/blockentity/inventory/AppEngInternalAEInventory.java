@@ -33,7 +33,6 @@ import appeng.core.AELog;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
-import appeng.util.iterators.AEInvIterator;
 import appeng.util.iterators.InvIterator;
 
 public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterable<ItemStack> {
@@ -219,10 +218,6 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     @Override
     public Iterator<ItemStack> iterator() {
         return new InvIterator(this);
-    }
-
-    public Iterator<IAEItemStack> getNewAEIterator() {
-        return new AEInvIterator(this);
     }
 
     @Override

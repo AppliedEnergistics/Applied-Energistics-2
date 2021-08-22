@@ -18,6 +18,7 @@
 
 package appeng.menu.implementations;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 import net.minecraft.world.entity.player.Inventory;
@@ -45,7 +46,6 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.EnumCycler;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperSupplierItemHandler;
-import appeng.util.iterators.NullIterator;
 
 /**
  * @see appeng.client.gui.implementations.CellWorkbenchScreen
@@ -192,7 +192,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
         if (cellInv != null) {
             return cellInv.getAvailableItems().iterator();
         } else {
-            return new NullIterator<>();
+            return Collections.emptyIterator();
         }
     }
 

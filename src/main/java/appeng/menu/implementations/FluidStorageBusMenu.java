@@ -18,6 +18,7 @@
 
 package appeng.menu.implementations;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 import net.minecraft.world.entity.player.Inventory;
@@ -34,7 +35,6 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.menu.guisync.GuiSync;
 import appeng.parts.misc.FluidStorageBusPart;
 import appeng.util.fluid.IAEFluidTank;
-import appeng.util.iterators.NullIterator;
 
 /**
  * @author BrockWS
@@ -125,7 +125,7 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu {
 
         final IMEInventory<IAEFluidStack> cellInv = this.storageBus.getInternalHandler();
 
-        Iterator<IAEFluidStack> i = new NullIterator<>();
+        Iterator<IAEFluidStack> i = Collections.emptyIterator();
         if (cellInv != null) {
             i = cellInv.getAvailableItems().iterator();
         }

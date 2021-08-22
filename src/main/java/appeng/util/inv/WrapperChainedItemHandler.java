@@ -18,8 +18,6 @@
 
 package appeng.util.inv;
 
-import java.util.ArrayList;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
@@ -75,17 +73,6 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
             return slot;
         }
         return slot - this.baseIndex[index - 1];
-    }
-
-    public void cycleOrder() {
-        if (this.itemHandler.length > 1) {
-            ArrayList<IItemHandler> newOrder = new ArrayList<>();
-            newOrder.add(this.itemHandler[this.itemHandler.length - 1]);
-            for (int i = 0; i < this.itemHandler.length - 1; ++i) {
-                newOrder.add(this.itemHandler[i]);
-            }
-            this.setItemHandlers(newOrder.toArray(new IItemHandler[this.itemHandler.length]));
-        }
     }
 
     @Override
