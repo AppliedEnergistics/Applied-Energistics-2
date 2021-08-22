@@ -643,7 +643,7 @@ public class DualityItemInterface
      * inventory.
      */
     private <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        if (this.hasConfig()) {
+        if (this.hasConfig) {
             return getLocalInventory(channel);
         }
 
@@ -668,10 +668,6 @@ public class DualityItemInterface
         }
 
         return null;
-    }
-
-    private boolean hasConfig() {
-        return this.hasConfig;
     }
 
     @Override
