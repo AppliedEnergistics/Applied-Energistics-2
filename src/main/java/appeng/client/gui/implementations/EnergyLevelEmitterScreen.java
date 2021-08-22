@@ -25,7 +25,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
@@ -58,11 +57,7 @@ public class EnergyLevelEmitterScreen extends UpgradeableScreen<EnergyLevelEmitt
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        // configure enabled status...
-        final boolean notCraftingMode = !menu.hasUpgrade(Upgrades.CRAFTING);
-        this.level.setActive(notCraftingMode);
-
-        this.redstoneMode.active = notCraftingMode;
+        this.redstoneMode.active = true;
         this.redstoneMode.set(menu.getRedStoneMode());
     }
 

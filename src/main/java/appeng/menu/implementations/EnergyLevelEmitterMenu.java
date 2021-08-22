@@ -21,11 +21,9 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.parts.automation.EnergyLevelEmitterPart;
@@ -89,9 +87,6 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.setCraftingMode(
-                    (YesNo) this.getUpgradeable().getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE));
-            this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
             this.setRedStoneMode(
                     (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
         }
