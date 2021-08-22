@@ -113,6 +113,10 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return new FacadeContainer(this.storage, this::invalidateShapes);
     }
 
+    private ICablePart getCable() {
+        return this.storage.getCenter();
+    }
+
     @Override
     public IPart getPart(final Direction partLocation) {
         if (partLocation == null) {
@@ -123,80 +127,57 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     public boolean canAddPart(ItemStack is, final Direction side) {
-        if (PartPlacement.isFacade(is, side) != null) {
+        if (PartPlacement.createFacade(is, side) != null) {
             return true;
         }
 
-        if (is.getItem() instanceof IPartItem<?>bi) {
-
+        if (is.getItem() instanceof IPartItem<?>partItem) {
             is = is.copy();
             is.setCount(1);
 
-            final IPart bp = bi.createPart(is);
-
-            if (bp == null) {
+            var part = partItem.createPart(is);
+            if (part == null) {
                 return false;
             }
 
-            if (bp instanceof ICablePart) {
-                boolean canPlace = true;
-                for (final Direction d : Direction.values()) {
-                    if (this.getPart(d) != null
-                            && !this.getPart(d).canBePlacedOn(((ICablePart) bp).supportsBuses())) {
-                        canPlace = false;
-                    }
-                }
-
-                if (!canPlace) {
-                    return false;
-                }
-
-                return this.getPart(null) == null;
+            if (part instanceof ICablePart cablePart) {
+                // Cables can be added if there's currently no cable, and existing parts work with the new cable
+                return getCable() == null && arePartsCompatibleWithCable(cablePart);
             } else if (side != null) {
-                final IPart cable = this.getPart(null);
-                if (cable != null && !bp.canBePlacedOn(((ICablePart) cable).supportsBuses())) {
-                    return false;
-                }
-
-                return this.getPart(side) == null;
+                // Parts can be added if the side is free, and they work with the existing cable (if any)
+                return getPart(side) == null && isPartCompatibleWithCable(part, getCable());
             }
         }
+
         return false;
     }
 
     @Override
     public boolean addPart(ItemStack is, final Direction side, final @Nullable Player player,
             final @Nullable InteractionHand hand) {
-        if (!this.canAddPart(is, side) || !(is.getItem() instanceof IPartItem<?>)) {
+        // This code-path does not allow adding facades, while canAddPart allows facades.
+        if (!(is.getItem() instanceof IPartItem<?>partItem)) {
             return false;
         }
 
         is = is.copy();
         is.setCount(1);
 
-        var partItem = (IPartItem<?>) is.getItem();
-        final IPart bp = partItem.createPart(is);
+        var part = partItem.createPart(is);
 
-        if (bp == null) {
+        if (part == null) {
             return false;
         }
 
-        if (bp instanceof ICablePart cablePart) {
-            boolean canPlace = this.getPart(null) == null;
-            for (var d : Direction.values()) {
-                if (this.getPart(d) != null && !this.getPart(d).canBePlacedOn(cablePart.supportsBuses())) {
-                    canPlace = false;
-                }
-            }
-
-            if (!canPlace) {
+        if (part instanceof ICablePart cablePart) {
+            if (getCable() != null || !arePartsCompatibleWithCable(cablePart)) {
                 return false;
             }
 
             this.storage.setCenter(cablePart);
             cablePart.setPartHostInfo(null, this, this.tcb.getBlockEntity());
 
-            if (player != null) {
+            if (player != null && hand != null) {
                 cablePart.onPlacement(player, hand, is, side);
             }
 
@@ -204,17 +185,18 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 cablePart.addToWorld();
             }
 
-            final IGridNode cn = this.storage.getCenter().getGridNode();
-            if (cn != null) {
-                for (final Direction ins : Direction.values()) {
-                    final IPart sbp = this.getPart(ins);
-                    if (sbp != null) {
-                        final IGridNode sn = sbp.getGridNode();
-                        if (sn != null) {
+            // Connect the cables grid node to all existing internal grid nodes on the host
+            var cableNode = cablePart.getGridNode();
+            if (cableNode != null) {
+                for (var partSide : Direction.values()) {
+                    var existingPart = this.getPart(partSide);
+                    if (existingPart != null) {
+                        var existingPartNode = existingPart.getGridNode();
+                        if (existingPartNode != null) {
                             try {
-                                GridConnection.create(cn, sn, null);
+                                GridConnection.create(cableNode, existingPartNode, null);
                             } catch (final FailedConnectionException e) {
-                                AELog.debug(e);
+                                AELog.warn(e);
 
                                 cablePart.removeFromWorld();
                                 this.storage.setCenter(null);
@@ -225,33 +207,34 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 }
             }
         } else if (side != null) {
-            final IPart cable = this.getPart(null);
-            if (cable != null && !bp.canBePlacedOn(((ICablePart) cable).supportsBuses())) {
+            var cable = getCable();
+            if (!isPartCompatibleWithCable(part, cable)) {
                 return false;
             }
 
-            this.storage.setPart(side, bp);
-            bp.setPartHostInfo(side, this, this.getBlockEntity());
+            this.storage.setPart(side, part);
+            part.setPartHostInfo(side, this, this.getBlockEntity());
 
-            if (player != null) {
-                bp.onPlacement(player, hand, is, side);
+            if (player != null && hand != null) {
+                part.onPlacement(player, hand, is, side);
             }
 
             if (this.inWorld) {
-                bp.addToWorld();
+                part.addToWorld();
             }
 
-            if (this.storage.getCenter() != null) {
-                final IGridNode cn = this.storage.getCenter().getGridNode();
-                final IGridNode sn = bp.getGridNode();
+            // Connect the parts grid node to the existing cables grid node
+            if (cable != null) {
+                var cableNode = cable.getGridNode();
+                var partNode = part.getGridNode();
 
-                if (cn != null && sn != null) {
+                if (cableNode != null && partNode != null) {
                     try {
-                        GridConnection.create(cn, sn, null);
-                    } catch (final FailedConnectionException e) {
-                        AELog.debug(e);
+                        GridConnection.create(cableNode, partNode, null);
+                    } catch (FailedConnectionException e) {
+                        AELog.warn(e);
 
-                        bp.removeFromWorld();
+                        part.removeFromWorld();
                         this.storage.removePart(side);
                         return false;
                     }
@@ -259,14 +242,24 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             }
         }
 
-        this.invalidateShapes();
-        this.updateDynamicRender();
-        this.updateConnections();
-        this.markForUpdate();
-        this.markForSave();
-        this.partChanged();
+        updateAfterPartChange();
 
         return true;
+    }
+
+    // Check that the current attached parts are compatible with the given cable part
+    private boolean arePartsCompatibleWithCable(ICablePart cable) {
+        for (var d : Direction.values()) {
+            var part = getPart(d);
+            if (part != null && !isPartCompatibleWithCable(part, cable)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isPartCompatibleWithCable(IPart part, @Nullable ICablePart cable) {
+        return cable == null || part.canBePlacedOn(cable.supportsBuses());
     }
 
     @Override
@@ -279,18 +272,22 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     public void removePart(@Nullable Direction side) {
         this.removePartWithoutUpdates(side);
 
-        this.invalidateShapes();
-        this.updateDynamicRender();
-        this.updateConnections();
-        this.markForUpdate();
-        this.markForSave();
-        this.partChanged();
+        updateAfterPartChange();
 
         // Cleanup the cable bus once it is no longer containing any parts.
         // Also only when the cable bus actually exists, otherwise it might perform a cleanup during initialization.
         if (this.isInWorld() && this.isEmpty()) {
             this.cleanup();
         }
+    }
+
+    private void updateAfterPartChange() {
+        this.invalidateShapes();
+        this.updateDynamicRender();
+        this.updateConnections();
+        this.markForUpdate();
+        this.markForSave();
+        this.partChanged();
     }
 
     private void removePartWithoutUpdates(@Nullable Direction side) {

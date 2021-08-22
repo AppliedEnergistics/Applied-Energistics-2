@@ -78,7 +78,7 @@ public interface IPartHost extends ICustomCableConnection {
      * @param owner with owning player
      * @return If the part could be placed.
      */
-    boolean addPart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand);
+    boolean addPart(ItemStack is, @Nullable Direction side, @Nullable Player owner, @Nullable InteractionHand hand);
 
     /**
      * Replace an existing part on the specific side with a new one. Returns false if it failed to be replaced.
@@ -88,8 +88,7 @@ public interface IPartHost extends ICustomCableConnection {
      * @param owner with owning player
      * @return If the part could be replaced.
      */
-    @Nullable
-    boolean replacePart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand);
+    boolean replacePart(ItemStack is, @Nullable Direction side, @Nullable Player owner, @Nullable InteractionHand hand);
 
     /**
      * Removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
@@ -99,7 +98,6 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @param side onto side or null for center of host
      */
-    @Nullable
     void removePart(@Nullable Direction side);
 
     /**
