@@ -201,20 +201,4 @@ public class AdaptorItemHandler extends InventoryAdaptor {
 
         return left;
     }
-
-    @Override
-    public boolean containsItems() {
-        int slots = this.itemHandler.getSlots();
-        for (int slot = 0; slot < slots; slot++) {
-            if (!this.itemHandler.getStackInSlot(slot).isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Iterator<ItemSlot> iterator() {
-        return new ItemHandlerIterator(this.itemHandler);
-    }
 }
