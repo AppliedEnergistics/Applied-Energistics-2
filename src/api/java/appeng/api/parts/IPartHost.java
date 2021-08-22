@@ -50,6 +50,16 @@ public interface IPartHost extends ICustomCableConnection {
     IFacadeContainer getFacadeContainer();
 
     /**
+     * Get a part attached to the host based on the location it's attached to.
+     *
+     * @param side side of host or null for center.
+     *
+     * @return the part located on the specified side, or null if there is no part.
+     */
+    @Nullable
+    IPart getPart(@Nullable Direction side);
+
+    /**
      * Test if you can add a part to the specified side of the Part Host. A null side represents the center of the part
      * host, where a cable would normally be.
      *
@@ -61,7 +71,7 @@ public interface IPartHost extends ICustomCableConnection {
     boolean canAddPart(ItemStack part, @Nullable Direction side);
 
     /**
-     * try to add a new part to the specified side, returns false if it failed to be added.
+     * Add a new part to the specified side, returns false if it failed to be added.
      *
      * @param is    new part
      * @param side  onto side or null for center of host.
@@ -71,25 +81,26 @@ public interface IPartHost extends ICustomCableConnection {
     boolean addPart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand);
 
     /**
-     * Get a part attached to the host based on the location it's attached to.
+     * Replace an existing part on the specific side with a new one. Returns false if it failed to be replaced.
      *
-     * @param side side of host or null for center.
-     *
-     * @return the part located on the specified side, or null if there is no part.
+     * @param is    new part
+     * @param side  onto side or null for center of host.
+     * @param owner with owning player
+     * @return If the part could be replaced.
      */
     @Nullable
-    IPart getPart(@Nullable Direction side);
+    boolean replacePart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand);
 
     /**
-     * removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
+     * Removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
      * "gone" and its never coming back; think about it.
      *
      * if you want to drop the part you must request it prior to removing it.
      *
-     * @param side           onto side or null for center of host
-     * @param suppressUpdate - used if you need to replace a part's INSTANCE, without really removing it first.
+     * @param side onto side or null for center of host
      */
-    void removePart(@Nullable Direction side, boolean suppressUpdate);
+    @Nullable
+    void removePart(@Nullable Direction side);
 
     /**
      * something changed, might want to send a packet to clients to update state.

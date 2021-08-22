@@ -180,8 +180,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             if (!newType.isEmpty() && newType.getItem() instanceof IPartItem) {
                 final IPart testPart = ((IPartItem<?>) newType.getItem()).createPart(newType);
                 if (testPart instanceof P2PTunnelPart) {
-                    this.getHost().removePart(this.getSide(), true);
-                    final boolean dir = this.getHost().addPart(newType, this.getSide(), player, hand);
+                    final boolean dir = this.getHost().replacePart(newType, this.getSide(), player, hand);
                     final IPart newBus = this.getHost().getPart(this.getSide());
 
                     if (newBus instanceof P2PTunnelPart<?>newTunnel) {
@@ -221,8 +220,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 final boolean oldOutput = this.isOutput();
                 final short myFreq = this.getFrequency();
 
-                this.getHost().removePart(this.getSide(), true);
-                final var partAdded = this.getHost().addPart(newType, this.getSide(), player, hand);
+                final var partAdded = this.getHost().replacePart(newType, this.getSide(), player, hand);
                 final IPart newBus = this.getHost().getPart(this.getSide());
 
                 if (newBus instanceof P2PTunnelPart newTunnel) {

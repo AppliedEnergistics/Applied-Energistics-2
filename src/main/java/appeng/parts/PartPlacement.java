@@ -112,7 +112,7 @@ public class PartPlacement {
                         if (sp.part != null) {
                             is.add(sp.part.getItemStack(PartItemStack.WRENCH));
                             sp.part.getDrops(is, true);
-                            host.removePart(sp.side, false);
+                            host.removePart(sp.side);
                         }
 
                         // A facade cannot exist without a cable part, no host cleanup needed.

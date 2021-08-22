@@ -190,6 +190,11 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
+    public IPart getPart(final Direction side) {
+        return this.cb.getPart(side);
+    }
+
+    @Override
     public boolean canAddPart(final ItemStack is, final Direction side) {
         return this.getCableBus().canAddPart(is, side);
     }
@@ -201,13 +206,13 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public IPart getPart(final Direction side) {
-        return this.cb.getPart(side);
+    public boolean replacePart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand) {
+        return this.getCableBus().replacePart(is, side, owner, hand);
     }
 
     @Override
-    public void removePart(@Nullable Direction side, final boolean suppressUpdate) {
-        this.getCableBus().removePart(side, suppressUpdate);
+    public void removePart(@Nullable Direction side) {
+        this.getCableBus().removePart(side);
     }
 
     @Override
