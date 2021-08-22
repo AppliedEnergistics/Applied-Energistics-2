@@ -18,16 +18,12 @@
 
 package appeng.parts.misc;
 
-import java.util.Objects;
-
 import javax.annotation.Nullable;
 
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -46,7 +42,7 @@ import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.inv.InvOperation;
 
-public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
+public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IItemHandler> {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
 
@@ -65,7 +61,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
 
     public ItemStorageBusPart(final ItemStack is) {
-        super(TickRates.ItemStorageBus, is);
+        super(TickRates.ItemStorageBus, is, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     @Override
@@ -75,33 +71,13 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack> {
 
     @Nullable
     @Override
-    protected IMEInventory<IAEItemStack> getHandlerAdapter(BlockEntity target, Direction targetSide,
-            Runnable alertDevice) {
-        var itemHandlerOpt = target
-                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
-        if (itemHandlerOpt.isPresent()) {
-            return new ItemHandlerAdapter(itemHandlerOpt.orElse(null)) {
-                @Override
-                protected void onInjectOrExtract() {
-                    alertDevice.run();
-                }
-            };
-        }
-
-        return null;
-    }
-
-    @Override
-    protected int getHandlerHash(BlockEntity target, Direction targetSide) {
-        var itemHandlerOpt = target
-                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
-
-        if (itemHandlerOpt.isPresent()) {
-            var itemHandler = itemHandlerOpt.orElse(null);
-            return Objects.hash(target, itemHandler, itemHandler.getSlots());
-        } else {
-            return 0;
-        }
+    protected IMEInventory<IAEItemStack> getHandlerAdapter(IItemHandler handler, Runnable alertDevice) {
+        return new ItemHandlerAdapter(handler) {
+            @Override
+            protected void onInjectOrExtract() {
+                alertDevice.run();
+            }
+        };
     }
 
     @Override
