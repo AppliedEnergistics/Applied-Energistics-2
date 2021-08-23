@@ -38,7 +38,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeableHost;
@@ -59,7 +58,6 @@ import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
@@ -73,7 +71,7 @@ import appeng.util.item.AEItemStack;
  * @since rv0
  */
 public class InscriberBlockEntity extends AENetworkPowerBlockEntity
-        implements IGridTickable, IUpgradeableHost, IConfigManagerHost {
+        implements IGridTickable, IUpgradeableHost {
     private final int maxProcessingTime = 100;
 
     private final IConfigManager settings;
@@ -105,7 +103,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 .setIdlePowerUsage(0)
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(1600);
-        this.settings = new ConfigManager(this);
+        this.settings = new ConfigManager();
 
         this.upgrades = new DefinitionUpgradeInventory(AEBlocks.INSCRIBER, this, this.getUpgradeSlots());
 
@@ -367,10 +365,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public int getInstalledUpgrades(final Upgrades u) {
         return this.upgrades.getInstalledUpgrades(u);
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
     }
 
     public long getClientStart() {

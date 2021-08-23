@@ -25,13 +25,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.AccessRestriction;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.util.IConfigManager;
 import appeng.menu.guisync.GuiSync;
 import appeng.parts.misc.FluidStorageBusPart;
 import appeng.util.fluid.IAEFluidTank;
@@ -41,13 +40,11 @@ import appeng.util.fluid.IAEFluidTank;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class FluidStorageBusMenu extends FluidConfigurableMenu {
+public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPart> {
 
     public static final MenuType<FluidStorageBusMenu> TYPE = MenuTypeBuilder
             .create(FluidStorageBusMenu::new, FluidStorageBusPart.class)
             .build("fluid_storage_bus");
-
-    private final FluidStorageBusPart storageBus;
 
     @GuiSync(3)
     public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
@@ -55,9 +52,8 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu {
     @GuiSync(4)
     public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-    public FluidStorageBusMenu(int id, Inventory ip, FluidStorageBusPart te) {
-        super(TYPE, id, ip, te);
-        this.storageBus = te;
+    public FluidStorageBusMenu(int id, Inventory ip, FluidStorageBusPart host) {
+        super(TYPE, id, ip, host);
     }
 
     @Override
@@ -68,7 +64,7 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu {
     @Override
     protected boolean isValidForConfig(int slot, IAEFluidStack fs) {
         if (this.supportCapacity()) {
-            final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
+            final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
 
             final int y = slot / 9;
 
@@ -91,29 +87,21 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (isServer()) {
-            this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
-            this.setReadWriteMode(
-                    (AccessRestriction) this.getUpgradeable().getConfigManager().getSetting(Settings.ACCESS));
-            this.setStorageFilter(
-                    (StorageFilter) this.getUpgradeable().getConfigManager().getSetting(Settings.STORAGE_FILTER));
-        }
-
-        this.standardDetectAndSendChanges();
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
+        this.setReadWriteMode(cm.getSetting(Settings.ACCESS));
+        this.setStorageFilter(cm.getSetting(Settings.STORAGE_FILTER));
     }
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
+        final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
 
         return upgrades > idx;
     }
 
     public void clear() {
-        IAEFluidTank h = this.storageBus.getConfig();
+        IAEFluidTank h = getHost().getConfig();
         for (int i = 0; i < h.getSlots(); ++i) {
             h.setFluidInSlot(i, null);
         }
@@ -121,9 +109,9 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu {
     }
 
     public void partition() {
-        IAEFluidTank h = this.storageBus.getConfig();
+        IAEFluidTank h = getHost().getConfig();
 
-        final IMEInventory<IAEFluidStack> cellInv = this.storageBus.getInternalHandler();
+        final IMEInventory<IAEFluidStack> cellInv = getHost().getInternalHandler();
 
         Iterator<IAEFluidStack> i = Collections.emptyIterator();
         if (cellInv != null) {
@@ -158,6 +146,6 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu {
 
     @Override
     public IAEFluidTank getFluidConfigInventory() {
-        return this.storageBus.getConfig();
+        return getHost().getConfig();
     }
 }

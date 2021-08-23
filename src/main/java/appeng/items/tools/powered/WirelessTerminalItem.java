@@ -117,9 +117,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem {
 
         @Override
         public IConfigManager getConfigManager(final ItemStack target) {
-            final ConfigManager out = new ConfigManager((manager, settingName, newValue) -> {
-                final CompoundTag data = target.getOrCreateTag();
-                manager.writeToNBT(data);
+            var out = new ConfigManager((manager, settingName) -> {
+                manager.writeToNBT(target.getOrCreateTag());
             });
 
             out.registerSetting(Settings.SORT_BY, SortOrder.NAME);

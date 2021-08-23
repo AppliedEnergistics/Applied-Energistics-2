@@ -39,6 +39,7 @@ import net.minecraftforge.common.util.NonNullConsumer;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
@@ -131,7 +132,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>, A> extends U
     }
 
     @Override
-    public final void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         this.scheduleCacheReset(true);
         this.getHost().markForSave();
     }

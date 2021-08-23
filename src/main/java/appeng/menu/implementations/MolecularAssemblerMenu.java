@@ -60,7 +60,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu implements IProgress
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
+        final IItemHandler mac = this.getHost().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
 
         final ItemStack is = mac.getStackInSlot(10);
         if (is.isEmpty()) {
@@ -80,7 +80,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu implements IProgress
 
     @Override
     protected void setupConfig() {
-        final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
+        final IItemHandler mac = this.getHost().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
 
         for (int i = 0; i < 9; i++) {
             this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_CRAFTING_GRID);

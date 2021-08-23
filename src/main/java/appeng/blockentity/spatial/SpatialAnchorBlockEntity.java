@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.world.ForgeChunkManager;
 
 import appeng.api.AEApi;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.GridFlags;
@@ -62,10 +63,10 @@ import appeng.client.render.overlay.OverlayManager;
 import appeng.me.service.StatisticsService;
 import appeng.services.ChunkLoadingService;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
+import appeng.util.IConfigManagerListener;
 
 public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
-        implements IGridTickable, IConfigManagerHost, IConfigurableObject, IOverlayDataSource {
+        implements IGridTickable, IConfigManagerListener, IConfigurableObject, IOverlayDataSource {
 
     static {
         AEApi.grid().addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorBlockEntity.class,
@@ -194,9 +195,9 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
-        if (settingName == Settings.OVERLAY_MODE) {
-            this.displayOverlay = newValue == YesNo.YES;
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
+        if (setting == Settings.OVERLAY_MODE) {
+            this.displayOverlay = manager.getSetting(setting) == YesNo.YES;
             this.markForUpdate();
         }
     }

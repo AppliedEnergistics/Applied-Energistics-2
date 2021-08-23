@@ -33,7 +33,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IManagedGridNode;
@@ -52,7 +51,6 @@ import appeng.api.util.IConfigManager;
 import appeng.me.storage.FluidHandlerAdapter;
 import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
@@ -60,12 +58,13 @@ import appeng.util.inv.IAEFluidInventory;
 
 public class DualityFluidInterface
         extends DualityInterface
-        implements IAEFluidInventory, IUpgradeableHost, IConfigManagerHost,
-        IConfigurableFluidInventory {
+        implements IAEFluidInventory, IUpgradeableHost, IConfigurableFluidInventory {
     public static final int NUMBER_OF_TANKS = 6;
     public static final int TANK_CAPACITY = FluidAttributes.BUCKET_VOLUME * 4;
 
-    private final ConfigManager cm = new ConfigManager(this);
+    private final ConfigManager cm = new ConfigManager((manager, setting) -> {
+        saveChanges();
+    });
     private boolean hasConfig = false;
     private final AEFluidInventory tanks = new AEFluidInventory(this, NUMBER_OF_TANKS, TANK_CAPACITY);
     private final AEFluidInventory config = new AEFluidInventory(this, NUMBER_OF_TANKS);
@@ -424,9 +423,5 @@ public class DualityFluidInterface
     @Override
     public BlockEntity getBlockEntity() {
         return (BlockEntity) (this.host instanceof BlockEntity ? this.host : null);
-    }
-
-    @Override
-    public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
     }
 }

@@ -22,11 +22,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.ItemFormationPlaneScreen;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
@@ -39,7 +39,7 @@ import appeng.parts.automation.FormationPlanePart;
  *
  * @see ItemFormationPlaneScreen
  */
-public class ItemFormationPlaneMenu extends UpgradeableMenu {
+public class ItemFormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
 
     public static final MenuType<ItemFormationPlaneMenu> TYPE = MenuTypeBuilder
             .create(ItemFormationPlaneMenu::new, FormationPlanePart.class)
@@ -49,13 +49,13 @@ public class ItemFormationPlaneMenu extends UpgradeableMenu {
     @GuiSync(7)
     public YesNo placeMode;
 
-    public ItemFormationPlaneMenu(int id, final Inventory ip, final FormationPlanePart te) {
-        super(TYPE, id, ip, te);
+    public ItemFormationPlaneMenu(int id, final Inventory ip, final FormationPlanePart host) {
+        super(TYPE, id, ip, host);
     }
 
     @Override
     protected void setupConfig() {
-        final IItemHandler config = this.getUpgradeable().getInventoryByName("config");
+        final IItemHandler config = this.getHost().getInventoryByName("config");
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
                 int invIdx = y * 9 + x;
@@ -81,21 +81,14 @@ public class ItemFormationPlaneMenu extends UpgradeableMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (isServer()) {
-            this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
-            this.setPlaceMode((YesNo) this.getUpgradeable().getConfigManager().getSetting(Settings.PLACE_BLOCK));
-        }
-
-        this.standardDetectAndSendChanges();
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
+        this.setPlaceMode(cm.getSetting(Settings.PLACE_BLOCK));
     }
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
-
+        final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
         return upgrades > idx;
     }
 

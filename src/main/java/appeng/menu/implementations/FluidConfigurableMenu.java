@@ -34,10 +34,11 @@ import appeng.helpers.FluidSyncHelper;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.IAEFluidTank;
 
-public abstract class FluidConfigurableMenu extends UpgradeableMenu implements IFluidSyncMenu {
+public abstract class FluidConfigurableMenu<T extends IUpgradeableHost> extends UpgradeableMenu<T>
+        implements IFluidSyncMenu {
     private FluidSyncHelper sync = null;
 
-    public FluidConfigurableMenu(MenuType<?> menuType, int id, Inventory ip, IUpgradeableHost te) {
+    public FluidConfigurableMenu(MenuType<?> menuType, int id, Inventory ip, T te) {
         super(menuType, id, ip, te);
     }
 
@@ -69,7 +70,7 @@ public abstract class FluidConfigurableMenu extends UpgradeableMenu implements I
     protected boolean isValidForConfig(int slot, IAEFluidStack fs) {
         if (this.supportCapacity()) {
             // assumes 4 slots per upgrade
-            final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
+            final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
 
             if (slot > 0 && upgrades < 1) {
                 return false;

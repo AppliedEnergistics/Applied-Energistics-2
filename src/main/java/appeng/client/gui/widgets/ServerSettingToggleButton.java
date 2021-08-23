@@ -18,7 +18,7 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.api.config.Settings;
+import appeng.api.config.Setting;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
 
@@ -27,7 +27,7 @@ import appeng.core.sync.packets.ConfigButtonPacket;
  */
 public class ServerSettingToggleButton<T extends Enum<T>> extends SettingToggleButton<T> {
 
-    public ServerSettingToggleButton(final Settings setting, final T val) {
+    public ServerSettingToggleButton(Setting<T> setting, final T val) {
         super(setting, val, ServerSettingToggleButton::sendToServer);
     }
 

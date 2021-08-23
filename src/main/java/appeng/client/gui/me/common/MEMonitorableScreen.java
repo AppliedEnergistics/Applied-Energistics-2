@@ -44,6 +44,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SearchBoxMode;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -82,12 +83,12 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.util.IConfigManagerHost;
+import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMonitorableMenu<T>>
-        extends AEBaseScreen<C> implements ISortSource, IConfigManagerHost {
+        extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
     private static final int MIN_ROWS = 3;
 
@@ -572,7 +573,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
     }
 
     @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         if (this.sortByToggle != null) {
             this.sortByToggle.set(getSortBy());
         }
@@ -604,7 +605,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     private <SE extends Enum<SE>> void toggleServerSetting(SettingToggleButton<SE> btn, boolean backwards) {
         SE next = btn.getNextValue(backwards);
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting().name(), next.name()));
+        NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting().getName(), next.name()));
         btn.set(next);
     }
 

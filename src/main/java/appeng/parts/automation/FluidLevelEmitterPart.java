@@ -34,6 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
@@ -59,14 +60,15 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.FluidLevelEmitterMenu;
 import appeng.parts.PartModel;
-import appeng.util.IConfigManagerHost;
+import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
 import appeng.util.inv.IAEFluidInventory;
 
 public class FluidLevelEmitterPart extends UpgradeablePart
-        implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack>,
+        implements IStackWatcherHost, IConfigManagerListener, IAEFluidInventory,
+        IMEMonitorHandlerReceiver<IAEFluidStack>,
         IConfigurableFluidInventory {
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
@@ -117,7 +119,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         this.configureWatchers();
     }
 

@@ -35,7 +35,7 @@ import appeng.util.fluid.IAEFluidTank;
 /**
  * @see FluidInterfaceScreen
  */
-public class FluidInterfaceMenu extends FluidConfigurableMenu {
+public class FluidInterfaceMenu extends FluidConfigurableMenu<IFluidInterfaceHost> {
 
     public static final MenuType<FluidInterfaceMenu> TYPE = MenuTypeBuilder
             .create(FluidInterfaceMenu::new, IFluidInterfaceHost.class)
@@ -45,10 +45,10 @@ public class FluidInterfaceMenu extends FluidConfigurableMenu {
     private final DualityFluidInterface myDuality;
     private final FluidSyncHelper tankSync;
 
-    public FluidInterfaceMenu(int id, final Inventory ip, final IFluidInterfaceHost te) {
-        super(TYPE, id, ip, te.getDualityFluidInterface().getHost());
+    public FluidInterfaceMenu(int id, final Inventory ip, IFluidInterfaceHost host) {
+        super(TYPE, id, ip, host);
 
-        this.myDuality = te.getDualityFluidInterface();
+        this.myDuality = host.getDualityFluidInterface();
         this.tankSync = new FluidSyncHelper(this.myDuality.getTanks(), DualityFluidInterface.NUMBER_OF_TANKS);
     }
 
@@ -63,13 +63,11 @@ public class FluidInterfaceMenu extends FluidConfigurableMenu {
 
     @Override
     public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
+        super.broadcastChanges();
 
         if (isServer()) {
             this.tankSync.sendDiff(getPlayer());
         }
-
-        super.broadcastChanges();
     }
 
     @Override

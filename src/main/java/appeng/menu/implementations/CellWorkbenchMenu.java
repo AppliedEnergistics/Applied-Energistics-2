@@ -37,6 +37,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
@@ -50,43 +51,41 @@ import appeng.util.inv.WrapperSupplierItemHandler;
 /**
  * @see appeng.client.gui.implementations.CellWorkbenchScreen
  */
-public class CellWorkbenchMenu extends UpgradeableMenu {
+public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity> {
 
     public static final MenuType<CellWorkbenchMenu> TYPE = MenuTypeBuilder
             .create(CellWorkbenchMenu::new, CellWorkbenchBlockEntity.class)
             .build("cellworkbench");
 
-    private final CellWorkbenchBlockEntity workBench;
     @GuiSync(2)
     public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
 
-    public CellWorkbenchMenu(int id, final Inventory ip, final CellWorkbenchBlockEntity te) {
+    public CellWorkbenchMenu(int id, Inventory ip, CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
-        this.workBench = te;
     }
 
     public void setFuzzy(final FuzzyMode valueOf) {
-        final ICellWorkbenchItem cwi = this.workBench.getCell();
+        final ICellWorkbenchItem cwi = getHost().getCell();
         if (cwi != null) {
             cwi.setFuzzyMode(getWorkbenchItem(), valueOf);
         }
     }
 
     public void nextWorkBenchCopyMode() {
-        this.workBench.getConfigManager().putSetting(Settings.COPY_MODE, EnumCycler.next(this.getWorkBenchCopyMode()));
+        getHost().getConfigManager().putSetting(Settings.COPY_MODE, EnumCycler.next(this.getWorkBenchCopyMode()));
     }
 
     private CopyMode getWorkBenchCopyMode() {
-        return (CopyMode) this.workBench.getConfigManager().getSetting(Settings.COPY_MODE);
+        return getHost().getConfigManager().getSetting(Settings.COPY_MODE);
     }
 
     @Override
     protected void setupConfig() {
-        final IItemHandler cell = this.getUpgradeable().getInventoryByName("cell");
+        final IItemHandler cell = this.getHost().getInventoryByName("cell");
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
                 SlotSemantic.STORAGE_CELL);
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final IItemHandler inv = this.getHost().getInventoryByName("config");
         final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler(
                 this::getCellUpgradeInventory);
 
@@ -110,17 +109,13 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
     }
 
     public ItemStack getWorkbenchItem() {
-        return this.workBench.getInventoryByName("cell").getStackInSlot(0);
+        return getHost().getInventoryByName("cell").getStackInSlot(0);
     }
 
     @Override
-    public void broadcastChanges() {
-        if (isServer()) {
-            this.setCopyMode(this.getWorkBenchCopyMode());
-            this.setFuzzyMode(this.getWorkBenchFuzzyMode());
-        }
-
-        this.standardDetectAndSendChanges();
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setCopyMode(this.getWorkBenchCopyMode());
+        this.setFuzzyMode(this.getWorkBenchFuzzyMode());
     }
 
     @Override
@@ -129,7 +124,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
     }
 
     public IItemHandler getCellUpgradeInventory() {
-        final IItemHandler upgradeInventory = this.workBench.getCellUpgradeInventory();
+        final IItemHandler upgradeInventory = getHost().getCellUpgradeInventory();
 
         return upgradeInventory == null ? EmptyHandler.INSTANCE : upgradeInventory;
     }
@@ -138,16 +133,16 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
     public void onServerDataSync() {
         super.onServerDataSync();
 
-        this.workBench.getConfigManager().putSetting(Settings.COPY_MODE, this.getCopyMode());
+        getHost().getConfigManager().putSetting(Settings.COPY_MODE, this.getCopyMode());
     }
 
     public void clear() {
-        ItemHandlerUtil.clear(this.getUpgradeable().getInventoryByName("config"));
+        ItemHandlerUtil.clear(this.getHost().getInventoryByName("config"));
         this.broadcastChanges();
     }
 
     private FuzzyMode getWorkBenchFuzzyMode() {
-        final ICellWorkbenchItem cwi = this.workBench.getCell();
+        final ICellWorkbenchItem cwi = getHost().getCell();
         if (cwi != null) {
             return cwi.getFuzzyMode(getWorkbenchItem());
         }
@@ -156,7 +151,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu {
 
     public void partition() {
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final IItemHandler inv = this.getHost().getInventoryByName("config");
 
         final ItemStack is = getWorkbenchItem();
         final IStorageChannel<?> channel = is.getItem() instanceof IStorageCell

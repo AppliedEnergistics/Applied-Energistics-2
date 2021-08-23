@@ -19,6 +19,7 @@
 package appeng.util;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
@@ -31,7 +32,7 @@ public final class EnumCycler {
     private EnumCycler() {
     }
 
-    public static <T extends Enum<T>> T rotateEnum(T ce, final boolean backwards, final EnumSet<T> validOptions) {
+    public static <T extends Enum<T>> T rotateEnum(T ce, boolean backwards, Set<T> validOptions) {
         Preconditions.checkArgument(!validOptions.isEmpty());
 
         int direction = backwards ? -1 : 1;

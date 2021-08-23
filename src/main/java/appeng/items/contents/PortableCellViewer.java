@@ -18,7 +18,6 @@
 
 package appeng.items.contents;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -77,16 +76,15 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
     @Override
     public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         if (channel == StorageChannels.items()) {
-            return (IMEMonitor<T>) this;
+            return cast(channel);
         }
         return null;
     }
 
     @Override
     public IConfigManager getConfigManager() {
-        final ConfigManager out = new ConfigManager((manager, settingName, newValue) -> {
-            final CompoundTag data = this.target.getOrCreateTag();
-            manager.writeToNBT(data);
+        var out = new ConfigManager((manager, settingName) -> {
+            manager.writeToNBT(this.target.getOrCreateTag());
         });
 
         out.registerSetting(Settings.SORT_BY, SortOrder.NAME);

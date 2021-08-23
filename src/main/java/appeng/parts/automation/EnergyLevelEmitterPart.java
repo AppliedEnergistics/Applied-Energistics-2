@@ -34,6 +34,7 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNodeListener;
@@ -229,7 +230,7 @@ public class EnergyLevelEmitterPart extends UpgradeablePart implements IEnergyWa
     }
 
     @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         this.configureWatchers();
     }
 

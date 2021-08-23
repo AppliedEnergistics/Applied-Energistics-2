@@ -24,72 +24,68 @@
 package appeng.api.config;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.annotation.Nonnull;
+import com.google.common.base.Preconditions;
 
-public enum Settings {
-    LEVEL_EMITTER_MODE(EnumSet.allOf(LevelEmitterMode.class)),
+public final class Settings {
+    private static final Map<String, Setting<?>> SETTINGS = new HashMap<>();
 
-    REDSTONE_EMITTER(EnumSet.of(RedstoneMode.HIGH_SIGNAL, RedstoneMode.LOW_SIGNAL)),
+    private Settings() {
+    }
 
-    REDSTONE_CONTROLLED(EnumSet.allOf(RedstoneMode.class)),
+    private synchronized static <T extends Enum<T>> Setting<T> register(String name, Class<T> enumClass) {
+        Preconditions.checkState(!SETTINGS.containsKey(name));
+        var setting = new Setting<T>(name, enumClass);
+        SETTINGS.put(name, setting);
+        return setting;
+    }
 
-    CONDENSER_OUTPUT(EnumSet.allOf(CondenserOutput.class)),
+    @SafeVarargs
+    private synchronized static <T extends Enum<T>> Setting<T> register(String name, T firstOption, T... moreOptions) {
+        Preconditions.checkState(!SETTINGS.containsKey(name));
+        var setting = new Setting<T>(name, firstOption.getDeclaringClass(), EnumSet.of(firstOption, moreOptions));
+        SETTINGS.put(name, setting);
+        return setting;
+    }
 
-    POWER_UNITS(EnumSet.allOf(PowerUnits.class)),
+    public static final Setting<LevelEmitterMode> LEVEL_EMITTER_MODE = register("level_emitter_mode",
+            LevelEmitterMode.class);
+    public static final Setting<RedstoneMode> REDSTONE_EMITTER = register("redstone_emitter", RedstoneMode.HIGH_SIGNAL,
+            RedstoneMode.LOW_SIGNAL);
+    public static final Setting<RedstoneMode> REDSTONE_CONTROLLED = register("redstone_controlled", RedstoneMode.class);
+    public static final Setting<CondenserOutput> CONDENSER_OUTPUT = register("condenser_output", CondenserOutput.class);
+    public static final Setting<PowerUnits> POWER_UNITS = register("power_units", PowerUnits.class);
+    public static final Setting<AccessRestriction> ACCESS = register("access", AccessRestriction.READ_WRITE,
+            AccessRestriction.READ, AccessRestriction.WRITE);
+    public static final Setting<SortDir> SORT_DIRECTION = register("sort_direction", SortDir.class);
+    public static final Setting<SortOrder> SORT_BY = register("sort_by", SortOrder.class);
+    public static final Setting<YesNo> SEARCH_TOOLTIPS = register("search_tooltips", YesNo.YES, YesNo.NO);
+    public static final Setting<ViewItems> VIEW_MODE = register("view_mode", ViewItems.class);
+    public static final Setting<SearchBoxMode> SEARCH_MODE = register("search_mode", SearchBoxMode.class);
+    public static final Setting<RelativeDirection> IO_DIRECTION = register("io_direction", RelativeDirection.LEFT,
+            RelativeDirection.RIGHT);
+    public static final Setting<YesNo> BLOCK = register("block", YesNo.YES, YesNo.NO);
+    public static final Setting<OperationMode> OPERATION_MODE = register("operation_mode", OperationMode.class);
+    public static final Setting<FullnessMode> FULLNESS_MODE = register("fullness_mode", FullnessMode.class);
+    public static final Setting<YesNo> CRAFT_ONLY = register("craft_only", YesNo.YES, YesNo.NO);
+    public static final Setting<FuzzyMode> FUZZY_MODE = register("fuzzy_mode", FuzzyMode.class);
+    public static final Setting<TerminalStyle> TERMINAL_STYLE = register("terminal_style", TerminalStyle.TALL,
+            TerminalStyle.SMALL);
+    public static final Setting<CopyMode> COPY_MODE = register("copy_mode", CopyMode.class);
+    public static final Setting<YesNo> INTERFACE_TERMINAL = register("interface_terminal", YesNo.YES, YesNo.NO);
+    public static final Setting<YesNo> CRAFT_VIA_REDSTONE = register("craft_via_redstone", YesNo.YES, YesNo.NO);
+    public static final Setting<StorageFilter> STORAGE_FILTER = register("storage_filter", StorageFilter.class);
+    public static final Setting<YesNo> PLACE_BLOCK = register("place_block", YesNo.YES, YesNo.NO);
+    public static final Setting<SchedulingMode> SCHEDULING_MODE = register("scheduling_mode", SchedulingMode.class);
+    public static final Setting<YesNo> OVERLAY_MODE = register("overlay_mode", YesNo.YES, YesNo.NO);
 
-    ACCESS(EnumSet.of(AccessRestriction.READ_WRITE, AccessRestriction.READ, AccessRestriction.WRITE)),
-
-    SORT_DIRECTION(EnumSet.allOf(SortDir.class)),
-
-    SORT_BY(EnumSet.allOf(SortOrder.class)),
-
-    SEARCH_TOOLTIPS(EnumSet.of(YesNo.YES, YesNo.NO)),
-
-    VIEW_MODE(EnumSet.allOf(ViewItems.class)),
-
-    SEARCH_MODE(EnumSet.allOf(SearchBoxMode.class)),
-
-    IO_DIRECTION(EnumSet.of(RelativeDirection.LEFT, RelativeDirection.RIGHT)),
-
-    BLOCK(EnumSet.of(YesNo.YES, YesNo.NO)),
-
-    OPERATION_MODE(EnumSet.allOf(OperationMode.class)),
-
-    FULLNESS_MODE(EnumSet.allOf(FullnessMode.class)),
-
-    CRAFT_ONLY(EnumSet.of(YesNo.YES, YesNo.NO)),
-
-    FUZZY_MODE(EnumSet.allOf(FuzzyMode.class)),
-
-    TERMINAL_STYLE(EnumSet.of(TerminalStyle.TALL, TerminalStyle.SMALL)),
-
-    COPY_MODE(EnumSet.allOf(CopyMode.class)),
-
-    INTERFACE_TERMINAL(EnumSet.of(YesNo.YES, YesNo.NO)),
-
-    CRAFT_VIA_REDSTONE(EnumSet.of(YesNo.YES, YesNo.NO)),
-
-    STORAGE_FILTER(EnumSet.allOf(StorageFilter.class)),
-
-    PLACE_BLOCK(EnumSet.of(YesNo.YES, YesNo.NO)),
-
-    SCHEDULING_MODE(EnumSet.allOf(SchedulingMode.class)),
-
-    OVERLAY_MODE(EnumSet.of(YesNo.YES, YesNo.NO));
-
-    private final EnumSet<? extends Enum<?>> values;
-
-    Settings(@Nonnull final EnumSet<? extends Enum<?>> possibleOptions) {
-        if (possibleOptions.isEmpty()) {
-            throw new IllegalArgumentException("Tried to instantiate an empty setting.");
+    public static Setting<?> getOrThrow(String name) {
+        var setting = SETTINGS.get(name);
+        if (setting == null) {
+            throw new IllegalArgumentException("Unknown setting '" + name + "'");
         }
-
-        this.values = possibleOptions;
+        return setting;
     }
-
-    public EnumSet<? extends Enum<?>> getPossibleValues() {
-        return this.values;
-    }
-
 }
