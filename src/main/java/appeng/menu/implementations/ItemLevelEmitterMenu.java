@@ -79,7 +79,7 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
     protected void setupConfig() {
         this.setupUpgrades();
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final IItemHandler inv = lvlEmitter.getInventoryByName("config");
         this.addSlot(new FakeTypeOnlySlot(inv, 0), SlotSemantic.CONFIG);
     }
 
@@ -98,11 +98,9 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.setCraftingMode(
-                    (YesNo) this.getUpgradeable().getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE));
-            this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
-            this.setRedStoneMode(
-                    (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
+            this.setCraftingMode((YesNo) lvlEmitter.getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE));
+            this.setFuzzyMode((FuzzyMode) lvlEmitter.getConfigManager().getSetting(Settings.FUZZY_MODE));
+            this.setRedStoneMode((RedstoneMode) lvlEmitter.getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
         }
 
         this.standardDetectAndSendChanges();

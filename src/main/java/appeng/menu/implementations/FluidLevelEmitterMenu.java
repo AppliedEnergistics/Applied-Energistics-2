@@ -78,7 +78,6 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
 
     @Override
     public int availableUpgrades() {
-
         return 0;
     }
 
@@ -87,8 +86,7 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.setRedStoneMode(
-                    (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
+            this.setRedStoneMode((RedstoneMode) lvlEmitter.getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
         }
 
         this.standardDetectAndSendChanges();

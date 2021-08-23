@@ -69,7 +69,6 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu {
 
     @Override
     protected void setupConfig() {
-        this.setupUpgrades();
     }
 
     @Override
@@ -79,7 +78,7 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu {
 
     @Override
     public int availableUpgrades() {
-        return 1;
+        return 0;
     }
 
     @Override
@@ -87,8 +86,7 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.setRedStoneMode(
-                    (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
+            this.setRedStoneMode((RedstoneMode) lvlEmitter.getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
         }
 
         this.standardDetectAndSendChanges();
