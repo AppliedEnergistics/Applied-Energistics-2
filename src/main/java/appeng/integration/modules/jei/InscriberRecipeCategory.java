@@ -20,7 +20,8 @@ package appeng.integration.modules.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaTypes;
@@ -39,6 +40,7 @@ import appeng.recipes.handlers.InscriberRecipe;
 
 class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
 
+    private static final String TITLE_TRANSLATION_KEY = "block.appliedenergistics2.inscriber";
     private static final int SLOT_INPUT_TOP = 0;
     private static final int SLOT_INPUT_MIDDLE = 1;
     private static final int SLOT_INPUT_BOTTOM = 2;
@@ -48,8 +50,6 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
 
     private final IDrawable background;
 
-    private final String localizedName;
-
     private final IDrawableAnimated progress;
 
     private final IDrawable icon;
@@ -57,7 +57,6 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     public InscriberRecipeCategory(IGuiHelper guiHelper) {
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
         this.background = guiHelper.createDrawable(location, 44, 15, 97, 64);
-        this.localizedName = I18n.get("block.appliedenergistics2.inscriber");
 
         IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location, 135, 177, 6, 18).addPadding(24, 0, 91, 0)
                 .build();
@@ -73,8 +72,8 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     }
 
     @Override
-    public String getTitle() {
-        return this.localizedName;
+    public Component getTitle() {
+        return new TranslatableComponent(TITLE_TRANSLATION_KEY);
     }
 
     @Override

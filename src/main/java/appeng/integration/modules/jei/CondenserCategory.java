@@ -27,7 +27,6 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -53,24 +52,20 @@ import appeng.core.definitions.AEItems;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
+    private static final String TITLE_TRANSLATION_KEY = "block.appliedenergistics2.Condenser";
+
     public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
 
-    private final String localizedName;
-
     private final IDrawable background;
-
-    private final IDrawable iconTrash;
-
     private final IDrawableAnimated progress;
 
     private final IDrawable iconButton;
-
+    private final IDrawable iconTrash;
     private final IDrawable icon;
 
     private final Map<CondenserOutput, IDrawable> buttonIcons;
 
     public CondenserCategory(IGuiHelper guiHelper) {
-        this.localizedName = I18n.get("gui.appliedenergistics2.Condenser");
         this.icon = guiHelper.createDrawableIngredient(AEBlocks.CONDENSER.stack());
 
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");
@@ -112,8 +107,8 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public String getTitle() {
-        return this.localizedName;
+    public Component getTitle() {
+        return new TranslatableComponent(TITLE_TRANSLATION_KEY);
     }
 
     @Override

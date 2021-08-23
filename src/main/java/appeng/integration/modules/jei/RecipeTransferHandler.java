@@ -42,14 +42,16 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.helpers.IMenuCraftingPacket;
 
-abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraftingPacket>
-        implements IRecipeTransferHandler<T> {
+abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraftingPacket, R extends Recipe<?>>
+        implements IRecipeTransferHandler<T, R> {
 
     private final Class<T> menuClass;
+    private final Class<R> recipeClass;
     protected final IRecipeTransferHandlerHelper helper;
 
-    RecipeTransferHandler(Class<T> menuClass, IRecipeTransferHandlerHelper helper) {
+    RecipeTransferHandler(Class<T> menuClass, Class<R> recipeClass, IRecipeTransferHandlerHelper helper) {
         this.menuClass = menuClass;
+        this.recipeClass = recipeClass;
         this.helper = helper;
     }
 
@@ -59,12 +61,9 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
     }
 
     @Override
-    public final IRecipeTransferError transferRecipe(T menu, Object recipe, IRecipeLayout recipeLayout,
+    public final IRecipeTransferError transferRecipe(T menu, R recipe, IRecipeLayout recipeLayout,
             Player player, boolean maxTransfer, boolean doTransfer) {
-        if (!(recipe instanceof Recipe<?>irecipe)) {
-            return this.helper.createInternalError();
-        }
-        final ResourceLocation recipeId = irecipe.getId();
+        final ResourceLocation recipeId = recipe.getId();
 
         if (recipeId == null) {
             return this.helper
@@ -83,12 +82,12 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
             canSendReference = false;
         }
 
-        if (!irecipe.canCraftInDimensions(3, 3)) {
+        if (!recipe.canCraftInDimensions(3, 3)) {
             return this.helper.createUserErrorWithTooltip(
                     new TranslatableComponent("jei.appliedenergistics2.recipe_too_large"));
         }
 
-        final IRecipeTransferError error = doTransferRecipe(menu, irecipe, recipeLayout, player, maxTransfer);
+        final IRecipeTransferError error = doTransferRecipe(menu, recipe, recipeLayout, player, maxTransfer);
 
         if (doTransfer && this.canTransfer(error)) {
             if (canSendReference) {
@@ -131,7 +130,12 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
         return error;
     }
 
-    protected abstract IRecipeTransferError doTransferRecipe(T menu, Recipe<?> recipe, IRecipeLayout recipeLayout,
+    @Override
+    public Class<R> getRecipeClass() {
+        return this.recipeClass;
+    }
+
+    protected abstract IRecipeTransferError doTransferRecipe(T menu, R recipe, IRecipeLayout recipeLayout,
             Player player, boolean maxTransfer);
 
     protected abstract boolean isCrafting();

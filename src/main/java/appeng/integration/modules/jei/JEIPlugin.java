@@ -35,6 +35,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import mezz.jei.api.IModPlugin;
@@ -93,20 +95,20 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-
         // Allow vanilla crafting recipe transfer from JEI to crafting terminal
         registration.addRecipeTransferHandler(
-                new CraftingRecipeTransferHandler(CraftingTermMenu.class, registration.getTransferHelper()),
+                new CraftingRecipeTransferHandler(CraftingTermMenu.class, CraftingRecipe.class,
+                        registration.getTransferHelper()),
                 VanillaRecipeCategoryUid.CRAFTING);
 
         // Universal handler for processing to try and handle all IRecipe
         registration.addUniversalRecipeTransferHandler(
-                new PatternRecipeTransferHandler(PatternTermMenu.class, registration.getTransferHelper()));
+                new PatternRecipeTransferHandler(PatternTermMenu.class, Recipe.class,
+                        registration.getTransferHelper()));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-
         RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
         registration.addRecipes(recipeManager.byType(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
         registration.addRecipes(recipeManager.byType(InscriberRecipe.TYPE).values(), InscriberRecipeCategory.UID);
@@ -165,7 +167,6 @@ public class JEIPlugin implements IModPlugin {
             this.addDescription(registry, AEItems.PURIFIED_FLUIX_CRYSTAL,
                     GuiText.inWorldPurificationFluix.text());
         }
-
     }
 
     private void addDescription(IRecipeRegistration registry, ItemDefinition<?> itemDefinition,
@@ -175,13 +176,11 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
-
         if (AEConfig.instance().isShowFacadesInJEIEnabled()) {
             FacadeItem itemFacade = AEItems.FACADE.asItem();
             ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }
-
     }
 
     @Override
