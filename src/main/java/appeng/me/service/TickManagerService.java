@@ -55,7 +55,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     private final Map<IGridNode, TickTracker> awake = new HashMap<>();
     private final Map<Level, PriorityQueue<TickTracker>> upcomingTicks = new HashMap<>();
 
-    private PriorityQueue<TickTracker> currentlyIterating = null;
+    private PriorityQueue<TickTracker> currentlyTickingQueue = null;
 
     private long currentTick = 0;
     private Stopwatch stopWatch = Stopwatch.createUnstarted();
@@ -86,7 +86,9 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         var queue = this.upcomingTicks.get(level);
 
         if (queue != null) {
+            currentlyTickingQueue = queue;
             tickQueue(queue);
+            currentlyTickingQueue = null;
 
             if (queue.isEmpty()) {
                 this.upcomingTicks.remove(level);
@@ -96,7 +98,6 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     private void tickQueue(PriorityQueue<TickTracker> queue) {
         TickTracker tt;
-        currentlyIterating = queue;
 
         while (!queue.isEmpty()) {
             // Peek and stop once it reaches a TickTracker running at a later tick
@@ -128,8 +129,6 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
                 queue.add(tt);
             }
         }
-
-        currentlyIterating = null;
     }
 
     @Override
@@ -299,7 +298,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
         // Make sure we don't cleanup a queue we are iterating over,
         // as something might be added to it later even if it's empty now.
-        if (currentlyIterating != queue && queue.isEmpty()) {
+        if (currentlyTickingQueue != queue && queue.isEmpty()) {
             this.upcomingTicks.remove(level);
         }
     }
