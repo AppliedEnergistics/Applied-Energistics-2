@@ -87,8 +87,12 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
         if (queue != null) {
             currentlyTickingQueue = queue;
-            tickQueue(queue);
-            currentlyTickingQueue = null;
+
+            try {
+                tickQueue(queue);
+            } finally {
+                currentlyTickingQueue = null;
+            }
 
             if (queue.isEmpty()) {
                 this.upcomingTicks.remove(level);
