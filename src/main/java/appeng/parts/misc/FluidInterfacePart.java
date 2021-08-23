@@ -41,10 +41,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
@@ -62,7 +58,7 @@ import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
 public class FluidInterfacePart extends BasicStatePart
-        implements IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
+        implements IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_base");
 
     private static final IGridNodeListener<FluidInterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
@@ -136,11 +132,6 @@ public class FluidInterfacePart extends BasicStatePart
         }
 
         return true;
-    }
-
-    @Override
-    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        return this.duality.getInventory(channel);
     }
 
     @Override

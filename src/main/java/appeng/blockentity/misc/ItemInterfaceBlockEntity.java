@@ -48,7 +48,7 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityItemInterface;
-import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IItemInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.menu.implementations.ItemInterfaceMenu;
@@ -56,7 +56,7 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
-        implements IInterfaceHost, IPriorityHost {
+        implements IItemInterfaceHost, IPriorityHost {
 
     private static final IGridNodeListener<ItemInterfaceBlockEntity> NODE_LISTENER = new BlockEntityNodeListener<>() {
         @Override

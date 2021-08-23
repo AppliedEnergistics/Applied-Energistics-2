@@ -18,7 +18,7 @@
 
 package appeng.helpers;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,33 +36,20 @@ import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
-import appeng.capabilities.Capabilities;
-import appeng.core.settings.TickRates;
-import appeng.me.helpers.MachineSource;
 import appeng.me.storage.FluidHandlerAdapter;
-import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
@@ -72,40 +59,23 @@ import appeng.util.fluid.IAEFluidTank;
 import appeng.util.inv.IAEFluidInventory;
 
 public class DualityFluidInterface
-        implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost,
+        extends DualityInterface
+        implements IAEFluidInventory, IUpgradeableHost, IConfigManagerHost,
         IConfigurableFluidInventory {
     public static final int NUMBER_OF_TANKS = 6;
     public static final int TANK_CAPACITY = FluidAttributes.BUCKET_VOLUME * 4;
 
     private final ConfigManager cm = new ConfigManager(this);
-    private final IManagedGridNode gridProxy;
-    private final IFluidInterfaceHost iHost;
-    private final IActionSource mySource;
-    private final IActionSource interfaceRequestSource;
     private boolean hasConfig = false;
-    private final IStorageMonitorableAccessor accessor = this::getMonitorable;
     private final AEFluidInventory tanks = new AEFluidInventory(this, NUMBER_OF_TANKS, TANK_CAPACITY);
     private final AEFluidInventory config = new AEFluidInventory(this, NUMBER_OF_TANKS);
     private final IAEFluidStack[] requireWork;
+    @Nullable
+    private InterfaceInventory localInvHandler;
     private int isWorking = -1;
-    private int priority;
 
-    private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(
-            new NullInventory<>(StorageChannels.items()), StorageChannels.items());
-    private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
-            new NullInventory<>(StorageChannels.fluids()), StorageChannels.fluids());
-
-    public DualityFluidInterface(final IManagedGridNode mainNode, final IFluidInterfaceHost ih) {
-        this.gridProxy = mainNode
-                .setFlags(GridFlags.REQUIRE_CHANNEL)
-                .addService(IGridTickable.class, this);
-        this.iHost = ih;
-
-        this.mySource = new MachineSource(this.iHost);
-        this.interfaceRequestSource = new InterfaceRequestSource(this.iHost);
-
-        this.fluids.setChangeSource(this.mySource);
-        this.items.setChangeSource(this.mySource);
+    public DualityFluidInterface(IManagedGridNode gridNode, IFluidInterfaceHost ih) {
+        super(gridNode, ih);
 
         this.requireWork = new IAEFluidStack[NUMBER_OF_TANKS];
         for (int i = 0; i < NUMBER_OF_TANKS; ++i) {
@@ -114,74 +84,44 @@ public class DualityFluidInterface
     }
 
     public IUpgradeableHost getHost() {
-        if (this.iHost instanceof IUpgradeableHost) {
-            return this.iHost;
+        if (this.host instanceof IUpgradeableHost) {
+            return this.host;
         }
-        if (this.iHost instanceof IUpgradeableHost) {
-            return this.iHost;
+        if (this.host instanceof IUpgradeableHost) {
+            return this.host;
         }
         return null;
     }
 
+    /**
+     * Returns an ME compatible monitor for the interfaces local storage.
+     */
     @Override
-    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        if (channel == StorageChannels.items()) {
-            if (this.hasConfig()) {
-                return null;
+    protected <T extends IAEStack<T>> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
+        if (channel == StorageChannels.fluids()) {
+            if (localInvHandler == null) {
+                localInvHandler = new InterfaceInventory();
             }
-
-            return (IMEMonitor<T>) this.items;
-        } else if (channel == StorageChannels.fluids()) {
-            if (this.hasConfig()) {
-                return (IMEMonitor<T>) new InterfaceInventory(this);
-            }
-
-            return (IMEMonitor<T>) this.fluids;
+            return localInvHandler.cast(channel);
         }
-
         return null;
-    }
-
-    public IStorageMonitorable getMonitorable(final IActionSource src) {
-        if (Platform.canAccess(this.gridProxy, src)) {
-            return this;
-        }
-
-        return null;
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
-        return new TickingRequest(TickRates.Interface.getMin(), TickRates.Interface.getMax(), !this.hasWorkToDo(),
-                true);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        if (!this.gridProxy.isActive()) {
-            return TickRateModulation.SLEEP;
-        }
-
-        final boolean couldDoWork = this.updateStorage();
-        return this.hasWorkToDo() ? couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER
-                : TickRateModulation.SLEEP;
     }
 
     public void notifyNeighbors() {
-        if (this.gridProxy.isActive()) {
-            this.gridProxy.ifPresent((grid, node) -> {
+        if (this.mainNode.isActive()) {
+            this.mainNode.ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);
             });
         }
 
-        final BlockEntity te = this.iHost.getBlockEntity();
+        final BlockEntity te = this.host.getBlockEntity();
         if (te != null && te.getLevel() != null) {
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
         }
     }
 
     public void gridChanged() {
-        var grid = gridProxy.getGrid();
+        var grid = mainNode.getGrid();
         if (grid != null) {
             this.items.setInternal(grid.getStorageService()
                     .getInventory(StorageChannels.items()));
@@ -200,21 +140,15 @@ public class DualityFluidInterface
     }
 
     public DimensionalBlockPos getLocation() {
-        return new DimensionalBlockPos(this.iHost.getBlockEntity());
+        return new DimensionalBlockPos(this.host.getBlockEntity());
     }
 
     @SuppressWarnings("unchecked")
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
         if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return (LazyOptional<T>) LazyOptional.of(() -> this.tanks);
-        } else if (capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.accessor);
         }
-        return LazyOptional.empty();
-    }
-
-    private boolean hasConfig() {
-        return this.hasConfig;
+        return super.getCapability(capabilityClass, facing);
     }
 
     private void readConfig() {
@@ -236,7 +170,7 @@ public class DualityFluidInterface
         final boolean has = this.hasWorkToDo();
 
         if (had != has) {
-            gridProxy.ifPresent((grid, node) -> {
+            mainNode.ifPresent((grid, node) -> {
                 if (has) {
                     grid.getTickManager().alertDevice(node);
                 } else {
@@ -248,7 +182,8 @@ public class DualityFluidInterface
         this.notifyNeighbors();
     }
 
-    private boolean updateStorage() {
+    @Override
+    protected boolean updateStorage() {
         boolean didSomething = false;
         for (int x = 0; x < NUMBER_OF_TANKS; x++) {
             if (this.requireWork[x] != null) {
@@ -258,8 +193,14 @@ public class DualityFluidInterface
         return didSomething;
     }
 
-    private boolean hasWorkToDo() {
-        for (final IAEFluidStack requiredWork : this.requireWork) {
+    @Override
+    protected boolean hasConfig() {
+        return this.hasConfig;
+    }
+
+    @Override
+    protected boolean hasWorkToDo() {
+        for (var requiredWork : this.requireWork) {
             if (requiredWork != null) {
                 return true;
             }
@@ -306,7 +247,7 @@ public class DualityFluidInterface
         this.isWorking = slot;
 
         boolean changed = false;
-        var grid = this.gridProxy.getGrid();
+        var grid = this.mainNode.getGrid();
         if (grid != null) {
             final IMEInventory<IAEFluidStack> dest = grid.getStorageService()
                     .getInventory(StorageChannels.fluids());
@@ -377,7 +318,7 @@ public class DualityFluidInterface
             final boolean now = this.hasWorkToDo();
 
             if (had != now) {
-                gridProxy.ifPresent((grid, node) -> {
+                mainNode.ifPresent((grid, node) -> {
                     if (now) {
                         grid.getTickManager().alertDevice(node);
                     } else {
@@ -388,30 +329,22 @@ public class DualityFluidInterface
         }
     }
 
-    public int getPriority() {
-        return this.priority;
-    }
-
-    public void setPriority(final int newValue) {
-        this.priority = newValue;
-    }
-
     @Override
     public boolean isRemote() {
-        Level level = this.iHost.getBlockEntity().getLevel();
+        Level level = this.host.getBlockEntity().getLevel();
         return level == null || level.isClientSide();
     }
 
     public void writeToNBT(final CompoundTag data) {
-        data.putInt("priority", this.priority);
+        super.writeToNBT(data);
         this.tanks.writeToNBT(data, "storage");
         this.config.writeToNBT(data, "config");
     }
 
     public void readFromNBT(final CompoundTag data) {
+        super.readFromNBT(data);
         this.config.readFromNBT(data, "config");
         this.tanks.readFromNBT(data, "storage");
-        this.priority = data.getInt("priority");
         this.readConfig();
     }
 
@@ -423,44 +356,16 @@ public class DualityFluidInterface
         return this.tanks;
     }
 
-    private class InterfaceRequestSource extends MachineSource {
-        private final InterfaceRequestContext context;
-
-        InterfaceRequestSource(IActionHost v) {
-            super(v);
-            this.context = new InterfaceRequestContext();
-        }
-
-        @Override
-        public <T> Optional<T> context(Class<T> key) {
-            if (key == InterfaceRequestContext.class) {
-                return (Optional<T>) Optional.of(this.context);
-            }
-
-            return super.context(key);
-        }
-    }
-
-    private class InterfaceRequestContext implements Comparable<Integer> {
-        @Override
-        public int compareTo(Integer o) {
-            return Integer.compare(DualityFluidInterface.this.priority, o);
-        }
-    }
-
     private class InterfaceInventory extends FluidHandlerAdapter implements IMEMonitor<IAEFluidStack> {
 
-        InterfaceInventory(final DualityFluidInterface iface) {
-            super(iface.tanks);
-            this.setActionSource(new MachineSource(iface.iHost));
+        InterfaceInventory() {
+            super(tanks);
+            this.setActionSource(actionSource);
         }
 
         @Override
         public IAEFluidStack injectItems(final IAEFluidStack input, final Actionable type, final IActionSource src) {
-            final Optional<InterfaceRequestContext> context = src.context(InterfaceRequestContext.class);
-            final boolean isInterface = context.isPresent();
-
-            if (isInterface) {
+            if (getRequestInterfacePriority(src).isPresent()) {
                 return input;
             }
 
@@ -469,11 +374,8 @@ public class DualityFluidInterface
 
         @Override
         public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable type, final IActionSource src) {
-            final Optional<InterfaceRequestContext> context = src.context(InterfaceRequestContext.class);
-            final boolean hasLowerOrEqualPriority = context
-                    .map(c -> c.compareTo(DualityFluidInterface.this.priority) <= 0).orElse(false);
-
-            if (hasLowerOrEqualPriority) {
+            var requestPriority = getRequestInterfacePriority(src);
+            if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority()) {
                 return null;
             }
 
@@ -493,7 +395,7 @@ public class DualityFluidInterface
     }
 
     public void saveChanges() {
-        this.iHost.saveChanges();
+        this.host.saveChanges();
     }
 
     @Override
@@ -521,7 +423,7 @@ public class DualityFluidInterface
 
     @Override
     public BlockEntity getBlockEntity() {
-        return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
+        return (BlockEntity) (this.host instanceof BlockEntity ? this.host : null);
     }
 
     @Override

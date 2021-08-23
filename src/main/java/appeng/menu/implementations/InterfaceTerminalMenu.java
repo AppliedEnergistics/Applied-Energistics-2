@@ -47,7 +47,7 @@ import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.helpers.DualityItemInterface;
-import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IItemInterfaceHost;
 import appeng.helpers.InventoryAction;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.AEBaseMenu;
@@ -78,7 +78,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
     // We use this serial number to uniquely identify all inventories we send to the client
     // It is used in packets sent by the client to interact with these inventories
     private static long inventorySerial = Long.MIN_VALUE;
-    private final Map<IInterfaceHost, InvTracker> diList = new IdentityHashMap<>();
+    private final Map<IItemInterfaceHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
 
     public InterfaceTerminalMenu(int id, final Inventory ip, final InterfaceTerminalPart anchor) {
@@ -133,7 +133,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         boolean forceFullUpdate;
     }
 
-    private <T extends IInterfaceHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
+    private <T extends IItemInterfaceHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             final DualityItemInterface dual = ih.getInterfaceDuality();
@@ -272,7 +272,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         }
 
         CompoundTag data = new CompoundTag();
-        for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
+        for (final Entry<IItemInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
             this.byId.put(inv.serverId, inv);
             this.addItems(data, inv, 0, inv.server.getSlots());
@@ -282,7 +282,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
 
     private InterfaceTerminalPacket createIncrementalUpdate() {
         CompoundTag data = null;
-        for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
+        for (final Entry<IItemInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
             for (int x = 0; x < inv.server.getSlots(); x++) {
                 if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {

@@ -46,7 +46,7 @@ import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityItemInterface;
-import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IItemInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
@@ -55,10 +55,8 @@ import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
 
-public class ItemInterfacePart extends BasicStatePart implements IInterfaceHost, IAEAppEngInventory, IPriorityHost {
+public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceHost, IPriorityHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
 
@@ -160,12 +158,6 @@ public class ItemInterfacePart extends BasicStatePart implements IInterfaceHost,
             MenuOpener.open(ItemInterfaceMenu.TYPE, p, MenuLocator.forPart(this));
         }
         return true;
-    }
-
-    @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
-        this.duality.onChangeInventory(inv, slot, mc, removedStack, newStack);
     }
 
     @Override

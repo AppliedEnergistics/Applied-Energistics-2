@@ -27,7 +27,7 @@ import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.ItemInterfaceScreen;
 import appeng.helpers.DualityItemInterface;
-import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IItemInterfaceHost;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.AppEngSlot;
@@ -40,7 +40,7 @@ import appeng.menu.slot.RestrictedInputSlot;
 public class ItemInterfaceMenu extends UpgradeableMenu {
 
     public static final MenuType<ItemInterfaceMenu> TYPE = MenuTypeBuilder
-            .create(ItemInterfaceMenu::new, IInterfaceHost.class)
+            .create(ItemInterfaceMenu::new, IItemInterfaceHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("interface");
 
@@ -50,7 +50,7 @@ public class ItemInterfaceMenu extends UpgradeableMenu {
     @GuiSync(4)
     public YesNo iTermMode = YesNo.YES;
 
-    public ItemInterfaceMenu(int id, final Inventory ip, final IInterfaceHost te) {
+    public ItemInterfaceMenu(int id, final Inventory ip, final IItemInterfaceHost te) {
         super(TYPE, id, ip, te.getInterfaceDuality().getHost());
 
         DualityItemInterface duality = te.getInterfaceDuality();
