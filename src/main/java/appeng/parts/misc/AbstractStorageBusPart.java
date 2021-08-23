@@ -20,7 +20,6 @@ package appeng.parts.misc;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -33,6 +32,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullConsumer;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -52,6 +54,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellProvider;
@@ -72,8 +75,12 @@ import appeng.util.Platform;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
-public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends UpgradeablePart
+/**
+ * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
+ */
+public abstract class AbstractStorageBusPart<T extends IAEStack<T>, A> extends UpgradeablePart
         implements IGridTickable, ICellProvider, IMEMonitorHandlerReceiver<T>, IPriorityHost {
+    private final Capability<A> handlerCapability;
     protected final IActionSource source;
     private final TickRates tickRates;
     private boolean wasActive = false;
@@ -81,11 +88,18 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
     private boolean cached = false;
     private ITickingMonitor monitor = null;
     private MEInventoryHandler<T> handler = null;
-    private int handlerHash = 0;
+    /**
+     * Last target (the IItemHandler, IFluidHandler or IMEMonitor). If it changes we need to rebuild the handler.
+     */
+    @Nullable
+    private Object lastTargetObject = null;
     private byte resetCacheLogic = 0;
+    private static final Object NO_TARGET = new Object();
+    private final NonNullConsumer<LazyOptional<A>> apiInvalidationListener = this::apiInvalidated;
 
-    public AbstractStorageBusPart(TickRates tickRates, ItemStack is) {
+    public AbstractStorageBusPart(TickRates tickRates, ItemStack is, Capability<A> handlerCapability) {
         super(is);
+        this.handlerCapability = handlerCapability;
         this.tickRates = tickRates;
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
@@ -99,13 +113,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
     protected abstract IStorageChannel<T> getStorageChannel();
 
     @Nullable
-    protected abstract IMEInventory<T> getHandlerAdapter(BlockEntity target, Direction targetSide,
-            Runnable alertDevice);
-
-    /**
-     * Hash the adjacent handler, or return 0 if there is no handler.
-     */
-    protected abstract int getHandlerHash(BlockEntity target, Direction targetSide);
+    protected abstract IMEInventory<T> getHandlerAdapter(A handler, Runnable alertDevice);
 
     protected abstract int getStackConfigSize();
 
@@ -221,6 +229,16 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
         }
     }
 
+    private void apiInvalidated(LazyOptional<A> aLazyOptional) {
+        // Make sure this storage bus still exists.
+        if (this.getMainNode().isReady()) {
+            // Do a full cache reset if the LazyOptional was invalidated.
+            // This is useful in case the tile doesn't trigger a neighbor change event for some reason.
+            this.scheduleCacheReset(true);
+            this.doCacheReset();
+        }
+    }
+
     @Override
     public final TickingRequest getTickingRequest(final IGridNode node) {
         return new TickingRequest(tickRates.getMin(), tickRates.getMax(), this.monitor == null, true);
@@ -251,7 +269,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
 
         this.cached = false;
         if (fullReset) {
-            this.handlerHash = 0;
+            this.lastTargetObject = null;
         }
 
         final IMEInventory<T> out = this.getInternalHandler();
@@ -290,28 +308,57 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
         }
 
         // Check via cap adapter
-        return getHandlerAdapter(target, targetSide, () -> {
-            getMainNode().ifPresent((grid, node) -> {
-                grid.getTickManager().alertDevice(node);
+        var handler = target.getCapability(this.handlerCapability, targetSide).orElse(null);
+
+        if (handler != null) {
+            return getHandlerAdapter(handler, () -> {
+                getMainNode().ifPresent((grid, node) -> {
+                    grid.getTickManager().alertDevice(node);
+                });
             });
-        });
+        } else {
+            return null;
+        }
     }
 
     // TODO, LazyOptionals are cacheable this might need changing?
-    private int createHandlerHash(BlockEntity target) {
+    private Object getTargetObject(BlockEntity target) {
         if (target == null) {
             return 0;
         }
 
         var targetSide = this.getSide().getOpposite();
 
-        var accessorOpt = target.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide);
+        var accessor = target.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide).orElse(null);
 
-        if (accessorOpt.isPresent()) {
-            return Objects.hash(target, accessorOpt.orElse(null));
+        if (accessor != null) {
+            // The accessor might be the same, but the monitor might have changed (e.g. interface suddenly has config).
+            // So we have to return the monitor and not the accessor.
+            IMEMonitor<T> targetMonitor = null;
+            var monitorable = accessor.getInventory(this.source);
+
+            if (monitorable != null) {
+                targetMonitor = monitorable.getInventory(getStorageChannel());
+            }
+
+            // Always return: if an IStorageMonitorableAccessor is exposed, we never query the handler capability.
+            // Even if the IMEMonitor is null.
+            if (targetMonitor == null) {
+                // Marks a null monitor - to prevent frequent rebuilds if null is returned.
+                return NO_TARGET;
+            } else {
+                return targetMonitor;
+            }
         }
 
-        return getHandlerHash(target, targetSide);
+        LazyOptional<A> adjCap = target.getCapability(this.handlerCapability, targetSide);
+
+        if (adjCap.isPresent()) {
+            adjCap.addListener(apiInvalidationListener);
+            return adjCap.resolve().get();
+        }
+
+        return null;
     }
 
     public final MEInventoryHandler<T> getInternalHandler() {
@@ -323,15 +370,14 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>> extends Upgr
 
         this.cached = true;
         var self = this.getHost().getBlockEntity();
-        var target = self.getLevel()
-                .getBlockEntity(self.getBlockPos().relative(this.getSide()));
-        var newHandlerHash = this.createHandlerHash(target);
+        var target = self.getLevel().getBlockEntity(self.getBlockPos().relative(this.getSide()));
+        var newTargetObject = this.getTargetObject(target);
 
-        if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
+        if (newTargetObject != null && newTargetObject == this.lastTargetObject) {
             return this.handler;
         }
 
-        this.handlerHash = newHandlerHash;
+        this.lastTargetObject = newTargetObject;
         this.handler = null;
         this.monitor = null;
         if (target != null) {
