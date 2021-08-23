@@ -2,7 +2,7 @@
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
-    "texture": "guis/lvlemitter.png",
+    "texture": "guis/level_emitter.png",
     "srcRect": [0, 0, 176, 184]
   },
   "slots": {

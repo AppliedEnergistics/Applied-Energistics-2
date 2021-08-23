@@ -2,7 +2,7 @@
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
-    "texture": "guis/lvlemitter.png",
+    "texture": "guis/energy_level_emitter.png",
     "srcRect": [0, 0, 176, 184]
   },
   "text": {
@@ -20,7 +20,7 @@
         "translate": "gui.appliedenergistics2.units.appliedenergstics"
       },
       "position": {
-        "left": 110,
+        "left": 144,
         "top": 44
       }
     }
