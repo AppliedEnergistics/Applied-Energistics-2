@@ -57,10 +57,10 @@ public interface ICraftingService extends IGridService {
      * @param craftWhat result
      * @param callback  callback -- optional
      *
-     * @return a future which will at an undetermined point in the future get you the {@link ICraftingJob} do not wait
+     * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan} do not wait
      *         on this, your be waiting forever.
      */
-    Future<ICraftingJob> beginCraftingJob(Level level, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
+    Future<ICraftingPlan> beginCraftingJob(Level level, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
             ICraftingCallback callback);
 
     /**
@@ -79,7 +79,7 @@ public interface ICraftingService extends IGridService {
      *         {@link ICraftingRequester} methods. if you send null, this object should be discarded after verifying the
      *         return state.
      */
-    ICraftingLink submitJob(ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target,
+    ICraftingLink submitJob(ICraftingPlan job, ICraftingRequester requestingMachine, ICraftingCPU target,
             boolean prioritizePower, IActionSource src);
 
     /**

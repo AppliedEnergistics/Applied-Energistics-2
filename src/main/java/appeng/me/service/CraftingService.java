@@ -50,18 +50,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingCallback;
-import appeng.api.networking.crafting.ICraftingJob;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingMedium;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.crafting.ICraftingWatcher;
-import appeng.api.networking.crafting.ICraftingWatcherNode;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.events.GridCraftingPatternChange;
@@ -76,7 +65,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingStorageBlockEntity;
-import appeng.crafting.CraftingJob;
+import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
 import appeng.crafting.CraftingWatcher;
@@ -145,7 +134,7 @@ public class CraftingService
         this.craftingLinks.values().removeIf(nexus -> nexus.isDead(this.grid, this));
 
         for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
-            cpu.updateCraftingLogic(this.grid, this.energyGrid, this);
+            cpu.craftingLogic.tickCraftingLogic(energyGrid, this);
         }
     }
 
@@ -258,8 +247,9 @@ public class CraftingService
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);
 
-                if (cluster.getLastCraftingLink() != null) {
-                    this.addLink((CraftingLink) cluster.getLastCraftingLink());
+                ICraftingLink maybeLink = cluster.craftingLogic.getLastLink();
+                if (maybeLink != null) {
+                    this.addLink((CraftingLink) maybeLink);
                 }
             }
         }
@@ -327,7 +317,7 @@ public class CraftingService
     @Override
     public boolean canAccept(final IAEItemStack input) {
         for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
-            if (cpu.canAccept(input)) {
+            if (cpu.craftingLogic.getWaitingFor(input) > 0) {
                 return true;
             }
         }
@@ -343,7 +333,7 @@ public class CraftingService
     @Override
     public IAEItemStack injectItems(IAEItemStack input, final Actionable type, final IActionSource src) {
         for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
-            input = cpu.injectItems(input, type, src);
+            input = cpu.craftingLogic.injectItems(input, type);
         }
 
         return input;
@@ -382,8 +372,7 @@ public class CraftingService
             if (details != null && details.isCraftable()) {
                 for (final IAEItemStack ais : this.craftableItems.keySet()) {
                     // TODO: check if OK
-                    // TODO: this is slightly hacky, but fine as long as we only deal with
-                    // itemstacks
+                    // TODO: this is slightly hacky, but fine as long as we only deal with itemstacks
                     if (ais.getItem() == whatToCraft.getItem()
                             && (!ais.getItem().canBeDepleted() || ais.getItemDamage() == whatToCraft.getItemDamage())
                             && details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), level)) {
@@ -399,21 +388,21 @@ public class CraftingService
     }
 
     @Override
-    public Future<ICraftingJob> beginCraftingJob(final Level level, final IGrid grid, final IActionSource actionSrc,
+    public Future<ICraftingPlan> beginCraftingJob(final Level level, final IGrid grid, final IActionSource actionSrc,
             final IAEItemStack slotItem, final ICraftingCallback cb) {
         if (level == null || grid == null || actionSrc == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }
 
-        final CraftingJob job = new CraftingJob(level, grid, actionSrc, slotItem, cb);
+        final CraftingCalculation job = new CraftingCalculation(level, grid, actionSrc, slotItem, cb);
 
-        return CRAFTING_POOL.submit(job, job);
+        return CRAFTING_POOL.submit(job::run);
     }
 
     @Override
-    public ICraftingLink submitJob(final ICraftingJob job, final ICraftingRequester requestingMachine,
+    public ICraftingLink submitJob(final ICraftingPlan job, final ICraftingRequester requestingMachine,
             final ICraftingCPU target, final boolean prioritizePower, final IActionSource src) {
-        if (job.isSimulation()) {
+        if (job.simulation()) {
             return null;
         }
 
@@ -426,7 +415,7 @@ public class CraftingService
         if (target == null) {
             final List<CraftingCPUCluster> validCpusClusters = new ArrayList<>();
             for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
-                if (cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.getByteTotal()) {
+                if (cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.bytes()) {
                     validCpusClusters.add(cpu);
                 }
             }
@@ -479,8 +468,7 @@ public class CraftingService
         long requested = 0;
 
         for (final CraftingCPUCluster cluster : this.craftingCPUClusters) {
-            final IAEItemStack stack = cluster.making(what);
-            requested += stack != null ? stack.getStackSize() : 0;
+            requested += cluster.craftingLogic.getWaitingFor(what);
         }
 
         return requested;

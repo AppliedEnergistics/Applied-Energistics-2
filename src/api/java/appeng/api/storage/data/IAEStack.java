@@ -100,12 +100,16 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @param i additional stack size
      */
-    void incStackSize(long i);
+    default T incStackSize(long i) {
+        return setStackSize(getStackSize() + i);
+    }
 
     /**
      * removes some from the stack size.
      */
-    void decStackSize(long i);
+    default T decStackSize(long i) {
+        return setStackSize(getStackSize() - i);
+    }
 
     /**
      * adds items to the requestable
@@ -169,6 +173,10 @@ public interface IAEStack<T extends IAEStack<T>> {
      * @return a new Stack, which is copied from the original.
      */
     T copy();
+
+    default T copyWithStackSize(long newStackSize) {
+        return copy().setStackSize(newStackSize);
+    }
 
     /**
      * create an empty stack.

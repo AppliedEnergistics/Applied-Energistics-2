@@ -26,7 +26,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventory;
@@ -40,18 +40,15 @@ import appeng.api.storage.data.IItemList;
 public class CraftingPlanSummary {
 
     /**
-     * @see ICraftingJob#getByteTotal()
+     * @see ICraftingPlan#bytes()
      */
     private final long usedBytes;
 
     /**
-     * @see ICraftingJob#isSimulation()
+     * @see ICraftingPlan#simulation()
      */
     private final boolean simulation;
 
-    /**
-     * @see ICraftingJob#populatePlan(IItemList)
-     */
     private final List<CraftingPlanSummaryEntry> entries;
 
     public CraftingPlanSummary(long usedBytes, boolean simulation, List<CraftingPlanSummaryEntry> entries) {
@@ -100,9 +97,23 @@ public class CraftingPlanSummary {
      * @param grid         The grid used to determine the amount of items already stored.
      * @param actionSource The action source used to determine the amount of items already stored.
      */
-    public static CraftingPlanSummary fromJob(IGrid grid, IActionSource actionSource, ICraftingJob job) {
+    public static CraftingPlanSummary fromJob(IGrid grid, IActionSource actionSource, ICraftingPlan job) {
         final IItemList<IAEItemStack> plan = StorageChannels.items().createList();
-        job.populatePlan(plan);
+        // TODO: clean this up, for now the point is to match the old behavior
+        for (IAEItemStack used : job.usedItems()) {
+            plan.addStorage(used);
+        }
+        for (IAEItemStack missing : job.missingItems()) {
+            plan.addStorage(missing);
+        }
+        for (IAEItemStack emitted : job.emittedItems()) {
+            plan.addRequestable(emitted.copy().setCountRequestable(emitted.getStackSize()));
+        }
+        for (var entry : job.patternTimes().entrySet()) {
+            for (IAEItemStack out : entry.getKey().getOutputs()) {
+                plan.addRequestable(out.copy().setCountRequestable(out.getStackSize() * entry.getValue()));
+            }
+        }
 
         ImmutableList.Builder<CraftingPlanSummaryEntry> entries = ImmutableList.builder();
 
@@ -113,7 +124,7 @@ public class CraftingPlanSummary {
         for (final IAEItemStack out : plan) {
             long missingAmount;
             long storedAmount;
-            if (job.isSimulation()) {
+            if (job.simulation()) {
                 IAEItemStack available = items.extractItems(out.copy(), Actionable.SIMULATE, actionSource);
 
                 storedAmount = available == null ? 0 : available.getStackSize();
@@ -132,7 +143,7 @@ public class CraftingPlanSummary {
 
         }
 
-        return new CraftingPlanSummary(job.getByteTotal(), job.isSimulation(), entries.build());
+        return new CraftingPlanSummary(job.bytes(), job.simulation(), entries.build());
 
     }
 

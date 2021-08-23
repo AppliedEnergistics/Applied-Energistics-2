@@ -80,16 +80,6 @@ public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T> {
     }
 
     @Override
-    public void incStackSize(final long i) {
-        this.stackSize += i;
-    }
-
-    @Override
-    public void decStackSize(final long i) {
-        this.stackSize -= i;
-    }
-
-    @Override
     public void incCountRequestable(final long i) {
         this.countRequestable += i;
     }

@@ -18,6 +18,8 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +27,6 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -64,6 +65,7 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
     private final IncrementalUpdateHelper<IAEItemStack> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
+    private final Consumer<IAEItemStack> cpuChangeListener = incrementalUpdateHelper::addChange;
 
     public CraftingCPUMenu(MenuType<?> menuType, int id, final Inventory ip, final Object te) {
         super(menuType, id, ip, te);
@@ -92,7 +94,7 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
         }
 
         if (this.cpu != null) {
-            this.cpu.removeListener(this);
+            this.cpu.craftingLogic.removeListener(cpuChangeListener);
         }
 
         this.incrementalUpdateHelper.clear();
@@ -103,12 +105,12 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
             // Initially send all items as a full-update to the client when the CPU changes
             IItemList<IAEItemStack> allItems = StorageChannels.items()
                     .createList();
-            this.cpu.getListOfItem(allItems, CraftingItemList.ALL);
+            cpu.craftingLogic.getAllItems(allItems);
             for (IAEItemStack stack : allItems) {
                 incrementalUpdateHelper.addChange(stack);
             }
 
-            this.cpu.addListener(this, null);
+            this.cpu.craftingLogic.addListener(cpuChangeListener);
         } else {
             this.cpu = null;
             // Clear the crafting status
@@ -130,14 +132,14 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
     public void removed(Player player) {
         super.removed(player);
         if (this.cpu != null) {
-            this.cpu.removeListener(this);
+            this.cpu.craftingLogic.removeListener(cpuChangeListener);
         }
     }
 
     @Override
     public void broadcastChanges() {
         if (isServer() && this.cpu != null && this.incrementalUpdateHelper.hasChanges()) {
-            CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu);
+            CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);
             this.incrementalUpdateHelper.commitChanges();
 
             sendPacketToClient(new CraftingStatusPacket(status));

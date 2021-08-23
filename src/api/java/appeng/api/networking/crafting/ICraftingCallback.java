@@ -37,5 +37,5 @@ public interface ICraftingCallback {
      *
      * @param job - final job
      */
-    void calculationComplete(@Nonnull ICraftingJob job);
+    void calculationComplete(@Nonnull ICraftingPlan job);
 }

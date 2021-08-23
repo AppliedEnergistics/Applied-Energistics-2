@@ -40,7 +40,7 @@ public interface ICraftingWatcherNode extends IGridNodeService {
      * Called when a crafting status changes.
      *
      * @param craftingGrid current crafting grid
-     * @param what         change
+     * @param what         change; don't assume anything regarding the count; don't edit the stack
      */
     void onRequestChange(ICraftingService craftingGrid, IAEItemStack what);
 }

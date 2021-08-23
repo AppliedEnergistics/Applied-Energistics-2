@@ -26,9 +26,9 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.crafting.execution.CraftingCpuLogic;
+import appeng.crafting.execution.ElapsedTimeTracker;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 
 /**
@@ -49,17 +49,17 @@ public class CraftingStatus {
     private final boolean fullStatus;
 
     /**
-     * @see CraftingCPUCluster#getElapsedTime()
+     * @see ElapsedTimeTracker
      */
     private final long elapsedTime;
 
     /**
-     * @see CraftingCPUCluster#getRemainingItemCount()
+     * @see ElapsedTimeTracker
      */
     private final long remainingItemCount;
 
     /**
-     * @see CraftingCPUCluster#getStartItemCount()
+     * @see ElapsedTimeTracker
      */
     private final long startItemCount;
 
@@ -121,19 +121,15 @@ public class CraftingStatus {
     }
 
     public static CraftingStatus create(IncrementalUpdateHelper<IAEItemStack> changes,
-            CraftingCPUCluster cpu) {
+            CraftingCpuLogic logic) {
 
         boolean full = changes.isFullUpdate();
 
         ImmutableList.Builder<CraftingStatusEntry> newEntries = ImmutableList.builder();
         for (IAEItemStack stack : changes) {
-            IAEItemStack stored = cpu.getItemStack(stack, CraftingItemList.STORAGE);
-            IAEItemStack active = cpu.getItemStack(stack, CraftingItemList.ACTIVE);
-            IAEItemStack pending = cpu.getItemStack(stack, CraftingItemList.PENDING);
-
-            long storedCount = stored != null ? stored.getStackSize() : 0;
-            long activeCount = active != null ? active.getStackSize() : 0;
-            long pendingCount = pending != null ? pending.getStackSize() : 0;
+            long storedCount = logic.getStored(stack);
+            long activeCount = logic.getWaitingFor(stack);
+            long pendingCount = logic.getPendingOutputs(stack);
 
             ItemStack item = stack.getDefinition();
             if (!full && changes.getSerial(stack) != null) {
@@ -149,9 +145,9 @@ public class CraftingStatus {
                     pendingCount));
         }
 
-        long elapsedTime = cpu.getElapsedTime();
-        long remainingItems = cpu.getRemainingItemCount();
-        long startItems = cpu.getStartItemCount();
+        long elapsedTime = logic.getElapsedTimeTracker().getElapsedTime();
+        long remainingItems = logic.getElapsedTimeTracker().getRemainingItemCount();
+        long startItems = logic.getElapsedTimeTracker().getStartItemCount();
 
         return new CraftingStatus(
                 full,

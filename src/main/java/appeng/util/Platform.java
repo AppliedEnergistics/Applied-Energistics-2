@@ -896,6 +896,10 @@ public class Platform {
         return ci;
     }
 
+    public static IAEItemStack getContainerItem(IAEItemStack stack) {
+        return StorageChannels.items().createStack(getContainerItem(stack.createItemStack()));
+    }
+
     public static void notifyBlocksOfNeighbors(final Level level, final BlockPos pos) {
         if (!level.isClientSide) {
             TickHandler.instance().addCallable(level, new BlockUpdate(pos));

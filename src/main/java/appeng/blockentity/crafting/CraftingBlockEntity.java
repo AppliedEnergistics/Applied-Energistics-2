@@ -43,12 +43,12 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -235,7 +235,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     public void breakCluster() {
         if (this.cluster != null) {
             this.cluster.cancel();
-            final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
+            final ListCraftingInventory<IAEItemStack> inv = this.cluster.craftingLogic.getInventory();
 
             final LinkedList<BlockPos> places = new LinkedList<>();
 
@@ -261,12 +261,11 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                         this.cluster + " does not contain any kind of blocks, which were destroyed.");
             }
 
-            for (IAEItemStack ais : inv.getAvailableItems()) {
+            for (IAEItemStack ais : inv.list) {
                 ais = ais.copy();
                 ais.setStackSize(ais.getDefinition().getMaxStackSize());
                 while (true) {
-                    final IAEItemStack g = inv.extractItems(ais.copy(), Actionable.MODULATE,
-                            this.cluster.getActionSource());
+                    final IAEItemStack g = inv.extractItems(ais.copy(), Actionable.MODULATE);
                     if (g == null) {
                         break;
                     }
