@@ -5,6 +5,12 @@
     "texture": "guis/level_emitter.png",
     "srcRect": [0, 0, 176, 184]
   },
+  "slots": {
+    "CONFIG": {
+      "left": 137,
+      "top": 40
+    }
+  },
   "text": {
     "dialog_title": {
       "text": {
