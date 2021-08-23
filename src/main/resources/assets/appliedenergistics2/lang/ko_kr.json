@@ -202,7 +202,7 @@
   "gui.appliedenergistics2.InterfaceTerminalHint": "인터페이스 터미널에서 보여주거나 숨깁니다.",
   "gui.appliedenergistics2.InvalidPattern": "알 수 없는 패턴",
   "gui.appliedenergistics2.LargeFontCraft": "+",
-  "gui.appliedenergistics2.LevelEmitter": "ME 레벨 측정기",
+  "gui.appliedenergistics2.ItemLevelEmitter": "ME 레벨 측정기",
   "gui.appliedenergistics2.LightBlue": "하늘색",
   "gui.appliedenergistics2.LightGray": "밝은 회색",
   "gui.appliedenergistics2.Lime": "연두색",

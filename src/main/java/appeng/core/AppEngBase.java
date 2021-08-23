@@ -69,10 +69,10 @@ import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.ticking.TickHandler;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
-import appeng.init.InitContainerTypes;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
+import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitChargerRegistry;
@@ -207,7 +207,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     public void registerContainerTypes(RegistryEvent.Register<MenuType<?>> event) {
-        InitContainerTypes.init(event.getRegistry());
+        InitMenuTypes.init(event.getRegistry());
     }
 
     public void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {

@@ -754,11 +754,17 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', Items.STICKY_PISTON)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/item_import_bus"));
-        ShapelessRecipeBuilder.shapeless(AEParts.LEVEL_EMITTER)
+        ShapelessRecipeBuilder.shapeless(AEParts.ITEM_LEVEL_EMITTER)
                 .requires(Items.REDSTONE_TORCH)
                 .requires(AEItems.CALCULATION_PROCESSOR)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/parts/item_level_emitter"));
+        ShapelessRecipeBuilder.shapeless(AEParts.ENERGY_LEVEL_EMITTER)
+                .requires(Items.REDSTONE_TORCH)
+                .requires(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                .requires(AEItems.CALCULATION_PROCESSOR)
+                .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
+                .save(consumer, AppEng.makeId("network/parts/energy_level_emitter"));
         ShapelessRecipeBuilder.shapeless(AEParts.ITEM_STORAGE_BUS)
                 .requires(Items.STICKY_PISTON)
                 .requires(ConventionTags.ITEM_INTERFACE)
@@ -772,10 +778,10 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_storage_monitor", has(AEParts.STORAGE_MONITOR))
                 .save(consumer, AppEng.makeId("network/parts/monitors_conversion"));
         ShapelessRecipeBuilder.shapeless(AEParts.STORAGE_MONITOR)
-                .requires(AEParts.LEVEL_EMITTER)
+                .requires(AEParts.ITEM_LEVEL_EMITTER)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .unlockedBy("has_illuminated_panel", has(ConventionTags.ILLUMINATED_PANEL))
-                .unlockedBy("has_item_level_emitter", has(AEParts.LEVEL_EMITTER))
+                .unlockedBy("has_item_level_emitter", has(AEParts.ITEM_LEVEL_EMITTER))
                 .save(consumer, AppEng.makeId("network/parts/monitors_storage"));
         ShapelessRecipeBuilder.shapeless(AEParts.DARK_MONITOR)
                 .requires(AEParts.MONITOR)

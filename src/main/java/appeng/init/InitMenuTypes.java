@@ -25,6 +25,7 @@ import appeng.menu.implementations.CellWorkbenchMenu;
 import appeng.menu.implementations.ChestMenu;
 import appeng.menu.implementations.CondenserMenu;
 import appeng.menu.implementations.DriveMenu;
+import appeng.menu.implementations.EnergyLevelEmitterMenu;
 import appeng.menu.implementations.FluidFormationPlaneMenu;
 import appeng.menu.implementations.FluidIOBusMenu;
 import appeng.menu.implementations.FluidInterfaceMenu;
@@ -62,9 +63,9 @@ import appeng.menu.me.items.WirelessTermMenu;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
-public final class InitContainerTypes {
+public final class InitMenuTypes {
 
-    private InitContainerTypes() {
+    private InitMenuTypes() {
     }
 
     public static void init(IForgeRegistry<MenuType<?>> registry) {
@@ -85,6 +86,7 @@ public final class InitContainerTypes {
                 InterfaceTerminalMenu.TYPE,
                 IOPortMenu.TYPE,
                 ItemLevelEmitterMenu.TYPE,
+                EnergyLevelEmitterMenu.TYPE,
                 MolecularAssemblerMenu.TYPE,
                 ItemTerminalMenu.TYPE,
                 MEPortableCellMenu.TYPE,

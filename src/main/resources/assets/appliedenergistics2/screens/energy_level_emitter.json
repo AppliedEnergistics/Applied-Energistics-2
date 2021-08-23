@@ -2,19 +2,13 @@
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
-    "texture": "guis/lvlemitter.png",
+    "texture": "guis/energy_level_emitter.png",
     "srcRect": [0, 0, 176, 184]
-  },
-  "slots": {
-    "CONFIG": {
-      "left": 137,
-      "top": 40
-    }
   },
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.LevelEmitter"
+        "translate": "gui.appliedenergistics2.EnergyLevelEmitter"
       },
       "position": {
         "left": 8,
@@ -26,7 +20,7 @@
         "translate": "gui.appliedenergistics2.units.appliedenergstics"
       },
       "position": {
-        "left": 110,
+        "left": 144,
         "top": 44
       }
     }

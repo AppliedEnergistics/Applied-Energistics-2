@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -33,31 +32,29 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;
-import appeng.parts.automation.LevelEmitterPart;
+import appeng.parts.automation.ItemLevelEmitterPart;
 
 public class ItemLevelEmitterMenu extends UpgradeableMenu {
 
     public static final MenuType<ItemLevelEmitterMenu> TYPE = MenuTypeBuilder
-            .create(ItemLevelEmitterMenu::new, LevelEmitterPart.class)
+            .create(ItemLevelEmitterMenu::new, ItemLevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarLong(host.getReportingValue());
             }, (host, menu, buffer) -> {
                 menu.reportingValue = buffer.readVarLong();
             })
-            .build("levelemitter");
+            .build("item_level_emitter");
 
-    private final LevelEmitterPart lvlEmitter;
+    private final ItemLevelEmitterPart lvlEmitter;
 
-    @GuiSync(2)
-    public LevelType lvType;
     @GuiSync(3)
     public YesNo cmType;
 
     // Only synced once on menu-open, and only used on client
     private long reportingValue;
 
-    public ItemLevelEmitterMenu(int id, final Inventory ip, final LevelEmitterPart te) {
+    public ItemLevelEmitterMenu(int id, final Inventory ip, final ItemLevelEmitterPart te) {
         super(TYPE, id, ip, te);
         this.lvlEmitter = te;
     }
@@ -82,7 +79,7 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
     protected void setupConfig() {
         this.setupUpgrades();
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final IItemHandler inv = lvlEmitter.getInventoryByName("config");
         this.addSlot(new FakeTypeOnlySlot(inv, 0), SlotSemantic.CONFIG);
     }
 
@@ -101,12 +98,9 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            this.setCraftingMode(
-                    (YesNo) this.getUpgradeable().getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE));
-            this.setLevelMode((LevelType) this.getUpgradeable().getConfigManager().getSetting(Settings.LEVEL_TYPE));
-            this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
-            this.setRedStoneMode(
-                    (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
+            this.setCraftingMode((YesNo) lvlEmitter.getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE));
+            this.setFuzzyMode((FuzzyMode) lvlEmitter.getConfigManager().getSetting(Settings.FUZZY_MODE));
+            this.setRedStoneMode((RedstoneMode) lvlEmitter.getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
         }
 
         this.standardDetectAndSendChanges();
@@ -120,14 +114,6 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
     @Override
     public void setCraftingMode(final YesNo cmType) {
         this.cmType = cmType;
-    }
-
-    public LevelType getLevelMode() {
-        return this.lvType;
-    }
-
-    private void setLevelMode(final LevelType lvType) {
-        this.lvType = lvType;
     }
 
 }

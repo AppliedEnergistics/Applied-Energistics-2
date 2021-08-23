@@ -212,7 +212,7 @@
   "gui.appliedenergistics2.InterfaceTerminalHint": "Показать или спрятать в терминале интерфейсов.",
   "gui.appliedenergistics2.InvalidPattern": "Неправильный шаблон",
   "gui.appliedenergistics2.LargeFontCraft": "+",
-  "gui.appliedenergistics2.LevelEmitter": "МЭ излучатель уровня",
+  "gui.appliedenergistics2.ItemLevelEmitter": "МЭ излучатель уровня",
   "gui.appliedenergistics2.LightBlue": "Светло-синий",
   "gui.appliedenergistics2.LightGray": "Светло-серый",
   "gui.appliedenergistics2.Lime": "Лаймовый",

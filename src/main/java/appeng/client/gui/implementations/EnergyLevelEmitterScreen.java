@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,40 +23,29 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.menu.implementations.ItemLevelEmitterMenu;
+import appeng.menu.implementations.EnergyLevelEmitterMenu;
 
-public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterMenu> {
+public class EnergyLevelEmitterScreen extends UpgradeableScreen<EnergyLevelEmitterMenu> {
 
-    private final SettingToggleButton<YesNo> craftingMode;
     private final SettingToggleButton<RedstoneMode> redstoneMode;
-    private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final NumberEntryWidget level;
 
-    public ItemLevelEmitterScreen(ItemLevelEmitterMenu menu, Inventory playerInventory, Component title,
+    public EnergyLevelEmitterScreen(EnergyLevelEmitterMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.redstoneMode = new ServerSettingToggleButton<>(
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
-        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE,
-                FuzzyMode.IGNORE_ALL);
-        this.craftingMode = new ServerSettingToggleButton<>(
-                Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
         this.addToLeftToolbar(this.redstoneMode);
-        this.addToLeftToolbar(this.craftingMode);
-        this.addToLeftToolbar(this.fuzzyMode);
 
-        this.level = new NumberEntryWidget(NumberEntryType.LEVEL_ITEM_COUNT);
+        this.level = new NumberEntryWidget(NumberEntryType.LEVEL_ENERGY_AMOUNT);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.setValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
@@ -68,18 +57,8 @@ public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterMe
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.fuzzyMode.set(menu.getFuzzyMode());
-        this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
-
-        // configure enabled status...
-        final boolean notCraftingMode = !menu.hasUpgrade(Upgrades.CRAFTING);
-        this.level.setActive(notCraftingMode);
-
-        this.redstoneMode.active = notCraftingMode;
+        this.redstoneMode.active = true;
         this.redstoneMode.set(menu.getRedStoneMode());
-
-        this.craftingMode.set(this.menu.getCraftingMode());
-        this.craftingMode.setVisibility(!notCraftingMode);
     }
 
     @Override

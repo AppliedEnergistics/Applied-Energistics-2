@@ -26,27 +26,26 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
-import appeng.parts.automation.FluidLevelEmitterPart;
-import appeng.util.fluid.IAEFluidTank;
+import appeng.parts.automation.EnergyLevelEmitterPart;
 
-public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
+public class EnergyLevelEmitterMenu extends UpgradeableMenu {
 
-    public static final MenuType<FluidLevelEmitterMenu> TYPE = MenuTypeBuilder
-            .create(FluidLevelEmitterMenu::new, FluidLevelEmitterPart.class)
+    public static final MenuType<EnergyLevelEmitterMenu> TYPE = MenuTypeBuilder
+            .create(EnergyLevelEmitterMenu::new, EnergyLevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarLong(host.getReportingValue());
             }, (host, menu, buffer) -> {
                 menu.reportingValue = buffer.readVarLong();
             })
-            .build("fluid_level_emitter");
+            .build("energy_level_emitter");
 
-    private final FluidLevelEmitterPart lvlEmitter;
+    private final EnergyLevelEmitterPart lvlEmitter;
 
     // Only synced once on menu-open, and only used on client
     private long reportingValue;
 
-    public FluidLevelEmitterMenu(int id, final Inventory ip, final FluidLevelEmitterPart te) {
+    public EnergyLevelEmitterMenu(int id, final Inventory ip, final EnergyLevelEmitterPart te) {
         super(TYPE, id, ip, te);
         this.lvlEmitter = te;
     }
@@ -60,7 +59,8 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
             if (reportingValue != this.reportingValue) {
                 this.reportingValue = reportingValue;
                 NetworkHandler.instance()
-                        .sendToServer(new ConfigValuePacket("FluidLevelEmitter.Value", String.valueOf(reportingValue)));
+                        .sendToServer(
+                                new ConfigValuePacket("EnergyLevelEmitter.Value", String.valueOf(reportingValue)));
             }
         } else {
             this.lvlEmitter.setReportingValue(reportingValue);
@@ -92,8 +92,4 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
         this.standardDetectAndSendChanges();
     }
 
-    @Override
-    public IAEFluidTank getFluidConfigInventory() {
-        return this.lvlEmitter.getConfig();
-    }
 }

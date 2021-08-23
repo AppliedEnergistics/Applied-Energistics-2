@@ -36,7 +36,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -48,9 +47,6 @@ import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.energy.IEnergyWatcher;
-import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -77,7 +73,7 @@ import appeng.parts.PartModel;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
-public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherHost, IStackWatcherHost,
+public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatcherHost,
         ICraftingWatcherNode, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
 
     @PartModels
@@ -112,25 +108,19 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     private long lastReportedValue = 0;
     private long reportingValue = 0;
 
-    private IStackWatcher myWatcher;
-    private IEnergyWatcher myEnergyWatcher;
-    private ICraftingWatcher myCraftingWatcher;
-    private double centerX;
-    private double centerY;
-    private double centerZ;
+    private IStackWatcher stackWatcher;
+    private ICraftingWatcher craftingWatcher;
 
-    public LevelEmitterPart(final ItemStack is) {
+    public ItemLevelEmitterPart(final ItemStack is) {
         super(is);
 
         getMainNode()
                 .addService(ICraftingWatcherNode.class, this)
                 .addService(ICraftingProvider.class, this)
-                .addService(IEnergyWatcherHost.class, this)
                 .addService(IStackWatcherHost.class, this);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
-        this.getConfigManager().registerSetting(Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL);
         this.getConfigManager().registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
     }
 
@@ -140,11 +130,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     public void setReportingValue(final long v) {
         this.reportingValue = v;
-        if (this.getConfigManager().getSetting(Settings.LEVEL_TYPE) == LevelType.ENERGY_LEVEL) {
-            this.configureWatchers();
-        } else {
-            this.updateState();
-        }
+        this.updateState();
     }
 
     @Override
@@ -195,7 +181,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public void updateWatcher(final ICraftingWatcher newWatcher) {
-        this.myCraftingWatcher = newWatcher;
+        this.craftingWatcher = newWatcher;
         this.configureWatchers();
     }
 
@@ -208,16 +194,12 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     private void configureWatchers() {
         final IAEItemStack myStack = this.config.getAEStackInSlot(0);
 
-        if (this.myWatcher != null) {
-            this.myWatcher.reset();
+        if (this.stackWatcher != null) {
+            this.stackWatcher.reset();
         }
 
-        if (this.myEnergyWatcher != null) {
-            this.myEnergyWatcher.reset();
-        }
-
-        if (this.myCraftingWatcher != null) {
-            this.myCraftingWatcher.reset();
+        if (this.craftingWatcher != null) {
+            this.craftingWatcher.reset();
         }
 
         getMainNode().ifPresent((grid, node) -> {
@@ -225,28 +207,9 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         });
 
         if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
-            if (this.myCraftingWatcher != null && myStack != null) {
-                this.myCraftingWatcher.add(myStack);
+            if (this.craftingWatcher != null && myStack != null) {
+                this.craftingWatcher.add(myStack);
             }
-
-            return;
-        }
-
-        if (this.getConfigManager().getSetting(Settings.LEVEL_TYPE) == LevelType.ENERGY_LEVEL) {
-            if (this.myEnergyWatcher != null) {
-                this.myEnergyWatcher.add(this.reportingValue);
-            }
-
-            getMainNode().ifPresent(grid -> {
-                // update to power...
-                this.lastReportedValue = (long) grid.getEnergyService().getStoredPower();
-                this.updateState();
-
-                // no more item stuff..
-                grid.getStorageService()
-                        .getInventory(StorageChannels.items())
-                        .removeListener(this);
-            });
 
             return;
         }
@@ -261,8 +224,8 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
                         .getInventory(StorageChannels.items())
                         .removeListener(this);
 
-                if (this.myWatcher != null) {
-                    this.myWatcher.add(myStack);
+                if (this.stackWatcher != null) {
+                    this.stackWatcher.add(myStack);
                 }
             }
 
@@ -300,7 +263,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public void updateWatcher(final IStackWatcher newWatcher) {
-        this.myWatcher = newWatcher;
+        this.stackWatcher = newWatcher;
         this.configureWatchers();
     }
 
@@ -313,18 +276,6 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
             this.lastReportedValue = fullStack.getStackSize();
             this.updateState();
         }
-    }
-
-    @Override
-    public void updateWatcher(final IEnergyWatcher newWatcher) {
-        this.myEnergyWatcher = newWatcher;
-        this.configureWatchers();
-    }
-
-    @Override
-    public void onThresholdPass(final IEnergyService energyGrid) {
-        this.lastReportedValue = (long) energyGrid.getStoredPower();
-        this.updateState();
     }
 
     @Override

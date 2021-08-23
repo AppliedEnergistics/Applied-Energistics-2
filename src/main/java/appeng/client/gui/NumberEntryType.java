@@ -19,7 +19,8 @@
 package appeng.client.gui;
 
 public enum NumberEntryType {
-    CRAFT_ITEM_COUNT(Long.class), PRIORITY(Long.class), LEVEL_ITEM_COUNT(Long.class), LEVEL_FLUID_VOLUME(Long.class);
+    CRAFT_ITEM_COUNT(Long.class), PRIORITY(Long.class), LEVEL_ITEM_COUNT(Long.class), LEVEL_FLUID_VOLUME(Long.class),
+    LEVEL_ENERGY_AMOUNT(Long.class);
 
     private final Class<? extends Number> inputType;
 
