@@ -174,7 +174,7 @@ public final class AEConfig {
 
         for (final TickRates tr : TickRates.values()) {
             tr.setMin(COMMON.tickRateMin.get(tr).get());
-            tr.setMax(COMMON.tickRateMin.get(tr).get());
+            tr.setMax(COMMON.tickRateMax.get(tr).get());
         }
 
         this.spatialPowerMultiplier = COMMON.spatialPowerMultiplier.get();
