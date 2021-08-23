@@ -289,7 +289,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		// new craftables!
 		for( final ICraftingPatternDetails details : this.craftingMethods.keySet() )
 		{
-			for( IAEItemStack out : details.getCondensedOutputs() )
+			for( IAEItemStack out : details.getOutputs() )
 			{
 				out = out.copy();
 				out.reset();

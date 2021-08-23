@@ -147,7 +147,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				}
 			}
 		}
-		final int outputLength = this.isCrafting ? CRAFTING_OUTPUT_LIMIT : PROCESSING_OUTPUT_LIMIT;
+		final int outputLength = out.size();
 
 		this.inputs = in.toArray(new IAEItemStack[ALL_INPUT_LIMIT]);
 		this.outputs = out.toArray(new IAEItemStack[outputLength]);
