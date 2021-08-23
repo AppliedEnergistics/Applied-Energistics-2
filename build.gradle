@@ -84,14 +84,12 @@ dependencies {
 
     // compile against provided APIs
     compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
-// TODO-117    compileOnly "mcjty.theoneprobe:TheOneProbe-${top_minecraft_release}:${top_minecraft_release}-${top_version}:api"
-    compileOnly files("jei-1.17.1-7.7.1.9999-api.jar")
-//    compileOnly files("theoneprobe-1.17-0.0.0-api.jar")
+// TODO-117    compileOnly "mcjty.theoneprobe:TheOneProbe-${top_minecraft_release}:${top_minecraft_release}-:api"
     compileOnly "curse.maven:the-one-probe-245211:3430022"
     compileOnly "curse.maven:jade-324717:3425042"
 
     // Runtime, Mods
-// TODO-117   runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
 // TODO-117   runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${top_minecraft_release}:${top_minecraft_release}-${top_version}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:3425040")
 

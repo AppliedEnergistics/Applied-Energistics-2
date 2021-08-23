@@ -20,26 +20,26 @@ package appeng.integration.modules.jei;
 
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.menu.me.items.PatternTermMenu;
 
-public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermMenu> {
+public class PatternRecipeTransferHandler<R extends Recipe<?>> extends RecipeTransferHandler<PatternTermMenu, R> {
 
-    PatternRecipeTransferHandler(Class<PatternTermMenu> containerClass, IRecipeTransferHandlerHelper helper) {
-        super(containerClass, helper);
+    PatternRecipeTransferHandler(Class<PatternTermMenu> containerClass, Class<R> recipeClass,
+            IRecipeTransferHandlerHelper helper) {
+        super(containerClass, recipeClass, helper);
     }
 
     @Override
-    protected IRecipeTransferError doTransferRecipe(PatternTermMenu menu, Recipe<?> recipe,
+    protected IRecipeTransferError doTransferRecipe(PatternTermMenu menu, R recipe,
             IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
-        if (menu.isCraftingMode()
-                && recipeLayout.getRecipeCategory().getUid() != VanillaRecipeCategoryUid.CRAFTING) {
+        if (menu.isCraftingMode() && !(recipe instanceof CraftingRecipe)) {
             return this.helper
                     .createUserErrorWithTooltip(
                             new TranslatableComponent("jei.appliedenergistics2.requires_processing_mode"));

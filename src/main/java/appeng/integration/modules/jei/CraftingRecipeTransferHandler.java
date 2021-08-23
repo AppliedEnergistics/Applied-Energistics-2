@@ -29,7 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
@@ -40,14 +40,16 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.item.AEItemStack;
 
-public class CraftingRecipeTransferHandler extends RecipeTransferHandler<CraftingTermMenu> {
+public class CraftingRecipeTransferHandler
+        extends RecipeTransferHandler<CraftingTermMenu, CraftingRecipe> {
 
-    CraftingRecipeTransferHandler(Class<CraftingTermMenu> menuClass, IRecipeTransferHandlerHelper helper) {
-        super(menuClass, helper);
+    CraftingRecipeTransferHandler(Class<CraftingTermMenu> menuClass,
+            Class<CraftingRecipe> recipeClass, IRecipeTransferHandlerHelper helper) {
+        super(menuClass, recipeClass, helper);
     }
 
     @Override
-    protected IRecipeTransferError doTransferRecipe(CraftingTermMenu menu, Recipe<?> recipe,
+    protected IRecipeTransferError doTransferRecipe(CraftingTermMenu menu, CraftingRecipe recipe,
             IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
 
         // Try to figure out if any slots have missing ingredients

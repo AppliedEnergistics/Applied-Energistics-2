@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -41,17 +42,13 @@ import appeng.recipes.handlers.GrinderRecipe;
 
 class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
 
+    private static final String TITLE_TRANSLATION_KEY = "block.appliedenergistics2.grindstone";
+
     public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "grinder");
-
-    private final String localizedName;
-
     private final IDrawable background;
-
     private final IDrawable icon;
 
     public GrinderRecipeCategory(IGuiHelper guiHelper) {
-        this.localizedName = I18n.get("block.appliedenergistics2.grindstone");
-
         ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/grinder.png");
         this.background = guiHelper.createDrawable(location, 11, 16, 154, 70);
 
@@ -64,8 +61,8 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     }
 
     @Override
-    public String getTitle() {
-        return this.localizedName;
+    public Component getTitle() {
+        return new TranslatableComponent(TITLE_TRANSLATION_KEY);
     }
 
     @Override
