@@ -59,7 +59,7 @@ import appeng.client.render.overlay.OverlayManager;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.helpers.IMouseWheelItem;
 import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitAutoRotatingModel;
@@ -201,8 +201,7 @@ public class AppEngClient extends AppEngBase {
             final boolean offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
-                NetworkHandler.instance()
-                        .sendToServer(new ConfigValuePacket("Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown"));
+                NetworkHandler.instance().sendToServer(new MouseWheelPacket(me.getScrollDelta() > 0));
                 me.setCanceled(true);
             }
         }

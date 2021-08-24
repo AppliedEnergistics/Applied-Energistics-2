@@ -31,8 +31,6 @@ import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.SlotSemantic;
 import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.util.fluid.IAEFluidTank;
@@ -66,8 +64,8 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu
 
         widgets.addOpenPriorityButton();
 
-        addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> clear()));
-        addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> partition()));
+        addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> menu.clear()));
+        addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> menu.partition()));
         this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
         this.storageFilter = new ServerSettingToggleButton<>(
@@ -82,14 +80,6 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu
 
         this.storageFilter.set(this.menu.getStorageFilter());
         this.rwMode.set(this.menu.getReadWriteMode());
-    }
-
-    private void partition() {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("StorageBus.Action", "Partition"));
-    }
-
-    private void clear() {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("StorageBus.Action", "Clear"));
     }
 
 }

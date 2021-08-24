@@ -61,9 +61,11 @@ import appeng.parts.reporting.PatternTerminalPart;
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
  */
-public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingMenu {
+public class CraftConfirmMenu extends AEBaseMenu {
 
     private static final String ACTION_BACK = "back";
+    private static final String ACTION_CYCLE_CPU = "cycleCpu";
+    private static final String ACTION_START_JOB = "startJob";
 
     public static final MenuType<CraftConfirmMenu> TYPE = MenuTypeBuilder
             .create(CraftConfirmMenu::new, ITerminalHost.class)
@@ -103,11 +105,16 @@ public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingMe
         this.cpuCycler.setAllowNoSelection(true);
 
         registerClientAction(ACTION_BACK, this::goBack);
+        registerClientAction(ACTION_CYCLE_CPU, Boolean.class, this::cycleSelectedCPU);
+        registerClientAction(ACTION_START_JOB, this::startJob);
     }
 
-    @Override
-    public void cycleSelectedCPU(final boolean next) {
-        this.cpuCycler.cycleCpu(next);
+    public void cycleSelectedCPU(boolean next) {
+        if (isClient()) {
+            sendClientAction(ACTION_CYCLE_CPU, next);
+        } else {
+            this.cpuCycler.cycleCpu(next);
+        }
     }
 
     @Override
@@ -141,7 +148,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingMe
 
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (final Throwable e) {
-                this.getPlayerInventory().player.sendMessage(new TextComponent("Error: " + e.toString()),
+                this.getPlayerInventory().player.sendMessage(new TextComponent("Error: " + e),
                         Util.NIL_UUID);
                 AELog.debug(e);
                 this.setValidMenu(false);
@@ -167,6 +174,11 @@ public class CraftConfirmMenu extends AEBaseMenu implements CraftingCPUCyclingMe
     }
 
     public void startJob() {
+        if (isClient()) {
+            sendClientAction(ACTION_START_JOB);
+            return;
+        }
+
         MenuType<?> originalGui = null;
 
         final IActionHost ah = this.getActionHost();

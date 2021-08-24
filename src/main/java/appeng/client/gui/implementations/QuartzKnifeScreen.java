@@ -33,8 +33,6 @@ import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.core.AppEngClient;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.implementations.QuartzKnifeMenu;
 
 public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeMenu> {
@@ -69,9 +67,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeMenu> {
     @Override
     public boolean charTyped(char character, int key) {
         if (this.name.isFocused() && this.name.charTyped(character, key)) {
-            final String Out = this.name.getValue();
-            menu.setName(Out);
-            NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
+            menu.setName(this.name.getValue());
             return true;
         }
 
@@ -96,9 +92,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeMenu> {
                 }
 
                 if (this.name.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                    final String Out = this.name.getValue();
-                    menu.setName(Out);
-                    NetworkHandler.instance().sendToServer(new ConfigValuePacket("QuartzKnife.Name", Out));
+                    menu.setName(this.name.getValue());
                 }
 
                 // We need to swallow key presses if the field is focused because typing 'e'

@@ -605,7 +605,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     private <SE extends Enum<SE>> void toggleServerSetting(SettingToggleButton<SE> btn, boolean backwards) {
         SE next = btn.getNextValue(backwards);
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting().getName(), next.name()));
+        NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting(), next));
         btn.set(next);
     }
 

@@ -32,7 +32,9 @@ import appeng.menu.implementations.MenuTypeBuilder;
 /**
  * @see appeng.client.gui.me.crafting.CraftingStatusScreen
  */
-public class CraftingStatusMenu extends CraftingCPUMenu implements CraftingCPUCyclingMenu {
+public class CraftingStatusMenu extends CraftingCPUMenu {
+
+    private static final String ACTION_CYCLE_CPU = "cycleCpu";
 
     public static final MenuType<CraftingStatusMenu> TYPE = MenuTypeBuilder
             .create(CraftingStatusMenu::new, ITerminalHost.class)
@@ -49,6 +51,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements CraftingCPUCy
 
     public CraftingStatusMenu(int id, final Inventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
+        registerClientAction(ACTION_CYCLE_CPU, Boolean.class, this::cycleSelectedCPU);
     }
 
     @Override
@@ -76,9 +79,12 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements CraftingCPUCy
         }
     }
 
-    @Override
     public void cycleSelectedCPU(boolean forward) {
-        this.cpuCycler.cycleCpu(forward);
+        if (isClient()) {
+            sendClientAction(ACTION_CYCLE_CPU, forward);
+        } else {
+            this.cpuCycler.cycleCpu(forward);
+        }
     }
 
 }

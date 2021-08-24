@@ -201,7 +201,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
 
                 if (sideLocal != sideRemote) {
                     set.copy(serverCM, clientCM);
-                    sendPacketToClient(new ConfigValuePacket(set.getName(), sideLocal.name()));
+                    sendPacketToClient(new ConfigValuePacket(set, serverCM));
                 }
             }
 

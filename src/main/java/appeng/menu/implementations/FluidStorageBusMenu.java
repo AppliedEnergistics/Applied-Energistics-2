@@ -42,6 +42,9 @@ import appeng.util.fluid.IAEFluidTank;
  */
 public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPart> {
 
+    private static final String ACTION_CLEAR = "clear";
+    private static final String ACTION_PARTITION = "partition";
+
     public static final MenuType<FluidStorageBusMenu> TYPE = MenuTypeBuilder
             .create(FluidStorageBusMenu::new, FluidStorageBusPart.class)
             .build("fluid_storage_bus");
@@ -54,6 +57,9 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
 
     public FluidStorageBusMenu(int id, Inventory ip, FluidStorageBusPart host) {
         super(TYPE, id, ip, host);
+
+        registerClientAction(ACTION_CLEAR, this::clear);
+        registerClientAction(ACTION_PARTITION, this::partition);
     }
 
     @Override
@@ -101,6 +107,11 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
     }
 
     public void clear() {
+        if (isClient()) {
+            sendClientAction(ACTION_CLEAR);
+            return;
+        }
+
         IAEFluidTank h = getHost().getConfig();
         for (int i = 0; i < h.getSlots(); ++i) {
             h.setFluidInSlot(i, null);
@@ -109,6 +120,11 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
     }
 
     public void partition() {
+        if (isClient()) {
+            sendClientAction(ACTION_PARTITION);
+            return;
+        }
+
         IAEFluidTank h = getHost().getConfig();
 
         final IMEInventory<IAEFluidStack> cellInv = getHost().getInternalHandler();

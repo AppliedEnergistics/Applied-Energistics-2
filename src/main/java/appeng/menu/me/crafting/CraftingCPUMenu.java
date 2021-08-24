@@ -46,6 +46,8 @@ import appeng.menu.me.common.IncrementalUpdateHelper;
  */
 public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
+    private static final String ACTION_CANCEL_CRAFTING = "cancelCrafting";
+
     public static final MenuType<CraftingCPUMenu> TYPE = MenuTypeBuilder
             .create(CraftingCPUMenu::new, CraftingBlockEntity.class)
             .requirePermission(SecurityPermissions.CRAFT)
@@ -80,6 +82,8 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
         if (this.getGrid() == null && isServer()) {
             this.setValidMenu(false);
         }
+
+        registerClientAction(ACTION_CANCEL_CRAFTING, this::cancelCrafting);
     }
 
     protected void setCPU(final ICraftingCPU c) {
@@ -113,8 +117,12 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
     }
 
     public void cancelCrafting() {
-        if (this.cpu != null) {
-            this.cpu.cancel();
+        if (isClient()) {
+            sendClientAction(ACTION_CANCEL_CRAFTING);
+        } else {
+            if (this.cpu != null) {
+                this.cpu.cancel();
+            }
         }
     }
 

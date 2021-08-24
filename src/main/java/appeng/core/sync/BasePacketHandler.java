@@ -45,6 +45,7 @@ import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.MatterCannonPacket;
 import appeng.core.sync.packets.MockExplosionPacket;
+import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.core.sync.packets.PatternSlotPacket;
@@ -105,7 +106,9 @@ public class BasePacketHandler {
 
         CRAFT_CONFIRM_PLAN(CraftConfirmPlanPacket.class, CraftConfirmPlanPacket::new),
 
-        CRAFTING_STATUS(CraftingStatusPacket.class, CraftingStatusPacket::new);
+        CRAFTING_STATUS(CraftingStatusPacket.class, CraftingStatusPacket::new),
+
+        MOUSE_WHEEL(MouseWheelPacket.class, MouseWheelPacket::new);
 
         private final Function<FriendlyByteBuf, BasePacket> factory;
 

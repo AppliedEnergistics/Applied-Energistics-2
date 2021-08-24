@@ -46,6 +46,9 @@ import appeng.util.helpers.ItemHandlerUtil;
  */
 public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
 
+    private static final String ACTION_CLEAR = "clear";
+    private static final String ACTION_PARTITION = "partition";
+
     public static final MenuType<ItemStorageBusMenu> TYPE = MenuTypeBuilder
             .create(ItemStorageBusMenu::new, ItemStorageBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
@@ -59,6 +62,9 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
 
     public ItemStorageBusMenu(int id, final Inventory ip, final ItemStorageBusPart te) {
         super(TYPE, id, ip, te);
+
+        registerClientAction(ACTION_CLEAR, this::clear);
+        registerClientAction(ACTION_PARTITION, this::partition);
     }
 
     @Override
@@ -103,11 +109,21 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
     }
 
     public void clear() {
+        if (isClient()) {
+            sendClientAction(ACTION_CLEAR);
+            return;
+        }
+
         ItemHandlerUtil.clear(this.getHost().getInventoryByName("config"));
         this.broadcastChanges();
     }
 
     public void partition() {
+        if (isClient()) {
+            sendClientAction(ACTION_PARTITION);
+            return;
+        }
+
         var inv = getHost().getInventoryByName("config");
 
         var cellInv = getHost().getInternalHandler();

@@ -53,6 +53,11 @@ import appeng.util.inv.WrapperSupplierItemHandler;
  */
 public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity> {
 
+    public static final String ACTION_NEXT_COPYMODE = "nextCopyMode";
+    public static final String ACTION_PARTITION = "partition";
+    public static final String ACTION_CLEAR = "clear";
+    public static final String ACTION_SET_FUZZY_MODE = "setFuzzyMode";
+
     public static final MenuType<CellWorkbenchMenu> TYPE = MenuTypeBuilder
             .create(CellWorkbenchMenu::new, CellWorkbenchBlockEntity.class)
             .build("cellworkbench");
@@ -62,17 +67,31 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
     public CellWorkbenchMenu(int id, Inventory ip, CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
+
+        registerClientAction(ACTION_NEXT_COPYMODE, this::nextWorkBenchCopyMode);
+        registerClientAction(ACTION_PARTITION, this::partition);
+        registerClientAction(ACTION_CLEAR, this::clear);
+        registerClientAction(ACTION_SET_FUZZY_MODE, FuzzyMode.class, this::setCellFuzzyMode);
     }
 
-    public void setFuzzy(final FuzzyMode valueOf) {
-        final ICellWorkbenchItem cwi = getHost().getCell();
+    public void setCellFuzzyMode(FuzzyMode fuzzyMode) {
+        if (isClient()) {
+            sendClientAction(ACTION_SET_FUZZY_MODE, fuzzyMode);
+            return;
+        }
+
+        var cwi = getHost().getCell();
         if (cwi != null) {
-            cwi.setFuzzyMode(getWorkbenchItem(), valueOf);
+            cwi.setFuzzyMode(getWorkbenchItem(), fuzzyMode);
         }
     }
 
     public void nextWorkBenchCopyMode() {
-        getHost().getConfigManager().putSetting(Settings.COPY_MODE, EnumCycler.next(this.getWorkBenchCopyMode()));
+        if (isClient()) {
+            sendClientAction(ACTION_NEXT_COPYMODE);
+        } else {
+            getHost().getConfigManager().putSetting(Settings.COPY_MODE, EnumCycler.next(this.getWorkBenchCopyMode()));
+        }
     }
 
     private CopyMode getWorkBenchCopyMode() {
@@ -137,8 +156,12 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     public void clear() {
-        ItemHandlerUtil.clear(this.getHost().getInventoryByName("config"));
-        this.broadcastChanges();
+        if (isClient()) {
+            sendClientAction(ACTION_CLEAR);
+        } else {
+            ItemHandlerUtil.clear(this.getHost().getInventoryByName("config"));
+            this.broadcastChanges();
+        }
     }
 
     private FuzzyMode getWorkBenchFuzzyMode() {
@@ -150,6 +173,10 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     public void partition() {
+        if (isClient()) {
+            sendClientAction(ACTION_PARTITION);
+            return;
+        }
 
         final IItemHandler inv = this.getHost().getInventoryByName("config");
 

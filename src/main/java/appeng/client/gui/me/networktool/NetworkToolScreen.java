@@ -26,8 +26,6 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 public class NetworkToolScreen extends AEBaseScreen<NetworkToolMenu> {
@@ -40,13 +38,9 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolMenu> {
 
         this.transparentFacadesButton = new ToggleButton(Icon.TRANSPARENT_FACADES_OFF, Icon.TRANSPARENT_FACADES_ON,
                 GuiText.TransparentFacades.text(), GuiText.TransparentFacadesHint.text(),
-                btn -> toggleFacades());
+                btn -> menu.toggleFacadeMode());
 
         addToLeftToolbar(this.transparentFacadesButton);
-    }
-
-    private void toggleFacades() {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("NetworkTool", "Toggle"));
     }
 
     @Override

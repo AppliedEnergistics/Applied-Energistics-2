@@ -31,8 +31,6 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.implementations.ItemStorageBusMenu;
 
 public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> {
@@ -47,8 +45,8 @@ public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> 
 
         widgets.addOpenPriorityButton();
 
-        addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> clear()));
-        addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> partition()));
+        addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> menu.clear()));
+        addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> menu.partition()));
         this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
         this.storageFilter = new ServerSettingToggleButton<>(
@@ -69,14 +67,6 @@ public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> 
         this.rwMode.set(this.menu.getReadWriteMode());
         this.fuzzyMode.set(this.menu.getFuzzyMode());
         this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
-    }
-
-    private void partition() {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("StorageBus.Action", "Partition"));
-    }
-
-    private void clear() {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("StorageBus.Action", "Clear"));
     }
 
 }

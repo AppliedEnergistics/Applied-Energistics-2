@@ -22,8 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IPriorityHost;
 import appeng.menu.AEBaseMenu;
 
@@ -31,6 +29,8 @@ import appeng.menu.AEBaseMenu;
  * @see appeng.client.gui.implementations.PriorityScreen
  */
 public class PriorityMenu extends AEBaseMenu {
+
+    private static final String ACTION_SET_PRIORITY = "setPriority";
 
     public static final MenuType<PriorityMenu> TYPE = MenuTypeBuilder
             .create(PriorityMenu::new, IPriorityHost.class)
@@ -50,6 +50,8 @@ public class PriorityMenu extends AEBaseMenu {
         super(TYPE, id, ip, te);
         this.priHost = te;
         this.priorityValue = te.getPriority();
+
+        registerClientAction(ACTION_SET_PRIORITY, Integer.class, this::setPriority);
     }
 
     public void setPriority(final int newValue) {
@@ -58,8 +60,7 @@ public class PriorityMenu extends AEBaseMenu {
                 // If for whatever reason the client enters the value first, do not update based
                 // on incoming server data
                 this.priorityValue = newValue;
-                NetworkHandler.instance()
-                        .sendToServer(new ConfigValuePacket("PriorityHost.Priority", String.valueOf(newValue)));
+                sendClientAction(ACTION_SET_PRIORITY, newValue);
             } else {
                 this.priHost.setPriority(newValue);
                 this.priorityValue = newValue;
