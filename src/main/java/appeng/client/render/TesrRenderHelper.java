@@ -22,9 +22,10 @@ package appeng.client.render;
 import appeng.api.storage.data.IAEFluidStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
@@ -32,6 +33,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
 import net.minecraftforge.fluids.FluidStack;
+import org.lwjgl.opengl.GL11;
 
 
 /**
@@ -121,6 +123,49 @@ public class TesrRenderHelper
 		}
 	}
 
+	public static void renderFluid2d( FluidStack fluidStack, float scale )
+	{
+		if( fluidStack != null )
+		{
+			GlStateManager.pushMatrix();
+			int color = fluidStack.getFluid().getColor( fluidStack );
+			float r = ( color >> 16 & 255 ) / 255.0f;
+			float g = ( color >> 8 & 255 ) / 255.0f;
+			float b = ( color & 255 ) / 255.0f;
+			TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( fluidStack.getFluid().getStill( fluidStack ).toString() );
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA );
+			GlStateManager.disableAlpha();
+			GlStateManager.disableLighting();
+			Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
+			Tessellator tess = Tessellator.getInstance();
+			BufferBuilder buf = tess.getBuffer();
+
+			float width = 0.4f;
+			float height = 0.4f;
+			float alpha = 1.0f;
+			float z = 0.0001f;
+			float x = -0.20f;
+			float y = -0.25f;
+
+			buf.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+			double uMin = sprite.getInterpolatedU( 16D - width * 16D ), uMax = sprite.getInterpolatedU( width * 16D );
+			double vMin = sprite.getMinV(), vMax = sprite.getInterpolatedV( height * 16D );
+			buf.pos( x, y, z ).tex( uMin, vMin ).color( r, g, b, alpha ).endVertex();
+			buf.pos( x, y + height, z ).tex( uMin, vMax ).color( r, g, b, alpha ).endVertex();
+			buf.pos( x + width, y + height, z ).tex( uMax, vMax ).color( r, g, b, alpha ).endVertex();
+			buf.pos( x + width, y, z ).tex( uMax, vMin ).color( r, g, b, alpha ).endVertex();
+
+			tess.draw();
+			GlStateManager.enableLighting();
+			GlStateManager.enableAlpha();
+			GlStateManager.disableBlend();
+			GlStateManager.color( 1F, 1F, 1F, 1F );
+			GlStateManager.popMatrix();
+
+		}
+	}
+
 	/**
 	 * Render an item in 2D and the given text below it.
 	 *
@@ -147,9 +192,9 @@ public class TesrRenderHelper
 
 	public static void renderFluid2dWithAmount( IAEFluidStack fluidStack, float scale, float spacing )
 	{
-		final ItemStack renderStack = fluidStack.asItemStackRepresentation();
+		final FluidStack renderStack = fluidStack.getFluidStack();
 
-		TesrRenderHelper.renderItem2d( renderStack, scale );
+		TesrRenderHelper.renderFluid2d( renderStack, scale );
 
 		final long stackSize = fluidStack.getStackSize() / 1000;
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize ) + "B";
