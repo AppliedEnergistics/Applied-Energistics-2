@@ -62,7 +62,7 @@ public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T
      * compatible.
      */
     protected List<Component> getCompatibleUpgrades() {
-        IUpgradeableHost host = menu.getUpgradeable();
+        IUpgradeableHost host = menu.getHost();
 
         Item item;
         if (host instanceof IPart) {

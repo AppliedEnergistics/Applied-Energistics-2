@@ -18,13 +18,12 @@
 
 package appeng.core.sync.packets;
 
-import java.util.EnumSet;
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -34,23 +33,23 @@ import appeng.menu.AEBaseMenu;
 import appeng.util.EnumCycler;
 
 public final class ConfigButtonPacket extends BasePacket {
-    private final Settings option;
+    private final Setting<?> option;
     private final boolean rotationDirection;
 
-    public ConfigButtonPacket(final FriendlyByteBuf stream) {
-        this.option = Settings.values()[stream.readInt()];
+    public ConfigButtonPacket(FriendlyByteBuf stream) {
+        this.option = Settings.getOrThrow(stream.readUtf());
         this.rotationDirection = stream.readBoolean();
     }
 
     // api
-    public ConfigButtonPacket(final Settings option, final boolean rotationDirection) {
+    public ConfigButtonPacket(Setting<?> option, final boolean rotationDirection) {
         this.option = option;
         this.rotationDirection = rotationDirection;
 
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
-        data.writeInt(option.ordinal());
+        data.writeUtf(option.getName());
         data.writeBoolean(rotationDirection);
 
         this.configureWrite(data);
@@ -58,16 +57,18 @@ public final class ConfigButtonPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
-        final ServerPlayer sender = (ServerPlayer) player;
-        if (sender.containerMenu instanceof AEBaseMenu baseMenu) {
-            if (baseMenu.getTarget() instanceof IConfigurableObject) {
-                final IConfigManager cm = ((IConfigurableObject) baseMenu.getTarget()).getConfigManager();
-                Enum setting = cm.getSetting(this.option);
-                Enum newState = EnumCycler.rotateEnum(setting, this.rotationDirection,
-                        (EnumSet) this.option.getPossibleValues());
-                cm.putSetting(this.option, newState);
+        if (player.containerMenu instanceof AEBaseMenu baseMenu) {
+            if (baseMenu.getTarget() instanceof IConfigurableObject configurableObject) {
+                var cm = configurableObject.getConfigManager();
+                cycleSetting(cm, option);
             }
         }
+    }
+
+    private <T extends Enum<T>> void cycleSetting(IConfigManager cm, Setting<T> setting) {
+        var currentValue = cm.getSetting(setting);
+        var nextValue = EnumCycler.rotateEnum(currentValue, rotationDirection, setting.getValues());
+        cm.putSetting(setting, nextValue);
     }
 
 }

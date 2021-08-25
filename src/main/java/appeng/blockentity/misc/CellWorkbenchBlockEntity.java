@@ -38,17 +38,16 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
 public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
-        implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost {
+        implements IUpgradeableHost, IAEAppEngInventory {
 
     private final AppEngInternalInventory cell = new AppEngInternalInventory(this, 1);
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
-    private final ConfigManager manager = new ConfigManager(this);
+    private final ConfigManager manager = new ConfigManager();
 
     private IItemHandler cacheUpgrades = null;
     private IItemHandler cacheConfig = null;
@@ -210,10 +209,5 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     @Override
     public IConfigManager getConfigManager() {
         return this.manager;
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
-        // nothing here..
     }
 }

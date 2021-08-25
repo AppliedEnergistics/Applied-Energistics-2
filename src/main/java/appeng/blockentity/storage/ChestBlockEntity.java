@@ -100,7 +100,6 @@ import appeng.me.storage.MEInventoryHandler;
 import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -110,9 +109,8 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
-        implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableBlockEntity,
-        ServerTickingBlockEntity,
-        ICellProvider {
+        implements IMEChest, ITerminalHost, IPriorityHost, IColorableBlockEntity,
+        ServerTickingBlockEntity, ICellProvider {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111;
@@ -126,7 +124,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.cellInventory);
 
     private final IActionSource mySrc = new MachineSource(this);
-    private final IConfigManager config = new ConfigManager(this);
+    private final IConfigManager config = new ConfigManager();
     private long lastStateChange = 0;
     private int priority = 0;
     private int state = 0;
@@ -516,11 +514,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public IConfigManager getConfigManager() {
         return this.config;
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
-
     }
 
     public boolean openGui(final Player p) {

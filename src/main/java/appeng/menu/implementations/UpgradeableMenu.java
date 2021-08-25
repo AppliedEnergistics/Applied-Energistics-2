@@ -47,9 +47,9 @@ import appeng.menu.slot.OptionalFakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.automation.ExportBusPart;
 
-public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlotHost {
+public abstract class UpgradeableMenu<T extends IUpgradeableHost> extends AEBaseMenu implements IOptionalSlotHost {
 
-    private final IUpgradeableHost upgradeable;
+    private final T host;
     @GuiSync(0)
     public RedstoneMode rsMode = RedstoneMode.IGNORE;
     @GuiSync(1)
@@ -61,10 +61,9 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
     private int tbSlot;
     private NetworkToolViewer tbInventory;
 
-    public UpgradeableMenu(MenuType<?> menuType, int id, final Inventory ip,
-            final IUpgradeableHost te) {
-        super(menuType, id, ip, te);
-        this.upgradeable = te;
+    public UpgradeableMenu(MenuType<?> menuType, int id, Inventory ip, T host) {
+        super(menuType, id, ip, host);
+        this.host = host;
 
         final Container pi = this.getPlayerInventory();
         for (int x = 0; x < pi.getContainerSize(); x++) {
@@ -105,7 +104,7 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
     protected abstract void setupConfig();
 
     protected final void setupUpgrades() {
-        final IItemHandler upgrades = this.getUpgradeable().getUpgradeInventory();
+        final IItemHandler upgrades = this.getHost().getUpgradeInventory();
 
         for (int i = 0; i < availableUpgrades(); i++) {
             RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades,
@@ -131,8 +130,7 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            final IConfigManager cm = this.getUpgradeable().getConfigManager();
-            this.loadSettingsFromHost(cm);
+            this.loadSettingsFromHost(getHost().getConfigManager());
         }
 
         this.checkToolbox();
@@ -149,11 +147,11 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
     }
 
     protected void loadSettingsFromHost(final IConfigManager cm) {
-        this.setFuzzyMode((FuzzyMode) cm.getSetting(Settings.FUZZY_MODE));
-        this.setRedStoneMode((RedstoneMode) cm.getSetting(Settings.REDSTONE_CONTROLLED));
-        if (this.getUpgradeable() instanceof ExportBusPart) {
-            this.setCraftingMode((YesNo) cm.getSetting(Settings.CRAFT_ONLY));
-            this.setSchedulingMode((SchedulingMode) cm.getSetting(Settings.SCHEDULING_MODE));
+        this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
+        this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_CONTROLLED));
+        if (this.getHost() instanceof ExportBusPart) {
+            this.setCraftingMode(cm.getSetting(Settings.CRAFT_ONLY));
+            this.setSchedulingMode(cm.getSetting(Settings.SCHEDULING_MODE));
         }
     }
 
@@ -182,7 +180,7 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        int capacityUpgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
+        int capacityUpgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
         return idx == 1 && capacityUpgrades >= 1
                 || idx == 2 && capacityUpgrades >= 2;
     }
@@ -219,12 +217,12 @@ public abstract class UpgradeableMenu extends AEBaseMenu implements IOptionalSlo
         this.schedulingMode = schedulingMode;
     }
 
-    public IUpgradeableHost getUpgradeable() {
-        return this.upgradeable;
+    public final T getHost() {
+        return this.host;
     }
 
     public final boolean hasUpgrade(Upgrades upgrade) {
-        return this.upgradeable.getInstalledUpgrades(upgrade) > 0;
+        return this.host.getInstalledUpgrades(upgrade) > 0;
     }
 
 }

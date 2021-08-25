@@ -38,8 +38,6 @@ import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.implementations.CellWorkbenchMenu;
 
 public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
@@ -54,10 +52,10 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
 
         this.fuzzyMode = addToLeftToolbar(
                 new SettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
-        this.addToLeftToolbar(new ActionButton(ActionItems.WRENCH, act -> action("Partition")));
-        this.addToLeftToolbar(new ActionButton(ActionItems.CLOSE, act -> action("Clear")));
+        this.addToLeftToolbar(new ActionButton(ActionItems.WRENCH, act -> menu.partition()));
+        this.addToLeftToolbar(new ActionButton(ActionItems.CLOSE, act -> menu.clear()));
         this.copyMode = this.addToLeftToolbar(new ToggleButton(Icon.COPY_MODE_ON, Icon.COPY_MODE_OFF,
-                GuiText.CopyMode.text(), GuiText.CopyModeDesc.text(), act -> action("CopyMode")));
+                GuiText.CopyMode.text(), GuiText.CopyModeDesc.text(), act -> menu.nextWorkBenchCopyMode()));
     }
 
     /**
@@ -91,13 +89,9 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
         this.fuzzyMode.setVisibility(hasFuzzy);
     }
 
-    private void action(String type) {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("CellWorkbench.Action", type));
-    }
-
     private void toggleFuzzyMode(SettingToggleButton<FuzzyMode> button, boolean backwards) {
-        FuzzyMode fz = button.getNextValue(backwards);
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("CellWorkbench.Fuzzy", fz.name()));
+        var fz = button.getNextValue(backwards);
+        menu.setCellFuzzyMode(fz);
     }
 
 }

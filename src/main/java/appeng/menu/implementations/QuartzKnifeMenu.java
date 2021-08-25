@@ -44,6 +44,8 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class QuartzKnifeMenu extends AEBaseMenu {
 
+    private static final String ACTION_SET_NAME = "setName";
+
     public static final MenuType<QuartzKnifeMenu> TYPE = MenuTypeBuilder
             .create(QuartzKnifeMenu::new, QuartzKnifeObj.class)
             .build("quartzknife");
@@ -66,10 +68,15 @@ public class QuartzKnifeMenu extends AEBaseMenu {
         this.lockPlayerInventorySlot(ip.selected);
 
         this.createPlayerInventorySlots(ip);
+
+        registerClientAction(ACTION_SET_NAME, String.class, this::setName);
     }
 
-    public void setName(final String value) {
+    public void setName(String value) {
         this.currentName = value;
+        if (isClient()) {
+            sendClientAction(ACTION_SET_NAME, value);
+        }
     }
 
     @Override

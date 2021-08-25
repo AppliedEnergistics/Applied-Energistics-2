@@ -67,8 +67,12 @@ import appeng.util.item.AEItemStack;
 /**
  * @see appeng.client.gui.me.items.PatternTermScreen
  */
-public class PatternTermMenu extends ItemTerminalMenu
-        implements IOptionalSlotHost, IMenuCraftingPacket {
+public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHost, IMenuCraftingPacket {
+
+    private static final String ACTION_SET_CRAFT_MODE = "setCraftMode";
+    private static final String ACTION_ENCODE = "encode";
+    private static final String ACTION_CLEAR = "encode";
+    private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
 
     public static MenuType<PatternTermMenu> TYPE = MenuTypeBuilder
             .create(PatternTermMenu::new, ITerminalHost.class)
@@ -129,6 +133,11 @@ public class PatternTermMenu extends ItemTerminalMenu
         this.encodedPatternSlot.setStackLimit(1);
 
         this.createPlayerInventorySlots(ip);
+
+        registerClientAction(ACTION_ENCODE, this::encode);
+        registerClientAction(ACTION_CLEAR, this::clear);
+        registerClientAction(ACTION_SET_CRAFT_MODE, Boolean.class, getPatternTerminal()::setCraftingRecipe);
+        registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, getPatternTerminal()::setSubstitution);
     }
 
     @Override
@@ -163,6 +172,11 @@ public class PatternTermMenu extends ItemTerminalMenu
     }
 
     public void encode() {
+        if (isClient()) {
+            sendClientAction(ACTION_ENCODE);
+            return;
+        }
+
         ItemStack output = this.encodedPatternSlot.getItem();
 
         final ItemStack[] in = this.getInputs();
@@ -387,6 +401,11 @@ public class PatternTermMenu extends ItemTerminalMenu
     }
 
     public void clear() {
+        if (isClient()) {
+            sendClientAction(ACTION_CLEAR);
+            return;
+        }
+
         for (final Slot s : this.craftingGridSlots) {
             s.set(ItemStack.EMPTY);
         }
@@ -416,8 +435,12 @@ public class PatternTermMenu extends ItemTerminalMenu
         return this.craftingMode;
     }
 
-    private void setCraftingMode(final boolean craftingMode) {
-        this.craftingMode = craftingMode;
+    public void setCraftingMode(boolean craftingMode) {
+        if (isClient()) {
+            sendClientAction(ACTION_SET_CRAFT_MODE, craftingMode);
+        } else {
+            this.craftingMode = craftingMode;
+        }
     }
 
     public PatternTerminalPart getPatternTerminal() {
@@ -429,7 +452,11 @@ public class PatternTermMenu extends ItemTerminalMenu
     }
 
     public void setSubstitute(final boolean substitute) {
-        this.substitute = substitute;
+        if (isClient()) {
+            sendClientAction(ACTION_SET_SUBSTITUTION, substitute);
+        } else {
+            this.substitute = substitute;
+        }
     }
 
     public FakeCraftingMatrixSlot[] getCraftingGridSlots() {

@@ -36,6 +36,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
@@ -64,7 +65,7 @@ import appeng.me.helpers.MachineSource;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
+import appeng.util.IConfigManagerListener;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -75,7 +76,7 @@ import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
 public class IOPortBlockEntity extends AENetworkInvBlockEntity
-        implements IUpgradeableHost, IConfigManagerHost, IGridTickable {
+        implements IUpgradeableHost, IConfigManagerListener, IGridTickable {
     private static final int NUMBER_OF_CELL_SLOTS = 6;
     private static final int NUMBER_OF_UPGRADE_SLOTS = 3;
 
@@ -193,7 +194,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         this.updateTask();
     }
 

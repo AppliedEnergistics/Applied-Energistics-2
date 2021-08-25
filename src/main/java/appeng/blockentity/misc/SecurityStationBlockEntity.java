@@ -65,18 +65,17 @@ import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class SecurityStationBlockEntity extends AENetworkBlockEntity implements ITerminalHost, IAEAppEngInventory,
-        IConfigManagerHost, ISecurityProvider, IColorableBlockEntity {
+        ISecurityProvider, IColorableBlockEntity {
 
     private static int difference = 0;
     private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);
-    private final IConfigManager cm = new ConfigManager(this);
+    private final IConfigManager cm = new ConfigManager();
     private final SecurityStationInventory inventory = new SecurityStationInventory(this);
     private final MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<>(this.inventory);
     private long securityKey;
@@ -246,11 +245,6 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     @Override
     public IConfigManager getConfigManager() {
         return this.cm;
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
-
     }
 
     @Override

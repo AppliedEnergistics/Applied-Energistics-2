@@ -37,6 +37,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
@@ -346,7 +347,7 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
     }
 
     @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         this.configureWatchers();
     }
 

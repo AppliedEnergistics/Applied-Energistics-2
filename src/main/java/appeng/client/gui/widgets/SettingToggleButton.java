@@ -45,6 +45,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.RelativeDirection;
 import appeng.api.config.SchedulingMode;
 import appeng.api.config.SearchBoxMode;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -58,8 +59,8 @@ import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
 
 public class SettingToggleButton<T extends Enum<T>> extends IconButton {
-    private static Map<EnumPair, ButtonAppearance> appearances;
-    private final Settings buttonSetting;
+    private static Map<EnumPair<?>, ButtonAppearance> appearances;
+    private final Setting<T> buttonSetting;
     private final IHandler<SettingToggleButton<T>> onPress;
     private final EnumSet<T> validValues;
     private T currentValue;
@@ -69,12 +70,12 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         void handle(T button, boolean backwards);
     }
 
-    public SettingToggleButton(final Settings setting, final T val,
+    public SettingToggleButton(Setting<T> setting, final T val,
             IHandler<SettingToggleButton<T>> onPress) {
         this(setting, val, t -> true, onPress);
     }
 
-    public SettingToggleButton(final Settings setting, final T val, Predicate<T> isValidValue,
+    public SettingToggleButton(Setting<T> setting, final T val, Predicate<T> isValidValue,
             IHandler<SettingToggleButton<T>> onPress) {
         super(SettingToggleButton::onPress);
         this.onPress = onPress;
@@ -82,7 +83,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         // Build a list of values (in order) that are valid w.r.t. the given predicate
         EnumSet<T> validValues = EnumSet.allOf(val.getDeclaringClass());
         validValues.removeIf(isValidValue.negate());
-        validValues.removeIf(s -> !setting.getPossibleValues().contains(s));
+        validValues.removeIf(s -> !setting.getValues().contains(s));
         this.validValues = validValues;
 
         this.buttonSetting = setting;
@@ -277,17 +278,17 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         onPress.handle(this, backwards);
     }
 
-    private static void registerApp(final Icon icon, final Settings setting, final Enum<?> val,
+    private static <T extends Enum<T>> void registerApp(final Icon icon, final Setting<T> setting, T val,
             final ButtonToolTips title, final Component hint) {
         appearances.put(
-                new EnumPair(setting, val),
+                new EnumPair<>(setting, val),
                 new ButtonAppearance(
                         icon,
                         title.text(),
                         hint));
     }
 
-    private static void registerApp(final Icon icon, final Settings setting, final Enum<?> val,
+    private static <T extends Enum<T>> void registerApp(final Icon icon, final Setting<T> setting, T val,
             final ButtonToolTips title, final ButtonToolTips hint) {
         registerApp(icon, setting, val, title, hint.text());
     }
@@ -295,7 +296,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     @Override
     protected Icon getIcon() {
         if (this.buttonSetting != null && this.currentValue != null) {
-            final ButtonAppearance app = appearances.get(new EnumPair(this.buttonSetting, this.currentValue));
+            final ButtonAppearance app = appearances.get(new EnumPair<>(this.buttonSetting, this.currentValue));
             if (app != null) {
                 return app.icon;
             }
@@ -303,7 +304,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         return Icon.TOOLBAR_BUTTON_BACKGROUND;
     }
 
-    public Settings getSetting() {
+    public Setting<T> getSetting() {
         return this.buttonSetting;
     }
 
@@ -337,14 +338,14 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         return Arrays.asList(buttonAppearance.displayName, buttonAppearance.hint);
     }
 
-    private static final class EnumPair {
+    private static final class EnumPair<T extends Enum<T>> {
 
-        final Settings setting;
-        final Enum<?> value;
+        final Setting<T> setting;
+        final T value;
 
-        EnumPair(final Settings a, final Enum<?> b) {
-            this.setting = a;
-            this.value = b;
+        public EnumPair(Setting<T> setting, T value) {
+            this.setting = setting;
+            this.value = value;
         }
 
         @Override
@@ -360,7 +361,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             if (this.getClass() != obj.getClass()) {
                 return false;
             }
-            final EnumPair other = (EnumPair) obj;
+            final EnumPair<?> other = (EnumPair<?>) obj;
             return other.setting == this.setting && other.value == this.value;
         }
     }

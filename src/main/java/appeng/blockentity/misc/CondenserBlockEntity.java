@@ -38,6 +38,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.networking.security.IActionSource;
@@ -55,13 +56,13 @@ import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEItems;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
+import appeng.util.IConfigManagerListener;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
-public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfigManagerHost, IConfigurableObject {
+public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfigManagerListener, IConfigurableObject {
 
     public static final int BYTE_MULTIPLIER = 8;
 
@@ -170,7 +171,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         this.addPower(0);
     }
 

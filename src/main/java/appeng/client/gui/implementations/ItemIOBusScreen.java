@@ -51,7 +51,7 @@ public class ItemIOBusScreen extends UpgradeableScreen<ItemIOBusMenu> {
         addToLeftToolbar(this.fuzzyMode);
 
         // Craft & Scheduling mode is only supported by export bus
-        if (menu.getUpgradeable() instanceof ExportBusPart) {
+        if (menu.getHost() instanceof ExportBusPart) {
             this.craftMode = new ServerSettingToggleButton<>(Settings.CRAFT_ONLY,
                     YesNo.NO);
             addToLeftToolbar(this.craftMode);

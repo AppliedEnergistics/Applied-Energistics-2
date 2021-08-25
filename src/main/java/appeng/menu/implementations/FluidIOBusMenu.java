@@ -33,7 +33,7 @@ import appeng.util.fluid.IAEFluidTank;
  *
  * @see FluidIOBusScreen
  */
-public class FluidIOBusMenu extends FluidConfigurableMenu {
+public class FluidIOBusMenu extends FluidConfigurableMenu<SharedFluidBusPart> {
 
     public static final MenuType<FluidIOBusMenu> EXPORT_TYPE = MenuTypeBuilder
             .create(FluidIOBusMenu::new, FluidExportBusPart.class)
@@ -45,16 +45,13 @@ public class FluidIOBusMenu extends FluidConfigurableMenu {
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_import_bus");
 
-    private final SharedFluidBusPart bus;
-
     public FluidIOBusMenu(MenuType<?> menuType, int id, Inventory ip, SharedFluidBusPart bus) {
         super(menuType, id, ip, bus);
-        this.bus = bus;
     }
 
     @Override
     public IAEFluidTank getFluidConfigInventory() {
-        return this.bus.getConfig();
+        return getHost().getConfig();
     }
 
     @Override

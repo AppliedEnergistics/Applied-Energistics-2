@@ -25,32 +25,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
+import appeng.api.config.Setting;
 import appeng.api.config.Upgrades;
 import appeng.api.util.IConfigManager;
 import appeng.parts.BasicStatePart;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
-public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEngInventory, IConfigManagerHost {
+public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEngInventory {
     private final IConfigManager manager;
     private final UpgradeInventory upgrades;
 
     public UpgradeablePart(final ItemStack is) {
         super(is);
         this.upgrades = new StackUpgradeInventory(this.getItemStack(), this, this.getUpgradeSlots());
-        this.manager = new ConfigManager(this);
+        this.manager = new ConfigManager(this::onSettingChanged);
     }
 
     protected int getUpgradeSlots() {
         return 4;
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
-
     }
 
     @Override
@@ -151,4 +145,8 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     public RedstoneMode getRSMode() {
         return null;
     }
+
+    protected void onSettingChanged(IConfigManager manager, Setting<?> setting) {
+    }
+
 }

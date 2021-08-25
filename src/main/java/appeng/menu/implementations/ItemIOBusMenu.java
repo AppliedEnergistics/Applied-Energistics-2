@@ -36,7 +36,7 @@ import appeng.parts.automation.SharedItemBusPart;
  *
  * @see ItemIOBusScreen
  */
-public class ItemIOBusMenu extends UpgradeableMenu {
+public class ItemIOBusMenu extends UpgradeableMenu<SharedItemBusPart> {
 
     public static final MenuType<ItemIOBusMenu> EXPORT_TYPE = MenuTypeBuilder
             .create(ItemIOBusMenu::new, ExportBusPart.class)
@@ -48,15 +48,15 @@ public class ItemIOBusMenu extends UpgradeableMenu {
             .requirePermission(SecurityPermissions.BUILD)
             .build("import_bus");
 
-    public ItemIOBusMenu(MenuType<?> menuType, int id, Inventory ip, SharedItemBusPart te) {
-        super(menuType, id, ip, te);
+    public ItemIOBusMenu(MenuType<?> menuType, int id, Inventory ip, SharedItemBusPart host) {
+        super(menuType, id, ip, host);
     }
 
     @Override
     protected void setupConfig() {
         this.setupUpgrades();
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final IItemHandler inv = this.getHost().getInventoryByName("config");
         final SlotSemantic s = SlotSemantic.CONFIG;
 
         this.addSlot(new FakeTypeOnlySlot(inv, 0), s);

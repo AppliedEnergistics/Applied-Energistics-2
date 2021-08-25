@@ -24,9 +24,9 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
-import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.api.util.IConfigManager;
 import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
@@ -36,7 +36,7 @@ import appeng.menu.slot.RestrictedInputSlot;
 /**
  * @see appeng.client.gui.implementations.IOPortScreen
  */
-public class IOPortMenu extends UpgradeableMenu {
+public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
 
     public static final MenuType<IOPortMenu> TYPE = MenuTypeBuilder
             .create(IOPortMenu::new, IOPortBlockEntity.class)
@@ -48,13 +48,13 @@ public class IOPortMenu extends UpgradeableMenu {
     @GuiSync(3)
     public OperationMode opMode = OperationMode.EMPTY;
 
-    public IOPortMenu(int id, final Inventory ip, final IOPortBlockEntity te) {
-        super(TYPE, id, ip, te);
+    public IOPortMenu(int id, final Inventory ip, final IOPortBlockEntity host) {
+        super(TYPE, id, ip, host);
     }
 
     @Override
     protected void setupConfig() {
-        final IItemHandler cells = this.getUpgradeable().getInventoryByName("cells");
+        final IItemHandler cells = this.getHost().getInventoryByName("cells");
 
         for (int i = 0; i < 6; i++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, cells, i),
@@ -80,19 +80,10 @@ public class IOPortMenu extends UpgradeableMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (isServer()) {
-            this.setOperationMode(
-                    (OperationMode) this.getUpgradeable().getConfigManager().getSetting(Settings.OPERATION_MODE));
-            this.setFullMode(
-                    (FullnessMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FULLNESS_MODE));
-            this.setRedStoneMode(
-                    (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED));
-        }
-
-        this.standardDetectAndSendChanges();
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setOperationMode(cm.getSetting(Settings.OPERATION_MODE));
+        this.setFullMode(cm.getSetting(Settings.FULLNESS_MODE));
+        this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_CONTROLLED));
     }
 
     public FullnessMode getFullMode() {

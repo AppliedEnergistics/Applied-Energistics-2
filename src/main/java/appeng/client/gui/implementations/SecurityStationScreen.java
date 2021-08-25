@@ -33,8 +33,6 @@ import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.implementations.SecurityStationMenu;
 
 public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationMenu> {
@@ -55,30 +53,25 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationMen
 
         this.inject = new ToggleButton(Icon.PERMISSION_INJECT, Icon.PERMISSION_INJECT_DISABLED,
                 SecurityPermissions.INJECT.getDisplayName(), SecurityPermissions.INJECT.getDisplayHint(),
-                btn -> toggleOption(SecurityPermissions.INJECT));
+                btn -> menu.toggleSetting(SecurityPermissions.INJECT));
         this.extract = new ToggleButton(Icon.PERMISSION_EXTRACT, Icon.PERMISSION_EXTRACT_DISABLED,
                 SecurityPermissions.EXTRACT.getDisplayName(), SecurityPermissions.EXTRACT.getDisplayHint(),
-                btn -> toggleOption(SecurityPermissions.EXTRACT));
+                btn -> menu.toggleSetting(SecurityPermissions.EXTRACT));
         this.craft = new ToggleButton(Icon.PERMISSION_CRAFT, Icon.PERMISSION_CRAFT_DISABLED,
                 SecurityPermissions.CRAFT.getDisplayName(), SecurityPermissions.CRAFT.getDisplayHint(),
-                btn -> toggleOption(SecurityPermissions.CRAFT));
+                btn -> menu.toggleSetting(SecurityPermissions.CRAFT));
         this.build = new ToggleButton(Icon.PERMISSION_BUILD, Icon.PERMISSION_BUILD_DISABLED,
                 SecurityPermissions.BUILD.getDisplayName(), SecurityPermissions.BUILD.getDisplayHint(),
-                btn -> toggleOption(SecurityPermissions.BUILD));
+                btn -> menu.toggleSetting(SecurityPermissions.BUILD));
         this.security = new ToggleButton(Icon.PERMISSION_SECURITY, Icon.PERMISSION_SECURITY_DISABLED,
                 SecurityPermissions.SECURITY.getDisplayName(), SecurityPermissions.SECURITY.getDisplayHint(),
-                btn -> toggleOption(SecurityPermissions.SECURITY));
+                btn -> menu.toggleSetting(SecurityPermissions.SECURITY));
 
         widgets.add("permissionInject", this.inject);
         widgets.add("permissionExtract", this.extract);
         widgets.add("permissionCraft", this.craft);
         widgets.add("permissionBuild", this.build);
         widgets.add("permissionSecurity", this.security);
-    }
-
-    private void toggleOption(SecurityPermissions permission) {
-        NetworkHandler.instance()
-                .sendToServer(new ConfigValuePacket("TileSecurityStation.ToggleOption", permission.name()));
     }
 
     @Override

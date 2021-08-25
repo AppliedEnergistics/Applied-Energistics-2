@@ -24,10 +24,11 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Upgrades;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.util.IConfigManager;
 import appeng.parts.automation.FluidFormationPlanePart;
 import appeng.util.fluid.IAEFluidTank;
 
-public class FluidFormationPlaneMenu extends FluidConfigurableMenu {
+public class FluidFormationPlaneMenu extends FluidConfigurableMenu<FluidFormationPlanePart> {
 
     public static final MenuType<FluidFormationPlaneMenu> TYPE = MenuTypeBuilder
             .create(FluidFormationPlaneMenu::new, FluidFormationPlanePart.class)
@@ -52,16 +53,13 @@ public class FluidFormationPlaneMenu extends FluidConfigurableMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-        this.checkToolbox();
-        this.standardDetectAndSendChanges();
+    protected void loadSettingsFromHost(IConfigManager cm) {
     }
 
     @Override
     protected boolean isValidForConfig(int slot, IAEFluidStack fs) {
         if (this.supportCapacity()) {
-            final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
+            final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
 
             final int y = slot / 9;
 
@@ -75,7 +73,7 @@ public class FluidFormationPlaneMenu extends FluidConfigurableMenu {
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
+        final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
 
         return upgrades > idx;
     }

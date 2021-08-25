@@ -34,8 +34,6 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingPlanSummary;
 
@@ -141,12 +139,11 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     }
 
     private void selectNextCpu() {
-        final boolean backwards = isHandlingRightClick();
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("Terminal.Cpu", backwards ? "Prev" : "Next"));
+        getMenu().cycleSelectedCPU(!isHandlingRightClick());
     }
 
     private void start() {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("Terminal.Start", "Start"));
+        getMenu().startJob();
     }
 
 }

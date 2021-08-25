@@ -20,21 +20,19 @@ package appeng.menu.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;
 import appeng.parts.automation.ItemLevelEmitterPart;
 
-public class ItemLevelEmitterMenu extends UpgradeableMenu {
+public class ItemLevelEmitterMenu extends UpgradeableMenu<ItemLevelEmitterPart> {
+
+    private static final String ACTION_SET_REPORTING_VALUE = "setReportingValue";
 
     public static final MenuType<ItemLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(ItemLevelEmitterMenu::new, ItemLevelEmitterPart.class)
@@ -46,8 +44,6 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
             })
             .build("item_level_emitter");
 
-    private final ItemLevelEmitterPart lvlEmitter;
-
     @GuiSync(3)
     public YesNo cmType;
 
@@ -56,7 +52,8 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
 
     public ItemLevelEmitterMenu(int id, final Inventory ip, final ItemLevelEmitterPart te) {
         super(TYPE, id, ip, te);
-        this.lvlEmitter = te;
+
+        registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setReportingValue);
     }
 
     public long getReportingValue() {
@@ -67,11 +64,10 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
         if (isClient()) {
             if (reportingValue != this.reportingValue) {
                 this.reportingValue = reportingValue;
-                NetworkHandler.instance()
-                        .sendToServer(new ConfigValuePacket("LevelEmitter.Value", String.valueOf(reportingValue)));
+                sendClientAction(ACTION_SET_REPORTING_VALUE, reportingValue);
             }
         } else {
-            this.lvlEmitter.setReportingValue(reportingValue);
+            getHost().setReportingValue(reportingValue);
         }
     }
 
@@ -79,7 +75,7 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
     protected void setupConfig() {
         this.setupUpgrades();
 
-        final IItemHandler inv = lvlEmitter.getInventoryByName("config");
+        var inv = getHost().getInventoryByName("config");
         this.addSlot(new FakeTypeOnlySlot(inv, 0), SlotSemantic.CONFIG);
     }
 
@@ -94,16 +90,10 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (isServer()) {
-            this.setCraftingMode((YesNo) lvlEmitter.getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE));
-            this.setFuzzyMode((FuzzyMode) lvlEmitter.getConfigManager().getSetting(Settings.FUZZY_MODE));
-            this.setRedStoneMode((RedstoneMode) lvlEmitter.getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
-        }
-
-        this.standardDetectAndSendChanges();
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setCraftingMode(cm.getSetting(Settings.CRAFT_VIA_REDSTONE));
+        this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
+        this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_EMITTER));
     }
 
     @Override

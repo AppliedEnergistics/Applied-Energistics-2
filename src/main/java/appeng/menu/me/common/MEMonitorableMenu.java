@@ -36,6 +36,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -74,13 +75,13 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
+import appeng.util.IConfigManagerListener;
 
 /**
  * @see MEMonitorableScreen
  */
 public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMenu
-        implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<T>, IMEInteractionHandler {
+        implements IConfigManagerListener, IConfigurableObject, IMEMonitorHandlerReceiver<T>, IMEInteractionHandler {
 
     private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;
@@ -95,7 +96,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
     @GuiSync(100)
     public int activeCraftingJobs = -1;
 
-    private IConfigManagerHost gui;
+    private IConfigManagerListener gui;
     private IConfigManager serverCM;
     private IGridNode networkNode;
 
@@ -194,13 +195,13 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
 
             this.updateActiveCraftingJobs();
 
-            for (final Settings set : this.serverCM.getSettings()) {
-                final Enum<?> sideLocal = this.serverCM.getSetting(set);
-                final Enum<?> sideRemote = this.clientCM.getSetting(set);
+            for (var set : this.serverCM.getSettings()) {
+                var sideLocal = this.serverCM.getSetting(set);
+                var sideRemote = this.clientCM.getSetting(set);
 
                 if (sideLocal != sideRemote) {
-                    this.clientCM.putSetting(set, sideLocal);
-                    sendPacketToClient(new ConfigValuePacket(set.name(), sideLocal.name()));
+                    set.copy(serverCM, clientCM);
+                    sendPacketToClient(new ConfigValuePacket(set, serverCM));
                 }
             }
 
@@ -333,9 +334,9 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
     }
 
     @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         if (this.getGui() != null) {
-            this.getGui().updateSetting(manager, settingName, newValue);
+            this.getGui().onSettingChanged(manager, setting);
         }
     }
 
@@ -407,11 +408,11 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
         this.hasPower = isPowered;
     }
 
-    private IConfigManagerHost getGui() {
+    private IConfigManagerListener getGui() {
         return this.gui;
     }
 
-    public void setGui(@Nonnull final IConfigManagerHost gui) {
+    public void setGui(@Nonnull final IConfigManagerListener gui) {
         this.gui = gui;
     }
 

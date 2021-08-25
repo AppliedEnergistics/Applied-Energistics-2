@@ -21,15 +21,15 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.api.util.IConfigManager;
 import appeng.parts.automation.FluidLevelEmitterPart;
 import appeng.util.fluid.IAEFluidTank;
 
-public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
+public class FluidLevelEmitterMenu extends FluidConfigurableMenu<FluidLevelEmitterPart> {
+
+    private static final String ACTION_SET_REPORTING_VALUE = "setReportingValue";
 
     public static final MenuType<FluidLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(FluidLevelEmitterMenu::new, FluidLevelEmitterPart.class)
@@ -41,14 +41,13 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
             })
             .build("fluid_level_emitter");
 
-    private final FluidLevelEmitterPart lvlEmitter;
-
     // Only synced once on menu-open, and only used on client
     private long reportingValue;
 
     public FluidLevelEmitterMenu(int id, final Inventory ip, final FluidLevelEmitterPart te) {
         super(TYPE, id, ip, te);
-        this.lvlEmitter = te;
+
+        registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setReportingValue);
     }
 
     public long getReportingValue() {
@@ -59,11 +58,10 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
         if (isClient()) {
             if (reportingValue != this.reportingValue) {
                 this.reportingValue = reportingValue;
-                NetworkHandler.instance()
-                        .sendToServer(new ConfigValuePacket("FluidLevelEmitter.Value", String.valueOf(reportingValue)));
+                sendClientAction(ACTION_SET_REPORTING_VALUE, reportingValue);
             }
         } else {
-            this.lvlEmitter.setReportingValue(reportingValue);
+            getHost().setReportingValue(reportingValue);
         }
     }
 
@@ -82,18 +80,12 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (isServer()) {
-            this.setRedStoneMode((RedstoneMode) lvlEmitter.getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
-        }
-
-        this.standardDetectAndSendChanges();
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_EMITTER));
     }
 
     @Override
     public IAEFluidTank getFluidConfigInventory() {
-        return this.lvlEmitter.getConfig();
+        return this.getHost().getConfig();
     }
 }

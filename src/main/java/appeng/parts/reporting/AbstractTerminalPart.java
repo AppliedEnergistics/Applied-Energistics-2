@@ -43,7 +43,6 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
@@ -59,9 +58,9 @@ import appeng.util.inv.InvOperation;
  * @since rv3
  */
 public abstract class AbstractTerminalPart extends AbstractDisplayPart
-        implements ITerminalHost, IConfigManagerHost, IViewCellStorage, IAEAppEngInventory {
+        implements ITerminalHost, IViewCellStorage, IAEAppEngInventory {
 
-    private final IConfigManager cm = new ConfigManager(this);
+    private final IConfigManager cm = new ConfigManager();
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
     public AbstractTerminalPart(final ItemStack is) {
@@ -126,11 +125,6 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
             return grid.getStorageService().getInventory(channel);
         }
         return null;
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
-
     }
 
     @Override

@@ -26,8 +26,6 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 
 /**
@@ -73,8 +71,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> 
     }
 
     private void selectNextCpu() {
-        final boolean backwards = isHandlingRightClick();
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("Terminal.Cpu", backwards ? "Prev" : "Next"));
+        getMenu().cycleSelectedCPU(!isHandlingRightClick());
     }
 
 }

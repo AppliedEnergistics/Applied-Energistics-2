@@ -43,6 +43,8 @@ import appeng.util.inv.InvOperation;
  */
 public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngInventory {
 
+    private static final String ACTION_TOGGLE_PERMISSION = "togglePermission";
+
     public static final MenuType<SecurityStationMenu> TYPE = MenuTypeBuilder
             .create(SecurityStationMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.SECURITY)
@@ -72,22 +74,23 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
         this.addSlot(this.linkableOut = new OutputSlot(gridLinkingInv, 1, null), SlotSemantic.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
+
+        registerClientAction(ACTION_TOGGLE_PERMISSION, SecurityPermissions.class, this::toggleSetting);
     }
 
-    public void toggleSetting(final String value, final Player player) {
-        try {
-            final SecurityPermissions permission = SecurityPermissions.valueOf(value);
+    public void toggleSetting(SecurityPermissions permission) {
+        if (isClient()) {
+            sendClientAction(ACTION_TOGGLE_PERMISSION, permission);
+            return;
+        }
 
-            final ItemStack a = this.configSlot.getItem();
-            if (!a.isEmpty() && a.getItem() instanceof IBiometricCard bc) {
-                if (bc.hasPermission(a, permission)) {
-                    bc.removePermission(a, permission);
-                } else {
-                    bc.addPermission(a, permission);
-                }
+        ItemStack a = this.configSlot.getItem();
+        if (!a.isEmpty() && a.getItem() instanceof IBiometricCard bc) {
+            if (bc.hasPermission(a, permission)) {
+                bc.removePermission(a, permission);
+            } else {
+                bc.addPermission(a, permission);
             }
-        } catch (final EnumConstantNotPresentException ex) {
-            // :(
         }
     }
 
@@ -153,7 +156,4 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
         this.permissionMode = permissionMode;
     }
 
-    public RestrictedInputSlot getConfigSlot() {
-        return configSlot;
-    }
 }

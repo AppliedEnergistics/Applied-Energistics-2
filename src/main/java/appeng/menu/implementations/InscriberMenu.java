@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.core.definitions.AEItems;
@@ -37,13 +38,11 @@ import appeng.menu.slot.RestrictedInputSlot;
 /**
  * @see appeng.client.gui.implementations.InscriberScreen
  */
-public class InscriberMenu extends UpgradeableMenu implements IProgressProvider {
+public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> implements IProgressProvider {
 
     public static final MenuType<InscriberMenu> TYPE = MenuTypeBuilder
             .create(InscriberMenu::new, InscriberBlockEntity.class)
             .build("inscriber");
-
-    private final InscriberBlockEntity ti;
 
     private final Slot top;
     private final Slot middle;
@@ -55,11 +54,10 @@ public class InscriberMenu extends UpgradeableMenu implements IProgressProvider 
     @GuiSync(3)
     public int processingTime = -1;
 
-    public InscriberMenu(int id, final Inventory ip, final InscriberBlockEntity te) {
-        super(TYPE, id, ip, te);
-        this.ti = te;
+    public InscriberMenu(int id, final Inventory ip, final InscriberBlockEntity host) {
+        super(TYPE, id, ip, host);
 
-        IItemHandler inv = te.getInternalInventory();
+        IItemHandler inv = host.getInternalInventory();
 
         RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0);
         top.setStackLimit(1);
@@ -92,19 +90,15 @@ public class InscriberMenu extends UpgradeableMenu implements IProgressProvider 
     }
 
     @Override
-    public void broadcastChanges() {
-        this.standardDetectAndSendChanges();
-
-        if (isServer()) {
-            this.maxProcessingTime = this.ti.getMaxProcessingTime();
-            this.processingTime = this.ti.getProcessingTime();
-        }
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.maxProcessingTime = getHost().getMaxProcessingTime();
+        this.processingTime = getHost().getProcessingTime();
     }
 
     @Override
     public boolean isValidForSlot(final Slot s, final ItemStack is) {
-        final ItemStack top = this.ti.getInternalInventory().getStackInSlot(0);
-        final ItemStack bot = this.ti.getInternalInventory().getStackInSlot(1);
+        final ItemStack top = getHost().getInternalInventory().getStackInSlot(0);
+        final ItemStack bot = getHost().getInternalInventory().getStackInSlot(1);
 
         if (s == this.middle) {
             ItemDefinition<?> press = AEItems.NAME_PRESS;
@@ -112,7 +106,7 @@ public class InscriberMenu extends UpgradeableMenu implements IProgressProvider 
                 return !press.isSameAs(is);
             }
 
-            return InscriberRecipes.findRecipe(ti.getLevel(), is, top, bot, false) != null;
+            return InscriberRecipes.findRecipe(getHost().getLevel(), is, top, bot, false) != null;
         } else if (s == this.top && !bot.isEmpty() || s == this.bottom && !top.isEmpty()) {
             ItemStack otherSlot;
             if (s == this.top) {
@@ -129,7 +123,7 @@ public class InscriberMenu extends UpgradeableMenu implements IProgressProvider 
 
             // everything else
             // test for a partial recipe match (ignoring the middle slot)
-            return InscriberRecipes.isValidOptionalIngredientCombination(ti.getLevel(), is, otherSlot);
+            return InscriberRecipes.isValidOptionalIngredientCombination(getHost().getLevel(), is, otherSlot);
         }
         return true;
     }

@@ -31,8 +31,6 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.menu.SlotSemantic;
 import appeng.menu.me.items.PatternTermMenu;
 
@@ -43,12 +41,6 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
     private static final Blitter CRAFTING_MODE_BG = Blitter.texture(MODES_TEXTURE).src(0, 0, 126, 68);
 
     private static final Blitter PROCESSING_MODE_BG = Blitter.texture(MODES_TEXTURE).src(0, 70, 126, 68);
-
-    private static final String SUBSTITUTION_DISABLE = "0";
-    private static final String SUBSTITUTION_ENABLE = "1";
-
-    private static final String CRAFTMODE_CRAFTING = "1";
-    private static final String CRAFTMODE_PROCESSING = "0";
 
     private final TabButton tabCraftButton;
     private final TabButton tabProcessButton;
@@ -61,29 +53,29 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
 
         this.tabCraftButton = new TabButton(
                 new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
-                btn -> toggleCraftMode(CRAFTMODE_PROCESSING));
+                btn -> getMenu().setCraftingMode(false));
         widgets.add("craftingPatternMode", this.tabCraftButton);
 
         this.tabProcessButton = new TabButton(
                 new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.text(), this.itemRenderer,
-                btn -> toggleCraftMode(CRAFTMODE_CRAFTING));
+                btn -> getMenu().setCraftingMode(true));
         widgets.add("processingPatternMode", this.tabProcessButton);
 
         this.substitutionsEnabledBtn = new ActionButton(
-                ActionItems.ENABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSTITUTION_DISABLE));
+                ActionItems.ENABLE_SUBSTITUTION, act -> getMenu().setSubstitute(false));
         this.substitutionsEnabledBtn.setHalfSize(true);
         widgets.add("substitutionsEnabled", this.substitutionsEnabledBtn);
 
         this.substitutionsDisabledBtn = new ActionButton(
-                ActionItems.DISABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSTITUTION_ENABLE));
+                ActionItems.DISABLE_SUBSTITUTION, act -> getMenu().setSubstitute(true));
         this.substitutionsDisabledBtn.setHalfSize(true);
         widgets.add("substitutionsDisabled", this.substitutionsDisabledBtn);
 
-        ActionButton clearBtn = new ActionButton(ActionItems.CLOSE, act -> clear());
+        ActionButton clearBtn = new ActionButton(ActionItems.CLOSE, act -> menu.clear());
         clearBtn.setHalfSize(true);
         widgets.add("clearPattern", clearBtn);
 
-        ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> encode());
+        ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
         widgets.add("encodePattern", encodeBtn);
     }
 
@@ -112,22 +104,6 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
 
         setSlotsHidden(SlotSemantic.CRAFTING_RESULT, !this.menu.isCraftingMode());
         setSlotsHidden(SlotSemantic.PROCESSING_RESULT, this.menu.isCraftingMode());
-    }
-
-    private void toggleCraftMode(String mode) {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("PatternTerminal.CraftMode", mode));
-    }
-
-    private void toggleSubstitutions(String mode) {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("PatternTerminal.Substitute", mode));
-    }
-
-    private void encode() {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("PatternTerminal.Encode", "1"));
-    }
-
-    private void clear() {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("PatternTerminal.Clear", "1"));
     }
 
     @Override

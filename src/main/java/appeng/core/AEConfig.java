@@ -20,7 +20,6 @@ package appeng.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -262,7 +261,7 @@ public final class AEConfig {
     @SuppressWarnings("unchecked")
     public void nextPowerUnit(final boolean backwards) {
         this.selectedPowerUnit = EnumCycler.rotateEnum(this.selectedPowerUnit, backwards,
-                (EnumSet<PowerUnits>) Settings.POWER_UNITS.getPossibleValues());
+                Settings.POWER_UNITS.getValues());
         this.save();
     }
 

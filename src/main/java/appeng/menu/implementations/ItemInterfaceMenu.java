@@ -37,7 +37,7 @@ import appeng.menu.slot.RestrictedInputSlot;
 /**
  * @see ItemInterfaceScreen
  */
-public class ItemInterfaceMenu extends UpgradeableMenu {
+public class ItemInterfaceMenu extends UpgradeableMenu<IItemInterfaceHost> {
 
     public static final MenuType<ItemInterfaceMenu> TYPE = MenuTypeBuilder
             .create(ItemInterfaceMenu::new, IItemInterfaceHost.class)
@@ -50,10 +50,10 @@ public class ItemInterfaceMenu extends UpgradeableMenu {
     @GuiSync(4)
     public YesNo iTermMode = YesNo.YES;
 
-    public ItemInterfaceMenu(int id, final Inventory ip, final IItemInterfaceHost te) {
-        super(TYPE, id, ip, te.getInterfaceDuality().getHost());
+    public ItemInterfaceMenu(int id, final Inventory ip, IItemInterfaceHost host) {
+        super(TYPE, id, ip, host);
 
-        DualityItemInterface duality = te.getInterfaceDuality();
+        DualityItemInterface duality = host.getInterfaceDuality();
 
         for (int x = 0; x < DualityItemInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
@@ -81,15 +81,9 @@ public class ItemInterfaceMenu extends UpgradeableMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-        super.broadcastChanges();
-    }
-
-    @Override
-    protected void loadSettingsFromHost(final IConfigManager cm) {
-        this.setBlockingMode((YesNo) cm.getSetting(Settings.BLOCK));
-        this.setInterfaceTerminalMode((YesNo) cm.getSetting(Settings.INTERFACE_TERMINAL));
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setBlockingMode(cm.getSetting(Settings.BLOCK));
+        this.setInterfaceTerminalMode(cm.getSetting(Settings.INTERFACE_TERMINAL));
     }
 
     public YesNo getBlockingMode() {

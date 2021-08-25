@@ -103,7 +103,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.mySrc = new PlayerSource(getPlayer(), this.getActionHost());
     }
 
-    protected IActionHost getActionHost() {
+    protected final IActionHost getActionHost() {
         if (this.guiItem instanceof IActionHost) {
             return (IActionHost) this.guiItem;
         }
@@ -117,6 +117,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         return null;
+    }
+
+    protected final boolean isActionHost() {
+        return this.guiItem instanceof IActionHost
+                || this.blockEntity instanceof IActionHost
+                || this.part instanceof IActionHost;
     }
 
     public boolean isRemote() {
@@ -150,7 +156,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected boolean hasAccess(final SecurityPermissions perm, final boolean requirePower) {
-        final IActionHost host = this.getActionHost();
+        if (!isActionHost() && !requirePower) {
+            return true; // Hosts that are not grid connected always give access
+        }
+
+        var host = this.getActionHost();
 
         if (host != null) {
             final IGridNode gn = host.getActionableNode();

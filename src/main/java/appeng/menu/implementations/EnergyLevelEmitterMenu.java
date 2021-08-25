@@ -21,14 +21,14 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.api.util.IConfigManager;
 import appeng.parts.automation.EnergyLevelEmitterPart;
 
-public class EnergyLevelEmitterMenu extends UpgradeableMenu {
+public class EnergyLevelEmitterMenu extends UpgradeableMenu<EnergyLevelEmitterPart> {
+
+    private static final String ACTION_SET_REPORTING_VALUE = "setReportingValue";
 
     public static final MenuType<EnergyLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(EnergyLevelEmitterMenu::new, EnergyLevelEmitterPart.class)
@@ -40,14 +40,13 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu {
             })
             .build("energy_level_emitter");
 
-    private final EnergyLevelEmitterPart lvlEmitter;
-
     // Only synced once on menu-open, and only used on client
     private long reportingValue;
 
-    public EnergyLevelEmitterMenu(int id, final Inventory ip, final EnergyLevelEmitterPart te) {
-        super(TYPE, id, ip, te);
-        this.lvlEmitter = te;
+    public EnergyLevelEmitterMenu(int id, Inventory ip, EnergyLevelEmitterPart host) {
+        super(TYPE, id, ip, host);
+
+        registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setReportingValue);
     }
 
     public long getReportingValue() {
@@ -58,12 +57,10 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu {
         if (isClient()) {
             if (reportingValue != this.reportingValue) {
                 this.reportingValue = reportingValue;
-                NetworkHandler.instance()
-                        .sendToServer(
-                                new ConfigValuePacket("EnergyLevelEmitter.Value", String.valueOf(reportingValue)));
+                sendClientAction(ACTION_SET_REPORTING_VALUE, reportingValue);
             }
         } else {
-            this.lvlEmitter.setReportingValue(reportingValue);
+            getHost().setReportingValue(reportingValue);
         }
     }
 
@@ -82,14 +79,8 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
-        if (isServer()) {
-            this.setRedStoneMode((RedstoneMode) lvlEmitter.getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
-        }
-
-        this.standardDetectAndSendChanges();
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_EMITTER));
     }
 
 }

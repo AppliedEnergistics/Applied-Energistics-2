@@ -54,6 +54,7 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
@@ -69,7 +70,6 @@ import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
@@ -87,7 +87,7 @@ import appeng.me.storage.NullInventory;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
+import appeng.util.IConfigManagerListener;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
@@ -98,7 +98,7 @@ import appeng.util.item.AEItemStack;
 public class DualityItemInterface
         extends DualityInterface
         implements IAEAppEngInventory,
-        IConfigManagerHost, ICraftingProvider, ICraftingRequester, IUpgradeableHost {
+        IConfigManagerListener, ICraftingProvider, ICraftingRequester, IUpgradeableHost {
 
     public static final int NUMBER_OF_STORAGE_SLOTS = 9;
     public static final int NUMBER_OF_CONFIG_SLOTS = 9;
@@ -641,7 +641,7 @@ public class DualityItemInterface
     }
 
     @Override
-    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
+    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         if (this.getInstalledUpgrades(Upgrades.CRAFTING) == 0) {
             this.cancelCrafting();
         }
@@ -792,20 +792,6 @@ public class DualityItemInterface
                 drops.add(is);
             }
         }
-    }
-
-    public IUpgradeableHost getHost() {
-        if (this.getPart() instanceof IUpgradeableHost) {
-            return (IUpgradeableHost) this.getPart();
-        }
-        if (this.getBlockEntity() instanceof IUpgradeableHost) {
-            return (IUpgradeableHost) this.getBlockEntity();
-        }
-        return null;
-    }
-
-    private IPart getPart() {
-        return (IPart) (this.host instanceof IPart ? this.host : null);
     }
 
     @Override
