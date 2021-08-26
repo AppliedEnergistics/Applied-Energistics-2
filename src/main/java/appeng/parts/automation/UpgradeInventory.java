@@ -44,8 +44,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     private int inverterUpgrades = 0;
     private int craftingUpgrades = 0;
 
-    public UpgradeInventory(final IAEAppEngInventory parent, final int s) {
-        super(null, s, 1);
+    public UpgradeInventory(final IAEAppEngInventory parent, final int slots) {
+        super(null, slots, 1);
         this.setBlockEntity(this);
         this.parent = parent;
         this.setFilter(new UpgradeInvFilter());

@@ -19,19 +19,14 @@
 package appeng.client.gui.implementations;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableObject;
-import appeng.api.parts.IPart;
-import appeng.api.parts.PartItemStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
@@ -44,7 +39,7 @@ import appeng.menu.implementations.UpgradeableMenu;
  * This screen adds the ability for {@link IUpgradeableObject} screens to show the upgrade inventory and the player's
  * toolbox to more easily install/remove upgrades.
  */
-public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T> {
+public class UpgradeableScreen<T extends UpgradeableMenu<?>> extends AEBaseScreen<T> {
 
     public UpgradeableScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
@@ -61,32 +56,15 @@ public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T
      * Gets the tooltip text that is shown for empty slots of the upgrade panel to indicate which upgrades are
      * compatible.
      */
-    protected List<Component> getCompatibleUpgrades() {
-        IUpgradeableObject host = menu.getHost();
-
-        Item item;
-        if (host instanceof IPart) {
-            item = ((IPart) host).getItemStack(PartItemStack.NETWORK).getItem();
-        } else if (host instanceof BlockEntity te) {
-            item = te.getBlockState().getBlock().asItem();
-        } else {
-            return Collections.emptyList();
-        }
-
-        return getCompatibleUpgrades(item);
-    }
-
-    protected List<Component> getCompatibleUpgrades(Item machineItem) {
+    private List<Component> getCompatibleUpgrades() {
         List<Component> list = new ArrayList<>();
         list.add(GuiText.CompatibleUpgrades.text());
 
-        for (Upgrades upgrade : Upgrades.values()) {
-            for (Upgrades.Supported supported : upgrade.getSupported()) {
-                if (supported.isSupported(machineItem)) {
-                    list.add(GuiText.CompatibleUpgrade.text(upgrade.getDisplayName(), supported.getMaxCount())
-                            .withStyle(ChatFormatting.GRAY));
-                    break;
-                }
+        for (var upgrade : Upgrades.values()) {
+            var maxCount = menu.getUpgrades().getMaxInstalled(upgrade);
+            if (maxCount > 0) {
+                list.add(GuiText.CompatibleUpgrade.text(upgrade.getDisplayName(), maxCount)
+                        .withStyle(ChatFormatting.GRAY));
             }
         }
 
