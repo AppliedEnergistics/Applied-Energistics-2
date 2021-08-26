@@ -112,7 +112,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
 
     protected int calculateAmountToSend() {
         double amount = this.getChannel().transferFactor();
-        switch (this.getInstalledUpgrades(Upgrades.SPEED)) {
+        switch (getInstalledUpgrades(Upgrades.SPEED)) {
             case 4:
                 amount = amount * 1.5;
             case 3:

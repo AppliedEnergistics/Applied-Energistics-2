@@ -18,8 +18,11 @@
 
 package appeng.parts.automation;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,6 +30,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -61,13 +65,14 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
         this.getConfig().writeToNBT(extra, "config");
     }
 
+    @Nullable
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("config")) {
-            return this.getConfig();
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.CONFIG)) {
+            return config;
+        } else {
+            return super.getSubInventory(id);
         }
-
-        return super.getInventoryByName(name);
     }
 
     @Override
@@ -90,11 +95,11 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     protected int availableSlots() {
-        return Math.min(1 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().getSlots());
+        return Math.min(1 + getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().getSlots());
     }
 
     protected int calculateItemsToSend() {
-        return switch (this.getInstalledUpgrades(Upgrades.SPEED)) {
+        return switch (getInstalledUpgrades(Upgrades.SPEED)) {
             default -> 1;
             case 1 -> 8;
             case 2 -> 32;

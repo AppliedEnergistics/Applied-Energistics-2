@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
@@ -75,18 +76,13 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu<ItemLevelEmitterPart> 
     protected void setupConfig() {
         this.setupUpgrades();
 
-        var inv = getHost().getInventoryByName("config");
+        var inv = getHost().getSubInventory(ISegmentedInventory.CONFIG);
         this.addSlot(new FakeTypeOnlySlot(inv, 0), SlotSemantic.CONFIG);
     }
 
     @Override
     protected boolean supportCapacity() {
         return false;
-    }
-
-    @Override
-    public int availableUpgrades() {
-        return 1;
     }
 
     @Override

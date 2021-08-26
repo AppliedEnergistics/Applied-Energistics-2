@@ -35,7 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
@@ -79,11 +79,11 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
 
             if (te instanceof IPartHost) {
                 final SelectedPart sp = ((IPartHost) te).selectPart(context.getClickLocation());
-                if (sp.part instanceof IUpgradeableHost) {
-                    upgrades = ((IUpgradeableHost) sp.part).getUpgradeInventory();
+                if (sp.part instanceof IUpgradeableObject) {
+                    upgrades = ((IUpgradeableObject) sp.part).getUpgrades();
                 }
-            } else if (te instanceof IUpgradeableHost) {
-                upgrades = ((IUpgradeableHost) te).getUpgradeInventory();
+            } else if (te instanceof IUpgradeableObject) {
+                upgrades = ((IUpgradeableObject) te).getUpgrades();
             }
 
             ItemStack heldStack = player.getItemInHand(hand);

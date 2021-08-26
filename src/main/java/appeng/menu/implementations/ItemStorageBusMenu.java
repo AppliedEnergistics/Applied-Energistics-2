@@ -31,6 +31,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.ItemStorageBusScreen;
@@ -69,7 +70,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
 
     @Override
     protected void setupConfig() {
-        final IItemHandler config = this.getHost().getInventoryByName("config");
+        final IItemHandler config = this.getHost().getSubInventory(ISegmentedInventory.CONFIG);
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
                 int invSlot = y * 9 + x;
@@ -90,11 +91,6 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
     }
 
     @Override
-    public int availableUpgrades() {
-        return 5;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         this.setReadWriteMode(cm.getSetting(Settings.ACCESS));
@@ -103,7 +99,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
+        final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
 
         return upgrades > idx;
     }
@@ -114,7 +110,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
             return;
         }
 
-        ItemHandlerUtil.clear(this.getHost().getInventoryByName("config"));
+        ItemHandlerUtil.clear(this.getHost().getSubInventory(ISegmentedInventory.CONFIG));
         this.broadcastChanges();
     }
 
@@ -124,7 +120,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
             return;
         }
 
-        var inv = getHost().getInventoryByName("config");
+        var inv = getHost().getSubInventory(ISegmentedInventory.CONFIG);
 
         var cellInv = getHost().getInternalHandler();
 

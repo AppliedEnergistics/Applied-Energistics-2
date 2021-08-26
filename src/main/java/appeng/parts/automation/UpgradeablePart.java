@@ -20,27 +20,35 @@ package appeng.parts.automation;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.parts.BasicStatePart;
 import appeng.util.ConfigManager;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
-public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEngInventory {
-    private final IConfigManager manager;
+public abstract class UpgradeablePart extends BasicStatePart
+        implements IAEAppEngInventory, IConfigurableObject, IUpgradeableObject {
+    private final IConfigManager config;
     private final UpgradeInventory upgrades;
 
-    public UpgradeablePart(final ItemStack is) {
+    public UpgradeablePart(ItemStack is) {
         super(is);
         this.upgrades = new StackUpgradeInventory(this.getItemStack(), this, this.getUpgradeSlots());
-        this.manager = new ConfigManager(this::onSettingChanged);
+        this.config = new ConfigManager(this::onSettingChanged);
     }
 
     protected int getUpgradeSlots() {
@@ -65,7 +73,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     }
 
     protected boolean isSleeping() {
-        if (this.getInstalledUpgrades(Upgrades.REDSTONE) > 0) {
+        if (upgrades.getInstalledUpgrades(Upgrades.REDSTONE) > 0) {
             switch (this.getRSMode()) {
                 case IGNORE:
                     return false;
@@ -96,11 +104,6 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     }
 
     @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        return this.upgrades.getInstalledUpgrades(u);
-    }
-
-    @Override
     public boolean canConnectRedstone() {
         return this.upgrades.getMaxInstalled(Upgrades.REDSTONE) > 0;
     }
@@ -108,14 +111,14 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     @Override
     public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
-        this.manager.readFromNBT(extra);
+        this.config.readFromNBT(extra);
         this.upgrades.readFromNBT(extra, "upgrades");
     }
 
     @Override
     public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
-        this.manager.writeToNBT(extra);
+        this.config.writeToNBT(extra);
         this.upgrades.writeToNBT(extra, "upgrades");
     }
 
@@ -130,16 +133,27 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
 
     @Override
     public IConfigManager getConfigManager() {
-        return this.manager;
+        return this.config;
     }
 
+    @Nullable
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("upgrades")) {
-            return this.upgrades;
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(UPGRADES)) {
+            return upgrades;
+        } else {
+            return super.getSubInventory(id);
         }
+    }
 
-        return null;
+    @Nonnull
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return upgrades;
+    }
+
+    protected final int getInstalledUpgrades(Upgrades u) {
+        return upgrades.getInstalledUpgrades(u);
     }
 
     public RedstoneMode getRSMode() {

@@ -128,9 +128,8 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     .getInventory(StorageChannels.items());
             final IEnergyService energy = grid.getEnergyService();
             final ICraftingService cg = grid.getCraftingService();
-            final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
-            final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager()
-                    .getSetting(Settings.SCHEDULING_MODE);
+            final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
+            final SchedulingMode schedulingMode = this.getConfigManager().getSetting(Settings.SCHEDULING_MODE);
 
             if (destination != null) {
                 int x = 0;
@@ -208,7 +207,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
     @Override
     public RedstoneMode getRSMode() {
-        return (RedstoneMode) this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
+        return this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
     }
 
     @Override

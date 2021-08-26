@@ -20,6 +20,8 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -42,6 +44,20 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 public class PatternTerminalPart extends AbstractTerminalPart {
+
+    /**
+     * Identifies the sub-inventory used by the pattern terminal to encode the inputs of crafting or processing
+     * patterns.
+     */
+    public static final ResourceLocation INV_CRAFTING = new ResourceLocation(
+            "appliedenergistics2:pattern_terminal_crafting");
+
+    /**
+     * Identifies the sub-inventory used by the pattern terminal to encode the outputs of crafting or processing
+     * patterns.
+     */
+    public static final ResourceLocation INV_OUTPUT = new ResourceLocation(
+            "appliedenergistics2:pattern_terminal_output");
 
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/pattern_terminal_off");
@@ -156,21 +172,18 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         this.substitute = canSubstitute;
     }
 
+    @Nullable
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("crafting")) {
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(INV_CRAFTING)) {
             return this.crafting;
-        }
-
-        if (name.equals("output")) {
+        } else if (id.equals(INV_OUTPUT)) {
             return this.output;
-        }
-
-        if (name.equals("pattern")) {
+        } else if (id.equals(PATTERNS)) {
             return this.pattern;
+        } else {
+            return super.getSubInventory(id);
         }
-
-        return super.getInventoryByName(name);
     }
 
     @Override

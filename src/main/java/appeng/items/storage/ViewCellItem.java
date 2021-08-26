@@ -34,6 +34,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
@@ -113,7 +114,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 

@@ -25,30 +25,24 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityFluidInterface;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.IFluidInterfaceHost;
-import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -57,8 +51,7 @@ import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class FluidInterfacePart extends BasicStatePart
-        implements IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
+public class FluidInterfacePart extends BasicStatePart implements IFluidInterfaceHost, IConfigurableFluidInventory {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_base");
 
     private static final IGridNodeListener<FluidInterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
@@ -140,11 +133,6 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public BlockEntity getBlockEntity() {
-        return super.getHost().getBlockEntity();
-    }
-
-    @Override
     public IPartModel getStaticModels() {
         if (this.isActive() && this.isPowered()) {
             return MODELS_HAS_CHANNEL;
@@ -156,33 +144,8 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public int getPriority() {
-        return this.duality.getPriority();
-    }
-
-    @Override
-    public void setPriority(final int newValue) {
-        this.duality.setPriority(newValue);
-    }
-
-    @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
         return this.duality.getCapability(capabilityClass, this.getSide());
-    }
-
-    @Override
-    public int getInstalledUpgrades(Upgrades u) {
-        return this.duality.getInstalledUpgrades(u);
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return this.duality.getConfigManager();
-    }
-
-    @Override
-    public IItemHandler getInventoryByName(String name) {
-        return this.duality.getInventoryByName(name);
     }
 
     @Override
@@ -193,11 +156,6 @@ public class FluidInterfacePart extends BasicStatePart
     @Override
     public ItemStack getItemStackRepresentation() {
         return AEParts.FLUID_INTERFACE.stack();
-    }
-
-    @Override
-    public MenuType<?> getMenuType() {
-        return FluidInterfaceMenu.TYPE;
     }
 
     @Override

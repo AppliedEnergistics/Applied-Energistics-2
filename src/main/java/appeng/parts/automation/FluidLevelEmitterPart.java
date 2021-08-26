@@ -109,6 +109,11 @@ public class FluidLevelEmitterPart extends UpgradeablePart
         this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
     }
 
+    @Override
+    protected int getUpgradeSlots() {
+        return 0;
+    }
+
     public long getReportingValue() {
         return this.reportingValue;
     }

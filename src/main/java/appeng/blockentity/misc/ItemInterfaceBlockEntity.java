@@ -28,7 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,24 +39,23 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
-import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
-import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IItemInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
-        implements IItemInterfaceHost, IPriorityHost {
+        implements IItemInterfaceHost, IPriorityHost, IUpgradeableObject, IConfigurableObject {
 
     private static final IGridNodeListener<ItemInterfaceBlockEntity> NODE_LISTENER = new BlockEntityNodeListener<>() {
         @Override
@@ -176,11 +175,6 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        return this.duality.getInventoryByName(name);
-    }
-
-    @Override
     public IItemHandler getInternalInventory() {
         return this.duality.getInternalInventory();
     }
@@ -209,26 +203,6 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
         return this;
     }
 
-    @Override
-    public IConfigManager getConfigManager() {
-        return this.duality.getConfigManager();
-    }
-
-    @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        return this.duality.getInstalledUpgrades(u);
-    }
-
-    @Override
-    public int getPriority() {
-        return this.duality.getPriority();
-    }
-
-    @Override
-    public void setPriority(final int newValue) {
-        this.duality.setPriority(newValue);
-    }
-
     /**
      * @return True if this interface is omni-directional.
      */
@@ -250,8 +224,10 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
         return AEBlocks.ITEM_INTERFACE.stack();
     }
 
+    @Nullable
     @Override
-    public MenuType<?> getMenuType() {
-        return ItemInterfaceMenu.TYPE;
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        var inv = getInterfaceDuality().getSubInventory(id);
+        return inv != null ? inv : super.getSubInventory(id);
     }
 }

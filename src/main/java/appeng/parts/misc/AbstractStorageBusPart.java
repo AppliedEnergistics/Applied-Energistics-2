@@ -394,14 +394,14 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>, A> extends U
 
                 this.handler = new MEInventoryHandler<>(inv, getStorageChannel());
 
-                this.handler.setBaseAccess((AccessRestriction) this.getConfigManager().getSetting(Settings.ACCESS));
-                this.handler.setWhitelist(this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
+                this.handler.setBaseAccess(this.getConfigManager().getSetting(Settings.ACCESS));
+                this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                         : IncludeExclude.WHITELIST);
                 this.handler.setPriority(this.priority);
 
                 var priorityList = getStorageChannel().createList();
 
-                var slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+                var slotsToUse = 18 + getInstalledUpgrades(Upgrades.CAPACITY) * 9;
                 for (var x = 0; x < getStackConfigSize() && x < slotsToUse; x++) {
                     var is = getStackInConfigSlot(x);
                     if (is != null) {
@@ -409,9 +409,9 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>, A> extends U
                     }
                 }
 
-                if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+                if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
                     this.handler.setPartitionList(new FuzzyPriorityList<>(priorityList,
-                            (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
+                            this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
                 } else {
                     this.handler.setPartitionList(new PrecisePriorityList<>(priorityList));
                 }

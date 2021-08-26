@@ -29,7 +29,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.parts.IPart;
 import appeng.api.parts.PartItemStack;
 import appeng.client.gui.AEBaseScreen;
@@ -41,7 +41,7 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.implementations.UpgradeableMenu;
 
 /**
- * This screen adds the ability for {@link IUpgradeableHost} screens to show the upgrade inventory and the player's
+ * This screen adds the ability for {@link IUpgradeableObject} screens to show the upgrade inventory and the player's
  * toolbox to more easily install/remove upgrades.
  */
 public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T> {
@@ -62,7 +62,7 @@ public class UpgradeableScreen<T extends UpgradeableMenu> extends AEBaseScreen<T
      * compatible.
      */
     protected List<Component> getCompatibleUpgrades() {
-        IUpgradeableHost host = menu.getHost();
+        IUpgradeableObject host = menu.getHost();
 
         Item item;
         if (host instanceof IPart) {

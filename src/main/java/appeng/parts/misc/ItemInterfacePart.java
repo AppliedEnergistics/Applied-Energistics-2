@@ -21,6 +21,8 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -28,14 +30,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -47,7 +47,6 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IItemInterfaceHost;
-import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -56,7 +55,7 @@ import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceHost, IPriorityHost {
+public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
 
@@ -110,11 +109,6 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     }
 
     @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        return this.duality.getInstalledUpgrades(u);
-    }
-
-    @Override
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.duality.readFromNBT(data);
@@ -148,11 +142,6 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        return this.duality.getInventoryByName(name);
-    }
-
-    @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
             MenuOpener.open(ItemInterfaceMenu.TYPE, p, MenuLocator.forPart(this));
@@ -168,11 +157,6 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     @Override
     public EnumSet<Direction> getTargets() {
         return EnumSet.of(this.getSide());
-    }
-
-    @Override
-    public BlockEntity getBlockEntity() {
-        return super.getHost().getBlockEntity();
     }
 
     @Override
@@ -194,6 +178,13 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
         } else {
             return MODELS_OFF;
         }
+    }
+
+    @Nullable
+    @Override
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        var inv = duality.getSubInventory(id);
+        return inv != null ? inv : super.getSubInventory(id);
     }
 
     @Override

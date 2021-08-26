@@ -20,9 +20,9 @@ package appeng.menu.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.client.gui.implementations.ItemIOBusScreen;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.FakeTypeOnlySlot;
@@ -56,7 +56,7 @@ public class ItemIOBusMenu extends UpgradeableMenu<SharedItemBusPart> {
     protected void setupConfig() {
         this.setupUpgrades();
 
-        final IItemHandler inv = this.getHost().getInventoryByName("config");
+        var inv = this.getHost().getSubInventory(ISegmentedInventory.CONFIG);
         final SlotSemantic s = SlotSemantic.CONFIG;
 
         this.addSlot(new FakeTypeOnlySlot(inv, 0), s);

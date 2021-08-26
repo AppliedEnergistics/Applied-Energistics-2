@@ -39,6 +39,11 @@ import appeng.util.Platform;
 
 public class CraftingTerminalPart extends AbstractTerminalPart {
 
+    /**
+     * A sub-inventory that contains crafting ingredients used in the crafting grid.
+     */
+    public static final ResourceLocation INV_CRAFTING = AppEng.makeId("crafting_terminal_crafting");
+
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/crafting_terminal_off");
     @PartModels
@@ -86,11 +91,12 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("crafting")) {
-            return this.craftingGrid;
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(INV_CRAFTING)) {
+            return craftingGrid;
+        } else {
+            return super.getSubInventory(id);
         }
-        return super.getInventoryByName(name);
     }
 
     @Override

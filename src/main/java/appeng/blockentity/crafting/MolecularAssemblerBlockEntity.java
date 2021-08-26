@@ -21,12 +21,14 @@ package appeng.blockentity.crafting;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -42,8 +44,10 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IPowerChannelState;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ICraftingMachine;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -52,10 +56,10 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
@@ -75,9 +79,12 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
-        implements IUpgradeableHost, IGridTickable, ICraftingMachine, IPowerChannelState {
+        implements IUpgradeableObject, IGridTickable, ICraftingMachine, IPowerChannelState {
 
-    public static final String INVENTORY_MAIN = "molecular_assembler";
+    /**
+     * Identifies the sub-inventory used by molecular assemblers to store the input items for the crafting process.
+     */
+    public static final ResourceLocation INV_MAIN = AppEng.makeId("molecular_assembler");
 
     private final CraftingContainer craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
@@ -171,11 +178,6 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        return this.upgrades.getInstalledUpgrades(u);
-    }
-
-    @Override
     protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean oldPower = this.isPowered;
@@ -264,21 +266,14 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public IConfigManager getConfigManager() {
-        return null;
-    }
-
-    @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("upgrades")) {
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
-        }
-
-        if (name.equals("molecular_assembler")) {
+        } else if (id.equals(INV_MAIN)) {
             return this.internalInv;
         }
 
-        return null;
+        return super.getSubInventory(id);
     }
 
     @Override
@@ -510,6 +505,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Nullable
     public AssemblerAnimationStatus getAnimationStatus() {
         return this.animationStatus;
+    }
+
+    @Nonnull
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return upgrades;
     }
 
     private class CraftingGridFilter implements IAEItemFilter {

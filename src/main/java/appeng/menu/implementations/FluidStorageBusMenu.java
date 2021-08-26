@@ -70,7 +70,7 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
     @Override
     protected boolean isValidForConfig(int slot, IAEFluidStack fs) {
         if (this.supportCapacity()) {
-            final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
+            final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
 
             final int y = slot / 9;
 
@@ -88,11 +88,6 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
     }
 
     @Override
-    public int availableUpgrades() {
-        return 5;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         this.setReadWriteMode(cm.getSetting(Settings.ACCESS));
@@ -101,7 +96,7 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
+        final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
 
         return upgrades > idx;
     }

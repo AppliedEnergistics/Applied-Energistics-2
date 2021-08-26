@@ -41,7 +41,8 @@ import appeng.menu.slot.RestrictedInputSlot;
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen
  */
-public class MolecularAssemblerMenu extends UpgradeableMenu implements IProgressProvider {
+public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBlockEntity>
+        implements IProgressProvider {
 
     public static final MenuType<MolecularAssemblerMenu> TYPE = MenuTypeBuilder
             .create(MolecularAssemblerMenu::new, MolecularAssemblerBlockEntity.class)
@@ -60,7 +61,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu implements IProgress
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        final IItemHandler mac = this.getHost().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
+        final IItemHandler mac = this.getHost().getSubInventory(MolecularAssemblerBlockEntity.INV_MAIN);
 
         final ItemStack is = mac.getStackInSlot(10);
         if (is.isEmpty()) {
@@ -80,7 +81,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu implements IProgress
 
     @Override
     protected void setupConfig() {
-        final IItemHandler mac = this.getHost().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
+        final IItemHandler mac = this.getHost().getSubInventory(MolecularAssemblerBlockEntity.INV_MAIN);
 
         for (int i = 0; i < 9; i++) {
             this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_CRAFTING_GRID);
@@ -98,11 +99,6 @@ public class MolecularAssemblerMenu extends UpgradeableMenu implements IProgress
     @Override
     protected boolean supportCapacity() {
         return false;
-    }
-
-    @Override
-    public int availableUpgrades() {
-        return 5;
     }
 
     @Override

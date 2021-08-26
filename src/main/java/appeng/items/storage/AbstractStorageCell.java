@@ -48,6 +48,7 @@ import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.InventoryAdaptor;
 
@@ -108,7 +109,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 

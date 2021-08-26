@@ -76,11 +76,6 @@ public class ItemInterfaceMenu extends UpgradeableMenu<IItemInterfaceHost> {
     }
 
     @Override
-    public int availableUpgrades() {
-        return 1;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setBlockingMode(cm.getSetting(Settings.BLOCK));
         this.setInterfaceTerminalMode(cm.getSetting(Settings.INTERFACE_TERMINAL));

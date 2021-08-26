@@ -43,8 +43,6 @@ import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
@@ -98,6 +96,11 @@ public class EnergyLevelEmitterPart extends UpgradeablePart implements IEnergyWa
         this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
+    }
+
+    @Override
+    protected int getUpgradeSlots() {
+        return 0;
     }
 
     public long getReportingValue() {
@@ -165,10 +168,6 @@ public class EnergyLevelEmitterPart extends UpgradeablePart implements IEnergyWa
         return;
     }
 
-    private void updateReportingValue(final IMEMonitor<IAEItemStack> monitor) {
-        this.updateState();
-    }
-
     @Override
     public void updateWatcher(final IEnergyWatcher newWatcher) {
         this.energyWatcher = newWatcher;
@@ -231,11 +230,6 @@ public class EnergyLevelEmitterPart extends UpgradeablePart implements IEnergyWa
 
     @Override
     public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
-        this.configureWatchers();
-    }
-
-    @Override
-    public void upgradesChanged() {
         this.configureWatchers();
     }
 

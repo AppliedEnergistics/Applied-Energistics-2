@@ -158,7 +158,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
 
     @Override
     public RedstoneMode getRSMode() {
-        return (RedstoneMode) this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
+        return this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
     }
 
     @Nonnull

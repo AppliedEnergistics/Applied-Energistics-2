@@ -35,8 +35,10 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.AEBaseMenu;
@@ -47,7 +49,7 @@ import appeng.menu.slot.OptionalFakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.automation.ExportBusPart;
 
-public abstract class UpgradeableMenu<T extends IUpgradeableHost> extends AEBaseMenu implements IOptionalSlotHost {
+public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBaseMenu implements IOptionalSlotHost {
 
     private final T host;
     @GuiSync(0)
@@ -104,11 +106,10 @@ public abstract class UpgradeableMenu<T extends IUpgradeableHost> extends AEBase
     protected abstract void setupConfig();
 
     protected final void setupUpgrades() {
-        final IItemHandler upgrades = this.getHost().getUpgradeInventory();
+        final IItemHandler upgrades = this.getHost().getUpgrades();
 
-        for (int i = 0; i < availableUpgrades(); i++) {
-            RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades,
-                    i);
+        for (int i = 0; i < getUpgrades().getSlots(); i++) {
+            var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, i);
             slot.setNotDraggable();
             this.addSlot(slot, SlotSemantic.UPGRADE);
         }
@@ -121,16 +122,12 @@ public abstract class UpgradeableMenu<T extends IUpgradeableHost> extends AEBase
         return true;
     }
 
-    public int availableUpgrades() {
-        return 4;
-    }
-
     @Override
     public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (isServer()) {
-            this.loadSettingsFromHost(getHost().getConfigManager());
+        if (isServer() && getHost() instanceof IConfigurableObject configurableObject) {
+            this.loadSettingsFromHost(configurableObject.getConfigManager());
         }
 
         this.checkToolbox();
@@ -180,7 +177,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableHost> extends AEBase
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        int capacityUpgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
+        int capacityUpgrades = this.getHost().getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
         return idx == 1 && capacityUpgrades >= 1
                 || idx == 2 && capacityUpgrades >= 2;
     }
@@ -221,8 +218,12 @@ public abstract class UpgradeableMenu<T extends IUpgradeableHost> extends AEBase
         return this.host;
     }
 
+    public final IUpgradeInventory getUpgrades() {
+        return getHost().getUpgrades();
+    }
+
     public final boolean hasUpgrade(Upgrades upgrade) {
-        return this.host.getInstalledUpgrades(upgrade) > 0;
+        return getUpgrades().getInstalledUpgrades(upgrade) > 0;
     }
 
 }

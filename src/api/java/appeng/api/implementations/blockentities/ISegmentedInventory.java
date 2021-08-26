@@ -23,17 +23,50 @@
 
 package appeng.api.implementations.blockentities;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 
+/**
+ * Allows access to specific segments of a machines inventory.
+ */
+@FunctionalInterface
 public interface ISegmentedInventory {
+    /**
+     * Identifies an inventory that contains fake items for the purpose of configuring a filter or interface
+     * auto-stocking.
+     */
+    ResourceLocation CONFIG = new ResourceLocation("appliedenergistics2:config");
+
+    /**
+     * Identifies the sub-inventory that contains installed upgrades. See
+     * {@link appeng.api.implementations.IUpgradeInventory}.
+     */
+    ResourceLocation UPGRADES = new ResourceLocation("appliedenergistics2:upgrades");
+
+    /**
+     * Identifies the sub-inventory used locally by the machine to store items.
+     */
+    ResourceLocation STORAGE = new ResourceLocation("appliedenergistics2:storage");
+
+    /**
+     * Identifies the sub-inventory used by interfaces or molecular assemblers to store crafting patterns.
+     */
+    ResourceLocation PATTERNS = new ResourceLocation("appliedenergistics2:patterns");
+
+    /**
+     * Identifies the sub-inventory used to store storage cells in machines such as the cell workbench, drive, ME chest.
+     */
+    ResourceLocation CELLS = new ResourceLocation("appliedenergistics2:cells");
 
     /**
      * Access an internal inventory, note, not all inventories contain real items, some may be ghost items, and treating
      * them a real inventories will result in duplication.
      *
-     * @param name inventory name
-     *
-     * @return inventory with inventory name
+     * @param id Identifier for the inventory segment.
+     * @return Null if the machine has no sub-inventory with the given id.
      */
-    IItemHandler getInventoryByName(String name);
+    @Nullable
+    IItemHandler getSubInventory(ResourceLocation id);
 }

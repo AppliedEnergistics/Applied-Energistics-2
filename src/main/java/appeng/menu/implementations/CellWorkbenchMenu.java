@@ -20,16 +20,19 @@ package appeng.menu.implementations;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
@@ -100,21 +103,20 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
     @Override
     protected void setupConfig() {
-        final IItemHandler cell = this.getHost().getInventoryByName("cell");
+        final IItemHandler cell = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
                 SlotSemantic.STORAGE_CELL);
 
-        final IItemHandler inv = this.getHost().getInventoryByName("config");
-        final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler(
-                this::getCellUpgradeInventory);
+        var inv = getConfigInventory();
 
         for (int i = 0; i < 7 * 9; i++) {
             this.addSlot(new FakeTypeOnlySlot(inv, i), SlotSemantic.CONFIG);
         }
 
-        // We support up to 24 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
+        // We support up to 8 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
         // while the active number of slots changes depending on the item inserted
-        for (int i = 0; i < 24; i++) {
+        var upgradeInventory = new WrapperSupplierItemHandler(this::getUpgrades);
+        for (int i = 0; i < 8; i++) {
             OptionalRestrictedInputSlot slot = new OptionalRestrictedInputSlot(
                     RestrictedInputSlot.PlacableItemType.UPGRADES,
                     upgradeInventory, this, i, i, this.getPlayerInventory());
@@ -122,13 +124,9 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         }
     }
 
-    @Override
-    public int availableUpgrades() {
-        return getCellUpgradeInventory().getSlots();
-    }
-
     public ItemStack getWorkbenchItem() {
-        return getHost().getInventoryByName("cell").getStackInSlot(0);
+        var cells = Objects.requireNonNull(getHost().getSubInventory(ISegmentedInventory.CELLS));
+        return cells.getStackInSlot(0);
     }
 
     @Override
@@ -139,13 +137,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        return idx < this.availableUpgrades();
-    }
-
-    public IItemHandler getCellUpgradeInventory() {
-        final IItemHandler upgradeInventory = getHost().getCellUpgradeInventory();
-
-        return upgradeInventory == null ? EmptyHandler.INSTANCE : upgradeInventory;
+        return idx < getUpgrades().getSlots();
     }
 
     @Override
@@ -159,7 +151,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         if (isClient()) {
             sendClientAction(ACTION_CLEAR);
         } else {
-            ItemHandlerUtil.clear(this.getHost().getInventoryByName("config"));
+            ItemHandlerUtil.clear(getConfigInventory());
             this.broadcastChanges();
         }
     }
@@ -178,7 +170,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
             return;
         }
 
-        final IItemHandler inv = this.getHost().getInventoryByName("config");
+        final IItemHandler inv = getConfigInventory();
 
         final ItemStack is = getWorkbenchItem();
         final IStorageChannel<?> channel = is.getItem() instanceof IStorageCell
@@ -197,6 +189,11 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         }
 
         this.broadcastChanges();
+    }
+
+    @Nonnull
+    private IItemHandler getConfigInventory() {
+        return Objects.requireNonNull(this.getHost().getSubInventory(ISegmentedInventory.CONFIG));
     }
 
     private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,

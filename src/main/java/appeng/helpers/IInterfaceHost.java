@@ -23,12 +23,16 @@ import java.util.EnumSet;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.util.IConfigurableObject;
 
-public interface IInterfaceHost extends IUpgradeableHost {
-    EnumSet<Direction> getTargets();
-
+public interface IInterfaceHost extends IConfigurableObject, IUpgradeableObject, IPriorityHost {
+    /**
+     * @return The block entity that is in-world and hosts the interface.
+     */
     BlockEntity getBlockEntity();
+
+    EnumSet<Direction> getTargets();
 
     void saveChanges();
 }

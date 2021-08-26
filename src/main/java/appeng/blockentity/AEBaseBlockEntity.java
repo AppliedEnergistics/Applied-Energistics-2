@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import io.netty.buffer.Unpooled;
 
@@ -37,6 +38,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -52,7 +54,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.util.IBlockEntityDrops;
-import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
@@ -67,7 +68,8 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.fluid.AEFluidInventory;
 
-public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBlockEntityDrops, ICustomNameObject {
+public class AEBaseBlockEntity extends BlockEntity
+        implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory {
 
     private static final ThreadLocal<WeakReference<AEBaseBlockEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
@@ -315,36 +317,68 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
     }
 
     /**
+     * null means nothing to store...
+     *
+     * @param from source of settings
+     * @return compound of source
+     */
+    public CompoundTag downloadSettings(final SettingsFrom from) {
+        final CompoundTag output = new CompoundTag();
+
+        if (this.hasCustomInventoryName()) {
+            final CompoundTag dsp = new CompoundTag();
+            dsp.putString("Name", this.customName);
+            output.put("display", dsp);
+        }
+
+        if (this instanceof IConfigurableObject configurableObject) {
+            configurableObject.getConfigManager().writeToNBT(output);
+        }
+
+        if (this instanceof IPriorityHost pHost) {
+            output.putInt("priority", pHost.getPriority());
+        }
+
+        var inv = getSubInventory(ISegmentedInventory.CONFIG);
+        if (inv instanceof AppEngInternalAEInventory) {
+            ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
+        }
+
+        if (this instanceof IConfigurableFluidInventory) {
+            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+            if (tank instanceof AEFluidInventory) {
+                ((AEFluidInventory) tank).writeToNBT(output, "config");
+            }
+        }
+        return output.isEmpty() ? null : output;
+    }
+
+    /**
      * depending on the from, different settings will be accepted, don't call this with null
      *
      * @param from     source of settings
      * @param compound compound of source
      */
     public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
-        if (this instanceof IConfigurableObject) {
-            final IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
-            if (cm != null) {
-                cm.readFromNBT(compound);
-            }
+        if (this instanceof IConfigurableObject configurableObject) {
+            configurableObject.getConfigManager().readFromNBT(compound);
         }
 
         if (this instanceof IPriorityHost pHost) {
             pHost.setPriority(compound.getInt("priority"));
         }
 
-        if (this instanceof ISegmentedInventory) {
-            final IItemHandler inv = ((ISegmentedInventory) this).getInventoryByName("config");
-            if (inv instanceof AppEngInternalAEInventory target) {
-                final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
-                tmp.readFromNBT(compound, "config");
-                for (int x = 0; x < tmp.getSlots(); x++) {
-                    target.setStackInSlot(x, tmp.getStackInSlot(x));
-                }
+        var inv = getSubInventory(ISegmentedInventory.CONFIG);
+        if (inv instanceof AppEngInternalAEInventory target) {
+            final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
+            tmp.readFromNBT(compound, "config");
+            for (int x = 0; x < tmp.getSlots(); x++) {
+                target.setStackInSlot(x, tmp.getStackInSlot(x));
             }
         }
 
-        if (this instanceof IConfigurableFluidInventory) {
-            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+        if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
+            final IFluidHandler tank = configurableFluidInventory.getFluidInventoryByName("config");
             if (tank instanceof AEFluidInventory target) {
                 final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
                 tmp.readFromNBT(compound, "config");
@@ -369,47 +403,6 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
 
     public void getNoDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
 
-    }
-
-    /**
-     * null means nothing to store...
-     *
-     * @param from source of settings
-     * @return compound of source
-     */
-    public CompoundTag downloadSettings(final SettingsFrom from) {
-        final CompoundTag output = new CompoundTag();
-
-        if (this.hasCustomInventoryName()) {
-            final CompoundTag dsp = new CompoundTag();
-            dsp.putString("Name", this.customName);
-            output.put("display", dsp);
-        }
-
-        if (this instanceof IConfigurableObject) {
-            final IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
-            if (cm != null) {
-                cm.writeToNBT(output);
-            }
-        }
-
-        if (this instanceof IPriorityHost pHost) {
-            output.putInt("priority", pHost.getPriority());
-        }
-
-        if (this instanceof ISegmentedInventory) {
-            final IItemHandler inv = ((ISegmentedInventory) this).getInventoryByName("config");
-            if (inv instanceof AppEngInternalAEInventory) {
-                ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
-            }
-        }
-        if (this instanceof IConfigurableFluidInventory) {
-            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
-            if (tank instanceof AEFluidInventory) {
-                ((AEFluidInventory) tank).writeToNBT(output, "config");
-            }
-        }
-        return output.isEmpty() ? null : output;
     }
 
     @Override
@@ -467,6 +460,12 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IBloc
 
     public void setName(final String name) {
         this.customName = name;
+    }
+
+    @Nullable
+    @OverridingMethodsMustInvokeSuper
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        return null;
     }
 
     @Nonnull

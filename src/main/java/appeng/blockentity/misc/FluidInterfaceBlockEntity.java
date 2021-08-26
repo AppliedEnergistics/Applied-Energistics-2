@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,26 +32,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
-import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityFluidInterface;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.IFluidInterfaceHost;
-import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.menu.implementations.FluidInterfaceMenu;
 
 public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
-        implements IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
+        implements IFluidInterfaceHost, IConfigurableFluidInventory {
 
     private static final IGridNodeListener<FluidInterfaceBlockEntity> NODE_LISTENER = new BlockEntityNodeListener<>() {
         @Override
@@ -111,37 +105,12 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public int getPriority() {
-        return this.duality.getPriority();
-    }
-
-    @Override
-    public void setPriority(final int newValue) {
-        this.duality.setPriority(newValue);
-    }
-
-    @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         LazyOptional<T> result = this.duality.getCapability(capability, facing);
         if (result.isPresent()) {
             return result;
         }
         return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public int getInstalledUpgrades(Upgrades u) {
-        return this.duality.getInstalledUpgrades(u);
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return this.duality.getConfigManager();
-    }
-
-    @Override
-    public IItemHandler getInventoryByName(String name) {
-        return this.duality.getInventoryByName(name);
     }
 
     @Override
@@ -154,8 +123,4 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
         return AEBlocks.FLUID_INTERFACE.stack();
     }
 
-    @Override
-    public MenuType<?> getMenuType() {
-        return FluidInterfaceMenu.TYPE;
-    }
 }

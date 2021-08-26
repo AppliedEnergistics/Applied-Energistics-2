@@ -76,6 +76,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -396,7 +397,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 

@@ -23,35 +23,16 @@
 
 package appeng.api.implementations;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.IItemHandler;
-
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
-import appeng.api.util.IConfigurableObject;
-
-public interface IUpgradeableHost extends IConfigurableObject, ISegmentedInventory {
-
+/**
+ * Implemented by {@link net.minecraft.world.level.block.entity.BlockEntity block entities} and
+ * {@link appeng.api.parts.IPart parts} that are upgradable through upgrade cards.
+ */
+public interface IUpgradeableObject {
     /**
-     * determine how many of an upgrade are installed.
-     */
-    int getInstalledUpgrades(Upgrades u);
-
-    /**
-     * @return block entity
-     */
-    BlockEntity getBlockEntity();
-
-    /**
-     * @return The inventory used to store the upgrade cards.
+     * Gets the inventory that contains the upgrade cards for this upgradable object.
      */
     @Nonnull
-    default IItemHandler getUpgradeInventory() {
-        return Objects.requireNonNull(getInventoryByName("upgrades"));
-    }
-
+    IUpgradeInventory getUpgrades();
 }

@@ -78,7 +78,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
         this.copyMode.setState(this.menu.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
         boolean hasFuzzy = false;
-        final IItemHandler inv = this.menu.getCellUpgradeInventory();
+        final IItemHandler inv = this.menu.getUpgrades();
         for (int x = 0; x < inv.getSlots(); x++) {
             final ItemStack is = inv.getStackInSlot(x);
             if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule
