@@ -20,6 +20,7 @@ package appeng.menu.me.items;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -44,6 +45,7 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
+import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInvItemHandler;
 
@@ -69,7 +71,8 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
         super(TYPE, id, ip, host, false);
         this.craftingInventoryHost = (ISegmentedInventory) host;
 
-        final IItemHandler craftingGridInv = this.craftingInventoryHost.getInventoryByName("crafting");
+        final IItemHandler craftingGridInv = this.craftingInventoryHost
+                .getSubInventory(CraftingTerminalPart.INV_CRAFTING);
 
         for (int i = 0; i < 9; i++) {
             this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this, craftingGridInv, i),
@@ -110,11 +113,11 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("player")) {
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(IMenuCraftingPacket.PLAYER)) {
             return new PlayerInvWrapper(this.getPlayerInventory());
         }
-        return this.craftingInventoryHost.getInventoryByName(name);
+        return this.craftingInventoryHost.getSubInventory(id);
     }
 
     @Override

@@ -78,7 +78,7 @@ public class SpatialAnchorMenu extends AEBaseMenu {
 
         if (isServer()) {
             SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) this.getBlockEntity();
-            this.setOverlayMode((YesNo) anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));
+            this.setOverlayMode(anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));
 
             var gridNode = anchor.getGridNode();
 

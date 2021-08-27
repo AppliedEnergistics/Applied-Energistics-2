@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
@@ -36,6 +37,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,8 +60,10 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ICraftingMachine;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -80,6 +84,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.me.storage.ItemHandlerAdapter;
@@ -97,8 +102,9 @@ import appeng.util.item.AEItemStack;
 
 public class DualityItemInterface
         extends DualityInterface
-        implements IAEAppEngInventory,
-        IConfigManagerListener, ICraftingProvider, ICraftingRequester, IUpgradeableHost {
+        implements IAEAppEngInventory, IConfigManagerListener, ICraftingProvider, ICraftingRequester,
+        IUpgradeableObject,
+        IConfigurableObject {
 
     public static final int NUMBER_OF_STORAGE_SLOTS = 9;
     public static final int NUMBER_OF_CONFIG_SLOTS = 9;
@@ -573,7 +579,7 @@ public class DualityItemInterface
 
     private boolean handleCrafting(final int x, final InventoryAdaptor d, final IAEItemStack itemStack) {
         var grid = mainNode.getGrid();
-        if (grid != null && this.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
+        if (grid != null && upgrades.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
             return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
                     this.host.getBlockEntity().getLevel(), grid,
                     grid.getCraftingService(),
@@ -581,19 +587,6 @@ public class DualityItemInterface
         }
 
         return false;
-    }
-
-    @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        if (this.upgrades == null) {
-            return 0;
-        }
-        return this.upgrades.getInstalledUpgrades(u);
-    }
-
-    @Override
-    public BlockEntity getBlockEntity() {
-        return (BlockEntity) (this.host instanceof BlockEntity ? this.host : null);
     }
 
     /**
@@ -610,21 +603,14 @@ public class DualityItemInterface
         return null;
     }
 
-    @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("storage")) {
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.STORAGE)) {
             return this.storage;
-        }
-
-        if (name.equals("patterns")) {
+        } else if (id.equals(ISegmentedInventory.PATTERNS)) {
             return this.patterns;
-        }
-
-        if (name.equals("config")) {
+        } else if (id.equals(ISegmentedInventory.CONFIG)) {
             return this.config;
-        }
-
-        if (name.equals("upgrades")) {
+        } else if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
         }
 
@@ -642,7 +628,7 @@ public class DualityItemInterface
 
     @Override
     public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
-        if (this.getInstalledUpgrades(Upgrades.CRAFTING) == 0) {
+        if (upgrades.getInstalledUpgrades(Upgrades.CRAFTING) == 0) {
             this.cancelCrafting();
         }
         this.host.saveChanges();
@@ -964,4 +950,11 @@ public class DualityItemInterface
     public IGridNode getActionableNode() {
         return mainNode.getNode();
     }
+
+    @Nonnull
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return upgrades;
+    }
+
 }

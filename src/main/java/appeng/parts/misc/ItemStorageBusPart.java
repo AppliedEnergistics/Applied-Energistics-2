@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
@@ -114,12 +115,12 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IIt
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("config")) {
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.CONFIG)) {
             return this.config;
+        } else {
+            return super.getSubInventory(id);
         }
-
-        return super.getInventoryByName(name);
     }
 
     @Override

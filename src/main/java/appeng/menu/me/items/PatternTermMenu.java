@@ -18,6 +18,7 @@
 
 package appeng.menu.me.items;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -37,6 +38,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.ICraftingHelper;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
@@ -100,11 +102,11 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         super(TYPE, id, ip, monitorable, false);
         this.patternTerminal = (PatternTerminalPart) monitorable;
 
-        final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName("pattern");
-        final IItemHandler output = this.getPatternTerminal().getInventoryByName("output");
+        var patternInv = this.getPatternTerminal().getSubInventory(ISegmentedInventory.PATTERNS);
+        var output = this.getPatternTerminal().getSubInventory(PatternTerminalPart.INV_OUTPUT);
 
         // Create the 3x3 crafting input grid, which is used for both processing and crafting mode
-        this.craftingGridInv = this.getPatternTerminal().getInventoryByName("crafting");
+        this.craftingGridInv = this.getPatternTerminal().getSubInventory(PatternTerminalPart.INV_CRAFTING);
         for (int i = 0; i < 9; i++) {
             this.addSlot(this.craftingGridSlots[i] = new FakeCraftingMatrixSlot(this.craftingGridInv, i),
                     SlotSemantic.CRAFTING_GRID);
@@ -419,11 +421,11 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("player")) {
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(PLAYER)) {
             return new PlayerInvWrapper(this.getPlayerInventory());
         }
-        return this.getPatternTerminal().getInventoryByName(name);
+        return this.getPatternTerminal().getSubInventory(id);
     }
 
     @Override

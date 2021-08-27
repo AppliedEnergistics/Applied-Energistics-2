@@ -74,7 +74,7 @@ public class CondenserMenu extends AEBaseMenu implements IProgressProvider {
 
             this.requiredEnergy = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min(requiredEnergy, maxStorage);
             this.storedPower = (int) this.condenser.getStoredPower();
-            this.output = (CondenserOutput) this.condenser.getConfigManager().getSetting(Settings.CONDENSER_OUTPUT);
+            this.output = this.condenser.getConfigManager().getSetting(Settings.CONDENSER_OUTPUT);
         }
 
         super.broadcastChanges();

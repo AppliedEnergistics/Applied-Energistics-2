@@ -29,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,7 +41,9 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
 import appeng.api.features.InscriberProcessType;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
@@ -48,7 +51,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
-import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.definitions.AEBlocks;
@@ -57,7 +59,6 @@ import appeng.core.settings.TickRates;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.handlers.InscriberRecipe;
-import appeng.util.ConfigManager;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
@@ -70,11 +71,9 @@ import appeng.util.item.AEItemStack;
  * @version rv2
  * @since rv0
  */
-public class InscriberBlockEntity extends AENetworkPowerBlockEntity
-        implements IGridTickable, IUpgradeableHost {
+public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable, IUpgradeableObject {
     private final int maxProcessingTime = 100;
 
-    private final IConfigManager settings;
     private final UpgradeInventory upgrades;
     private int processingTime = 0;
     // cycles from 0 - 16, at 8 it preforms the action, at 16 it re-enables the
@@ -103,9 +102,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 .setIdlePowerUsage(0)
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(1600);
-        this.settings = new ConfigManager();
 
-        this.upgrades = new DefinitionUpgradeInventory(AEBlocks.INSCRIBER, this, this.getUpgradeSlots());
+        this.upgrades = new DefinitionUpgradeInventory(AEBlocks.INSCRIBER, this, 3);
 
         this.sideItemHandler.setMaxStackSize(1, 64);
 
@@ -113,10 +111,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         this.topItemHandlerExtern = new WrapperFilteredItemHandler(this.topItemHandler, filter);
         this.bottomItemHandlerExtern = new WrapperFilteredItemHandler(this.bottomItemHandler, filter);
         this.sideItemHandlerExtern = new WrapperFilteredItemHandler(this.sideItemHandler, filter);
-    }
-
-    private int getUpgradeSlots() {
-        return 3;
     }
 
     @Override
@@ -128,7 +122,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.upgrades.writeToNBT(data, "upgrades");
-        this.settings.writeToNBT(data);
         return data;
     }
 
@@ -136,7 +129,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     public void load(final CompoundTag data) {
         super.load(data);
         this.upgrades.readFromNBT(data, "upgrades");
-        this.settings.readFromNBT(data);
     }
 
     @Override
@@ -333,22 +325,16 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         return this.hasWork() ? TickRateModulation.URGENT : TickRateModulation.SLEEP;
     }
 
+    @Nullable
     @Override
-    public IConfigManager getConfigManager() {
-        return this.settings;
-    }
-
-    @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("inv")) {
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.STORAGE)) {
             return this.getInternalInventory();
-        }
-
-        if (name.equals("upgrades")) {
+        } else if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
         }
 
-        return null;
+        return super.getSubInventory(id);
     }
 
     @Override
@@ -362,9 +348,10 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
+    @Nonnull
     @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        return this.upgrades.getInstalledUpgrades(u);
+    public IUpgradeInventory getUpgrades() {
+        return upgrades;
     }
 
     public long getClientStart() {

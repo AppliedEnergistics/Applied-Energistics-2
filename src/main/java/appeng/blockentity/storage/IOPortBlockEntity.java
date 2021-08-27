@@ -22,9 +22,13 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -36,11 +40,12 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
-import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
@@ -57,6 +62,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.definitions.AEBlocks;
@@ -65,7 +71,6 @@ import appeng.me.helpers.MachineSource;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerListener;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -76,7 +81,7 @@ import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
 public class IOPortBlockEntity extends AENetworkInvBlockEntity
-        implements IUpgradeableHost, IConfigManagerListener, IGridTickable {
+        implements IUpgradeableObject, IConfigurableObject, IGridTickable {
     private static final int NUMBER_OF_CELL_SLOTS = 6;
     private static final int NUMBER_OF_UPGRADE_SLOTS = 3;
 
@@ -102,7 +107,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
-        this.manager = new ConfigManager(this);
+        this.manager = new ConfigManager((manager, setting) -> this.updateTask());
         this.manager.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         this.manager.registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY);
         this.manager.registerSetting(Settings.OPERATION_MODE, OperationMode.EMPTY);
@@ -164,11 +169,11 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     private boolean isEnabled() {
-        if (this.getInstalledUpgrades(Upgrades.REDSTONE) == 0) {
+        if (upgrades.getInstalledUpgrades(Upgrades.REDSTONE) == 0) {
             return true;
         }
 
-        final RedstoneMode rs = (RedstoneMode) this.manager.getSetting(Settings.REDSTONE_CONTROLLED);
+        final RedstoneMode rs = this.manager.getSetting(Settings.REDSTONE_CONTROLLED);
         if (rs == RedstoneMode.HIGH_SIGNAL) {
             return this.getRedstoneState();
         }
@@ -180,22 +185,22 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         return this.manager;
     }
 
+    @Nonnull
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("upgrades")) {
-            return this.upgrades;
-        }
-
-        if (name.equals("cells")) {
-            return this.combinedInventory;
-        }
-
-        return null;
+    public IUpgradeInventory getUpgrades() {
+        return this.upgrades;
     }
 
+    @Nullable
     @Override
-    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
-        this.updateTask();
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.UPGRADES)) {
+            return this.upgrades;
+        } else if (id.equals(ISegmentedInventory.CELLS)) {
+            return this.combinedInventory;
+        } else {
+            return super.getSubInventory(id);
+        }
     }
 
     private boolean hasWork() {
@@ -242,7 +247,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         TickRateModulation ret = TickRateModulation.SLEEP;
         long itemsToMove = 256;
 
-        switch (this.getInstalledUpgrades(Upgrades.SPEED)) {
+        switch (upgrades.getInstalledUpgrades(Upgrades.SPEED)) {
             case 1 -> itemsToMove *= 2;
             case 2 -> itemsToMove *= 4;
             case 3 -> itemsToMove *= 8;
@@ -293,11 +298,6 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         }
 
         return ret;
-    }
-
-    @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        return this.upgrades.getInstalledUpgrades(u);
     }
 
     private IMEInventory<?> getInv(final ItemStack is, final IStorageChannel<?> chan) {
@@ -371,7 +371,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     private boolean shouldMove(final IMEInventory<?> inv) {
-        final FullnessMode fm = (FullnessMode) this.manager.getSetting(Settings.FULLNESS_MODE);
+        final FullnessMode fm = this.manager.getSetting(Settings.FULLNESS_MODE);
 
         if (inv != null) {
             return this.matches(fm, inv);

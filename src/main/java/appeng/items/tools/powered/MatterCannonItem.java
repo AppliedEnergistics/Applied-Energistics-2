@@ -80,6 +80,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
@@ -378,7 +379,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 4);
     }
 

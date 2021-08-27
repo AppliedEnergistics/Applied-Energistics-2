@@ -23,10 +23,13 @@
 
 package appeng.api.storage.cells;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.implementations.IUpgradeInventory;
 
 public interface ICellWorkbenchItem {
 
@@ -40,12 +43,15 @@ public interface ICellWorkbenchItem {
     boolean isEditable(ItemStack is);
 
     /**
-     * used to edit the upgrade slots on your cell, should have a capacity of 0-24, you are also responsible for
+     * used to edit the upgrade slots on your cell, should have a capacity of 0-8 slots. You are also responsible for
      * implementing the valid checks, and any storage/usage of them.
      *
      * onInventoryChange will be called when saving is needed.
      */
-    IItemHandler getUpgradesInventory(ItemStack is);
+    @Nullable
+    default IUpgradeInventory getUpgradesInventory(ItemStack is) {
+        return null;
+    }
 
     /**
      * Used to extract, or mirror the contents of the work bench onto the cell.

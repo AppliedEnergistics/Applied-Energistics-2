@@ -189,7 +189,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
-            final BlockEntity te = this.getBlockEntity();
+            final BlockEntity te = getHost().getBlockEntity();
             Level level = te.getLevel();
             BlockPos pos = te.getBlockPos().relative(this.getSide());
             this.opacity = 255 - level.getBlockState(pos).getLightBlock(level, pos);

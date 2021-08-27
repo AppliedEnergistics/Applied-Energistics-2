@@ -58,6 +58,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.me.items.PatternTermMenu;
+import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
@@ -170,8 +171,8 @@ public class JEIRecipePacket extends BasePacket {
 
         final IEnergyService energy = grid.getService(IEnergyService.class);
         final ICraftingService crafting = grid.getService(ICraftingService.class);
-        final IItemHandler craftMatrix = cct.getInventoryByName("crafting");
-        final IItemHandler playerInventory = cct.getInventoryByName("player");
+        final IItemHandler craftMatrix = cct.getSubInventory(PatternTerminalPart.INV_CRAFTING);
+        final IItemHandler playerInventory = cct.getSubInventory(IMenuCraftingPacket.PLAYER);
 
         final IMEMonitor<IAEItemStack> storage = inv
                 .getInventory(StorageChannels.items());
@@ -346,7 +347,7 @@ public class JEIRecipePacket extends BasePacket {
     private void handleProcessing(AbstractContainerMenu con, IMenuCraftingPacket cct, Recipe<?> recipe) {
         if (con instanceof PatternTermMenu patternTerm) {
             if (!patternTerm.craftingMode) {
-                final IItemHandler output = cct.getInventoryByName("output");
+                final IItemHandler output = cct.getSubInventory(PatternTerminalPart.INV_OUTPUT);
                 ItemHandlerUtil.setStackInSlot(output, 0, recipe.getResultItem());
                 ItemHandlerUtil.setStackInSlot(output, 1, ItemStack.EMPTY);
                 ItemHandlerUtil.setStackInSlot(output, 2, ItemStack.EMPTY);

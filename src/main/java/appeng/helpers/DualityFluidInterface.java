@@ -30,11 +30,8 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -48,6 +45,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.me.storage.FluidHandlerAdapter;
 import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
@@ -58,7 +56,7 @@ import appeng.util.inv.IAEFluidInventory;
 
 public class DualityFluidInterface
         extends DualityInterface
-        implements IAEFluidInventory, IUpgradeableHost, IConfigurableFluidInventory {
+        implements IAEFluidInventory, IConfigurableObject, IConfigurableFluidInventory {
     public static final int NUMBER_OF_TANKS = 6;
     public static final int TANK_CAPACITY = FluidAttributes.BUCKET_VOLUME * 4;
 
@@ -80,16 +78,6 @@ public class DualityFluidInterface
         for (int i = 0; i < NUMBER_OF_TANKS; ++i) {
             this.requireWork[i] = null;
         }
-    }
-
-    public IUpgradeableHost getHost() {
-        if (this.host instanceof IUpgradeableHost) {
-            return this.host;
-        }
-        if (this.host instanceof IUpgradeableHost) {
-            return this.host;
-        }
-        return null;
     }
 
     /**
@@ -403,11 +391,6 @@ public class DualityFluidInterface
     }
 
     @Override
-    public IItemHandler getInventoryByName(String name) {
-        return null;
-    }
-
-    @Override
     public IFluidHandler getFluidInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
@@ -415,13 +398,4 @@ public class DualityFluidInterface
         return null;
     }
 
-    @Override
-    public int getInstalledUpgrades(Upgrades u) {
-        return 0;
-    }
-
-    @Override
-    public BlockEntity getBlockEntity() {
-        return (BlockEntity) (this.host instanceof BlockEntity ? this.host : null);
-    }
 }

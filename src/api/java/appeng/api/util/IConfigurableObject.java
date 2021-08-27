@@ -23,6 +23,8 @@
 
 package appeng.api.util;
 
+import javax.annotation.Nonnull;
+
 /**
  * Implemented by various block entities or parts in AE
  */
@@ -31,5 +33,6 @@ public interface IConfigurableObject {
     /**
      * get the config manager for the object.
      */
+    @Nonnull
     IConfigManager getConfigManager();
 }

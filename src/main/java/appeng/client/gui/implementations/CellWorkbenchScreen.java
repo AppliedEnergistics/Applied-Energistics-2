@@ -18,9 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -58,19 +55,6 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
                 GuiText.CopyMode.text(), GuiText.CopyModeDesc.text(), act -> menu.nextWorkBenchCopyMode()));
     }
 
-    /**
-     * For cell workbenches it is the item currently in the slot that determines which upgrades are compatible.
-     */
-    @Override
-    protected List<Component> getCompatibleUpgrades() {
-        ItemStack workbenchItem = menu.getWorkbenchItem();
-        if (workbenchItem.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return super.getCompatibleUpgrades(workbenchItem.getItem());
-    }
-
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
@@ -78,7 +62,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
         this.copyMode.setState(this.menu.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
         boolean hasFuzzy = false;
-        final IItemHandler inv = this.menu.getCellUpgradeInventory();
+        final IItemHandler inv = this.menu.getUpgrades();
         for (int x = 0; x < inv.getSlots(); x++) {
             final ItemStack is = inv.getStackInSlot(x);
             if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule

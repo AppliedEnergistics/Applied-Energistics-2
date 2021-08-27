@@ -85,11 +85,6 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     }
 
     @Override
-    public int availableUpgrades() {
-        return 3;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.maxProcessingTime = getHost().getMaxProcessingTime();
         this.processingTime = getHost().getProcessingTime();

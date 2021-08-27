@@ -20,8 +20,11 @@ package appeng.blockentity.misc;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -30,26 +33,29 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.parts.automation.EmptyUpgradeInventory;
 import appeng.util.ConfigManager;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
 public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
-        implements IUpgradeableHost, IAEAppEngInventory {
+        implements IConfigurableObject, IUpgradeableObject, IAEAppEngInventory {
 
     private final AppEngInternalInventory cell = new AppEngInternalInventory(this, 1);
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
     private final ConfigManager manager = new ConfigManager();
 
-    private IItemHandler cacheUpgrades = null;
+    private IUpgradeInventory cacheUpgrades = null;
     private IItemHandler cacheConfig = null;
     private boolean locked = false;
 
@@ -57,28 +63,6 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         super(blockEntityType, pos, blockState);
         this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
         this.cell.setEnableClientEvents(true);
-    }
-
-    public IItemHandler getCellUpgradeInventory() {
-        if (this.cacheUpgrades == null) {
-            final ICellWorkbenchItem cell = this.getCell();
-            if (cell == null) {
-                return null;
-            }
-
-            final ItemStack is = this.cell.getStackInSlot(0);
-            if (is.isEmpty()) {
-                return null;
-            }
-
-            final IItemHandler inv = cell.getUpgradesInventory(is);
-            if (inv == null) {
-                return null;
-            }
-
-            return this.cacheUpgrades = inv;
-        }
-        return this.cacheUpgrades;
     }
 
     public ICellWorkbenchItem getCell() {
@@ -111,21 +95,14 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("config")) {
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.CONFIG)) {
             return this.config;
-        }
-
-        if (name.equals("cell")) {
+        } else if (id.equals(ISegmentedInventory.CELLS)) {
             return this.cell;
         }
 
-        return null;
-    }
-
-    @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        return 0;
+        return super.getSubInventory(id);
     }
 
     @Override
@@ -201,7 +178,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(level, pos, drops);
 
-        if (this.cell.getStackInSlot(0) != null) {
+        if (!this.cell.getStackInSlot(0).isEmpty()) {
             drops.add(this.cell.getStackInSlot(0));
         }
     }
@@ -209,5 +186,29 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     @Override
     public IConfigManager getConfigManager() {
         return this.manager;
+    }
+
+    @Nonnull
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        if (this.cacheUpgrades == null) {
+            final ICellWorkbenchItem cell = this.getCell();
+            if (cell == null) {
+                return EmptyUpgradeInventory.INSTANCE;
+            }
+
+            final ItemStack is = this.cell.getStackInSlot(0);
+            if (is.isEmpty()) {
+                return EmptyUpgradeInventory.INSTANCE;
+            }
+
+            var inv = cell.getUpgradesInventory(is);
+            if (inv == null) {
+                return EmptyUpgradeInventory.INSTANCE;
+            }
+
+            return this.cacheUpgrades = inv;
+        }
+        return this.cacheUpgrades;
     }
 }

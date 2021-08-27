@@ -559,17 +559,17 @@ public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMon
 
     @Override
     public SortOrder getSortBy() {
-        return (SortOrder) this.configSrc.getSetting(Settings.SORT_BY);
+        return this.configSrc.getSetting(Settings.SORT_BY);
     }
 
     @Override
     public SortDir getSortDir() {
-        return (SortDir) this.configSrc.getSetting(Settings.SORT_DIRECTION);
+        return this.configSrc.getSetting(Settings.SORT_DIRECTION);
     }
 
     @Override
     public ViewItems getSortDisplay() {
-        return (ViewItems) this.configSrc.getSetting(Settings.VIEW_MODE);
+        return this.configSrc.getSetting(Settings.VIEW_MODE);
     }
 
     @Override

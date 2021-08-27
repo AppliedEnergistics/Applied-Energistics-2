@@ -75,11 +75,6 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu<FluidLevelEmitt
     }
 
     @Override
-    public int availableUpgrades() {
-        return 0;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_EMITTER));
     }

@@ -41,6 +41,7 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -125,6 +126,11 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
         this.getConfigManager().registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
     }
 
+    @Override
+    protected int getUpgradeSlots() {
+        return 1;
+    }
+
     public long getReportingValue() {
         return this.reportingValue;
     }
@@ -160,7 +166,7 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
             return false;
         }
 
-        if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
+        if (getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
             var grid = getMainNode().getGrid();
             if (grid != null) {
                 return grid.getCraftingService().isRequesting(this.config.getAEStackInSlot(0));
@@ -245,7 +251,7 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
             }
         } else if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             this.lastReportedValue = 0;
-            final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
+            final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
             final Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy(myStack, fzMode);
             for (final IAEItemStack st : fuzzyList) {
                 this.lastReportedValue += st.getStackSize();
@@ -390,12 +396,12 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("config")) {
-            return this.config;
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.CONFIG)) {
+            return config;
+        } else {
+            return super.getSubInventory(id);
         }
-
-        return super.getInventoryByName(name);
     }
 
     @Override

@@ -138,7 +138,7 @@ public class ImportBusPart extends SharedItemBusPart {
         this.worked = false;
 
         final InventoryAdaptor myAdaptor = this.getHandler();
-        final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
+        final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
 
         if (myAdaptor != null) {
             getMainNode().ifPresent(grid -> {
@@ -181,7 +181,7 @@ public class ImportBusPart extends SharedItemBusPart {
         final int toSend = this.calculateMaximumAmountToImport(myAdaptor, whatToImport, inv, fzMode);
         final ItemStack newItems;
 
-        if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+        if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             newItems = myAdaptor.removeSimilarItems(toSend,
                     whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, insertionPredicate);
         } else {
@@ -226,7 +226,7 @@ public class ImportBusPart extends SharedItemBusPart {
 
         final IAEItemStack itemAmountNotStorable;
         final ItemStack simResult;
-        if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+        if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             simResult = myAdaptor.simulateSimilarRemove(toSend, itemStackToImport, fzMode, insertionPredicate);
         } else {
             simResult = myAdaptor.simulateRemove(toSend, itemStackToImport, insertionPredicate);
@@ -248,7 +248,7 @@ public class ImportBusPart extends SharedItemBusPart {
 
     @Override
     public RedstoneMode getRSMode() {
-        return (RedstoneMode) this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
+        return this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
     }
 
     @Override

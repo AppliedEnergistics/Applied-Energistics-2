@@ -25,13 +25,15 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public abstract class UpgradeInventory extends AppEngInternalInventory implements IAEAppEngInventory {
+public abstract class UpgradeInventory extends AppEngInternalInventory
+        implements IAEAppEngInventory, IUpgradeInventory {
     private final IAEAppEngInventory parent;
 
     private boolean cached = false;
@@ -42,8 +44,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     private int inverterUpgrades = 0;
     private int craftingUpgrades = 0;
 
-    public UpgradeInventory(final IAEAppEngInventory parent, final int s) {
-        super(null, s, 1);
+    public UpgradeInventory(final IAEAppEngInventory parent, final int slots) {
+        super(null, slots, 1);
         this.setBlockEntity(this);
         this.parent = parent;
         this.setFilter(new UpgradeInvFilter());
@@ -59,6 +61,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
         return true;
     }
 
+    @Override
     public int getInstalledUpgrades(final Upgrades u) {
         if (!this.cached) {
             this.updateUpgradeInfo();
@@ -75,6 +78,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
         };
     }
 
+    @Override
     public abstract int getMaxInstalled(Upgrades upgrades);
 
     private void updateUpgradeInfo() {

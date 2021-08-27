@@ -26,6 +26,7 @@ import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.menu.SlotSemantic;
@@ -54,7 +55,7 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
 
     @Override
     protected void setupConfig() {
-        final IItemHandler cells = this.getHost().getInventoryByName("cells");
+        final IItemHandler cells = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
 
         for (int i = 0; i < 6; i++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, cells, i),
@@ -72,11 +73,6 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
     @Override
     protected boolean supportCapacity() {
         return false;
-    }
-
-    @Override
-    public int availableUpgrades() {
-        return 3;
     }
 
     @Override

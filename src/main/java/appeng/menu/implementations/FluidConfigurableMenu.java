@@ -28,13 +28,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.helpers.FluidSyncHelper;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.IAEFluidTank;
 
-public abstract class FluidConfigurableMenu<T extends IUpgradeableHost> extends UpgradeableMenu<T>
+public abstract class FluidConfigurableMenu<T extends IUpgradeableObject> extends UpgradeableMenu<T>
         implements IFluidSyncMenu {
     private FluidSyncHelper sync = null;
 
@@ -70,7 +70,7 @@ public abstract class FluidConfigurableMenu<T extends IUpgradeableHost> extends 
     protected boolean isValidForConfig(int slot, IAEFluidStack fs) {
         if (this.supportCapacity()) {
             // assumes 4 slots per upgrade
-            final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
+            var upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
 
             if (slot > 0 && upgrades < 1) {
                 return false;

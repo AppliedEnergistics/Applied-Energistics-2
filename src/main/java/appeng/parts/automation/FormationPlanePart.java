@@ -29,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -54,6 +55,7 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
@@ -88,7 +90,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>(this,
             StorageChannels.items());
-    private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
+    private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
 
     public FormationPlanePart(final ItemStack is) {
         super(is);
@@ -108,8 +110,8 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final IItemList<IAEItemStack> priorityList = StorageChannels.items().createList();
 
         final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-        for (int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++) {
-            final IAEItemStack is = this.Config.getAEStackInSlot(x);
+        for (int x = 0; x < this.config.getSlots() && x < slotsToUse; x++) {
+            final IAEItemStack is = this.config.getAEStackInSlot(x);
             if (is != null) {
                 priorityList.add(is);
             }
@@ -117,7 +119,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             this.myHandler.setPartitionList(new FuzzyPriorityList<>(priorityList,
-                    (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
+                    this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
         } else {
             this.myHandler.setPartitionList(new PrecisePriorityList<>(priorityList));
         }
@@ -130,7 +132,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             final ItemStack removedStack, final ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
-        if (inv == this.Config) {
+        if (inv == this.config) {
             this.updateHandler();
         }
     }
@@ -138,23 +140,23 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     @Override
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
-        this.Config.readFromNBT(data, "config");
+        this.config.readFromNBT(data, "config");
         this.updateHandler();
     }
 
     @Override
     public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
-        this.Config.writeToNBT(data, "config");
+        this.config.writeToNBT(data, "config");
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
-        if (name.equals("config")) {
-            return this.Config;
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.CONFIG)) {
+            return config;
+        } else {
+            return super.getSubInventory(id);
         }
-
-        return super.getInventoryByName(name);
     }
 
     @Override
@@ -182,7 +184,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             return input;
         }
 
-        final YesNo placeBlock = (YesNo) this.getConfigManager().getSetting(Settings.PLACE_BLOCK);
+        final YesNo placeBlock = this.getConfigManager().getSetting(Settings.PLACE_BLOCK);
 
         final ItemStack is = input.createItemStack();
         final Item i = is.getItem();

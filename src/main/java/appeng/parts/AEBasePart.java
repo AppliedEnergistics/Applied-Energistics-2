@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.base.Preconditions;
 
@@ -33,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,8 +50,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.IGridNode;
@@ -63,7 +64,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
@@ -77,7 +78,7 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.fluid.AEFluidInventory;
 
-public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost, ICustomNameObject {
+public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory {
 
     private final IManagedGridNode mainNode;
     private final ItemStack is;
@@ -129,16 +130,6 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     }
 
-    @Override
-    public int getInstalledUpgrades(final Upgrades u) {
-        return 0;
-    }
-
-    @Override
-    public BlockEntity getBlockEntity() {
-        return this.blockEntity;
-    }
-
     public IManagedGridNode getMainNode() {
         return this.mainNode;
     }
@@ -146,6 +137,10 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     @Override
     public IGridNode getActionableNode() {
         return this.mainNode.getNode();
+    }
+
+    public final BlockEntity getBlockEntity() {
+        return blockEntity;
     }
 
     public Level getLevel() {
@@ -239,7 +234,7 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
 
     @Override
     public void addToWorld() {
-        this.mainNode.create(getLevel(), getBlockEntity().getBlockPos());
+        this.mainNode.create(getLevel(), blockEntity.getBlockPos());
     }
 
     @Override
@@ -280,16 +275,6 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return false;
     }
 
-    @Override
-    public IConfigManager getConfigManager() {
-        return null;
-    }
-
-    @Override
-    public IItemHandler getInventoryByName(final String name) {
-        return null;
-    }
-
     /**
      * depending on the from, different settings will be accepted, don't call this with null
      *
@@ -297,16 +282,15 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
      * @param compound compound of source
      */
     private void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
-        final IConfigManager cm = this.getConfigManager();
-        if (cm != null) {
-            cm.readFromNBT(compound);
+        if (this instanceof IConfigurableObject configurableObject) {
+            configurableObject.getConfigManager().readFromNBT(compound);
         }
 
         if (this instanceof IPriorityHost pHost) {
             pHost.setPriority(compound.getInt("priority"));
         }
 
-        final IItemHandler inv = this.getInventoryByName("config");
+        var inv = getSubInventory(ISegmentedInventory.CONFIG);
         if (inv instanceof AppEngInternalAEInventory target) {
             final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
             tmp.readFromNBT(compound, "config");
@@ -342,16 +326,15 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
     private CompoundTag downloadSettings(final SettingsFrom from) {
         final CompoundTag output = new CompoundTag();
 
-        final IConfigManager cm = this.getConfigManager();
-        if (cm != null) {
-            cm.writeToNBT(output);
+        if (this instanceof IConfigurableObject configurableObject) {
+            configurableObject.getConfigManager().writeToNBT(output);
         }
 
         if (this instanceof IPriorityHost pHost) {
             output.putInt("priority", pHost.getPriority());
         }
 
-        final IItemHandler inv = this.getInventoryByName("config");
+        var inv = getSubInventory(ISegmentedInventory.CONFIG);
         if (inv instanceof AppEngInternalAEInventory) {
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
             if (this instanceof ItemLevelEmitterPart partLevelEmitter) {
@@ -463,6 +446,13 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
         return this.is;
     }
 
+    @Nullable
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public IItemHandler getSubInventory(ResourceLocation id) {
+        return null;
+    }
+
     /**
      * Simple {@link IGridNodeListener} for {@link AEBasePart} that host nodes.
      */
@@ -476,8 +466,8 @@ public abstract class AEBasePart implements IPart, IActionHost, IUpgradeableHost
             if (is.getCount() > 0 && nodeOwner.getGridNode() != null) {
                 var items = List.of(is.copy());
                 nodeOwner.getHost().removePart(nodeOwner.getSide());
-                var blockEntity = nodeOwner.getBlockEntity();
-                Platform.spawnDrops(blockEntity.getLevel(), blockEntity.getBlockPos(), items);
+                var be = nodeOwner.getHost().getBlockEntity();
+                Platform.spawnDrops(be.getLevel(), be.getBlockPos(), items);
                 is.setCount(0);
             }
         }

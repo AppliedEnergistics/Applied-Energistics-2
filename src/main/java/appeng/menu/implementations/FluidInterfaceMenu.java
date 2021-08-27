@@ -96,11 +96,6 @@ public class FluidInterfaceMenu extends FluidConfigurableMenu<IFluidInterfaceHos
     }
 
     @Override
-    public int availableUpgrades() {
-        return 0;
-    }
-
-    @Override
     public boolean hasToolbox() {
         return false;
     }

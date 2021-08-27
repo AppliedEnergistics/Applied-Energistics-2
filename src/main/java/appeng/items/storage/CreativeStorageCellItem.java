@@ -49,11 +49,6 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
-        return null;
-    }
-
-    @Override
     public IItemHandler getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }

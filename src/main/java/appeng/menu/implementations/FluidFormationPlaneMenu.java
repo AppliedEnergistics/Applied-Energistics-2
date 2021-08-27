@@ -59,7 +59,7 @@ public class FluidFormationPlaneMenu extends FluidConfigurableMenu<FluidFormatio
     @Override
     protected boolean isValidForConfig(int slot, IAEFluidStack fs) {
         if (this.supportCapacity()) {
-            final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
+            final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
 
             final int y = slot / 9;
 
@@ -73,7 +73,7 @@ public class FluidFormationPlaneMenu extends FluidConfigurableMenu<FluidFormatio
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        final int upgrades = this.getHost().getInstalledUpgrades(Upgrades.CAPACITY);
+        final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
 
         return upgrades > idx;
     }
@@ -81,10 +81,5 @@ public class FluidFormationPlaneMenu extends FluidConfigurableMenu<FluidFormatio
     @Override
     protected boolean supportCapacity() {
         return true;
-    }
-
-    @Override
-    public int availableUpgrades() {
-        return 5;
     }
 }

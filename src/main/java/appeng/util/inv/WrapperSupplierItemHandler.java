@@ -26,6 +26,10 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
+/**
+ * Wraps another {@link IItemHandler} in such a way that the underlying item hander is queried from a supplier, which
+ * allows it to be changed at any time.
+ */
 public class WrapperSupplierItemHandler implements IItemHandlerModifiable {
     private final Supplier<IItemHandler> sourceHandler;
 

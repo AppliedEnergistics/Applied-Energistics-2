@@ -20,13 +20,19 @@ package appeng.helpers;
 
 import java.util.List;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
+import appeng.core.AppEng;
 
 public interface IMenuCraftingPacket {
+    /**
+     * Used to identify the player inventory.
+     */
+    ResourceLocation PLAYER = AppEng.makeId("player");
 
     /**
      * @return gain access to network infrastructure.
@@ -37,7 +43,7 @@ public interface IMenuCraftingPacket {
      * @param string name of inventory
      * @return the inventory of the part/block entity by name.
      */
-    IItemHandler getInventoryByName(String string);
+    IItemHandler getSubInventory(ResourceLocation id);
 
     /**
      * @return who are we?

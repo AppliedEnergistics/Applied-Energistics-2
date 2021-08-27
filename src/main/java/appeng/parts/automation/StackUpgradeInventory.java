@@ -26,8 +26,8 @@ import appeng.util.inv.IAEAppEngInventory;
 public class StackUpgradeInventory extends UpgradeInventory {
     private final ItemStack stack;
 
-    public StackUpgradeInventory(final ItemStack stack, final IAEAppEngInventory inventory, final int s) {
-        super(inventory, s);
+    public StackUpgradeInventory(final ItemStack stack, final IAEAppEngInventory inventory, final int slots) {
+        super(inventory, slots);
         this.stack = stack;
     }
 

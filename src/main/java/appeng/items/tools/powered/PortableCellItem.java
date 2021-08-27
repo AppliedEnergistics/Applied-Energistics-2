@@ -51,6 +51,7 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.MEPortableCellMenu;
+import appeng.parts.automation.UpgradeInventory;
 
 public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem {
 
@@ -125,7 +126,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
