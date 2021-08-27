@@ -579,7 +579,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "Giallo Sfera di vernice",
   "item.appliedenergistics2.yellow_smart_cable": "Giallo Cavo intelligente ME",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Giallo Cavo denso ME",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - Facciate",
   "stat.appliedenergistics2.items_extracted": "Oggetti estratti dal Deposito ME",
   "stat.appliedenergistics2.items_inserted": "Oggetti aggiunti al Deposito ME",

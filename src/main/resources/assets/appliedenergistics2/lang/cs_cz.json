@@ -560,7 +560,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "Žlutá Malovací míč",
   "item.appliedenergistics2.yellow_smart_cable": "Žlutá ME chytrý kabel",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Žlutá ME silný kabel",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - Fasády",
   "stat.appliedenergistics2.items_extracted": "Předměty odebrány z ME úložiště",
   "stat.appliedenergistics2.items_inserted": "Předměty přidány do ME úložiště",

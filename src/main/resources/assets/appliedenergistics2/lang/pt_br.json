@@ -642,7 +642,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "Amarelo Bola de Tinta",
   "item.appliedenergistics2.yellow_smart_cable": "Amarelo Cabo Inteligente ME",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Amarelo Cabo Denso Coberto Inteligente ME",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - Fachadas",
   "key.appliedenergistics2.category": "Applied Energistics 2",
   "key.toggle_focus.desc": "Alterar foco da caixa de procura",

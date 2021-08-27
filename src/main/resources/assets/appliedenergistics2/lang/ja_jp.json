@@ -83,7 +83,7 @@
   "chat.appliedenergistics2.AmmoDepleted": "弾薬がなくなりました。",
   "chat.appliedenergistics2.isNowLocked": "モニターはロックされました。",
   "chat.appliedenergistics2.isNowUnlocked": "モニターのロックが解除されました。",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - 外観",
   "gui.appliedenergistics2.CraftingTerminal": "クラフトターミナル",
   "gui.appliedenergistics2.METunnel": "ME",

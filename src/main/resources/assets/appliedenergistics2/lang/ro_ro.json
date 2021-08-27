@@ -378,7 +378,7 @@
   "item.appliedenergistics2.yellow_glass_cable": "Galben Cablu de Sticlă ME",
   "item.appliedenergistics2.yellow_smart_cable": "Galben Cablu Deştept ME",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Galben Cablu Dens ME",
-  "itemGroup.appliedenergistics2": "Energistici Aplicate 2",
+  "itemGroup.appliedenergistics2.main": "Energistici Aplicate 2",
   "itemGroup.appliedenergistics2.facades": "Energistici Aplicate 2 - Faţade",
   "waila.appliedenergistics2.Contains": "Conţine",
   "waila.appliedenergistics2.DeviceMissingChannel": "Maşinărie îi Lipseşte Canal",

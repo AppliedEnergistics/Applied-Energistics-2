@@ -659,7 +659,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "染色球(黄色)",
   "item.appliedenergistics2.yellow_smart_cable": "ME智能线缆(黄色)",
   "item.appliedenergistics2.yellow_smart_dense_cable": "ME致密线缆(黄色)",
-  "itemGroup.appliedenergistics2": "应用能源2",
+  "itemGroup.appliedenergistics2.main": "应用能源2",
   "itemGroup.appliedenergistics2.facades": "应用能源2-伪装板",
   "key.appliedenergistics2.category": "Applied Energistics 2",
   "key.toggle_focus.desc": "打开/关闭搜索框聚焦",

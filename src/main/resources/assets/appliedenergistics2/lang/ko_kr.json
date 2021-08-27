@@ -637,7 +637,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "노랑색 페인트 공",
   "item.appliedenergistics2.yellow_smart_cable": "노랑색 ME 스마트 케이블",
   "item.appliedenergistics2.yellow_smart_dense_cable": "노랑색 ME 조밀 스마트 케이블",
-  "itemGroup.appliedenergistics2": "응용 에너지학",
+  "itemGroup.appliedenergistics2.main": "응용 에너지학",
   "itemGroup.appliedenergistics2.facades": "응용 에너지학(덮개)",
   "key.appliedenergistics2.category": "응용 에너지학",
   "key.toggle_focus.desc": "상자를 집중적으로 토글하면서 검색하세요.",

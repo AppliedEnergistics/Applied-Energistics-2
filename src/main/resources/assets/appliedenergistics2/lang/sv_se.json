@@ -668,7 +668,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "Gul färgboll",
   "item.appliedenergistics2.yellow_smart_cable": "Gul smart ME-kabel",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Gul kompakt smart ME-kabel",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - Fasader",
   "key.appliedenergistics2.category": "Applied Energistics 2",
   "key.toggle_focus.desc": "Växla fokus för sökfältet",
