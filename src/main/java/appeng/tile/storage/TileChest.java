@@ -494,12 +494,14 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			try
 			{
 				this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
-				final IStorageGrid gs = this.getProxy().getStorage();
-				Platform.postChanges( gs, removed, added, this.mySrc );
+				if( this.getProxy().isActive() )
+				{
+					final IStorageGrid gs = this.getProxy().getStorage();
+					Platform.postChanges( gs, removed, added, this.mySrc );
+				}
 			}
 			catch( final GridAccessException ignored )
 			{
-
 			}
 
 			// update the neighbors
