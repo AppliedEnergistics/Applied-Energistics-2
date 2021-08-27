@@ -65,7 +65,6 @@ repositories {
         url = 'https://storage.bhs.cloud.ovh.net/v1/AUTH_5f0553a5313d4e93b3ecd2520d172e98/appliedenergistics2-temp-dependencies'
         content {
             includeGroup "mixin"
-            includeGroup "mezz.jei"
         }
     }
     ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN AND JEI ARE BACK

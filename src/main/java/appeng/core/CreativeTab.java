@@ -23,7 +23,7 @@ public final class CreativeTab {
     public static AEItemGroup INSTANCE;
 
     public static void init() {
-        INSTANCE = new AEItemGroup("appliedenergistics2");
+        INSTANCE = new AEItemGroup("appliedenergistics2.main");
     }
 
 }

@@ -49,7 +49,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.blockentities.ISegmentedInventory;
@@ -344,8 +343,8 @@ public class AEBaseBlockEntity extends BlockEntity
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
         }
 
-        if (this instanceof IConfigurableFluidInventory) {
-            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+        if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
+            var tank = configurableFluidInventory.getFluidInventoryByName("config");
             if (tank instanceof AEFluidInventory) {
                 ((AEFluidInventory) tank).writeToNBT(output, "config");
             }
@@ -378,7 +377,7 @@ public class AEBaseBlockEntity extends BlockEntity
         }
 
         if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
-            final IFluidHandler tank = configurableFluidInventory.getFluidInventoryByName("config");
+            var tank = configurableFluidInventory.getFluidInventoryByName("config");
             if (tank instanceof AEFluidInventory target) {
                 final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
                 tmp.readFromNBT(compound, "config");

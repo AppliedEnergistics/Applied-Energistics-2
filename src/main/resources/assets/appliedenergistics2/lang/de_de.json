@@ -598,7 +598,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "Gelb Farbball",
   "item.appliedenergistics2.yellow_smart_cable": "Gelb Schlaues ME-Kabel",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Gelb Dichtes ME-Kabel",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - Fassaden",
   "stat.appliedenergistics2.items_extracted": "Items aus ME Speicher entfernt",
   "stat.appliedenergistics2.items_inserted": "Items zu ME Speicher hinzugefügt",

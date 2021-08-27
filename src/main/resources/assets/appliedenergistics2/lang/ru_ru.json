@@ -685,7 +685,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "Жёлтый Шар с краской",
   "item.appliedenergistics2.yellow_smart_cable": "Жёлтый МЭ умный кабель",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Жёлтый МЭ плотный умный кабель",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2: Фасады",
   "key.appliedenergistics2.category": "Applied Energistics 2",
   "key.toggle_focus.desc": "Переключить фокус поля поиска",

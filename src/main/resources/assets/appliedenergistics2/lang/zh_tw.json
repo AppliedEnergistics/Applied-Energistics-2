@@ -685,7 +685,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "黃色染色球",
   "item.appliedenergistics2.yellow_smart_cable": "黃色ME智慧纜線",
   "item.appliedenergistics2.yellow_smart_dense_cable": "黃色ME緻密智慧纜線",
-  "itemGroup.appliedenergistics2": "應用能源 2",
+  "itemGroup.appliedenergistics2.main": "應用能源 2",
   "itemGroup.appliedenergistics2.facades": "應用能源 2 － 外觀",
   "key.appliedenergistics2.category": "應用能源 2",
   "key.toggle_focus.desc": "按下後將聚焦在搜尋方塊上",

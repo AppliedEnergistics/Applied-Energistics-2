@@ -487,7 +487,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "Amarillo Bola de Pintura",
   "item.appliedenergistics2.yellow_smart_cable": "Amarillo ME Cable Avanzado",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Amarillo ME Cable Denso",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - Fachadas",
   "waila.appliedenergistics2.Channels": "%1$d of %2$d Canales",
   "waila.appliedenergistics2.Contains": "Contiene",

@@ -46,7 +46,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -302,10 +301,10 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
             }
         }
 
-        if (this instanceof IConfigurableFluidInventory) {
-            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+        if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
+            var tank = configurableFluidInventory.getFluidInventoryByName("config");
             if (tank instanceof AEFluidInventory target) {
-                final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
+                var tmp = new AEFluidInventory(null, target.getSlots());
                 tmp.readFromNBT(compound, "config");
                 for (int x = 0; x < tmp.getSlots(); x++) {
                     target.setFluidInSlot(x, tmp.getFluidInSlot(x));
@@ -342,8 +341,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
             }
         }
 
-        if (this instanceof IConfigurableFluidInventory) {
-            final IFluidHandler tank = ((IConfigurableFluidInventory) this).getFluidInventoryByName("config");
+        if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
+            var tank = configurableFluidInventory.getFluidInventoryByName("config");
             ((AEFluidInventory) tank).writeToNBT(output, "config");
             if (this instanceof FluidLevelEmitterPart fluidLevelEmitterPart) {
                 output.putLong("reportingValue", fluidLevelEmitterPart.getReportingValue());

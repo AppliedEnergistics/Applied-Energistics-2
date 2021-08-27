@@ -506,7 +506,7 @@
   "item.appliedenergistics2.ToolPortableCell": "Hordozható Cella",
   "item.appliedenergistics2.ToolReplicatorCard": "Dev.Replikátor Kártya",
   "item.appliedenergistics2.ToolWirelessTerminal": "Vezetéknélküli Terminál",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - Látszatok",
   "stat.appliedenergistics2.items_extracted": "Tárgyak eltávolítva ME tárolókból",
   "stat.appliedenergistics2.items_inserted": "Tárgyak hozzáadva ME tárolókhoz",
