@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Iterators;
 
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
@@ -228,7 +229,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
      * Reports the average time for a gridnode
      * <p>
      * There is no overflow handling for the internal counter.
-     * 
+     *
      * @return average time spent ticking this node in nanoseconds, or 0 for an unknown node
      */
     public long getAverageTime(final IGridNode node) {
@@ -242,7 +243,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     /**
      * Gets the overall time spent ticking this grid node in nanoseconds.
-     * 
+     *
      * @return 0 if the node isn't ticking or doesn't belong to this grid.
      */
     public long getOverallTime(final IGridNode node) {
@@ -256,7 +257,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     /**
      * The maximum time a {@link GridNode} across its existence.
-     * 
+     *
      * @param node
      * @return maximum time or 0 for an unknown node
      */
@@ -314,7 +315,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     /**
      * Helper method to handle exceptions and report them without polluting the queue loop.
-     * 
+     * <p>
      * Also tracks time statistics.
      */
     private TickRateModulation unsafeTickingRequest(TickTracker tt, int diff) {
@@ -341,4 +342,49 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
             throw new ReportedException(crashreport);
         }
     }
+
+    /**
+     * This method is slow and only for debugging purposes.
+     */
+    public NodeStatus getStatus(IGridNode node) {
+        var sleepingTracker = sleeping.get(node);
+        var awakeTracker = awake.get(node);
+        var alertableTracker = alertable.get(node);
+
+        // Also check if the node is _really_ queued for ticking. If it's awake
+        // and not queued, this indicates a bug.
+        boolean isQueued = false;
+        var tickQueue = upcomingTicks.get(node.getLevel());
+        if (awakeTracker != null && tickQueue != null) {
+            isQueued = Iterators.contains(tickQueue.iterator(), awakeTracker);
+        }
+
+        // Get the tick-request stats
+        var tracker = awakeTracker;
+        if (tracker == null) {
+            tracker = alertableTracker;
+        }
+        if (tracker == null) {
+            tracker = sleepingTracker;
+        }
+        var currentRate = tracker != null ? tracker.getCurrentRate() : 0;
+        var lastTick = tracker != null ? tracker.getLastTick() : 0;
+        return new NodeStatus(
+                alertableTracker != null,
+                sleepingTracker != null,
+                awakeTracker != null,
+                isQueued,
+                currentRate,
+                currentTick - lastTick);
+    }
+
+    public record NodeStatus(
+            boolean alertable,
+            boolean sleeping,
+            boolean awake,
+            boolean queued,
+            int currentRate,
+            long lastTick) {
+    }
+
 }

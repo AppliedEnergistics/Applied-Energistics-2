@@ -1,5 +1,7 @@
 package appeng.integration.modules.waila.tile;
 
+import java.util.ArrayList;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -31,6 +33,12 @@ import appeng.util.Platform;
 public class DebugDataProvider extends BaseDataProvider implements IPartDataProvider {
 
     private static final String TAG_TICK_TIME = "debugTickTime";
+    private static final String TAG_TICK_SLEEPING = "debugTickSleeping";
+    private static final String TAG_TICK_ALERTABLE = "debugTickAlertable";
+    private static final String TAG_TICK_AWAKE = "debugTickAwake";
+    private static final String TAG_TICK_QUEUED = "debugTickQueued";
+    private static final String TAG_TICK_CURRENT_RATE = "debugTickCurrentRate";
+    private static final String TAG_TICK_LAST_TICK = "debugTickLastTick";
 
     @Override
     public void appendBodyTooltip(IPart part, CompoundTag partTag, ITooltip tooltip) {
@@ -64,6 +72,33 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
                                         .withStyle(ChatFormatting.WHITE)));
             }
         }
+
+        if (tag.contains(TAG_TICK_QUEUED)) {
+            var status = new ArrayList<String>();
+            if (tag.getBoolean(TAG_TICK_SLEEPING)) {
+                status.add("Sleeping");
+            }
+            if (tag.getBoolean(TAG_TICK_ALERTABLE)) {
+                status.add("Alertable");
+            }
+            if (tag.getBoolean(TAG_TICK_AWAKE)) {
+                status.add("Awake");
+            }
+            if (tag.getBoolean(TAG_TICK_QUEUED)) {
+                status.add("Queued");
+            }
+
+            tooltip.add(
+                    new TextComponent("")
+                            .append(new TextComponent("Tick Status: ").withStyle(ChatFormatting.WHITE))
+                            .append(String.join(", ", status)));
+            tooltip.add(
+                    new TextComponent("")
+                            .append(new TextComponent("Tick Rate: ").withStyle(ChatFormatting.WHITE))
+                            .append(String.valueOf(tag.getInt(TAG_TICK_CURRENT_RATE)))
+                            .append(new TextComponent(" Last: ").withStyle(ChatFormatting.WHITE))
+                            .append(tag.getInt(TAG_TICK_LAST_TICK) + " ticks ago"));
+        }
     }
 
     @Override
@@ -93,6 +128,14 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
         var sum = tickManager.getOverallTime(node);
 
         tag.putLongArray(TAG_TICK_TIME, new long[] { avg, max, sum });
+
+        var status = tickManager.getStatus(node);
+        tag.putBoolean(TAG_TICK_SLEEPING, status.sleeping());
+        tag.putBoolean(TAG_TICK_ALERTABLE, status.alertable());
+        tag.putBoolean(TAG_TICK_AWAKE, status.awake());
+        tag.putBoolean(TAG_TICK_QUEUED, status.queued());
+        tag.putInt(TAG_TICK_CURRENT_RATE, status.currentRate());
+        tag.putLong(TAG_TICK_LAST_TICK, status.lastTick());
     }
 
     private static boolean isVisible(Player player) {
