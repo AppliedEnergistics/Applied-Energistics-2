@@ -73,7 +73,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
     private static final String ACTION_SET_CRAFT_MODE = "setCraftMode";
     private static final String ACTION_ENCODE = "encode";
-    private static final String ACTION_CLEAR = "encode";
+    private static final String ACTION_CLEAR = "clear";
     private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
 
     public static MenuType<PatternTermMenu> TYPE = MenuTypeBuilder
