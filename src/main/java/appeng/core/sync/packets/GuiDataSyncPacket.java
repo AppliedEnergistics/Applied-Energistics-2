@@ -36,23 +36,23 @@ import appeng.menu.AEBaseMenu;
  * actions.
  */
 public class GuiDataSyncPacket extends BasePacket {
-    private final int windowId;
+    private final int containerId;
 
     private final FriendlyByteBuf data;
 
-    public GuiDataSyncPacket(int windowId, Consumer<FriendlyByteBuf> writer) {
-        this.windowId = 0;
+    public GuiDataSyncPacket(int containerId, Consumer<FriendlyByteBuf> writer) {
+        this.containerId = 0;
         this.data = null;
 
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
-        data.writeVarInt(windowId);
+        data.writeVarInt(containerId);
         writer.accept(data);
         configureWrite(data);
     }
 
     public GuiDataSyncPacket(FriendlyByteBuf data) {
-        this.windowId = data.readVarInt();
+        this.containerId = data.readVarInt();
         this.data = new FriendlyByteBuf(data.copy());
     }
 
@@ -63,7 +63,7 @@ public class GuiDataSyncPacket extends BasePacket {
     @Override
     public void clientPacketData(final INetworkInfo manager, final Player player) {
         AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof AEBaseMenu && c.containerId == this.windowId) {
+        if (c instanceof AEBaseMenu && c.containerId == this.containerId) {
             ((AEBaseMenu) c).receiveServerSyncData(this);
         }
     }
@@ -71,7 +71,7 @@ public class GuiDataSyncPacket extends BasePacket {
     @Override
     public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof AEBaseMenu && c.containerId == this.windowId) {
+        if (c instanceof AEBaseMenu && c.containerId == this.containerId) {
             ((AEBaseMenu) c).receiveClientAction(this);
         }
     }

@@ -58,7 +58,6 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -207,10 +206,10 @@ public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMen
 
             if (this.updateHelper.hasChanges()) {
                 try {
-                    MEInventoryUpdatePacket.Builder<T> builder = MEInventoryUpdatePacket
-                            .builder(containerId, updateHelper.isFullUpdate());
+                    var builder = MEInventoryUpdatePacket
+                            .builder(getStorageChannel(), containerId, updateHelper.isFullUpdate());
 
-                    IItemList<T> storageList = monitor.getStorageList();
+                    var storageList = monitor.getStorageList();
                     if (this.updateHelper.isFullUpdate()) {
                         builder.addFull(updateHelper, storageList);
                     } else {

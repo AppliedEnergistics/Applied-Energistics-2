@@ -81,7 +81,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
     private MenuTypeBuilder(Class<I> hostInterface, TypedMenuFactory<M, I> typedFactory) {
         this.hostInterface = hostInterface;
-        this.factory = (windowId, playerInv, accessObj) -> typedFactory.create(menuType, windowId, playerInv,
+        this.factory = (containerId, playerInv, accessObj) -> typedFactory.create(menuType, containerId, playerInv,
                 accessObj);
     }
 
@@ -133,10 +133,10 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      * Opens a menu that is based around a single block entity. The block entity's position is encoded in the packet
      * buffer.
      */
-    private M fromNetwork(int windowId, Inventory inv, FriendlyByteBuf packetBuf) {
+    private M fromNetwork(int containerId, Inventory inv, FriendlyByteBuf packetBuf) {
         I host = getHostFromLocator(inv.player, MenuLocator.read(packetBuf));
         if (host != null) {
-            M menu = factory.create(windowId, inv, host);
+            M menu = factory.create(containerId, inv, host);
             if (initialDataDeserializer != null) {
                 initialDataDeserializer.deserializeInitialData(host, menu, packetBuf);
             }
@@ -264,12 +264,12 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
     @FunctionalInterface
     public interface MenuFactory<C, I> {
-        C create(int windowId, Inventory playerInv, I accessObj);
+        C create(int containerId, Inventory playerInv, I accessObj);
     }
 
     @FunctionalInterface
     public interface TypedMenuFactory<C extends AbstractContainerMenu, I> {
-        C create(MenuType<C> type, int windowId, Inventory playerInv, I accessObj);
+        C create(MenuType<C> type, int containerId, Inventory playerInv, I accessObj);
     }
 
     /**

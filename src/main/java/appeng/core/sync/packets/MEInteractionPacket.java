@@ -33,24 +33,24 @@ import appeng.menu.me.common.IMEInteractionHandler;
  */
 public class MEInteractionPacket extends BasePacket {
 
-    private final int windowId;
+    private final int containerId;
     private final long serial;
     private final InventoryAction action;
 
     public MEInteractionPacket(FriendlyByteBuf buffer) {
-        this.windowId = buffer.readInt();
+        this.containerId = buffer.readInt();
         this.serial = buffer.readVarLong();
         this.action = buffer.readEnum(InventoryAction.class);
     }
 
-    public MEInteractionPacket(int windowId, long serial, InventoryAction action) {
-        this.windowId = windowId;
+    public MEInteractionPacket(int containerId, long serial, InventoryAction action) {
+        this.containerId = containerId;
         this.serial = serial;
         this.action = action;
 
-        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+        var data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(this.getPacketID());
-        data.writeInt(windowId);
+        data.writeInt(containerId);
         data.writeVarLong(serial);
         data.writeEnum(action);
         this.configureWrite(data);
@@ -60,7 +60,7 @@ public class MEInteractionPacket extends BasePacket {
     public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         if (player.containerMenu instanceof IMEInteractionHandler handler) {
             // The open screen has changed since the client sent the packet
-            if (player.containerMenu.containerId != windowId) {
+            if (player.containerMenu.containerId != containerId) {
                 return;
             }
 
