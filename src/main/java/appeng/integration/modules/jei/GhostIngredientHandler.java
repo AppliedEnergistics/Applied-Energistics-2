@@ -127,7 +127,7 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
             this.area = new Rect2i(screen.getGuiLeft() + slot.getTooltipAreaX(),
                     screen.getGuiTop() + slot.getTooltipAreaY(),
                     slot.getTooltipAreaWidth(),
-                    slot.getTooltipAreaWidth());
+                    slot.getTooltipAreaHeight());
         }
 
         @Override

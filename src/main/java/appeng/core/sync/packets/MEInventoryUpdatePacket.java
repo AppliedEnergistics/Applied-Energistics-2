@@ -19,25 +19,20 @@
 package appeng.core.sync.packets;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
-
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
@@ -49,7 +44,7 @@ import appeng.menu.me.common.IClientRepo;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 import appeng.menu.me.common.MEMonitorableMenu;
 
-public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
+public class MEInventoryUpdatePacket extends BasePacket {
 
     /**
      * Maximum size of a single packet before it will be flushed forcibly.
@@ -62,73 +57,87 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
     private static final int INITIAL_BUFFER_CAPACITY = 2 * 1024;
 
     // input.
-    private final List<GridInventoryEntry<T>> list;
+    private final StorageList<?> storageList;
 
     private boolean fullUpdate;
 
-    private int windowId;
+    private int containerId;
 
-    public MEInventoryUpdatePacket(final FriendlyByteBuf data) {
-        int itemCount = data.readShort();
-        this.windowId = data.readVarInt();
-        this.fullUpdate = data.readBoolean();
-        this.list = new ArrayList<>(itemCount);
+    /**
+     * @param <T> Type of stack stored in list.
+     */
+    private record StorageList<T extends IAEStack<T>> (
+            IStorageChannel<T> storageChannel,
+            List<GridInventoryEntry<T>> list) {
+        public static StorageList<?> read(FriendlyByteBuf data) {
+            var storageChannel = StorageChannels.get(data.readResourceLocation());
+            return read(storageChannel, data);
+        }
 
-        // We need to access the current screen to know which storage channel was used to serialize this data
-        MEMonitorableMenu<T> menu = getMenu();
-        if (menu != null) {
-            IStorageChannel<T> storageChannel = menu.getStorageChannel();
-            for (int i = 0; i < itemCount; i++) {
-                this.list.add(GridInventoryEntry.read(storageChannel, data));
+        private static <T extends IAEStack<T>> StorageList<T> read(IStorageChannel<T> storageChannel,
+                FriendlyByteBuf data) {
+            var count = data.readShort();
+            var list = new ArrayList<GridInventoryEntry<T>>(count);
+
+            // We need to access the current screen to know which storage channel was used to serialize this data
+            for (int i = 0; i < count; i++) {
+                list.add(GridInventoryEntry.read(storageChannel, data));
             }
+
+            return new StorageList<>(storageChannel, list);
+        }
+
+        @SuppressWarnings("unchecked")
+        public void tryApply(MEMonitorableMenu<?> menu, boolean fullUpdate) {
+            if (menu.getStorageChannel() != storageChannel) {
+                AELog.warn("Ignoring storage update from server because storage channel of opened menu is %s, " +
+                        "but update is for %s.", menu.getStorageChannel().getId(), storageChannel.getId());
+            } else {
+                apply((MEMonitorableMenu<T>) menu, fullUpdate);
+            }
+        }
+
+        public void apply(MEMonitorableMenu<T> menu, boolean fullUpdate) {
+            IClientRepo<T> clientRepo = menu.getClientRepo();
+            if (clientRepo == null) {
+                AELog.info("Ignoring ME inventory update packet because no client repo is available.");
+                return;
+            }
+
+            clientRepo.handleUpdate(fullUpdate, list);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private MEMonitorableMenu<T> getMenu() {
-        // This is slightly dangerous since it accesses the game thread from the network thread,
-        // but reading the current menu is atomic (reference field), and from then the window id
-        // and storage channel are immutable.
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
-            // Probably a race-condition when the player already has left the game
-            return null;
-        }
-
-        AbstractContainerMenu currentMenu = player.containerMenu;
-        if (!(currentMenu instanceof MEMonitorableMenu<?>meMenu)) {
-            // Ignore a packet for a screen that has already been closed
-            return null;
-        }
-
-        // If the window id matches, this unsafe cast should actually be safe
-        if (meMenu.containerId == windowId) {
-            return (MEMonitorableMenu<T>) meMenu;
-        }
-
-        return null;
+    public MEInventoryUpdatePacket(FriendlyByteBuf data) {
+        this.containerId = data.readVarInt();
+        this.fullUpdate = data.readBoolean();
+        this.storageList = StorageList.read(data);
     }
 
     // api
     private MEInventoryUpdatePacket() {
-        this.list = Collections.emptyList();
+        this.storageList = null;
     }
 
-    // Byte offset to the field in the packet that contains the item count
-    private static final int ITEM_COUNT_FIELD_OFFSET = 4;
-
     public static class Builder<T extends IAEStack<T>> {
-        private final List<MEInventoryUpdatePacket<T>> packets = new ArrayList<>();
+        private final List<MEInventoryUpdatePacket> packets = new ArrayList<>();
 
-        private final int windowId;
+        private final int containerId;
+
+        private final IStorageChannel<T> storageChannel;
 
         @Nullable
         private FriendlyByteBuf data;
 
+        // Offset into data where the 16-bit item-count must be written
+        // to at the end, before sending the packet
+        private int itemCountOffset = -1;
+
         private int itemCount;
 
-        public Builder(int windowId, boolean fullUpdate) {
-            this.windowId = windowId;
+        public Builder(IStorageChannel<T> storageChannel, int containerId, boolean fullUpdate) {
+            this.containerId = containerId;
+            this.storageChannel = storageChannel;
 
             // If we are to send a full update, initialize the data buffer to ensure it is sent even if no
             // items are ever added (this indicates clearing the inventory client-side)
@@ -198,17 +207,18 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
             if (data != null) {
                 // Jump back and fill in the number of items contained in the packet
                 data.markWriterIndex();
-                data.writerIndex(ITEM_COUNT_FIELD_OFFSET);
+                data.writerIndex(itemCountOffset);
                 data.writeShort(itemCount);
                 data.resetWriterIndex();
 
                 // Build a packet and queue it
-                MEInventoryUpdatePacket<T> packet = new MEInventoryUpdatePacket<>();
+                var packet = new MEInventoryUpdatePacket();
                 packet.configureWrite(data);
                 packets.add(packet);
 
                 // Reset
                 data = null;
+                itemCountOffset = -1;
                 itemCount = 0;
             }
         }
@@ -225,46 +235,41 @@ public class MEInventoryUpdatePacket<T extends IAEStack<T>> extends BasePacket {
             data = new FriendlyByteBuf(Unpooled.buffer(INITIAL_BUFFER_CAPACITY));
             // Since we don't have an instance of a packet we can't get the packet id the normal way now
             data.writeInt(BasePacketHandler.PacketTypes.ME_INVENTORY_UPDATE.getPacketId());
-            Preconditions.checkState(data.writerIndex() == ITEM_COUNT_FIELD_OFFSET);
-            // This is a placeholder for the item count and will be added at the end
-            data.writeShort(0);
-            data.writeVarInt(windowId);
+            data.writeVarInt(containerId);
             data.writeBoolean(fullUpdate);
+            data.writeResourceLocation(storageChannel.getId());
+            // This is a placeholder for the item count and will be added at the end,
+            // so we need to remember where in the stream we have written it
+            itemCountOffset = data.writerIndex();
+            data.writeShort(0);
             return data;
         }
 
-        public List<MEInventoryUpdatePacket<T>> build() {
+        public List<MEInventoryUpdatePacket> build() {
             flushData();
             return packets;
         }
 
-        public void buildAndSend(Consumer<MEInventoryUpdatePacket<T>> sender) {
-            for (MEInventoryUpdatePacket<T> packet : build()) {
+        public void buildAndSend(Consumer<MEInventoryUpdatePacket> sender) {
+            for (var packet : build()) {
                 sender.accept(packet);
             }
         }
     }
 
-    public static <T extends IAEStack<T>> Builder<T> builder(int windowId, boolean fullUpdate) {
-        return new Builder<>(windowId, fullUpdate);
+    public static <T extends IAEStack<T>> Builder<T> builder(IStorageChannel<T> storageChannel,
+            int containerId,
+            boolean fullUpdate) {
+        return new Builder<>(storageChannel, containerId, fullUpdate);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final Player player) {
-        MEMonitorableMenu<T> menu = getMenu();
-        if (menu == null) {
-            AELog.info("Ignoring ME inventory update packet because the target menu isn't open.");
-            return;
+    public void clientPacketData(INetworkInfo network, Player player) {
+        if (player.containerMenu.containerId == containerId
+                && player.containerMenu instanceof MEMonitorableMenu<?>meMenu) {
+            storageList.tryApply(meMenu, fullUpdate);
         }
-
-        IClientRepo<T> clientRepo = menu.getClientRepo();
-        if (clientRepo == null) {
-            AELog.info("Ignoring ME inventory update packet because no client repo is available.");
-            return;
-        }
-
-        clientRepo.handleUpdate(fullUpdate, list);
     }
 
 }
