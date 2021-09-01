@@ -245,7 +245,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		{
 			this.resetCacheLogic = 2;
 		}
-		else
+		else if( this.resetCacheLogic < 2 )
 		{
 			this.resetCacheLogic = 1;
 		}
