@@ -20,18 +20,19 @@ package appeng.client.render.overlay;
 
 import java.util.OptionalDouble;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 
 /**
  * This is based on the area render of https://github.com/TeamPneumatic/pnc-repressurized/
  */
 public class OverlayRenderType extends RenderType {
+
+    private static RenderType BLOCK_HIGHLIGHT_FACE;
+    private static RenderType BLOCK_HIGHLIGHT_LINE;
 
     public OverlayRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode mode, int bufferSizeIn,
             boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
@@ -40,38 +41,39 @@ public class OverlayRenderType extends RenderType {
     }
 
     public static RenderType getBlockHilightFace() {
-        return create("block_hilight",
-                DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 65536, false, false,
-                CompositeState.builder()
-                        .setTransparencyState(TransparencyStateShard.CRUMBLING_TRANSPARENCY)
-                        .setTextureState(NO_TEXTURE)
-                        .setLightmapState(NO_LIGHTMAP)
-                        .setDepthTestState(NO_DEPTH_TEST)
-                        .setWriteMaskState(COLOR_WRITE)
-                        .setCullState(NO_CULL)
-                        .createCompositeState(false));
+        if (BLOCK_HIGHLIGHT_FACE == null) {
+            BLOCK_HIGHLIGHT_FACE = create("block_hilight",
+                    DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.QUADS, 65536, false, false,
+                    CompositeState.builder()
+                            .setTransparencyState(TransparencyStateShard.CRUMBLING_TRANSPARENCY)
+                            .setTextureState(NO_TEXTURE)
+                            .setLightmapState(NO_LIGHTMAP)
+                            .setDepthTestState(NO_DEPTH_TEST)
+                            .setWriteMaskState(COLOR_WRITE)
+                            .setCullState(NO_CULL)
+                            .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                            .createCompositeState(false));
+        }
+        return BLOCK_HIGHLIGHT_FACE;
     }
 
     private static final LineStateShard LINE_3 = new LineStateShard(OptionalDouble.of(3.0));
 
     public static RenderType getBlockHilightLine() {
-        return create("block_hilight_line",
-                DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 65536, false, false,
-                CompositeState.builder().setLineState(LINE_3)
-                        .setTransparencyState(TransparencyStateShard.GLINT_TRANSPARENCY)
-                        .setTextureState(NO_TEXTURE)
-                        .setDepthTestState(NO_DEPTH_TEST)
-                        .setCullState(NO_CULL)
-                        .setLightmapState(NO_LIGHTMAP)
-                        .setWriteMaskState(COLOR_DEPTH_WRITE)
-                        .createCompositeState(false));
-    }
-
-    public static void finishBuffer(MultiBufferSource buffer, RenderType type) {
-        if (buffer instanceof BufferSource) {
-            RenderSystem.disableDepthTest();
-            ((BufferSource) buffer).endBatch(type);
+        if (BLOCK_HIGHLIGHT_LINE == null) {
+            BLOCK_HIGHLIGHT_LINE = create("block_hilight_line",
+                    DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 65536, false, false,
+                    CompositeState.builder().setLineState(LINE_3)
+                            .setTransparencyState(TransparencyStateShard.GLINT_TRANSPARENCY)
+                            .setTextureState(NO_TEXTURE)
+                            .setDepthTestState(NO_DEPTH_TEST)
+                            .setCullState(NO_CULL)
+                            .setLightmapState(NO_LIGHTMAP)
+                            .setWriteMaskState(COLOR_DEPTH_WRITE)
+                            .setShaderState(RENDERTYPE_LINES_SHADER)
+                            .createCompositeState(false));
         }
+        return BLOCK_HIGHLIGHT_LINE;
     }
 
     public static int[] decomposeColor(int color) {
