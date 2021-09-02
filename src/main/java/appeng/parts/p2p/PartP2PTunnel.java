@@ -350,9 +350,25 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				if( needsNewFrequency )
 				{
 					newFreq = this.getProxy().getP2P().newFrequency();
-				}
 
-				this.getProxy().getP2P().updateFreq( this, newFreq );
+					final ItemStack newType = new ItemStack( data );
+
+					this.getHost().removePart( this.getSide(), false );
+					final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player, hand );
+					final IPart newBus = this.getHost().getPart( dir );
+
+					if( newBus instanceof PartP2PTunnel )
+					{
+						final PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
+						newTunnel.setOutput( false );
+						newTunnel.onTunnelNetworkChange();
+						newTunnel.getProxy().getP2P().updateFreq( newTunnel, newFreq );
+					}
+				}
+				else
+				{
+					this.getProxy().getP2P().updateFreq( this, newFreq );
+				}
 			}
 			catch( final GridAccessException e )
 			{
@@ -365,10 +381,17 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			final String type = p2pItem.getUnlocalizedName();
 
 			p2pItem.writeToNBT( data );
-			data.setShort( "freq", this.getFrequency() );
+			if( needsNewFrequency )
+			{
+				data.setShort( "freq", newFreq );
+			}
+			else
+			{
+				data.setShort( "freq", this.getFrequency() );
+			}
 
 			final AEColor[] colors = Platform.p2p().toColors( this.getFrequency() );
-			final int[] colorCode = new int[] {
+			final int[] colorCode = new int[]{
 					colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(), colors[1].ordinal(),
 					colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(), colors[3].ordinal(),
 			};
