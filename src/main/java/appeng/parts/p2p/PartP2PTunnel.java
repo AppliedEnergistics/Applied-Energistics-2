@@ -351,7 +351,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				{
 					newFreq = this.getProxy().getP2P().newFrequency();
 
-					final ItemStack newType = new ItemStack( data );
+					final ItemStack newType = this.getHost().getPart( this.getSide() ).getItemStack( PartItemStack.WRENCH );
 
 					this.getHost().removePart( this.getSide(), false );
 					final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player, hand );

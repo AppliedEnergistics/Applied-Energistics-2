@@ -191,6 +191,10 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public void onUpdateTick()
 	{
+		if( localStorage.stored < MAX_BUFFER_STORAGE - 0.001 )
+		{
+			this.myGrid.postEvent( new MENetworkPowerStorage( localStorage, PowerEventType.REQUEST_POWER ) );
+		}
 		if( !this.interests.isEmpty() )
 		{
 			final double oldPower = this.lastStoredPower;
@@ -832,11 +836,6 @@ public class EnergyGridCache implements IEnergyGrid
 		private void removeCurrentAEPower( double amount )
 		{
 			this.stored -= amount;
-
-			if( this.stored < MAX_BUFFER_STORAGE - 0.001 )
-			{
-				EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
-			}
 
 			if( this.stored < 0.01 )
 			{
