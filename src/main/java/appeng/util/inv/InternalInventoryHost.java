@@ -19,12 +19,11 @@
 package appeng.util.inv;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
-public interface IAEAppEngInventory {
+public interface InternalInventoryHost {
     void saveChanges();
 
-    void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack);
+    void onChangeInventory(Object inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack);
 
     boolean isRemote();
 }

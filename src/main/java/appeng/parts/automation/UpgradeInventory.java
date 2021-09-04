@@ -19,22 +19,20 @@
 package appeng.parts.automation;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public abstract class UpgradeInventory extends AppEngInternalInventory
-        implements IAEAppEngInventory, IUpgradeInventory {
-    private final IAEAppEngInventory parent;
+        implements InternalInventoryHost, IUpgradeInventory {
+    private final InternalInventoryHost parent;
 
     private boolean cached = false;
     private int fuzzyUpgrades = 0;
@@ -44,9 +42,9 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     private int inverterUpgrades = 0;
     private int craftingUpgrades = 0;
 
-    public UpgradeInventory(final IAEAppEngInventory parent, final int slots) {
+    public UpgradeInventory(InternalInventoryHost parent, final int slots) {
         super(null, slots, 1);
-        this.setBlockEntity(this);
+        this.setHost(this);
         this.parent = parent;
         this.setFilter(new UpgradeInvFilter());
     }
@@ -85,13 +83,13 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
         this.cached = true;
         this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
 
-        for (final ItemStack is : this) {
-            if (is == null || is.getItem() == Items.AIR || !(is.getItem() instanceof IUpgradeModule)) {
+        for (var is : this) {
+            var upgradeType = IUpgradeModule.getTypeFromStack(is);
+            if (upgradeType == null) {
                 continue;
             }
 
-            final Upgrades myUpgrade = ((IUpgradeModule) is.getItem()).getType(is);
-            switch (myUpgrade) {
+            switch (upgradeType) {
                 case CAPACITY:
                     this.capacityUpgrades++;
                     break;
@@ -124,8 +122,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     }
 
     @Override
-    public void readFromNBT(final CompoundTag target) {
-        super.readFromNBT(target);
+    public void readFromNBT(CompoundTag data, String name) {
+        super.readFromNBT(data, name);
         this.updateUpgradeInfo();
     }
 
@@ -137,7 +135,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
         this.cached = false;
         if (!isRemote()) {
@@ -148,21 +146,15 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     private class UpgradeInvFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack itemstack) {
-            if (itemstack.isEmpty()) {
-                return false;
-            }
-            final Item it = itemstack.getItem();
-            if (it instanceof IUpgradeModule) {
-                final Upgrades u = ((IUpgradeModule) it).getType(itemstack);
-                if (u != null) {
-                    return UpgradeInventory.this.getInstalledUpgrades(u) < UpgradeInventory.this.getMaxInstalled(u);
-                }
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack itemstack) {
+            var u = IUpgradeModule.getTypeFromStack(itemstack);
+            if (u != null) {
+                return UpgradeInventory.this.getInstalledUpgrades(u) < UpgradeInventory.this.getMaxInstalled(u);
             }
             return false;
         }

@@ -24,7 +24,6 @@ import java.util.Iterator;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.SecurityPermissions;
@@ -70,7 +69,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
 
     @Override
     protected void setupConfig() {
-        final IItemHandler config = this.getHost().getSubInventory(ISegmentedInventory.CONFIG);
+        var config = this.getHost().getSubInventory(ISegmentedInventory.CONFIG);
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
                 int invSlot = y * 9 + x;
@@ -129,13 +128,13 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
             i = cellInv.getAvailableItems().iterator();
         }
 
-        for (int x = 0; x < inv.getSlots(); x++) {
+        for (int x = 0; x < inv.size(); x++) {
             if (i.hasNext() && this.isSlotEnabled(x / 9 - 2)) {
                 // TODO: check if ok
                 final ItemStack g = i.next().asItemStackRepresentation();
-                ItemHandlerUtil.setStackInSlot(inv, x, g);
+                inv.setItemDirect(x, g);
             } else {
-                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.EMPTY);
+                inv.setItemDirect(x, ItemStack.EMPTY);
             }
         }
 

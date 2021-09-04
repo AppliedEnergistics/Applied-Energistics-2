@@ -29,13 +29,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -44,19 +44,18 @@ import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.parts.automation.EmptyUpgradeInventory;
 import appeng.util.ConfigManager;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.InvOperation;
 
 public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
-        implements IConfigurableObject, IUpgradeableObject, IAEAppEngInventory {
+        implements IConfigurableObject, IUpgradeableObject, InternalInventoryHost {
 
     private final AppEngInternalInventory cell = new AppEngInternalInventory(this, 1);
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
     private final ConfigManager manager = new ConfigManager();
 
     private IUpgradeInventory cacheUpgrades = null;
-    private IItemHandler cacheConfig = null;
+    private InternalInventory cacheConfig = null;
     private boolean locked = false;
 
     public CellWorkbenchBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -95,7 +94,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(ISegmentedInventory.CONFIG)) {
             return this.config;
         } else if (id.equals(ISegmentedInventory.CELLS)) {
@@ -106,7 +105,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;
@@ -114,26 +113,20 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
             this.cacheUpgrades = null;
             this.cacheConfig = null;
 
-            final IItemHandler configInventory = this.getCellConfigInventory();
+            var configInventory = this.getCellConfigInventory();
             if (configInventory != null) {
-                boolean cellHasConfig = false;
-                for (int x = 0; x < configInventory.getSlots(); x++) {
-                    if (!configInventory.getStackInSlot(x).isEmpty()) {
-                        cellHasConfig = true;
-                        break;
-                    }
-                }
-
-                if (cellHasConfig) {
-                    for (int x = 0; x < this.config.getSlots(); x++) {
-                        this.config.setStackInSlot(x, configInventory.getStackInSlot(x));
+                if (!configInventory.isEmpty()) {
+                    // Copy cell -> config inventory
+                    for (int x = 0; x < this.config.size(); x++) {
+                        this.config.setItemDirect(x, configInventory.getStackInSlot(x));
                     }
                 } else {
-                    ItemHandlerUtil.copy(this.config, configInventory, false);
+                    // Copy config inventory -> cell, when cell's config is empty
+                    copy(this.config, configInventory);
                 }
             } else if (this.manager.getSetting(Settings.COPY_MODE) == CopyMode.CLEAR_ON_REMOVE) {
-                for (int x = 0; x < this.config.getSlots(); x++) {
-                    this.config.setStackInSlot(x, ItemStack.EMPTY);
+                for (int x = 0; x < this.config.size(); x++) {
+                    this.config.setItemDirect(x, ItemStack.EMPTY);
                 }
 
                 this.saveChanges();
@@ -142,29 +135,35 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
             this.locked = false;
         } else if (inv == this.config && !this.locked) {
             this.locked = true;
-            final IItemHandler c = this.getCellConfigInventory();
+            var c = this.getCellConfigInventory();
             if (c != null) {
-                ItemHandlerUtil.copy(this.config, c, false);
+                copy(this.config, c);
                 // copy items back. The ConfigInventory may changed the items on insert
-                ItemHandlerUtil.copy(c, this.config, false);
+                copy(c, this.config);
             }
             this.locked = false;
         }
     }
 
-    private IItemHandler getCellConfigInventory() {
+    public static void copy(InternalInventory from, InternalInventory to) {
+        for (int i = 0; i < Math.min(from.size(), to.size()); ++i) {
+            to.setItemDirect(i, from.getStackInSlot(i));
+        }
+    }
+
+    private InternalInventory getCellConfigInventory() {
         if (this.cacheConfig == null) {
-            final ICellWorkbenchItem cell = this.getCell();
+            var cell = this.getCell();
             if (cell == null) {
                 return null;
             }
 
-            final ItemStack is = this.cell.getStackInSlot(0);
+            var is = this.cell.getStackInSlot(0);
             if (is.isEmpty()) {
                 return null;
             }
 
-            final IItemHandler inv = cell.getConfigInventory(is);
+            var inv = cell.getConfigInventory(is);
             if (inv == null) {
                 return null;
             }

@@ -18,7 +18,6 @@
 
 package appeng.items.storage;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -26,8 +25,6 @@ import net.minecraft.world.level.ItemLike;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.definitions.AEItems;
-import appeng.util.InventoryAdaptor;
 
 public final class BasicItemStorageCellItem extends AbstractStorageCell<IAEItemStack> {
 
@@ -56,11 +53,4 @@ public final class BasicItemStorageCellItem extends AbstractStorageCell<IAEItemS
         return StorageChannels.items();
     }
 
-    @Override
-    protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final Player player) {
-        final ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
-        if (!extraA.isEmpty()) {
-            player.drop(extraA, false);
-        }
-    }
 }

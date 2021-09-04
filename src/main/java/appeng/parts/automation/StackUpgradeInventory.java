@@ -21,12 +21,12 @@ package appeng.parts.automation;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Upgrades;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 
 public class StackUpgradeInventory extends UpgradeInventory {
     private final ItemStack stack;
 
-    public StackUpgradeInventory(final ItemStack stack, final IAEAppEngInventory inventory, final int slots) {
+    public StackUpgradeInventory(final ItemStack stack, final InternalInventoryHost inventory, final int slots) {
         super(inventory, slots);
         this.stack = stack;
     }

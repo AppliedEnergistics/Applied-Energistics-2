@@ -32,6 +32,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -45,13 +46,13 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
+import appeng.helpers.ItemTransfer;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemIOBusMenu;
 import appeng.parts.PartModel;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -137,7 +138,7 @@ public class ImportBusPart extends SharedItemBusPart {
 
         this.worked = false;
 
-        final InventoryAdaptor myAdaptor = this.getHandler();
+        var myAdaptor = this.getHandler();
         final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
 
         if (myAdaptor != null) {
@@ -176,16 +177,16 @@ public class ImportBusPart extends SharedItemBusPart {
         return this.worked ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
     }
 
-    private boolean importStuff(final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport,
+    private boolean importStuff(InternalInventory srcInv, final IAEItemStack whatToImport,
             final IMEMonitor<IAEItemStack> inv, final IEnergySource energy, final FuzzyMode fzMode) {
-        final int toSend = this.calculateMaximumAmountToImport(myAdaptor, whatToImport, inv, fzMode);
+        final int toSend = this.calculateMaximumAmountToImport(srcInv, whatToImport, inv, fzMode);
         final ItemStack newItems;
 
         if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            newItems = myAdaptor.removeSimilarItems(toSend,
+            newItems = ItemTransfer.removeSimilarItems(srcInv, toSend,
                     whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, insertionPredicate);
         } else {
-            newItems = myAdaptor.removeItems(toSend,
+            newItems = ItemTransfer.removeItems(srcInv, toSend,
                     whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), insertionPredicate);
         }
 
@@ -199,7 +200,7 @@ public class ImportBusPart extends SharedItemBusPart {
                 final IAEItemStack spill = inv.injectItems(failed, Actionable.MODULATE, this.source);
                 if (spill != null) {
                     // last resort try to put it back .. lets hope it's a chest type of thing
-                    myAdaptor.addItems(spill.createItemStack());
+                    srcInv.addItems(spill.createItemStack());
                 }
                 return true;
             } else {
@@ -213,7 +214,7 @@ public class ImportBusPart extends SharedItemBusPart {
         return false;
     }
 
-    private int calculateMaximumAmountToImport(final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport,
+    private int calculateMaximumAmountToImport(InternalInventory srcInv, final IAEItemStack whatToImport,
             final IMEMonitor<IAEItemStack> inv, final FuzzyMode fzMode) {
         final int toSend = Math.min(this.itemsToSend, 64);
         final ItemStack itemStackToImport;
@@ -227,9 +228,10 @@ public class ImportBusPart extends SharedItemBusPart {
         final IAEItemStack itemAmountNotStorable;
         final ItemStack simResult;
         if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            simResult = myAdaptor.simulateSimilarRemove(toSend, itemStackToImport, fzMode, insertionPredicate);
+            simResult = ItemTransfer.simulateSimilarRemove(srcInv, toSend, itemStackToImport, fzMode,
+                    insertionPredicate);
         } else {
-            simResult = myAdaptor.simulateRemove(toSend, itemStackToImport, insertionPredicate);
+            simResult = ItemTransfer.simulateRemove(srcInv, toSend, itemStackToImport, insertionPredicate);
         }
         itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
                 this.source);

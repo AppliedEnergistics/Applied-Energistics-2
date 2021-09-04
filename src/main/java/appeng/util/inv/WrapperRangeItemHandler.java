@@ -24,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import appeng.util.helpers.ItemHandlerUtil;
+import appeng.api.implementations.blockentities.InternalInventory;
 
 public class WrapperRangeItemHandler implements IItemHandlerModifiable {
     private final IItemHandler compose;
@@ -75,7 +75,7 @@ public class WrapperRangeItemHandler implements IItemHandlerModifiable {
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
         if (this.checkSlot(slot)) {
-            ItemHandlerUtil.setStackInSlot(this.compose, slot + this.minSlot, stack);
+            ((InternalInventory) this.compose).setItemDirect(slot + this.minSlot, stack);
         }
     }
 

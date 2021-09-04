@@ -50,7 +50,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     private final long order;
 
     public InterfaceRecord(long serverId, int slots, long order, Component name) {
-        this.inventory = new AppEngInternalInventory(null, slots);
+        this.inventory = new AppEngInternalInventory(slots);
         this.displayName = name.getString();
         this.searchName = this.displayName.toLowerCase();
         this.serverId = serverId;

@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.GridLinkables;
@@ -35,13 +34,13 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.InvOperation;
 
 /**
  * @see appeng.client.gui.implementations.SecurityStationScreen
  */
-public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngInventory {
+public class SecurityStationMenu extends ItemTerminalMenu implements InternalInventoryHost {
 
     private static final String ACTION_TOGGLE_PERMISSION = "togglePermission";
 
@@ -132,7 +131,7 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
         if (!this.linkableOut.hasItem() && this.linkableIn.hasItem()) {
             var term = this.linkableIn.getItem().copy();

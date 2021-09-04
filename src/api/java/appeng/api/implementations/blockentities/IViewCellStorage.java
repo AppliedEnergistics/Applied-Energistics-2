@@ -23,8 +23,6 @@
 
 package appeng.api.implementations.blockentities;
 
-import net.minecraftforge.items.IItemHandler;
-
 public interface IViewCellStorage {
 
     /**
@@ -32,5 +30,5 @@ public interface IViewCellStorage {
      *
      * @return inventory with at least 5 slot
      */
-    IItemHandler getViewCellStorage();
+    InternalInventory getViewCellStorage();
 }

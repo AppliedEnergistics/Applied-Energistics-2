@@ -77,7 +77,7 @@ public class CraftAmountMenu extends AEBaseMenu {
     public CraftAmountMenu(int id, Inventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
 
-        this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(null, 1), 0);
+        this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
         this.addSlot(this.craftingItem, SlotSemantic.MACHINE_OUTPUT);
     }
 

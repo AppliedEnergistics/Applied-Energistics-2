@@ -46,7 +46,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -56,6 +55,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
@@ -110,7 +110,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final IItemList<IAEItemStack> priorityList = StorageChannels.items().createList();
 
         final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-        for (int x = 0; x < this.config.getSlots() && x < slotsToUse; x++) {
+        for (int x = 0; x < this.config.size() && x < slotsToUse; x++) {
             final IAEItemStack is = this.config.getAEStackInSlot(x);
             if (is != null) {
                 priorityList.add(is);
@@ -128,7 +128,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
@@ -151,7 +151,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(ISegmentedInventory.CONFIG)) {
             return config;
         } else {

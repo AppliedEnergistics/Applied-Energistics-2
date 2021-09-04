@@ -27,12 +27,12 @@ import javax.annotation.Nonnull;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
@@ -49,7 +49,7 @@ import appeng.menu.slot.OptionalRestrictedInputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.EnumCycler;
 import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.WrapperSupplierItemHandler;
+import appeng.util.inv.SupplierInternalInventory;
 
 /**
  * @see appeng.client.gui.implementations.CellWorkbenchScreen
@@ -103,7 +103,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
     @Override
     protected void setupConfig() {
-        final IItemHandler cell = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
+        var cell = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
                 SlotSemantic.STORAGE_CELL);
 
@@ -115,7 +115,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
         // We support up to 8 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
         // while the active number of slots changes depending on the item inserted
-        var upgradeInventory = new WrapperSupplierItemHandler(this::getUpgrades);
+        var upgradeInventory = new SupplierInternalInventory(this::getUpgrades);
         for (int i = 0; i < 8; i++) {
             OptionalRestrictedInputSlot slot = new OptionalRestrictedInputSlot(
                     RestrictedInputSlot.PlacableItemType.UPGRADES,
@@ -137,7 +137,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
     @Override
     public boolean isSlotEnabled(final int idx) {
-        return idx < getUpgrades().getSlots();
+        return idx < getUpgrades().size();
     }
 
     @Override
@@ -170,7 +170,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
             return;
         }
 
-        final IItemHandler inv = getConfigInventory();
+        var inv = getConfigInventory();
 
         final ItemStack is = getWorkbenchItem();
         final IStorageChannel<?> channel = is.getItem() instanceof IStorageCell
@@ -179,12 +179,12 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
         Iterator<? extends IAEStack<?>> i = iterateCellItems(is, channel);
 
-        for (int x = 0; x < inv.getSlots(); x++) {
+        for (int x = 0; x < inv.size(); x++) {
             if (i.hasNext()) {
-                final ItemStack g = i.next().asItemStackRepresentation();
-                ItemHandlerUtil.setStackInSlot(inv, x, g);
+                var g = i.next().asItemStackRepresentation();
+                inv.setItemDirect(x, g);
             } else {
-                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.EMPTY);
+                inv.setItemDirect(x, ItemStack.EMPTY);
             }
         }
 
@@ -192,7 +192,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     @Nonnull
-    private IItemHandler getConfigInventory() {
+    private InternalInventory getConfigInventory() {
         return Objects.requireNonNull(this.getHost().getSubInventory(ISegmentedInventory.CONFIG));
     }
 

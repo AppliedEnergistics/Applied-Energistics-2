@@ -22,12 +22,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.config.Upgrades;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 
 public final class DefinitionUpgradeInventory extends UpgradeInventory {
     private final Item item;
 
-    public DefinitionUpgradeInventory(final ItemLike item, final IAEAppEngInventory parent, final int s) {
+    public DefinitionUpgradeInventory(final ItemLike item, final InternalInventoryHost parent, final int s) {
         super(parent, s);
 
         this.item = item.asItem();

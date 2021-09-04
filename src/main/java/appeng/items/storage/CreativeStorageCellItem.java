@@ -27,9 +27,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellInventoryHandler;
@@ -49,7 +49,7 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public InternalInventory getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

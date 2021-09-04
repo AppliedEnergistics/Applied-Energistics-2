@@ -31,14 +31,13 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
@@ -60,10 +59,9 @@ import appeng.menu.slot.PatternOutputsSlot;
 import appeng.menu.slot.PatternTermSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.reporting.PatternTerminalPart;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.WrapperCursorItemHandler;
+import appeng.util.inv.CarriedItemInventory;
+import appeng.util.inv.PlayerInternalInventory;
 import appeng.util.item.AEItemStack;
 
 /**
@@ -82,7 +80,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             .build("patternterm");
 
     private final PatternTerminalPart patternTerminal;
-    private final IItemHandler craftingGridInv;
+    private final InternalInventory craftingGridInv;
     private final FakeCraftingMatrixSlot[] craftingGridSlots = new FakeCraftingMatrixSlot[9];
     private final OptionalFakeSlot[] processingOutputSlots = new OptionalFakeSlot[3];
     private final PatternTermSlot craftOutputSlot;
@@ -286,8 +284,8 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
                                                                         * TODO should this check powered / powerSource?
                                                                         */) {
             final IAEItemStack out = packetPatternSlot.slotItem.copy();
-            InventoryAdaptor inv = new AdaptorItemHandler(new WrapperCursorItemHandler(this));
-            final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(this.getPlayerInventory().player);
+            InternalInventory inv = new CarriedItemInventory(this);
+            var playerInv = new PlayerInternalInventory(getPlayerInventory());
 
             if (packetPatternSlot.shift) {
                 inv = playerInv;
@@ -421,10 +419,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
-        if (id.equals(PLAYER)) {
-            return new PlayerInvWrapper(this.getPlayerInventory());
-        }
+    public InternalInventory getSubInventory(ResourceLocation id) {
         return this.getPatternTerminal().getSubInventory(id);
     }
 

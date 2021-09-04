@@ -44,8 +44,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -214,12 +212,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 getSlots(SlotSemantic.PLAYER_INVENTORY).isEmpty(),
                 "Player inventory was already created");
 
-        IItemHandler ih = new PlayerInvWrapper(playerInventory);
-
         for (int i = 0; i < playerInventory.items.size(); i++) {
             Slot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
-                slot = new DisabledSlot(ih, i);
+                slot = new DisabledSlot(playerInventory, i);
             } else {
                 slot = new Slot(playerInventory, i, 0, 0);
             }

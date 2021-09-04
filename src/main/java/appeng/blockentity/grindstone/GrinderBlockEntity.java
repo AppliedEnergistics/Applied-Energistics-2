@@ -26,27 +26,24 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import appeng.api.implementations.blockentities.ICrankable;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.recipes.handlers.GrinderOptionalResult;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.GrinderRecipes;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankable {
     private static final int SLOT_PROCESSING = 6;
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 7);
-    private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
+    private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new GrinderFilter());
     private int points;
 
     public GrinderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -62,17 +59,17 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(Direction side) {
+    protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.invExt;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
 
     }
@@ -101,8 +98,8 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
                         item = ItemStack.EMPTY;
                     }
 
-                    this.inv.setStackInSlot(x, item);
-                    this.inv.setStackInSlot(6, ais);
+                    this.inv.setItemDirect(x, item);
+                    this.inv.setItemDirect(6, ais);
                     return true;
                 }
             }
@@ -127,28 +124,28 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
             }
 
             this.points = 0;
-            final InventoryAdaptor sia = new AdaptorItemHandler(new RangedWrapper(this.inv, 3, 6));
+            var outputSlots = this.inv.getSubInventory(3, 6);
 
-            this.addItem(sia, r.getResultItem());
+            this.addItem(outputSlots, r.getResultItem());
 
             for (GrinderOptionalResult optionalResult : r.getOptionalResults()) {
                 final float chance = Platform.getRandomInt() % 2000 / 2000.0f;
 
                 if (chance <= optionalResult.getChance()) {
-                    this.addItem(sia, optionalResult.getResult());
+                    this.addItem(outputSlots, optionalResult.getResult());
                 }
             }
 
-            this.inv.setStackInSlot(6, ItemStack.EMPTY);
+            this.inv.setItemDirect(6, ItemStack.EMPTY);
         }
     }
 
-    private void addItem(final InventoryAdaptor sia, final ItemStack output) {
+    private void addItem(InternalInventory outputSlots, ItemStack output) {
         if (output.isEmpty()) {
             return;
         }
 
-        final ItemStack notAdded = sia.addItems(output);
+        final ItemStack notAdded = outputSlots.addItems(output);
         if (!notAdded.isEmpty()) {
             final List<ItemStack> out = new ArrayList<>();
             out.add(notAdded);
@@ -164,12 +161,12 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
 
     private class GrinderFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slotIndex, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slotIndex, int amount) {
             return slotIndex >= 3 && slotIndex <= 5;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slotIndex, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slotIndex, ItemStack stack) {
             if (!GrinderRecipes.isValidIngredient(level, stack)) {
                 return false;
             }

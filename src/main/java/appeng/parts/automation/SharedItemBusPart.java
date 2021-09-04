@@ -26,16 +26,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 public abstract class SharedItemBusPart extends UpgradeablePart implements IGridTickable {
@@ -67,7 +66,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
 
     @Nullable
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(ISegmentedInventory.CONFIG)) {
             return config;
         } else {
@@ -86,16 +85,16 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
         }
     }
 
-    protected InventoryAdaptor getHandler() {
+    protected InternalInventory getHandler() {
         final BlockEntity self = this.getHost().getBlockEntity();
         final BlockEntity target = Platform.getTickingBlockEntity(getLevel(),
                 self.getBlockPos().relative(this.getSide()));
 
-        return InventoryAdaptor.getAdaptor(target, this.getSide().getOpposite());
+        return InternalInventory.wrapExternal(target, this.getSide().getOpposite());
     }
 
     protected int availableSlots() {
-        return Math.min(1 + getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().getSlots());
+        return Math.min(1 + getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().size());
     }
 
     protected int calculateItemsToSend() {

@@ -187,7 +187,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
                 final Object lineObj = this.lines.get(scrollLevel + i);
                 if (lineObj instanceof InterfaceRecord inv) {
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
-                    for (int z = 0; z < inv.getInventory().getSlots(); z++) {
+                    for (int z = 0; z < inv.getInventory().size(); z++) {
                         this.menu.slots
                                 .add(new InterfaceSlot(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
                     }
@@ -369,10 +369,10 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
                     Component un = Serializer.fromJson(invData.getString("un"));
                     final InterfaceRecord current = this.getById(id, invData.getLong("sortBy"), un);
 
-                    for (int x = 0; x < current.getInventory().getSlots(); x++) {
+                    for (int x = 0; x < current.getInventory().size(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, ItemStack.of(invData.getCompound(which)));
+                            current.getInventory().setItemDirect(x, ItemStack.of(invData.getCompound(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {

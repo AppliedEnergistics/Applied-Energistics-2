@@ -26,13 +26,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
@@ -43,7 +43,7 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.InvOperation;
 
 /**
@@ -58,7 +58,7 @@ import appeng.util.inv.InvOperation;
  * @since rv3
  */
 public abstract class AbstractTerminalPart extends AbstractDisplayPart
-        implements ITerminalHost, IViewCellStorage, IAEAppEngInventory {
+        implements ITerminalHost, IViewCellStorage, InternalInventoryHost {
 
     private final IConfigManager cm = new ConfigManager();
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
@@ -128,12 +128,12 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public IItemHandler getViewCellStorage() {
+    public InternalInventory getViewCellStorage() {
         return this.viewCell;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
         this.getHost().markForSave();
     }

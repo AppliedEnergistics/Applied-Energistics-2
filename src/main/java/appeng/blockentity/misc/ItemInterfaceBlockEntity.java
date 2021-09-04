@@ -36,10 +36,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -175,12 +175,12 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.duality.getInternalInventory();
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
         this.duality.onChangeInventory(inv, slot, mc, removed, added);
     }
@@ -226,7 +226,7 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
 
     @Nullable
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         var inv = getInterfaceDuality().getSubInventory(id);
         return inv != null ? inv : super.getSubInventory(id);
     }

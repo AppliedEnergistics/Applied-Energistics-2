@@ -18,11 +18,11 @@
 
 package appeng.menu.slot;
 
-import net.minecraftforge.items.IItemHandler;
+import appeng.api.implementations.blockentities.InternalInventory;
 
 public class FakeCraftingMatrixSlot extends FakeSlot {
 
-    public FakeCraftingMatrixSlot(final IItemHandler inv, final int invSlot) {
+    public FakeCraftingMatrixSlot(InternalInventory inv, final int invSlot) {
         super(inv, invSlot);
     }
 }

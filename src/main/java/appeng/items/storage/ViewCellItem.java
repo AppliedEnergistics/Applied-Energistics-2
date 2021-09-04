@@ -22,10 +22,9 @@ import java.util.Collection;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.Upgrades;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
@@ -60,37 +59,30 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
             if (currentViewCell.getItem() instanceof ViewCellItem) {
                 final IItemList<IAEItemStack> priorityList = StorageChannels.items().createList();
 
-                final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();
-                final IItemHandler upgrades = vc.getUpgradesInventory(currentViewCell);
-                final IItemHandler config = vc.getConfigInventory(currentViewCell);
-                final FuzzyMode fzMode = vc.getFuzzyMode(currentViewCell);
+                var vc = (ICellWorkbenchItem) currentViewCell.getItem();
+                var upgrades = vc.getUpgradesInventory(currentViewCell);
+                var config = vc.getConfigInventory(currentViewCell);
+                var fzMode = vc.getFuzzyMode(currentViewCell);
 
                 boolean hasInverter = false;
                 boolean hasFuzzy = false;
 
-                for (int x = 0; x < upgrades.getSlots(); x++) {
-                    final ItemStack is = upgrades.getStackInSlot(x);
-                    if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
-                        final Upgrades u = ((IUpgradeModule) is.getItem()).getType(is);
+                if (upgrades != null) {
+                    for (var upgrade : upgrades) {
+                        var u = IUpgradeModule.getTypeFromStack(upgrade);
                         if (u != null) {
                             switch (u) {
-                                case FUZZY:
-                                    hasFuzzy = true;
-                                    break;
-                                case INVERTER:
-                                    hasInverter = true;
-                                    break;
-                                default:
+                                case FUZZY -> hasFuzzy = true;
+                                case INVERTER -> hasInverter = true;
+                                default -> {
+                                }
                             }
                         }
                     }
                 }
 
-                for (int x = 0; x < config.getSlots(); x++) {
-                    final ItemStack is = config.getStackInSlot(x);
-                    if (!is.isEmpty()) {
-                        priorityList.add(AEItemStack.fromItemStack(is));
-                    }
+                for (var stack : config) {
+                    priorityList.add(AEItemStack.fromItemStack(stack));
                 }
 
                 if (!priorityList.isEmpty()) {
@@ -119,7 +111,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public InternalInventory getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

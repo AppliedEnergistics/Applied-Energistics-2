@@ -19,18 +19,18 @@
 package appeng.blockentity.inventory;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class AppEngCellInventory implements IItemHandlerModifiable {
+public class AppEngCellInventory implements InternalInventory {
     private final AppEngInternalInventory inv;
     private final ICellInventoryHandler handlerForSlot[];
 
-    public AppEngCellInventory(final IAEAppEngInventory host, final int slots) {
+    public AppEngCellInventory(final InternalInventoryHost host, final int slots) {
         this.inv = new AppEngInternalInventory(host, slots, 1);
         this.handlerForSlot = new ICellInventoryHandler[slots];
     }
@@ -44,15 +44,15 @@ public class AppEngCellInventory implements IItemHandlerModifiable {
     }
 
     @Override
-    public void setStackInSlot(int slot, ItemStack stack) {
+    public void setItemDirect(int slot, ItemStack stack) {
         this.persist(slot);
-        this.inv.setStackInSlot(slot, stack);
+        this.inv.setItemDirect(slot, stack);
         this.cleanup(slot);
     }
 
     @Override
-    public int getSlots() {
-        return this.inv.getSlots();
+    public int size() {
+        return this.inv.size();
     }
 
     @Override
@@ -88,7 +88,7 @@ public class AppEngCellInventory implements IItemHandlerModifiable {
     }
 
     public void persist() {
-        for (int i = 0; i < this.getSlots(); ++i) {
+        for (int i = 0; i < this.size(); ++i) {
             this.persist(i);
         }
     }

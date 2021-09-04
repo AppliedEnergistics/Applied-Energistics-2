@@ -25,9 +25,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.AppEng;
@@ -91,7 +91,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(INV_CRAFTING)) {
             return craftingGrid;
         } else {

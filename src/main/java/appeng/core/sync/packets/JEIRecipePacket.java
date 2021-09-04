@@ -39,12 +39,9 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.crafting.IShapedRecipe;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.ISecurityService;
@@ -60,9 +57,6 @@ import appeng.items.storage.ViewCellItem;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.WrapperInvItemHandler;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -142,8 +136,7 @@ public class JEIRecipePacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
         // Setup and verification
-        final ServerPlayer pmp = (ServerPlayer) player;
-        final AbstractContainerMenu con = pmp.containerMenu;
+        final AbstractContainerMenu con = player.containerMenu;
         Preconditions.checkArgument(con instanceof IMenuCraftingPacket);
 
         Recipe<?> recipe = player.getCommandSenderWorld().getRecipeManager().byKey(this.recipeId).orElse(null);
@@ -155,24 +148,23 @@ public class JEIRecipePacket extends BasePacket {
         }
         Preconditions.checkArgument(recipe != null);
 
-        final IMenuCraftingPacket cct = (IMenuCraftingPacket) con;
-        final IGridNode node = cct.getNetworkNode();
+        var cct = (IMenuCraftingPacket) con;
+        var node = cct.getNetworkNode();
 
         Preconditions.checkArgument(node != null);
 
-        final IGrid grid = node.getGrid();
+        var grid = node.getGrid();
         Preconditions.checkArgument(grid != null);
 
-        final IStorageService inv = grid.getService(IStorageService.class);
+        var inv = grid.getService(IStorageService.class);
         Preconditions.checkArgument(inv != null);
 
-        final ISecurityService security = grid.getService(ISecurityService.class);
+        var security = grid.getService(ISecurityService.class);
         Preconditions.checkArgument(security != null);
 
-        final IEnergyService energy = grid.getService(IEnergyService.class);
-        final ICraftingService crafting = grid.getService(ICraftingService.class);
-        final IItemHandler craftMatrix = cct.getSubInventory(PatternTerminalPart.INV_CRAFTING);
-        final IItemHandler playerInventory = cct.getSubInventory(IMenuCraftingPacket.PLAYER);
+        var energy = grid.getService(IEnergyService.class);
+        var crafting = grid.getService(ICraftingService.class);
+        var craftMatrix = cct.getSubInventory(PatternTerminalPart.INV_CRAFTING);
 
         final IMEMonitor<IAEItemStack> storage = inv
                 .getInventory(StorageChannels.items());
@@ -180,7 +172,7 @@ public class JEIRecipePacket extends BasePacket {
         final NonNullList<Ingredient> ingredients = this.ensure3by3CraftingMatrix(recipe);
 
         // Handle each slot
-        for (int x = 0; x < craftMatrix.getSlots(); x++) {
+        for (int x = 0; x < craftMatrix.size(); x++) {
             ItemStack currentItem = craftMatrix.getStackInSlot(x);
             Ingredient ingredient = ingredients.get(x);
 
@@ -233,24 +225,27 @@ public class JEIRecipePacket extends BasePacket {
                 ItemStack[] matchingStacks = ingredient.getItems();
                 for (ItemStack matchingStack : matchingStacks) {
                     if (currentItem.isEmpty()) {
-                        AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
-
-                        if (cct.useRealItems()) {
-                            currentItem = ad.removeItems(1, matchingStack, null);
-                        } else {
-                            currentItem = ad.simulateRemove(1, matchingStack, null);
+                        var playerInv = player.getInventory();
+                        var slotMatchingItem = playerInv.findSlotMatchingItem(matchingStack);
+                        if (slotMatchingItem != -1) {
+                            if (cct.useRealItems()) {
+                                currentItem = playerInv.getItem(slotMatchingItem).split(1);
+                            } else {
+                                currentItem = playerInv.getItem(slotMatchingItem).copy();
+                                currentItem.setCount(1);
+                            }
                         }
                     }
                 }
             }
-            ItemHandlerUtil.setStackInSlot(craftMatrix, x, currentItem);
+            craftMatrix.setItemDirect(x, currentItem);
         }
 
         if (!this.crafting) {
             this.handleProcessing(con, cct, recipe);
         }
 
-        con.slotsChanged(new WrapperInvItemHandler(craftMatrix));
+        con.slotsChanged(craftMatrix.toContainer());
     }
 
     /**
@@ -347,10 +342,10 @@ public class JEIRecipePacket extends BasePacket {
     private void handleProcessing(AbstractContainerMenu con, IMenuCraftingPacket cct, Recipe<?> recipe) {
         if (con instanceof PatternTermMenu patternTerm) {
             if (!patternTerm.craftingMode) {
-                final IItemHandler output = cct.getSubInventory(PatternTerminalPart.INV_OUTPUT);
-                ItemHandlerUtil.setStackInSlot(output, 0, recipe.getResultItem());
-                ItemHandlerUtil.setStackInSlot(output, 1, ItemStack.EMPTY);
-                ItemHandlerUtil.setStackInSlot(output, 2, ItemStack.EMPTY);
+                var output = cct.getSubInventory(PatternTerminalPart.INV_OUTPUT);
+                output.setItemDirect(0, recipe.getResultItem());
+                output.setItemDirect(1, ItemStack.EMPTY);
+                output.setItemDirect(2, ItemStack.EMPTY);
             }
         }
     }

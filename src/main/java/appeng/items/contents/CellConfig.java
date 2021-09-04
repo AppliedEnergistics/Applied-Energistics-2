@@ -33,7 +33,7 @@ public class CellConfig extends AppEngInternalInventory {
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    protected void onContentsChanged(int slot, ItemStack oldStack) {
         this.writeToNBT(this.is.getOrCreateTag(), "list");
     }
 }

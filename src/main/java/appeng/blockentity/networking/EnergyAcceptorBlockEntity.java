@@ -23,10 +23,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.util.inv.InvOperation;
@@ -65,12 +64,12 @@ public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
-        return EmptyHandler.INSTANCE;
+    public InternalInventory getInternalInventory() {
+        return InternalInventory.empty();
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
 
     }

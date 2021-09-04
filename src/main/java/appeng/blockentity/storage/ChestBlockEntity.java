@@ -43,7 +43,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.config.AccessRestriction;
@@ -56,6 +55,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.blockentities.IMEChest;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -102,7 +102,6 @@ import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidStack;
-import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -120,7 +119,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     private final AppEngInternalInventory inputInventory = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory cellInventory = new AppEngInternalInventory(this, 1);
-    private final IItemHandler internalInventory = new WrapperChainedItemHandler(this.inputInventory,
+    private final InternalInventory internalInventory = new WrapperChainedItemHandler(this.inputInventory,
             this.cellInventory);
 
     private final IActionSource mySrc = new MachineSource(this);
@@ -337,7 +336,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             }
         }
 
-        if (!ItemHandlerUtil.isEmpty(this.inputInventory)) {
+        if (!this.inputInventory.isEmpty()) {
             this.tryToStoreContents();
         }
     }
@@ -420,12 +419,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.internalInventory;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
@@ -448,7 +447,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(@Nonnull Direction side) {
+    protected InternalInventory getExposedInventoryForSide(@Nonnull Direction side) {
         if (side == this.getForward()) {
             return this.cellInventory;
         } else {
@@ -457,7 +456,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     private void tryToStoreContents() {
-        if (!ItemHandlerUtil.isEmpty(this.inputInventory)) {
+
+        if (!this.inputInventory.isEmpty()) {
             this.updateHandler();
 
             if (this.cellHandler != null && this.cellHandler.getChannel() == StorageChannels.items()) {
@@ -465,9 +465,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                         AEItemStack.fromItemStack(this.inputInventory.getStackInSlot(0)), this.mySrc);
 
                 if (returns == null) {
-                    this.inputInventory.setStackInSlot(0, ItemStack.EMPTY);
+                    this.inputInventory.setItemDirect(0, ItemStack.EMPTY);
                 } else {
-                    this.inputInventory.setStackInSlot(0, returns.createItemStack());
+                    this.inputInventory.setItemDirect(0, returns.createItemStack());
                 }
             }
         }
@@ -760,12 +760,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     private class InputInventoryFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return false;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             if (ChestBlockEntity.this.isPowered()) {
                 ChestBlockEntity.this.updateHandler();
                 return ChestBlockEntity.this.cellHandler != null
@@ -778,12 +778,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private static class CellInventoryFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             return StorageCells.getHandler(stack) != null;
         }
 

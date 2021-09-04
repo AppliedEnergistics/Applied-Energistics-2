@@ -20,10 +20,8 @@ package appeng.integration.modules.theoneprobe.blockentity;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
 
 import mcjty.theoneprobe.api.ElementAlignment;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -39,8 +37,8 @@ public class ChargerInfoProvider implements IBlockEntityInfoProvider {
     public void addProbeInfo(AEBaseBlockEntity blockEntity, ProbeMode mode, IProbeInfo probeInfo, Player player,
             Level level, BlockState blockState, IProbeHitData data) {
         if (blockEntity instanceof ChargerBlockEntity charger) {
-            final IItemHandler chargerInventory = charger.getInternalInventory();
-            final ItemStack chargingItem = chargerInventory.getStackInSlot(0);
+            var chargerInventory = charger.getInternalInventory();
+            var chargingItem = chargerInventory.getStackInSlot(0);
 
             if (!chargingItem.isEmpty()) {
                 final Component currentInventory = chargingItem.getHoverName();

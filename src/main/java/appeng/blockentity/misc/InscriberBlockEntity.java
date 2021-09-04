@@ -34,8 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -44,6 +42,7 @@ import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
@@ -59,9 +58,9 @@ import appeng.core.settings.TickRates;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
@@ -85,13 +84,14 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     private final AppEngInternalInventory bottomItemHandler = new AppEngInternalInventory(this, 1, 1);
     private final AppEngInternalInventory sideItemHandler = new AppEngInternalInventory(this, 2, 1);
 
-    private final IItemHandler topItemHandlerExtern;
-    private final IItemHandler bottomItemHandlerExtern;
-    private final IItemHandler sideItemHandlerExtern;
+    // The externally visible inventories (with filters applied)
+    private final InternalInventory topItemHandlerExtern;
+    private final InternalInventory bottomItemHandlerExtern;
+    private final InternalInventory sideItemHandlerExtern;
 
     private InscriberRecipe cachedTask = null;
 
-    private final IItemHandlerModifiable inv = new WrapperChainedItemHandler(this.topItemHandler,
+    private final InternalInventory inv = new WrapperChainedItemHandler(this.topItemHandler,
             this.bottomItemHandler, this.sideItemHandler);
 
     public InscriberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -107,10 +107,10 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
         this.sideItemHandler.setMaxStackSize(1, 64);
 
-        final IAEItemFilter filter = new ItemHandlerFilter();
-        this.topItemHandlerExtern = new WrapperFilteredItemHandler(this.topItemHandler, filter);
-        this.bottomItemHandlerExtern = new WrapperFilteredItemHandler(this.bottomItemHandler, filter);
-        this.sideItemHandlerExtern = new WrapperFilteredItemHandler(this.sideItemHandler, filter);
+        var filter = new ItemHandlerFilter();
+        this.topItemHandlerExtern = new FilteredInternalInventory(this.topItemHandler, filter);
+        this.bottomItemHandlerExtern = new FilteredInternalInventory(this.bottomItemHandler, filter);
+        this.sideItemHandlerExtern = new FilteredInternalInventory(this.sideItemHandler, filter);
     }
 
     @Override
@@ -144,11 +144,11 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
             this.setClientStart(System.currentTimeMillis());
         }
 
-        for (int num = 0; num < this.inv.getSlots(); num++) {
+        for (int num = 0; num < this.inv.size(); num++) {
             if ((slot & 1 << num) > 0) {
-                this.inv.setStackInSlot(num, AEItemStack.fromPacket(data).createItemStack());
+                this.inv.setItemDirect(num, AEItemStack.fromPacket(data).createItemStack());
             } else {
-                this.inv.setStackInSlot(num, ItemStack.EMPTY);
+                this.inv.setItemDirect(num, ItemStack.EMPTY);
             }
         }
         this.cachedTask = null;
@@ -161,14 +161,14 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         super.writeToStream(data);
         int slot = this.isSmash() ? 64 : 0;
 
-        for (int num = 0; num < this.inv.getSlots(); num++) {
+        for (int num = 0; num < this.inv.size(); num++) {
             if (!this.inv.getStackInSlot(num).isEmpty()) {
                 slot |= 1 << num;
             }
         }
 
         data.writeByte(slot);
-        for (int num = 0; num < this.inv.getSlots(); num++) {
+        for (int num = 0; num < this.inv.size(); num++) {
             if ((slot & 1 << num) > 0) {
                 final AEItemStack st = AEItemStack.fromItemStack(this.inv.getStackInSlot(num));
                 st.writeToPacket(data);
@@ -193,21 +193,18 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(level, pos, drops);
 
-        for (int h = 0; h < this.upgrades.getSlots(); h++) {
-            final ItemStack is = this.upgrades.getStackInSlot(h);
-            if (!is.isEmpty()) {
-                drops.add(is);
-            }
+        for (var upgrade : upgrades) {
+            drops.add(upgrade);
         }
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
         if (slot == 0) {
             this.setProcessingTime(0);
@@ -269,10 +266,10 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
                     if (this.sideItemHandler.insertItem(1, outputCopy, false).isEmpty()) {
                         this.setProcessingTime(0);
                         if (out.getProcessType() == InscriberProcessType.PRESS) {
-                            this.topItemHandler.setStackInSlot(0, ItemStack.EMPTY);
-                            this.bottomItemHandler.setStackInSlot(0, ItemStack.EMPTY);
+                            this.topItemHandler.setItemDirect(0, ItemStack.EMPTY);
+                            this.bottomItemHandler.setItemDirect(0, ItemStack.EMPTY);
                         }
-                        this.sideItemHandler.setStackInSlot(0, ItemStack.EMPTY);
+                        this.sideItemHandler.setItemDirect(0, ItemStack.EMPTY);
                     }
                 }
                 this.saveChanges();
@@ -327,7 +324,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
     @Nullable
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(ISegmentedInventory.STORAGE)) {
             return this.getInternalInventory();
         } else if (id.equals(ISegmentedInventory.UPGRADES)) {
@@ -338,7 +335,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(@Nonnull Direction facing) {
+    protected InternalInventory getExposedInventoryForSide(@Nonnull Direction facing) {
         if (facing == this.getUp()) {
             return this.topItemHandlerExtern;
         } else if (facing == this.getUp().getOpposite()) {
@@ -389,7 +386,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
      */
     private class ItemHandlerFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             if (InscriberBlockEntity.this.isSmash()) {
                 return false;
             }
@@ -399,7 +396,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             // output slot
             if (slot == 1) {
                 return false;

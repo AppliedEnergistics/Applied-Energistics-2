@@ -46,10 +46,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.IGridNode;
@@ -291,10 +291,10 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
 
         var inv = getSubInventory(ISegmentedInventory.CONFIG);
         if (inv instanceof AppEngInternalAEInventory target) {
-            final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
+            final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.size());
             tmp.readFromNBT(compound, "config");
-            for (int x = 0; x < tmp.getSlots(); x++) {
-                target.setStackInSlot(x, tmp.getStackInSlot(x));
+            for (int x = 0; x < tmp.size(); x++) {
+                target.setItemDirect(x, tmp.getStackInSlot(x));
             }
             if (this instanceof ItemLevelEmitterPart partLevelEmitter) {
                 partLevelEmitter.setReportingValue(compound.getLong("reportingValue"));
@@ -448,7 +448,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     @Nullable
     @Override
     @OverridingMethodsMustInvokeSuper
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         return null;
     }
 

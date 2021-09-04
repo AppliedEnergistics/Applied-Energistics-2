@@ -18,31 +18,28 @@
 
 package appeng.blockentity.inventory;
 
-import java.util.Iterator;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
-import appeng.util.iterators.InvIterator;
 
-public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterable<ItemStack> {
-    private final IAEAppEngInventory te;
+public class AppEngInternalAEInventory implements Iterable<ItemStack>, InternalInventory {
+    private final InternalInventoryHost te;
     private final IAEItemStack[] inv;
     private final int size;
     private int maxStack;
     private boolean dirtyFlag = false;
 
-    public AppEngInternalAEInventory(final IAEAppEngInventory te, final int s) {
+    public AppEngInternalAEInventory(final InternalInventoryHost te, final int s) {
         this.te = te;
         this.size = s;
         this.maxStack = 64;
@@ -103,12 +100,10 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         return Math.min(this.getSlotLimit(slot), stack.getMaxStackSize());
     }
 
-    @Override
-    public int getSlots() {
+    public int size() {
         return this.size;
     }
 
-    @Override
     public ItemStack getStackInSlot(final int var1) {
         if (this.inv[var1] == null) {
             return ItemStack.EMPTY;
@@ -117,7 +112,6 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         return this.inv[var1].createItemStack();
     }
 
-    @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -153,7 +147,6 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
-    @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (this.inv[slot] != null) {
             final ItemStack split = this.getStackInSlot(slot);
@@ -177,13 +170,13 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     @Override
-    public void setStackInSlot(final int slot, final ItemStack newItemStack) {
-        ItemStack oldStack = this.getStackInSlot(slot).copy();
-        this.inv[slot] = StorageChannels.items()
-                .createStack(newItemStack);
+    public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+        ItemStack oldStack = this.getStackInSlot(slotIndex).copy();
+        this.inv[slotIndex] = StorageChannels.items()
+                .createStack(stack);
 
         if (this.te != null && !this.te.isRemote()) {
-            ItemStack newStack = newItemStack.copy();
+            ItemStack newStack = stack.copy();
             InvOperation op = InvOperation.SET;
 
             if (ItemStack.isSame(oldStack, newStack)) {
@@ -197,7 +190,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
                     op = InvOperation.EXTRACT;
                 }
             }
-            this.fireOnChangeInventory(slot, op, oldStack, newStack);
+            this.fireOnChangeInventory(slotIndex, op, oldStack, newStack);
         }
     }
 
@@ -210,18 +203,12 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         }
     }
 
-    @Override
     public int getSlotLimit(int slot) {
-        return this.maxStack > 64 ? 64 : this.maxStack;
+        return Math.min(this.maxStack, 64);
     }
 
-    @Override
-    public Iterator<ItemStack> iterator() {
-        return new InvIterator(this);
-    }
-
-    @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         return true;
     }
+
 }

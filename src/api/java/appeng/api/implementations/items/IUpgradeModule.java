@@ -23,11 +23,20 @@
 
 package appeng.api.implementations.items;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Upgrades;
 
 public interface IUpgradeModule {
+    @Nullable
+    static Upgrades getTypeFromStack(ItemStack stack) {
+        if (stack.getItem() instanceof IUpgradeModule upgradeModule) {
+            return upgradeModule.getType(stack);
+        }
+        return null;
+    }
 
     /**
      * @param itemstack item with potential upgrades

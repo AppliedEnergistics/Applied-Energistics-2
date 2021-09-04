@@ -27,11 +27,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.YesNo;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.GridSpatialEvent;
@@ -41,14 +41,14 @@ import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.hooks.ticking.TickHandler;
 import appeng.util.ILevelRunnable;
+import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 2);
-    private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new SpatialIOFilter());
+    private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new SpatialIOFilter());
     private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
     private final ILevelRunnable transitionCallback = level -> transition();
@@ -145,8 +145,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
                             playerId);
                     if (success) {
                         energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                        this.inv.setStackInSlot(0, ItemStack.EMPTY);
-                        this.inv.setStackInSlot(1, cell);
+                        this.inv.setItemDirect(0, ItemStack.EMPTY);
+                        this.inv.setItemDirect(1, cell);
                     }
                 }
             }
@@ -159,29 +159,30 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
     }
 
     @Override
-    protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull Direction side) {
+    @Nonnull
+    protected InternalInventory getExposedInventoryForSide(@Nonnull Direction side) {
         return this.invExt;
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
 
     }
 
     private class SpatialIOFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return slot == 1;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             return slot == 0 && SpatialIOPortBlockEntity.this.isSpatialCell(stack);
         }
 

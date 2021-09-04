@@ -19,13 +19,13 @@
 package appeng.menu.slot;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.client.gui.Icon;
 
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final IItemHandler inv, final int invSlot, final Icon icon) {
+    public OutputSlot(final InternalInventory inv, final int invSlot, final Icon icon) {
         super(inv, invSlot);
         this.setIcon(icon);
     }

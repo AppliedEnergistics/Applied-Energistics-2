@@ -20,9 +20,9 @@ package appeng.me.storage;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellInventory;
@@ -206,12 +206,12 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
     }
 
     @Override
-    public IItemHandler getConfigInventory() {
+    public InternalInventory getConfigInventory() {
         return this.cellType.getConfigInventory(this.i);
     }
 
     @Override
-    public IItemHandler getUpgradesInventory() {
+    public InternalInventory getUpgradesInventory() {
         return this.cellType.getUpgradesInventory(this.i);
     }
 

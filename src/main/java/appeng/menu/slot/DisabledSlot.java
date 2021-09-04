@@ -18,14 +18,15 @@
 
 package appeng.menu.slot;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
-public class DisabledSlot extends AppEngSlot {
+public class DisabledSlot extends Slot {
 
-    public DisabledSlot(final IItemHandler inventory, final int invSlot) {
-        super(inventory, invSlot);
+    public DisabledSlot(Container inventory, final int invSlot) {
+        super(inventory, invSlot, 0, 0);
     }
 
     @Override

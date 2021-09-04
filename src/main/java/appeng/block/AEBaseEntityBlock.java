@@ -44,7 +44,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -151,8 +150,8 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     public int getAnalogOutputSignal(BlockState state, final Level level, final BlockPos pos) {
         final BlockEntity te = this.getBlockEntity(level, pos);
         if (te instanceof AEBaseInvBlockEntity invBlockEntity) {
-            if (invBlockEntity.getInternalInventory().getSlots() > 0) {
-                return ItemHandlerHelper.calcRedstoneFromInventory(invBlockEntity.getInternalInventory());
+            if (invBlockEntity.getInternalInventory().size() > 0) {
+                return invBlockEntity.getInternalInventory().getRedstoneSignal();
             }
         }
         return 0;

@@ -35,11 +35,11 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
@@ -57,9 +57,9 @@ import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEItems;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
+import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
 public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfigManagerListener, IConfigurableObject {
@@ -70,13 +70,13 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
-    private final IItemHandler inputSlot = new CondenseItemHandler();
+    private final InternalInventory inputSlot = new CondenseItemHandler();
     private final IFluidHandler fluidHandler = new FluidHandler();
     private final MEHandler meHandler = new MEHandler();
 
-    private final IItemHandler externalInv = new WrapperChainedItemHandler(this.inputSlot,
-            new WrapperFilteredItemHandler(this.outputSlot, AEItemFilters.EXTRACT_ONLY));
-    private final IItemHandler combinedInv = new WrapperChainedItemHandler(this.inputSlot, this.outputSlot,
+    private final InternalInventory externalInv = new WrapperChainedItemHandler(this.inputSlot,
+            new FilteredInternalInventory(this.outputSlot, AEItemFilters.EXTRACT_ONLY));
+    private final InternalInventory combinedInv = new WrapperChainedItemHandler(this.inputSlot, this.outputSlot,
             this.storageSlot);
 
     private double storedPower = 0;
@@ -140,7 +140,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         this.outputSlot.insertItem(0, output, false);
     }
 
-    IItemHandler getOutputSlot() {
+    InternalInventory getOutputSlot() {
         return this.outputSlot;
     }
 
@@ -158,12 +158,12 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.combinedInv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
         if (inv == this.outputSlot) {
             this.meHandler.outputChanged(added, removed);
@@ -188,6 +188,18 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         this.storedPower = storedPower;
     }
 
+    public InternalInventory getExternalInv() {
+        return externalInv;
+    }
+
+    public IFluidHandler getFluidHandler() {
+        return fluidHandler;
+    }
+
+    public MEHandler getMEHandler() {
+        return meHandler;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
@@ -201,17 +213,11 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return super.getCapability(capability, facing);
     }
 
-    private class CondenseItemHandler implements IItemHandler {
-
+    private class CondenseItemHandler implements InternalInventory {
         @Override
-        public int getSlots() {
+        public int size() {
             // We only expose the void slot
             return 1;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return slot == 0;
         }
 
         @Override
@@ -221,24 +227,25 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         }
 
         @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (slot != 0) {
-                return stack;
+        public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+            if (!stack.isEmpty()) {
+                CondenserBlockEntity.this.addPower(stack.getCount());
             }
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             if (!simulate && !stack.isEmpty()) {
                 CondenserBlockEntity.this.addPower(stack.getCount());
             }
             return ItemStack.EMPTY;
         }
 
+        @Nonnull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return 64;
         }
     }
 

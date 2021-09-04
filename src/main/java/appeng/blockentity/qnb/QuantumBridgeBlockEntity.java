@@ -35,9 +35,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
@@ -109,12 +108,12 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.internalInventory;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);
@@ -122,11 +121,11 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(Direction side) {
+    protected InternalInventory getExposedInventoryForSide(Direction side) {
         if (this.isCenter()) {
             return this.internalInventory;
         }
-        return EmptyHandler.INSTANCE;
+        return InternalInventory.empty();
     }
 
     private boolean isCenter() {

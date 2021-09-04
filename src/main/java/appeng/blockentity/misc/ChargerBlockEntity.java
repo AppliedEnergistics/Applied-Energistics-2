@@ -30,13 +30,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.features.ChargerRegistry;
 import appeng.api.implementations.blockentities.ICrankable;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -88,9 +88,9 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
         try {
             final IAEItemStack item = AEItemStack.fromPacket(data);
             final ItemStack is = item.createItemStack();
-            this.inv.setStackInSlot(0, is);
+            this.inv.setItemDirect(0, is);
         } catch (final Throwable t) {
-            this.inv.setStackInSlot(0, ItemStack.EMPTY);
+            this.inv.setItemDirect(0, ItemStack.EMPTY);
         }
         return c; // TESR doesn't need updates!
     }
@@ -127,7 +127,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
                 ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
-                this.inv.setStackInSlot(0, charged);
+                this.inv.setItemDirect(0, charged);
             }
         }
     }
@@ -138,12 +138,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removed, final ItemStack added) {
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().wakeDevice(node);
@@ -164,12 +164,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
             if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(held)
                     || Platform.isChargeable(held)) {
                 held = player.getInventory().removeItem(player.getInventory().selected, 1);
-                this.inv.setStackInSlot(0, held);
+                this.inv.setItemDirect(0, held);
             }
         } else {
             final List<ItemStack> drops = new ArrayList<>();
             drops.add(myItem);
-            this.inv.setStackInSlot(0, ItemStack.EMPTY);
+            this.inv.setItemDirect(0, ItemStack.EMPTY);
             Platform.spawnDrops(this.level, this.worldPosition.relative(this.getForward()), drops);
         }
     }
@@ -224,7 +224,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
                 ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
-                this.inv.setStackInSlot(0, charged);
+                this.inv.setItemDirect(0, charged);
 
                 changed = true;
             }
@@ -252,12 +252,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
     private static class ChargerInvFilter implements IAEItemFilter {
         @Override
-        public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
+        public boolean allowInsert(InternalInventory inv, final int i, final ItemStack itemstack) {
             return Platform.isChargeable(itemstack) || AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(itemstack);
         }
 
         @Override
-        public boolean allowExtract(IItemHandler inv, final int slotIndex, int amount) {
+        public boolean allowExtract(InternalInventory inv, final int slotIndex, int amount) {
             ItemStack extractedItem = inv.getStackInSlot(slotIndex);
 
             if (Platform.isChargeable(extractedItem)) {

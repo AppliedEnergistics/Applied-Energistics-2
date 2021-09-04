@@ -20,13 +20,14 @@ package appeng.menu.slot;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+
+import appeng.api.implementations.blockentities.InternalInventory;
 
 public class InaccessibleSlot extends AppEngSlot {
 
     private ItemStack dspStack = ItemStack.EMPTY;
 
-    public InaccessibleSlot(final IItemHandler i, final int invSlot) {
+    public InaccessibleSlot(final InternalInventory i, final int invSlot) {
         super(i, invSlot);
     }
 

@@ -34,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -65,12 +64,11 @@ import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
 import appeng.util.ConfigManager;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
-public class SecurityStationBlockEntity extends AENetworkBlockEntity implements ITerminalHost, IAEAppEngInventory,
+public class SecurityStationBlockEntity extends AENetworkBlockEntity implements ITerminalHost, InternalInventoryHost,
         ISecurityProvider, IColorableBlockEntity {
 
     private static int difference = 0;
@@ -101,14 +99,14 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
             final ItemStack removedStack, final ItemStack newStack) {
 
     }
 
     @Override
     public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
-        if (!ItemHandlerUtil.isEmpty(this.getConfigSlot())) {
+        if (!this.getConfigSlot().isEmpty()) {
             drops.add(this.getConfigSlot().getStackInSlot(0));
         }
 

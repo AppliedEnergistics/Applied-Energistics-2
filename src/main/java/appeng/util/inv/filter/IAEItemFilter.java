@@ -19,10 +19,11 @@
 package appeng.util.inv.filter;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+
+import appeng.api.implementations.blockentities.InternalInventory;
 
 public interface IAEItemFilter {
-    boolean allowExtract(IItemHandler inv, int slot, int amount);
+    boolean allowExtract(InternalInventory inv, int slot, int amount);
 
-    boolean allowInsert(IItemHandler inv, int slot, ItemStack stack);
+    boolean allowInsert(InternalInventory inv, int slot, ItemStack stack);
 }

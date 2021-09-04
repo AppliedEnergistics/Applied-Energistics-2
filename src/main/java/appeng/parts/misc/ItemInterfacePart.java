@@ -33,9 +33,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -182,7 +182,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
 
     @Nullable
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         var inv = duality.getSubInventory(id);
         return inv != null ? inv : super.getSubInventory(id);
     }

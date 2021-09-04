@@ -20,8 +20,8 @@ package appeng.menu.slot;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageMonitorable;
@@ -36,7 +36,7 @@ public class PatternTermSlot extends CraftingTermSlot {
     private final IOptionalSlotHost host;
 
     public PatternTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
-            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
+            final IStorageMonitorable storage, final InternalInventory cMatrix, final InternalInventory secondMatrix,
             final IOptionalSlotHost h, final int groupNumber,
             final IMenuCraftingPacket c) {
         super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, c);

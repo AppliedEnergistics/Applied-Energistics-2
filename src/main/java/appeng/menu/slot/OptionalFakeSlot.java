@@ -21,8 +21,8 @@ package appeng.menu.slot;
 import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.client.Point;
 
 public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
@@ -31,7 +31,8 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     private final IOptionalSlotHost host;
     private boolean renderDisabled = true;
 
-    public OptionalFakeSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, int invSlot, int groupNum) {
+    public OptionalFakeSlot(final InternalInventory inv, final IOptionalSlotHost containerBus, int invSlot,
+            int groupNum) {
         super(inv, invSlot);
         this.groupNum = groupNum;
         this.host = containerBus;

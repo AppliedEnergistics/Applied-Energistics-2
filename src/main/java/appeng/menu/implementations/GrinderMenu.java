@@ -20,7 +20,6 @@ package appeng.menu.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.client.gui.Icon;
@@ -42,7 +41,7 @@ public class GrinderMenu extends AEBaseMenu {
     public GrinderMenu(int id, final Inventory ip, final GrinderBlockEntity grinder) {
         super(TYPE, id, ip, grinder);
 
-        IItemHandler inv = grinder.getInternalInventory();
+        var inv = grinder.getInternalInventory();
 
         for (int i = 0; i < 3; i++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, i),
