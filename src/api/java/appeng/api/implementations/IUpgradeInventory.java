@@ -3,7 +3,7 @@ package appeng.api.implementations;
 import javax.annotation.Nonnegative;
 
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 
 /**
  * This specialized inventory can be used to insert and extract upgrade cards into AE2 machines. Only upgrades supported

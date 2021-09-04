@@ -21,7 +21,7 @@ package appeng.helpers;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.menu.implementations.ItemInterfaceMenu;
 

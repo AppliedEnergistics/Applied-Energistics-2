@@ -20,7 +20,7 @@ package appeng.menu.slot;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 
 public class MolecularAssemblerPatternSlot extends AppEngSlot {

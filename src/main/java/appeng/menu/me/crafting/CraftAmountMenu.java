@@ -38,7 +38,6 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
@@ -50,6 +49,7 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.InaccessibleSlot;
+import appeng.util.inv.AppEngInternalInventory;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen

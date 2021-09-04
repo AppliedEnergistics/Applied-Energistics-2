@@ -25,7 +25,7 @@ import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.menu.SlotSemantic;

@@ -29,13 +29,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
+import appeng.util.inv.AppEngInternalAEInventory;
 
 public abstract class SharedItemBusPart extends UpgradeablePart implements IGridTickable {
 

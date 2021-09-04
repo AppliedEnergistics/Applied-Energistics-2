@@ -32,8 +32,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;

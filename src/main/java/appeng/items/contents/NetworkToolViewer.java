@@ -20,11 +20,11 @@ package appeng.items.contents;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;

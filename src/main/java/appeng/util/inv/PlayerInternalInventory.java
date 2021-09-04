@@ -5,8 +5,11 @@ import javax.annotation.Nonnull;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 
+/**
+ * Exposes the main player inventory and hotbar as an {@link InternalInventory}.
+ */
 public class PlayerInternalInventory implements InternalInventory {
     private final Inventory inventory;
 
@@ -27,7 +30,9 @@ public class PlayerInternalInventory implements InternalInventory {
     @Override
     public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
         inventory.setItem(slotIndex, stack);
-        inventory.getItem(slotIndex).setPopTime(5);
+        if (!stack.isEmpty()) {
+            inventory.getItem(slotIndex).setPopTime(5);
+        }
     }
 
 }

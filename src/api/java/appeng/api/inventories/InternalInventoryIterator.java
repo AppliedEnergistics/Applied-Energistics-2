@@ -1,10 +1,13 @@
-package appeng.api.implementations.blockentities;
+package appeng.api.inventories;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * Iterates over the slots of an {@link InternalInventory} that are not empty.
+ */
 class InternalInventoryIterator implements Iterator<ItemStack> {
     private final InternalInventory inventory;
     private int currentSlot;

@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class FilteredInternalInventory implements InternalInventory {

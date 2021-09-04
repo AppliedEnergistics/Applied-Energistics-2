@@ -50,13 +50,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.implementations.blockentities.ISegmentedInventory;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.util.IBlockEntityDrops;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.helpers.IConfigurableFluidInventory;
@@ -66,6 +65,7 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.fluid.AEFluidInventory;
+import appeng.util.inv.AppEngInternalAEInventory;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory {

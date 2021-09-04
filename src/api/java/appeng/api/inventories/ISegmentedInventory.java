@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.blockentities;
+package appeng.api.inventories;
 
 import javax.annotation.Nullable;
 

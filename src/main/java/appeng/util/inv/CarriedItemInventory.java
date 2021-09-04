@@ -7,9 +7,12 @@ import com.google.common.base.Preconditions;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.util.Platform;
 
+/**
+ * Exposes the carried item stored in a menu as an {@link InternalInventory}.
+ */
 public class CarriedItemInventory implements InternalInventory {
     private final AbstractContainerMenu menu;
 

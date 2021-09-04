@@ -41,8 +41,8 @@ import appeng.api.config.Upgrades;
 import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
@@ -51,16 +51,16 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
@@ -91,7 +91,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
     private InscriberRecipe cachedTask = null;
 
-    private final InternalInventory inv = new WrapperChainedItemHandler(this.topItemHandler,
+    private final InternalInventory inv = new CombinedInternalInventory(this.topItemHandler,
             this.bottomItemHandler, this.sideItemHandler);
 
     public InscriberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {

@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridControllerChange;

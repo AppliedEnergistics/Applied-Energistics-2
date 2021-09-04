@@ -26,7 +26,7 @@ package appeng.api.storage.cells;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEStack;
 

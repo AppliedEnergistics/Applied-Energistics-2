@@ -20,7 +20,7 @@ package appeng.util.inv.filter;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.core.definitions.ItemDefinition;
 
 public class AEItemDefinitionFilter implements IAEItemFilter {

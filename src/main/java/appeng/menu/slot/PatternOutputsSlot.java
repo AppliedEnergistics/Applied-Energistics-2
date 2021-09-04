@@ -18,7 +18,7 @@
 
 package appeng.menu.slot;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 
 public class PatternOutputsSlot extends OptionalFakeSlot {
 

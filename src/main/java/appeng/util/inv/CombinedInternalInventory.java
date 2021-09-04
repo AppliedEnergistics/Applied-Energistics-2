@@ -22,14 +22,17 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 
-public class WrapperChainedItemHandler implements InternalInventory {
+/**
+ * Exposes several internal inventories as one larger internal inventory.
+ */
+public class CombinedInternalInventory implements InternalInventory {
     private final InternalInventory[] inventories; // the handlers
     private final int[] baseIndex; // index-offsets of the different handlers
     private final int slotCount; // number of total slots
 
-    public WrapperChainedItemHandler(InternalInventory... inventories) {
+    public CombinedInternalInventory(InternalInventory... inventories) {
         this.inventories = inventories;
         this.baseIndex = new int[this.inventories.length];
         int index = 0;

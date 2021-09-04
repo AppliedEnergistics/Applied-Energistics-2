@@ -27,7 +27,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 
 /**
  * Wraps another {@link IItemHandler} in such a way that the underlying item hander is queried from a supplier, which

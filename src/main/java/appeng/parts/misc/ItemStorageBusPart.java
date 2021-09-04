@@ -27,14 +27,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.implementations.blockentities.ISegmentedInventory;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
@@ -42,6 +41,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.storage.ItemHandlerAdapter;
 import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
+import appeng.util.inv.AppEngInternalAEInventory;
 import appeng.util.inv.InvOperation;
 
 public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IItemHandler> {

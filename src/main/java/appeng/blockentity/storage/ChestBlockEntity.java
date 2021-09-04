@@ -55,7 +55,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.blockentities.IMEChest;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -90,7 +90,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
@@ -102,8 +101,9 @@ import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidStack;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
@@ -119,7 +119,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     private final AppEngInternalInventory inputInventory = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory cellInventory = new AppEngInternalInventory(this, 1);
-    private final InternalInventory internalInventory = new WrapperChainedItemHandler(this.inputInventory,
+    private final InternalInventory internalInventory = new CombinedInternalInventory(this.inputInventory,
             this.cellInventory);
 
     private final IActionSource mySrc = new MachineSource(this);

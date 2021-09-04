@@ -30,16 +30,16 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
+import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
 

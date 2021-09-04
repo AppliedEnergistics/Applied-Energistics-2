@@ -1,4 +1,4 @@
-package appeng.api.implementations.blockentities;
+package appeng.api.inventories;
 
 import java.util.Iterator;
 

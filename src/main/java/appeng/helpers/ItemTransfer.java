@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.util.Platform;
 
 public final class ItemTransfer {

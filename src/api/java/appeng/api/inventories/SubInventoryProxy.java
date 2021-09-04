@@ -1,4 +1,4 @@
-package appeng.api.implementations.blockentities;
+package appeng.api.inventories;
 
 import javax.annotation.Nonnull;
 
@@ -6,6 +6,9 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * Exposes a subset of an {@link InternalInventory}.
+ */
 final class SubInventoryProxy implements InternalInventory {
     private final InternalInventory delegate;
     private final int fromSlot;

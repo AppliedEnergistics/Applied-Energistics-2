@@ -24,8 +24,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEItemStack;

@@ -39,8 +39,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
-import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IStorageComponent;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
@@ -52,14 +52,14 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEItems;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
 public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfigManagerListener, IConfigurableObject {
@@ -74,9 +74,9 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private final IFluidHandler fluidHandler = new FluidHandler();
     private final MEHandler meHandler = new MEHandler();
 
-    private final InternalInventory externalInv = new WrapperChainedItemHandler(this.inputSlot,
+    private final InternalInventory externalInv = new CombinedInternalInventory(this.inputSlot,
             new FilteredInternalInventory(this.outputSlot, AEItemFilters.EXTRACT_ONLY));
-    private final InternalInventory combinedInv = new WrapperChainedItemHandler(this.inputSlot, this.outputSlot,
+    private final InternalInventory combinedInv = new CombinedInternalInventory(this.inputSlot, this.outputSlot,
             this.storageSlot);
 
     private double storedPower = 0;

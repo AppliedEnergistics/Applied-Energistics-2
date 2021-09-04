@@ -16,20 +16,19 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.blockentity.inventory;
+package appeng.util.inv;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
-import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class AppEngInternalAEInventory implements Iterable<ItemStack>, InternalInventory {
@@ -44,10 +43,6 @@ public class AppEngInternalAEInventory implements Iterable<ItemStack>, InternalI
         this.size = s;
         this.maxStack = 64;
         this.inv = new IAEItemStack[s];
-    }
-
-    public void setMaxStackSize(final int s) {
-        this.maxStack = s;
     }
 
     public IAEItemStack getAEStackInSlot(final int var1) {
@@ -76,22 +71,22 @@ public class AppEngInternalAEInventory implements Iterable<ItemStack>, InternalI
     }
 
     public void readFromNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = data.getCompound(name);
-        if (c != null) {
+        if (data.contains(name, Tag.TAG_COMPOUND)) {
+            var c = data.getCompound(name);
             this.readFromNBT(c);
         }
     }
 
-    private void readFromNBT(final CompoundTag target) {
+    private void readFromNBT(CompoundTag target) {
         for (int x = 0; x < this.size; x++) {
             try {
-                final CompoundTag c = target.getCompound("#" + x);
-
-                if (c != null) {
+                String name = "#" + x;
+                if (target.contains(name, Tag.TAG_COMPOUND)) {
+                    var c = target.getCompound(name);
                     this.inv[x] = AEItemStack.fromNBT(c);
                 }
-            } catch (final Exception e) {
-                AELog.debug(e);
+            } catch (Exception e) {
+                AELog.warn(e);
             }
         }
     }

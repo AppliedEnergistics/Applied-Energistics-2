@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.guiobjects;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
 
 /**

@@ -20,7 +20,7 @@ package appeng.util.inv.filter;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 
 public interface IAEItemFilter {
     boolean allowExtract(InternalInventory inv, int slot, int amount);

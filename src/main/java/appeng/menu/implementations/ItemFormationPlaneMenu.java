@@ -25,7 +25,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.ItemFormationPlaneScreen;
 import appeng.menu.SlotSemantic;

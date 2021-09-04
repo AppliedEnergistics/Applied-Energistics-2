@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.client.Point;
 
 public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {

@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.network.chat.Component;
 
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.helpers.DualityItemInterface;
 import appeng.menu.implementations.InterfaceTerminalMenu;
+import appeng.util.inv.AppEngInternalInventory;
 
 /**
  * This class is used on the client-side to represent an interface and it's inventory as it is shown in the

@@ -20,6 +20,9 @@ package appeng.util.inv;
 
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * Interface that allows listening to events of {@link AppEngInternalInventory} and {@link AppEngInternalAEInventory}.
+ */
 public interface InternalInventoryHost {
     void saveChanges();
 

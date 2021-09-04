@@ -26,10 +26,10 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeHooks;
 
-import appeng.api.implementations.blockentities.InternalInventory;
-import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.crafting.CraftingEvent;
 import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.AppEngInternalInventory;
 
 public class AppEngCraftingSlot extends AppEngSlot {
 

@@ -23,6 +23,8 @@
 
 package appeng.api.implementations.blockentities;
 
+import appeng.api.inventories.InternalInventory;
+
 public interface IViewCellStorage {
 
     /**

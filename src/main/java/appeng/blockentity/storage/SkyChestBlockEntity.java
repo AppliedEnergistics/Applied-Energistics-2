@@ -51,11 +51,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.menu.implementations.SkyChestMenu;
+import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
 @SuppressWarnings("JavadocReference")

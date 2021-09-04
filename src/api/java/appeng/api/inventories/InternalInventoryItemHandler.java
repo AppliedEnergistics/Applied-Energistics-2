@@ -1,4 +1,4 @@
-package appeng.api.implementations.blockentities;
+package appeng.api.inventories;
 
 import javax.annotation.Nonnull;
 
@@ -31,22 +31,22 @@ class InternalInventoryItemHandler implements IItemHandlerModifiable {
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        throw new UnsupportedOperationException();
+        return inventory.insertItem(slot, stack, simulate);
     }
 
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        throw new UnsupportedOperationException();
+        return inventory.extractItem(slot, amount, simulate);
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        throw new UnsupportedOperationException();
+        return inventory.getSlotLimit(slot);
     }
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        throw new UnsupportedOperationException();
+        return inventory.isItemValid(slot, stack);
     }
 }

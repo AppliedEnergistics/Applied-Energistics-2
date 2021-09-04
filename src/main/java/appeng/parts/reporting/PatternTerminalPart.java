@@ -30,17 +30,17 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
+import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
 public class PatternTerminalPart extends AbstractTerminalPart {

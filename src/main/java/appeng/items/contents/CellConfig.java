@@ -20,7 +20,7 @@ package appeng.items.contents;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.util.inv.AppEngInternalInventory;
 
 public class CellConfig extends AppEngInternalInventory {
 

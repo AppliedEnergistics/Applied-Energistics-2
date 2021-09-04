@@ -39,7 +39,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.IUpgradeableObject;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;

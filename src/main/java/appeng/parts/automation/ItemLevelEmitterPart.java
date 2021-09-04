@@ -40,8 +40,8 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -65,7 +65,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
@@ -73,6 +72,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemLevelEmitterMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
+import appeng.util.inv.AppEngInternalAEInventory;
 import appeng.util.inv.InvOperation;
 
 public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatcherHost,

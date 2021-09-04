@@ -44,8 +44,8 @@ import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
@@ -64,7 +64,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
@@ -72,9 +71,10 @@ import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
 public class IOPortBlockEntity extends AENetworkInvBlockEntity
@@ -86,7 +86,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
     private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
-    private final InternalInventory combinedInventory = new WrapperChainedItemHandler(this.inputCells,
+    private final InternalInventory combinedInventory = new CombinedInternalInventory(this.inputCells,
             this.outputCells);
 
     private final InternalInventory inputCellsExt = new FilteredInternalInventory(this.inputCells,

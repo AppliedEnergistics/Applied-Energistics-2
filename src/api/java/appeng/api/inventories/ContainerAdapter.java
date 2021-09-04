@@ -1,4 +1,4 @@
-package appeng.api.implementations.blockentities;
+package appeng.api.inventories;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Adapts an {@link InternalInventory} to the {@link Container} interface in a read-only fashion.
  */
-public class ContainerAdapter implements Container {
+class ContainerAdapter implements Container {
     private final InternalInventory inventory;
 
     public ContainerAdapter(InternalInventory inventory) {

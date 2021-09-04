@@ -20,7 +20,7 @@ package appeng.menu.slot;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.blockentities.InternalInventory;
+import appeng.api.inventories.InternalInventory;
 
 public class FakeTypeOnlySlot extends FakeSlot {
 

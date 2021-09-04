@@ -22,8 +22,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.blockentities.InternalInventory;
 import appeng.api.implementations.items.IStorageCell;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
