@@ -1,10 +1,12 @@
 package appeng.api.inventories;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.config.FuzzyMode;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.BlockPos;
@@ -117,27 +119,214 @@ public interface InternalInventory extends Iterable<ItemStack> {
             return ItemStack.EMPTY;
         }
 
-        ItemStack left = stack.copy();
+        // Heuristically use a faster one-pass approach to fill inventories that we consider "large",
+        // i.e. external storage drawer inventories that might be exposed as hundreds of slots.
+        if (size() <= 64) {
+            return addItemSlow(stack, simulate);
+        } else {
+            return addItemFast(stack, simulate);
+        }
+    }
+
+    /**
+     * This version of {@link #addItems} will try to stack items before adding them to empty slots.
+     */
+    private ItemStack addItemSlow(ItemStack stack, boolean simulate) {
+        var remainder = stack.copy();
+
+        for (int pass = 0; pass < 2; pass++) {
+            boolean fillEmptySlots = pass == 1;
+
+            for (int slot = 0; slot < size(); slot++) {
+                if (getStackInSlot(slot).isEmpty() == fillEmptySlots) {
+                    remainder = insertItem(slot, remainder, simulate);
+                }
+                if (remainder.isEmpty()) {
+                    return ItemStack.EMPTY;
+                }
+            }
+        }
+
+        return remainder;
+    }
+
+    /**
+     * This version of {@link #addItems} will try to add items to the first suitable slots in the inventory.
+     */
+    private ItemStack addItemFast(ItemStack stack, boolean simulate) {
+        var remainder = stack.copy();
 
         for (int slot = 0; slot < size(); slot++) {
-            ItemStack is = getStackInSlot(slot);
-
-            if (ItemStack.isSameItemSameTags(is, left)) {
-                left = insertItem(slot, left, simulate);
-            }
-            if (left.isEmpty()) {
+            remainder = insertItem(slot, remainder, simulate);
+            if (remainder.isEmpty()) {
                 return ItemStack.EMPTY;
             }
         }
 
-        for (int slot = 0; slot < size(); slot++) {
-            left = insertItem(slot, left, simulate);
-            if (left.isEmpty()) {
-                return ItemStack.EMPTY;
+        return remainder;
+    }
+
+    default ItemStack removeItems(int amount, ItemStack filter, Predicate<ItemStack> destination) {
+        int slots = size();
+        ItemStack rv = ItemStack.EMPTY;
+
+        for (int slot = 0; slot < slots && amount > 0; slot++) {
+            final ItemStack is = getStackInSlot(slot);
+            if (is.isEmpty() || !filter.isEmpty() && !ItemStack.isSameItemSameTags(is, filter)) {
+                continue;
+            }
+
+            if (destination != null) {
+                ItemStack extracted = extractItem(slot, amount, true);
+                if (extracted.isEmpty()) {
+                    continue;
+                }
+
+                if (!destination.test(extracted)) {
+                    continue;
+                }
+            }
+
+            // Attempt extracting it
+            ItemStack extracted = extractItem(slot, amount, false);
+
+            if (extracted.isEmpty()) {
+                continue;
+            }
+
+            if (rv.isEmpty()) {
+                // Use the first stack as a template for the result
+                rv = extracted;
+                filter = extracted;
+            } else {
+                // Subsequent stacks will just increase the extracted size
+                rv.grow(extracted.getCount());
+            }
+            amount -= extracted.getCount();
+        }
+
+        return rv;
+    }
+
+    default ItemStack simulateRemove(int amount, ItemStack filter, Predicate<ItemStack> destination) {
+        int slots = size();
+        ItemStack rv = ItemStack.EMPTY;
+
+        for (int slot = 0; slot < slots && amount > 0; slot++) {
+            final ItemStack is = getStackInSlot(slot);
+            if (!is.isEmpty() && (filter.isEmpty() || ItemStack.isSameItemSameTags(is, filter))) {
+                ItemStack extracted = extractItem(slot, amount, true);
+
+                if (extracted.isEmpty()) {
+                    continue;
+                }
+
+                if (destination != null && !destination.test(extracted)) {
+                    continue;
+                }
+
+                if (rv.isEmpty()) {
+                    // Use the first stack as a template for the result
+                    rv = extracted.copy();
+                    filter = extracted;
+                } else {
+                    // Subsequent stacks will just increase the extracted size
+                    rv.grow(extracted.getCount());
+                }
+                amount -= extracted.getCount();
             }
         }
 
-        return left;
+        return rv;
+    }
+
+    /**
+     * For fuzzy extract, we will only ever extract one slot, since we're afraid of merging two item stacks with
+     * different damage values.
+     */
+    default ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
+                                               Predicate<ItemStack> destination) {
+        int slots = size();
+        ItemStack extracted = ItemStack.EMPTY;
+
+        for (int slot = 0; slot < slots && extracted.isEmpty(); slot++) {
+            final ItemStack is = getStackInSlot(slot);
+            if (is.isEmpty() || !filter.isEmpty() && !isFuzzyEqualItem(is, filter, fuzzyMode)) {
+                continue;
+            }
+
+            if (destination != null) {
+                ItemStack simulated = extractItem(slot, amount, true);
+                if (simulated.isEmpty()) {
+                    continue;
+                }
+
+                if (!destination.test(simulated)) {
+                    continue;
+                }
+            }
+
+            // Attempt extracting it
+            extracted = extractItem(slot, amount, false);
+        }
+
+        return extracted;
+    }
+
+    default ItemStack simulateSimilarRemove(int amount, ItemStack filter,
+                                                  FuzzyMode fuzzyMode,
+                                                  Predicate<ItemStack> destination) {
+        int slots = size();
+        ItemStack extracted = ItemStack.EMPTY;
+
+        for (int slot = 0; slot < slots && extracted.isEmpty(); slot++) {
+            final ItemStack is = getStackInSlot(slot);
+            if (is.isEmpty() || !filter.isEmpty() && !isFuzzyEqualItem(is, filter, fuzzyMode)) {
+                continue;
+            }
+
+            // Attempt extracting it
+            extracted = extractItem(slot, amount, true);
+
+            if (!extracted.isEmpty() && destination != null && !destination.test(extracted)) {
+                extracted = ItemStack.EMPTY; // Keep on looking...
+            }
+        }
+
+        return extracted;
+    }
+
+    /**
+     * Similar to {@link ItemStack#isSameItemSameTags}, but it can further check, if both are equal considering
+     * a {@link FuzzyMode}.
+     *
+     * @param mode how to compare the two {@link ItemStack}s
+     * @return true, if both are matching the mode
+     */
+    private boolean isFuzzyEqualItem(ItemStack a, ItemStack b, FuzzyMode mode) {
+        if (a.isEmpty() && b.isEmpty()) {
+            return true;
+        }
+
+        if (a.isEmpty() || b.isEmpty()) {
+            return false;
+        }
+
+        // test damageable items..
+        if (a.getItem() == b.getItem() && a.getItem().canBeDepleted()) {
+            if (mode == FuzzyMode.IGNORE_ALL) {
+                return true;
+            } else if (mode == FuzzyMode.PERCENT_99) {
+                return a.getDamageValue() > 1 == b.getDamageValue() > 1;
+            } else {
+                final float percentDamagedOfA = (float) a.getDamageValue() / a.getMaxDamage();
+                final float percentDamagedOfB = (float) b.getDamageValue() / b.getMaxDamage();
+
+                return percentDamagedOfA > mode.breakPoint == percentDamagedOfB > mode.breakPoint;
+            }
+        }
+
+        return a.sameItem(b);
     }
 
     @Nonnull

@@ -24,10 +24,11 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class FilteredInternalInventory implements InternalInventory {
+public class FilteredInternalInventory extends BaseInternalInventory {
     private final InternalInventory delegate;
     private final IAEItemFilter filter;
 

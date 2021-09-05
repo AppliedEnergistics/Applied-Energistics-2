@@ -20,16 +20,16 @@ package appeng.blockentity.inventory;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.inventories.InternalInventory;
+import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class AppEngCellInventory implements InternalInventory {
+public class AppEngCellInventory extends BaseInternalInventory {
     private final AppEngInternalInventory inv;
-    private final ICellInventoryHandler handlerForSlot[];
+    private final ICellInventoryHandler[] handlerForSlot;
 
     public AppEngCellInventory(final InternalInventoryHost host, final int slots) {
         this.inv = new AppEngInternalInventory(host, slots, 1);

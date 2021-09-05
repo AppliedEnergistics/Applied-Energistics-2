@@ -18,6 +18,7 @@
 
 package appeng.menu.slot;
 
+import appeng.helpers.Inventories;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -28,7 +29,6 @@ import net.minecraftforge.common.ForgeHooks;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.crafting.CraftingEvent;
-import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AppEngInternalInventory;
 
 public class AppEngCraftingSlot extends AppEngSlot {
@@ -89,9 +89,9 @@ public class AppEngCraftingSlot extends AppEngSlot {
             ic.setItem(x, this.craftingGrid.getStackInSlot(x));
         }
 
-        final NonNullList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.level);
+        var aitemstack = this.getRemainingItems(ic, playerIn.level);
 
-        ItemHandlerUtil.copy(ic, this.craftingGrid, false);
+        Inventories.copy(ic, this.craftingGrid, false);
 
         ForgeHooks.setCraftingPlayer(null);
 

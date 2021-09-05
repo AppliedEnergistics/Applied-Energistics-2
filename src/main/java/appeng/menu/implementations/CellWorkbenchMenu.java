@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import appeng.helpers.Inventories;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +49,6 @@ import appeng.menu.slot.FakeTypeOnlySlot;
 import appeng.menu.slot.OptionalRestrictedInputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.EnumCycler;
-import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.SupplierInternalInventory;
 
 /**
@@ -151,7 +151,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         if (isClient()) {
             sendClientAction(ACTION_CLEAR);
         } else {
-            ItemHandlerUtil.clear(getConfigInventory());
+            Inventories.clear(getConfigInventory());
             this.broadcastChanges();
         }
     }

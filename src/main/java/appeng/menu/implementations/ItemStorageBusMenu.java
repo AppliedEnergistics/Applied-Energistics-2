@@ -20,7 +20,10 @@ package appeng.menu.implementations;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
+import appeng.api.inventories.InternalInventory;
+import appeng.helpers.Inventories;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +42,6 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;
 import appeng.menu.slot.OptionalTypeOnlyFakeSlot;
 import appeng.parts.misc.ItemStorageBusPart;
-import appeng.util.helpers.ItemHandlerUtil;
 
 /**
  * @see ItemStorageBusScreen
@@ -67,9 +69,13 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
         registerClientAction(ACTION_PARTITION, this::partition);
     }
 
+    private InternalInventory getConfigInv() {
+        return Objects.requireNonNull(getHost().getSubInventory(ISegmentedInventory.CONFIG));
+    }
+
     @Override
     protected void setupConfig() {
-        var config = this.getHost().getSubInventory(ISegmentedInventory.CONFIG);
+        var config = getConfigInv();
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
                 int invSlot = y * 9 + x;
@@ -109,7 +115,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
             return;
         }
 
-        ItemHandlerUtil.clear(this.getHost().getSubInventory(ISegmentedInventory.CONFIG));
+        Inventories.clear(getConfigInv());
         this.broadcastChanges();
     }
 
@@ -119,8 +125,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
             return;
         }
 
-        var inv = getHost().getSubInventory(ISegmentedInventory.CONFIG);
-
+        var inv = getConfigInv();
         var cellInv = getHost().getInternalHandler();
 
         Iterator<IAEItemStack> i = Collections.emptyIterator();

@@ -49,9 +49,9 @@ class ContainerAdapter implements Container {
      */
     @Override
     public int getMaxStackSize() {
-        int max = 0;
+        int max = Container.LARGE_MAX_STACK_SIZE;
         for (int i = 0; i < inventory.size(); ++i) {
-            max = Math.max(max, inventory.getSlotLimit(i));
+            max = Math.min(max, inventory.getSlotLimit(i));
         }
         return max;
     }

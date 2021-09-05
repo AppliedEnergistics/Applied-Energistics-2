@@ -100,9 +100,9 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (facing == null) {
-                return (LazyOptional<T>) LazyOptional.of(this::getInternalInventory);
+                return (LazyOptional<T>) LazyOptional.of(getInternalInventory()::toItemHandler);
             } else {
-                return (LazyOptional<T>) LazyOptional.of(() -> getExposedInventoryForSide(facing));
+                return (LazyOptional<T>) LazyOptional.of(() -> getExposedInventoryForSide(facing).toItemHandler());
             }
         }
         return super.getCapability(capability, facing);

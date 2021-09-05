@@ -339,7 +339,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             final Recipe<CraftingContainer> rr = p.level.getRecipeManager()
                     .getRecipeFor(RecipeType.CRAFTING, real, p.level).orElse(null);
 
-            if (rr == r && Platform.itemComparisons().isSameItem(rr.assemble(real), is)) {
+            if (rr == r && ItemStack.isSameItemSameTags(rr.assemble(real), is)) {
                 final ResultContainer craftingResult = new ResultContainer();
                 craftingResult.setRecipeUsed(rr);
 

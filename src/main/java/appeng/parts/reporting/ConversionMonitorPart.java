@@ -18,13 +18,12 @@
 
 package appeng.parts.reporting;
 
+import appeng.util.inv.PlayerInternalInventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.parts.IPartModel;
@@ -150,13 +149,13 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
             if (allItems) {
                 if (this.getDisplayed() != null) {
-                    final IAEItemStack input = this.getDisplayed().copy();
-                    IItemHandler inv = new PlayerMainInvWrapper(player.getInventory());
+                    var input = this.getDisplayed().copy();
+                    var inv = new PlayerInternalInventory(player.getInventory());
 
-                    for (int x = 0; x < inv.getSlots(); x++) {
-                        final ItemStack targetStack = inv.getStackInSlot(x);
+                    for (int x = 0; x < inv.size(); x++) {
+                        var targetStack = inv.getStackInSlot(x);
                         if (input.equals(targetStack)) {
-                            final ItemStack canExtract = inv.extractItem(x, targetStack.getCount(), true);
+                            var canExtract = inv.extractItem(x, targetStack.getCount(), true);
                             if (!canExtract.isEmpty()) {
                                 input.setStackSize(canExtract.getCount());
                                 final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,

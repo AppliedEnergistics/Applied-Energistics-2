@@ -46,7 +46,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.helpers.ItemTransfer;
+import appeng.helpers.Inventories;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.MenuLocator;
@@ -183,10 +183,10 @@ public class ImportBusPart extends SharedItemBusPart {
         final ItemStack newItems;
 
         if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            newItems = ItemTransfer.removeSimilarItems(srcInv, toSend,
+            newItems = srcInv.removeSimilarItems(toSend,
                     whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, insertionPredicate);
         } else {
-            newItems = ItemTransfer.removeItems(srcInv, toSend,
+            newItems = srcInv.removeItems(toSend,
                     whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), insertionPredicate);
         }
 
@@ -228,10 +228,9 @@ public class ImportBusPart extends SharedItemBusPart {
         final IAEItemStack itemAmountNotStorable;
         final ItemStack simResult;
         if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            simResult = ItemTransfer.simulateSimilarRemove(srcInv, toSend, itemStackToImport, fzMode,
-                    insertionPredicate);
+            simResult = srcInv.simulateSimilarRemove(toSend, itemStackToImport, fzMode, insertionPredicate);
         } else {
-            simResult = ItemTransfer.simulateRemove(srcInv, toSend, itemStackToImport, insertionPredicate);
+            simResult = srcInv.simulateRemove(toSend, itemStackToImport, insertionPredicate);
         }
         itemAmountNotStorable = inv.injectItems(AEItemStack.fromItemStack(simResult), Actionable.SIMULATE,
                 this.source);

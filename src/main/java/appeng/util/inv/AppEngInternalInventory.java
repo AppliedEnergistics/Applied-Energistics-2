@@ -30,13 +30,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.inventories.InternalInventory;
-import appeng.util.Platform;
+import appeng.api.inventories.BaseInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class AppEngInternalInventory implements InternalInventory {
+public class AppEngInternalInventory extends BaseInternalInventory {
     private boolean enableClientEvents = false;
     private InternalInventoryHost host;
     private final NonNullList<ItemStack> stacks;
@@ -97,7 +95,7 @@ public class AppEngInternalInventory implements InternalInventory {
         var current = stacks.get(slot);
         if (!current.isEmpty()) {
             // Prevent stacking non-stackable items
-            if (!Platform.itemComparisons().isSameItem(stack, current)) {
+            if (!ItemStack.isSameItemSameTags(stack, current)) {
                 return stack;
             }
         }
@@ -254,11 +252,6 @@ public class AppEngInternalInventory implements InternalInventory {
 
     protected final void setHost(InternalInventoryHost host) {
         this.host = host;
-    }
-
-    @Override
-    public IItemHandler toItemHandler() {
-        return null;
     }
 
     @Override

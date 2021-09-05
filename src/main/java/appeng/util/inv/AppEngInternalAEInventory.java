@@ -25,13 +25,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import appeng.api.inventories.InternalInventory;
+import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
 import appeng.util.item.AEItemStack;
 
-public class AppEngInternalAEInventory implements Iterable<ItemStack>, InternalInventory {
+public class AppEngInternalAEInventory extends BaseInternalInventory {
     private final InternalInventoryHost te;
     private final IAEItemStack[] inv;
     private final int size;

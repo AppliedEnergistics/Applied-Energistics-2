@@ -541,7 +541,7 @@ public class DualityItemInterface
 
             // make sure strange things didn't happen...
             // TODO: check if OK
-            var canExtract = ItemTransfer.simulateRemove(storageSlot, (int) diff, toStore.getDefinition(), null);
+            var canExtract = storageSlot.simulateRemove((int) diff, toStore.getDefinition(), null);
             if (canExtract.isEmpty() || canExtract.getCount() != diff) {
                 return true;
             }
@@ -554,7 +554,7 @@ public class DualityItemInterface
 
             if (diff != 0) {
                 // extract items!
-                var removed = ItemTransfer.removeItems(storageSlot, (int) diff, ItemStack.EMPTY, null);
+                var removed = storageSlot.removeItems((int) diff, ItemStack.EMPTY, null);
                 if (removed.isEmpty() || removed.getCount() != diff) {
                     throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
                 }
@@ -656,7 +656,7 @@ public class DualityItemInterface
 
             var ad = InternalInventory.wrapExternal(te, s.getOpposite());
             if (ad != null) {
-                if (this.isBlocking() && !ItemTransfer.simulateRemove(ad, 1, ItemStack.EMPTY, null).isEmpty()) {
+                if (this.isBlocking() && !ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
                     continue;
                 }
 
@@ -695,7 +695,7 @@ public class DualityItemInterface
             for (final Direction s : possibleDirections) {
                 var adjacentPos = blockEntity.getBlockPos().relative(s);
                 var extInv = InternalInventory.wrapExternal(level, adjacentPos, s.getOpposite());
-                if (extInv != null && ItemTransfer.simulateRemove(extInv, 1, ItemStack.EMPTY, null).isEmpty()) {
+                if (extInv != null && extInv.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
                     allAreBusy = false;
                     break;
                 }
@@ -782,7 +782,7 @@ public class DualityItemInterface
             var storageSlot = this.storage.getSlotInv(slot);
 
             if (mode == Actionable.SIMULATE) {
-                return AEItemStack.fromItemStack(ItemTransfer.simulateAdd(storageSlot, acquired.createItemStack()));
+                return AEItemStack.fromItemStack(storageSlot.simulateAdd(acquired.createItemStack()));
             } else {
                 final IAEItemStack is = AEItemStack.fromItemStack(storageSlot.addItems(acquired.createItemStack()));
                 this.updatePlan(slot);
@@ -881,7 +881,7 @@ public class DualityItemInterface
 
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
         if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return LazyOptional.of(() -> this.storage).cast();
+            return LazyOptional.of(this.storage::toItemHandler).cast();
         }
         return super.getCapability(capabilityClass, facing);
     }

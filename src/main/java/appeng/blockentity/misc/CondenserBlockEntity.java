@@ -40,6 +40,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageComponent;
+import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
@@ -204,7 +205,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.externalInv);
+            return (LazyOptional<T>) LazyOptional.of(this.externalInv::toItemHandler);
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
         } else if (capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
@@ -213,7 +214,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return super.getCapability(capability, facing);
     }
 
-    private class CondenseItemHandler implements InternalInventory {
+    private class CondenseItemHandler extends BaseInternalInventory {
         @Override
         public int size() {
             // We only expose the void slot

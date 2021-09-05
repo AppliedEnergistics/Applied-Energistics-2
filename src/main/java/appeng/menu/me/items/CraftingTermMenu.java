@@ -45,7 +45,6 @@ import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.parts.reporting.CraftingTerminalPart;
-import appeng.util.Platform;
 
 /**
  * Can only be used with a host that implements {@link ISegmentedInventory} and exposes an inventory named "crafting" to
@@ -140,7 +139,7 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
         // already contains some of the needed items
         for (Slot slot : getSlots(SlotSemantic.CRAFTING_GRID)) {
             ItemStack stackInSlot = slot.getItem();
-            if (!stackInSlot.isEmpty() && Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
+            if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameTags(itemStack, stackInSlot)) {
                 if (itemStack.getCount() >= amount) {
                     return true;
                 }

@@ -109,7 +109,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                     if (item.getCount() >= item.getMaxStackSize()) {
                         liftQty = 0;
                     }
-                    if (!Platform.itemComparisons().isSameItem(stack.getDefinition(), item)) {
+                    if (!ItemStack.isSameItemSameTags(stack.getDefinition(), item)) {
                         liftQty = 0;
                     }
                 }

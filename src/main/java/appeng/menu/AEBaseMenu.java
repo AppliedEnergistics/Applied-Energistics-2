@@ -67,7 +67,6 @@ import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
-import appeng.util.Platform;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
@@ -332,7 +331,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                     final ItemStack destination = cs.getItem();
 
                     if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
-                        if (Platform.itemComparisons().isSameItem(destination, tis)) {
+                        if (ItemStack.isSameItemSameTags(destination, tis)) {
                             break;
                         } else if (destination.isEmpty()) {
                             cs.set(tis.copy());
@@ -399,7 +398,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private boolean x(Slot clickSlot, ItemStack tis, Slot d) {
         final ItemStack t = d.getItem().copy();
 
-        if (Platform.itemComparisons().isSameItem(t, tis)) {
+        if (ItemStack.isSameItemSameTags(t, tis)) {
             int maxSize = t.getMaxStackSize();
             if (maxSize > d.getMaxStackSize()) {
                 maxSize = d.getMaxStackSize();

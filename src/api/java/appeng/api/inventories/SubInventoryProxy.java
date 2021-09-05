@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Exposes a subset of an {@link InternalInventory}.
  */
-final class SubInventoryProxy implements InternalInventory {
+final class SubInventoryProxy extends BaseInternalInventory {
     private final InternalInventory delegate;
     private final int fromSlot;
     private final int toSlot;
