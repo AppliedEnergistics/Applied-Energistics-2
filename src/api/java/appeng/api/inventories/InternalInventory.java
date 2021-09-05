@@ -121,7 +121,8 @@ public interface InternalInventory extends Iterable<ItemStack> {
 
         // Heuristically use a faster one-pass approach to fill inventories that we consider "large",
         // i.e. external storage drawer inventories that might be exposed as hundreds of slots.
-        if (size() <= 64) {
+        // 54 is the size of a double chest and will include the player inventory as well as our sky chest
+        if (size() <= 54) {
             return addItemSlow(stack, simulate);
         } else {
             return addItemFast(stack, simulate);
