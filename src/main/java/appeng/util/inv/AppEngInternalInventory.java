@@ -85,53 +85,6 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
     @Override
     @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        Preconditions.checkArgument(slot >= 0 && slot < size(), "slot out of range");
-
-        if (!isItemValid(slot, stack) || stack.isEmpty()) {
-            return stack;
-        }
-
-        var current = stacks.get(slot);
-        if (!current.isEmpty()) {
-            // Prevent stacking non-stackable items
-            if (!ItemStack.isSameItemSameTags(stack, current)) {
-                return stack;
-            }
-        }
-
-        // Determine the remaining space in the slot
-        int remainingSpace = maxStack[slot] - current.getCount();
-        if (remainingSpace <= 0) {
-            return stack;
-        }
-
-        // If the stack exceeds the remaining free space, we'll need to split it
-        boolean needToSplit = stack.getCount() > remainingSpace;
-        if (!simulate) {
-            // Save a copy of the stack for notifications
-            var previousStack = stacks.get(slot).copy();
-
-            if (current.isEmpty()) {
-                stacks.set(slot, needToSplit ? copyWithCount(stack, remainingSpace) : stack);
-            } else {
-                current.grow(needToSplit ? remainingSpace : stack.getCount());
-            }
-
-            onContentsChanged(slot, previousStack);
-        }
-
-        return needToSplit ? copyWithCount(stack, stack.getCount() - remainingSpace) : ItemStack.EMPTY;
-    }
-
-    private ItemStack copyWithCount(ItemStack from, int count) {
-        var copy = from.copy();
-        copy.setCount(count);
-        return copy;
-    }
-
-    @Override
-    @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         Preconditions.checkArgument(slot >= 0 && slot < size(), "slot out of range");
 

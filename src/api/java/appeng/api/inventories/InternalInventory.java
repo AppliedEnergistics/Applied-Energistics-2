@@ -333,36 +333,37 @@ public interface InternalInventory extends Iterable<ItemStack> {
 
     @Nonnull
     default ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if (stack.isEmpty()) {
+        Preconditions.checkArgument(slot >= 0 && slot < size(), "slot out of range");
+
+        if (stack.isEmpty() || !isItemValid(slot, stack)) {
             return stack;
         }
 
         var inSlot = getStackInSlot(slot);
-        if (inSlot.isEmpty()) {
-            if (!simulate) {
-                setItemDirect(slot, stack);
-            }
-            return ItemStack.EMPTY;
-        }
-
-        if (!ItemStack.isSameItemSameTags(inSlot, stack)) {
+        if (!inSlot.isEmpty() && !ItemStack.isSameItemSameTags(inSlot, stack)) {
             return stack;
         }
 
-        int freeSpace = inSlot.getMaxStackSize() - inSlot.getCount();
+        // Calculate how much free space there is in the targeted slot, considering
+        // an item-dependent maximum stack size, as well as a potential slot-based limit
+        int maxSpace = Math.min(getSlotLimit(slot), stack.getMaxStackSize());
+        int freeSpace = maxSpace - inSlot.getCount();
         if (freeSpace <= 0) {
             return stack;
         }
 
+        var insertAmount = Math.min(stack.getCount(), freeSpace);
         if (!simulate) {
-            inSlot.grow(Math.min(stack.getCount(), freeSpace));
+            var newItem = inSlot.isEmpty() ? stack.copy() : inSlot.copy();
+            newItem.setCount(inSlot.getCount() + insertAmount);
+            setItemDirect(slot, newItem);
         }
 
         if (freeSpace >= stack.getCount()) {
             return ItemStack.EMPTY;
         } else {
             var r = stack.copy();
-            r.shrink(freeSpace);
+            r.shrink(insertAmount);
             return r;
         }
     }

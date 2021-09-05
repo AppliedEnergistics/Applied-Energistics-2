@@ -1,10 +1,9 @@
 package appeng.api.inventories;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Preconditions;
-
 import net.minecraft.world.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 /**
  * Exposes a subset of an {@link InternalInventory}.
@@ -46,7 +45,14 @@ final class SubInventoryProxy extends BaseInternalInventory {
 
     @Override
     public InternalInventory getSubInventory(int fromSlotInclusive, int toSlotExclusive) {
-        return delegate.getSubInventory(translateSlot(fromSlotInclusive), translateSlot(toSlotExclusive));
+        Preconditions.checkArgument(toSlotExclusive >= 0, "toSlotExclusive >= 0");
+        Preconditions.checkArgument(toSlotExclusive <= size(), "toSlotExclusive <= size()");
+        return delegate.getSubInventory(translateSlot(fromSlotInclusive), toSlotExclusive + this.fromSlot);
+    }
+
+    @Override
+    public InternalInventory getSlotInv(int slotIndex) {
+        return delegate.getSlotInv(translateSlot(slotIndex));
     }
 
     @Override
