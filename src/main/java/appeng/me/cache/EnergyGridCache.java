@@ -191,10 +191,6 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public void onUpdateTick()
 	{
-		if( localStorage.stored < MAX_BUFFER_STORAGE - 0.001 )
-		{
-			this.myGrid.postEvent( new MENetworkPowerStorage( localStorage, PowerEventType.REQUEST_POWER ) );
-		}
 		if( !this.interests.isEmpty() )
 		{
 			final double oldPower = this.lastStoredPower;
@@ -329,11 +325,7 @@ public class EnergyGridCache implements IEnergyGrid
 		double extractedPower = 0;
 
 		providersToAdd.forEach( provider -> {
-			if( provider instanceof GridPowerStorage )
-			{
-				providers.put( 1, provider );
-			}
-			else
+			if( provider != localStorage )
 			{
 				providers.put( 0, provider );
 			}
@@ -355,17 +347,14 @@ public class EnergyGridCache implements IEnergyGrid
 
 				if( newPower < req && mode == Actionable.MODULATE )
 				{
-					it.remove();
+					if (node != localStorage)
+						it.remove();
 				}
 			}
 		} finally
 		{
 			providersToRemove.forEach( provider -> {
-				if( provider instanceof GridPowerStorage )
-				{
-					providers.remove( 1, provider );
-				}
-				else
+				if( provider != localStorage )
 				{
 					providers.remove( 0, provider );
 				}
@@ -396,11 +385,7 @@ public class EnergyGridCache implements IEnergyGrid
 		final double originalAmount = amt;
 
 		requestersToAdd.forEach( requester -> {
-			if( requester instanceof GridPowerStorage )
-			{
-				requesters.put( 0, requester );
-			}
-			else
+			if( requester != localStorage )
 			{
 				requesters.put( 1, requester );
 			}
@@ -420,17 +405,14 @@ public class EnergyGridCache implements IEnergyGrid
 
 				if( amt > 0 && mode == Actionable.MODULATE )
 				{
-					it.remove();
+					if( node != localStorage )
+						it.remove();
 				}
 			}
 		} finally
 		{
 			requestersToRemove.forEach( requester -> {
-				if( requester instanceof GridPowerStorage )
-				{
-					requesters.remove( 0, requester );
-				}
-				else
+				if( requester != localStorage )
 				{
 					requesters.remove( 1, requester );
 				}
@@ -636,11 +618,7 @@ public class EnergyGridCache implements IEnergyGrid
 	private void removeRequester(IAEPowerStorage requester) {
 		Preconditions.checkState(!ongoingInjectOperation,
 				"Cannot modify energy requesters while energy is being injected.");
-		if( requester instanceof GridPowerStorage )
-		{
-			requesters.remove( 0, requester );
-		}
-		else
+		if( requester != localStorage )
 		{
 			requesters.remove( 1, requester );
 		}
@@ -662,11 +640,7 @@ public class EnergyGridCache implements IEnergyGrid
 	private void removeProvider(IAEPowerStorage provider)
 	{
 		Preconditions.checkState( !ongoingExtractOperation, "Cannot modify energy providers while energy is being extracted." );
-		if( provider instanceof GridPowerStorage )
-		{
-			providers.remove( 1, provider );
-		}
-		else
+		if( provider != localStorage )
 		{
 			providers.remove( 0, provider );
 		}
@@ -836,6 +810,11 @@ public class EnergyGridCache implements IEnergyGrid
 		private void removeCurrentAEPower( double amount )
 		{
 			this.stored -= amount;
+
+			if( stored < MAX_BUFFER_STORAGE - 0.001 )
+			{
+				EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
+			}
 
 			if( this.stored < 0.01 )
 			{
