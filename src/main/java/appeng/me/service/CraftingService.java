@@ -19,12 +19,9 @@
 package appeng.me.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,7 +42,6 @@ import com.google.common.collect.Multimap;
 import net.minecraft.world.level.Level;
 
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -56,10 +52,7 @@ import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -73,10 +66,10 @@ import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
+import appeng.me.service.helpers.CraftingServiceStorage;
 
 public class CraftingService
-        implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper, ICellProvider,
-        IMEInventoryHandler<IAEItemStack> {
+        implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper {
 
     private static final ExecutorService CRAFTING_POOL;
     private static final Comparator<ICraftingPatternDetails> COMPARATOR = (firstDetail,
@@ -121,7 +114,7 @@ public class CraftingService
         this.storageGrid = storageGrid;
         this.energyGrid = energyGrid;
 
-        this.storageGrid.registerAdditionalCellProvider(this);
+        this.storageGrid.registerAdditionalCellProvider(new CraftingServiceStorage(this));
     }
 
     @Override
@@ -197,17 +190,16 @@ public class CraftingService
     }
 
     private void updatePatterns() {
-        final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = this.craftableItems;
+        var oldItems = new ArrayList<>(this.craftableItems.keySet());
 
         // erase list.
         this.craftingMethods.clear();
         this.craftableItems.clear();
         this.emitableItems.clear();
 
-        // update the stuff that was in the list...
-        this.storageGrid.postAlterationOfStoredItems(
-                StorageChannels.items(), oldItems.keySet(),
-                new BaseActionSource());
+        // Send an update for the items that had patterns previously.
+        // This tells the terminals to update items marked as "craftable".
+        this.storageGrid.postAlterationOfStoredItems(StorageChannels.items(), oldItems, new BaseActionSource());
 
         // re-create list..
         for (final ICraftingProvider provider : this.craftingProviders) {
@@ -234,8 +226,8 @@ public class CraftingService
             this.craftableItems.put(e.getKey(), ImmutableList.copyOf(e.getValue()));
         }
 
-        this.storageGrid.postAlterationOfStoredItems(
-                StorageChannels.items(), this.craftableItems.keySet(),
+        // Post new craftable items to the opened terminals.
+        this.storageGrid.postAlterationOfStoredItems(StorageChannels.items(), this.craftableItems.keySet(),
                 new BaseActionSource());
     }
 
@@ -288,50 +280,7 @@ public class CraftingService
         this.emitableItems.add(someItem.copy());
     }
 
-    @Override
-    public List<IMEInventoryHandler> getCellArray(final IStorageChannel<?> channel) {
-        final List<IMEInventoryHandler> list = new ArrayList<>(1);
-
-        if (channel == StorageChannels.items()) {
-            list.add(this);
-        }
-
-        return list;
-    }
-
-    @Override
-    public int getPriority() {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.WRITE;
-    }
-
-    @Override
-    public boolean isPrioritized(final IAEItemStack input) {
-        return true;
-    }
-
-    @Override
-    public boolean canAccept(final IAEItemStack input) {
-        for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
-            if (cpu.craftingLogic.getWaitingFor(input) > 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean validForPass(final int pass) {
-        return pass == 1;
-    }
-
-    @Override
-    public IAEItemStack injectItems(IAEItemStack input, final Actionable type, final IActionSource src) {
+    public IAEItemStack injectItemsIntoCpus(IAEItemStack input, final Actionable type) {
         for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
             input = cpu.craftingLogic.injectItems(input, type);
         }
@@ -339,13 +288,7 @@ public class CraftingService
         return input;
     }
 
-    @Override
-    public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final IActionSource src) {
-        return null;
-    }
-
-    @Override
-    public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> out) {
+    public IItemList<IAEItemStack> addCrafting(final IItemList<IAEItemStack> out) {
         // add craftable items!
         for (final IAEItemStack stack : this.craftableItems.keySet()) {
             out.addCrafting(stack);
@@ -356,11 +299,6 @@ public class CraftingService
         }
 
         return out;
-    }
-
-    @Override
-    public IStorageChannel<IAEItemStack> getChannel() {
-        return StorageChannels.items();
     }
 
     @Override
@@ -420,7 +358,7 @@ public class CraftingService
                 }
             }
 
-            Collections.sort(validCpusClusters, (firstCluster, nextCluster) -> {
+            validCpusClusters.sort((firstCluster, nextCluster) -> {
                 if (prioritizePower) {
                     final int comparison1 = Long.compare(nextCluster.getCoProcessors(), firstCluster.getCoProcessors());
                     if (comparison1 != 0) {
@@ -450,7 +388,13 @@ public class CraftingService
 
     @Override
     public ImmutableSet<ICraftingCPU> getCpus() {
-        return ImmutableSet.copyOf(new ActiveCpuIterator(this.craftingCPUClusters));
+        var cpus = ImmutableSet.<ICraftingCPU>builder();
+        for (CraftingCPUCluster cpu : this.craftingCPUClusters) {
+            if (cpu.isActive() && !cpu.isDestroyed()) {
+                cpus.add(cpu);
+            }
+        }
+        return cpus.build();
     }
 
     @Override
@@ -490,45 +434,5 @@ public class CraftingService
 
     public GenericInterestManager<CraftingWatcher> getInterestManager() {
         return this.interestManager;
-    }
-
-    private static class ActiveCpuIterator implements Iterator<ICraftingCPU> {
-
-        private final Iterator<CraftingCPUCluster> iterator;
-        private CraftingCPUCluster cpuCluster;
-
-        public ActiveCpuIterator(final Collection<CraftingCPUCluster> o) {
-            this.iterator = o.iterator();
-            this.cpuCluster = null;
-        }
-
-        @Override
-        public boolean hasNext() {
-            this.findNext();
-
-            return this.cpuCluster != null;
-        }
-
-        private void findNext() {
-            while (this.iterator.hasNext() && this.cpuCluster == null) {
-                this.cpuCluster = this.iterator.next();
-                if (!this.cpuCluster.isActive() || this.cpuCluster.isDestroyed()) {
-                    this.cpuCluster = null;
-                }
-            }
-        }
-
-        @Override
-        public ICraftingCPU next() {
-            final ICraftingCPU o = this.cpuCluster;
-            this.cpuCluster = null;
-
-            return o;
-        }
-
-        @Override
-        public void remove() {
-            // no..
-        }
     }
 }

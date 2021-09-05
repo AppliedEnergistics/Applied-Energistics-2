@@ -30,7 +30,7 @@ import appeng.api.networking.events.GridCraftingPatternChange;
  * Allows a IGridHost to provide crafting patterns to the network, post a {@link GridCraftingPatternChange} to tell AE2
  * to update.
  */
-public interface ICraftingProvider extends IGridNodeService, ICraftingMedium {
+public interface ICraftingProvider extends IGridNodeService {
 
     /**
      * called when the network is looking for possible crafting jobs.

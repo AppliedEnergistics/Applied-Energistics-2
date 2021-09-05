@@ -26,7 +26,8 @@ package appeng.api.networking.crafting;
 import net.minecraft.world.inventory.CraftingContainer;
 
 /**
- * A place to send Items for crafting purposes, this is considered part of AE's External crafting system.
+ * A place to send Items for crafting purposes, registered by a {@link ICraftingProvider} with
+ * {@link ICraftingProviderHelper#addCraftingOption}.
  */
 public interface ICraftingMedium {
 

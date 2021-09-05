@@ -67,11 +67,7 @@ import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
@@ -102,7 +98,7 @@ import appeng.util.item.AEItemStack;
 
 public class DualityItemInterface
         extends DualityInterface
-        implements IAEAppEngInventory, IConfigManagerListener, ICraftingProvider, ICraftingRequester,
+        implements IAEAppEngInventory, IConfigManagerListener, ICraftingProvider, ICraftingMedium, ICraftingRequester,
         IUpgradeableObject,
         IConfigurableObject {
 
