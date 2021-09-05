@@ -40,7 +40,6 @@ import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
 
 public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWirelessAccessPoint, IPowerChannelState {
@@ -113,7 +112,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         // :P
     }

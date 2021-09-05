@@ -52,7 +52,6 @@ import appeng.helpers.IItemInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
 
 public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
         implements IItemInterfaceHost, IPriorityHost, IUpgradeableObject, IConfigurableObject {
@@ -180,9 +179,9 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
-        this.duality.onChangeInventory(inv, slot, mc, removed, added);
+        this.duality.onChangeInventory(inv, slot, removed, added);
     }
 
     @Override

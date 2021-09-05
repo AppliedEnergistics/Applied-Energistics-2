@@ -18,7 +18,6 @@
 
 package appeng.menu.slot;
 
-import appeng.helpers.Inventories;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -29,6 +28,7 @@ import net.minecraftforge.common.ForgeHooks;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.crafting.CraftingEvent;
+import appeng.helpers.Inventories;
 import appeng.util.inv.AppEngInternalInventory;
 
 public class AppEngCraftingSlot extends AppEngSlot {

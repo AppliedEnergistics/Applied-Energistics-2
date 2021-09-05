@@ -46,7 +46,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.helpers.Inventories;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.MenuLocator;

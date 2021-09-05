@@ -56,7 +56,6 @@ import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.InvOperation;
 
 @SuppressWarnings("JavadocReference")
 @OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
@@ -138,7 +137,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
 
     }

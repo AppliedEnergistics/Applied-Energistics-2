@@ -52,8 +52,8 @@ import appeng.util.inv.PlayerInternalInventory;
 import appeng.util.item.AEItemStack;
 
 /**
- * This is the crafting result slot of the crafting terminal, which also handles performing the actual crafting
- * when a player clicks it.
+ * This is the crafting result slot of the crafting terminal, which also handles performing the actual crafting when a
+ * player clicks it.
  */
 public class CraftingTermSlot extends AppEngCraftingSlot {
 

@@ -28,7 +28,6 @@ import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
-import appeng.util.inv.InvOperation;
 
 public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
 
@@ -69,7 +68,7 @@ public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
 
     }

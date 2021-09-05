@@ -173,21 +173,18 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         if (this.host != null && this.eventsEnabled() && !this.notifyingChanges) {
             this.notifyingChanges = true;
             ItemStack newStack = this.getStackInSlot(slot).copy();
-            InvOperation op = InvOperation.SET;
 
             if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.isSame(newStack, oldStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
                     newStack.shrink(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;
-                    op = InvOperation.INSERT;
                 } else {
                     oldStack.shrink(newStack.getCount());
                     newStack = ItemStack.EMPTY;
-                    op = InvOperation.EXTRACT;
                 }
             }
 
-            this.host.onChangeInventory(this, slot, op, oldStack, newStack);
+            this.host.onChangeInventory(this, slot, oldStack, newStack);
             this.host.saveChanges();
             this.notifyingChanges = false;
         }

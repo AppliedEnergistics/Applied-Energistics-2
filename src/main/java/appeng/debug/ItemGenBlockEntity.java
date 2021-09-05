@@ -24,8 +24,6 @@ import java.util.Queue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.inventories.BaseInternalInventory;
-import appeng.api.inventories.InternalInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -41,6 +39,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import appeng.api.inventories.BaseInternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
 
 public class ItemGenBlockEntity extends AEBaseBlockEntity {

@@ -48,7 +48,6 @@ import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
 import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.InvOperation;
 
 public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         implements IAEMultiBlock<QuantumCluster>, ServerTickingBlockEntity {
@@ -113,7 +112,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);

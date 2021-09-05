@@ -72,7 +72,6 @@ import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
@@ -285,7 +284,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();

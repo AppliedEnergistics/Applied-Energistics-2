@@ -103,7 +103,6 @@ import appeng.util.Platform;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
@@ -424,7 +423,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
@@ -441,7 +440,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 this.markForUpdate();
             }
         }
-        if (inv == this.inputInventory && mc == InvOperation.INSERT) {
+        if (inv == this.inputInventory && !added.isEmpty()) {
             this.tryToStoreContents();
         }
     }

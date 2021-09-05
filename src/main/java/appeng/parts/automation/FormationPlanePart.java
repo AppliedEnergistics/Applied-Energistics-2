@@ -73,7 +73,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemFormationPlaneMenu;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalAEInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
@@ -128,9 +127,9 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
-        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
+        super.onChangeInventory(inv, slot, removedStack, newStack);
 
         if (inv == this.config) {
             this.updateHandler();

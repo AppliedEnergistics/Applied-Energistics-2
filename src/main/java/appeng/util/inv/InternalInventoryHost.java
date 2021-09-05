@@ -20,13 +20,15 @@ package appeng.util.inv;
 
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.inventories.InternalInventory;
+
 /**
  * Interface that allows listening to events of {@link AppEngInternalInventory} and {@link AppEngInternalAEInventory}.
  */
 public interface InternalInventoryHost {
     void saveChanges();
 
-    void onChangeInventory(Object inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack);
+    void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack, ItemStack newStack);
 
     boolean isRemote();
 }

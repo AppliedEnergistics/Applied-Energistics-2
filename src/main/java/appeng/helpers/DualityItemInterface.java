@@ -94,7 +94,6 @@ import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalAEInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class DualityItemInterface
@@ -141,7 +140,7 @@ public class DualityItemInterface
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (this.isWorking == slot) {
             return;

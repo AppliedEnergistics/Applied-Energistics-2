@@ -27,7 +27,6 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public abstract class UpgradeInventory extends AppEngInternalInventory
@@ -135,11 +134,11 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         this.cached = false;
         if (!isRemote()) {
-            this.parent.onChangeInventory(inv, slot, mc, removedStack, newStack);
+            this.parent.onChangeInventory(inv, slot, removedStack, newStack);
         }
     }
 

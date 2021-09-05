@@ -42,7 +42,6 @@ import appeng.me.storage.ItemHandlerAdapter;
 import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.inv.AppEngInternalAEInventory;
-import appeng.util.inv.InvOperation;
 
 public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IItemHandler> {
 
@@ -94,9 +93,9 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IIt
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
-        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
+        super.onChangeInventory(inv, slot, removedStack, newStack);
 
         if (inv == this.config) {
             this.scheduleCacheReset(true);

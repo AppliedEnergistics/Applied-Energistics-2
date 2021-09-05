@@ -44,7 +44,6 @@ import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 
 /**
  * Anything resembling an network terminal with view cells can reuse this.
@@ -133,7 +132,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         this.getHost().markForSave();
     }

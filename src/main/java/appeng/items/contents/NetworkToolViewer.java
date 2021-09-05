@@ -26,7 +26,6 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class NetworkToolViewer implements INetworkTool, InternalInventoryHost {
@@ -54,7 +53,7 @@ public class NetworkToolViewer implements INetworkTool, InternalInventoryHost {
     }
 
     @Override
-    public void onChangeInventory(Object inv, int slot, InvOperation mc, ItemStack removedStack,
+    public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack,
             ItemStack newStack) {
     }
 

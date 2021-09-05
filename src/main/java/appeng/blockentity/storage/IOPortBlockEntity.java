@@ -74,7 +74,6 @@ import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.AEItemFilters;
 
 public class IOPortBlockEntity extends AENetworkInvBlockEntity
@@ -216,7 +215,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (this.inputCells == inv) {
             this.updateTask();

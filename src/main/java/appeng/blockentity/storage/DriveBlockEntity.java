@@ -67,7 +67,6 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DriveWatcher;
 import appeng.menu.implementations.DriveMenu;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestOrDrive, IPriorityHost, ICellProvider {
@@ -309,7 +308,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (this.isCached) {
             this.isCached = false; // recalculate the storage cell.

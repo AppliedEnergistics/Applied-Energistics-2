@@ -18,7 +18,6 @@
 
 package appeng.parts.reporting;
 
-import appeng.util.inv.PlayerInternalInventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +35,7 @@ import appeng.me.helpers.PlayerSource;
 import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
+import appeng.util.inv.PlayerInternalInventory;
 import appeng.util.item.AEItemStack;
 
 public class ConversionMonitorPart extends AbstractMonitorPart {

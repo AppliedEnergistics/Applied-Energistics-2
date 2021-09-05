@@ -44,6 +44,7 @@ import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.items.IBiometricCard;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSecurityChange;
@@ -65,7 +66,6 @@ import appeng.me.storage.SecurityStationInventory;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 public class SecurityStationBlockEntity extends AENetworkBlockEntity implements ITerminalHost, InternalInventoryHost,
@@ -99,7 +99,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
 
     }

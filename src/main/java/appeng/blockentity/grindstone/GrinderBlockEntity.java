@@ -36,7 +36,6 @@ import appeng.recipes.handlers.GrinderRecipes;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankable {
@@ -69,7 +68,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
 
     }

@@ -45,7 +45,6 @@ import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalAEInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 
 public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         implements IConfigurableObject, IUpgradeableObject, InternalInventoryHost {
@@ -105,7 +104,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;

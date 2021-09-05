@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.config.FuzzyMode;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.BlockPos;
@@ -18,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import appeng.api.config.FuzzyMode;
 
 public interface InternalInventory extends Iterable<ItemStack> {
 
@@ -246,7 +247,7 @@ public interface InternalInventory extends Iterable<ItemStack> {
      * different damage values.
      */
     default ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-                                               Predicate<ItemStack> destination) {
+            Predicate<ItemStack> destination) {
         int slots = size();
         ItemStack extracted = ItemStack.EMPTY;
 
@@ -275,8 +276,8 @@ public interface InternalInventory extends Iterable<ItemStack> {
     }
 
     default ItemStack simulateSimilarRemove(int amount, ItemStack filter,
-                                                  FuzzyMode fuzzyMode,
-                                                  Predicate<ItemStack> destination) {
+            FuzzyMode fuzzyMode,
+            Predicate<ItemStack> destination) {
         int slots = size();
         ItemStack extracted = ItemStack.EMPTY;
 
@@ -298,8 +299,8 @@ public interface InternalInventory extends Iterable<ItemStack> {
     }
 
     /**
-     * Similar to {@link ItemStack#isSameItemSameTags}, but it can further check, if both are equal considering
-     * a {@link FuzzyMode}.
+     * Similar to {@link ItemStack#isSameItemSameTags}, but it can further check, if both are equal considering a
+     * {@link FuzzyMode}.
      *
      * @param mode how to compare the two {@link ItemStack}s
      * @return true, if both are matching the mode

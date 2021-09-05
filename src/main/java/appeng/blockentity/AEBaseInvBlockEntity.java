@@ -35,7 +35,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {
 
@@ -86,7 +85,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public abstract void onChangeInventory(Object inv, int slot, InvOperation mc, ItemStack removed,
+    public abstract void onChangeInventory(InternalInventory inv, int slot, ItemStack removed,
             ItemStack added);
 
     @Nonnull

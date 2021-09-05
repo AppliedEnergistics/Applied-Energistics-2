@@ -42,7 +42,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.util.ILevelRunnable;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
@@ -170,7 +169,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
 
     }

@@ -38,7 +38,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.parts.BasicStatePart;
 import appeng.util.ConfigManager;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.InvOperation;
 
 public abstract class UpgradeablePart extends BasicStatePart
         implements InternalInventoryHost, IConfigurableObject, IUpgradeableObject {
@@ -61,7 +60,7 @@ public abstract class UpgradeablePart extends BasicStatePart
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.upgrades) {
             this.upgradesChanged();

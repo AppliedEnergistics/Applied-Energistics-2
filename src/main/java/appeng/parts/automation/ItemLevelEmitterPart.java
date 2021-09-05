@@ -73,7 +73,6 @@ import appeng.menu.implementations.ItemLevelEmitterMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalAEInventory;
-import appeng.util.inv.InvOperation;
 
 public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatcherHost,
         ICraftingWatcherNode, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
@@ -358,13 +357,13 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.config) {
             this.configureWatchers();
         }
 
-        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
+        super.onChangeInventory(inv, slot, removedStack, newStack);
     }
 
     @Override

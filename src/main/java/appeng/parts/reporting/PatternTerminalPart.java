@@ -41,7 +41,6 @@ import appeng.menu.me.items.PatternTermMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.InvOperation;
 
 public class PatternTerminalPart extends AbstractTerminalPart {
 
@@ -117,7 +116,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void onChangeInventory(final Object inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getStackInSlot(1);

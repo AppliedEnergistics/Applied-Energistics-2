@@ -136,7 +136,7 @@ public class AppEngInternalAEInventory extends BaseInternalInventory {
             } else {
                 existing.grow(reachedLimit ? limit : stack.getCount());
             }
-            this.fireOnChangeInventory(slot, InvOperation.INSERT, ItemStack.EMPTY,
+            this.fireOnChangeInventory(slot, ItemStack.EMPTY,
                     reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
         }
         return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
@@ -149,13 +149,13 @@ public class AppEngInternalAEInventory extends BaseInternalInventory {
             if (amount >= split.getCount()) {
                 if (!simulate) {
                     this.inv[slot] = null;
-                    this.fireOnChangeInventory(slot, InvOperation.EXTRACT, split, ItemStack.EMPTY);
+                    this.fireOnChangeInventory(slot, split, ItemStack.EMPTY);
                 }
                 return split;
             } else {
                 if (!simulate) {
                     split.grow(-amount);
-                    this.fireOnChangeInventory(slot, InvOperation.EXTRACT,
+                    this.fireOnChangeInventory(slot,
                             ItemHandlerHelper.copyStackWithSize(split, amount), ItemStack.EMPTY);
                 }
                 return ItemHandlerHelper.copyStackWithSize(split, amount);
@@ -172,27 +172,24 @@ public class AppEngInternalAEInventory extends BaseInternalInventory {
 
         if (this.te != null && !this.te.isRemote()) {
             ItemStack newStack = stack.copy();
-            InvOperation op = InvOperation.SET;
 
             if (ItemStack.isSame(oldStack, newStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
                     newStack.shrink(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;
-                    op = InvOperation.INSERT;
                 } else {
                     oldStack.shrink(newStack.getCount());
                     newStack = ItemStack.EMPTY;
-                    op = InvOperation.EXTRACT;
                 }
             }
-            this.fireOnChangeInventory(slotIndex, op, oldStack, newStack);
+            this.fireOnChangeInventory(slotIndex, oldStack, newStack);
         }
     }
 
-    private void fireOnChangeInventory(int slot, InvOperation op, ItemStack removed, ItemStack inserted) {
+    private void fireOnChangeInventory(int slot, ItemStack removed, ItemStack inserted) {
         if (this.te != null && !this.te.isRemote() && !this.dirtyFlag) {
             this.dirtyFlag = true;
-            this.te.onChangeInventory(this, slot, op, removed, inserted);
+            this.te.onChangeInventory(this, slot, removed, inserted);
             this.te.saveChanges();
             this.dirtyFlag = false;
         }

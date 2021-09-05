@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import appeng.helpers.Inventories;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +42,7 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
+import appeng.helpers.Inventories;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;

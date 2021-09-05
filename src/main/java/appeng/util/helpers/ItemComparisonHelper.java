@@ -25,8 +25,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.FuzzyMode;
-
 /**
  * A helper class for comparing {@link Item}, {@link ItemStack} or NBT
  */
