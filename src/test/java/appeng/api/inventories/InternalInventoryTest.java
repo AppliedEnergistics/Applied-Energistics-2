@@ -325,7 +325,7 @@ class InternalInventoryTest {
         void testAddStackableItemAboveMaxStackSize() {
             assertSame(ItemStack.EMPTY, inv.simulateAdd(stackableItem(64)));
             assertSame(ItemStack.EMPTY, inv.addItems(stackableItem(64)));
-            assertThat(reportSlots())
+            assertThat(reportAllSlots(inv))
                     .containsExactly(
                             "16 ender_pearl",
                             "10 ender_pearl",
@@ -370,24 +370,6 @@ class InternalInventoryTest {
             assertFalse(overflow.isEmpty());
             assertEquals(123, overflow.getCount());
         }
-
-        List<String> reportSlots() {
-            for (int i = inv.size(); i > 0; i--) {
-                if (!inv.getStackInSlot(i - 1).isEmpty()) {
-                    List<String> result = new ArrayList<>();
-                    for (int j = 0; j < i; j++) {
-                        var str = inv.getStackInSlot(j).toString();
-                        if (inv.getStackInSlot(j).hasTag()) {
-                            str += " [has NBT]";
-                        }
-                        result.add(str);
-                    }
-                    return result;
-                }
-            }
-            return Collections.emptyList();
-        }
-
     }
 
     @Nested
@@ -402,7 +384,7 @@ class InternalInventoryTest {
         void testAddStackableItem() {
             assertSame(ItemStack.EMPTY, inv.simulateAdd(stackableItem(16)));
             assertSame(ItemStack.EMPTY, inv.addItems(stackableItem(16)));
-            assertThat(reportSlots())
+            assertThat(reportAllSlots(inv))
                     .containsExactly(
                             // This was the remainder after stacking into everything else
                             "13 ender_pearl",
@@ -433,7 +415,7 @@ class InternalInventoryTest {
         void testAddStackableItem() {
             assertSame(ItemStack.EMPTY, inv.simulateAdd(stackableItem(16)));
             assertSame(ItemStack.EMPTY, inv.addItems(stackableItem(16)));
-            assertThat(reportSlots())
+            assertThat(reportAllSlots(inv))
                     .containsExactly(
                             // This slot was empty
                             "16 ender_pearl",
@@ -447,4 +429,149 @@ class InternalInventoryTest {
         }
 
     }
+
+    @Nested
+    class RemoveItems {
+
+        AppEngInternalInventory inv = new AppEngInternalInventory(64);
+
+        ItemStack item1;
+        ItemStack item2;
+        ItemStack item3;
+        ItemStack item4;
+
+        public RemoveItems() {
+            item1 = new ItemStack(Items.STICK);
+            item2 = new ItemStack(Items.STICK);
+            item2.getOrCreateTag().putInt("x", 1);
+            item3 = new ItemStack(Items.DIAMOND_SWORD);
+            item4 = new ItemStack(Items.DIAMOND_SWORD);
+            item4.setDamageValue(1);
+
+            inv.setItemDirect(1, copyAmount(item1, 10));
+            inv.setItemDirect(3, copyAmount(item2, 10));
+            inv.setItemDirect(5, copyAmount(item3, 10));
+            inv.setItemDirect(7, copyAmount(item4, 1));
+
+            // Just repeat the items again
+            inv.setItemDirect(10, copyAmount(item1, 5));
+            inv.setItemDirect(11, copyAmount(item2, 5));
+            inv.setItemDirect(12, copyAmount(item3, 5));
+            inv.setItemDirect(13, copyAmount(item4, 1));
+        }
+
+        private static ItemStack copyAmount(ItemStack stack, int count) {
+            var result = stack.copy();
+            result.setCount(count);
+            return result;
+        }
+
+        @Test
+        void testWithEmptyInventory() {
+            assertSame(ItemStack.EMPTY, InternalInventory.empty().removeItems(1, ItemStack.EMPTY, null));
+        }
+
+        @Nested
+        class NoFilters {
+            @Test
+            void testTakeAll() {
+                assertEquals("15 stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                assertThat(reportFilledSlots(inv)).containsOnly(
+                        "10 stick [has NBT]",
+                        "10 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]",
+                        "5 stick [has NBT]",
+                        "5 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]"
+                );
+
+                assertEquals("15 stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                assertThat(reportFilledSlots(inv)).containsOnly(
+                        "10 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]",
+                        "5 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]"
+                );
+
+                // Note how it'll extract only 1 sword of each slot per-iteration because
+                // due to IItemHandler#extractItem being the basis for our extractItem,
+                // it'll adhere to Vanilla stack size limits.
+                assertEquals("2 diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                assertThat(reportFilledSlots(inv)).containsOnly(
+                        "9 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]",
+                        "4 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]"
+                );
+                // Extract the rest of it
+                for (var i = 0; i < 4; i++) {
+                    assertEquals("2 diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                }
+                for (var i = 0; i < 5; i++) {
+                    assertEquals("1 diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
+                }
+                assertThat(reportFilledSlots(inv)).containsOnly(
+                        "1 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]"
+                );
+
+                // Now extract the damaged sword
+                var damagedSwords = inv.removeItems(15, ItemStack.EMPTY, null);
+                assertEquals("2 diamond_sword", damagedSwords.toString());
+                assertEquals(1, damagedSwords.getDamageValue());
+                assertThat(reportFilledSlots(inv)).containsOnly();
+            }
+
+            @Test
+            void testTakeLessThanAvailable() {
+                assertEquals("14 stick", inv.removeItems(14, ItemStack.EMPTY, null).toString());
+                assertThat(reportFilledSlots(inv)).containsOnly("10 stick [has NBT]",
+                        "10 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]",
+                        // This is the remainder of the 15 sticks previously in the inventory
+                        "1 stick",
+                        "5 stick [has NBT]",
+                        "5 diamond_sword [has NBT]",
+                        "1 diamond_sword [has NBT]");
+            }
+
+            @Test
+            void testTakeMoreThanAvailable() {
+                assertEquals("15 stick", inv.removeItems(30, ItemStack.EMPTY, null).toString());
+
+                assertThat(inv).noneMatch(s -> ItemStack.isSameItemSameTags(s, item1));
+            }
+        }
+
+    }
+
+    private static List<String> reportFilledSlots(InternalInventory inv) {
+        return reportSlots(inv, false);
+    }
+
+    private static List<String> reportAllSlots(InternalInventory inv) {
+        return reportSlots(inv, true);
+    }
+
+    private static List<String> reportSlots(InternalInventory inv, boolean includingEmpty) {
+        for (int i = inv.size(); i > 0; i--) {
+            if (!inv.getStackInSlot(i - 1).isEmpty()) {
+                List<String> result = new ArrayList<>();
+                for (int j = 0; j < i; j++) {
+                    if (!includingEmpty && inv.getStackInSlot(j).isEmpty()) {
+                        continue;
+                    }
+
+                    var str = inv.getStackInSlot(j).toString();
+                    if (inv.getStackInSlot(j).hasTag()) {
+                        str += " [has NBT]";
+                    }
+                    result.add(str);
+                }
+                return result;
+            }
+        }
+        return Collections.emptyList();
+    }
+
 }

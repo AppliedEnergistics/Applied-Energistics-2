@@ -168,7 +168,7 @@ public interface InternalInventory extends Iterable<ItemStack> {
         return remainder;
     }
 
-    default ItemStack removeItems(int amount, ItemStack filter, Predicate<ItemStack> destination) {
+    default ItemStack removeItems(int amount, ItemStack filter, @Nullable Predicate<ItemStack> destination) {
         int slots = size();
         ItemStack rv = ItemStack.EMPTY;
 

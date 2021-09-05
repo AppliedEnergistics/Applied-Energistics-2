@@ -493,7 +493,7 @@ public class DualityItemInterface
     private boolean usePlan(final int x, final IAEItemStack itemStack) {
         this.isWorking = x;
 
-        boolean changed = tryUsePlan(x, itemStack, this.storage.getSlotInv(x));
+        boolean changed = tryUsePlan(x, itemStack);
 
         if (changed) {
             this.updatePlan(x);
@@ -503,7 +503,7 @@ public class DualityItemInterface
         return changed;
     }
 
-    private boolean tryUsePlan(int slot, IAEItemStack itemStack, InternalInventory storageSlot) {
+    private boolean tryUsePlan(int slot, IAEItemStack itemStack) {
         var grid = mainNode.getGrid();
         if (grid == null) {
             return false;
@@ -514,50 +514,41 @@ public class DualityItemInterface
         var src = grid.getEnergyService();
 
         if (this.craftingTracker.isBusy(slot)) {
-            return this.handleCrafting(slot, storageSlot, itemStack);
+            return this.handleCrafting(slot, storage.getSlotInv(slot), itemStack);
         } else if (itemStack.getStackSize() > 0) {
             // make sure strange things didn't happen...
-            if (!storageSlot.addItems(itemStack.createItemStack(), true).isEmpty()) {
+            if (!storage.insertItem(slot, itemStack.createItemStack(), true).isEmpty()) {
                 return true;
             }
 
-            final IAEItemStack acquired = Platform.poweredExtraction(src, this.destination, itemStack,
+            var acquired = Platform.poweredExtraction(src, this.destination, itemStack,
                     this.interfaceRequestSource);
             if (acquired != null) {
-                var overflow = storageSlot.addItems(acquired.createItemStack());
+                var overflow = storage.insertItem(slot, acquired.createItemStack(), false);
                 if (!overflow.isEmpty()) {
                     throw new IllegalStateException("bad attempt at managing inventory. ( addItems )");
                 }
                 return true;
             } else {
-                return this.handleCrafting(slot, storageSlot, itemStack);
+                return this.handleCrafting(slot, storage.getSlotInv(slot), itemStack);
             }
         } else if (itemStack.getStackSize() < 0) {
-            IAEItemStack toStore = itemStack.copy();
+            var toStore = itemStack.copy();
             toStore.setStackSize(-toStore.getStackSize());
 
             long diff = toStore.getStackSize();
 
-            // make sure strange things didn't happen...
-            // TODO: check if OK
-            var canExtract = storageSlot.simulateRemove((int) diff, toStore.getDefinition(), null);
-            if (canExtract.isEmpty() || canExtract.getCount() != diff) {
+            // Make sure the plan still matches the storage
+            var inSlot = storage.getStackInSlot(slot);
+            if (!ItemStack.isSameItemSameTags(itemStack.getDefinition(), inSlot) || inSlot.getCount() != diff) {
                 return true;
             }
 
-            toStore = Platform.poweredInsert(src, this.destination, toStore, this.interfaceRequestSource);
-
-            if (toStore != null) {
-                diff -= toStore.getStackSize();
-            }
-
-            if (diff != 0) {
-                // extract items!
-                var removed = storageSlot.removeItems((int) diff, ItemStack.EMPTY, null);
-                if (removed.isEmpty() || removed.getCount() != diff) {
-                    throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
-                }
-                return true;
+            var remainder = Platform.poweredInsert(src, this.destination, toStore, this.interfaceRequestSource);
+            if (remainder != null) {
+                storage.setItemDirect(slot, remainder.createItemStack());
+            } else {
+                storage.setItemDirect(slot, ItemStack.EMPTY);
             }
         }
 

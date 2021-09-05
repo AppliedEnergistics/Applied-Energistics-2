@@ -111,6 +111,16 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         } else
         // pick up what was crafted...
         {
+            // This is a shortcut to ensure that for mods that create recipes with result counts larger than
+            // the max stack size, it remains possible to pick up those items at least _once_.
+            if (getMenu().getCarried().isEmpty()) {
+                var rs = getItem().copy();
+                if (!rs.isEmpty()) {
+                    getMenu().setCarried(this.craftItem(who, rs, inv, inv.getStorageList()));
+                }
+                return;
+            }
+
             target = new CarriedItemInventory(getMenu());
             maxTimesToCraft = 1;
         }
