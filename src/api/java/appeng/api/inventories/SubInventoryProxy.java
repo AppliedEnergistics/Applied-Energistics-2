@@ -1,9 +1,10 @@
 package appeng.api.inventories;
 
-import com.google.common.base.Preconditions;
-import net.minecraft.world.item.ItemStack;
-
 import javax.annotation.Nonnull;
+
+import com.google.common.base.Preconditions;
+
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Exposes a subset of an {@link InternalInventory}.

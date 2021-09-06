@@ -1,25 +1,28 @@
 package appeng.api.inventories;
 
-import appeng.util.BootstrapMinecraft;
-import appeng.util.inv.AppEngInternalInventory;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.testing.IteratorTester;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.testing.IteratorTester;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import appeng.util.BootstrapMinecraft;
+import appeng.util.inv.AppEngInternalInventory;
 
 @BootstrapMinecraft
 class InternalInventoryTest {
@@ -117,8 +120,8 @@ class InternalInventoryTest {
         }
 
         /**
-         * Sub inventories acquired via sub-inventories should directly forward to the delegate rather
-         * than creating pointless deep chains of proxy objects.
+         * Sub inventories acquired via sub-inventories should directly forward to the delegate rather than creating
+         * pointless deep chains of proxy objects.
          */
         @Test
         void testSubInventoryOfSubInventoryDoesntChain() {
@@ -129,8 +132,8 @@ class InternalInventoryTest {
         }
 
         /**
-         * Slot inventories acquired via sub-inventories should directly forward to the delegate rather
-         * than creating pointless deep chains of proxy objects.
+         * Slot inventories acquired via sub-inventories should directly forward to the delegate rather than creating
+         * pointless deep chains of proxy objects.
          */
         @Test
         void testSlotInventoryOfSubInventoryDoesntChain() {
@@ -237,8 +240,8 @@ class InternalInventoryTest {
         }
 
         /**
-         * Checks that the iterator correctly deals with an inventory that has two slots populated,
-         * with different amounts of empty space before, between and after the items.
+         * Checks that the iterator correctly deals with an inventory that has two slots populated, with different
+         * amounts of empty space before, between and after the items.
          */
         @ParameterizedTest
         @CsvSource({
@@ -266,8 +269,7 @@ class InternalInventoryTest {
                     5,
                     Collections.emptyList(),
                     List.of(boat, planks),
-                    IteratorTester.KnownOrder.KNOWN_ORDER
-            ) {
+                    IteratorTester.KnownOrder.KNOWN_ORDER) {
 
                 @Override
                 protected Iterator<ItemStack> newTargetIterator() {
@@ -335,8 +337,7 @@ class InternalInventoryTest {
                             "16 ender_pearl",
                             "16 ender_pearl",
                             "16 ender_pearl",
-                            "13 ender_pearl"
-                    );
+                            "13 ender_pearl");
         }
 
         @Test
@@ -398,8 +399,7 @@ class InternalInventoryTest {
                             "16 ender_pearl",
                             "1 air",
                             // Filled this from 14->16 due to max stack size
-                            "16 ender_pearl"
-                    );
+                            "16 ender_pearl");
         }
     }
 
@@ -424,8 +424,7 @@ class InternalInventoryTest {
                             "15 ender_pearl",
                             "16 ender_pearl",
                             "1 air",
-                            "14 ender_pearl"
-                    );
+                            "14 ender_pearl");
         }
 
     }
@@ -482,16 +481,14 @@ class InternalInventoryTest {
                         "1 diamond_sword [has NBT]",
                         "5 stick [has NBT]",
                         "5 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]"
-                );
+                        "1 diamond_sword [has NBT]");
 
                 assertEquals("15 stick", inv.removeItems(15, ItemStack.EMPTY, null).toString());
                 assertThat(reportFilledSlots(inv)).containsOnly(
                         "10 diamond_sword [has NBT]",
                         "1 diamond_sword [has NBT]",
                         "5 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]"
-                );
+                        "1 diamond_sword [has NBT]");
 
                 // Note how it'll extract only 1 sword of each slot per-iteration because
                 // due to IItemHandler#extractItem being the basis for our extractItem,
@@ -501,8 +498,7 @@ class InternalInventoryTest {
                         "9 diamond_sword [has NBT]",
                         "1 diamond_sword [has NBT]",
                         "4 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]"
-                );
+                        "1 diamond_sword [has NBT]");
                 // Extract the rest of it
                 for (var i = 0; i < 4; i++) {
                     assertEquals("2 diamond_sword", inv.removeItems(15, ItemStack.EMPTY, null).toString());
@@ -512,8 +508,7 @@ class InternalInventoryTest {
                 }
                 assertThat(reportFilledSlots(inv)).containsOnly(
                         "1 diamond_sword [has NBT]",
-                        "1 diamond_sword [has NBT]"
-                );
+                        "1 diamond_sword [has NBT]");
 
                 // Now extract the damaged sword
                 var damagedSwords = inv.removeItems(15, ItemStack.EMPTY, null);

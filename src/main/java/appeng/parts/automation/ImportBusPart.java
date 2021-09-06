@@ -24,7 +24,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
@@ -83,7 +82,7 @@ public class ImportBusPart extends SharedItemBusPart {
     }
 
     public boolean canInsert(final ItemStack stack) {
-        if (stack.isEmpty() || stack.getItem() == Items.AIR) {
+        if (stack.isEmpty()) {
             return false;
         }
 
