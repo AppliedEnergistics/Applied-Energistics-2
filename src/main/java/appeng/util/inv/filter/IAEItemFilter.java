@@ -23,7 +23,11 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 
 public interface IAEItemFilter {
-    boolean allowExtract(InternalInventory inv, int slot, int amount);
+    default boolean allowExtract(InternalInventory inv, int slot, int amount) {
+        return true;
+    }
 
-    boolean allowInsert(InternalInventory inv, int slot, ItemStack stack);
+    default boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+        return true;
+    }
 }

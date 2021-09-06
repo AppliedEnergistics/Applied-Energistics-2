@@ -11,11 +11,13 @@ import java.util.List;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.testing.IteratorTester;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.junit.jupiter.MockitoSettings;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +25,7 @@ import net.minecraft.world.item.Items;
 
 import appeng.util.BootstrapMinecraft;
 import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.filter.IAEItemFilter;
 
 @BootstrapMinecraft
 class InternalInventoryTest {
@@ -441,6 +444,7 @@ class InternalInventoryTest {
 
         public RemoveItems() {
             item1 = new ItemStack(Items.STICK);
+            // Same item, but with NBT to check that removeItem honors NBT differences
             item2 = new ItemStack(Items.STICK);
             item2.getOrCreateTag().putInt("x", 1);
             item3 = new ItemStack(Items.DIAMOND_SWORD);
@@ -520,7 +524,8 @@ class InternalInventoryTest {
             @Test
             void testTakeLessThanAvailable() {
                 assertEquals("14 stick", inv.removeItems(14, ItemStack.EMPTY, null).toString());
-                assertThat(reportFilledSlots(inv)).containsOnly("10 stick [has NBT]",
+                assertThat(reportFilledSlots(inv)).containsOnly(
+                        "10 stick [has NBT]",
                         "10 diamond_sword [has NBT]",
                         "1 diamond_sword [has NBT]",
                         // This is the remainder of the 15 sticks previously in the inventory
@@ -535,6 +540,79 @@ class InternalInventoryTest {
                 assertEquals("15 stick", inv.removeItems(30, ItemStack.EMPTY, null).toString());
 
                 assertThat(inv).noneMatch(s -> ItemStack.isSameItemSameTags(s, item1));
+            }
+
+            // When actual extraction for a slot is denied, the extraction does not lock onto the item type
+            @Test
+            void testReadOnlySlotsAreSkipped() {
+                inv.setFilter(new IAEItemFilter() {
+                    @Override
+                    public boolean allowExtract(InternalInventory inv, int slot, int amount) {
+                        return slot != 1;
+                    }
+                });
+                var extracted = describeStack(inv.removeItems(15, ItemStack.EMPTY, null));
+                assertEquals("15 stick [has NBT]", extracted);
+            }
+        }
+
+        @Nested
+        @MockitoSettings
+        class DestinationFilter {
+
+            @Test
+            void testCallOrder() {
+                var calls = new ArrayList<ItemStack>();
+
+                // Only accept item 2
+                assertEquals("15 stick", inv.removeItems(15, ItemStack.EMPTY, is -> {
+                    calls.add(is.copy());
+                    return ItemStack.isSameItemSameTags(is, item2);
+                }).toString());
+
+                // Up until the filter returns true, it will be called for all items,
+                // after it returns true, it should only be called for items stackable with the first it accepted.
+                assertThat(calls)
+                        .extracting(InternalInventoryTest::describeStack)
+                        .containsExactly(
+                                "10 stick", "10 stick [has NBT]", "5 stick [has NBT]");
+            }
+
+            // Test that removeItems performs a simulated extract and passes the result of that to the filter
+            // This can be observed by extracting swords, because the simulated extract will only return 1
+            // due to the max stack size of swords.
+            @Test
+            void testCalledWithSimulatedExtractionResult() {
+                var calls = new ArrayList<ItemStack>();
+                inv.removeItems(2, ItemStack.EMPTY, is -> {
+                    if (ItemStack.isSameItemSameTags(is, item3)) {
+                        calls.add(is);
+                        return true;
+                    }
+                    return false;
+                });
+
+                assertThat(calls)
+                        .extracting(InternalInventoryTest::describeStack)
+                        .containsOnly(
+                                // It's called twice because there are two slots.
+                                "1 diamond_sword [has NBT]",
+                                "1 diamond_sword [has NBT]");
+            }
+
+            @Test
+            void testNotCalledWhenInventoryDisallowsExtraction() {
+                inv.setFilter(new IAEItemFilter() {
+                    @Override
+                    public boolean allowExtract(InternalInventory inv, int slot, int amount) {
+                        return false;
+                    }
+                });
+
+                inv.removeItems(1, ItemStack.EMPTY, is -> {
+                    Assertions.fail("Should not be called for read-only invs");
+                    return true;
+                });
             }
         }
 
@@ -557,16 +635,20 @@ class InternalInventoryTest {
                         continue;
                     }
 
-                    var str = inv.getStackInSlot(j).toString();
-                    if (inv.getStackInSlot(j).hasTag()) {
-                        str += " [has NBT]";
-                    }
-                    result.add(str);
+                    result.add(describeStack(inv.getStackInSlot(j)));
                 }
                 return result;
             }
         }
         return Collections.emptyList();
+    }
+
+    private static String describeStack(ItemStack stack) {
+        if (stack.hasTag()) {
+            return stack + " [has NBT]";
+        } else {
+            return stack.toString();
+        }
     }
 
 }
