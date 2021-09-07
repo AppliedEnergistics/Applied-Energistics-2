@@ -23,8 +23,13 @@ import java.util.Collections;
 import java.util.List;
 
 import appeng.api.config.AccessRestriction;
+import appeng.fluids.parts.PartFluidInterface;
+import appeng.fluids.tile.TileFluidInterface;
+import appeng.tile.misc.TileInterface;
+import appeng.tile.networking.TileCableBus;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
@@ -161,7 +166,27 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	{
 		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
-			this.resetCache( false );
+
+			final TileEntity te = w.getTileEntity( neighbor );
+
+			// In case the TE was destroyed, we have to do a full reset immediately.
+			if( te instanceof TileCableBus )
+			{
+				if( ( (TileCableBus) te ).getPart( this.getSide().getOpposite() ) instanceof PartFluidInterface )
+				{
+					this.resetCache( true );
+					this.resetCache();
+				}
+			}
+			if( te == null || te instanceof TileFluidInterface )
+			{
+				this.resetCache( true );
+				this.resetCache();
+			}
+			else
+			{
+				this.resetCache( false );
+			}
 		}
 	}
 
