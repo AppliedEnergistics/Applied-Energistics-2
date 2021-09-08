@@ -54,7 +54,7 @@ import appeng.menu.NullMenu;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class CraftingPatternDetails implements ICraftingPatternDetails, Comparable<CraftingPatternDetails> {
+public class CraftingPatternDetails implements ICraftingPatternDetails {
 
     private static final int CRAFTING_GRID_DIMENSION = 3;
     private static final int ALL_INPUT_LIMIT = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
@@ -78,7 +78,6 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private final Set<TestLookup> failCache = new HashSet<>();
     private final Set<TestLookup> passCache = new HashSet<>();
     private final IAEItemStack pattern;
-    private int priority = 0;
 
     public CraftingPatternDetails(final IAEItemStack is, final Level level) {
         Preconditions.checkArgument(is.getItem() instanceof EncodedPatternItem,
@@ -361,21 +360,6 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         return TestStatus.TEST;
-    }
-
-    @Override
-    public int getPriority() {
-        return this.priority;
-    }
-
-    @Override
-    public void setPriority(final int priority) {
-        this.priority = priority;
-    }
-
-    @Override
-    public int compareTo(final CraftingPatternDetails o) {
-        return Integer.compare(o.priority, this.priority);
     }
 
     @Override

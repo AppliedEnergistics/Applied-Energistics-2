@@ -742,8 +742,7 @@ public class DualityItemInterface
     public void provideCrafting(final ICraftingProviderHelper craftingTracker) {
         if (this.mainNode.isActive() && this.craftingList != null) {
             for (final ICraftingPatternDetails details : this.craftingList) {
-                details.setPriority(getPriority());
-                craftingTracker.addCraftingOption(this, details);
+                craftingTracker.addCraftingOption(this, details, getPriority());
             }
         }
     }

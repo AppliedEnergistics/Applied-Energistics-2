@@ -18,26 +18,15 @@
 
 package appeng.me.service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 
 import net.minecraft.world.level.Level;
 
@@ -72,8 +61,6 @@ public class CraftingService
         implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper {
 
     private static final ExecutorService CRAFTING_POOL;
-    private static final Comparator<ICraftingPatternDetails> COMPARATOR = (firstDetail,
-            nextDetail) -> nextDetail.getPriority() - firstDetail.getPriority();
 
     static {
         final ThreadFactory factory = ar -> {
@@ -98,7 +85,7 @@ public class CraftingService
     private final Set<ICraftingProvider> craftingProviders = new HashSet<>();
     private final Map<IGridNode, ICraftingWatcher> craftingWatchers = new HashMap<>();
     private final IGrid grid;
-    private final Map<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<>();
+    private final Map<ICraftingPatternDetails, SortedMultiset<CraftingMedium>> craftingMethods = new HashMap<>();
     private final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<>();
     private final Set<IAEItemStack> emitableItems = new HashSet<>();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
@@ -207,7 +194,8 @@ public class CraftingService
         }
 
         final Map<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap<>();
-
+        // Sort by highest priority (that of the highest priority crafting medium).
+        var detailsComparator = Comparator.comparing(details -> -this.craftingMethods.get(details).firstEntry().getElement().priority);
         // new craftables!
         for (final ICraftingPatternDetails details : this.craftingMethods.keySet()) {
             for (IAEItemStack out : details.getOutputs()) {
@@ -215,9 +203,7 @@ public class CraftingService
                 out.reset();
                 out.setCraftable(true);
 
-                var methods = tmpCraft.computeIfAbsent(out, k -> new TreeSet<>(COMPARATOR));
-
-                methods.add(details);
+                tmpCraft.computeIfAbsent(out, k -> new TreeSet<>(detailsComparator)).add(details);
             }
         }
 
@@ -262,17 +248,10 @@ public class CraftingService
     }
 
     @Override
-    public void addCraftingOption(final ICraftingMedium medium, final ICraftingPatternDetails api) {
+    public void addCraftingOption(final ICraftingMedium medium, final ICraftingPatternDetails api, int priority) {
         Preconditions.checkArgument(api.getClass() == CraftingPatternDetails.class,
                 "Only supports internal ICraftingPatternDetails for now");
-        List<ICraftingMedium> details = this.craftingMethods.get(api);
-        if (details == null) {
-            details = new ArrayList<>();
-            details.add(medium);
-            this.craftingMethods.put(api, details);
-        } else {
-            details.add(medium);
-        }
+        this.craftingMethods.computeIfAbsent(api, pattern -> TreeMultiset.create()).add(new CraftingMedium(medium, priority));
     }
 
     @Override
@@ -418,14 +397,14 @@ public class CraftingService
         return requested;
     }
 
-    public List<ICraftingMedium> getMediums(final ICraftingPatternDetails key) {
-        List<ICraftingMedium> mediums = this.craftingMethods.get(key);
+    public Iterable<ICraftingMedium> getMediums(final ICraftingPatternDetails key) {
+        var mediums = this.craftingMethods.get(key);
 
         if (mediums == null) {
-            mediums = ImmutableList.of();
+            return Collections.emptyList();
+        } else {
+            return Iterables.transform(mediums, CraftingMedium::medium);
         }
-
-        return mediums;
     }
 
     public boolean hasCpu(final ICraftingCPU cpu) {
@@ -434,5 +413,14 @@ public class CraftingService
 
     public GenericInterestManager<CraftingWatcher> getInterestManager() {
         return this.interestManager;
+    }
+
+    private record CraftingMedium(ICraftingMedium medium, int priority) implements Comparable<CraftingMedium> {
+
+        @Override
+        public int compareTo(CraftingMedium o) {
+            // Higher priority goes first.
+            return o.priority - this.priority;
+        }
     }
 }

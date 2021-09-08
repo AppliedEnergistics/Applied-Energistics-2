@@ -132,18 +132,4 @@ public interface ICraftingPatternDetails {
      * @return the crafted ( work bench ) item.
      */
     ItemStack getOutput(CraftingContainer craftingInv, Level level);
-
-    /**
-     * Get the priority of this pattern
-     *
-     * @return the priority of this pattern
-     */
-    int getPriority();
-
-    /**
-     * Set the priority the of this pattern.
-     *
-     * @param priority priority of pattern
-     */
-    void setPriority(int priority);
 }
