@@ -63,6 +63,7 @@ import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.inventories.ItemTransfer;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -705,7 +706,7 @@ public class DualityItemInterface
         return this.cm.getSetting(Settings.BLOCK) == YesNo.YES;
     }
 
-    private boolean acceptsItems(InternalInventory ad, CraftingContainer table) {
+    private boolean acceptsItems(ItemTransfer ad, CraftingContainer table) {
         for (int x = 0; x < table.getContainerSize(); x++) {
             final ItemStack is = table.getItem(x);
             if (is.isEmpty()) {
@@ -813,7 +814,7 @@ public class DualityItemInterface
 
             var adaptor = InternalInventory.wrapExternal(directedBlockEntity, direction.getOpposite());
             if (directedBlockEntity instanceof ICraftingMachine || adaptor != null) {
-                if (adaptor != null && adaptor.size() <= 0) {
+                if (adaptor != null && !adaptor.mayAllowTransfer()) {
                     continue;
                 }
 

@@ -20,10 +20,10 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 
-public interface InternalInventory extends Iterable<ItemStack> {
+public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
     @Nullable
-    static InternalInventory wrapExternal(@Nullable BlockEntity be, @Nonnull Direction side) {
+    static ItemTransfer wrapExternal(@Nullable BlockEntity be, @Nonnull Direction side) {
         if (be == null) {
             return null;
         }
@@ -34,7 +34,7 @@ public interface InternalInventory extends Iterable<ItemStack> {
     }
 
     @Nullable
-    static InternalInventory wrapExternal(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Direction side) {
+    static ItemTransfer wrapExternal(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Direction side) {
         return wrapExternal(level.getBlockEntity(pos), side);
     }
 
@@ -394,4 +394,10 @@ public interface InternalInventory extends Iterable<ItemStack> {
             return result;
         }
     }
+
+    @Override
+    default boolean mayAllowTransfer() {
+        return size() > 0;
+    }
+
 }

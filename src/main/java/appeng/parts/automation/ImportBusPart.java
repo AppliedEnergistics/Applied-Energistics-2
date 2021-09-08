@@ -31,7 +31,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
-import appeng.api.inventories.InternalInventory;
+import appeng.api.inventories.ItemTransfer;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -175,7 +175,7 @@ public class ImportBusPart extends SharedItemBusPart {
         return this.worked ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
     }
 
-    private boolean importStuff(InternalInventory srcInv, final IAEItemStack whatToImport,
+    private boolean importStuff(ItemTransfer srcInv, final IAEItemStack whatToImport,
             final IMEMonitor<IAEItemStack> inv, final IEnergySource energy, final FuzzyMode fzMode) {
         final int toSend = this.calculateMaximumAmountToImport(srcInv, whatToImport, inv, fzMode);
         final ItemStack newItems;
@@ -212,7 +212,7 @@ public class ImportBusPart extends SharedItemBusPart {
         return false;
     }
 
-    private int calculateMaximumAmountToImport(InternalInventory srcInv, final IAEItemStack whatToImport,
+    private int calculateMaximumAmountToImport(ItemTransfer srcInv, final IAEItemStack whatToImport,
             final IMEMonitor<IAEItemStack> inv, final FuzzyMode fzMode) {
         final int toSend = Math.min(this.itemsToSend, 64);
         final ItemStack itemStackToImport;

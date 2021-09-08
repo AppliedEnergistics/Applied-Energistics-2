@@ -31,6 +31,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.inventories.ItemTransfer;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -85,7 +86,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
         }
     }
 
-    protected InternalInventory getHandler() {
+    protected ItemTransfer getHandler() {
         final BlockEntity self = this.getHost().getBlockEntity();
         final BlockEntity target = Platform.getTickingBlockEntity(getLevel(),
                 self.getBlockPos().relative(this.getSide()));

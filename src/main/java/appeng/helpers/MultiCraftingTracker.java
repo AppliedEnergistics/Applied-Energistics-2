@@ -27,7 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.AEApi;
-import appeng.api.inventories.InternalInventory;
+import appeng.api.inventories.ItemTransfer;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -71,7 +71,7 @@ public class MultiCraftingTracker {
         }
     }
 
-    public boolean handleCrafting(final int x, final long itemToCraft, final IAEItemStack ais, InternalInventory d,
+    public boolean handleCrafting(final int x, final long itemToCraft, final IAEItemStack ais, ItemTransfer d,
             final Level level, final IGrid g, final ICraftingService cg, final IActionSource mySrc) {
         if (ais != null && d.simulateAdd(ais.createItemStack()).isEmpty()) {
             final Future<ICraftingJob> craftingJob = this.getJob(x);
