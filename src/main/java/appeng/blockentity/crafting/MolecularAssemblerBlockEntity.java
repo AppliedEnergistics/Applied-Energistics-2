@@ -24,6 +24,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.networking.crafting.IPatternDetails;
+import appeng.api.storage.data.IItemList;
+import appeng.crafting.pattern.CraftingPatternDetailsAdapter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -120,19 +123,17 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingContainer table,
-            final Direction where) {
+    public boolean pushPattern(final IPatternDetails patternDetails, final IItemList<IAEItemStack>[] table, final Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = ItemHandlerUtil.isEmpty(this.gridInv) && ItemHandlerUtil.isEmpty(this.patternInv);
 
-            if (isEmpty && patternDetails.isCraftable()) {
+            // Only accept our own crafting patterns!
+            if (isEmpty && patternDetails instanceof CraftingPatternDetailsAdapter adapter) {
                 this.forcePlan = true;
-                this.myPlan = patternDetails;
+                this.myPlan = adapter.getLegacy();
                 this.pushDirection = where;
 
-                for (int x = 0; x < table.getContainerSize(); x++) {
-                    this.gridInv.setStackInSlot(x, table.getItem(x));
-                }
+                this.fillGrid(table, adapter);
 
                 this.updateSleepiness();
                 this.saveChanges();
@@ -140,6 +141,18 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             }
         }
         return false;
+    }
+
+    private void fillGrid(IItemList<IAEItemStack>[] table, CraftingPatternDetailsAdapter adapter) {
+        for (int sparseIndex = 0; sparseIndex < 9; ++sparseIndex) {
+            int inputId = adapter.getInputIndexFromSparseIndex(sparseIndex);
+            if (inputId != -1) {
+                var list = table[inputId];
+                var stack = list.iterator().next();
+                this.gridInv.setStackInSlot(sparseIndex, stack.getDefinition().copy());
+                stack.decStackSize(1);
+            }
+        }
     }
 
     private void updateSleepiness() {

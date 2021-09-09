@@ -85,8 +85,8 @@ public class CraftingService
     private final Set<ICraftingProvider> craftingProviders = new HashSet<>();
     private final Map<IGridNode, ICraftingWatcher> craftingWatchers = new HashMap<>();
     private final IGrid grid;
-    private final Map<ICraftingPatternDetails, SortedMultiset<CraftingMedium>> craftingMethods = new HashMap<>();
-    private final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<>();
+    private final Map<IPatternDetails, SortedMultiset<CraftingMedium>> craftingMethods = new HashMap<>();
+    private final Map<IAEItemStack, ImmutableList<IPatternDetails>> craftableItems = new HashMap<>();
     private final Set<IAEItemStack> emitableItems = new HashSet<>();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
@@ -193,22 +193,19 @@ public class CraftingService
             provider.provideCrafting(this);
         }
 
-        final Map<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap<>();
+        final Map<IAEItemStack, Set<IPatternDetails>> tmpCraft = new HashMap<>();
         // Sort by highest priority (that of the highest priority crafting medium).
         var detailsComparator = Comparator.comparing(details -> -this.craftingMethods.get(details).firstEntry().getElement().priority);
         // new craftables!
-        for (final ICraftingPatternDetails details : this.craftingMethods.keySet()) {
-            for (IAEItemStack out : details.getOutputs()) {
-                out = out.copy();
-                out.reset();
-                out.setCraftable(true);
+        for (final IPatternDetails details : this.craftingMethods.keySet()) {
+            var primaryOutput = details.getPrimaryOutput();
+            primaryOutput = primaryOutput.copy().reset().setCraftable(true);
 
-                tmpCraft.computeIfAbsent(out, k -> new TreeSet<>(detailsComparator)).add(details);
-            }
+            tmpCraft.computeIfAbsent(primaryOutput, k -> new TreeSet<>(detailsComparator)).add(details);
         }
 
         // make them immutable
-        for (final Entry<IAEItemStack, Set<ICraftingPatternDetails>> e : tmpCraft.entrySet()) {
+        for (final Entry<IAEItemStack, Set<IPatternDetails>> e : tmpCraft.entrySet()) {
             this.craftableItems.put(e.getKey(), ImmutableList.copyOf(e.getValue()));
         }
 
@@ -248,9 +245,7 @@ public class CraftingService
     }
 
     @Override
-    public void addCraftingOption(final ICraftingMedium medium, final ICraftingPatternDetails api, int priority) {
-        Preconditions.checkArgument(api.getClass() == CraftingPatternDetails.class,
-                "Only supports internal ICraftingPatternDetails for now");
+    public void addCraftingOption(final ICraftingMedium medium, final IPatternDetails api, int priority) {
         this.craftingMethods.computeIfAbsent(api, pattern -> TreeMultiset.create()).add(new CraftingMedium(medium, priority));
     }
 
@@ -281,18 +276,18 @@ public class CraftingService
     }
 
     @Override
-    public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(final IAEItemStack whatToCraft,
-            final ICraftingPatternDetails details, final int slotIndex, final Level level) {
-        final ImmutableList<ICraftingPatternDetails> res = this.craftableItems.get(whatToCraft);
+    public ImmutableCollection<IPatternDetails> getCraftingFor(final IAEItemStack whatToCraft,
+            final IPatternDetails details, final int slotIndex, final Level level) {
+        final ImmutableList<IPatternDetails> res = this.craftableItems.get(whatToCraft);
 
         if (res == null) {
-            if (details != null && details.isCraftable()) {
+            if (details != null && details.isCrafting()) {
                 for (final IAEItemStack ais : this.craftableItems.keySet()) {
                     // TODO: check if OK
                     // TODO: this is slightly hacky, but fine as long as we only deal with itemstacks
                     if (ais.getItem() == whatToCraft.getItem()
                             && (!ais.getItem().canBeDepleted() || ais.getItemDamage() == whatToCraft.getItemDamage())
-                            && details.isValidItemForSlot(slotIndex, ais.asItemStackRepresentation(), level)) {
+                            && details.getInputs()[slotIndex].isValid(ais, level)) {
                         return this.craftableItems.get(ais);
                     }
                 }
@@ -397,7 +392,7 @@ public class CraftingService
         return requested;
     }
 
-    public Iterable<ICraftingMedium> getMediums(final ICraftingPatternDetails key) {
+    public Iterable<ICraftingMedium> getMediums(final IPatternDetails key) {
         var mediums = this.craftingMethods.get(key);
 
         if (mediums == null) {

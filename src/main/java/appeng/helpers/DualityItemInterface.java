@@ -28,6 +28,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.crafting.pattern.PatternDetailsAdapter;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.core.BlockPos;
@@ -117,7 +118,7 @@ public class DualityItemInterface
     private InterfaceInventory localInvHandler;
     private final UpgradeInventory upgrades;
     private boolean hasConfig = false;
-    private List<ICraftingPatternDetails> craftingList = null;
+    private List<IPatternDetails> craftingList = null;
     private List<ItemStack> waitingToSend = null;
     private IMEInventory<IAEItemStack> destination;
     private int isWorking = -1;
@@ -277,14 +278,15 @@ public class DualityItemInterface
         }
 
         if (this.craftingList != null) {
-            final Iterator<ICraftingPatternDetails> i = this.craftingList.iterator();
+            final Iterator<IPatternDetails> i = this.craftingList.iterator();
             while (i.hasNext()) {
-                final ICraftingPatternDetails details = i.next();
+                var details = i.next();
                 boolean found = false;
 
                 for (int x = 0; x < accountedFor.length; x++) {
                     final ItemStack is = this.patterns.getStackInSlot(x);
-                    if (details.getPattern() == is) {
+                    // TODO: used to be always false, and still is! ...
+                    if (details.getDefinition() == is) {
                         accountedFor[x] = found = true;
                     }
                 }
@@ -375,7 +377,7 @@ public class DualityItemInterface
     }
 
     private void addToCraftingList(final ItemStack is) {
-        final ICraftingPatternDetails details = AEApi.crafting().decodePattern(is,
+        var details = AEApi.crafting().decodePattern(is,
                 this.host.getBlockEntity().getLevel());
 
         if (details != null) {
@@ -383,7 +385,7 @@ public class DualityItemInterface
                 this.craftingList = new ArrayList<>();
             }
 
-            this.craftingList.add(details);
+            this.craftingList.add(PatternDetailsAdapter.adapt(details));
         }
     }
 
@@ -635,7 +637,7 @@ public class DualityItemInterface
     }
 
     @Override
-    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final CraftingContainer table) {
+    public boolean pushPattern(final IPatternDetails patternDetails, final IItemList<IAEItemStack>[] table) {
         if (this.hasItemsToSend() || !this.mainNode.isActive() || !this.craftingList.contains(patternDetails)) {
             return false;
         }
@@ -668,11 +670,9 @@ public class DualityItemInterface
                 }
 
                 if (this.acceptsItems(ad, table)) {
-                    for (int x = 0; x < table.getContainerSize(); x++) {
-                        final ItemStack is = table.getItem(x);
-                        if (!is.isEmpty()) {
-                            final ItemStack added = ad.addItems(is);
-                            this.addToSendList(added);
+                    for (IItemList<IAEItemStack> inputList : table) {
+                        for (IAEItemStack input : inputList) {
+                            this.addToSendList(input.createItemStack());
                         }
                     }
                     this.pushItemsOut(possibleDirections);
@@ -723,25 +723,21 @@ public class DualityItemInterface
         return this.cm.getSetting(Settings.BLOCK) == YesNo.YES;
     }
 
-    private boolean acceptsItems(final InventoryAdaptor ad, final CraftingContainer table) {
-        for (int x = 0; x < table.getContainerSize(); x++) {
-            final ItemStack is = table.getItem(x);
-            if (is.isEmpty()) {
-                continue;
-            }
-
-            if (!ad.simulateAdd(is.copy()).isEmpty()) {
-                return false;
+    private boolean acceptsItems(final InventoryAdaptor ad, IItemList<IAEItemStack>[] inputs) {
+        for (IItemList<IAEItemStack> inputList : inputs) {
+            for (IAEItemStack input : inputList) {
+                if (!ad.simulateAdd(input.createItemStack()).isEmpty()) {
+                    return false;
+                }
             }
         }
-
         return true;
     }
 
     @Override
     public void provideCrafting(final ICraftingProviderHelper craftingTracker) {
         if (this.mainNode.isActive() && this.craftingList != null) {
-            for (final ICraftingPatternDetails details : this.craftingList) {
+            for (var details : this.craftingList) {
                 craftingTracker.addCraftingOption(this, details, getPriority());
             }
         }

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -32,7 +33,7 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
      * Byte count.
      */
     private long bytes = 0;
-    private final Map<ICraftingPatternDetails, Long> crafts = new HashMap<>();
+    private final Map<IPatternDetails, Long> crafts = new HashMap<>();
     /**
      * Minimum amount of each item that needs to be extracted from the network. This is the maximum of (unmodified -
      * modifiable).
@@ -148,7 +149,7 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
     }
 
     @Override
-    public void addCrafting(ICraftingPatternDetails details, long crafts) {
+    public void addCrafting(IPatternDetails details, long crafts) {
         this.crafts.merge(details, crafts, Long::sum);
     }
 

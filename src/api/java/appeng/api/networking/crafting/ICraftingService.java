@@ -45,8 +45,8 @@ public interface ICraftingService extends IGridService {
      *
      * @return a collection of crafting patterns for the item in question.
      */
-    ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft,
-            ICraftingPatternDetails details, int slot, Level level);
+    ImmutableCollection<IPatternDetails> getCraftingFor(IAEItemStack whatToCraft,
+            IPatternDetails details, int slot, Level level);
 
     /**
      * Begin calculating a crafting job.

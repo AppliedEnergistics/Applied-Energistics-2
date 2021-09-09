@@ -1,6 +1,7 @@
 package appeng.crafting.inv;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEStack;
 
 /**
@@ -12,5 +13,5 @@ public interface ICraftingSimulationState<T extends IAEStack<T>> extends ICrafti
 
     void addBytes(long bytes);
 
-    void addCrafting(ICraftingPatternDetails details, long crafts);
+    void addCrafting(IPatternDetails details, long crafts);
 }

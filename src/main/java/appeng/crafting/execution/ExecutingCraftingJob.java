@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import appeng.api.networking.crafting.IPatternDetails;
+import appeng.crafting.pattern.PatternDetailsAdapter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
@@ -31,7 +33,7 @@ public class ExecutingCraftingJob {
     final CraftingLink link;
     final IAEItemStack finalOutput;
     final ListCraftingInventory<IAEItemStack> waitingFor;
-    final Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<>();
+    final Map<IPatternDetails, TaskProgress> tasks = new HashMap<>();
     final ElapsedTimeTracker timeTracker;
 
     ExecutingCraftingJob(ICraftingPlan plan, Consumer<IAEItemStack> postCraftingDifference, CraftingLink link) {
@@ -87,7 +89,7 @@ public class ExecutingCraftingJob {
                 if (details != null) {
                     final TaskProgress tp = new TaskProgress();
                     tp.value = item.getLong(NBT_CRAFTING_PROGRESS);
-                    this.tasks.put(details, tp);
+                    this.tasks.put(PatternDetailsAdapter.adapt(details), tp);
                 }
             }
         }
@@ -106,8 +108,8 @@ public class ExecutingCraftingJob {
         data.put(NBT_TIME_TRACKER, timeTracker.writeToNBT());
 
         final ListTag list = new ListTag();
-        for (final Map.Entry<ICraftingPatternDetails, TaskProgress> e : this.tasks.entrySet()) {
-            final CompoundTag item = this.writeItem(AEItemStack.fromItemStack(e.getKey().getPattern()));
+        for (var e : this.tasks.entrySet()) {
+            final CompoundTag item = this.writeItem(AEItemStack.fromItemStack(e.getKey().getDefinition()));
             item.putLong(NBT_CRAFTING_PROGRESS, e.getValue().value);
             list.add(item);
         }

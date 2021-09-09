@@ -23,6 +23,8 @@
 
 package appeng.api.networking.crafting;
 
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import net.minecraft.world.inventory.CraftingContainer;
 
 /**
@@ -36,11 +38,11 @@ public interface ICraftingMedium {
      * possible the output should be directed.
      *
      * @param patternDetails details
-     * @param table          crafting table
+     * @param inputHolder    the requested stacks, for each input slot of the pattern
      *
      * @return if the pattern was successfully pushed.
      */
-    boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingContainer table);
+    boolean pushPattern(IPatternDetails patternDetails, IItemList<IAEItemStack>[] inputHolder);
 
     /**
      * @return if this is false, the crafting engine will refuse to send new jobs to this medium.

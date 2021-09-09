@@ -4,6 +4,10 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import appeng.api.networking.crafting.IPatternDetails;
+import appeng.api.storage.data.IItemList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -65,192 +69,78 @@ public class CraftingCpuHelper {
         return tag;
     }
 
-    /**
-     * Check if the passed crafting inventory has enough inputs for the passed pattern.
-     * 
-     * @return True if the inventory has all the required inputs, false otherwise.
-     */
-    public static boolean hasInputs(ICraftingInventory<IAEItemStack> inv, ICraftingPatternDetails details) {
-        if (!details.isCraftable()) {
-            // Processing patterns are relatively easy
-            for (IAEItemStack input : details.getInputs()) {
-                final IAEItemStack ais = inv.extractItems(input.copy(), Actionable.SIMULATE);
-
-                if (ais == null || ais.getStackSize() < input.getStackSize()) {
-                    return false;
-                }
-            }
-        } else if (details.canSubstitute()) {
-            // When substitutions are allowed, we have to keep track of which items we've reserved
-            IAEItemStack[] sparseInputs = details.getSparseInputs();
-            Map<IAEItemStack, Integer> consumedCount = new HashMap<>();
-            for (int i = 0; i < sparseInputs.length; i++) {
-                List<IAEItemStack> substitutes = details.getSubstituteInputs(i);
-                if (substitutes.isEmpty()) {
-                    continue;
-                }
-
-                boolean found = false;
-                for (IAEItemStack substitute : substitutes) {
-                    for (IAEItemStack fuzz : inv.findFuzzyTemplates(substitute)) {
-                        int alreadyConsumed = consumedCount.getOrDefault(fuzz, 0);
-                        if (fuzz.getStackSize() - alreadyConsumed <= 0) {
-                            continue; // Already fully consumed by a previous slot of this recipe
-                        }
-
-                        fuzz = fuzz.copy();
-                        fuzz.setStackSize(1); // We're iterating over SPARSE inputs which means there's 1 of each needed
-                        final IAEItemStack ais = inv.extractItems(fuzz, Actionable.SIMULATE);
-
-                        if (ais != null && ais.getStackSize() > 0) {
-                            // Mark 1 of the stack as consumed
-                            consumedCount.merge(fuzz, 1, Integer::sum);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) {
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    return false;
-                }
-            }
-
-        } else {
-            // When no substitutions can occur, we can simply check that all items are accounted since
-            // each type of item should only occur once
-            for (IAEItemStack g : details.getInputs()) {
-                boolean found = false;
-
-                for (IAEItemStack fuzz : inv.findFuzzyTemplates(g)) {
-                    fuzz = fuzz.copy();
-                    fuzz.setStackSize(g.getStackSize());
-                    final IAEItemStack ais = inv.extractItems(fuzz, Actionable.SIMULATE);
-
-                    if (ais != null && ais.getStackSize() >= g.getStackSize()) {
-                        found = true;
-                        break;
-                    } else if (ais != null) {
-                        g = g.copy();
-                        g.decStackSize(ais.getStackSize());
-                    }
-                }
-
-                if (!found) {
-                    return false;
-                }
-            }
-
-        }
-
-        return true;
-    }
-
-    @Nullable
-    public static CraftingContainer extractPatternInputs(
-            ICraftingPatternDetails details,
-            ICraftingInventory<IAEItemStack> sourceInv,
+    public static boolean extractPatternPower(
+            IPatternDetails details,
             IEnergyService energyService,
-            Level level) {
-        final IAEItemStack[] input = details.getSparseInputs();
+            Actionable type) {
         // Consume power.
         double sum = 0;
 
-        for (final IAEItemStack anInput : input) {
+        for (var anInput : details.getInputs()) {
             if (anInput != null) {
-                sum += anInput.getStackSize();
+                sum += anInput.getMultiplier();
             }
         }
 
-        if (energyService.extractAEPower(sum, Actionable.MODULATE, PowerMultiplier.CONFIG) < sum - 0.01) {
-            // Not enough power.
-            return null;
-        }
+        return energyService.extractAEPower(sum, type, PowerMultiplier.CONFIG) >= sum - 0.01;
+    }
+
+    @Nullable
+    public static IItemList<IAEItemStack>[] extractPatternInputs(
+            IPatternDetails details,
+            ICraftingInventory<IAEItemStack> sourceInv,
+            IEnergyService energyService,
+            Level level) {
+        // Check energy first.
+        if (!extractPatternPower(details, energyService, Actionable.SIMULATE)) return null;
 
         // Extract inputs into the container.
-        CraftingContainer craftingContainer = new CraftingContainer(new NullMenu(), 3, 3);
-        boolean found = false;
+        var inputs = details.getInputs();
+        @SuppressWarnings("unchecked")
+        IItemList<IAEItemStack>[] inputHolder = new IItemList[inputs.length];
+        boolean found = true;
 
-        for (int x = 0; x < input.length; x++) {
-            if (input[x] != null) {
+        for (int x = 0; x < inputs.length; x++) {
+            IItemList<IAEItemStack> list = inputHolder[x] = StorageChannels.items().createList();
+            long remainingMultiplier = inputs[x].getMultiplier();
+            for (IAEItemStack template : getValidItemTemplates(sourceInv, inputs[x], level)) {
+                long extracted = extractTemplates(sourceInv, template, remainingMultiplier);
+                list.add(template.copyWithStackSize(template.getStackSize() * extracted));
+                remainingMultiplier -= extracted;
+                if (remainingMultiplier == 0) break;
+            }
+
+            if (remainingMultiplier > 0) {
                 found = false;
-
-                if (details.isCraftable()) {
-                    final Collection<IAEItemStack> itemList;
-
-                    if (details.canSubstitute()) {
-                        final List<IAEItemStack> substitutes = details.getSubstituteInputs(x);
-                        itemList = new ArrayList<>(substitutes.size());
-
-                        for (IAEItemStack stack : substitutes) {
-                            itemList.addAll(sourceInv.findFuzzyTemplates(stack));
-                        }
-                    } else {
-                        itemList = List.of(input[x]);
-                    }
-
-                    for (IAEItemStack fuzz : itemList) {
-                        fuzz = fuzz.copy();
-                        fuzz.setStackSize(input[x].getStackSize());
-
-                        if (details.isValidItemForSlot(x, fuzz.createItemStack(), level)) {
-                            final IAEItemStack ais = sourceInv.extractItems(fuzz, Actionable.MODULATE);
-                            final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
-
-                            if (!is.isEmpty()) {
-                                craftingContainer.setItem(x, is);
-                                found = true;
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    final IAEItemStack ais = sourceInv.extractItems(input[x].copy(), Actionable.MODULATE);
-                    final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
-
-                    if (!is.isEmpty()) {
-                        craftingContainer.setItem(x, is);
-                        if (is.getCount() == input[x].getStackSize()) {
-                            found = true;
-                            continue;
-                        }
-                    }
-                }
-
-                if (!found) {
-                    break;
-                }
+                break;
             }
         }
 
         // Failed to extract everything, put it back!
         if (!found) {
             // put stuff back..
-            reinjectPatternInputs(sourceInv, craftingContainer);
+            reinjectPatternInputs(sourceInv, inputHolder);
             return null;
         }
 
-        return craftingContainer;
+        return inputHolder;
     }
 
     public static void reinjectPatternInputs(ICraftingInventory<IAEItemStack> sourceInv,
-            CraftingContainer craftingContainer) {
-        for (int x = 0; x < craftingContainer.getContainerSize(); x++) {
-            final ItemStack is = craftingContainer.getItem(x);
-            if (!is.isEmpty()) {
-                sourceInv.injectItems(AEItemStack.fromItemStack(is), Actionable.MODULATE);
+            IItemList<IAEItemStack>[] inputHolder) {
+        for (var list : inputHolder) {
+            for (IAEItemStack stack : list) {
+                sourceInv.injectItems(stack, Actionable.MODULATE);
             }
         }
     }
 
-    public static Iterable<IAEItemStack> getExpectedOutputs(ICraftingPatternDetails details,
-            CraftingContainer craftingContainer, Level level) {
-        var outputs = new ArrayList<>(details.getOutputs());
+    public static Iterable<IAEItemStack> getExpectedOutputs(IPatternDetails details) {
+        var outputs = Arrays.asList(details.getOutputs());
 
-        if (details.isCraftable()) {
+        // TODO: fire event?
+        // TODO: add back container items.
+        /*if (details.isCraftable()) {
             CraftingEvent.fireAutoCraftingEvent(level, details, craftingContainer);
 
             for (int x = 0; x < craftingContainer.getContainerSize(); x++) {
@@ -259,9 +149,47 @@ public class CraftingCpuHelper {
                     outputs.add(AEItemStack.fromItemStack(output));
                 }
             }
-        }
+        }*/
 
         return outputs;
+    }
+
+    /**
+     * Get all stack templates that can be used for this pattern's input.
+     */
+    public static Iterable<IAEItemStack> getValidItemTemplates(ICraftingInventory<IAEItemStack> inv, IPatternDetails.IInput input, Level level) {
+        IAEItemStack[] possibleInputs = input.getPossibleInputs();
+        List<IAEItemStack> substitutes;
+        if (input.allowFuzzyMatch()) {
+            substitutes = new ArrayList<>(possibleInputs.length);
+
+            for (IAEItemStack stack : possibleInputs) {
+                substitutes.addAll(inv.findFuzzyTemplates(stack));
+            }
+        } else {
+            substitutes = Arrays.asList(possibleInputs);
+        }
+
+        return Iterables.filter(substitutes, stack -> input.isValid(stack, level));
+    }
+
+    /**
+     * Extract a whole number of templates, and return how many were extracted.
+     */
+    public static long extractTemplates(ICraftingInventory<IAEItemStack> inv, IAEItemStack template, long multiplier) {
+        long maxTotal = template.getStackSize() * multiplier;
+        // Extract as much as possible.
+        IAEItemStack extracted = inv.extractItems(template.copyWithStackSize(maxTotal), Actionable.SIMULATE);
+        if (extracted == null) return 0;
+        // Adjust to have a whole number of templates.
+        multiplier = extracted.getStackSize() / template.getStackSize();
+        maxTotal = template.getStackSize() * multiplier;
+        if (maxTotal == 0) return 0;
+        extracted = inv.extractItems(template.copyWithStackSize(maxTotal), Actionable.MODULATE);
+        if (extracted == null || extracted.getStackSize() != maxTotal) {
+            throw new IllegalStateException("Failed to correctly extract whole number. Invalid simulation!");
+        }
+        return multiplier;
     }
 
     private CraftingCpuHelper() {

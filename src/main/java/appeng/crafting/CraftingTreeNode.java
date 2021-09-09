@@ -18,17 +18,14 @@
 
 package appeng.crafting;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-import com.google.common.collect.Iterators;
+import appeng.api.networking.crafting.IPatternDetails;
+import appeng.crafting.execution.CraftingCpuHelper;
 
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
@@ -70,7 +67,7 @@ public class CraftingTreeNode {
             return; // if you can emit for something, you can't make it with patterns.
         }
 
-        for (final ICraftingPatternDetails details : cc.getCraftingFor(this.what,
+        for (var details : cc.getCraftingFor(this.what,
                 this.parent == null ? null : this.parent.details, slot, this.level)) {
             if (this.parent == null || this.parent.notRecursive(details)) {
                 this.nodes.add(new CraftingTreeProcess(cc, job, details, this));
@@ -81,19 +78,15 @@ public class CraftingTreeNode {
     /**
      * Return true if adding this pattern as a child would not cause recursion.
      */
-    boolean notRecursive(final ICraftingPatternDetails details) {
-        Collection<IAEItemStack> o = details.getOutputs();
-
-        for (final IAEItemStack i : o) {
-            if (i.equals(this.what)) {
+    boolean notRecursive(final IPatternDetails details) {
+        for (var output : details.getOutputs()) {
+            if (output.equals(this.what)) {
                 return false;
             }
         }
 
-        o = details.getInputs();
-
-        for (final IAEItemStack i : o) {
-            if (i.equals(this.what)) {
+        for (var input : details.getInputs()) {
+            if (input.getPossibleInputs()[0].equals(this.what)) {
                 return false;
             }
         }
@@ -122,11 +115,10 @@ public class CraftingTreeNode {
          * 1) COLLECT ITEMS FROM THE INVENTORY
          */
         // Templates: must copy before using!
-        Iterator<IAEItemStack> validItemTemplates = getValidItemTemplates(inv);
-
-        while (validItemTemplates.hasNext()) {
-            IAEItemStack toExtract = validItemTemplates.next().copyWithStackSize(requestedAmount);
+        for (var template : getValidItemTemplates(inv)) {
+            IAEItemStack toExtract = template.copyWithStackSize(requestedAmount * template.getStackSize());
             IAEItemStack available = inv.extractItems(toExtract, Actionable.MODULATE);
+            // TODO: ensure exact match if template.getStackSize() > 1 with CraftingCpuHelper#extractTemplates!
 
             if (available != null) {
                 inv.addBytes(available.getStackSize());
@@ -227,34 +219,9 @@ public class CraftingTreeNode {
      * 
      * @param inv Crafting inventory, used for fuzzy matching.
      */
-    private Iterator<IAEItemStack> getValidItemTemplates(ICraftingInventory<IAEItemStack> inv) {
-        if (this.getSlot() >= 0) {
-            if (this.parent == null || !this.parent.details.isCraftable()) {
-                throw new AssertionError("If the slot is not -1, the parent must be a crafting pattern.");
-            }
-
-            // Special case: if this is a crafting pattern and there is a parent, also try to use a substitute input.
-            final Collection<IAEItemStack> itemList; // All possible substitute inputs, and fuzzy matching stacks.
-
-            if (this.parent.details.canSubstitute()) {
-                final List<IAEItemStack> substitutes = this.parent.details.getSubstituteInputs(this.slot);
-                itemList = new ArrayList<>(substitutes.size());
-
-                for (IAEItemStack stack : substitutes) {
-                    itemList.addAll(inv.findFuzzyTemplates(stack));
-                }
-            } else {
-                itemList = List.of(this.what);
-            }
-
-            // Fuzzy might match too much: make sure the items are actually valid in the pattern.
-            return Iterators.filter(itemList.iterator(), stack -> {
-                return this.parent.details.isValidItemForSlot(this.getSlot(),
-                        stack.copy().setStackSize(1).createItemStack(), this.level);
-            });
-        } else {
-            return List.of(this.what).iterator();
-        }
+    private Iterable<IAEItemStack> getValidItemTemplates(ICraftingInventory<IAEItemStack> inv) {
+        if (this.slot == -1) return List.of(this.what);
+        return CraftingCpuHelper.getValidItemTemplates(inv, this.parent.details.getInputs()[slot], level);
     }
 
     long getTreeSize() {
@@ -269,9 +236,5 @@ public class CraftingTreeNode {
 
     IAEItemStack getStackWithSize(final long size) {
         return this.what.copyWithStackSize(size);
-    }
-
-    int getSlot() {
-        return this.slot;
     }
 }

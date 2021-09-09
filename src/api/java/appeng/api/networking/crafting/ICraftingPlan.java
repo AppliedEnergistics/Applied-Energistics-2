@@ -44,5 +44,5 @@ public interface ICraftingPlan {
      * Map of each pattern to the number of times it needs to be crafted. Can be used to retrieve the crafted items:
      * outputs * times.
      */
-    Map<ICraftingPatternDetails, Long> patternTimes();
+    Map<IPatternDetails, Long> patternTimes();
 }

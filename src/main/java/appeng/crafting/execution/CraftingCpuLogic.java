@@ -157,34 +157,27 @@ public class CraftingCpuLogic {
                 continue;
             }
 
-            ICraftingPatternDetails details = task.getKey();
-            // Check that we have enough items to craft this pattern.
-            if (!CraftingCpuHelper.hasInputs(inventory, details))
-                continue;
-
-            // Contains the inputs for the pattern, created lazily.
-            CraftingContainer craftingContainer = null;
+            IPatternDetails details = task.getKey();
+            // Contains the inputs for the pattern.
+            @Nullable
+            var craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService, level);
 
             // Try to push to each medium.
             for (ICraftingMedium medium : craftingService.getMediums(details)) {
+                if (craftingContainer == null)
+                    break;
                 if (medium.isBusy())
                     continue;
 
-                if (craftingContainer == null) {
-                    craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService,
-                            level);
-                }
-
-                if (craftingContainer != null && medium.pushPattern(details, craftingContainer)) {
+                if (medium.pushPattern(details, craftingContainer)) {
+                    CraftingCpuHelper.extractPatternPower(details, energyService, Actionable.MODULATE);
                     pushedPatterns++;
 
-                    for (IAEItemStack expectedOutput : CraftingCpuHelper.getExpectedOutputs(details, craftingContainer,
-                            level)) {
+                    for (IAEItemStack expectedOutput : CraftingCpuHelper.getExpectedOutputs(details)) {
                         job.waitingFor.injectItems(expectedOutput, Actionable.MODULATE);
                         postChange(expectedOutput);
                     }
 
-                    craftingContainer = null;
                     cluster.markDirty();
 
                     task.getValue().value--;
@@ -196,6 +189,9 @@ public class CraftingCpuLogic {
                     if (pushedPatterns == maxPatterns) {
                         break taskLoop;
                     }
+
+                    // Prepare next inputs.
+                    craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService, level);
                 }
             }
 
@@ -427,7 +423,7 @@ public class CraftingCpuLogic {
     public long getPendingOutputs(IAEItemStack template) {
         long count = 0;
         if (this.job != null) {
-            for (final Map.Entry<ICraftingPatternDetails, ExecutingCraftingJob.TaskProgress> t : job.tasks.entrySet()) {
+            for (final Map.Entry<IPatternDetails, ExecutingCraftingJob.TaskProgress> t : job.tasks.entrySet()) {
                 for (IAEItemStack output : t.getKey().getOutputs()) {
                     if (output.equals(template)) {
                         count += output.getStackSize() * t.getValue().value;
@@ -449,7 +445,7 @@ public class CraftingCpuLogic {
             for (IAEItemStack stack : job.waitingFor.list) {
                 out.add(stack);
             }
-            for (final Map.Entry<ICraftingPatternDetails, ExecutingCraftingJob.TaskProgress> t : job.tasks.entrySet()) {
+            for (final Map.Entry<IPatternDetails, ExecutingCraftingJob.TaskProgress> t : job.tasks.entrySet()) {
                 for (IAEItemStack output : t.getKey().getOutputs()) {
                     out.add(output.copyWithStackSize(output.getStackSize() * t.getValue().value));
                 }

@@ -39,7 +39,7 @@ public interface ICraftingProviderHelper {
      * 
      * This will only accept instances created by {@link ICraftingHelper#decodePattern(ItemStack, Level)}
      */
-    void addCraftingOption(ICraftingMedium medium, ICraftingPatternDetails api, int priority);
+    void addCraftingOption(ICraftingMedium medium, IPatternDetails api, int priority);
 
     /**
      * Set an item can Emitable

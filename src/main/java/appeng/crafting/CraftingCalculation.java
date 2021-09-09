@@ -53,7 +53,6 @@ public class CraftingCalculation {
     private final CraftingTreeNode tree;
     private final IAEItemStack output;
     private boolean simulate = false;
-    private long bytes = 0;
     final IActionSource actionSrc;
     private final ICraftingCallback callback;
     private boolean running = false;
@@ -236,7 +235,8 @@ public class CraftingCalculation {
                 actionSource = "[unknown source]";
             }
 
-            AELog.crafting(LOG_CRAFTING_JOB, type, actionSource, itemToOutput, this.bytes, elapsedTime);
+            // TODO: bytes
+            AELog.crafting(LOG_CRAFTING_JOB, type, actionSource, itemToOutput, 0, elapsedTime);
         }
     }
 }

@@ -22,7 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.world.item.ItemStack;
+import appeng.api.networking.crafting.IPatternDetails;
+import appeng.crafting.pattern.PatternDetailsAdapter;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -38,7 +39,7 @@ import appeng.util.Platform;
 public class CraftingTreeProcess {
 
     private final CraftingTreeNode parent;
-    final ICraftingPatternDetails details;
+    final IPatternDetails details;
     private final CraftingCalculation job;
     private final Map<CraftingTreeNode, Long> nodes = new HashMap<>();
     boolean possible = true;
@@ -50,53 +51,25 @@ public class CraftingTreeProcess {
     private boolean limitQty;
 
     public CraftingTreeProcess(final ICraftingService cc, final CraftingCalculation job,
-            final ICraftingPatternDetails details,
+            final IPatternDetails details,
             final CraftingTreeNode craftingTreeNode) {
         this.parent = craftingTreeNode;
         this.details = details;
         this.job = job;
 
-        if (details.isCraftable()) {
-            final IAEItemStack[] list = details.getSparseInputs();
+        updateLimitQty();
 
-            updateLimitQty(true);
-
-            if (this.containerItems) {
-                // One node per SPARSE input!
-                for (int x = 0; x < list.length; x++) {
-                    final IAEItemStack part = list[x];
-                    if (part != null) {
-                        this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, x),
-                                part.getStackSize());
-                    }
-                }
-            } else {
-                // Here we combine identical slots into one node: one node per (non sparse) input.
-                for (final IAEItemStack part : details.getInputs()) {
-                    for (int x = 0; x < list.length; x++) {
-                        final IAEItemStack comparePart = list[x];
-                        if (part != null && part.equals(comparePart)) {
-                            // use the first slot...
-                            this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, x),
-                                    part.getStackSize());
-                            break;
-                        }
-                    }
-                }
-            }
-        } else {
-            updateLimitQty(false);
-
-            for (final IAEItemStack part : details.getInputs()) {
-                this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, -1), part.getStackSize());
-            }
+        final IPatternDetails.IInput[] inputs = this.details.getInputs();
+        for (int x = 0; x < inputs.length; ++x) {
+            var input = inputs[x];
+            this.nodes.put(new CraftingTreeNode(cc, job, input.getPossibleInputs()[0].copy(), this, x), input.getMultiplier());
         }
     }
 
     /**
      * @see CraftingTreeNode#notRecursive
      */
-    boolean notRecursive(final ICraftingPatternDetails details) {
+    boolean notRecursive(final IPatternDetails details) {
         return this.parent == null || this.parent.notRecursive(details);
     }
 
@@ -104,14 +77,16 @@ public class CraftingTreeProcess {
      * Check if this pattern has one of its outputs as input. If that's the case, update {@code limitQty} to make sure
      * we simulate this pattern one by one. Also check for container items.
      */
-    private void updateLimitQty(boolean checkContainerItems) {
-        for (final IAEItemStack part : details.getInputs()) {
-            final ItemStack g = part.createItemStack();
-
+    private void updateLimitQty() {
+        // TODO: consider checking substitute inputs as well?
+        for (final IPatternDetails.IInput input : details.getInputs()) {
+            IAEItemStack primaryInput = input.getPossibleInputs()[0];
             boolean isAnInput = false;
-            for (final IAEItemStack a : details.getOutputs()) {
-                if (!g.isEmpty() && a != null && a.equals(g)) {
+
+            for (final IAEItemStack output : details.getOutputs()) {
+                if (output.equals(primaryInput)) {
                     isAnInput = true;
+                    break;
                 }
             }
 
@@ -119,7 +94,7 @@ public class CraftingTreeProcess {
                 this.limitQty = true;
             }
 
-            if (checkContainerItems && g.getItem().hasContainerItem(g)) {
+            if (input.getContainerItem(primaryInput) != null) {
                 this.limitQty = this.containerItems = true;
             }
         }
@@ -142,6 +117,9 @@ public class CraftingTreeProcess {
             final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize() * times);
 
             if (this.containerItems) {
+                // TODO: use the pattern for container items
+                // TODO: shouldn't this be moved out of the loop? otherwise container items may be added too early.
+                // TODO: possible solution: pass list to store container items
                 final IAEItemStack o = Platform.getContainerItem(stack);
                 if (o != null) {
                     inv.addBytes(1);
