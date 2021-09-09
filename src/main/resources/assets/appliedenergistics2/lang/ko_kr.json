@@ -150,7 +150,7 @@
   "commands.ae2.ChunkLoggerOn": "청크 로깅이 켜졌습니다.",
   "commands.ae2.Supporters": "응용 에너지학 모드의 지원자 목록을 공개합니다.",
   "commands.ae2.permissions": "이 명령어를 실행할 수 있는 적절한 권한이 없습니다.",
-  "commands.ae2.usage": "응용 에너지학 모드에서 제공되는 명령어는 다음과 같습니다. - 목록은 /ae2 list를 사용하고, 명령어 도움말은 /ae2 help _____를 사 용하세요.",
+  "commands.ae2.usage": "응용 에너지학 모드에서 제공되는 명령어는 다음과 같습니다. - 목록은 /ae2 list를 사용하고, 명령어 도움말은 /ae2 help _____를 사용하세요.",
   "gui.appliedenergistics2.And": "와(과)",
   "gui.appliedenergistics2.Automatic": "자동",
   "gui.appliedenergistics2.Black": "검정색",
