@@ -1,31 +1,35 @@
 package appeng.api.networking.crafting;
 
-import appeng.api.storage.data.IAEItemStack;
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
+import appeng.api.storage.data.IAEItemStack;
 
 public interface IPatternDetails {
-	ItemStack getDefinition();
+    ItemStack getDefinition();
 
-	boolean isCrafting();
+    boolean isCrafting();
 
-	IInput[] getInputs();
+    IInput[] getInputs();
 
-	default IAEItemStack getPrimaryOutput() {
-		return getOutputs()[0];
-	}
+    default IAEItemStack getPrimaryOutput() {
+        return getOutputs()[0];
+    }
 
-	IAEItemStack[] getOutputs();
+    IAEItemStack[] getOutputs();
 
-	interface IInput {
-		IAEItemStack[] getPossibleInputs();
-		long getMultiplier();
-		boolean isValid(IAEItemStack input, Level level);
-		boolean allowFuzzyMatch();
+    interface IInput {
+        IAEItemStack[] getPossibleInputs();
 
-		@Nullable
-		IAEItemStack getContainerItem(IAEItemStack template);
-	}
+        long getMultiplier();
+
+        boolean isValid(IAEItemStack input, Level level);
+
+        boolean allowFuzzyMatch();
+
+        @Nullable
+        IAEItemStack getContainerItem(IAEItemStack template);
+    }
 }

@@ -26,8 +26,8 @@ public interface ICraftingPlan {
     boolean simulation();
 
     /**
-     * True there were multiple paths in the crafting tree,
-     * i.e. at least one item had multiple patterns that could produce it.
+     * True there were multiple paths in the crafting tree, i.e. at least one item had multiple patterns that could
+     * produce it.
      */
     boolean multiplePaths();
 

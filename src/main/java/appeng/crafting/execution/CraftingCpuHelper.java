@@ -4,31 +4,24 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
-import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.data.IItemList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
+
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingPlan;
+import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.crafting.CraftingEvent;
+import appeng.api.storage.data.IItemList;
 import appeng.crafting.inv.ICraftingInventory;
 import appeng.crafting.inv.ListCraftingInventory;
-import appeng.menu.NullMenu;
-import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 /**
  * Helper functions used by the CPU.
@@ -92,7 +85,8 @@ public class CraftingCpuHelper {
             IEnergyService energyService,
             Level level) {
         // Check energy first.
-        if (!extractPatternPower(details, energyService, Actionable.SIMULATE)) return null;
+        if (!extractPatternPower(details, energyService, Actionable.SIMULATE))
+            return null;
 
         // Extract inputs into the container.
         var inputs = details.getInputs();
@@ -107,7 +101,8 @@ public class CraftingCpuHelper {
                 long extracted = extractTemplates(sourceInv, template, remainingMultiplier);
                 list.add(template.copyWithStackSize(template.getStackSize() * extracted));
                 remainingMultiplier -= extracted;
-                if (remainingMultiplier == 0) break;
+                if (remainingMultiplier == 0)
+                    break;
             }
 
             if (remainingMultiplier > 0) {
@@ -140,16 +135,13 @@ public class CraftingCpuHelper {
 
         // TODO: fire event?
         // TODO: add back container items.
-        /*if (details.isCraftable()) {
-            CraftingEvent.fireAutoCraftingEvent(level, details, craftingContainer);
-
-            for (int x = 0; x < craftingContainer.getContainerSize(); x++) {
-                final ItemStack output = Platform.getContainerItem(craftingContainer.getItem(x));
-                if (!output.isEmpty()) {
-                    outputs.add(AEItemStack.fromItemStack(output));
-                }
-            }
-        }*/
+        /*
+         * if (details.isCraftable()) { CraftingEvent.fireAutoCraftingEvent(level, details, craftingContainer);
+         * 
+         * for (int x = 0; x < craftingContainer.getContainerSize(); x++) { final ItemStack output =
+         * Platform.getContainerItem(craftingContainer.getItem(x)); if (!output.isEmpty()) {
+         * outputs.add(AEItemStack.fromItemStack(output)); } } }
+         */
 
         return outputs;
     }
@@ -157,7 +149,8 @@ public class CraftingCpuHelper {
     /**
      * Get all stack templates that can be used for this pattern's input.
      */
-    public static Iterable<IAEItemStack> getValidItemTemplates(ICraftingInventory<IAEItemStack> inv, IPatternDetails.IInput input, Level level) {
+    public static Iterable<IAEItemStack> getValidItemTemplates(ICraftingInventory<IAEItemStack> inv,
+            IPatternDetails.IInput input, Level level) {
         IAEItemStack[] possibleInputs = input.getPossibleInputs();
         List<IAEItemStack> substitutes;
         if (input.allowFuzzyMatch()) {
@@ -183,11 +176,13 @@ public class CraftingCpuHelper {
         long maxTotal = template.getStackSize() * multiplier;
         // Extract as much as possible.
         IAEItemStack extracted = inv.extractItems(template.copyWithStackSize(maxTotal), Actionable.SIMULATE);
-        if (extracted == null) return 0;
+        if (extracted == null)
+            return 0;
         // Adjust to have a whole number of templates.
         multiplier = extracted.getStackSize() / template.getStackSize();
         maxTotal = template.getStackSize() * multiplier;
-        if (maxTotal == 0) return 0;
+        if (maxTotal == 0)
+            return 0;
         extracted = inv.extractItems(template.copyWithStackSize(maxTotal), Actionable.MODULATE);
         if (extracted == null || extracted.getStackSize() != maxTotal) {
             throw new IllegalStateException("Failed to correctly extract whole number. Invalid simulation!");

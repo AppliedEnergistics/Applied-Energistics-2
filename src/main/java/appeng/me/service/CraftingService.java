@@ -25,7 +25,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 
 import net.minecraft.world.level.Level;
@@ -51,7 +50,6 @@ import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
 import appeng.crafting.CraftingWatcher;
-import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
@@ -195,7 +193,8 @@ public class CraftingService
 
         final Map<IAEItemStack, Set<IPatternDetails>> tmpCraft = new HashMap<>();
         // Sort by highest priority (that of the highest priority crafting medium).
-        var detailsComparator = Comparator.comparing(details -> -this.craftingMethods.get(details).firstEntry().getElement().priority);
+        var detailsComparator = Comparator
+                .comparing(details -> -this.craftingMethods.get(details).firstEntry().getElement().priority);
         // new craftables!
         for (final IPatternDetails details : this.craftingMethods.keySet()) {
             var primaryOutput = details.getPrimaryOutput();
@@ -246,7 +245,8 @@ public class CraftingService
 
     @Override
     public void addCraftingOption(final ICraftingMedium medium, final IPatternDetails api, int priority) {
-        this.craftingMethods.computeIfAbsent(api, pattern -> TreeMultiset.create()).add(new CraftingMedium(medium, priority));
+        this.craftingMethods.computeIfAbsent(api, pattern -> TreeMultiset.create())
+                .add(new CraftingMedium(medium, priority));
     }
 
     @Override

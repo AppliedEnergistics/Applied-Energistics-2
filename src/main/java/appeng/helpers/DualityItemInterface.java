@@ -28,7 +28,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.crafting.pattern.PatternDetailsAdapter;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.core.BlockPos;
@@ -39,7 +38,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -84,6 +82,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.crafting.pattern.PatternDetailsAdapter;
 import appeng.me.storage.ItemHandlerAdapter;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.StackUpgradeInventory;

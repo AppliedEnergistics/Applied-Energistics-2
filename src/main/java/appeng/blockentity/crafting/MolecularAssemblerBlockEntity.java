@@ -24,9 +24,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.data.IItemList;
-import appeng.crafting.pattern.CraftingPatternDetailsAdapter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -54,10 +51,12 @@ import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
@@ -68,6 +67,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
+import appeng.crafting.pattern.CraftingPatternDetailsAdapter;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.NullMenu;
 import appeng.parts.automation.DefinitionUpgradeInventory;
@@ -123,7 +123,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public boolean pushPattern(final IPatternDetails patternDetails, final IItemList<IAEItemStack>[] table, final Direction where) {
+    public boolean pushPattern(final IPatternDetails patternDetails, final IItemList<IAEItemStack>[] table,
+            final Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = ItemHandlerUtil.isEmpty(this.gridInv) && ItemHandlerUtil.isEmpty(this.patternInv);
 

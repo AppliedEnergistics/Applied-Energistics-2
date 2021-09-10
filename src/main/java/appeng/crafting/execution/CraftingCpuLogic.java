@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -191,7 +190,8 @@ public class CraftingCpuLogic {
                     }
 
                     // Prepare next inputs.
-                    craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService, level);
+                    craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService,
+                            level);
                 }
             }
 

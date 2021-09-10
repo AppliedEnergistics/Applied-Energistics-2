@@ -27,7 +27,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.AEApi;
-import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;

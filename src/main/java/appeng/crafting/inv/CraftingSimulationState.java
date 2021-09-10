@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEItemStack;

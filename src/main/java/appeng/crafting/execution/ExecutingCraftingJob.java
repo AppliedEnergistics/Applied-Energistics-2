@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import appeng.api.networking.crafting.IPatternDetails;
-import appeng.crafting.pattern.PatternDetailsAdapter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
@@ -15,10 +13,12 @@ import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingPlan;
+import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.inv.ListCraftingInventory;
+import appeng.crafting.pattern.PatternDetailsAdapter;
 import appeng.me.service.CraftingService;
 import appeng.util.item.AEItemStack;
 

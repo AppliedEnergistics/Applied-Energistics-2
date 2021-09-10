@@ -22,16 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.api.config.Actionable;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.StorageChannels;
-import appeng.crafting.pattern.PatternDetailsAdapter;
-
-import appeng.api.config.Actionable;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.crafting.inv.CraftingSimulationState;
-import appeng.util.Platform;
 
 /**
  * A crafting tree process is what represents a pattern in the crafting process. It has a parent node (its output), and
@@ -63,7 +59,8 @@ public class CraftingTreeProcess {
         final IPatternDetails.IInput[] inputs = this.details.getInputs();
         for (int x = 0; x < inputs.length; ++x) {
             var input = inputs[x];
-            this.nodes.put(new CraftingTreeNode(cc, job, input.getPossibleInputs()[0].copy(), this, x), input.getMultiplier());
+            this.nodes.put(new CraftingTreeNode(cc, job, input.getPossibleInputs()[0].copy(), this, x),
+                    input.getMultiplier());
         }
     }
 

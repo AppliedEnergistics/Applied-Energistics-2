@@ -23,13 +23,11 @@
 
 package appeng.api.implementations.blockentities;
 
+import net.minecraft.core.Direction;
+
 import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.CraftingContainer;
-
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 
 public interface ICraftingMachine {
 

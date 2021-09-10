@@ -20,21 +20,20 @@ package appeng.crafting;
 
 import java.util.*;
 
-import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.data.IItemList;
-import appeng.crafting.execution.CraftingCpuHelper;
+import javax.annotation.Nullable;
 
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
+import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
 import appeng.crafting.inv.ICraftingInventory;
-
-import javax.annotation.Nullable;
 
 /**
  * A crafting tree node is what represents a single requested stack in the crafting process. It can either be the
@@ -53,9 +52,8 @@ public class CraftingTreeNode {
     private final CraftingTreeProcess parent;
     private final Level level;
     /**
-     * "Template" of the item this node is making.
-     * For top-level node: the count is always 1.
-     * For child nodes: the count is that of the template of the corresponding input.
+     * "Template" of the item this node is making. For top-level node: the count is always 1. For child nodes: the count
+     * is that of the template of the corresponding input.
      */
     private final IAEItemStack what;
     // what are the crafting patterns for this?
@@ -111,12 +109,14 @@ public class CraftingTreeNode {
      * Request items. Will always succeed or throw an exception.
      * 
      * @param inv             Current simulated inventory.
-     * @param requestedAmount How many items. The raw amount for top-level requests, or the number of inputs for requests that have a parent.
+     * @param requestedAmount How many items. The raw amount for top-level requests, or the number of inputs for
+     *                        requests that have a parent.
      * @param containerItems  A list where produced container items are written if it's not null.
      * @throws CraftBranchFailure If the request failed.
      */
     // TODO: get rid of the return, it's only used to inject container items back into the inventory.
-    void request(final CraftingSimulationState<IAEItemStack> inv, long requestedAmount, @Nullable IItemList<IAEItemStack> containerItems)
+    void request(final CraftingSimulationState<IAEItemStack> inv, long requestedAmount,
+            @Nullable IItemList<IAEItemStack> containerItems)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
@@ -196,7 +196,8 @@ public class CraftingTreeNode {
                         pro.request(child, 1);
 
                         // by now we have succeeded, as request throws an exception in case of failure
-                        final IAEItemStack available = child.extractItems(this.what.copyWithStackSize(totalRequestedItems), Actionable.MODULATE);
+                        final IAEItemStack available = child
+                                .extractItems(this.what.copyWithStackSize(totalRequestedItems), Actionable.MODULATE);
 
                         if (available != null) {
                             child.applyDiff(inv);
@@ -226,7 +227,8 @@ public class CraftingTreeNode {
     }
 
     // Only item stacks are supported.
-    private void addContainerItems(IAEItemStack template, long multiplier, @Nullable IItemList<IAEItemStack> outputList) {
+    private void addContainerItems(IAEItemStack template, long multiplier,
+            @Nullable IItemList<IAEItemStack> outputList) {
         if (outputList != null) {
             var containerItem = parentInput.getContainerItem(template);
             if (containerItem != null) {
@@ -242,7 +244,8 @@ public class CraftingTreeNode {
      * @param inv Crafting inventory, used for fuzzy matching.
      */
     private Iterable<IAEItemStack> getValidItemTemplates(ICraftingInventory<IAEItemStack> inv) {
-        if (this.parentInput == null) return List.of(this.what.copyWithStackSize(1));
+        if (this.parentInput == null)
+            return List.of(this.what.copyWithStackSize(1));
         return CraftingCpuHelper.getValidItemTemplates(inv, this.parentInput, level);
     }
 

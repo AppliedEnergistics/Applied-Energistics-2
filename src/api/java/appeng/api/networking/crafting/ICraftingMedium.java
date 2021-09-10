@@ -25,7 +25,6 @@ package appeng.api.networking.crafting;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import net.minecraft.world.inventory.CraftingContainer;
 
 /**
  * A place to send Items for crafting purposes, registered by a {@link ICraftingProvider} with

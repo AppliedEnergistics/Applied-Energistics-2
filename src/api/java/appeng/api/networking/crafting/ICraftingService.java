@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.world.level.Level;
 
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
