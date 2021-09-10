@@ -164,7 +164,10 @@ public class CraftingCpuHelper {
             substitutes = new ArrayList<>(possibleInputs.length);
 
             for (IAEItemStack stack : possibleInputs) {
-                substitutes.addAll(inv.findFuzzyTemplates(stack));
+                for (IAEItemStack fuzz : inv.findFuzzyTemplates(stack)) {
+                    // Set the correct amount, it has to match that of the template!
+                    substitutes.add(fuzz.copyWithStackSize(stack.getStackSize()));
+                }
             }
         } else {
             substitutes = Arrays.asList(possibleInputs);

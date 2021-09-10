@@ -68,18 +68,18 @@ public class CraftingCalculation {
         this.actionSrc = actionSrc;
 
         this.callback = callback;
-        final ICraftingService cc = grid.getService(ICraftingService.class);
-        final IStorageService sg = grid.getService(IStorageService.class);
+        final ICraftingService cc = grid.getCraftingService();
+        final IStorageService sg = grid.getStorageService();
         this.networkInv = new NetworkCraftingSimulationState<>(sg.getInventory(StorageChannels.items()), actionSrc);
 
-        this.tree = new CraftingTreeNode(cc, this, what, null, -1);
+        this.tree = new CraftingTreeNode(cc, this, what.copyWithStackSize(1), null, -1);
     }
 
     void addMissing(IAEItemStack stack) {
         missing.add(stack);
     }
 
-    public CraftingPlan run() throws Exception {
+    public CraftingPlan run() {
         try {
             TickHandler.instance().registerCraftingSimulation(this.level, this);
             this.handlePausing();
@@ -92,7 +92,7 @@ public class CraftingCalculation {
             }
         } catch (Exception ex) {
             AELog.info(ex, "Exception during crafting calculation.");
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             this.finish();
         }
@@ -105,12 +105,8 @@ public class CraftingCalculation {
                 StorageChannels.items(), networkInv);
         craftingInventory.ignore(this.output);
 
-        // final MECraftingInventory craftingInventory = new MECraftingInventory(this.original, true, false);
-        // craftingInventory.ignore(this.output);
-
-        // this.availableCheck = new MECraftingInventory(this.original, false, false);
         // Do the crafting. Throws in case of failure.
-        this.tree.request(craftingInventory, this.output.getStackSize());
+        this.tree.request(craftingInventory, this.output.getStackSize(), null);
         // Add bytes for the tree size.
         craftingInventory.addBytes(this.tree.getTreeSize() * 8);
 
@@ -185,11 +181,11 @@ public class CraftingCalculation {
     /**
      * returns true if this needs more simulation.
      *
-     * @param milli milliseconds of simulation
+     * @param micros microseconds of simulation
      * @return true if this needs more simulation
      */
-    public boolean simulateFor(final int milli) {
-        this.time = milli;
+    public boolean simulateFor(final int micros) {
+        this.time = micros;
 
         synchronized (this.monitor) {
             if (this.done) {

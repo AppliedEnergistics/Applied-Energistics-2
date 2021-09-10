@@ -100,11 +100,6 @@ public class CraftAmountMenu extends AEBaseMenu {
         this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
 
-    public IGrid getGrid() {
-        final IActionHost h = (IActionHost) this.getTarget();
-        return h.getActionableNode().getGrid();
-    }
-
     public Level getLevel() {
         return this.getPlayerInventory().player.level;
     }
@@ -150,8 +145,7 @@ public class CraftAmountMenu extends AEBaseMenu {
             Future<ICraftingPlan> futureJob = null;
             try {
                 final ICraftingService cg = g.getService(ICraftingService.class);
-                futureJob = cg.beginCraftingJob(getLevel(), getGrid(), getActionSrc(),
-                        this.itemToCreate, null);
+                futureJob = cg.beginCraftingJob(getLevel(), getActionSrc(), this.itemToCreate, null);
 
                 final MenuLocator locator = getLocator();
                 if (locator != null) {

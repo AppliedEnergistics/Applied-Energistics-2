@@ -111,6 +111,10 @@ public interface IAEStack<T extends IAEStack<T>> {
         return setStackSize(getStackSize() - i);
     }
 
+    default T multStackSize(long i) {
+        return setStackSize(getStackSize() * i);
+    }
+
     /**
      * adds items to the requestable
      *

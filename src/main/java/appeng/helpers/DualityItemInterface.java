@@ -579,7 +579,7 @@ public class DualityItemInterface
         var grid = mainNode.getGrid();
         if (grid != null && upgrades.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && itemStack != null) {
             return this.craftingTracker.handleCrafting(x, itemStack.getStackSize(), itemStack, d,
-                    this.host.getBlockEntity().getLevel(), grid,
+                    this.host.getBlockEntity().getLevel(),
                     grid.getCraftingService(),
                     this.actionSource);
         }
@@ -672,7 +672,8 @@ public class DualityItemInterface
                 if (this.acceptsItems(ad, table)) {
                     for (IItemList<IAEItemStack> inputList : table) {
                         for (IAEItemStack input : inputList) {
-                            this.addToSendList(input.createItemStack());
+                            ItemStack leftover = ad.addItems(input.createItemStack());
+                            this.addToSendList(leftover);
                         }
                     }
                     this.pushItemsOut(possibleDirections);

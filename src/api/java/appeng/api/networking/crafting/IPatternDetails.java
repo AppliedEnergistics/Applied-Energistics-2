@@ -25,7 +25,7 @@ public interface IPatternDetails {
 		boolean isValid(IAEItemStack input, Level level);
 		boolean allowFuzzyMatch();
 
-		// TODO: how is parameter count handled?
-		@Nullable IAEItemStack getContainerItem(IAEItemStack input);
+		@Nullable
+		IAEItemStack getContainerItem(IAEItemStack template);
 	}
 }

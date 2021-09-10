@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import appeng.api.networking.crafting.IPatternDetails;
+import appeng.api.storage.StorageChannels;
 import appeng.crafting.pattern.PatternDetailsAdapter;
 
 import appeng.api.config.Actionable;
@@ -100,35 +101,30 @@ public class CraftingTreeProcess {
         }
     }
 
-    long getTimes(final long remaining, final long stackSize) {
-        if (this.limitQty) {
-            return 1;
-        }
-        return remaining / stackSize + (remaining % stackSize != 0 ? 1 : 0);
+    boolean limitsQuantity() {
+        return this.limitQty;
     }
 
     void request(final CraftingSimulationState<IAEItemStack> inv, final long times)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
+        var containerItems = this.containerItems ? StorageChannels.items().createList() : null;
+
         // request and remove inputs...
         for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {
-            final IAEItemStack item = entry.getKey().getStackWithSize(entry.getValue());
-            final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize() * times);
-
-            if (this.containerItems) {
-                // TODO: use the pattern for container items
-                // TODO: shouldn't this be moved out of the loop? otherwise container items may be added too early.
-                // TODO: possible solution: pass list to store container items
-                final IAEItemStack o = Platform.getContainerItem(stack);
-                if (o != null) {
-                    inv.addBytes(1);
-                    inv.injectItems(o, Actionable.MODULATE);
-                }
-            }
+            entry.getKey().request(inv, entry.getValue() * times, containerItems);
         }
 
         // by now we must have succeeded, otherwise an exception would have been thrown by request() above
+
+        // add container items
+        if (containerItems != null) {
+            for (var stack : containerItems) {
+                inv.injectItems(stack, Actionable.MODULATE);
+                inv.addBytes(stack.getStackSize());
+            }
+        }
 
         // add crafting results..
         for (final IAEItemStack out : this.details.getOutputs()) {
@@ -151,18 +147,17 @@ public class CraftingTreeProcess {
         return tot;
     }
 
-    IAEItemStack getAmountCrafted(IAEItemStack what2) {
+    IAEItemStack getMatchingOutput(IAEItemStack requestedItem) {
         for (final IAEItemStack is : this.details.getOutputs()) {
-            if (is.equals(what2)) {
-                return what2.copyWithStackSize(is.getStackSize());
+            if (is.equals(requestedItem)) {
+                return is.copy();
             }
         }
 
         // more fuzzy!
         for (final IAEItemStack is : this.details.getOutputs()) {
-            if (is.getItem() == what2.getItem()
-                    && (!is.getItem().canBeDepleted() || is.getItemDamage() == what2.getItemDamage())) {
-                // TODO: why doesn't this respect the stack size? in case there are multiple matching fuzzy outputs?
+            if (is.getItem() == requestedItem.getItem()
+                    && (!is.getItem().canBeDepleted() || is.getItemDamage() == requestedItem.getItemDamage())) {
                 return is.copy();
             }
         }

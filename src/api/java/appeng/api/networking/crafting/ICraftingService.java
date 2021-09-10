@@ -52,7 +52,6 @@ public interface ICraftingService extends IGridService {
      * Begin calculating a crafting job.
      *
      * @param level     crafting level
-     * @param grid      network
      * @param actionSrc source
      * @param craftWhat result
      * @param callback  callback -- optional
@@ -60,7 +59,7 @@ public interface ICraftingService extends IGridService {
      * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan} do not wait
      *         on this, your be waiting forever.
      */
-    Future<ICraftingPlan> beginCraftingJob(Level level, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
+    Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEItemStack craftWhat,
             ICraftingCallback callback);
 
     /**
