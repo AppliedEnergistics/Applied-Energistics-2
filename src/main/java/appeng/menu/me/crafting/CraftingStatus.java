@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEItemStack;
 import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.crafting.execution.ElapsedTimeTracker;
 import appeng.menu.me.common.IncrementalUpdateHelper;
@@ -120,25 +119,25 @@ public class CraftingStatus {
         return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build());
     }
 
-    public static CraftingStatus create(IncrementalUpdateHelper<IAEItemStack> changes,
+    public static CraftingStatus create(IncrementalUpdateHelper<?> changes,
             CraftingCpuLogic logic) {
 
         boolean full = changes.isFullUpdate();
 
         ImmutableList.Builder<CraftingStatusEntry> newEntries = ImmutableList.builder();
-        for (IAEItemStack stack : changes) {
+        for (var stack : changes) {
             long storedCount = logic.getStored(stack);
             long activeCount = logic.getWaitingFor(stack);
             long pendingCount = logic.getPendingOutputs(stack);
 
-            ItemStack item = stack.getDefinition();
-            if (!full && changes.getSerial(stack) != null) {
+            ItemStack item = stack.asItemStackRepresentation();
+            if (!full && changes.getSerial(cast(stack)) != null) {
                 // The item was already sent to the client, so we can skip the item stack
                 item = ItemStack.EMPTY;
             }
 
             newEntries.add(new CraftingStatusEntry(
-                    changes.getOrAssignSerial(stack),
+                    changes.getOrAssignSerial(cast(stack)),
                     item,
                     storedCount,
                     activeCount,
@@ -155,6 +154,11 @@ public class CraftingStatus {
                 remainingItems,
                 startItems,
                 newEntries.build());
+    }
+
+    // TODO: ugly
+    public static <T, U> U cast(T t) {
+        return (U) t;
     }
 
 }

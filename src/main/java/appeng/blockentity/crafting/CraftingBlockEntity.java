@@ -235,7 +235,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     public void breakCluster() {
         if (this.cluster != null) {
             this.cluster.cancel();
-            final ListCraftingInventory<IAEItemStack> inv = this.cluster.craftingLogic.getInventory();
+            final ListCraftingInventory inv = this.cluster.craftingLogic.getInventory();
 
             final LinkedList<BlockPos> places = new LinkedList<>();
 
@@ -261,19 +261,22 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                         this.cluster + " does not contain any kind of blocks, which were destroyed.");
             }
 
-            for (IAEItemStack ais : inv.list) {
-                ais = ais.copy();
-                ais.setStackSize(ais.getDefinition().getMaxStackSize());
-                while (true) {
-                    final IAEItemStack g = inv.extractItems(ais.copy(), Actionable.MODULATE);
-                    if (g == null) {
-                        break;
+            for (var stack : inv.list) {
+                // Drop items, void other types of stacks (fluids...).
+                if (stack instanceof IAEItemStack ais) {
+                    ais = ais.copy();
+                    ais.setStackSize(ais.getDefinition().getMaxStackSize());
+                    while (true) {
+                        final IAEItemStack g = (IAEItemStack) inv.extractItems(ais.copy(), Actionable.MODULATE);
+                        if (g == null) {
+                            break;
+                        }
+
+                        final BlockPos pos = places.poll();
+                        places.add(pos);
+
+                        Platform.spawnDrops(this.level, pos, Collections.singletonList(g.createItemStack()));
                     }
-
-                    final BlockPos pos = places.poll();
-                    places.add(pos);
-
-                    Platform.spawnDrops(this.level, pos, Collections.singletonList(g.createItemStack()));
                 }
             }
 

@@ -29,10 +29,8 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.MixedItemList;
 
 /**
  * A crafting plan intended to be sent to the client.
@@ -98,19 +96,19 @@ public class CraftingPlanSummary {
      * @param actionSource The action source used to determine the amount of items already stored.
      */
     public static CraftingPlanSummary fromJob(IGrid grid, IActionSource actionSource, ICraftingPlan job) {
-        final IItemList<IAEItemStack> plan = StorageChannels.items().createList();
+        final MixedItemList plan = new MixedItemList();
         // TODO: clean this up, for now the point is to match the old behavior
-        for (IAEItemStack used : job.usedItems()) {
+        for (var used : job.usedItems()) {
             plan.addStorage(used);
         }
-        for (IAEItemStack missing : job.missingItems()) {
+        for (var missing : job.missingItems()) {
             plan.addStorage(missing);
         }
-        for (IAEItemStack emitted : job.emittedItems()) {
+        for (var emitted : job.emittedItems()) {
             plan.addRequestable(emitted.copy().setCountRequestable(emitted.getStackSize()));
         }
         for (var entry : job.patternTimes().entrySet()) {
-            for (IAEItemStack out : entry.getKey().getOutputs()) {
+            for (var out : entry.getKey().getOutputs()) {
                 plan.addRequestable(out.copy().setCountRequestable(out.getStackSize() * entry.getValue()));
             }
         }
@@ -118,14 +116,13 @@ public class CraftingPlanSummary {
         ImmutableList.Builder<CraftingPlanSummaryEntry> entries = ImmutableList.builder();
 
         final IStorageService sg = grid.getService(IStorageService.class);
-        final IMEInventory<IAEItemStack> items = sg
-                .getInventory(StorageChannels.items());
 
-        for (final IAEItemStack out : plan) {
+        for (var out : plan) {
             long missingAmount;
             long storedAmount;
             if (job.simulation()) {
-                IAEItemStack available = items.extractItems(out.copy(), Actionable.SIMULATE, actionSource);
+                IMEMonitor networkInventory = sg.getInventory(out.getChannel());
+                var available = networkInventory.extractItems(out.copy(), Actionable.SIMULATE, actionSource);
 
                 storedAmount = available == null ? 0 : available.getStackSize();
                 missingAmount = out.getStackSize() - storedAmount;

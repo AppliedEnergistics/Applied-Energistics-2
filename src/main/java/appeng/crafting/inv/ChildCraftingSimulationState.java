@@ -3,24 +3,22 @@ package appeng.crafting.inv;
 import java.util.Collection;
 
 import appeng.api.config.Actionable;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
-public class ChildCraftingSimulationState<T extends IAEStack<T>> extends CraftingSimulationState<T> {
-    private final ICraftingInventory<T> parent;
+public class ChildCraftingSimulationState extends CraftingSimulationState {
+    private final ICraftingInventory parent;
 
-    public ChildCraftingSimulationState(IStorageChannel<T> chan, ICraftingInventory<T> parent) {
-        super(chan);
+    public ChildCraftingSimulationState(ICraftingInventory parent) {
         this.parent = parent;
     }
 
     @Override
-    protected T simulateExtractParent(T input) {
+    protected IAEStack<?> simulateExtractParent(IAEStack<?> input) {
         return parent.extractItems(input, Actionable.SIMULATE);
     }
 
     @Override
-    protected Collection<T> findFuzzyParent(T input) {
+    protected Collection<IAEStack<?>> findFuzzyParent(IAEStack<?> input) {
         return parent.findFuzzyTemplates(input);
     }
 }

@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.ICraftingHelper;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 
 /**
  * Passed to a ICraftingProvider as a interface to manipulate the available crafting jobs.
@@ -44,5 +44,5 @@ public interface ICraftingProviderHelper {
     /**
      * Set an item can Emitable
      */
-    void setEmitable(IAEItemStack what);
+    void setEmitable(IAEStack<?> what);
 }

@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 
 public interface IPatternDetails {
     ItemStack getDefinition();
@@ -14,22 +14,22 @@ public interface IPatternDetails {
 
     IInput[] getInputs();
 
-    default IAEItemStack getPrimaryOutput() {
+    default IAEStack<?> getPrimaryOutput() {
         return getOutputs()[0];
     }
 
-    IAEItemStack[] getOutputs();
+    IAEStack<?>[] getOutputs();
 
     interface IInput {
-        IAEItemStack[] getPossibleInputs();
+        IAEStack<?>[] getPossibleInputs();
 
         long getMultiplier();
 
-        boolean isValid(IAEItemStack input, Level level);
+        boolean isValid(IAEStack<?> input, Level level);
 
         boolean allowFuzzyMatch();
 
         @Nullable
-        IAEItemStack getContainerItem(IAEItemStack template);
+        IAEStack<?> getContainerItem(IAEStack<?> template);
     }
 }

@@ -18,12 +18,7 @@
 
 package appeng.helpers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,19 +64,18 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.*;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.MixedItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.crafting.execution.GenericStackHelper;
 import appeng.crafting.pattern.PatternDetailsAdapter;
 import appeng.me.storage.ItemHandlerAdapter;
 import appeng.me.storage.NullInventory;
@@ -118,7 +112,7 @@ public class DualityItemInterface
     private final UpgradeInventory upgrades;
     private boolean hasConfig = false;
     private List<IPatternDetails> craftingList = null;
-    private List<ItemStack> waitingToSend = null;
+    private List<IAEStack<?>> waitingToSend = null;
     private IMEInventory<IAEItemStack> destination;
     private int isWorking = -1;
 
@@ -187,10 +181,8 @@ public class DualityItemInterface
 
         final ListTag waitingToSend = new ListTag();
         if (this.waitingToSend != null) {
-            for (final ItemStack is : this.waitingToSend) {
-                final CompoundTag item = new CompoundTag();
-                is.save(item);
-                waitingToSend.add(item);
+            for (var stack : this.waitingToSend) {
+                waitingToSend.add(GenericStackHelper.writeGenericStack(stack));
             }
         }
         data.put("waitingToSend", waitingToSend);
@@ -204,8 +196,7 @@ public class DualityItemInterface
             for (int x = 0; x < waitingList.size(); x++) {
                 final CompoundTag c = waitingList.getCompound(x);
                 if (c != null) {
-                    final ItemStack is = ItemStack.of(c);
-                    this.addToSendList(is);
+                    this.addToSendList(GenericStackHelper.readGenericStack(c));
                 }
             }
         }
@@ -220,8 +211,8 @@ public class DualityItemInterface
         this.updateCraftingList();
     }
 
-    private void addToSendList(final ItemStack is) {
-        if (is.isEmpty()) {
+    private void addToSendList(final IAEStack<?> is) {
+        if (is == null || is.getStackSize() == 0) {
             return;
         }
 
@@ -435,34 +426,25 @@ public class DualityItemInterface
         final BlockEntity blockEntity = this.host.getBlockEntity();
         final Level level = blockEntity.getLevel();
 
-        final Iterator<ItemStack> i = this.waitingToSend.iterator();
+        final Iterator<IAEStack<?>> i = this.waitingToSend.iterator();
         while (i.hasNext()) {
-            ItemStack whatToSend = i.next();
+            var whatToSend = i.next();
 
             for (final Direction s : possibleDirections) {
-                final BlockEntity te = level.getBlockEntity(blockEntity.getBlockPos().relative(s));
-                if (te == null) {
-                    continue;
-                }
+                var adjPos = blockEntity.getBlockPos().relative(s);
+                final BlockEntity te = level.getBlockEntity(adjPos);
+                IForeignInventory foreignInventory = whatToSend.getChannel().getForeignInventory(level, adjPos, te,
+                        s.getOpposite());
+                if (foreignInventory != null) {
+                    var leftover = foreignInventory.injectItems(whatToSend, Actionable.MODULATE);
 
-                final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
-                if (ad != null) {
-                    final ItemStack result = ad.addItems(whatToSend);
-
-                    if (result.isEmpty()) {
-                        whatToSend = ItemStack.EMPTY;
-                    } else {
-                        whatToSend.setCount(whatToSend.getCount() - (whatToSend.getCount() - result.getCount()));
-                    }
-
-                    if (whatToSend.isEmpty()) {
+                    if (leftover == null || leftover.getStackSize() == 0) {
+                        i.remove();
                         break;
+                    } else {
+                        whatToSend.setStackSize(leftover.getStackSize());
                     }
                 }
-            }
-
-            if (whatToSend.isEmpty()) {
-                i.remove();
             }
         }
 
@@ -635,8 +617,29 @@ public class DualityItemInterface
         this.craftingTracker.cancel();
     }
 
+    private Map<IStorageChannel<?>, IForeignInventory<?>> getAdapterSet(Level level, BlockPos pos,
+            @Nullable BlockEntity blockEntity, Direction side) {
+        Map<IStorageChannel<?>, IForeignInventory<?>> adapters = new HashMap<>();
+        for (var chan : StorageChannels.getAll()) {
+            var foreignInventory = chan.getForeignInventory(level, pos, blockEntity, side);
+            if (foreignInventory != null) {
+                adapters.put(chan, foreignInventory);
+            }
+        }
+        return adapters;
+    }
+
+    private boolean isAtLeastOneAdapterBusy(Map<IStorageChannel<?>, IForeignInventory<?>> adapters) {
+        for (var foreignInv : adapters.values()) {
+            if (foreignInv.isBusy()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
-    public boolean pushPattern(final IPatternDetails patternDetails, final IItemList<IAEItemStack>[] table) {
+    public boolean pushPattern(final IPatternDetails patternDetails, final MixedItemList[] table) {
         if (this.hasItemsToSend() || !this.mainNode.isActive() || !this.craftingList.contains(patternDetails)) {
             return false;
         }
@@ -646,7 +649,8 @@ public class DualityItemInterface
 
         final EnumSet<Direction> possibleDirections = this.host.getTargets();
         for (final Direction s : possibleDirections) {
-            var te = level.getBlockEntity(blockEntity.getBlockPos().relative(s));
+            var adjPos = blockEntity.getBlockPos().relative(s);
+            var te = level.getBlockEntity(adjPos);
             if (te instanceof IItemInterfaceHost interfaceHost) {
                 if (interfaceHost.getInterfaceDuality().sameGrid(this.mainNode.getGrid())) {
                     continue;
@@ -662,22 +666,20 @@ public class DualityItemInterface
                 }
             }
 
-            final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
-            if (ad != null) {
-                if (this.isBlocking() && !ad.simulateRemove(1, ItemStack.EMPTY, null).isEmpty()) {
-                    continue;
-                }
+            var adapters = getAdapterSet(level, adjPos, te, s.getOpposite());
+            if (this.isBlocking() && isAtLeastOneAdapterBusy(adapters)) {
+                continue;
+            }
 
-                if (this.acceptsItems(ad, table)) {
-                    for (IItemList<IAEItemStack> inputList : table) {
-                        for (IAEItemStack input : inputList) {
-                            ItemStack leftover = ad.addItems(input.createItemStack());
-                            this.addToSendList(leftover);
-                        }
+            if (this.acceptsItems(adapters, table)) {
+                for (var inputList : table) {
+                    for (var input : inputList) {
+                        IForeignInventory foreignInventory = adapters.get(input.getChannel());
+                        this.addToSendList(foreignInventory.injectItems(input, Actionable.MODULATE));
                     }
-                    this.pushItemsOut(possibleDirections);
-                    return true;
                 }
+                this.pushItemsOut(possibleDirections);
+                return true;
             }
         }
 
@@ -723,10 +725,14 @@ public class DualityItemInterface
         return this.cm.getSetting(Settings.BLOCK) == YesNo.YES;
     }
 
-    private boolean acceptsItems(final InventoryAdaptor ad, IItemList<IAEItemStack>[] inputs) {
-        for (IItemList<IAEItemStack> inputList : inputs) {
-            for (IAEItemStack input : inputList) {
-                if (!ad.simulateAdd(input.createItemStack()).isEmpty()) {
+    private boolean acceptsItems(Map<IStorageChannel<?>, IForeignInventory<?>> ad, MixedItemList[] inputs) {
+        for (var inputList : inputs) {
+            for (var input : inputList) {
+                IForeignInventory foreignInv = ad.get(input.getChannel());
+                if (foreignInv == null)
+                    return false;
+                var leftover = foreignInv.injectItems(input, Actionable.SIMULATE);
+                if (leftover != null && leftover.getStackSize() == input.getStackSize()) {
                     return false;
                 }
             }
@@ -745,9 +751,10 @@ public class DualityItemInterface
 
     public void addDrops(final List<ItemStack> drops) {
         if (this.waitingToSend != null) {
-            for (final ItemStack is : this.waitingToSend) {
-                if (!is.isEmpty()) {
-                    drops.add(is);
+            for (var stack : this.waitingToSend) {
+                if (stack instanceof IAEItemStack itemStack) {
+                    // TODO: check max stack size?
+                    drops.add(itemStack.createItemStack());
                 }
             }
         }
@@ -777,8 +784,10 @@ public class DualityItemInterface
     }
 
     @Override
-    public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack acquired,
+    public IAEStack<?> injectCraftedItems(final ICraftingLink link, final IAEStack<?> stack,
             final Actionable mode) {
+        // Cast is safe: we know we only requested items.
+        var acquired = (IAEItemStack) stack;
         final int slot = this.craftingTracker.getSlot(link);
 
         if (acquired != null && slot >= 0 && slot <= this.requireWork.length) {
@@ -793,7 +802,7 @@ public class DualityItemInterface
             }
         }
 
-        return acquired;
+        return stack;
     }
 
     @Override

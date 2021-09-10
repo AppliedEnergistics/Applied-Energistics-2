@@ -9,20 +9,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 
 public class ProcessingPatternBuilder {
-    private final IAEItemStack[] outputs;
+    private final IAEStack<?>[] outputs;
     private final List<IPatternDetails.IInput> inputs = new ArrayList<>();
 
-    public ProcessingPatternBuilder(IAEItemStack... outputs) {
+    public ProcessingPatternBuilder(IAEStack<?>... outputs) {
         this.outputs = outputs;
     }
 
-    public ProcessingPatternBuilder addPreciseInput(long multiplier, IAEItemStack... possibleInputs) {
+    public ProcessingPatternBuilder addPreciseInput(long multiplier, IAEStack<?>... possibleInputs) {
         inputs.add(new IPatternDetails.IInput() {
             @Override
-            public IAEItemStack[] getPossibleInputs() {
+            public IAEStack<?>[] getPossibleInputs() {
                 return possibleInputs;
             }
 
@@ -32,7 +32,7 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public boolean isValid(IAEItemStack input, Level level) {
+            public boolean isValid(IAEStack<?> input, Level level) {
                 for (var possibleInput : possibleInputs) {
                     if (possibleInput.equals(input)) {
                         return true;
@@ -48,7 +48,7 @@ public class ProcessingPatternBuilder {
 
             @Nullable
             @Override
-            public IAEItemStack getContainerItem(IAEItemStack template) {
+            public IAEStack<?> getContainerItem(IAEStack<?> template) {
                 return null;
             }
         });
@@ -73,7 +73,7 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public IAEItemStack[] getOutputs() {
+            public IAEStack<?>[] getOutputs() {
                 return outputs;
             }
         };

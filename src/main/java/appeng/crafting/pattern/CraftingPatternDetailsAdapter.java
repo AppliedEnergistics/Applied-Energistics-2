@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.util.Platform;
 
 public class CraftingPatternDetailsAdapter implements IPatternDetails {
@@ -121,7 +122,7 @@ public class CraftingPatternDetailsAdapter implements IPatternDetails {
         }
 
         @Override
-        public IAEItemStack[] getPossibleInputs() {
+        public IAEStack<?>[] getPossibleInputs() {
             return possibleInputs;
         }
 
@@ -131,8 +132,8 @@ public class CraftingPatternDetailsAdapter implements IPatternDetails {
         }
 
         @Override
-        public boolean isValid(IAEItemStack input, Level level) {
-            return legacy.isValidItemForSlot(slot, input.getDefinition(), level);
+        public boolean isValid(IAEStack<?> stack, Level level) {
+            return stack instanceof IAEItemStack input && legacy.isValidItemForSlot(slot, input.getDefinition(), level);
         }
 
         @Override
@@ -142,8 +143,8 @@ public class CraftingPatternDetailsAdapter implements IPatternDetails {
 
         @Nullable
         @Override
-        public IAEItemStack getContainerItem(IAEItemStack input) {
-            return Platform.getContainerItem(input);
+        public IAEStack<?> getContainerItem(IAEStack<?> input) {
+            return Platform.getContainerItem((IAEItemStack) input);
         }
     }
 }

@@ -9,24 +9,24 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 
 /**
- * Simplified inventory with unbounded capacity. Used for crafting, both for the simulation and for the CPU's own
- * inventory.
+ * Simplified inventory with unbounded capacity and support for multiple IAEStacks. Used for crafting, both for the
+ * simulation and for the CPU's own inventory.
  */
-public interface ICraftingInventory<T extends IAEStack<T>> {
+public interface ICraftingInventory {
     /**
      * Inject items. Can never fail.
      */
-    void injectItems(T input, Actionable mode);
+    void injectItems(IAEStack<?> input, Actionable mode);
 
     /**
      * Extract items.
      */
     @Nullable
-    T extractItems(T input, Actionable mode);
+    IAEStack<?> extractItems(IAEStack<?> input, Actionable mode);
 
     /**
      * Return a list of templates that match the input with {@link FuzzyMode#IGNORE_ALL}. Never edit the return value,
      * and use {@link #extractItems} to query the exact amount that is available.
      */
-    Collection<T> findFuzzyTemplates(T input);
+    Collection<IAEStack<?>> findFuzzyTemplates(IAEStack<?> input);
 }

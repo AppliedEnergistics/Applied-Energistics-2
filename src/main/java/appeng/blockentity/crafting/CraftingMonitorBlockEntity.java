@@ -36,6 +36,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.util.item.AEItemStack;
@@ -111,18 +112,22 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         return true;
     }
 
-    public void setJob(final IAEItemStack is) {
-        if (is == null != (this.dspPlay == null)) {
-            this.dspPlay = is == null ? null : is.copy();
-            this.markForUpdate();
-        } else if (is != null && this.dspPlay != null && is.getStackSize() != this.dspPlay.getStackSize()) {
-            this.dspPlay = is.copy();
-            this.markForUpdate();
+    public void setJob(final IAEStack<?> genericStack) {
+        // TODO: fix for generic stacks
+        if (genericStack == null || genericStack instanceof IAEItemStack) {
+            IAEItemStack is = (IAEItemStack) genericStack;
+            if (is == null != (this.dspPlay == null)) {
+                this.dspPlay = is == null ? null : is.copy();
+                this.markForUpdate();
+            } else if (is != null && this.dspPlay != null && is.getStackSize() != this.dspPlay.getStackSize()) {
+                this.dspPlay = is.copy();
+                this.markForUpdate();
+            }
         }
     }
 
     public IAEItemStack getJobProgress() {
-        return this.dspPlay; // AEItemStack.create( new ItemStack( Items.DIAMOND, 64 ) );
+        return this.dspPlay;
     }
 
     @Override

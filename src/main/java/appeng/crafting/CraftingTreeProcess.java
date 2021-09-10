@@ -25,8 +25,8 @@ import java.util.Map.Entry;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.MixedItemList;
 import appeng.crafting.inv.CraftingSimulationState;
 
 /**
@@ -78,10 +78,10 @@ public class CraftingTreeProcess {
     private void updateLimitQty() {
         // TODO: consider checking substitute inputs as well?
         for (final IPatternDetails.IInput input : details.getInputs()) {
-            IAEItemStack primaryInput = input.getPossibleInputs()[0];
+            var primaryInput = input.getPossibleInputs()[0];
             boolean isAnInput = false;
 
-            for (final IAEItemStack output : details.getOutputs()) {
+            for (var output : details.getOutputs()) {
                 if (output.equals(primaryInput)) {
                     isAnInput = true;
                     break;
@@ -102,11 +102,11 @@ public class CraftingTreeProcess {
         return this.limitQty;
     }
 
-    void request(final CraftingSimulationState<IAEItemStack> inv, final long times)
+    void request(final CraftingSimulationState inv, final long times)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
-        var containerItems = this.containerItems ? StorageChannels.items().createList() : null;
+        var containerItems = this.containerItems ? new MixedItemList() : null;
 
         // request and remove inputs...
         for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {
@@ -124,8 +124,8 @@ public class CraftingTreeProcess {
         }
 
         // add crafting results..
-        for (final IAEItemStack out : this.details.getOutputs()) {
-            final IAEItemStack o = out.copy();
+        for (var out : this.details.getOutputs()) {
+            var o = out.copy();
             o.setStackSize(o.getStackSize() * times);
             inv.injectItems(o, Actionable.MODULATE);
         }
@@ -144,20 +144,21 @@ public class CraftingTreeProcess {
         return tot;
     }
 
-    IAEItemStack getMatchingOutput(IAEItemStack requestedItem) {
-        for (final IAEItemStack is : this.details.getOutputs()) {
+    IAEStack<?> getMatchingOutput(IAEStack<?> requestedItem) {
+        for (var is : this.details.getOutputs()) {
             if (is.equals(requestedItem)) {
                 return is.copy();
             }
         }
 
+        // TODO: restore this for items
         // more fuzzy!
-        for (final IAEItemStack is : this.details.getOutputs()) {
-            if (is.getItem() == requestedItem.getItem()
-                    && (!is.getItem().canBeDepleted() || is.getItemDamage() == requestedItem.getItemDamage())) {
-                return is.copy();
-            }
-        }
+        // for (final IAEItemStack is : this.details.getOutputs()) {
+        // if (is.getItem() == requestedItem.getItem()
+        // && (!is.getItem().canBeDepleted() || is.getItemDamage() == requestedItem.getItemDamage())) {
+        // return is.copy();
+        // }
+        // }
 
         throw new IllegalStateException("Crafting Tree construction failed.");
     }

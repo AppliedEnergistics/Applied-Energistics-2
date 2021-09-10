@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 
 public class ProcessingPatternDetailsAdapter implements IPatternDetails {
     private final Input[] inputs;
@@ -78,7 +79,7 @@ public class ProcessingPatternDetailsAdapter implements IPatternDetails {
         }
 
         @Override
-        public boolean isValid(IAEItemStack input, Level level) {
+        public boolean isValid(IAEStack<?> input, Level level) {
             return true;
         }
 
@@ -89,7 +90,7 @@ public class ProcessingPatternDetailsAdapter implements IPatternDetails {
 
         @Nullable
         @Override
-        public IAEItemStack getContainerItem(IAEItemStack input) {
+        public IAEStack<?> getContainerItem(IAEStack<?> input) {
             return null;
         }
     }

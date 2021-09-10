@@ -4,29 +4,22 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.MixedItemList;
+import appeng.crafting.execution.GenericStackHelper;
 
-public class ListCraftingInventory<T extends IAEStack<T>> implements ICraftingInventory<T> {
-    public final IItemList<T> list;
-    private final IStorageChannel<T> chan;
+public class ListCraftingInventory implements ICraftingInventory {
+    public final MixedItemList list = new MixedItemList();
 
-    public ListCraftingInventory(IStorageChannel<T> chan) {
-        this.list = chan.createList();
-        this.chan = chan;
-    }
-
-    public void postChange(T template, long delta) {
+    public void postChange(IAEStack<?> template, long delta) {
     }
 
     @Override
-    public void injectItems(T input, Actionable mode) {
+    public void injectItems(IAEStack<?> input, Actionable mode) {
         if (mode == Actionable.MODULATE) {
             list.addStorage(input);
             postChange(input, -input.getStackSize());
@@ -35,8 +28,8 @@ public class ListCraftingInventory<T extends IAEStack<T>> implements ICraftingIn
 
     @Nullable
     @Override
-    public T extractItems(T input, Actionable mode) {
-        T precise = list.findPrecise(input);
+    public IAEStack<?> extractItems(IAEStack<?> input, Actionable mode) {
+        IAEStack<?> precise = list.findPrecise(input);
         if (precise == null)
             return null;
         long extracted = Math.min(precise.getStackSize(), input.getStackSize());
@@ -48,12 +41,12 @@ public class ListCraftingInventory<T extends IAEStack<T>> implements ICraftingIn
     }
 
     @Override
-    public Collection<T> findFuzzyTemplates(T input) {
+    public Collection<IAEStack<?>> findFuzzyTemplates(IAEStack<?> input) {
         return list.findFuzzy(input, FuzzyMode.IGNORE_ALL);
     }
 
     public void clear() {
-        for (T stack : list) {
+        for (IAEStack<?> stack : list) {
             postChange(stack, stack.getStackSize());
         }
         list.resetStatus();
@@ -64,7 +57,7 @@ public class ListCraftingInventory<T extends IAEStack<T>> implements ICraftingIn
 
         if (data != null) {
             for (int i = 0; i < data.size(); ++i) {
-                injectItems(chan.createFromNBT(data.getCompound(i)), Actionable.MODULATE);
+                injectItems(GenericStackHelper.readGenericStack(data.getCompound(i)), Actionable.MODULATE);
             }
         }
     }
@@ -72,10 +65,8 @@ public class ListCraftingInventory<T extends IAEStack<T>> implements ICraftingIn
     public ListTag writeToNBT() {
         ListTag tag = new ListTag();
 
-        for (T stack : list) {
-            CompoundTag t = new CompoundTag();
-            stack.writeToNBT(t);
-            tag.add(t);
+        for (IAEStack<?> stack : list) {
+            tag.add(GenericStackHelper.writeGenericStack(stack));
         }
 
         return tag;

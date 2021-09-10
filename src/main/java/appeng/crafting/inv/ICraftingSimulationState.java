@@ -7,8 +7,8 @@ import appeng.api.storage.data.IAEStack;
  * Extended version of {@link ICraftingInventory} to keep track of other simulation state that is not directly related
  * to inventory contents.
  */
-public interface ICraftingSimulationState<T extends IAEStack<T>> extends ICraftingInventory<T> {
-    void emitItems(T what);
+public interface ICraftingSimulationState extends ICraftingInventory {
+    void emitItems(IAEStack<?> what);
 
     void addBytes(long bytes);
 

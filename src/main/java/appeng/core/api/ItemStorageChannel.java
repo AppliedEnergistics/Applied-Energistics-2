@@ -19,14 +19,22 @@
 package appeng.core.api;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.items.CapabilityItemHandler;
 
+import appeng.api.config.Actionable;
+import appeng.api.storage.IForeignInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -74,5 +82,53 @@ public final class ItemStorageChannel implements IItemStorageChannel {
         Preconditions.checkNotNull(input);
 
         return AEItemStack.fromPacket(input);
+    }
+
+    @Nullable
+    @Override
+    public IForeignInventory<IAEItemStack> getForeignInventory(Level level, BlockPos pos, @Nullable BlockEntity be,
+            Direction direction) {
+        if (be == null)
+            return null;
+        var itemHandler = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).orElse(null);
+        if (itemHandler == null)
+            return null;
+
+        return new IForeignInventory<>() {
+            @Nullable
+            @Override
+            public IAEItemStack injectItems(IAEItemStack input, Actionable type) {
+                ItemStack orgInput = input.createItemStack();
+                ItemStack remaining = orgInput;
+
+                int slotCount = itemHandler.getSlots();
+                boolean simulate = type == Actionable.SIMULATE;
+
+                // This uses a brute force approach and tries to jam it in every slot the inventory exposes.
+                for (int i = 0; i < slotCount && !remaining.isEmpty(); i++) {
+                    remaining = itemHandler.insertItem(i, remaining, simulate);
+                }
+
+                // At this point, we still have some items left...
+                if (remaining == orgInput) {
+                    // The stack remained unmodified, target inventory is full
+                    return input;
+                }
+
+                return AEItemStack.fromItemStack(remaining);
+            }
+
+            @Override
+            public boolean isBusy() {
+                // Check if something can be extracted.
+                int slotCount = itemHandler.getSlots();
+                for (int i = 0; i < slotCount; ++i) {
+                    if (!itemHandler.extractItem(i, 1, true).isEmpty()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
     }
 }

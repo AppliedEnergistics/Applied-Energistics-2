@@ -27,9 +27,8 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.MixedItemList;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
@@ -55,12 +54,12 @@ public class CraftingTreeNode {
      * "Template" of the item this node is making. For top-level node: the count is always 1. For child nodes: the count
      * is that of the template of the corresponding input.
      */
-    private final IAEItemStack what;
+    private final IAEStack<?> what;
     // what are the crafting patterns for this?
     private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<>();
     private final boolean canEmit;
 
-    public CraftingTreeNode(final ICraftingService cc, final CraftingCalculation job, final IAEItemStack wat,
+    public CraftingTreeNode(final ICraftingService cc, final CraftingCalculation job, final IAEStack<?> wat,
             final CraftingTreeProcess par, final int slot) {
         this.what = wat;
         this.parent = par;
@@ -115,8 +114,8 @@ public class CraftingTreeNode {
      * @throws CraftBranchFailure If the request failed.
      */
     // TODO: get rid of the return, it's only used to inject container items back into the inventory.
-    void request(final CraftingSimulationState<IAEItemStack> inv, long requestedAmount,
-            @Nullable IItemList<IAEItemStack> containerItems)
+    void request(final CraftingSimulationState inv, long requestedAmount,
+            @Nullable MixedItemList containerItems)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
@@ -130,6 +129,8 @@ public class CraftingTreeNode {
             long extracted = CraftingCpuHelper.extractTemplates(inv, template, requestedAmount);
 
             if (extracted > 0) {
+                // TODO: we should keep track of which items we extracted to make sure the CPU uses exactly those when
+                // TODO: it processes the job.
                 requestedAmount -= extracted;
                 addContainerItems(template, extracted, containerItems);
 
@@ -156,7 +157,7 @@ public class CraftingTreeNode {
         if (this.nodes.size() == 1) {
             // Single branch: just query as much as we can and let it throw if that's not possible.
             final CraftingTreeProcess pro = this.nodes.get(0);
-            final IAEItemStack matchingOutput = pro.getMatchingOutput(this.what);
+            var matchingOutput = pro.getMatchingOutput(this.what);
 
             while (pro.possible && totalRequestedItems > 0) {
                 long times;
@@ -170,7 +171,7 @@ public class CraftingTreeNode {
 
                 // by now we have succeeded, as request throws an exception in case of failure
                 // check how much was actually produced
-                final IAEItemStack available = inv.extractItems(matchingOutput.copyWithStackSize(totalRequestedItems),
+                var available = inv.extractItems(matchingOutput.copyWithStackSize(totalRequestedItems),
                         Actionable.MODULATE);
                 if (available != null) {
                     totalRequestedItems -= available.getStackSize();
@@ -190,13 +191,12 @@ public class CraftingTreeNode {
             for (final CraftingTreeProcess pro : this.nodes) {
                 try {
                     while (pro.possible && totalRequestedItems > 0) {
-                        final ChildCraftingSimulationState<IAEItemStack> child = new ChildCraftingSimulationState<>(
-                                StorageChannels.items(), inv);
+                        final ChildCraftingSimulationState child = new ChildCraftingSimulationState(inv);
                         // craft one by one, using the sub inventory as target
                         pro.request(child, 1);
 
                         // by now we have succeeded, as request throws an exception in case of failure
-                        final IAEItemStack available = child
+                        var available = child
                                 .extractItems(this.what.copyWithStackSize(totalRequestedItems), Actionable.MODULATE);
 
                         if (available != null) {
@@ -227,8 +227,8 @@ public class CraftingTreeNode {
     }
 
     // Only item stacks are supported.
-    private void addContainerItems(IAEItemStack template, long multiplier,
-            @Nullable IItemList<IAEItemStack> outputList) {
+    private void addContainerItems(IAEStack<?> template, long multiplier,
+            @Nullable MixedItemList outputList) {
         if (outputList != null) {
             var containerItem = parentInput.getContainerItem(template);
             if (containerItem != null) {
@@ -243,7 +243,7 @@ public class CraftingTreeNode {
      * 
      * @param inv Crafting inventory, used for fuzzy matching.
      */
-    private Iterable<IAEItemStack> getValidItemTemplates(ICraftingInventory<IAEItemStack> inv) {
+    private Iterable<IAEStack<?>> getValidItemTemplates(ICraftingInventory inv) {
         if (this.parentInput == null)
             return List.of(this.what.copyWithStackSize(1));
         return CraftingCpuHelper.getValidItemTemplates(inv, this.parentInput, level);

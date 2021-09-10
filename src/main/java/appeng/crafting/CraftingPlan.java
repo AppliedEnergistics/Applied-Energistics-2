@@ -4,12 +4,12 @@ import java.util.Map;
 
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.MixedItemList;
 
-public record CraftingPlan(IAEItemStack finalOutput, long bytes, boolean simulation, boolean multiplePaths,
-        IItemList<IAEItemStack> usedItems,
-        IItemList<IAEItemStack> emittedItems,
-        IItemList<IAEItemStack> missingItems,
+public record CraftingPlan(IAEStack<?> finalOutput, long bytes, boolean simulation, boolean multiplePaths,
+        MixedItemList usedItems,
+        MixedItemList emittedItems,
+        MixedItemList missingItems,
         Map<IPatternDetails, Long> patternTimes) implements ICraftingPlan {
 }

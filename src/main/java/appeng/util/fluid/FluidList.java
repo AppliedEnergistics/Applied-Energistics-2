@@ -18,11 +18,7 @@
 
 package appeng.util.fluid;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
@@ -61,11 +57,12 @@ public final class FluidList implements IItemList<IAEFluidStack> {
 
     @Override
     public Collection<IAEFluidStack> findFuzzy(final IAEFluidStack filter, final FuzzyMode fuzzy) {
-        if (filter == null) {
+        var precise = findPrecise(filter);
+        if (precise == null) {
             return Collections.emptyList();
+        } else {
+            return List.of(precise);
         }
-
-        return Collections.singletonList(this.findPrecise(filter));
     }
 
     @Override

@@ -50,6 +50,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -214,7 +215,9 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     }
 
     @Override
-    public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack items, final Actionable mode) {
+    public IAEStack<?> injectCraftedItems(final ICraftingLink link, final IAEStack<?> stack, final Actionable mode) {
+        // Cast is safe: we know we only requested items.
+        var items = (IAEItemStack) stack;
         final InventoryAdaptor d = this.getHandler();
 
         var grid = getMainNode().getGrid();

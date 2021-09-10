@@ -56,7 +56,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.MixedItemList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngInternalInventory;
@@ -123,7 +123,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public boolean pushPattern(final IPatternDetails patternDetails, final IItemList<IAEItemStack>[] table,
+    public boolean pushPattern(final IPatternDetails patternDetails, final MixedItemList[] table,
             final Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = ItemHandlerUtil.isEmpty(this.gridInv) && ItemHandlerUtil.isEmpty(this.patternInv);
@@ -144,12 +144,13 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return false;
     }
 
-    private void fillGrid(IItemList<IAEItemStack>[] table, CraftingPatternDetailsAdapter adapter) {
+    private void fillGrid(MixedItemList[] table, CraftingPatternDetailsAdapter adapter) {
         for (int sparseIndex = 0; sparseIndex < 9; ++sparseIndex) {
             int inputId = adapter.getInputIndexFromSparseIndex(sparseIndex);
             if (inputId != -1) {
                 var list = table[inputId];
-                var stack = list.iterator().next();
+                // Cast should be safe because our crafting patterns only provide IAEItemStacks
+                var stack = (IAEItemStack) list.iterator().next();
                 this.gridInv.setStackInSlot(sparseIndex, stack.getDefinition().copy());
                 stack.decStackSize(1);
             }

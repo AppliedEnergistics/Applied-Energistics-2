@@ -1,7 +1,9 @@
 package appeng.me.service.helpers;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -13,6 +15,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.service.CraftingService;
 
@@ -25,54 +28,58 @@ import appeng.me.service.CraftingService;
  */
 public class CraftingServiceStorage implements ICellProvider {
     private final CraftingService craftingService;
-    private final IMEInventoryHandler<IAEItemStack> itemInventory = new IMEInventoryHandler<>() {
-        @Override
-        public AccessRestriction getAccess() {
-            return AccessRestriction.WRITE;
-        }
+    private final Map<IStorageChannel<?>, IMEInventoryHandler<?>> inventories = new HashMap<>();
 
-        @Override
-        public boolean isPrioritized(IAEItemStack input) {
-            return true;
-        }
+    private final IMEInventoryHandler getOrComputeInventory(IStorageChannel<?> channel) {
+        return inventories.computeIfAbsent(channel, chan -> new IMEInventoryHandler() {
+            @Override
+            public AccessRestriction getAccess() {
+                return AccessRestriction.WRITE;
+            }
 
-        @Override
-        public boolean canAccept(IAEItemStack input) {
-            return craftingService.isRequesting(input);
-        }
+            @Override
+            public boolean isPrioritized(IAEStack input) {
+                return true;
+            }
 
-        @Override
-        public int getPriority() {
-            return Integer.MAX_VALUE;
-        }
+            @Override
+            public boolean canAccept(IAEStack input) {
+                return craftingService.isRequesting(input);
+            }
 
-        @Override
-        public boolean validForPass(int pass) {
-            return pass == 1;
-        }
+            @Override
+            public int getPriority() {
+                return Integer.MAX_VALUE;
+            }
 
-        @Override
-        public IAEItemStack injectItems(IAEItemStack input, Actionable type, IActionSource src) {
-            // Item interception logic
-            return craftingService.injectItemsIntoCpus(input, type);
-        }
+            @Override
+            public boolean validForPass(int pass) {
+                return pass == 1;
+            }
 
-        @Override
-        public IAEItemStack extractItems(IAEItemStack request, Actionable mode, IActionSource src) {
-            return null;
-        }
+            @Override
+            public IAEStack injectItems(IAEStack input, Actionable type, IActionSource src) {
+                // Item interception logic
+                return craftingService.injectItemsIntoCpus(input, type);
+            }
 
-        @Override
-        public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out) {
-            // Add craftable items so the terminals can see them.
-            return craftingService.addCrafting(out);
-        }
+            @Override
+            public IAEStack extractItems(IAEStack request, Actionable mode, IActionSource src) {
+                return null;
+            }
 
-        @Override
-        public IStorageChannel<IAEItemStack> getChannel() {
-            return StorageChannels.items();
-        }
-    };
+            @Override
+            public IItemList getAvailableItems(IItemList out) {
+                // Add craftable items so the terminals can see them.
+                return craftingService.addCrafting(chan, out);
+            }
+
+            @Override
+            public IStorageChannel<IAEItemStack> getChannel() {
+                return StorageChannels.items();
+            }
+        });
+    }
 
     public CraftingServiceStorage(CraftingService craftingService) {
         this.craftingService = craftingService;
@@ -82,7 +89,7 @@ public class CraftingServiceStorage implements ICellProvider {
     @Override
     public List<IMEInventoryHandler> getCellArray(IStorageChannel<?> channel) {
         if (channel == StorageChannels.items()) {
-            return List.of(this.itemInventory);
+            return List.of(getOrComputeInventory(channel));
         } else {
             return Collections.emptyList();
         }

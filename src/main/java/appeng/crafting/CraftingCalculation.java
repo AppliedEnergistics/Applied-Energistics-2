@@ -32,9 +32,8 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.MixedItemList;
 import appeng.core.AELog;
 import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
@@ -45,13 +44,13 @@ public class CraftingCalculation {
     private static final String LOG_CRAFTING_JOB = "CraftingCalculation (%s) issued by %s requesting [%s] using %s bytes took %s ms";
     private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s, %s]";
 
-    private final NetworkCraftingSimulationState<IAEItemStack> networkInv;
+    private final NetworkCraftingSimulationState networkInv;
     private final Level level;
-    private final IItemList<IAEItemStack> missing = StorageChannels.items().createList();
+    private final MixedItemList missing = new MixedItemList();
     private final Object monitor = new Object();
     private final Stopwatch watch = Stopwatch.createUnstarted();
     private final CraftingTreeNode tree;
-    private final IAEItemStack output;
+    private final IAEStack<?> output;
     private boolean simulate = false;
     final IActionSource actionSrc;
     private final ICraftingCallback callback;
@@ -61,7 +60,7 @@ public class CraftingCalculation {
     private int incTime = Integer.MAX_VALUE;
 
     public CraftingCalculation(final Level level, final IGrid grid, final IActionSource actionSrc,
-            final IAEItemStack what,
+            final IAEStack<?> what,
             final ICraftingCallback callback) {
         this.level = level;
         this.output = what.copy();
@@ -70,12 +69,12 @@ public class CraftingCalculation {
         this.callback = callback;
         final ICraftingService cc = grid.getCraftingService();
         final IStorageService sg = grid.getStorageService();
-        this.networkInv = new NetworkCraftingSimulationState<>(sg.getInventory(StorageChannels.items()), actionSrc);
+        this.networkInv = new NetworkCraftingSimulationState(sg, actionSrc);
 
         this.tree = new CraftingTreeNode(cc, this, what.copyWithStackSize(1), null, -1);
     }
 
-    void addMissing(IAEItemStack stack) {
+    void addMissing(IAEStack<?> stack) {
         missing.add(stack);
     }
 
@@ -101,8 +100,7 @@ public class CraftingCalculation {
     private CraftingPlan computeCraft(boolean simulate) throws CraftBranchFailure, InterruptedException {
         final Stopwatch timer = Stopwatch.createStarted();
 
-        ChildCraftingSimulationState<IAEItemStack> craftingInventory = new ChildCraftingSimulationState<>(
-                StorageChannels.items(), networkInv);
+        ChildCraftingSimulationState craftingInventory = new ChildCraftingSimulationState(networkInv);
         craftingInventory.ignore(this.output);
 
         // Do the crafting. Throws in case of failure.
@@ -166,11 +164,11 @@ public class CraftingCalculation {
         return this.simulate;
     }
 
-    public IAEItemStack getOutput() {
+    public IAEStack<?> getOutput() {
         return this.output;
     }
 
-    public IItemList<IAEItemStack> getMissingItems() {
+    public MixedItemList getMissingItems() {
         return missing;
     }
 

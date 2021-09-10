@@ -7,27 +7,25 @@ import javax.annotation.Nullable;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.MixedItemList;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingPlan;
 
-public abstract class CraftingSimulationState<T extends IAEStack<T>> implements ICraftingSimulationState<T> {
+public abstract class CraftingSimulationState implements ICraftingSimulationState {
     /**
      * Partial cache of the parent's items, never modified.
      */
-    private final IItemList<T> unmodifiedCache;
+    private final MixedItemList unmodifiedCache;
     /**
      * Partial cache of the parent's items, but modifiable. The different between this cache and the unmodified cache is
      * the items that were injected/extracted.
      */
-    private final IItemList<T> modifiableCache;
+    private final MixedItemList modifiableCache;
     /**
      * List of items to emit.
      */
-    private final IItemList<T> emittedItems;
+    private final MixedItemList emittedItems;
     /**
      * Byte count.
      */
@@ -37,27 +35,27 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
      * Minimum amount of each item that needs to be extracted from the network. This is the maximum of (unmodified -
      * modifiable).
      */
-    private final IItemList<T> requiredExtract;
+    private final MixedItemList requiredExtract;
 
-    protected CraftingSimulationState(IStorageChannel<T> chan) {
-        this.unmodifiedCache = chan.createList();
-        this.modifiableCache = chan.createList();
-        this.emittedItems = chan.createList();
-        this.requiredExtract = chan.createList();
+    protected CraftingSimulationState() {
+        this.unmodifiedCache = new MixedItemList();
+        this.modifiableCache = new MixedItemList();
+        this.emittedItems = new MixedItemList();
+        this.requiredExtract = new MixedItemList();
     }
 
-    protected abstract T simulateExtractParent(T input);
+    protected abstract IAEStack<?> simulateExtractParent(IAEStack<?> input);
 
-    protected abstract Collection<T> findFuzzyParent(T input);
+    protected abstract Collection<IAEStack<?>> findFuzzyParent(IAEStack<?> input);
 
-    private void cacheFuzzy(T stack) {
+    private void cacheFuzzy(IAEStack<?> stack) {
         if (unmodifiedCache.findFuzzy(stack, FuzzyMode.IGNORE_ALL).isEmpty()) {
-            Collection<T> toCache = findFuzzyParent(stack);
+            Collection<IAEStack<?>> toCache = findFuzzyParent(stack);
             boolean insertedAny = false;
 
-            for (T stackToCache : toCache) {
+            for (IAEStack<?> stackToCache : toCache) {
                 // not cached yet.
-                T extracted = simulateExtractParent(stackToCache);
+                IAEStack<?> extracted = simulateExtractParent(stackToCache);
                 if (extracted != null) {
                     insertedAny = true;
                     // we set craftable to true to ensure the entries never get removed from the list.
@@ -75,7 +73,7 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
     }
 
     @Override
-    public void injectItems(T input, Actionable mode) {
+    public void injectItems(IAEStack<?> input, Actionable mode) {
         if (input == null)
             return;
         cacheFuzzy(input);
@@ -85,14 +83,14 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
         }
     }
 
-    private long getAmount(IItemList<T> list, T template) {
-        T precise = list.findPrecise(template);
+    private long getAmount(MixedItemList list, IAEStack<?> template) {
+        IAEStack<?> precise = list.findPrecise(template);
         if (precise == null)
             return 0;
         return precise.getStackSize();
     }
 
-    private void updateRequiredExtract(T template) {
+    private void updateRequiredExtract(IAEStack<?> template) {
         long amountUnmodified = getAmount(unmodifiedCache, template);
         long amountModified = getAmount(modifiableCache, template);
         long amountDifference = amountUnmodified - amountModified;
@@ -108,12 +106,12 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
 
     @Nullable
     @Override
-    public T extractItems(T input, Actionable mode) {
+    public IAEStack<?> extractItems(IAEStack<?> input, Actionable mode) {
         if (input == null)
             return null;
         cacheFuzzy(input);
 
-        T precise = modifiableCache.findPrecise(input);
+        IAEStack<?> precise = modifiableCache.findPrecise(input);
         if (precise == null)
             return null;
 
@@ -129,7 +127,7 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
 
     @Nullable
     @Override
-    public Collection<T> findFuzzyTemplates(T input) {
+    public Collection<IAEStack<?>> findFuzzyTemplates(IAEStack<?> input) {
         if (input == null)
             return Collections.emptyList();
         cacheFuzzy(input);
@@ -138,7 +136,7 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
     }
 
     @Override
-    public void emitItems(T what) {
+    public void emitItems(IAEStack<?> what) {
         this.emittedItems.add(what);
     }
 
@@ -152,24 +150,25 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
         this.crafts.merge(details, crafts, Long::sum);
     }
 
-    public void ignore(T stack) {
+    public void ignore(IAEStack<?> stack) {
         cacheFuzzy(stack);
         unmodifiedCache.findPrecise(stack).setStackSize(0);
 
-        T modifiablePrecise = modifiableCache.findPrecise(stack);
+        IAEStack<?> modifiablePrecise = modifiableCache.findPrecise(stack);
         if (modifiablePrecise != null)
             modifiablePrecise.setStackSize(0);
     }
 
-    public void applyDiff(CraftingSimulationState<T> parent) {
-        for (T stack : modifiableCache) {
-            T unmodified = unmodifiedCache.findPrecise(stack);
+    public void applyDiff(CraftingSimulationState parent) {
+        for (IAEStack<?> stack : modifiableCache) {
+            IAEStack<?> unmodified = unmodifiedCache.findPrecise(stack);
             long sizeDelta = (unmodified == null ? 0 : unmodified.getStackSize()) - stack.getStackSize();
 
             if (sizeDelta > 0) {
                 parent.injectItems(stack.copyWithStackSize(sizeDelta), Actionable.MODULATE);
             } else if (sizeDelta < 0) {
-                T reallyExtracted = parent.extractItems(stack.copyWithStackSize(-sizeDelta), Actionable.MODULATE);
+                IAEStack<?> reallyExtracted = parent.extractItems(stack.copyWithStackSize(-sizeDelta),
+                        Actionable.MODULATE);
 
                 if (reallyExtracted == null || reallyExtracted.getStackSize() != -sizeDelta) {
                     throw new IllegalStateException("Failed to extract from parent. This is a bug!");
@@ -177,7 +176,7 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
             }
         }
 
-        for (T toEmit : emittedItems) {
+        for (IAEStack<?> toEmit : emittedItems) {
             parent.emitItems(toEmit);
         }
 
@@ -192,7 +191,7 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
         }
     }
 
-    public static CraftingPlan buildCraftingPlan(CraftingSimulationState<IAEItemStack> state,
+    public static CraftingPlan buildCraftingPlan(CraftingSimulationState state,
             CraftingCalculation calculation) {
         return new CraftingPlan(
                 calculation.getOutput(),

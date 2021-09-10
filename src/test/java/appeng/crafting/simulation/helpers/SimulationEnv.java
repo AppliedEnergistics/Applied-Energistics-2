@@ -21,10 +21,11 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.MixedItemList;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingPlan;
 import appeng.me.helpers.BaseActionSource;
@@ -32,7 +33,7 @@ import appeng.me.helpers.BaseActionSource;
 public class SimulationEnv {
     private final Map<IAEStack<?>, List<IPatternDetails>> patterns = new HashMap<>();
     private final Set<IAEStack<?>> emitableItems = new HashSet<>();
-    private final IItemList<IAEItemStack> networkStorage = StorageChannels.items().createList();
+    private final MixedItemList networkStorage = new MixedItemList();
 
     public IPatternDetails addPattern(IPatternDetails pattern) {
         patterns.computeIfAbsent(pattern.getPrimaryOutput(), s -> new ArrayList<>()).add(pattern);
@@ -43,7 +44,7 @@ public class SimulationEnv {
         emitableItems.add(stack);
     }
 
-    public void addStoredItem(IAEItemStack stack) {
+    public void addStoredItem(IAEStack<?> stack) {
         this.networkStorage.addStorage(stack);
     }
 
@@ -88,7 +89,7 @@ public class SimulationEnv {
     private ICraftingService createCraftingServiceMock() {
         return new ICraftingService() {
             @Override
-            public ImmutableCollection<IPatternDetails> getCraftingFor(IAEItemStack whatToCraft,
+            public ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack<?> whatToCraft,
                     IPatternDetails details, int slot, Level level) {
                 var patternList = patterns.get(whatToCraft);
                 if (patternList == null) {
@@ -99,7 +100,7 @@ public class SimulationEnv {
             }
 
             @Override
-            public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEItemStack craftWhat,
+            public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack<?> craftWhat,
                     ICraftingCallback callback) {
                 throw new UnsupportedOperationException();
             }
@@ -116,54 +117,79 @@ public class SimulationEnv {
             }
 
             @Override
-            public boolean canEmitFor(IAEItemStack what) {
+            public boolean canEmitFor(IAEStack<?> what) {
                 return emitableItems.contains(what);
             }
 
             @Override
-            public boolean isRequesting(IAEItemStack what) {
+            public boolean isRequesting(IAEStack<?> what) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public long requesting(IAEItemStack what) {
+            public long requesting(IAEStack<?> what) {
                 throw new UnsupportedOperationException();
             }
         };
     }
 
     private IStorageService createStorageServiceMock() {
-        IStorageService mock = mock(IStorageService.class);
-        IMEMonitor<IAEItemStack> monitor = new IMEMonitor<IAEItemStack>() {
+        Map<IStorageChannel<?>, IMEMonitor<?>> monitors = new HashMap<>();
+        return new IStorageService() {
             @Override
-            public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out) {
+            public <T extends IAEStack<T>> void postAlterationOfStoredItems(IStorageChannel<T> chan,
+                    Iterable<? extends IAEStack<T>> input, IActionSource src) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public IItemList<IAEItemStack> getStorageList() {
-                return networkStorage;
-            }
-
-            @Override
-            public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken) {
+            public void registerAdditionalCellProvider(ICellProvider cc) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void removeListener(IMEMonitorHandlerReceiver<IAEItemStack> l) {
+            public void unregisterAdditionalCellProvider(ICellProvider cc) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public IAEItemStack injectItems(IAEItemStack input, Actionable type, IActionSource src) {
+            public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+                return (IMEMonitor<T>) monitors.computeIfAbsent(channel, chan -> createMonitorMock(chan));
+            }
+        };
+    }
+
+    private <T extends IAEStack<T>> IMEMonitor<T> createMonitorMock(IStorageChannel<T> channel) {
+        return new IMEMonitor<>() {
+            @Override
+            public IItemList<T> getAvailableItems(IItemList<T> out) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public IAEItemStack extractItems(IAEItemStack request, Actionable mode, IActionSource src) {
+            public IItemList<T> getStorageList() {
+                return networkStorage.getList(channel);
+            }
+
+            @Override
+            public void addListener(IMEMonitorHandlerReceiver<T> l, Object verificationToken) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void removeListener(IMEMonitorHandlerReceiver<T> l) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public T injectItems(T input, Actionable type, IActionSource src) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public T extractItems(T request, Actionable mode, IActionSource src) {
                 if (mode == Actionable.SIMULATE) {
-                    IAEItemStack precise = networkStorage.findPrecise(request);
+                    T precise = networkStorage.getList(channel).findPrecise(request);
                     if (precise == null)
                         return null;
                     return precise.copyWithStackSize(Math.min(precise.getStackSize(), request.getStackSize()));
@@ -173,11 +199,9 @@ public class SimulationEnv {
             }
 
             @Override
-            public IStorageChannel<IAEItemStack> getChannel() {
-                return StorageChannels.items();
+            public IStorageChannel<T> getChannel() {
+                return channel;
             }
         };
-        when(mock.getInventory(StorageChannels.items())).thenReturn(monitor);
-        return mock;
     }
 }

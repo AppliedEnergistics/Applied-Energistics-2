@@ -26,10 +26,14 @@ package appeng.api.storage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEStack;
@@ -92,4 +96,15 @@ public interface IStorageChannel<T extends IAEStack<T>> {
     @Nullable
     T createFromNBT(@Nonnull CompoundTag nbt);
 
+    /**
+     * Optionally return a foreign inventory at the target position.
+     * 
+     * @param level       Level to query.
+     * @param pos         Query position.
+     * @param blockEntity Block entity at the target position, or null if there is none.
+     * @param direction   Query side.
+     */
+    @Nullable
+    IForeignInventory<T> getForeignInventory(Level level, BlockPos pos, @Nullable BlockEntity blockEntity,
+            Direction direction);
 }

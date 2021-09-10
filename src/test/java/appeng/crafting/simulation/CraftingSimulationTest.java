@@ -12,16 +12,19 @@ import org.junit.jupiter.api.Test;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.MixedItemList;
 import appeng.core.AELog;
 import appeng.crafting.CraftingPlan;
 import appeng.crafting.simulation.helpers.ProcessingPatternBuilder;
 import appeng.crafting.simulation.helpers.SimulationEnv;
 import appeng.util.BootstrapMinecraft;
+import appeng.util.fluid.AEFluidStack;
 import appeng.util.item.AEItemStack;
 
 @BootstrapMinecraft
@@ -36,12 +39,11 @@ public class CraftingSimulationTest {
     public void testWaterSubstitution() {
         var env = new SimulationEnv();
 
-        IAEItemStack waterBucket = item(Items.WATER_BUCKET);
-        IAEItemStack dirt = item(Items.DIRT);
-        IAEItemStack grass = item(Items.GRASS);
-        // We use diamonds instead of water because fluid stacks are not yet supported.
-        IAEItemStack water1mb = item(Items.DIAMOND);
-        IAEItemStack water1000mb = water1mb.copyWithStackSize(1000);
+        var waterBucket = item(Items.WATER_BUCKET);
+        var dirt = item(Items.DIRT);
+        var grass = item(Items.GRASS);
+        var water1mb = AEFluidStack.fromFluidStack(new FluidStack(Fluids.WATER, 1));
+        var water1000mb = mult(water1mb, 1000);
 
         // 1 dirt + 2x [1000 water or 1 water bucket] -> 1 grass.
         var grassPattern = env.addPattern(new ProcessingPatternBuilder(grass)
@@ -116,7 +118,7 @@ public class CraftingSimulationTest {
         return new ProcessingPatternBuilder(plank.copyWithStackSize(4)).addPreciseInput(1, log).build();
     }
 
-    private static IAEItemStack mult(IAEItemStack template, long multiplier) {
+    private static IAEStack<?> mult(IAEStack<?> template, long multiplier) {
         return template.copy().multStackSize(multiplier);
     }
 
@@ -161,9 +163,9 @@ public class CraftingSimulationTest {
             return patternsMatch(Map.of(p1, t1, p2, t2, p3, t3));
         }
 
-        private CraftingPlanAssert listMatches(IItemList<IAEItemStack> actualList, IAEItemStack... expectedStacks) {
-            var expectedList = StorageChannels.items().createList();
-            for (IAEItemStack stack : expectedStacks) {
+        private CraftingPlanAssert listMatches(MixedItemList actualList, IAEStack<?>... expectedStacks) {
+            var expectedList = new MixedItemList();
+            for (var stack : expectedStacks) {
                 expectedList.addStorage(stack);
             }
             var expected = Lists.newArrayList(expectedList);
@@ -181,15 +183,15 @@ public class CraftingSimulationTest {
             return this;
         }
 
-        public CraftingPlanAssert emittedMatch(IAEItemStack... emittedStacks) {
+        public CraftingPlanAssert emittedMatch(IAEStack<?>... emittedStacks) {
             return listMatches(plan.emittedItems(), emittedStacks);
         }
 
-        public CraftingPlanAssert missingMatch(IAEItemStack... missingStacks) {
+        public CraftingPlanAssert missingMatch(IAEStack<?>... missingStacks) {
             return listMatches(plan.missingItems(), missingStacks);
         }
 
-        public CraftingPlanAssert usedMatch(IAEItemStack... usedStacks) {
+        public CraftingPlanAssert usedMatch(IAEStack<?>... usedStacks) {
             return listMatches(plan.usedItems(), usedStacks);
         }
     }

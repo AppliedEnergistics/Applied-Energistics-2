@@ -14,8 +14,8 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.IPatternDetails;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.inv.ListCraftingInventory;
 import appeng.crafting.pattern.PatternDetailsAdapter;
@@ -31,23 +31,23 @@ public class ExecutingCraftingJob {
     private static final String NBT_CRAFTING_PROGRESS = "craftingProgress";
 
     final CraftingLink link;
-    final IAEItemStack finalOutput;
-    final ListCraftingInventory<IAEItemStack> waitingFor;
+    final IAEStack<?> finalOutput;
+    final ListCraftingInventory waitingFor;
     final Map<IPatternDetails, TaskProgress> tasks = new HashMap<>();
     final ElapsedTimeTracker timeTracker;
 
-    ExecutingCraftingJob(ICraftingPlan plan, Consumer<IAEItemStack> postCraftingDifference, CraftingLink link) {
+    ExecutingCraftingJob(ICraftingPlan plan, Consumer<IAEStack<?>> postCraftingDifference, CraftingLink link) {
         this.finalOutput = plan.finalOutput().copy();
-        this.waitingFor = new ListCraftingInventory<>(StorageChannels.items()) {
+        this.waitingFor = new ListCraftingInventory() {
             @Override
-            public void postChange(IAEItemStack template, long delta) {
+            public void postChange(IAEStack<?> template, long delta) {
                 postCraftingDifference.accept(template.copyWithStackSize(delta));
             }
         };
 
         // Fill waiting for and tasks
         long totalPending = 0;
-        for (IAEItemStack stack : plan.emittedItems()) {
+        for (var stack : plan.emittedItems()) {
             waitingFor.injectItems(stack, Actionable.MODULATE);
             totalPending += stack.getStackSize();
         }
@@ -61,17 +61,17 @@ public class ExecutingCraftingJob {
         this.link = link;
     }
 
-    ExecutingCraftingJob(CompoundTag data, Consumer<IAEItemStack> postCraftingDifference, CraftingCpuLogic cpu) {
+    ExecutingCraftingJob(CompoundTag data, Consumer<IAEStack<?>> postCraftingDifference, CraftingCpuLogic cpu) {
         this.link = new CraftingLink(data.getCompound(NBT_LINK), cpu.cluster);
         IGrid grid = cpu.cluster.getGrid();
         if (grid != null) {
             ((CraftingService) grid.getCraftingService()).addLink(link);
         }
 
-        this.finalOutput = AEItemStack.fromNBT(data.getCompound(NBT_FINAL_OUTPUT));
-        this.waitingFor = new ListCraftingInventory<>(StorageChannels.items()) {
+        this.finalOutput = GenericStackHelper.readGenericStack(data.getCompound(NBT_FINAL_OUTPUT));
+        this.waitingFor = new ListCraftingInventory() {
             @Override
-            public void postChange(IAEItemStack template, long delta) {
+            public void postChange(IAEStack<?> template, long delta) {
                 postCraftingDifference.accept(template.copyWithStackSize(delta));
             }
         };
@@ -102,7 +102,7 @@ public class ExecutingCraftingJob {
         link.writeToNBT(linkData);
         data.put(NBT_LINK, linkData);
 
-        data.put(NBT_FINAL_OUTPUT, writeItem(finalOutput));
+        data.put(NBT_FINAL_OUTPUT, GenericStackHelper.writeGenericStack(finalOutput));
 
         data.put(NBT_WAITING_FOR, waitingFor.writeToNBT());
         data.put(NBT_TIME_TRACKER, timeTracker.writeToNBT());

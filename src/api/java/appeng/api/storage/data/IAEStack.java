@@ -200,4 +200,19 @@ public interface IAEStack<T extends IAEStack<T>> {
      * @return itemstack
      */
     ItemStack asItemStackRepresentation();
+
+    /**
+     * Convenience method to cast inventory handlers with wildcard generic types to the concrete type used by the given
+     * storage channel, but only if the given storage channel is equal to {@link #getChannel()}.
+     *
+     * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
+     */
+    @SuppressWarnings("unchecked")
+    default <SC extends IAEStack<SC>> SC cast(IStorageChannel<SC> channel) {
+        if (getChannel() == channel) {
+            return (SC) this;
+        }
+        throw new IllegalArgumentException("This stack's storage channel " + getChannel()
+                + " is not compatible with " + channel);
+    }
 }
