@@ -47,6 +47,22 @@ public class SimulationEnv {
         this.networkStorage.addStorage(stack);
     }
 
+    public SimulationEnv copy() {
+        var copy = new SimulationEnv();
+        for (var entry : patterns.entrySet()) {
+            for (var pattern : entry.getValue()) {
+                copy.addPattern(pattern);
+            }
+        }
+        for (var emitable : emitableItems) {
+            copy.addEmitable(emitable);
+        }
+        for (var stack : networkStorage) {
+            copy.addStoredItem(stack);
+        }
+        return copy;
+    }
+
     public CraftingPlan runSimulation(IAEItemStack what) {
         var calculation = new CraftingCalculation(mock(Level.class), gridMock, new BaseActionSource(), what, null);
         try {

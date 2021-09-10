@@ -19,7 +19,7 @@ public class ProcessingPatternBuilder {
         this.outputs = outputs;
     }
 
-    public ProcessingPatternBuilder addStrictInput(long multiplier, IAEItemStack... possibleInputs) {
+    public ProcessingPatternBuilder addPreciseInput(long multiplier, IAEItemStack... possibleInputs) {
         inputs.add(new IPatternDetails.IInput() {
             @Override
             public IAEItemStack[] getPossibleInputs() {
