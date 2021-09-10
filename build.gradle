@@ -60,14 +60,6 @@ repositories {
         }
     }
     maven { url = 'https://repo.spongepowered.org/maven' }
-    ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN AND JEI ARE BACK
-    maven {
-        url = 'https://storage.bhs.cloud.ovh.net/v1/AUTH_5f0553a5313d4e93b3ecd2520d172e98/appliedenergistics2-temp-dependencies'
-        content {
-            includeGroup "mixin"
-        }
-    }
-    ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN AND JEI ARE BACK
 }
 
 ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
@@ -111,11 +103,11 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:3.9.0")
 
 ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
-    library "mixin:mixin-runtime:0.0.0-9999"
+    library "org.spongepowered:mixin:0.8.4"
 ///////////////////// TODO-117 END TEMP FIX UNTIL MIXIN IS BACK
 
     // Annotation Processors
-    annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 group = artifact_group
 archivesBaseName = artifact_basename
