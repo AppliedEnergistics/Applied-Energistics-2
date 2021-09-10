@@ -8,7 +8,7 @@ import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
-public record CraftingPlan(IAEItemStack finalOutput, long bytes, boolean simulation,
+public record CraftingPlan(IAEItemStack finalOutput, long bytes, boolean simulation, boolean multiplePaths,
         IItemList<IAEItemStack> usedItems,
         IItemList<IAEItemStack> emittedItems,
         IItemList<IAEItemStack> missingItems,

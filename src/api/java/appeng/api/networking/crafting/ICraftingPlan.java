@@ -26,6 +26,12 @@ public interface ICraftingPlan {
     boolean simulation();
 
     /**
+     * True there were multiple paths in the crafting tree,
+     * i.e. at least one item had multiple patterns that could produce it.
+     */
+    boolean multiplePaths();
+
+    /**
      * List of items that were used. (They would need to be extracted to start the job).
      */
     IItemList<IAEItemStack> usedItems();

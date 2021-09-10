@@ -164,4 +164,13 @@ public class CraftingTreeProcess {
 
         throw new IllegalStateException("Crafting Tree construction failed.");
     }
+
+    boolean hasMultiplePaths() {
+        for (var entry : nodes.entrySet()) {
+            if (entry.getKey().hasMultiplePaths()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

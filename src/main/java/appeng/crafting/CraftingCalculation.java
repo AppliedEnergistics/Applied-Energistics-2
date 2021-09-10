@@ -235,4 +235,8 @@ public class CraftingCalculation {
             AELog.crafting(LOG_CRAFTING_JOB, type, actionSource, itemToOutput, 0, elapsedTime);
         }
     }
+
+    public boolean hasMultiplePaths() {
+        return this.tree.hasMultiplePaths();
+    }
 }

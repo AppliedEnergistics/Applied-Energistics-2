@@ -256,7 +256,15 @@ public class CraftingTreeNode {
         return tot;
     }
 
-    IAEItemStack getStackWithSize(final long size) {
-        return this.what.copyWithStackSize(size);
+    boolean hasMultiplePaths() {
+        if (this.nodes.size() > 1) {
+            return true;
+        }
+        for (var pro : this.nodes) {
+            if (pro.hasMultiplePaths()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

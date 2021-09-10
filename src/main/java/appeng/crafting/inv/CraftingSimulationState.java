@@ -199,6 +199,7 @@ public abstract class CraftingSimulationState<T extends IAEStack<T>> implements 
                 calculation.getOutput(),
                 state.bytes,
                 calculation.isSimulation(),
+                calculation.hasMultiplePaths(),
                 state.requiredExtract,
                 state.emittedItems,
                 calculation.getMissingItems(),

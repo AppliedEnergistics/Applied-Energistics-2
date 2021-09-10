@@ -37,7 +37,7 @@ public class SimulationEnv {
 		return pattern;
 	}
 
-	public void setEmitable(IAEStack<?> stack) {
+	public void addEmitable(IAEStack<?> stack) {
 		emitableItems.add(stack);
 	}
 
@@ -45,7 +45,7 @@ public class SimulationEnv {
 		this.networkStorage.addStorage(stack);
 	}
 
-	public CraftingPlan doCrafting(IAEItemStack what) {
+	public CraftingPlan runSimulation(IAEItemStack what) {
 		var calculation = new CraftingCalculation(mock(Level.class), gridMock, new BaseActionSource(), what, null);
 		try {
 			var calculationFuture = Executors.newSingleThreadExecutor().submit(calculation::run);

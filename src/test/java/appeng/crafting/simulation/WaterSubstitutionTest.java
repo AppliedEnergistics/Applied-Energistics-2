@@ -44,7 +44,7 @@ public class WaterSubstitutionTest {
 		);
 
 		// Dirt is infinite.
-		env.setEmitable(dirt);
+		env.addEmitable(dirt);
 
 		// Let's add 1 stored water bucket and 3500 mb.
 		// We add a little bit more water to test that exact multiples of the template get extracted.
@@ -52,7 +52,7 @@ public class WaterSubstitutionTest {
 		env.addStoredItem(water1000mb.copyWithStackSize(3500));
 
 		// Crafting should use the water bucket from the network and then the water directly.
-		var plan = env.doCrafting(grass.copyWithStackSize(2));
+		var plan = env.runSimulation(grass.copyWithStackSize(2));
 
 		assertThat(plan.simulation()).isFalse();
 		assertThat(plan.missingItems()).isEmpty();
