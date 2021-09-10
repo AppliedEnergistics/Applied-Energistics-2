@@ -46,11 +46,6 @@ import appeng.menu.NullMenu;
 public class ApiCrafting implements ICraftingHelper {
 
     @Override
-    public boolean isEncodedPattern(@Nullable IAEItemStack item) {
-        return item != null && item.getItem() instanceof EncodedPatternItem;
-    }
-
-    @Override
     public boolean isEncodedPattern(ItemStack item) {
         return !item.isEmpty() && item.getItem() instanceof EncodedPatternItem;
     }

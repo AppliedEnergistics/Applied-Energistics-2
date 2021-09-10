@@ -32,14 +32,9 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.data.IAEItemStack;
 
+// TODO: remove overlap with IPatternDetailsHelper
 public interface ICraftingHelper {
-
-    /**
-     * Checks that the given item stack is an encoded pattern.
-     */
-    boolean isEncodedPattern(@Nullable IAEItemStack item);
 
     /**
      * Checks that the given item stack is an encoded pattern.

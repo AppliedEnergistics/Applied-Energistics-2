@@ -76,7 +76,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.crafting.execution.GenericStackHelper;
-import appeng.crafting.pattern.PatternDetailsAdapter;
 import appeng.me.storage.ItemHandlerAdapter;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.StackUpgradeInventory;
@@ -367,7 +366,7 @@ public class DualityItemInterface
     }
 
     private void addToCraftingList(final ItemStack is) {
-        var details = AEApi.crafting().decodePattern(is,
+        var details = AEApi.patternDetailsHelper().decodePattern(is,
                 this.host.getBlockEntity().getLevel());
 
         if (details != null) {
@@ -375,7 +374,7 @@ public class DualityItemInterface
                 this.craftingList = new ArrayList<>();
             }
 
-            this.craftingList.add(PatternDetailsAdapter.adapt(details));
+            this.craftingList.add(details);
         }
     }
 

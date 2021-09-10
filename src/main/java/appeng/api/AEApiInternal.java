@@ -18,11 +18,7 @@
 
 package appeng.api;
 
-import appeng.core.api.ApiClientHelper;
-import appeng.core.api.ApiCrafting;
-import appeng.core.api.ApiGrid;
-import appeng.core.api.ApiPart;
-import appeng.core.api.ApiStorage;
+import appeng.core.api.*;
 
 public final class AEApiInternal {
 
@@ -32,6 +28,7 @@ public final class AEApiInternal {
     public static void init() {
         AEApi.initialize(
                 new ApiStorage(),
+                new ApiPatternDetails(),
                 new ApiCrafting(),
                 new ApiGrid(),
                 new ApiPart(),

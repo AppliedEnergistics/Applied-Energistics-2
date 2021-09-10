@@ -29,6 +29,7 @@ import com.google.common.base.Preconditions;
 
 import appeng.api.client.IClientHelper;
 import appeng.api.crafting.ICraftingHelper;
+import appeng.api.crafting.IPatternDetailsHelper;
 import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHelper;
@@ -72,6 +73,12 @@ public final class AEApi {
         return storage;
     }
 
+    @Nonnull
+    public static IPatternDetailsHelper patternDetailsHelper() {
+        Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
+        return patternDetails;
+    }
+
     /**
      * @return A helper for working with crafting related tasks.
      */
@@ -110,6 +117,7 @@ public final class AEApi {
 
     private static boolean initialized;
     private static IStorageHelper storage;
+    private static IPatternDetailsHelper patternDetails;
     private static ICraftingHelper crafting;
     private static IGridHelper grid;
     private static IPartHelper partHelper;
@@ -117,12 +125,14 @@ public final class AEApi {
 
     static void initialize(
             IStorageHelper storage,
+            IPatternDetailsHelper patternDetails,
             ICraftingHelper crafting,
             IGridHelper grid,
             IPartHelper partHelper,
             IClientHelper client) {
         Preconditions.checkState(!initialized, "AE2 API was already initialized");
         AEApi.storage = storage;
+        AEApi.patternDetails = patternDetails;
         AEApi.crafting = crafting;
         AEApi.grid = grid;
         AEApi.partHelper = partHelper;

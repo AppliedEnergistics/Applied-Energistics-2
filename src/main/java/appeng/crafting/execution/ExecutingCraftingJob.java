@@ -9,16 +9,13 @@ import net.minecraft.nbt.ListTag;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.inv.ListCraftingInventory;
-import appeng.crafting.pattern.PatternDetailsAdapter;
 import appeng.me.service.CraftingService;
 import appeng.util.item.AEItemStack;
 
@@ -82,15 +79,12 @@ public class ExecutingCraftingJob {
         for (int i = 0; i < tasksTag.size(); ++i) {
             final CompoundTag item = tasksTag.getCompound(i);
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
-            ICraftingHelper craftingHelper = AEApi.crafting();
-            if (craftingHelper.isEncodedPattern(pattern)) {
-                final ICraftingPatternDetails details = craftingHelper.decodePattern(pattern.createItemStack(),
-                        cpu.cluster.getLevel());
-                if (details != null) {
-                    final TaskProgress tp = new TaskProgress();
-                    tp.value = item.getLong(NBT_CRAFTING_PROGRESS);
-                    this.tasks.put(PatternDetailsAdapter.adapt(details), tp);
-                }
+            var details = AEApi.patternDetailsHelper().decodePattern(pattern.createItemStack(),
+                    cpu.cluster.getLevel());
+            if (details != null) {
+                final TaskProgress tp = new TaskProgress();
+                tp.value = item.getLong(NBT_CRAFTING_PROGRESS);
+                this.tasks.put(details, tp);
             }
         }
     }

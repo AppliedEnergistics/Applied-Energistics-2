@@ -2,7 +2,7 @@ package appeng.api.storage.data;
 
 import java.util.*;
 
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -77,7 +77,7 @@ public final class MixedItemList implements Iterable<IAEStack<?>> {
 
     @Override
     public Iterator<IAEStack<?>> iterator() {
-        // Removing the cast will make the compiler unhappy, but IntelliJ won't highlight the error!
-        return (Iterator) Iterables.concat(chans.values()).iterator();
+        return Iterators.concat(
+                Iterators.transform(chans.values().iterator(), IItemList::iterator));
     }
 }

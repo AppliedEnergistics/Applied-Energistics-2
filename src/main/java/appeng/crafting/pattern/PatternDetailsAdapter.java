@@ -6,6 +6,8 @@ import appeng.api.storage.data.IAEItemStack;
 
 public class PatternDetailsAdapter {
     public static IPatternDetails adapt(ICraftingPatternDetails details) {
+        if (details == null)
+            return null;
         if (details.isCraftable()) {
             return new CraftingPatternDetailsAdapter(details);
         } else {

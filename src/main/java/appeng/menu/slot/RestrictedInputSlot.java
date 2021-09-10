@@ -26,7 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
-import appeng.api.crafting.ICraftingHelper;
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.ids.AETags;
@@ -34,7 +33,6 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.blockentity.misc.InscriberRecipes;
@@ -102,24 +100,25 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        final ICraftingHelper crafting = AEApi.crafting();
+        var patternHelper = AEApi.patternDetailsHelper();
 
+        // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                final ICraftingPatternDetails de = crafting.decodePattern(stack, getLevel());
+                var de = patternHelper.decodePattern(stack, getLevel());
                 if (de != null) {
-                    return de.isCraftable();
+                    return de.isCrafting();
                 }
                 return false;
             case VALID_ENCODED_PATTERN_W_OUTPUT:
             case ENCODED_PATTERN_W_OUTPUT:
             case ENCODED_PATTERN:
-                return crafting.isEncodedPattern(stack);
+                return patternHelper.isEncodedPattern(stack);
             case BLANK_PATTERN:
                 return AEItems.BLANK_PATTERN.isSameAs(stack);
 
             case PATTERN:
-                return AEItems.BLANK_PATTERN.isSameAs(stack) || crafting.isEncodedPattern(stack);
+                return AEItems.BLANK_PATTERN.isSameAs(stack) || patternHelper.isEncodedPattern(stack);
 
             case INSCRIBER_PLATE:
                 if (AEItems.NAME_PRESS.isSameAs(stack)) {

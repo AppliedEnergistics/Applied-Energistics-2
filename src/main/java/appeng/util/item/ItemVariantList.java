@@ -24,6 +24,7 @@ import java.util.Map;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.util.iterators.MeaningfulStackIterator;
 
 /**
  * Stores variants of a single type of {@link net.minecraft.world.item.Item}, i.e. versions with different durability,
@@ -104,7 +105,7 @@ abstract class ItemVariantList {
     }
 
     public Iterator<IAEItemStack> iterator() {
-        return new MeaningfulItemIterator<>(this.getRecords().values());
+        return new MeaningfulStackIterator<>(this.getRecords().values());
     }
 
     private void putItemRecord(final IAEItemStack itemStack) {
