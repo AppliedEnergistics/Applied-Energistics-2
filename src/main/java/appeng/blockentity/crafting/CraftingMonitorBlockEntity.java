@@ -117,10 +117,10 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         if (genericStack == null || genericStack instanceof IAEItemStack) {
             IAEItemStack is = (IAEItemStack) genericStack;
             if (is == null != (this.dspPlay == null)) {
-                this.dspPlay = is == null ? null : IAEStack.copy(is);
+                this.dspPlay = is == null ? null : is.copy();
                 this.markForUpdate();
             } else if (is != null && this.dspPlay != null && is.getStackSize() != this.dspPlay.getStackSize()) {
-                this.dspPlay = IAEStack.copy(is);
+                this.dspPlay = is.copy();
                 this.markForUpdate();
             }
         }

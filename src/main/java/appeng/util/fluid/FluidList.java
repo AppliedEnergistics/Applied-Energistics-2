@@ -43,7 +43,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
             return;
         }
 
-        final IAEFluidStack opt = IAEStack.copy(option);
+        final IAEFluidStack opt = option.copy();
 
         this.putFluidRecord(opt);
     }
@@ -85,7 +85,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
             return;
         }
 
-        final IAEFluidStack opt = IAEStack.copy(option);
+        final IAEFluidStack opt = option.copy();
 
         this.putFluidRecord(opt);
     }
@@ -108,7 +108,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
             return;
         }
 
-        final IAEFluidStack opt = IAEStack.copy(option);
+        final IAEFluidStack opt = option.copy();
         opt.setStackSize(0);
         opt.setCraftable(true);
 
@@ -128,7 +128,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
             return;
         }
 
-        final IAEFluidStack opt = IAEStack.copy(option);
+        final IAEFluidStack opt = option.copy();
         opt.setStackSize(0);
         opt.setCraftable(false);
         opt.setCountRequestable(option.getCountRequestable());

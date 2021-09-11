@@ -25,7 +25,6 @@ import java.util.LinkedList;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.storage.data.IAEStack;
 import com.google.common.collect.Iterators;
 
 import net.minecraft.core.BlockPos;
@@ -265,10 +264,10 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
             for (var stack : inv.list) {
                 // Drop items, void other types of stacks (fluids...).
                 if (stack instanceof IAEItemStack ais) {
-                    ais = IAEStack.copy(ais);
+                    ais = ais.copy();
                     ais.setStackSize(ais.getDefinition().getMaxStackSize());
                     while (true) {
-                        final IAEItemStack g = (IAEItemStack) inv.extractItems(IAEStack.copy(ais), Actionable.MODULATE);
+                        final IAEItemStack g = (IAEItemStack) inv.extractItems(ais.copy(), Actionable.MODULATE);
                         if (g == null) {
                             break;
                         }

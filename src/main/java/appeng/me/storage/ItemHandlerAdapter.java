@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import appeng.api.storage.data.IAEStack;
 import com.google.common.primitives.Ints;
 
 import net.minecraft.world.item.ItemStack;
@@ -256,7 +255,7 @@ public abstract class ItemHandlerAdapter
                     final IAEItemStack aeStack = this.cachedAeStacks[slot];
 
                     if (aeStack != null) {
-                        final IAEItemStack a = IAEStack.copy(aeStack);
+                        final IAEItemStack a = aeStack.copy();
                         a.setStackSize(-a.getStackSize());
                         changes.add(a);
                     }
@@ -284,12 +283,12 @@ public abstract class ItemHandlerAdapter
             final long diff = newIS.getCount() - oldAeIS.getStackSize();
 
             if (diff != 0) {
-                final IAEItemStack stack = IAEStack.copy(oldAeIS);
+                final IAEItemStack stack = oldAeIS.copy();
                 stack.setStackSize(newIS.getCount());
 
                 this.cachedAeStacks[slot] = stack;
 
-                final IAEItemStack a = IAEStack.copy(stack);
+                final IAEItemStack a = stack.copy();
                 a.setStackSize(diff);
                 changes.add(a);
             }

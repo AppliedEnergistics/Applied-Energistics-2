@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import appeng.api.storage.data.IAEStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -181,7 +180,7 @@ public abstract class FluidHandlerAdapter
                     final IAEFluidStack aeStack = this.cachedAeStacks[slot];
 
                     if (aeStack != null) {
-                        final IAEFluidStack a = IAEStack.copy(aeStack);
+                        final IAEFluidStack a = aeStack.copy();
                         a.setStackSize(-a.getStackSize());
                         changes.add(a);
                     }
@@ -212,12 +211,12 @@ public abstract class FluidHandlerAdapter
             final long diff = newFS.getAmount() - oldAeFS.getStackSize();
 
             if (diff != 0) {
-                final IAEFluidStack stack = IAEStack.copy(oldAeFS);
+                final IAEFluidStack stack = oldAeFS.copy();
                 stack.setStackSize(newFS.getAmount());
 
                 this.cachedAeStacks[slot] = stack;
 
-                final IAEFluidStack a = IAEStack.copy(stack);
+                final IAEFluidStack a = stack.copy();
                 a.setStackSize(diff);
                 changes.add(a);
             }

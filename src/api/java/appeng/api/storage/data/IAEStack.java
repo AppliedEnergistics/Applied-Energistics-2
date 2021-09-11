@@ -51,7 +51,7 @@ public interface IAEStack {
     }
 
     /**
-     * Clone the Item / Fluid Stack
+     * Generalized method to clone an item stack of an arbitrary storage channel.
      *
      * @return a new Stack, which is copied from the original.
      */
@@ -61,6 +61,9 @@ public interface IAEStack {
         return channel.copy(stack);
     }
 
+    /**
+     * Copies a stack and sets the stack size of the copy.
+     */
     static <T extends IAEStack> T copy(@Nonnull T stack, long newStackSize) {
         var result = IAEStack.copy(stack);
         result.setStackSize(newStackSize);

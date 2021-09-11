@@ -327,12 +327,12 @@ public class DualityItemInterface
         } else if (req != null) {
             if (stored.isEmpty()) // need to add stuff!
             {
-                this.requireWork[slot] = IAEStack.copy(req);
+                this.requireWork[slot] = req.copy();
                 return;
             } else if (req.isSameType(stored)) // same type ( qty different? )!
             {
                 if (req.getStackSize() != stored.getCount()) {
-                    this.requireWork[slot] = IAEStack.copy(req);
+                    this.requireWork[slot] = req.copy();
                     this.requireWork[slot].setStackSize(req.getStackSize() - stored.getCount());
                     return;
                 }
@@ -519,7 +519,7 @@ public class DualityItemInterface
                 return this.handleCrafting(slot, adaptor, itemStack);
             }
         } else if (itemStack.getStackSize() < 0) {
-            IAEItemStack toStore = IAEStack.copy(itemStack);
+            IAEItemStack toStore = itemStack.copy();
             toStore.setStackSize(-toStore.getStackSize());
 
             long diff = toStore.getStackSize();

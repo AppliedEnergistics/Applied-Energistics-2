@@ -18,7 +18,6 @@
 
 package appeng.me.storage;
 
-import appeng.api.storage.data.IAEStack;
 import com.mojang.authlib.GameProfile;
 
 import appeng.api.config.Actionable;
@@ -74,7 +73,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
         if (this.hasPermission(src)) {
             final IAEItemStack target = this.getStoredItems().findPrecise(request);
             if (target != null) {
-                final IAEItemStack output = IAEStack.copy(target);
+                final IAEItemStack output = target.copy();
 
                 if (mode == Actionable.SIMULATE) {
                     return output;
