@@ -41,7 +41,7 @@ abstract class ItemVariantList {
             return;
         }
 
-        final IAEItemStack opt = IAEStack.copy(option);
+        final IAEItemStack opt = option.copy();
 
         this.putItemRecord(opt);
     }
@@ -58,7 +58,7 @@ abstract class ItemVariantList {
             return;
         }
 
-        final IAEItemStack opt = IAEStack.copy(option);
+        final IAEItemStack opt = option.copy();
 
         this.putItemRecord(opt);
     }
@@ -71,7 +71,7 @@ abstract class ItemVariantList {
             return;
         }
 
-        final IAEItemStack opt = IAEStack.copy(option);
+        final IAEItemStack opt = option.copy();
         opt.setStackSize(0);
         opt.setCraftable(true);
 
@@ -86,7 +86,7 @@ abstract class ItemVariantList {
             return;
         }
 
-        final IAEItemStack opt = IAEStack.copy(option);
+        final IAEItemStack opt = option.copy();
         opt.setStackSize(0);
         opt.setCraftable(false);
         opt.setCountRequestable(option.getCountRequestable());

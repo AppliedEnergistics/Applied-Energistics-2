@@ -22,7 +22,6 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.storage.data.IAEStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -111,7 +110,7 @@ public class CraftAmountMenu extends AEBaseMenu {
 
     private void setItemToCraft(@Nonnull final IAEItemStack itemToCreate, int initialAmount) {
         // Make a copy because this stack will be modified with the requested amount
-        this.itemToCreate = IAEStack.copy(itemToCreate);
+        this.itemToCreate = itemToCreate.copy();
         this.initialAmount = initialAmount;
         this.craftingItem.set(itemToCreate.asItemStackRepresentation());
     }
@@ -155,7 +154,7 @@ public class CraftAmountMenu extends AEBaseMenu {
 
                     if (player.containerMenu instanceof CraftConfirmMenu ccc) {
                         ccc.setAutoStart(autoStart);
-                        ccc.setItemToCreate(IAEStack.copy(this.itemToCreate));
+                        ccc.setItemToCreate(this.itemToCreate.copy());
                         ccc.setJob(futureJob);
                         broadcastChanges();
                     }

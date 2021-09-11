@@ -124,10 +124,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             if (inv != null) {
                 var itemList = inv.getAvailableItems();
                 IAEItemStack req = itemList.getFirstItem();
-                if (req instanceof IAEItemStack) {
+                if (req != null) {
                     shots = Math.min(shots, (int) req.getStackSize());
                     for (int sh = 0; sh < shots; sh++) {
-                        IAEItemStack aeAmmo = IAEStack.copy(req);
+                        var aeAmmo = req.copy();
                         this.extractAEPower(p.getItemInHand(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
                         if (level.isClientSide()) {

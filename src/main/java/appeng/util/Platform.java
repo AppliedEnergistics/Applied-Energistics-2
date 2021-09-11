@@ -853,7 +853,7 @@ public class Platform {
                         cp.setCount(1);
                         ci.setItem(slot, cp);
                         if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
-                            final IAEItemStack ax = IAEStack.copy(x);
+                            final IAEItemStack ax = x.copy();
                             ax.setStackSize(1);
                             if (filter == null || filter.isListed(ax)) {
                                 final IAEItemStack ex = src.extractItems(ax, realForFake, mySrc);

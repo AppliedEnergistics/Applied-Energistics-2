@@ -21,7 +21,6 @@ package appeng.parts.reporting;
 import java.util.Collections;
 import java.util.List;
 
-import appeng.api.storage.data.IAEStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -155,7 +154,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
             if (allItems) {
                 if (this.getDisplayed() != null) {
-                    var input = IAEStack.copy(this.getDisplayed());
+                    var input = this.getDisplayed().copy();
                     IItemHandler inv = new PlayerMainInvWrapper(player.getInventory());
 
                     for (int x = 0; x < inv.getSlots(); x++) {

@@ -18,7 +18,6 @@
 
 package appeng.me.storage;
 
-import appeng.api.storage.data.IAEStack;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -69,7 +68,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> 
             return null;
         }
 
-        return IAEStack.copy(request);
+        return request.copy();
     }
 
     @Override

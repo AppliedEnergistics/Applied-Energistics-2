@@ -25,7 +25,6 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.storage.data.IAEStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -247,7 +246,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         this.blocked = !level.getBlockState(placePos).getMaterial().isReplaceable();
 
         if (worked) {
-            final IAEItemStack out = IAEStack.copy(input);
+            final IAEItemStack out = input.copy();
             out.decStackSize(maxStorage);
             if (out.getStackSize() == 0) {
                 return null;

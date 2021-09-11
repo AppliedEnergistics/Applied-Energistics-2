@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.storage.data.IAEStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -64,7 +63,7 @@ public class AEFluidInventory implements IAEFluidTank {
                 if (fluid == EMPTY_AE_FLUIDSTACK) {
                     this.fluids[slot] = EMPTY_AE_FLUIDSTACK;
                 } else {
-                    this.fluids[slot] = IAEStack.copy(fluid);
+                    this.fluids[slot] = fluid.copy();
                     this.fluids[slot].setStackSize(Math.min(fluid.getStackSize(), this.capacity));
                 }
 
