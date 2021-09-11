@@ -75,7 +75,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
         }
 
         private static <T extends IAEStack> StorageList<T> read(IStorageChannel<T> storageChannel,
-                                                                FriendlyByteBuf data) {
+                FriendlyByteBuf data) {
             var count = data.readShort();
             var list = new ArrayList<GridInventoryEntry<T>>(count);
 
@@ -258,8 +258,8 @@ public class MEInventoryUpdatePacket extends BasePacket {
     }
 
     public static <T extends IAEStack> Builder<T> builder(IStorageChannel<T> storageChannel,
-                                                          int containerId,
-                                                          boolean fullUpdate) {
+            int containerId,
+            boolean fullUpdate) {
         return new Builder<>(storageChannel, containerId, fullUpdate);
     }
 

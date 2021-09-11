@@ -71,6 +71,6 @@ public interface ICellGuiHandler {
      * @param chan        storage channel
      */
     <T extends IAEStack> void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler,
-                                           IMEInventoryHandler<T> inv, ItemStack is, IStorageChannel<T> chan);
+            IMEInventoryHandler<T> inv, ItemStack is, IStorageChannel<T> chan);
 
 }

@@ -138,7 +138,7 @@ public class SimulationEnv {
         return new IStorageService() {
             @Override
             public <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-                                                                         Iterable<? extends IAEStack> input, IActionSource src) {
+                    Iterable<? extends IAEStack> input, IActionSource src) {
                 throw new UnsupportedOperationException();
             }
 

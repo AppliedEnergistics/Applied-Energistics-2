@@ -44,7 +44,7 @@ public class BasicCellInventory<T extends IAEStack> extends AbstractCellInventor
     }
 
     public static <T extends IAEStack> ICellInventory<T> createInventory(final ItemStack o,
-                                                                         final ISaveProvider container) {
+            final ISaveProvider container) {
         try {
             if (o == null) {
                 throw new AppEngException("ItemStack was used as a cell, but was not a cell!");

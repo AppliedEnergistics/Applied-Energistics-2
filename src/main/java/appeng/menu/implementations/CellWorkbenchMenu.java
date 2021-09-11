@@ -197,7 +197,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     private <T extends IAEStack> Iterator<? extends IAEStack> iterateCellItems(ItemStack is,
-                                                                               IStorageChannel<T> channel) {
+            IStorageChannel<T> channel) {
         final IMEInventory<T> cellInv = StorageCells.getCellInventory(is, null, channel);
         if (cellInv != null) {
             return cellInv.getAvailableItems().iterator();

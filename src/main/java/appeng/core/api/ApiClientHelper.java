@@ -35,7 +35,7 @@ public class ApiClientHelper implements IClientHelper {
 
     @Override
     public <T extends IAEStack> void addCellInformation(ICellInventoryHandler<T> handler,
-                                                        List<Component> lines) {
+            List<Component> lines) {
         if (handler == null) {
             return;
         }

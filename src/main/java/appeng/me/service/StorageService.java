@@ -205,7 +205,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     private <T extends IAEStack, C extends IStorageChannel<T>> void postChangesToNetwork(final C chan,
-                                                                                         final int upOrDown, final IItemList<T> availableItems, final IActionSource src) {
+            final int upOrDown, final IItemList<T> availableItems, final IActionSource src) {
         this.storageMonitors.get(chan).postChange(upOrDown > 0, (Iterable) availableItems, src);
     }
 
@@ -226,8 +226,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     @Override
     public <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-                                                                 Iterable<? extends IAEStack> input,
-                                                                 final IActionSource src) {
+            Iterable<? extends IAEStack> input,
+            final IActionSource src) {
         this.storageMonitors.get(chan).postChange(true, (Iterable) input, src);
     }
 
