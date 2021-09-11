@@ -123,8 +123,11 @@ public class CraftingCpuHelper {
     public static void reinjectPatternInputs(ICraftingInventory sourceInv,
             MixedItemList[] inputHolder) {
         for (var list : inputHolder) {
-            for (var stack : list) {
-                sourceInv.injectItems(stack, Actionable.MODULATE);
+            // List may be null if we failed to extract some of the pattern's inputs.
+            if (list != null) {
+                for (var stack : list) {
+                    sourceInv.injectItems(stack, Actionable.MODULATE);
+                }
             }
         }
     }

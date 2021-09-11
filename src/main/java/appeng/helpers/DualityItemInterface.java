@@ -76,6 +76,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.crafting.execution.GenericStackHelper;
+import appeng.helpers.iface.IInterfaceTarget;
 import appeng.me.storage.ItemHandlerAdapter;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.StackUpgradeInventory;
@@ -432,10 +433,9 @@ public class DualityItemInterface
             for (final Direction s : possibleDirections) {
                 var adjPos = blockEntity.getBlockPos().relative(s);
                 final BlockEntity te = level.getBlockEntity(adjPos);
-                IForeignInventory foreignInventory = whatToSend.getChannel().getForeignInventory(level, adjPos, te,
-                        s.getOpposite());
-                if (foreignInventory != null) {
-                    var leftover = foreignInventory.injectItems(whatToSend, Actionable.MODULATE);
+                var adapter = IInterfaceTarget.get(level, adjPos, te, s.getOpposite(), this.actionSource);
+                if (adapter != null) {
+                    var leftover = adapter.injectItems(whatToSend, Actionable.MODULATE);
 
                     if (leftover == null || leftover.getStackSize() == 0) {
                         i.remove();
@@ -616,27 +616,6 @@ public class DualityItemInterface
         this.craftingTracker.cancel();
     }
 
-    private Map<IStorageChannel<?>, IForeignInventory<?>> getAdapterSet(Level level, BlockPos pos,
-            @Nullable BlockEntity blockEntity, Direction side) {
-        Map<IStorageChannel<?>, IForeignInventory<?>> adapters = new HashMap<>();
-        for (var chan : StorageChannels.getAll()) {
-            var foreignInventory = chan.getForeignInventory(level, pos, blockEntity, side);
-            if (foreignInventory != null) {
-                adapters.put(chan, foreignInventory);
-            }
-        }
-        return adapters;
-    }
-
-    private boolean isAtLeastOneAdapterBusy(Map<IStorageChannel<?>, IForeignInventory<?>> adapters) {
-        for (var foreignInv : adapters.values()) {
-            if (foreignInv.isBusy()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public boolean pushPattern(final IPatternDetails patternDetails, final MixedItemList[] table) {
         if (this.hasItemsToSend() || !this.mainNode.isActive() || !this.craftingList.contains(patternDetails)) {
@@ -665,16 +644,18 @@ public class DualityItemInterface
                 }
             }
 
-            var adapters = getAdapterSet(level, adjPos, te, s.getOpposite());
-            if (this.isBlocking() && isAtLeastOneAdapterBusy(adapters)) {
+            var adapter = IInterfaceTarget.get(level, adjPos, te, s.getOpposite(), this.actionSource);
+            if (adapter == null)
+                continue;
+
+            if (this.isBlocking() && adapter.isBusy()) {
                 continue;
             }
 
-            if (this.acceptsItems(adapters, table)) {
+            if (this.acceptsItems(adapter, table)) {
                 for (var inputList : table) {
                     for (var input : inputList) {
-                        IForeignInventory foreignInventory = adapters.get(input.getChannel());
-                        this.addToSendList(foreignInventory.injectItems(input, Actionable.MODULATE));
+                        this.addToSendList(adapter.injectItems(input, Actionable.MODULATE));
                     }
                 }
                 this.pushItemsOut(possibleDirections);
@@ -724,13 +705,10 @@ public class DualityItemInterface
         return this.cm.getSetting(Settings.BLOCK) == YesNo.YES;
     }
 
-    private boolean acceptsItems(Map<IStorageChannel<?>, IForeignInventory<?>> ad, MixedItemList[] inputs) {
+    private boolean acceptsItems(IInterfaceTarget adapter, MixedItemList[] inputs) {
         for (var inputList : inputs) {
             for (var input : inputList) {
-                IForeignInventory foreignInv = ad.get(input.getChannel());
-                if (foreignInv == null)
-                    return false;
-                var leftover = foreignInv.injectItems(input, Actionable.SIMULATE);
+                var leftover = adapter.injectItems(input, Actionable.SIMULATE);
                 if (leftover != null && leftover.getStackSize() == input.getStackSize()) {
                     return false;
                 }

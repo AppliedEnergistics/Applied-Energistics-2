@@ -26,14 +26,10 @@ package appeng.api.storage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEStack;
@@ -78,7 +74,7 @@ public interface IStorageChannel<T extends IAEStack> {
      * <p>
      * The parameter is unbound to allow a slightly more flexible approach. But the general intention is about
      * converting an {@link ItemStack} or {@link FluidStack} into the corresponding {@link IAEStack}. Another valid case
-     * might be to use it instead of {@link IAEStack#copy()}, but this might not be supported by all types. IAEStacks
+     * might be to use it instead of {@link IAEStack#copy}, but this might not be supported by all types. IAEStacks
      * that use custom items for {@link IAEStack#asItemStackRepresentation()} must also be able to convert these.
      *
      * @param input The object to turn into an {@link IAEStack}
@@ -96,18 +92,5 @@ public interface IStorageChannel<T extends IAEStack> {
     @Nullable
     T createFromNBT(@Nonnull CompoundTag nbt);
 
-    /**
-     * Optionally return a foreign inventory at the target position.
-     * 
-     * @param level       Level to query.
-     * @param pos         Query position.
-     * @param blockEntity Block entity at the target position, or null if there is none.
-     * @param direction   Query side.
-     */
-    @Nullable
-    IForeignInventory<T> getForeignInventory(Level level, BlockPos pos, @Nullable BlockEntity blockEntity,
-            Direction direction);
-
     T copy(T stack);
-
 }
