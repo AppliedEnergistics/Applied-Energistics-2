@@ -20,7 +20,6 @@ package appeng.menu.me.crafting;
 
 import java.util.List;
 
-import appeng.api.storage.data.IAEStack;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,6 +30,7 @@ import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedItemList;
 
 /**

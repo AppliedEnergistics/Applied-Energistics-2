@@ -78,7 +78,8 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
         if (mode == Actionable.SIMULATE) {
             return this.getHandler().injectItems(input, mode, src);
         }
-        return this.monitorDifference(IAEStack.copy(input), this.getHandler().injectItems(input, mode, src), false, src);
+        return this.monitorDifference(IAEStack.copy(input), this.getHandler().injectItems(input, mode, src), false,
+                src);
     }
 
     protected IMEInventoryHandler<T> getHandler() {
@@ -129,7 +130,8 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
         if (mode == Actionable.SIMULATE) {
             return this.getHandler().extractItems(request, mode, src);
         }
-        return this.monitorDifference(IAEStack.copy(request), this.getHandler().extractItems(request, mode, src), true, src);
+        return this.monitorDifference(IAEStack.copy(request), this.getHandler().extractItems(request, mode, src), true,
+                src);
     }
 
     @Override

@@ -41,8 +41,8 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler {
 
     @Override
     public <T extends IAEStack> void openChestGui(final Player player, final IChestOrDrive chest,
-                                                  final ICellHandler cellHandler,
-                                                  final IMEInventoryHandler<T> inv, final ItemStack is, final IStorageChannel<T> chan) {
+            final ICellHandler cellHandler,
+            final IMEInventoryHandler<T> inv, final ItemStack is, final IStorageChannel<T> chan) {
         MenuOpener.open(ItemTerminalMenu.TYPE, player,
                 MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }

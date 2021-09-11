@@ -49,5 +49,5 @@ public interface IStackWatcherHost extends IGridNodeService {
      * @param chan      storage channel
      */
     void onStackChange(IItemList<?> o, IAEStack fullStack, IAEStack diffStack, IActionSource src,
-                       IStorageChannel<?> chan);
+            IStorageChannel<?> chan);
 }

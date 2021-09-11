@@ -784,7 +784,7 @@ public class DualityItemInterface
 
     @Override
     public IAEStack injectCraftedItems(final ICraftingLink link, final IAEStack stack,
-                                       final Actionable mode) {
+            final Actionable mode) {
         // Cast is safe: we know we only requested items.
         var acquired = (IAEItemStack) stack;
         final int slot = this.craftingTracker.getSlot(link);

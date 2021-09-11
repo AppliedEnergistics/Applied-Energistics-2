@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.data.IAEStack;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 
@@ -53,6 +52,7 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;

@@ -21,7 +21,6 @@ package appeng.util.fluid;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.storage.data.IAEStack;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
@@ -38,6 +37,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
 import appeng.items.misc.FluidDummyItem;
 import appeng.util.Platform;

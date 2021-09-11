@@ -112,7 +112,7 @@ public class GridInventoryEntry<T extends IAEStack> {
      * {@link #stack} field.
      */
     public static <T extends IAEStack> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel,
-                                                                  FriendlyByteBuf buffer) {
+            FriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
         T stack = null;
         if (buffer.readBoolean()) {

@@ -229,7 +229,7 @@ public class CraftingTreeNode {
 
     // Only item stacks are supported.
     private void addContainerItems(IAEStack template, long multiplier,
-                                   @Nullable MixedItemList outputList) {
+            @Nullable MixedItemList outputList) {
         if (outputList != null) {
             var containerItem = parentInput.getContainerItem(template);
             if (containerItem != null) {

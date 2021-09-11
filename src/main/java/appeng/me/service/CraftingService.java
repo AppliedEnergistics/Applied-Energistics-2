@@ -311,7 +311,7 @@ public class CraftingService
 
     @Override
     public Future<ICraftingPlan> beginCraftingJob(final Level level, final IActionSource actionSrc,
-                                                  final IAEStack slotItem, final ICraftingCallback cb) {
+            final IAEStack slotItem, final ICraftingCallback cb) {
         if (level == null || actionSrc == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }

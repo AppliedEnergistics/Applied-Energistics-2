@@ -46,8 +46,8 @@ public interface IStorageService extends IGridService, IStorageMonitorable {
      * @param input injected items
      */
     <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-                                                          Iterable<? extends IAEStack> input,
-                                                          IActionSource src);
+            Iterable<? extends IAEStack> input,
+            IActionSource src);
 
     /**
      * Used to add an additional cell provider to the storage system, i.e. for adding global providers from grid

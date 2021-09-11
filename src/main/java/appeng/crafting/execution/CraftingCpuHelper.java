@@ -149,7 +149,7 @@ public class CraftingCpuHelper {
      * Get all stack templates that can be used for this pattern's input.
      */
     public static Iterable<IAEStack> getValidItemTemplates(ICraftingInventory inv,
-                                                           IPatternDetails.IInput input, Level level) {
+            IPatternDetails.IInput input, Level level) {
         IAEStack[] possibleInputs = input.getPossibleInputs();
         List<IAEStack> substitutes;
         if (input.allowFuzzyMatch()) {

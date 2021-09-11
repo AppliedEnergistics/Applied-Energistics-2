@@ -23,7 +23,8 @@
 
 package appeng.api.storage.data;
 
-import java.io.IOException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,9 +32,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public interface IAEStack {
 
@@ -93,8 +91,6 @@ public interface IAEStack {
 
     /**
      * Same as setStackSize, but for requestable items. ( LP )
-     *
-     * @return basically itemStack.stackSize = N but for setStackSize items.
      */
     void setCountRequestable(long countRequestable);
 
@@ -195,8 +191,6 @@ public interface IAEStack {
      * Slower for disk saving, but smaller/more efficient for packets.
      *
      * @param data to be written data
-     *
-     * @throws IOException
      */
     void writeToPacket(FriendlyByteBuf data);
 

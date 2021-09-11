@@ -21,12 +21,12 @@ package appeng.menu.me.crafting;
 import java.util.Collections;
 import java.util.List;
 
-import appeng.api.storage.data.IAEStack;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.storage.data.IAEStack;
 import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.crafting.execution.ElapsedTimeTracker;
 import appeng.menu.me.common.IncrementalUpdateHelper;

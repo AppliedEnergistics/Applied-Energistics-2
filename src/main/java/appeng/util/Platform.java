@@ -539,12 +539,12 @@ public class Platform {
     }
 
     public static <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
-                                                           final T request, final IActionSource src) {
+            final T request, final IActionSource src) {
         return poweredExtraction(energy, cell, request, src, Actionable.MODULATE);
     }
 
     public static <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
-                                                           final T request, final IActionSource src, final Actionable mode) {
+            final T request, final IActionSource src, final Actionable mode) {
         Preconditions.checkNotNull(energy);
         Preconditions.checkNotNull(cell);
         Preconditions.checkNotNull(request);
@@ -584,12 +584,12 @@ public class Platform {
     }
 
     public static <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
-                                                       final T input, final IActionSource src) {
+            final T input, final IActionSource src) {
         return poweredInsert(energy, cell, input, src, Actionable.MODULATE);
     }
 
     public static <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
-                                                       final T input, final IActionSource src, final Actionable mode) {
+            final T input, final IActionSource src, final Actionable mode) {
         Preconditions.checkNotNull(energy);
         Preconditions.checkNotNull(cell);
         Preconditions.checkNotNull(input);
@@ -658,10 +658,10 @@ public class Platform {
     }
 
     private static <T extends IAEStack> void postWholeCellChanges(IStorageService service,
-                                                                  IStorageChannel<T> channel,
-                                                                  ItemStack removedCell,
-                                                                  ItemStack addedCell,
-                                                                  IActionSource src) {
+            IStorageChannel<T> channel,
+            ItemStack removedCell,
+            ItemStack addedCell,
+            IActionSource src) {
         var myChanges = channel.createList();
 
         if (!removedCell.isEmpty()) {
@@ -684,7 +684,7 @@ public class Platform {
     }
 
     public static <T extends IAEStack> void postListChanges(final IItemList<T> before, final IItemList<T> after,
-                                                            final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source) {
+            final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source) {
         final List<T> changes = new ArrayList<>();
 
         for (final T is : before) {

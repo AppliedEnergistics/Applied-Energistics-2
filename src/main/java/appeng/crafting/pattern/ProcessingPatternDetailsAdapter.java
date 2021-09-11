@@ -64,7 +64,7 @@ public class ProcessingPatternDetailsAdapter implements IPatternDetails {
         private final long multiplier;
 
         private Input(IAEItemStack input) {
-            this.input = new IAEItemStack[] {IAEStack.copy(input, 1)};
+            this.input = new IAEItemStack[] { IAEStack.copy(input, 1) };
             this.multiplier = input.getStackSize();
         }
 
