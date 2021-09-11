@@ -226,7 +226,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     @Override
     public <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-            Iterable<? extends IAEStack> input,
+            Iterable<T> input,
             final IActionSource src) {
         this.storageMonitors.get(chan).postChange(true, (Iterable) input, src);
     }

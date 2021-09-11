@@ -138,7 +138,7 @@ public class SimulationEnv {
         return new IStorageService() {
             @Override
             public <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-                    Iterable<? extends IAEStack> input, IActionSource src) {
+                    Iterable<T> input, IActionSource src) {
                 throw new UnsupportedOperationException();
             }
 
@@ -154,7 +154,7 @@ public class SimulationEnv {
 
             @Override
             public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-                return (IMEMonitor<T>) monitors.computeIfAbsent(channel, chan -> createMonitorMock(chan));
+                return monitors.computeIfAbsent(channel, chan -> createMonitorMock(chan)).cast(channel);
             }
         };
     }

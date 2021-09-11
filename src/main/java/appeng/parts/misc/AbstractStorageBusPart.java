@@ -462,11 +462,11 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     }
 
     @Override
-    public final List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
+    public final <U extends IAEStack> List<IMEInventoryHandler<U>> getCellArray(final IStorageChannel<U> channel) {
         if (channel == getStorageChannel()) {
             var out = this.getMainNode().isActive() ? this.getInternalHandler() : null;
             if (out != null) {
-                return Collections.singletonList(out);
+                return Collections.singletonList(out.cast(channel));
             }
         }
         return Collections.emptyList();

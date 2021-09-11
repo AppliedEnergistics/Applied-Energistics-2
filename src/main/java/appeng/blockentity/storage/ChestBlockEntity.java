@@ -84,7 +84,6 @@ import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
@@ -131,7 +130,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private boolean wasActive = false;
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isCached = false;
-    private ChestMonitorHandler cellHandler;
+    private ChestMonitorHandler<?> cellHandler;
     private Accessor accessor;
     private IFluidHandler fluidHandler;
     // This is only used on the client to display the right cell model without
@@ -408,13 +407,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.recalculateDisplay();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         this.updateHandler();
 
         if (this.cellHandler != null && this.cellHandler.getChannel() == channel) {
-            return this.cellHandler;
+            return this.cellHandler.cast(channel);
         }
         return null;
     }
@@ -461,7 +459,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.updateHandler();
 
             if (this.cellHandler != null && this.cellHandler.getChannel() == StorageChannels.items()) {
-                final IAEItemStack returns = Platform.poweredInsert(this, this.cellHandler,
+                var returns = Platform.poweredInsert(this, this.cellHandler.cast(StorageChannels.items()),
                         AEItemStack.fromItemStack(this.inputInventory.getStackInSlot(0)), this.mySrc);
 
                 if (returns == null) {
@@ -474,12 +472,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
+    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(final IStorageChannel<T> channel) {
         if (this.getMainNode().isActive()) {
             this.updateHandler();
 
             if (this.cellHandler != null && this.cellHandler.getChannel() == channel) {
-                return Collections.singletonList(this.cellHandler);
+                return Collections.singletonList(this.cellHandler.cast(channel));
             }
         }
         return Collections.emptyList();
@@ -525,7 +523,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 final ICellGuiHandler chg = StorageCells
                         .getGuiHandler(this.cellHandler.getChannel(), this.getCell());
                 if (chg != null) {
-                    chg.openChestGui(p, this, ch, this.cellHandler, this.getCell(), this.cellHandler.getChannel());
+                    chg.openChestGui(p, this, ch, this.cellHandler, this.getCell());
                     return true;
                 }
             }
@@ -733,7 +731,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             ChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
                 final IAEFluidStack results = Platform.poweredInsert(ChestBlockEntity.this,
-                        ChestBlockEntity.this.cellHandler, AEFluidStack.fromFluidStack(resource),
+                        ChestBlockEntity.this.cellHandler.cast(StorageChannels.fluids()),
+                        AEFluidStack.fromFluidStack(resource),
                         ChestBlockEntity.this.mySrc,
                         action == FluidAction.EXECUTE ? Actionable.MODULATE : Actionable.SIMULATE);
 

@@ -193,7 +193,7 @@ public class CraftingService
 
         final Map<IAEStack, Set<IPatternDetails>> tmpCraft = new HashMap<>();
         // Sort by highest priority (that of the highest priority crafting medium).
-        var detailsComparator = Comparator
+        Comparator<IPatternDetails> detailsComparator = Comparator
                 .comparing(details -> -this.craftingMethods.get(details).firstEntry().getElement().priority);
         // new craftables!
         for (final IPatternDetails details : this.craftingMethods.keySet()) {
@@ -216,10 +216,17 @@ public class CraftingService
 
     private void postAlterationOfCraftableItems(Collection<IAEStack> patterns) {
         // Batch by storage channel.
-        for (IStorageChannel channel : StorageChannels.getAll()) {
-            List changes = patterns.stream().filter(stack -> stack.getChannel() == channel).toList();
-            this.storageGrid.postAlterationOfStoredItems(channel, changes, new BaseActionSource());
+        for (var channel : StorageChannels.getAll()) {
+            postChannelAlteration(patterns, channel);
         }
+    }
+
+    private <T extends IAEStack> void postChannelAlteration(Collection<IAEStack> patterns, IStorageChannel<T> channel) {
+        var changes = patterns.stream()
+                .filter(stack -> stack.getChannel() == channel)
+                .map(stack -> stack.cast(channel))
+                .toList();
+        this.storageGrid.postAlterationOfStoredItems(channel, changes, new BaseActionSource());
     }
 
     private void updateCPUClusters() {
@@ -271,17 +278,17 @@ public class CraftingService
         return input;
     }
 
-    public IItemList addCrafting(IStorageChannel<?> channel, final IItemList out) {
+    public <T extends IAEStack> IItemList<T> addCrafting(IStorageChannel<T> channel, final IItemList<T> out) {
         // add craftable items!
         for (var stack : this.craftableItems.keySet()) {
             if (stack.getChannel() == channel) {
-                out.addCrafting(stack);
+                out.addCrafting(stack.cast(channel));
             }
         }
 
-        for (var st : this.emitableItems) {
-            if (st.getChannel() == channel) {
-                out.addCrafting(st);
+        for (var stack : this.emitableItems) {
+            if (stack.getChannel() == channel) {
+                out.addCrafting(stack.cast(channel));
             }
         }
 

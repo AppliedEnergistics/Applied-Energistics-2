@@ -1,6 +1,5 @@
 package appeng.me.service.helpers;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +11,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.service.CraftingService;
@@ -30,8 +27,8 @@ public class CraftingServiceStorage implements ICellProvider {
     private final CraftingService craftingService;
     private final Map<IStorageChannel<?>, IMEInventoryHandler<?>> inventories = new HashMap<>();
 
-    private final IMEInventoryHandler getOrComputeInventory(IStorageChannel<?> channel) {
-        return inventories.computeIfAbsent(channel, chan -> new IMEInventoryHandler() {
+    private <T extends IAEStack> IMEInventoryHandler<T> getOrComputeInventory(IStorageChannel<T> channel) {
+        return inventories.computeIfAbsent(channel, ignored -> new IMEInventoryHandler<T>() {
             @Override
             public AccessRestriction getAccess() {
                 return AccessRestriction.WRITE;
@@ -58,27 +55,31 @@ public class CraftingServiceStorage implements ICellProvider {
             }
 
             @Override
-            public IAEStack injectItems(IAEStack input, Actionable type, IActionSource src) {
+            public T injectItems(T input, Actionable type, IActionSource src) {
                 // Item interception logic
-                return craftingService.injectItemsIntoCpus(input, type);
-            }
-
-            @Override
-            public IAEStack extractItems(IAEStack request, Actionable mode, IActionSource src) {
+                var result = craftingService.injectItemsIntoCpus(input, type);
+                if (result != null) {
+                    return result.cast(channel);
+                }
                 return null;
             }
 
             @Override
-            public IItemList getAvailableItems(IItemList out) {
-                // Add craftable items so the terminals can see them.
-                return craftingService.addCrafting(chan, out);
+            public T extractItems(T request, Actionable mode, IActionSource src) {
+                return null;
             }
 
             @Override
-            public IStorageChannel<IAEItemStack> getChannel() {
-                return StorageChannels.items();
+            public IItemList<T> getAvailableItems(IItemList<T> out) {
+                // Add craftable items so the terminals can see them.
+                return craftingService.addCrafting(channel, out);
             }
-        });
+
+            @Override
+            public IStorageChannel<T> getChannel() {
+                return channel;
+            }
+        }).cast(channel);
     }
 
     public CraftingServiceStorage(CraftingService craftingService) {
@@ -87,12 +88,8 @@ public class CraftingServiceStorage implements ICellProvider {
 
     @Nonnull
     @Override
-    public List<IMEInventoryHandler> getCellArray(IStorageChannel<?> channel) {
-        if (channel == StorageChannels.items()) {
-            return List.of(getOrComputeInventory(channel));
-        } else {
-            return Collections.emptyList();
-        }
+    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(IStorageChannel<T> channel) {
+        return List.of(getOrComputeInventory(channel));
     }
 
     @Override
