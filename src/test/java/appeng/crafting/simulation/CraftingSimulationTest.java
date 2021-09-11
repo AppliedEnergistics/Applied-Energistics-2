@@ -5,17 +5,18 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Map;
 import java.util.Objects;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.networking.crafting.IPatternDetails;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedItemList;
@@ -42,7 +43,7 @@ public class CraftingSimulationTest {
         var waterBucket = item(Items.WATER_BUCKET);
         var dirt = item(Items.DIRT);
         var grass = item(Items.GRASS);
-        var water1mb = AEFluidStack.fromFluidStack(new FluidStack(Fluids.WATER, 1));
+        var water1mb = fluid(Fluids.WATER, 1);
         var water1000mb = mult(water1mb, 1000);
 
         // 1 dirt + 2x [1000 water or 1 water bucket] -> 1 grass.
@@ -57,7 +58,7 @@ public class CraftingSimulationTest {
         // Let's add 1 stored water bucket and 3500 mb.
         // We add a little bit more water to test that exact multiples of the template get extracted.
         env.addStoredItem(waterBucket);
-        env.addStoredItem(IAEStack.copy(water1000mb, (long) 3500));
+        env.addStoredItem(IAEStack.copy(water1000mb, 3500));
 
         // Crafting should use the water bucket from the network and then the water directly.
         var plan = env.runSimulation(IAEStack.copy(grass, 2));
@@ -65,7 +66,8 @@ public class CraftingSimulationTest {
                 .succeeded()
                 .patternsMatch(grassPattern, 2)
                 .emittedMatch(mult(dirt, 2))
-                .usedMatch(mult(waterBucket, 1), mult(water1mb, 3000));
+                .usedMatch(mult(waterBucket, 1), mult(water1mb, 3000))
+                .bytesMatch(3, 8, 0);
     }
 
     @Test
@@ -78,7 +80,9 @@ public class CraftingSimulationTest {
         var oakPlanks = item(Items.OAK_PLANKS);
         var craftingTable = item(Items.CRAFTING_TABLE);
 
-        var acaciaPattern = env.addPattern(plankRecipe(acaciaPlanks, acaciaLog));
+        var acaciaPattern = env.addPattern(new ProcessingPatternBuilder(IAEStack.copy(acaciaPlanks, 4))
+                .addPreciseInput(1, acaciaLog)
+                .build());
         var tablePattern = env.addPattern(new ProcessingPatternBuilder(craftingTable)
                 .addPreciseInput(4, acaciaPlanks, birchPlanks, oakPlanks)
                 .build());
@@ -110,16 +114,99 @@ public class CraftingSimulationTest {
                 .usedMatch(mult(acaciaPlanks, 2), birchPlanks, mult(oakPlanks, 2));
     }
 
+    @Test
+    public void testReusedBuckets() {
+        var env = new SimulationEnv();
+
+        var emptyBucket = item(Items.BUCKET);
+        var waterBucket = item(Items.WATER_BUCKET);
+        var grass = item(Items.GRASS);
+        var dirt = item(Items.DIRT);
+        var water1000mb = fluid(Fluids.WATER, 1000);
+
+        var grassPattern = env.addPattern(new ProcessingPatternBuilder(grass)
+                .addPreciseInput(1, dirt)
+                .addPreciseInput(1, true, waterBucket)
+                .build());
+        var bucketFilling = env.addPattern(new ProcessingPatternBuilder(waterBucket)
+                .addPreciseInput(1, emptyBucket)
+                .addPreciseInput(1, water1000mb)
+                .build());
+
+        env.addStoredItem(emptyBucket);
+        env.addStoredItem(mult(dirt, 10000));
+        env.addEmitable(water1000mb);
+
+        var plan = env.runSimulation(mult(grass, 100));
+        assertThatPlan(plan)
+                .succeeded()
+                .patternsMatch(grassPattern, 100, bucketFilling, 100)
+                .emittedMatch(mult(water1000mb, 100))
+                .usedMatch(emptyBucket, mult(dirt, 100))
+                .bytesMatch(5, 500, 100);
+        // the important thing is that the bucket was reused, so only 1 needed to be extracted from the network!
+    }
+
+    @Test
+    public void testDamagedOutput() {
+        testDamagedOutput(false);
+        testDamagedOutput(true);
+    }
+
+    public void testDamagedOutput(boolean branching) {
+        var env = new SimulationEnv();
+
+        var pickaxeStack = new ItemStack(Items.DIAMOND_PICKAXE);
+        pickaxeStack.setDamageValue(100);
+        var damagedPickaxe = AEItemStack.fromItemStack(pickaxeStack);
+        var cobble = item(Items.COBBLESTONE);
+        var stone = item(Items.STONE);
+        var diamond = item(Items.DIAMOND);
+        var stick = item(Items.STICK);
+
+        var cobblePattern = env.addPattern(new ProcessingPatternBuilder(cobble)
+                .addPreciseInput(1, stone)
+                .addDamageableInput(damagedPickaxe.getItem())
+                .build());
+        // "By mistake" the pattern was encoded with a damaged output, test that it still behaves as expected!
+        // In some cases, this mistake is not easy to spot (e.g. with seeds), hence we support this mistake.
+        // This is what the weird checks in CraftingService#getCraftingFor are for.
+        var pickaxePattern = env.addPattern(new ProcessingPatternBuilder(damagedPickaxe)
+                .addPreciseInput(3, diamond)
+                .addPreciseInput(2, stick)
+                .build());
+        if (branching) {
+            // Just to toggle the branching behavior in the node.
+            // This pattern is not craftable so it has no effect on the results of the calculation.
+            env.addPattern(new ProcessingPatternBuilder(damagedPickaxe)
+                    .addPreciseInput(42, item(Items.BEDROCK))
+                    .build());
+        }
+
+        env.addStoredItem(mult(stone, 1000));
+        env.addStoredItem(mult(diamond, 3));
+        env.addStoredItem(mult(stick, 2));
+
+        var plan = env.runSimulation(mult(cobble, 100));
+        assertThatPlan(plan)
+                .succeeded()
+                .patternsMatch(cobblePattern, 100, pickaxePattern, 1)
+                .emittedMatch()
+                .usedMatch(mult(stone, 100), mult(diamond, 3), mult(stick, 2))
+                .bytesMatch(branching ? 6 : 5, 300 + 3 + 2, 100);
+        // note that the pickaxe is only crafted once, and then reused!
+    }
+
     private static IAEItemStack item(Item item) {
         return AEItemStack.fromItemStack(new ItemStack(item));
     }
 
-    private static IPatternDetails plankRecipe(IAEItemStack plank, IAEItemStack log) {
-        return new ProcessingPatternBuilder(IAEStack.copy(plank, 4)).addPreciseInput(1, log).build();
+    private static IAEFluidStack fluid(Fluid fluid, int amount) {
+        return AEFluidStack.fromFluidStack(new FluidStack(fluid, amount));
     }
 
     private static IAEStack mult(IAEStack template, long multiplier) {
-        var r = (IAEStack) IAEStack.copy(template);
+        var r = IAEStack.copy(template);
         r.multStackSize(multiplier);
         return r;
     }
@@ -170,16 +257,12 @@ public class CraftingSimulationTest {
             for (var stack : expectedStacks) {
                 expectedList.addStorage(stack);
             }
-            var expected = Lists.newArrayList(expectedList);
-            var actual = Lists.newArrayList(actualList);
-            assertThat(expected.size()).isEqualTo(actual.size());
+            assertThat(actualList.size()).isEqualTo(expectedList.size());
+            for (var expected : expectedList) {
+                var actual = actualList.findPrecise(expected);
 
-            for (int i = 0; i < expected.size(); ++i) {
-                var expectedStack = expected.get(i);
-                var actualStack = actual.get(i);
-                assertThat(actualStack).isEqualTo(expectedStack);
-                // Must check the amount, equals only checks the type.
-                assertThat(actualStack.getStackSize()).isEqualTo(expectedStack.getStackSize());
+                assertThat(actual).isEqualTo(expected);
+                assertThat(actual.getStackSize()).isEqualTo(expected.getStackSize());
             }
 
             return this;
@@ -195,6 +278,13 @@ public class CraftingSimulationTest {
 
         public CraftingPlanAssert usedMatch(IAEStack... usedStacks) {
             return listMatches(plan.usedItems(), usedStacks);
+        }
+
+        public CraftingPlanAssert bytesMatch(long nodeCount, long nodeRequests, long containerItems) {
+            long patternBytes = plan.patternTimes().values().stream().reduce(0L, Long::sum);
+            long totalBytes = nodeCount * 8 + patternBytes + nodeRequests + containerItems;
+            assertThat(plan.bytes()).isEqualTo(totalBytes);
+            return this;
         }
     }
 }

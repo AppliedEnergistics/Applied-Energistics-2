@@ -27,7 +27,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -53,20 +52,16 @@ public class CraftingCalculation {
     private final IAEStack output;
     private boolean simulate = false;
     final IActionSource actionSrc;
-    private final ICraftingCallback callback;
     private boolean running = false;
     private boolean done = false;
     private int time = 5;
     private int incTime = Integer.MAX_VALUE;
 
-    public CraftingCalculation(final Level level, final IGrid grid, final IActionSource actionSrc,
-            final IAEStack what,
-            final ICraftingCallback callback) {
+    public CraftingCalculation(Level level, IGrid grid, IActionSource actionSrc, IAEStack what) {
         this.level = level;
         this.output = IAEStack.copy(what);
         this.actionSrc = actionSrc;
 
-        this.callback = callback;
         final ICraftingService cc = grid.getCraftingService();
         final IStorageService sg = grid.getStorageService();
         this.networkInv = new NetworkCraftingSimulationState(sg, actionSrc);
@@ -106,7 +101,7 @@ public class CraftingCalculation {
         // Do the crafting. Throws in case of failure.
         this.tree.request(craftingInventory, this.output.getStackSize(), null);
         // Add bytes for the tree size.
-        craftingInventory.addBytes(this.tree.getTreeSize() * 8);
+        craftingInventory.addBytes(this.tree.getNodeCount() * 8);
 
         // TODO: log tree?
         // for (final String s : this.opsAndMultiplier.keySet()) {
@@ -114,8 +109,9 @@ public class CraftingCalculation {
         // AELog.crafting(s + " * " + ti.times + " = " + ti.perOp * ti.times);
         // }
 
-        this.logCraftingJob(simulate ? "simulate" : "real", timer);
-        return CraftingSimulationState.buildCraftingPlan(craftingInventory, this);
+        var plan = CraftingSimulationState.buildCraftingPlan(craftingInventory, this);
+        this.logCraftingJob(plan, timer);
+        return plan;
     }
 
     void handlePausing() throws InterruptedException {
@@ -148,11 +144,6 @@ public class CraftingCalculation {
     }
 
     private void finish() {
-        if (this.callback != null) {
-            // TODO: figure out whether the callback should only be called in case of success, and actually call it.
-            // this.callback.calculationComplete(this);
-        }
-
         synchronized (this.monitor) {
             this.running = false;
             this.done = true;
@@ -211,7 +202,7 @@ public class CraftingCalculation {
         return true;
     }
 
-    private void logCraftingJob(String type, Stopwatch timer) {
+    private void logCraftingJob(CraftingPlan plan, Stopwatch timer) {
         if (AELog.isCraftingLogEnabled()) {
             final String itemToOutput = this.output.toString();
             final long elapsedTime = timer.elapsed(TimeUnit.MILLISECONDS);
@@ -229,8 +220,8 @@ public class CraftingCalculation {
                 actionSource = "[unknown source]";
             }
 
-            // TODO: bytes
-            AELog.crafting(LOG_CRAFTING_JOB, type, actionSource, itemToOutput, 0, elapsedTime);
+            String type = plan.simulation() ? "simulation" : "real";
+            AELog.crafting(LOG_CRAFTING_JOB, type, actionSource, itemToOutput, plan.bytes(), elapsedTime);
         }
     }
 

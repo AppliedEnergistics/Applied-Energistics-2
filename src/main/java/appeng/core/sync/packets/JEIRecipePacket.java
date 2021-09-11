@@ -324,7 +324,7 @@ public class JEIRecipePacket extends BasePacket {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemStack::fromItemStack)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
-                .peek(s -> s.setCraftable(!crafting.getCraftingFor(s, null, 0, null).isEmpty()))//
+                .peek(s -> s.setCraftable(!crafting.getCraftingFor(s).isEmpty()))//
                 .filter(IAEItemStack::isCraftable);
         return getMostStored(stacks, storage, cct);
     }

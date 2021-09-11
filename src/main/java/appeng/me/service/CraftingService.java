@@ -24,6 +24,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.*;
 
@@ -31,6 +34,7 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -44,6 +48,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.MixedItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 import appeng.crafting.CraftingCalculation;
@@ -85,6 +90,7 @@ public class CraftingService
     private final IGrid grid;
     private final Map<IPatternDetails, SortedMultiset<CraftingMedium>> craftingMethods = new HashMap<>();
     private final Map<IAEStack, ImmutableList<IPatternDetails>> craftableItems = new HashMap<>();
+    private final MixedItemList craftableItemsList = new MixedItemList();
     private final Set<IAEStack> emitableItems = new HashSet<>();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
@@ -180,6 +186,7 @@ public class CraftingService
         // erase list.
         this.craftingMethods.clear();
         this.craftableItems.clear();
+        this.craftableItemsList.resetStatus();
         this.emitableItems.clear();
 
         // Send an update for the items that had patterns previously.
@@ -207,7 +214,9 @@ public class CraftingService
 
         // make them immutable
         for (final Entry<IAEStack, Set<IPatternDetails>> e : tmpCraft.entrySet()) {
-            this.craftableItems.put(e.getKey(), ImmutableList.copyOf(e.getValue()));
+            var output = e.getKey();
+            this.craftableItems.put(output, ImmutableList.copyOf(e.getValue()));
+            this.craftableItemsList.add(output);
         }
 
         // Post new craftable items to the opened terminals.
@@ -296,34 +305,28 @@ public class CraftingService
     }
 
     @Override
-    public ImmutableCollection<IPatternDetails> getCraftingFor(final IAEStack whatToCraft,
-            final IPatternDetails details, final int slotIndex, final Level level) {
-        final ImmutableList<IPatternDetails> res = this.craftableItems.get(whatToCraft);
+    public ImmutableCollection<IPatternDetails> getCraftingFor(final IAEStack whatToCraft) {
+        return this.craftableItems.getOrDefault(whatToCraft, ImmutableList.of());
+    }
 
-        if (res == null) {
-            // TODO: restore this for item stacks
-            /*
-             * if (details != null && details.isCrafting()) { for (var ais : this.craftableItems.keySet()) { // TODO:
-             * check if OK // TODO: this is slightly hacky, but fine as long as we only deal with itemstacks if
-             * (ais.getItem() == whatToCraft.getItem() && (!ais.getItem().canBeDepleted() || ais.getItemDamage() ==
-             * whatToCraft.getItemDamage()) && details.getInputs()[slotIndex].isValid(ais, level)) { return
-             * this.craftableItems.get(ais); } } }
-             */
-
-            return ImmutableSet.of();
+    @Nullable
+    @Override
+    public IAEStack getFuzzyCraftable(IAEStack whatToCraft, Predicate<IAEStack> filter) {
+        for (var fuzzy : craftableItemsList.findFuzzy(whatToCraft, FuzzyMode.IGNORE_ALL)) {
+            if (filter.test(fuzzy)) {
+                return IAEStack.copy(fuzzy, whatToCraft.getStackSize());
+            }
         }
-
-        return res;
+        return null;
     }
 
     @Override
-    public Future<ICraftingPlan> beginCraftingJob(final Level level, final IActionSource actionSrc,
-            final IAEStack slotItem, final ICraftingCallback cb) {
+    public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack slotItem) {
         if (level == null || actionSrc == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }
 
-        final CraftingCalculation job = new CraftingCalculation(level, grid, actionSrc, slotItem, cb);
+        final CraftingCalculation job = new CraftingCalculation(level, grid, actionSrc, slotItem);
 
         return CRAFTING_POOL.submit(job::run);
     }

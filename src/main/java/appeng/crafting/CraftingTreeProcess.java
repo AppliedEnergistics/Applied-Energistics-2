@@ -134,33 +134,26 @@ public class CraftingTreeProcess {
         inv.addBytes(times);
     }
 
-    long getTreeSize() {
+    long getNodeCount() {
         long tot = 0;
 
         for (CraftingTreeNode node : this.nodes.keySet()) {
-            tot += node.getTreeSize();
+            tot += node.getNodeCount();
         }
 
         return tot;
     }
 
-    IAEStack getMatchingOutput(IAEStack requestedItem) {
+    long getOutputCount(IAEStack what) {
+        long tot = 0;
+
         for (var is : this.details.getOutputs()) {
-            if (is.equals(requestedItem)) {
-                return IAEStack.copy(is);
+            if (is.equals(what)) {
+                tot += is.getStackSize();
             }
         }
 
-        // TODO: restore this for items
-        // more fuzzy!
-        // for (final IAEItemStack is : this.details.getOutputs()) {
-        // if (is.getItem() == requestedItem.getItem()
-        // && (!is.getItem().canBeDepleted() || is.getItemDamage() == requestedItem.getItemDamage())) {
-        // return is.copy();
-        // }
-        // }
-
-        throw new IllegalStateException("Crafting Tree construction failed.");
+        return tot;
     }
 
     boolean hasMultiplePaths() {

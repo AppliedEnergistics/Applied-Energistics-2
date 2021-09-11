@@ -875,6 +875,7 @@ public class Platform {
      * Gets the container item for the given item or EMPTY. A container item is what remains when the item is used for
      * crafting, i.E. the empty bucket for a bucket of water.
      */
+    // TODO: investigate if all these special cases make sense. E.g. item == null isn't possible anymore.
     public static ItemStack getContainerItem(final ItemStack stackInSlot) {
         if (stackInSlot == null) {
             return ItemStack.EMPTY;

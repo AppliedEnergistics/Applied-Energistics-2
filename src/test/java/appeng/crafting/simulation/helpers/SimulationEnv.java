@@ -6,6 +6,9 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -14,6 +17,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
@@ -22,7 +26,6 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.storage.data.MixedItemList;
@@ -32,11 +35,14 @@ import appeng.me.helpers.BaseActionSource;
 
 public class SimulationEnv {
     private final Map<IAEStack, List<IPatternDetails>> patterns = new HashMap<>();
+    private final MixedItemList craftableItemsList = new MixedItemList();
     private final Set<IAEStack> emitableItems = new HashSet<>();
     private final MixedItemList networkStorage = new MixedItemList();
 
     public IPatternDetails addPattern(IPatternDetails pattern) {
-        patterns.computeIfAbsent(pattern.getPrimaryOutput(), s -> new ArrayList<>()).add(pattern);
+        var output = pattern.getPrimaryOutput();
+        patterns.computeIfAbsent(output, s -> new ArrayList<>()).add(pattern);
+        craftableItemsList.add(output);
         return pattern;
     }
 
@@ -64,8 +70,8 @@ public class SimulationEnv {
         return copy;
     }
 
-    public CraftingPlan runSimulation(IAEItemStack what) {
-        var calculation = new CraftingCalculation(mock(Level.class), gridMock, new BaseActionSource(), what, null);
+    public CraftingPlan runSimulation(IAEStack what) {
+        var calculation = new CraftingCalculation(mock(Level.class), gridMock, new BaseActionSource(), what);
         try {
             var calculationFuture = Executors.newSingleThreadExecutor().submit(calculation::run);
             calculation.simulateFor(1000000000);
@@ -89,19 +95,27 @@ public class SimulationEnv {
     private ICraftingService createCraftingServiceMock() {
         return new ICraftingService() {
             @Override
-            public ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack whatToCraft,
-                    IPatternDetails details, int slot, Level level) {
-                var patternList = patterns.get(whatToCraft);
-                if (patternList == null) {
+            public ImmutableCollection<IPatternDetails> getCraftingFor(final IAEStack whatToCraft) {
+                var list = patterns.get(whatToCraft);
+                if (list == null) {
                     return ImmutableList.of();
-                } else {
-                    return ImmutableList.copyOf(patternList);
                 }
+                return ImmutableList.copyOf(list);
+            }
+
+            @Nullable
+            @Override
+            public IAEStack getFuzzyCraftable(IAEStack whatToCraft, Predicate<IAEStack> filter) {
+                for (var fuzzy : craftableItemsList.findFuzzy(whatToCraft, FuzzyMode.IGNORE_ALL)) {
+                    if (filter.test(fuzzy)) {
+                        return IAEStack.copy(fuzzy, whatToCraft.getStackSize());
+                    }
+                }
+                return null;
             }
 
             @Override
-            public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat,
-                    ICraftingCallback callback) {
+            public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat) {
                 throw new UnsupportedOperationException();
             }
 

@@ -11,15 +11,15 @@ import appeng.api.storage.IStorageChannel;
  * List of generic IAEStacks.
  */
 public final class MixedItemList implements Iterable<IAEStack> {
-    private final Map<IStorageChannel<?>, IItemList<?>> chans = new IdentityHashMap<>();
+    private final Map<IStorageChannel<?>, IItemList<?>> lists = new IdentityHashMap<>();
 
     @SuppressWarnings("unchecked")
     public <T extends IAEStack> IItemList<T> getList(IStorageChannel<T> channel) {
-        return (IItemList<T>) chans.computeIfAbsent(channel, IStorageChannel::createList);
+        return (IItemList<T>) lists.computeIfAbsent(channel, IStorageChannel::createList);
     }
 
     private IItemList getList(IAEStack stack) {
-        return chans.computeIfAbsent(stack.getChannel(), IStorageChannel::createList);
+        return getList(stack.getChannel());
     }
 
     public void add(IAEStack stack) {
@@ -63,7 +63,7 @@ public final class MixedItemList implements Iterable<IAEStack> {
     }
 
     public boolean isEmpty() {
-        for (IItemList<?> list : chans.values()) {
+        for (IItemList<?> list : lists.values()) {
             if (!list.isEmpty()) {
                 return false;
             }
@@ -71,13 +71,21 @@ public final class MixedItemList implements Iterable<IAEStack> {
         return true;
     }
 
+    public int size() {
+        int tot = 0;
+        for (IItemList<?> list : lists.values()) {
+            tot += list.size();
+        }
+        return tot;
+    }
+
     public void resetStatus() {
-        chans.values().forEach(IItemList::resetStatus);
+        lists.values().forEach(IItemList::resetStatus);
     }
 
     @Override
     public Iterator<IAEStack> iterator() {
         return Iterators.concat(
-                Iterators.transform(chans.values().iterator(), IItemList::iterator));
+                Iterators.transform(lists.values().iterator(), IItemList::iterator));
     }
 }

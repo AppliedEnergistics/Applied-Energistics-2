@@ -24,6 +24,9 @@
 package appeng.api.networking.crafting;
 
 import java.util.concurrent.Future;
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
@@ -38,14 +41,18 @@ public interface ICraftingService extends IGridService {
 
     /**
      * @param whatToCraft requested craft
-     * @param level       crafting level
-     * @param slot        slot index
-     * @param details     pattern details
      *
      * @return a collection of crafting patterns for the item in question.
      */
-    ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack whatToCraft,
-            IPatternDetails details, int slot, Level level);
+    ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack whatToCraft);
+
+    /**
+     * Important: Never mutate the passed or returned stacks.
+     *
+     * @return another fuzzy equals stack that can be crafted and matches the filter, or null if none exists
+     */
+    @Nullable
+    IAEStack getFuzzyCraftable(IAEStack whatToCraft, Predicate<IAEStack> filter);
 
     /**
      * Begin calculating a crafting job.
@@ -53,13 +60,11 @@ public interface ICraftingService extends IGridService {
      * @param level     crafting level
      * @param actionSrc source
      * @param craftWhat result
-     * @param callback  callback -- optional
      *
      * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan} do not wait
      *         on this, your be waiting forever.
      */
-    Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat,
-            ICraftingCallback callback);
+    Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat);
 
     /**
      * Submit the job to the Crafting system for processing.
