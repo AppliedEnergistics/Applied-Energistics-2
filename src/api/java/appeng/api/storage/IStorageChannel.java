@@ -39,7 +39,7 @@ import net.minecraftforge.fluids.FluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-public interface IStorageChannel<T extends IAEStack<T>> {
+public interface IStorageChannel<T extends IAEStack> {
 
     /**
      * @return The unique ID of this storage channel.
@@ -107,4 +107,7 @@ public interface IStorageChannel<T extends IAEStack<T>> {
     @Nullable
     IForeignInventory<T> getForeignInventory(Level level, BlockPos pos, @Nullable BlockEntity blockEntity,
             Direction direction);
+
+    T copy(T stack);
+
 }

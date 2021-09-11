@@ -157,7 +157,7 @@ public abstract class DualityInterface {
      * If the interface has configured slots, it will <b>always</b> expose its local inventory instead of the grid's
      * inventory.
      */
-    private <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    private <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         if (hasConfig()) {
             return getLocalInventory(channel);
         }
@@ -174,7 +174,7 @@ public abstract class DualityInterface {
     /**
      * Returns an ME compatible monitor for the interface's local storage for a given storage channel.
      */
-    protected abstract <T extends IAEStack<T>> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel);
+    protected abstract <T extends IAEStack> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel);
 
     private class InterfaceRequestSource extends MachineSource {
         private final InterfaceRequestContext context;

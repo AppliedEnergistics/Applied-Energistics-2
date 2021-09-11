@@ -21,7 +21,7 @@ package appeng.util.prioritylist;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-public class PrecisePriorityList<T extends IAEStack<T>> implements IPartitionList<T> {
+public class PrecisePriorityList<T extends IAEStack> implements IPartitionList<T> {
 
     private final IItemList<T> list;
 

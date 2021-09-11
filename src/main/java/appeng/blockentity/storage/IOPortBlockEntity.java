@@ -266,7 +266,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
                 for (var c : StorageChannels.getAll()) {
                     if (itemsToMove > 0) {
-                        final IMEMonitor<? extends IAEStack<?>> network = grid.getStorageService()
+                        final IMEMonitor<? extends IAEStack> network = grid.getStorageService()
                                 .getInventory(c);
                         final IMEInventory<?> inv = this.getInv(is, c);
 

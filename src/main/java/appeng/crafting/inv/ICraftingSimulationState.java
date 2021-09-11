@@ -8,7 +8,7 @@ import appeng.api.storage.data.IAEStack;
  * to inventory contents.
  */
 public interface ICraftingSimulationState extends ICraftingInventory {
-    void emitItems(IAEStack<?> what);
+    void emitItems(IAEStack what);
 
     void addBytes(long bytes);
 

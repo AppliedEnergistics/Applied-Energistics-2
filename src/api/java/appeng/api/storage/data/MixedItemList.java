@@ -10,43 +10,43 @@ import appeng.api.storage.IStorageChannel;
 /**
  * List of generic IAEStacks.
  */
-public final class MixedItemList implements Iterable<IAEStack<?>> {
+public final class MixedItemList implements Iterable<IAEStack> {
     private final Map<IStorageChannel<?>, IItemList<?>> chans = new IdentityHashMap<>();
 
     @SuppressWarnings("unchecked")
-    public <T extends IAEStack<T>> IItemList<T> getList(IStorageChannel<T> channel) {
+    public <T extends IAEStack> IItemList<T> getList(IStorageChannel<T> channel) {
         return (IItemList<T>) chans.computeIfAbsent(channel, IStorageChannel::createList);
     }
 
-    private IItemList getList(IAEStack<?> stack) {
+    private IItemList getList(IAEStack stack) {
         return chans.computeIfAbsent(stack.getChannel(), IStorageChannel::createList);
     }
 
-    public void add(IAEStack<?> stack) {
+    public void add(IAEStack stack) {
         if (stack != null) {
             getList(stack).add(stack);
         }
     }
 
-    public void addCrafting(IAEStack<?> stack) {
+    public void addCrafting(IAEStack stack) {
         if (stack != null) {
             getList(stack).addCrafting(stack);
         }
     }
 
-    public void addStorage(IAEStack<?> stack) {
+    public void addStorage(IAEStack stack) {
         if (stack != null) {
             getList(stack).addStorage(stack);
         }
     }
 
-    public void addRequestable(IAEStack<?> stack) {
+    public void addRequestable(IAEStack stack) {
         if (stack != null) {
             getList(stack).addRequestable(stack);
         }
     }
 
-    public IAEStack<?> findPrecise(IAEStack<?> stack) {
+    public IAEStack findPrecise(IAEStack stack) {
         if (stack != null) {
             return getList(stack).findPrecise(stack);
         } else {
@@ -54,7 +54,7 @@ public final class MixedItemList implements Iterable<IAEStack<?>> {
         }
     }
 
-    public Collection<IAEStack<?>> findFuzzy(IAEStack<?> stack, FuzzyMode fuzzy) {
+    public Collection<IAEStack> findFuzzy(IAEStack stack, FuzzyMode fuzzy) {
         if (stack != null) {
             return getList(stack).findFuzzy(stack, fuzzy);
         } else {
@@ -76,7 +76,7 @@ public final class MixedItemList implements Iterable<IAEStack<?>> {
     }
 
     @Override
-    public Iterator<IAEStack<?>> iterator() {
+    public Iterator<IAEStack> iterator() {
         return Iterators.concat(
                 Iterators.transform(chans.values().iterator(), IItemList::iterator));
     }

@@ -27,7 +27,7 @@ import appeng.api.storage.data.IAEStack;
  * Represents a client-side only repository of {@link GridInventoryEntry} entries that represent the network content
  * currently known to the client. This is actively synchronized by the server via {@link IncrementalUpdateHelper}.
  */
-public interface IClientRepo<T extends IAEStack<T>> {
+public interface IClientRepo<T extends IAEStack> {
 
     /**
      * Handle incoming updates from the server.

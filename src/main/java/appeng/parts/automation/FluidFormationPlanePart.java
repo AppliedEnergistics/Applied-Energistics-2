@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -135,7 +136,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
                     return input;
                 }
             }
-            final IAEFluidStack ret = input.copy();
+            final IAEFluidStack ret = IAEStack.copy(input);
             ret.setStackSize(input.getStackSize() - FluidAttributes.BUCKET_VOLUME);
             return ret.getStackSize() == 0 ? null : ret;
         }

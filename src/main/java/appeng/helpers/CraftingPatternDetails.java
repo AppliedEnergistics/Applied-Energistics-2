@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import appeng.api.storage.data.IAEStack;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -90,7 +91,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails {
         final List<IAEItemStack> products = templateItem.getProducts(itemStack);
         final ResourceLocation recipeId = templateItem.getCraftingRecipeId(itemStack);
 
-        this.pattern = is.copy();
+        this.pattern = IAEStack.copy(is);
         this.isCraftable = recipeId != null;
         this.canSubstitute = templateItem.allowsSubstitution(itemStack);
 
@@ -107,7 +108,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails {
                 this.markItemAs(x, gs, TestStatus.ACCEPT);
             }
 
-            in.add(ais != null ? ais.copy() : null);
+            in.add(ais != null ? IAEStack.copy(ais) : null);
             this.testFrame.setItem(x, gs);
         }
 
@@ -129,7 +130,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails {
             for (int x = 0; x < PROCESSING_OUTPUT_LIMIT; x++) {
                 final IAEItemStack ais = products.get(x);
 
-                out.add(ais != null ? ais.copy() : null);
+                out.add(ais != null ? IAEStack.copy(ais) : null);
             }
         }
 
@@ -393,8 +394,11 @@ public class CraftingPatternDetails implements ICraftingPatternDetails {
      */
     private List<IAEItemStack> condenseStacks(Collection<IAEItemStack> collection) {
         final List<IAEItemStack> merged = collection.stream().filter(Objects::nonNull)
-                .collect(Collectors.toMap(Function.identity(), IAEItemStack::copy,
-                        (left, right) -> left.setStackSize(left.getStackSize() + right.getStackSize())))
+                .collect(Collectors.toMap(Function.identity(), itemStack -> IAEStack.copy(itemStack),
+                        (left, right) -> {
+                            left.setStackSize(left.getStackSize() + right.getStackSize());
+                            return left;
+                        }))
                 .values().stream().sorted(COMPARE_BY_STACKSIZE).collect(ImmutableList.toImmutableList());
 
         if (merged.isEmpty()) {

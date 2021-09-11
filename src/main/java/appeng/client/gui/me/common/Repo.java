@@ -50,7 +50,7 @@ import appeng.util.prioritylist.IPartitionList;
  * For showing the network content of a storage channel, this class will maintain a client-side copy of the current
  * server-side storage, which is continuously synchronized to the client while it is open.
  */
-public abstract class Repo<T extends IAEStack<T>> implements IClientRepo<T> {
+public abstract class Repo<T extends IAEStack> implements IClientRepo<T> {
 
     private int rowSize = 9;
 

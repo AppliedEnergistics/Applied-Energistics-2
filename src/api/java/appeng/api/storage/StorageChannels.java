@@ -76,7 +76,7 @@ public final class StorageChannels {
      * @param channel        The channel type, must be a subtype of {@link IStorageChannel}
      * @param implementation An instance implementing the channel.
      */
-    public static synchronized <T extends IAEStack<T>, C extends IStorageChannel<T>> void register(
+    public static synchronized <T extends IAEStack, C extends IStorageChannel<T>> void register(
             @Nonnull Class<C> channel,
             @Nonnull C implementation) {
         Preconditions.checkNotNull(channel, "channel");
@@ -107,7 +107,7 @@ public final class StorageChannels {
      * @throws IllegalArgumentException when fetching an unregistered channel.
      */
     @Nonnull
-    public static <T extends IAEStack<T>, C extends IStorageChannel<T>> C get(@Nonnull Class<C> channel) {
+    public static <T extends IAEStack, C extends IStorageChannel<T>> C get(@Nonnull Class<C> channel) {
         var result = registry.getInstance(channel);
         if (result == null) {
             throw new IllegalArgumentException("No storage channel registered with interface " + channel);

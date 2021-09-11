@@ -33,7 +33,7 @@ import appeng.menu.me.common.GridInventoryEntry;
  * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the
  * client-side {@link ItemRepo}.
  */
-public class RepoSlot<T extends IAEStack<T>> extends ClientReadOnlySlot {
+public class RepoSlot<T extends IAEStack> extends ClientReadOnlySlot {
 
     private final Repo<T> repo;
     private final int offset;
@@ -95,7 +95,7 @@ public class RepoSlot<T extends IAEStack<T>> extends ClientReadOnlySlot {
      */
     @SuppressWarnings("unchecked")
     @Nullable
-    public static <T extends IAEStack<T>> RepoSlot<T> tryCast(Repo<T> repo, @Nullable Slot slot) {
+    public static <T extends IAEStack> RepoSlot<T> tryCast(Repo<T> repo, @Nullable Slot slot) {
         if (slot instanceof RepoSlot<?>repoSlot) {
             if (repoSlot.repo == repo) {
                 return (RepoSlot<T>) repoSlot;

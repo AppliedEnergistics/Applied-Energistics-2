@@ -57,10 +57,10 @@ public class CraftingSimulationTest {
         // Let's add 1 stored water bucket and 3500 mb.
         // We add a little bit more water to test that exact multiples of the template get extracted.
         env.addStoredItem(waterBucket);
-        env.addStoredItem(water1000mb.copyWithStackSize(3500));
+        env.addStoredItem(IAEStack.copy(water1000mb, (long) 3500));
 
         // Crafting should use the water bucket from the network and then the water directly.
-        var plan = env.runSimulation(grass.copyWithStackSize(2));
+        var plan = env.runSimulation(IAEStack.copy(grass, 2));
         assertThatPlan(plan)
                 .succeeded()
                 .patternsMatch(grassPattern, 2)
@@ -91,7 +91,7 @@ public class CraftingSimulationTest {
         var successEnv = env.copy();
         successEnv.addStoredItem(acaciaLog);
 
-        var successPlan = successEnv.runSimulation(craftingTable.copyWithStackSize(2));
+        var successPlan = successEnv.runSimulation(IAEStack.copy(craftingTable, 2));
         assertThatPlan(successPlan)
                 .succeeded()
                 .patternsMatch(tablePattern, 2, acaciaPattern, 1)
@@ -101,7 +101,7 @@ public class CraftingSimulationTest {
         // That's because the simulation sees it can extract 5 planks before it attempts to craft more.
 
         // Network only has 2 acacia planks, 1 birch plank, 2 oak planks for two tables. 1 acacia log is missing.
-        var failurePlan = env.runSimulation(craftingTable.copyWithStackSize(2));
+        var failurePlan = env.runSimulation(IAEStack.copy(craftingTable, 2));
         assertThatPlan(failurePlan)
                 .failed()
                 .patternsMatch(tablePattern, 2, acaciaPattern, 1)
@@ -115,11 +115,13 @@ public class CraftingSimulationTest {
     }
 
     private static IPatternDetails plankRecipe(IAEItemStack plank, IAEItemStack log) {
-        return new ProcessingPatternBuilder(plank.copyWithStackSize(4)).addPreciseInput(1, log).build();
+        return new ProcessingPatternBuilder(IAEStack.copy(plank, 4)).addPreciseInput(1, log).build();
     }
 
-    private static IAEStack<?> mult(IAEStack<?> template, long multiplier) {
-        return template.copy().multStackSize(multiplier);
+    private static IAEStack mult(IAEStack template, long multiplier) {
+        var r = (IAEStack) IAEStack.copy(template);
+        r.multStackSize(multiplier);
+        return r;
     }
 
     private static CraftingPlanAssert assertThatPlan(CraftingPlan plan) {
@@ -163,7 +165,7 @@ public class CraftingSimulationTest {
             return patternsMatch(Map.of(p1, t1, p2, t2, p3, t3));
         }
 
-        private CraftingPlanAssert listMatches(MixedItemList actualList, IAEStack<?>... expectedStacks) {
+        private CraftingPlanAssert listMatches(MixedItemList actualList, IAEStack... expectedStacks) {
             var expectedList = new MixedItemList();
             for (var stack : expectedStacks) {
                 expectedList.addStorage(stack);
@@ -183,15 +185,15 @@ public class CraftingSimulationTest {
             return this;
         }
 
-        public CraftingPlanAssert emittedMatch(IAEStack<?>... emittedStacks) {
+        public CraftingPlanAssert emittedMatch(IAEStack... emittedStacks) {
             return listMatches(plan.emittedItems(), emittedStacks);
         }
 
-        public CraftingPlanAssert missingMatch(IAEStack<?>... missingStacks) {
+        public CraftingPlanAssert missingMatch(IAEStack... missingStacks) {
             return listMatches(plan.missingItems(), missingStacks);
         }
 
-        public CraftingPlanAssert usedMatch(IAEStack<?>... usedStacks) {
+        public CraftingPlanAssert usedMatch(IAEStack... usedStacks) {
             return listMatches(plan.usedItems(), usedStacks);
         }
     }

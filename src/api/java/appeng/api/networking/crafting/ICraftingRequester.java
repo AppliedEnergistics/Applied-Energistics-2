@@ -49,7 +49,7 @@ public interface ICraftingRequester extends IActionHost, IGridNodeService {
      *
      * @return unwanted item
      */
-    IAEStack<?> injectCraftedItems(ICraftingLink link, IAEStack<?> items, Actionable mode);
+    IAEStack injectCraftedItems(ICraftingLink link, IAEStack items, Actionable mode);
 
     /**
      * called when the job changes from in progress, to either complete, or canceled.

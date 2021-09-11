@@ -111,7 +111,7 @@ public class DualityItemInterface
     private final UpgradeInventory upgrades;
     private boolean hasConfig = false;
     private List<IPatternDetails> craftingList = null;
-    private List<IAEStack<?>> waitingToSend = null;
+    private List<IAEStack> waitingToSend = null;
     private IMEInventory<IAEItemStack> destination;
     private int isWorking = -1;
 
@@ -210,7 +210,7 @@ public class DualityItemInterface
         this.updateCraftingList();
     }
 
-    private void addToSendList(final IAEStack<?> is) {
+    private void addToSendList(final IAEStack is) {
         if (is == null || is.getStackSize() == 0) {
             return;
         }
@@ -320,28 +320,28 @@ public class DualityItemInterface
         final ItemStack stored = this.storage.getStackInSlot(slot);
 
         if (req == null && !stored.isEmpty()) {
-            final IAEItemStack work = StorageChannels.items()
-                    .createStack(stored);
-            this.requireWork[slot] = work.setStackSize(-work.getStackSize());
+            var work = StorageChannels.items().createStack(stored);
+            work.setStackSize(-work.getStackSize());
+            this.requireWork[slot] = work;
             return;
         } else if (req != null) {
             if (stored.isEmpty()) // need to add stuff!
             {
-                this.requireWork[slot] = req.copy();
+                this.requireWork[slot] = IAEStack.copy(req);
                 return;
             } else if (req.isSameType(stored)) // same type ( qty different? )!
             {
                 if (req.getStackSize() != stored.getCount()) {
-                    this.requireWork[slot] = req.copy();
+                    this.requireWork[slot] = IAEStack.copy(req);
                     this.requireWork[slot].setStackSize(req.getStackSize() - stored.getCount());
                     return;
                 }
             } else
             // Stored != null; dispose!
             {
-                final IAEItemStack work = StorageChannels.items()
-                        .createStack(stored);
-                this.requireWork[slot] = work.setStackSize(-work.getStackSize());
+                var work = StorageChannels.items().createStack(stored);
+                work.setStackSize(-work.getStackSize());
+                this.requireWork[slot] = work;
                 return;
             }
         }
@@ -425,7 +425,7 @@ public class DualityItemInterface
         final BlockEntity blockEntity = this.host.getBlockEntity();
         final Level level = blockEntity.getLevel();
 
-        final Iterator<IAEStack<?>> i = this.waitingToSend.iterator();
+        final Iterator<IAEStack> i = this.waitingToSend.iterator();
         while (i.hasNext()) {
             var whatToSend = i.next();
 
@@ -519,7 +519,7 @@ public class DualityItemInterface
                 return this.handleCrafting(slot, adaptor, itemStack);
             }
         } else if (itemStack.getStackSize() < 0) {
-            IAEItemStack toStore = itemStack.copy();
+            IAEItemStack toStore = IAEStack.copy(itemStack);
             toStore.setStackSize(-toStore.getStackSize());
 
             long diff = toStore.getStackSize();
@@ -571,7 +571,7 @@ public class DualityItemInterface
      * Returns an ME compatible monitor for the interfaces local storage.
      */
     @Override
-    protected <T extends IAEStack<T>> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
+    protected <T extends IAEStack> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
         if (channel == StorageChannels.items()) {
             if (localInvHandler == null) {
                 localInvHandler = new InterfaceInventory();
@@ -783,8 +783,8 @@ public class DualityItemInterface
     }
 
     @Override
-    public IAEStack<?> injectCraftedItems(final ICraftingLink link, final IAEStack<?> stack,
-            final Actionable mode) {
+    public IAEStack injectCraftedItems(final ICraftingLink link, final IAEStack stack,
+                                       final Actionable mode) {
         // Cast is safe: we know we only requested items.
         var acquired = (IAEItemStack) stack;
         final int slot = this.craftingTracker.getSlot(link);

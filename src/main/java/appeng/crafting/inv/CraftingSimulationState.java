@@ -44,22 +44,23 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         this.requiredExtract = new MixedItemList();
     }
 
-    protected abstract IAEStack<?> simulateExtractParent(IAEStack<?> input);
+    protected abstract IAEStack simulateExtractParent(IAEStack input);
 
-    protected abstract Collection<IAEStack<?>> findFuzzyParent(IAEStack<?> input);
+    protected abstract Collection<IAEStack> findFuzzyParent(IAEStack input);
 
-    private void cacheFuzzy(IAEStack<?> stack) {
+    private void cacheFuzzy(IAEStack stack) {
         if (unmodifiedCache.findFuzzy(stack, FuzzyMode.IGNORE_ALL).isEmpty()) {
-            Collection<IAEStack<?>> toCache = findFuzzyParent(stack);
+            Collection<IAEStack> toCache = findFuzzyParent(stack);
             boolean insertedAny = false;
 
-            for (IAEStack<?> stackToCache : toCache) {
+            for (IAEStack stackToCache : toCache) {
                 // not cached yet.
-                IAEStack<?> extracted = simulateExtractParent(stackToCache);
+                IAEStack extracted = simulateExtractParent(stackToCache);
                 if (extracted != null) {
                     insertedAny = true;
                     // we set craftable to true to ensure the entries never get removed from the list.
-                    extracted.setCountRequestable(0).setCraftable(true);
+                    extracted.setCountRequestable(0);
+                    extracted.setCraftable(true);
                 }
                 modifiableCache.add(extracted);
                 unmodifiedCache.add(extracted);
@@ -67,30 +68,35 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
 
             if (!insertedAny) {
                 // make sure we don't requery the parent next time
-                unmodifiedCache.addCrafting(stack.copy().setCraftable(true));
+                var craftable = (IAEStack) IAEStack.copy(stack);
+                craftable.setCraftable(true);
+                unmodifiedCache.addCrafting(craftable);
             }
         }
     }
 
     @Override
-    public void injectItems(IAEStack<?> input, Actionable mode) {
+    public void injectItems(IAEStack input, Actionable mode) {
         if (input == null)
             return;
         cacheFuzzy(input);
 
         if (mode == Actionable.MODULATE) {
-            modifiableCache.add(input.copy().setCountRequestable(0).setCraftable(true));
+            var craftable = (IAEStack) IAEStack.copy(input);
+            craftable.setCountRequestable(0);
+            craftable.setCraftable(true);
+            modifiableCache.add(craftable);
         }
     }
 
-    private long getAmount(MixedItemList list, IAEStack<?> template) {
-        IAEStack<?> precise = list.findPrecise(template);
+    private long getAmount(MixedItemList list, IAEStack template) {
+        IAEStack precise = list.findPrecise(template);
         if (precise == null)
             return 0;
         return precise.getStackSize();
     }
 
-    private void updateRequiredExtract(IAEStack<?> template) {
+    private void updateRequiredExtract(IAEStack template) {
         long amountUnmodified = getAmount(unmodifiedCache, template);
         long amountModified = getAmount(modifiableCache, template);
         long amountDifference = amountUnmodified - amountModified;
@@ -99,19 +105,19 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
             long alreadyRequired = getAmount(this.requiredExtract, template);
 
             if (alreadyRequired < amountDifference) {
-                this.requiredExtract.addStorage(template.copyWithStackSize(amountDifference - alreadyRequired));
+                this.requiredExtract.addStorage(IAEStack.copy(template, amountDifference - alreadyRequired));
             }
         }
     }
 
     @Nullable
     @Override
-    public IAEStack<?> extractItems(IAEStack<?> input, Actionable mode) {
+    public IAEStack extractItems(IAEStack input, Actionable mode) {
         if (input == null)
             return null;
         cacheFuzzy(input);
 
-        IAEStack<?> precise = modifiableCache.findPrecise(input);
+        IAEStack precise = modifiableCache.findPrecise(input);
         if (precise == null)
             return null;
 
@@ -122,12 +128,12 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
 
         updateRequiredExtract(input);
 
-        return input.copyWithStackSize(extracted);
+        return IAEStack.copy(input, extracted);
     }
 
     @Nullable
     @Override
-    public Collection<IAEStack<?>> findFuzzyTemplates(IAEStack<?> input) {
+    public Collection<IAEStack> findFuzzyTemplates(IAEStack input) {
         if (input == null)
             return Collections.emptyList();
         cacheFuzzy(input);
@@ -136,7 +142,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     }
 
     @Override
-    public void emitItems(IAEStack<?> what) {
+    public void emitItems(IAEStack what) {
         this.emittedItems.add(what);
     }
 
@@ -150,24 +156,25 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         this.crafts.merge(details, crafts, Long::sum);
     }
 
-    public void ignore(IAEStack<?> stack) {
+    public void ignore(IAEStack stack) {
         cacheFuzzy(stack);
         unmodifiedCache.findPrecise(stack).setStackSize(0);
 
-        IAEStack<?> modifiablePrecise = modifiableCache.findPrecise(stack);
+        IAEStack modifiablePrecise = modifiableCache.findPrecise(stack);
         if (modifiablePrecise != null)
             modifiablePrecise.setStackSize(0);
     }
 
     public void applyDiff(CraftingSimulationState parent) {
-        for (IAEStack<?> stack : modifiableCache) {
-            IAEStack<?> unmodified = unmodifiedCache.findPrecise(stack);
+        for (IAEStack stack : modifiableCache) {
+            IAEStack unmodified = unmodifiedCache.findPrecise(stack);
             long sizeDelta = (unmodified == null ? 0 : unmodified.getStackSize()) - stack.getStackSize();
 
             if (sizeDelta > 0) {
-                parent.injectItems(stack.copyWithStackSize(sizeDelta), Actionable.MODULATE);
+                parent.injectItems(IAEStack.copy(stack, sizeDelta), Actionable.MODULATE);
             } else if (sizeDelta < 0) {
-                IAEStack<?> reallyExtracted = parent.extractItems(stack.copyWithStackSize(-sizeDelta),
+                long newStackSize = -sizeDelta;
+                IAEStack reallyExtracted = parent.extractItems(IAEStack.copy(stack, newStackSize),
                         Actionable.MODULATE);
 
                 if (reallyExtracted == null || reallyExtracted.getStackSize() != -sizeDelta) {
@@ -176,7 +183,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
             }
         }
 
-        for (IAEStack<?> toEmit : emittedItems) {
+        for (IAEStack toEmit : emittedItems) {
             parent.emitItems(toEmit);
         }
 

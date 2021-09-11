@@ -21,6 +21,7 @@ package appeng.core.api;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.data.IAEStack;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.BlockPos;
@@ -139,5 +140,10 @@ public final class FluidStorageChannel implements IFluidStorageChannel {
                 return !fluidHandler.drain(1000, IFluidHandler.FluidAction.SIMULATE).isEmpty();
             }
         };
+    }
+
+    @Override
+    public IAEFluidStack copy(IAEFluidStack stack) {
+        return IAEStack.copy(stack);
     }
 }

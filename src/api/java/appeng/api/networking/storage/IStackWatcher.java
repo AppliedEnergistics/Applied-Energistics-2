@@ -39,7 +39,7 @@ public interface IStackWatcher {
      * @param stack
      * @return true, if successfully added.
      */
-    boolean add(IAEStack<?> stack);
+    boolean add(IAEStack stack);
 
     /**
      * Remove a specific {@link IAEStack} from the watcher.
@@ -47,7 +47,7 @@ public interface IStackWatcher {
      * @param stack
      * @return true, if successfully removed.
      */
-    boolean remove(IAEStack<?> stack);
+    boolean remove(IAEStack stack);
 
     /**
      * Removes all watched stacks and resets the watcher to a clean state.

@@ -50,7 +50,7 @@ public class CraftingCalculation {
     private final Object monitor = new Object();
     private final Stopwatch watch = Stopwatch.createUnstarted();
     private final CraftingTreeNode tree;
-    private final IAEStack<?> output;
+    private final IAEStack output;
     private boolean simulate = false;
     final IActionSource actionSrc;
     private final ICraftingCallback callback;
@@ -60,10 +60,10 @@ public class CraftingCalculation {
     private int incTime = Integer.MAX_VALUE;
 
     public CraftingCalculation(final Level level, final IGrid grid, final IActionSource actionSrc,
-            final IAEStack<?> what,
+            final IAEStack what,
             final ICraftingCallback callback) {
         this.level = level;
-        this.output = what.copy();
+        this.output = IAEStack.copy(what);
         this.actionSrc = actionSrc;
 
         this.callback = callback;
@@ -71,10 +71,10 @@ public class CraftingCalculation {
         final IStorageService sg = grid.getStorageService();
         this.networkInv = new NetworkCraftingSimulationState(sg, actionSrc);
 
-        this.tree = new CraftingTreeNode(cc, this, what.copyWithStackSize(1), null, -1);
+        this.tree = new CraftingTreeNode(cc, this, IAEStack.copy(what, (long) 1), null, -1);
     }
 
-    void addMissing(IAEStack<?> stack) {
+    void addMissing(IAEStack stack) {
         missing.add(stack);
     }
 
@@ -164,7 +164,7 @@ public class CraftingCalculation {
         return this.simulate;
     }
 
-    public IAEStack<?> getOutput() {
+    public IAEStack getOutput() {
         return this.output;
     }
 

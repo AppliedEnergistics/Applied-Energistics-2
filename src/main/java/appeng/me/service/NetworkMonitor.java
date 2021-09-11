@@ -44,7 +44,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.ItemWatcher;
 
-public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
+public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
     @Nonnull
     private static final Deque<NetworkMonitor<?>> GLOBAL_DEPTH = Queues.newArrayDeque();
 
@@ -90,7 +90,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
         this.localDepthSemaphore--;
 
         if (this.localDepthSemaphore == 0) {
-            this.monitorDifference(request.copy(), leftover, true, src);
+            this.monitorDifference(IAEStack.copy(request), leftover, true, src);
         }
 
         return leftover;
@@ -139,7 +139,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
         this.localDepthSemaphore--;
 
         if (this.localDepthSemaphore == 0) {
-            this.monitorDifference(input.copy(), leftover, false, src);
+            this.monitorDifference(IAEStack.copy(input), leftover, false, src);
         }
 
         return leftover;
@@ -169,9 +169,9 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
         return this.listeners.entrySet().iterator();
     }
 
-    private T monitorDifference(final IAEStack<T> original, final T leftOvers, final boolean extraction,
-            final IActionSource src) {
-        final T diff = original.copy();
+    private T monitorDifference(final T original, final T leftOvers, final boolean extraction,
+                                final IActionSource src) {
+        final T diff = IAEStack.copy(original);
 
         if (extraction) {
             diff.setStackSize(leftOvers == null ? 0 : -leftOvers.getStackSize());
@@ -221,7 +221,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
             T difference = changedItem;
 
             if (!add && changedItem != null) {
-                difference = changedItem.copy();
+                difference = IAEStack.copy(changedItem);
                 difference.setStackSize(-changedItem.getStackSize());
             }
 
@@ -229,10 +229,10 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T> {
                 final Collection<ItemWatcher> list = this.service.getInterestManager().get(changedItem);
 
                 if (!list.isEmpty()) {
-                    IAEStack<T> fullStack = this.getStorageList().findPrecise(changedItem);
+                    IAEStack fullStack = this.getStorageList().findPrecise(changedItem);
 
                     if (fullStack == null) {
-                        fullStack = changedItem.copy();
+                        fullStack = IAEStack.copy(changedItem);
                         fullStack.setStackSize(0);
                     }
 

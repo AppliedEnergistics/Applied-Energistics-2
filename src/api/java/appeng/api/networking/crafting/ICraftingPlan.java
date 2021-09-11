@@ -13,7 +13,7 @@ public interface ICraftingPlan {
     /**
      * Final output of the job.
      */
-    IAEStack<?> finalOutput();
+    IAEStack finalOutput();
 
     /**
      * Total bytes used by the job.

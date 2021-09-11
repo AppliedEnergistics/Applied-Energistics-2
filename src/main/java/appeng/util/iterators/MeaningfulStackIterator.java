@@ -28,7 +28,7 @@ import appeng.api.storage.data.IAEStack;
  * This iterator will only return items from a collection that are meaningful (w.r.t. {@link IAEStack#isMeaningful()}.
  * Items that are not meaningful are automatically removed from the collection as it is being iterated.
  */
-public class MeaningfulStackIterator<T extends IAEStack<T>> implements Iterator<T> {
+public class MeaningfulStackIterator<T extends IAEStack> implements Iterator<T> {
     private final Iterator<T> parent;
     private T next;
 

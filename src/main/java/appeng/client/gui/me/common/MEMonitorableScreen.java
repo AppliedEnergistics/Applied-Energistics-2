@@ -87,7 +87,7 @@ import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public abstract class MEMonitorableScreen<T extends IAEStack<T>, C extends MEMonitorableMenu<T>>
+public abstract class MEMonitorableScreen<T extends IAEStack, C extends MEMonitorableMenu<T>>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
     private static final int MIN_ROWS = 3;

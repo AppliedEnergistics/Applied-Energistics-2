@@ -24,6 +24,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -128,22 +129,15 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public void add(final IAEItemStack option) {
-        if (option == null) {
-            return;
+    public boolean fuzzyEquals(final IAEStack other, final FuzzyMode mode) {
+        if (other instanceof AEItemStack otherItemStack) {
+            var itemStack = this.getDefinition();
+            var otherStack = otherItemStack.getDefinition();
+
+            return this.fuzzyItemStackComparison(itemStack, otherStack, mode);
+        } else {
+            return false;
         }
-
-        this.incStackSize(option.getStackSize());
-        this.setCountRequestable(this.getCountRequestable() + option.getCountRequestable());
-        this.setCraftable(this.isCraftable() || option.isCraftable());
-    }
-
-    @Override
-    public boolean fuzzyComparison(final IAEItemStack other, final FuzzyMode mode) {
-        final ItemStack itemStack = this.getDefinition();
-        final ItemStack otherStack = other.getDefinition();
-
-        return this.fuzzyItemStackComparison(itemStack, otherStack, mode);
     }
 
     @Override

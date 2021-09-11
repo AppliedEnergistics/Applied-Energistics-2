@@ -20,6 +20,7 @@ package appeng.parts.automation;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -111,7 +112,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
                     for (int i = 0; i < this.getConfig().getSlots(); i++) {
                         IAEFluidStack fluid = this.getConfig().getFluidInSlot(i);
                         if (fluid != null) {
-                            final IAEFluidStack toExtract = fluid.copy();
+                            final IAEFluidStack toExtract = IAEStack.copy(fluid);
 
                             toExtract.setStackSize(this.calculateAmountToSend());
 

@@ -20,7 +20,7 @@ package appeng.util.item;
 
 import appeng.api.storage.data.IAEStack;
 
-public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T> {
+public abstract class AEStack<T extends IAEStack> implements IAEStack {
 
     private boolean isCraftable;
     private long stackSize;
@@ -32,9 +32,8 @@ public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T> {
     }
 
     @Override
-    public T setStackSize(final long ss) {
+    public void setStackSize(final long ss) {
         this.stackSize = ss;
-        return (T) this;
     }
 
     @Override
@@ -43,9 +42,8 @@ public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T> {
     }
 
     @Override
-    public T setCountRequestable(final long countRequestable) {
+    public void setCountRequestable(final long countRequestable) {
         this.countRequestable = countRequestable;
-        return (T) this;
     }
 
     @Override
@@ -54,24 +52,15 @@ public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T> {
     }
 
     @Override
-    public T setCraftable(final boolean isCraftable) {
+    public void setCraftable(final boolean isCraftable) {
         this.isCraftable = isCraftable;
-        return (T) this;
     }
 
     @Override
-    public T reset() {
+    public void reset() {
         this.stackSize = 0;
         this.setCountRequestable(0);
         this.setCraftable(false);
-        return (T) this;
-    }
-
-    @Override
-    public T empty() {
-        final T dup = this.copy();
-        dup.reset();
-        return dup;
     }
 
     @Override

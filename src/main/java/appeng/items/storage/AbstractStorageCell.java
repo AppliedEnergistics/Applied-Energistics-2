@@ -57,7 +57,7 @@ import appeng.util.InventoryAdaptor;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseItem implements IStorageCell<T> {
+public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem implements IStorageCell<T> {
     /**
      * This can be retrieved when disassembling the storage cell.
      */

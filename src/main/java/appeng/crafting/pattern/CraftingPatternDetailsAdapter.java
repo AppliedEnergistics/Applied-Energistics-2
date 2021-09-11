@@ -122,7 +122,7 @@ public class CraftingPatternDetailsAdapter implements IPatternDetails {
         }
 
         @Override
-        public IAEStack<?>[] getPossibleInputs() {
+        public IAEStack[] getPossibleInputs() {
             return possibleInputs;
         }
 
@@ -132,7 +132,7 @@ public class CraftingPatternDetailsAdapter implements IPatternDetails {
         }
 
         @Override
-        public boolean isValid(IAEStack<?> stack, Level level) {
+        public boolean isValid(IAEStack stack, Level level) {
             return stack instanceof IAEItemStack input && legacy.isValidItemForSlot(slot, input.getDefinition(), level);
         }
 
@@ -143,7 +143,7 @@ public class CraftingPatternDetailsAdapter implements IPatternDetails {
 
         @Nullable
         @Override
-        public IAEStack<?> getContainerItem(IAEStack<?> input) {
+        public IAEStack getContainerItem(IAEStack input) {
             return Platform.getContainerItem((IAEItemStack) input);
         }
     }

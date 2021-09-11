@@ -9,7 +9,7 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 
 public class GenericStackHelper {
-    public static CompoundTag writeGenericStack(IAEStack<?> stack) {
+    public static CompoundTag writeGenericStack(IAEStack stack) {
         Objects.requireNonNull(stack);
         var tag = new CompoundTag();
         tag.putString("chan", stack.getChannel().getId().toString());
@@ -17,7 +17,7 @@ public class GenericStackHelper {
         return tag;
     }
 
-    public static IAEStack<?> readGenericStack(CompoundTag tag) {
+    public static IAEStack readGenericStack(CompoundTag tag) {
         // TODO: what if a channel gets removed?
         var channel = StorageChannels.get(new ResourceLocation(tag.getString("chan")));
         return channel.createFromNBT(tag);

@@ -39,10 +39,10 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.service.SecurityService;
 
-public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T> {
+public class NetworkInventoryHandler<T extends IAEStack> implements IMEInventoryHandler<T> {
 
-    private static final ThreadLocal<Deque> DEPTH_MOD = new ThreadLocal<>();
-    private static final ThreadLocal<Deque> DEPTH_SIM = new ThreadLocal<>();
+    private static final ThreadLocal<Deque<NetworkInventoryHandler<?>>> DEPTH_MOD = new ThreadLocal<>();
+    private static final ThreadLocal<Deque<NetworkInventoryHandler<?>>> DEPTH_SIM = new ThreadLocal<>();
     private static final Comparator<Integer> PRIORITY_SORTER = (o1, o2) -> Integer.compare(o2, o1);
 
     private static int currentPass = 0;
@@ -105,7 +105,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
     }
 
     private boolean diveList(final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type) {
-        final Deque cDepth = this.getDepth(type);
+        var cDepth = this.getDepth(type);
         if (cDepth.contains(networkInventoryHandler)) {
             return true;
         }
@@ -146,10 +146,10 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
         }
     }
 
-    private Deque getDepth(final Actionable type) {
-        final ThreadLocal<Deque> depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
+    private Deque<NetworkInventoryHandler<?>> getDepth(final Actionable type) {
+        var depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
 
-        Deque s = depth.get();
+        var s = depth.get();
 
         if (s == null) {
             depth.set(s = new ArrayDeque<>());
@@ -171,8 +171,8 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
         final Iterator<List<IMEInventoryHandler<T>>> i = this.priorityInventory.descendingMap().values().iterator();
 
-        final T output = request.copy();
-        request = request.copy();
+        final T output = IAEStack.copy(request);
+        request = IAEStack.copy(request);
         output.setStackSize(0);
         final long req = request.getStackSize();
 
@@ -184,7 +184,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
                 final IMEInventoryHandler<T> inv = ii.next();
 
                 request.setStackSize(req - output.getStackSize());
-                output.add(inv.extractItems(request, mode, src));
+                IAEStack.add(output, inv.extractItems(request, mode, src));
             }
         }
 
@@ -203,8 +203,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
             return out;
         }
 
-        // for (Entry<Integer, IMEInventoryHandler<T>> h : priorityInventory.entries())
-        for (final List<IMEInventoryHandler<T>> i : this.priorityInventory.values()) {
+        for (var i : this.priorityInventory.values()) {
             for (final IMEInventoryHandler<T> j : i) {
                 out = j.getAvailableItems(out);
             }
@@ -216,7 +215,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
     }
 
     private boolean diveIteration(final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type) {
-        final Deque cDepth = this.getDepth(type);
+        var cDepth = this.getDepth(type);
         if (cDepth.isEmpty()) {
             currentPass++;
         } else if (currentPass == this.myPass) {

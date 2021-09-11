@@ -16,17 +16,17 @@ public interface ICraftingInventory {
     /**
      * Inject items. Can never fail.
      */
-    void injectItems(IAEStack<?> input, Actionable mode);
+    void injectItems(IAEStack input, Actionable mode);
 
     /**
      * Extract items.
      */
     @Nullable
-    IAEStack<?> extractItems(IAEStack<?> input, Actionable mode);
+    IAEStack extractItems(IAEStack input, Actionable mode);
 
     /**
      * Return a list of templates that match the input with {@link FuzzyMode#IGNORE_ALL}. Never edit the return value,
      * and use {@link #extractItems} to query the exact amount that is available.
      */
-    Collection<IAEStack<?>> findFuzzyTemplates(IAEStack<?> input);
+    Collection<IAEStack> findFuzzyTemplates(IAEStack input);
 }

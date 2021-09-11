@@ -119,7 +119,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             return grid.getStorageService().getInventory(channel);

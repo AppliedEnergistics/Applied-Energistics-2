@@ -35,7 +35,7 @@ import appeng.api.storage.data.IItemList;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public abstract class AbstractCellInventory<T extends IAEStack<T>> implements ICellInventory<T> {
+public abstract class AbstractCellInventory<T extends IAEStack> implements ICellInventory<T> {
     private static final int MAX_ITEM_TYPES = 63;
     private static final String ITEM_TYPE_TAG = "it";
     private static final String ITEM_COUNT_TAG = "ic";

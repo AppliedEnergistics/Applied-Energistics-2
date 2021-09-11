@@ -33,7 +33,7 @@ import appeng.api.storage.data.IAEStack;
  *
  * @param <T> The general type of what is being stored (items, fluids, etc.)
  */
-public class GridInventoryEntry<T extends IAEStack<T>> {
+public class GridInventoryEntry<T extends IAEStack> {
     private final long serial;
 
     @Nullable
@@ -111,8 +111,8 @@ public class GridInventoryEntry<T extends IAEStack<T>> {
      * Reads an inventory entry from a packet for a given storage channel. The storage channel is used to read the
      * {@link #stack} field.
      */
-    public static <T extends IAEStack<T>> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel,
-            FriendlyByteBuf buffer) {
+    public static <T extends IAEStack> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel,
+                                                                  FriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
         T stack = null;
         if (buffer.readBoolean()) {

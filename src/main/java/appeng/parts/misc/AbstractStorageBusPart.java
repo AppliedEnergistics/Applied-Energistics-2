@@ -79,7 +79,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
 /**
  * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
  */
-public abstract class AbstractStorageBusPart<T extends IAEStack<T>, A> extends UpgradeablePart
+public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends UpgradeablePart
         implements IGridTickable, ICellProvider, IMEMonitorHandlerReceiver<T>, IPriorityHost {
     private final Capability<A> handlerCapability;
     protected final IActionSource source;

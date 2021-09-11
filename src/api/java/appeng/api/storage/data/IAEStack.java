@@ -32,14 +32,40 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 
-public interface IAEStack<T extends IAEStack<T>> {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public interface IAEStack {
 
     /**
-     * add two stacks together
-     *
-     * @param is added item
+     * Adds the stack size, requestable count and craftable status.
      */
-    void add(T is);
+    static <T extends IAEStack> void add(@Nonnull T stack, @Nullable T otherStack) {
+        if (otherStack == null) {
+            return;
+        }
+
+        stack.setStackSize(stack.getStackSize() + otherStack.getStackSize());
+        stack.setCountRequestable(stack.getCountRequestable() + otherStack.getCountRequestable());
+        stack.setCraftable(stack.isCraftable() || otherStack.isCraftable());
+    }
+
+    /**
+     * Clone the Item / Fluid Stack
+     *
+     * @return a new Stack, which is copied from the original.
+     */
+    @SuppressWarnings("unchecked")
+    static <T extends IAEStack> T copy(@Nonnull T stack) {
+        var channel = (IStorageChannel<T>) stack.getChannel();
+        return channel.copy(stack);
+    }
+
+    static <T extends IAEStack> T copy(@Nonnull T stack, long newStackSize) {
+        var result = IAEStack.copy(stack);
+        result.setStackSize(newStackSize);
+        return result;
+    }
 
     /**
      * number of items in the stack.
@@ -53,7 +79,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @param stackSize , ItemStack.stackSize = N
      */
-    T setStackSize(long stackSize);
+    void setStackSize(long stackSize);
 
     /**
      * Same as getStackSize, but for requestable items. ( LP )
@@ -67,7 +93,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @return basically itemStack.stackSize = N but for setStackSize items.
      */
-    T setCountRequestable(long countRequestable);
+    void setCountRequestable(long countRequestable);
 
     /**
      * true, if the item can be crafted.
@@ -81,12 +107,12 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @param isCraftable can item be crafted
      */
-    T setCraftable(boolean isCraftable);
+    void setCraftable(boolean isCraftable);
 
     /**
      * clears, requestable, craftable, and stack sizes.
      */
-    T reset();
+    void reset();
 
     /**
      * returns true, if the item can be crafted, requested, or extracted.
@@ -100,19 +126,19 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @param i additional stack size
      */
-    default T incStackSize(long i) {
-        return setStackSize(getStackSize() + i);
+    default void incStackSize(long i) {
+        setStackSize(getStackSize() + i);
     }
 
     /**
      * removes some from the stack size.
      */
-    default T decStackSize(long i) {
-        return setStackSize(getStackSize() - i);
+    default void decStackSize(long i) {
+        setStackSize(getStackSize() - i);
     }
 
-    default T multStackSize(long i) {
-        return setStackSize(getStackSize() * i);
+    default void multStackSize(long i) {
+        setStackSize(getStackSize() * i);
     }
 
     /**
@@ -160,7 +186,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @return true if two stacks are equal based on AE Fuzzy Comparison.
      */
-    boolean fuzzyComparison(T other, FuzzyMode mode);
+    boolean fuzzyEquals(IAEStack other, FuzzyMode mode);
 
     /**
      * Slower for disk saving, but smaller/more efficient for packets.
@@ -171,28 +197,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      */
     void writeToPacket(FriendlyByteBuf data);
 
-    /**
-     * Clone the Item / Fluid Stack
-     *
-     * @return a new Stack, which is copied from the original.
-     */
-    T copy();
-
-    default T copyWithStackSize(long newStackSize) {
-        return copy().setStackSize(newStackSize);
-    }
-
-    /**
-     * create an empty stack.
-     *
-     * @return a new stack, which represents an empty copy of the original.
-     */
-    T empty();
-
-    /**
-     * @return The {@link IStorageChannel} backing this stack.
-     */
-    IStorageChannel<T> getChannel();
+    IStorageChannel<?> getChannel();
 
     /**
      * Returns itemstack for display and similar purposes. Always has a count of 1.
@@ -208,7 +213,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
      */
     @SuppressWarnings("unchecked")
-    default <SC extends IAEStack<SC>> SC cast(IStorageChannel<SC> channel) {
+    default <SC extends IAEStack> SC cast(IStorageChannel<SC> channel) {
         if (getChannel() == channel) {
             return (SC) this;
         }

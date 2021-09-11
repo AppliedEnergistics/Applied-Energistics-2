@@ -12,17 +12,17 @@ import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEStack;
 
 public class ProcessingPatternBuilder {
-    private final IAEStack<?>[] outputs;
+    private final IAEStack[] outputs;
     private final List<IPatternDetails.IInput> inputs = new ArrayList<>();
 
-    public ProcessingPatternBuilder(IAEStack<?>... outputs) {
+    public ProcessingPatternBuilder(IAEStack... outputs) {
         this.outputs = outputs;
     }
 
-    public ProcessingPatternBuilder addPreciseInput(long multiplier, IAEStack<?>... possibleInputs) {
+    public ProcessingPatternBuilder addPreciseInput(long multiplier, IAEStack... possibleInputs) {
         inputs.add(new IPatternDetails.IInput() {
             @Override
-            public IAEStack<?>[] getPossibleInputs() {
+            public IAEStack[] getPossibleInputs() {
                 return possibleInputs;
             }
 
@@ -32,7 +32,7 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public boolean isValid(IAEStack<?> input, Level level) {
+            public boolean isValid(IAEStack input, Level level) {
                 for (var possibleInput : possibleInputs) {
                     if (possibleInput.equals(input)) {
                         return true;
@@ -48,7 +48,7 @@ public class ProcessingPatternBuilder {
 
             @Nullable
             @Override
-            public IAEStack<?> getContainerItem(IAEStack<?> template) {
+            public IAEStack getContainerItem(IAEStack template) {
                 return null;
             }
         });
@@ -73,7 +73,7 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public IAEStack<?>[] getOutputs() {
+            public IAEStack[] getOutputs() {
                 return outputs;
             }
         };
