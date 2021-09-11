@@ -47,7 +47,8 @@ public interface IInterfaceTarget {
                 @Nullable
                 @Override
                 public IAEStack injectItems(IAEStack what, Actionable type) {
-                    if (what == null) return null;
+                    if (what == null)
+                        return null;
                     return IInterfaceTarget.channelInjectItems(what.getChannel(), monitorable, what, type, src);
                 }
 
@@ -64,7 +65,8 @@ public interface IInterfaceTarget {
         }
     }
 
-    private static <T extends IAEStack> T channelInjectItems(IStorageChannel<T> channel, IStorageMonitorable monitorable, IAEStack what, Actionable type, IActionSource src) {
+    private static <T extends IAEStack> T channelInjectItems(IStorageChannel<T> channel,
+            IStorageMonitorable monitorable, IAEStack what, Actionable type, IActionSource src) {
         var castedWhat = what.cast(channel);
         var inventory = monitorable.getInventory(channel);
         if (inventory != null) {
@@ -73,7 +75,8 @@ public interface IInterfaceTarget {
         return null;
     }
 
-    private static <T extends IAEStack> boolean isChannelBusy(IStorageChannel<T> channel, IStorageMonitorable monitorable, IActionSource src) {
+    private static <T extends IAEStack> boolean isChannelBusy(IStorageChannel<T> channel,
+            IStorageMonitorable monitorable, IActionSource src) {
         var inventory = monitorable.getInventory(channel);
         if (inventory != null) {
             for (var stack : inventory.getStorageList()) {
