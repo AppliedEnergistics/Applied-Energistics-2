@@ -15,11 +15,11 @@ import appeng.crafting.execution.GenericStackHelper;
 public class ListCraftingInventory implements ICraftingInventory {
     public final MixedItemList list = new MixedItemList();
 
-    public void postChange(IAEStack<?> template, long delta) {
+    public void postChange(IAEStack template, long delta) {
     }
 
     @Override
-    public void injectItems(IAEStack<?> input, Actionable mode) {
+    public void injectItems(IAEStack input, Actionable mode) {
         if (mode == Actionable.MODULATE) {
             list.addStorage(input);
             postChange(input, -input.getStackSize());
@@ -28,8 +28,8 @@ public class ListCraftingInventory implements ICraftingInventory {
 
     @Nullable
     @Override
-    public IAEStack<?> extractItems(IAEStack<?> input, Actionable mode) {
-        IAEStack<?> precise = list.findPrecise(input);
+    public IAEStack extractItems(IAEStack input, Actionable mode) {
+        IAEStack precise = list.findPrecise(input);
         if (precise == null)
             return null;
         long extracted = Math.min(precise.getStackSize(), input.getStackSize());
@@ -37,16 +37,16 @@ public class ListCraftingInventory implements ICraftingInventory {
             precise.decStackSize(extracted);
             postChange(input, extracted);
         }
-        return input.copyWithStackSize(extracted);
+        return IAEStack.copy(input, extracted);
     }
 
     @Override
-    public Collection<IAEStack<?>> findFuzzyTemplates(IAEStack<?> input) {
+    public Collection<IAEStack> findFuzzyTemplates(IAEStack input) {
         return list.findFuzzy(input, FuzzyMode.IGNORE_ALL);
     }
 
     public void clear() {
-        for (IAEStack<?> stack : list) {
+        for (IAEStack stack : list) {
             postChange(stack, stack.getStackSize());
         }
         list.resetStatus();
@@ -65,7 +65,7 @@ public class ListCraftingInventory implements ICraftingInventory {
     public ListTag writeToNBT() {
         ListTag tag = new ListTag();
 
-        for (IAEStack<?> stack : list) {
+        for (IAEStack stack : list) {
             tag.add(GenericStackHelper.writeGenericStack(stack));
         }
 

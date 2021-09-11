@@ -20,6 +20,7 @@ package appeng.menu.me.items;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -96,7 +97,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                     IAEItemStack ais = StorageChannels.items()
                             .createStack(isg);
                     ais.setStackSize(1);
-                    final IAEItemStack extracted = ais.copy();
+                    final IAEItemStack extracted = IAEStack.copy(ais);
 
                     ais = Platform.poweredInsert(powerSource, monitor, ais,
                             this.getActionSource());
@@ -127,7 +128,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                 }
 
                 if (liftQty > 0) {
-                    IAEItemStack ais = stack.copy();
+                    IAEItemStack ais = IAEStack.copy(stack);
                     ais.setStackSize(1);
                     ais = Platform.poweredExtraction(powerSource, monitor, ais,
                             this.getActionSource());
@@ -146,7 +147,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(false);
                 } else {
-                    IAEItemStack ais = stack.copy();
+                    IAEItemStack ais = IAEStack.copy(stack);
                     ais.setStackSize(ais.getDefinition().getMaxStackSize());
                     ais = Platform.poweredExtraction(powerSource, monitor, ais,
                             this.getActionSource());
@@ -162,7 +163,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(true);
                 } else {
-                    IAEItemStack ais = stack.copy();
+                    IAEItemStack ais = IAEStack.copy(stack);
                     final long maxSize = ais.getDefinition().getMaxStackSize();
                     ais.setStackSize(maxSize);
                     ais = monitor.extractItems(ais, Actionable.SIMULATE, this.getActionSource());
@@ -228,7 +229,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
     }
 
     private boolean moveOneStackToPlayer(IAEItemStack stack, ServerPlayer player) {
-        IAEItemStack ais = stack.copy();
+        IAEItemStack ais = IAEStack.copy(stack);
         ItemStack myItem = ais.createItemStack();
 
         ais.setStackSize(myItem.getMaxStackSize());

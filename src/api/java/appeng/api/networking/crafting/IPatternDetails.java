@@ -14,22 +14,22 @@ public interface IPatternDetails {
 
     IInput[] getInputs();
 
-    default IAEStack<?> getPrimaryOutput() {
+    default IAEStack getPrimaryOutput() {
         return getOutputs()[0];
     }
 
-    IAEStack<?>[] getOutputs();
+    IAEStack[] getOutputs();
 
     interface IInput {
-        IAEStack<?>[] getPossibleInputs();
+        IAEStack[] getPossibleInputs();
 
         long getMultiplier();
 
-        boolean isValid(IAEStack<?> input, Level level);
+        boolean isValid(IAEStack input, Level level);
 
         boolean allowFuzzyMatch();
 
         @Nullable
-        IAEStack<?> getContainerItem(IAEStack<?> template);
+        IAEStack getContainerItem(IAEStack template);
     }
 }

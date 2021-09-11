@@ -43,7 +43,7 @@ public class CraftingCpuLogic {
      */
     private final ListCraftingInventory inventory = new ListCraftingInventory() {
         @Override
-        public void postChange(IAEStack<?> template, long delta) {
+        public void postChange(IAEStack template, long delta) {
             CraftingCpuLogic.this.postChange(template);
         }
     };
@@ -51,7 +51,7 @@ public class CraftingCpuLogic {
      * Used crafting operations over the last 3 ticks.
      */
     private final int[] usedOps = new int[3];
-    private final Set<Consumer<IAEStack<?>>> listeners = new HashSet<>();
+    private final Set<Consumer<IAEStack>> listeners = new HashSet<>();
 
     public CraftingCpuLogic(CraftingCPUCluster cluster) {
         this.cluster = cluster;
@@ -206,25 +206,26 @@ public class CraftingCpuLogic {
     /**
      * Called by the CraftingService with an Integer.MAX_VALUE priority to inject items that are being waited for.
      */
-    public IAEStack<?> injectItems(IAEStack<?> input, Actionable type) {
+    public IAEStack injectItems(IAEStack input, Actionable type) {
         // also stop accepting items when the job is complete, i.e. to prevent re-insertion when pushing out
         // items during storeItems
         if (input == null || job == null)
             return input;
 
         // Only accept items we are waiting for.
-        IAEStack<?> waitingFor = job.waitingFor.extractItems(input, Actionable.SIMULATE);
+        IAEStack waitingFor = job.waitingFor.extractItems(input, Actionable.SIMULATE);
         if (waitingFor == null || waitingFor.getStackSize() <= 0)
             return input;
 
-        IAEStack leftOver = input.copyWithStackSize(0);
-        input = input.copy();
+        IAEStack leftOver = IAEStack.copy(input, (long) 0);
+        input = IAEStack.copy(input);
 
         // Make sure we don't insert more than what we are waiting for.
         if (input.getStackSize() > waitingFor.getStackSize()) {
             long difference = input.getStackSize() - waitingFor.getStackSize();
             leftOver.incStackSize(difference);
-            input = input.copy().decStackSize(difference);
+            input = IAEStack.copy(input);
+            input.decStackSize(difference);
         }
 
         if (type == Actionable.MODULATE) {
@@ -235,7 +236,7 @@ public class CraftingCpuLogic {
 
         if (input.equals(job.finalOutput)) {
             // Final output is special: it goes directly into the requester
-            leftOver.add(job.link.injectItems(input, type));
+            IAEStack.add(leftOver, (IAEStack) job.link.injectItems(input, type));
 
             if (type == Actionable.MODULATE) {
                 // Update count and displayed CPU stack, and finish the job if possible.
@@ -250,7 +251,7 @@ public class CraftingCpuLogic {
                 }
             }
         } else {
-            leftOver.add(input);
+            IAEStack.add(leftOver, (IAEStack) input);
 
             if (type == Actionable.MODULATE) {
                 inventory.injectItems(input, Actionable.MODULATE);
@@ -312,10 +313,10 @@ public class CraftingCpuLogic {
 
         final IStorageService sg = g.getService(IStorageService.class);
 
-        for (IAEStack<?> is : this.inventory.list) {
+        for (IAEStack is : this.inventory.list) {
             this.postChange(is);
             IMEMonitor networkInventory = sg.getInventory(is.getChannel());
-            IAEStack<?> remainder = networkInventory.injectItems(is.copy(), Actionable.MODULATE, cluster.getSrc());
+            IAEStack remainder = networkInventory.injectItems(IAEStack.copy(is), Actionable.MODULATE, cluster.getSrc());
 
             // The network was unable to receive all of the items, i.e. no or not enough storage space left
             if (remainder != null) {
@@ -328,7 +329,7 @@ public class CraftingCpuLogic {
         cluster.markDirty();
     }
 
-    private String generateCraftId(IAEStack<?> finalOutput) {
+    private String generateCraftId(IAEStack finalOutput) {
         final long now = System.currentTimeMillis();
         final int hash = System.identityHashCode(this);
         final int hmm = Objects.hashCode(finalOutput);
@@ -337,13 +338,13 @@ public class CraftingCpuLogic {
                 + Integer.toString(hmm, Character.MAX_RADIX);
     }
 
-    private void postChange(IAEStack<?> stack) {
+    private void postChange(IAEStack stack) {
         for (var listener : listeners) {
             listener.accept(stack);
         }
     }
 
-    private void postCraftingDifference(IAEStack<?> stack) {
+    private void postCraftingDifference(IAEStack stack) {
         IGrid grid = cluster.getGrid();
         if (grid == null)
             return;
@@ -398,28 +399,28 @@ public class CraftingCpuLogic {
      * Register a listener that will receive stacks when either the stored items, await items or pending outputs change.
      * This is only used by the menu. Make sure to remove it by calling {@link #removeListener}.
      */
-    public void addListener(Consumer<IAEStack<?>> listener) {
+    public void addListener(Consumer<IAEStack> listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(Consumer<IAEStack<?>> listener) {
+    public void removeListener(Consumer<IAEStack> listener) {
         listeners.remove(listener);
     }
 
-    public long getStored(IAEStack<?> template) {
-        var extracted = this.inventory.extractItems(template.copyWithStackSize(Long.MAX_VALUE), Actionable.SIMULATE);
+    public long getStored(IAEStack template) {
+        var extracted = this.inventory.extractItems(IAEStack.copy(template, Long.MAX_VALUE), Actionable.SIMULATE);
         return extracted == null ? 0 : extracted.getStackSize();
     }
 
-    public long getWaitingFor(IAEStack<?> template) {
-        IAEStack<?> stack = null;
+    public long getWaitingFor(IAEStack template) {
+        IAEStack stack = null;
         if (this.job != null) {
-            stack = this.job.waitingFor.extractItems(template.copyWithStackSize(Long.MAX_VALUE), Actionable.SIMULATE);
+            stack = this.job.waitingFor.extractItems(IAEStack.copy(template, Long.MAX_VALUE), Actionable.SIMULATE);
         }
         return stack == null ? 0 : stack.getStackSize();
     }
 
-    public long getPendingOutputs(IAEStack<?> template) {
+    public long getPendingOutputs(IAEStack template) {
         long count = 0;
         if (this.job != null) {
             for (final Map.Entry<IPatternDetails, ExecutingCraftingJob.TaskProgress> t : job.tasks.entrySet()) {
@@ -446,7 +447,7 @@ public class CraftingCpuLogic {
             }
             for (final Map.Entry<IPatternDetails, ExecutingCraftingJob.TaskProgress> t : job.tasks.entrySet()) {
                 for (var output : t.getKey().getOutputs()) {
-                    out.add(output.copyWithStackSize(output.getStackSize() * t.getValue().value));
+                    out.add(IAEStack.copy(output, output.getStackSize() * t.getValue().value));
                 }
             }
         }

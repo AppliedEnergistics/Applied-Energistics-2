@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -126,7 +127,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 if (req instanceof IAEItemStack) {
                     shots = Math.min(shots, (int) req.getStackSize());
                     for (int sh = 0; sh < shots; sh++) {
-                        IAEItemStack aeAmmo = req.copy();
+                        IAEItemStack aeAmmo = IAEStack.copy(req);
                         this.extractAEPower(p.getItemInHand(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
                         if (level.isClientSide()) {

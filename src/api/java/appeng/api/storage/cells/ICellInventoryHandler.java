@@ -29,7 +29,7 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 
-public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInventoryHandler<T> {
+public interface ICellInventoryHandler<T extends IAEStack> extends IMEInventoryHandler<T> {
 
     /**
      * Get access to the ICellInventory. Can be null for custom cells.

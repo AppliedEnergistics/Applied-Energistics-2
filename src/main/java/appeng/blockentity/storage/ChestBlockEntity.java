@@ -236,7 +236,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private <T extends IAEStack<T>> ChestMonitorHandler<T> wrap(final IMEInventoryHandler<T> h) {
+    private <T extends IAEStack> ChestMonitorHandler<T> wrap(final IMEInventoryHandler<T> h) {
         if (h == null) {
             return null;
         }
@@ -410,7 +410,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         this.updateHandler();
 
         if (this.cellHandler != null && this.cellHandler.getChannel() == channel) {
@@ -559,7 +559,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.level.blockEntityChanged(this.worldPosition);
     }
 
-    private class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T> {
+    private class ChestNetNotifier<T extends IAEStack> implements IMEMonitorHandlerReceiver<T> {
 
         private final IStorageChannel<T> chan;
 
@@ -597,7 +597,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private class ChestMonitorHandler<T extends IAEStack<T>> extends MEMonitorHandler<T> {
+    private class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T> {
 
         public ChestMonitorHandler(final IMEInventoryHandler<T> t) {
             super(t);

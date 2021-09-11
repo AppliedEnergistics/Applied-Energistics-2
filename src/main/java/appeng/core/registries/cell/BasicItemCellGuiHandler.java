@@ -35,14 +35,14 @@ import appeng.menu.me.items.ItemTerminalMenu;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
-    public <T extends IAEStack<T>> boolean isHandlerFor(final IStorageChannel<T> channel) {
+    public <T extends IAEStack> boolean isHandlerFor(final IStorageChannel<T> channel) {
         return channel == StorageChannels.items();
     }
 
     @Override
-    public <T extends IAEStack<T>> void openChestGui(final Player player, final IChestOrDrive chest,
-            final ICellHandler cellHandler,
-            final IMEInventoryHandler<T> inv, final ItemStack is, final IStorageChannel<T> chan) {
+    public <T extends IAEStack> void openChestGui(final Player player, final IChestOrDrive chest,
+                                                  final ICellHandler cellHandler,
+                                                  final IMEInventoryHandler<T> inv, final ItemStack is, final IStorageChannel<T> chan) {
         MenuOpener.open(ItemTerminalMenu.TYPE, player,
                 MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }

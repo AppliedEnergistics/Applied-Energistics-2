@@ -40,7 +40,7 @@ import appeng.api.storage.data.IAEStack;
  * serialized using it's {@link ItemStack#getShareTag() share tag}, which would not match the server-side stack if it's
  * sent back, or that would group distinct server-side entries together on the client-side if their share tag was equal.
  */
-public class IncrementalUpdateHelper<T extends IAEStack<T>> implements Iterable<T> {
+public class IncrementalUpdateHelper<T extends IAEStack> implements Iterable<T> {
 
     /**
      * Maps stacks to serial numbers. This relies on the fact that these stacks are equal iff their type is equal, and

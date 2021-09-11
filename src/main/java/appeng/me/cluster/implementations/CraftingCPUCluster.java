@@ -145,7 +145,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    public IAEStack<?> injectItems(final IAEStack<?> input, final Actionable type, final IActionSource src) {
+    public IAEStack injectItems(final IAEStack input, final Actionable type, final IActionSource src) {
         return craftingLogic.injectItems(input, type);
     }
 
@@ -153,7 +153,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.getCore().saveChanges();
     }
 
-    public void updateOutput(IAEStack<?> finalOutput) {
+    public void updateOutput(IAEStack finalOutput) {
         var send = finalOutput;
 
         if (finalOutput != null && finalOutput.getStackSize() <= 0) {

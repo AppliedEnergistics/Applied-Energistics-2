@@ -150,7 +150,7 @@ public class CraftingLink implements ICraftingLink {
         }
     }
 
-    public IAEStack<?> injectItems(final IAEStack<?> input, final Actionable mode) {
+    public IAEStack injectItems(final IAEStack input, final Actionable mode) {
         if (this.tie == null || this.tie.getRequest() == null || this.tie.getRequest().getRequester() == null) {
             return input;
         }

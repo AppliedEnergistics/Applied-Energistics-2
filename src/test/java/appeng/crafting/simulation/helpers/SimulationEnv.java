@@ -31,8 +31,8 @@ import appeng.crafting.CraftingPlan;
 import appeng.me.helpers.BaseActionSource;
 
 public class SimulationEnv {
-    private final Map<IAEStack<?>, List<IPatternDetails>> patterns = new HashMap<>();
-    private final Set<IAEStack<?>> emitableItems = new HashSet<>();
+    private final Map<IAEStack, List<IPatternDetails>> patterns = new HashMap<>();
+    private final Set<IAEStack> emitableItems = new HashSet<>();
     private final MixedItemList networkStorage = new MixedItemList();
 
     public IPatternDetails addPattern(IPatternDetails pattern) {
@@ -40,11 +40,11 @@ public class SimulationEnv {
         return pattern;
     }
 
-    public void addEmitable(IAEStack<?> stack) {
+    public void addEmitable(IAEStack stack) {
         emitableItems.add(stack);
     }
 
-    public void addStoredItem(IAEStack<?> stack) {
+    public void addStoredItem(IAEStack stack) {
         this.networkStorage.addStorage(stack);
     }
 
@@ -89,7 +89,7 @@ public class SimulationEnv {
     private ICraftingService createCraftingServiceMock() {
         return new ICraftingService() {
             @Override
-            public ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack<?> whatToCraft,
+            public ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack whatToCraft,
                     IPatternDetails details, int slot, Level level) {
                 var patternList = patterns.get(whatToCraft);
                 if (patternList == null) {
@@ -100,7 +100,7 @@ public class SimulationEnv {
             }
 
             @Override
-            public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack<?> craftWhat,
+            public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat,
                     ICraftingCallback callback) {
                 throw new UnsupportedOperationException();
             }
@@ -117,17 +117,17 @@ public class SimulationEnv {
             }
 
             @Override
-            public boolean canEmitFor(IAEStack<?> what) {
+            public boolean canEmitFor(IAEStack what) {
                 return emitableItems.contains(what);
             }
 
             @Override
-            public boolean isRequesting(IAEStack<?> what) {
+            public boolean isRequesting(IAEStack what) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public long requesting(IAEStack<?> what) {
+            public long requesting(IAEStack what) {
                 throw new UnsupportedOperationException();
             }
         };
@@ -137,8 +137,8 @@ public class SimulationEnv {
         Map<IStorageChannel<?>, IMEMonitor<?>> monitors = new HashMap<>();
         return new IStorageService() {
             @Override
-            public <T extends IAEStack<T>> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-                    Iterable<? extends IAEStack<T>> input, IActionSource src) {
+            public <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
+                                                                         Iterable<? extends IAEStack> input, IActionSource src) {
                 throw new UnsupportedOperationException();
             }
 
@@ -153,13 +153,13 @@ public class SimulationEnv {
             }
 
             @Override
-            public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+            public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
                 return (IMEMonitor<T>) monitors.computeIfAbsent(channel, chan -> createMonitorMock(chan));
             }
         };
     }
 
-    private <T extends IAEStack<T>> IMEMonitor<T> createMonitorMock(IStorageChannel<T> channel) {
+    private <T extends IAEStack> IMEMonitor<T> createMonitorMock(IStorageChannel<T> channel) {
         return new IMEMonitor<>() {
             @Override
             public IItemList<T> getAvailableItems(IItemList<T> out) {
@@ -192,7 +192,7 @@ public class SimulationEnv {
                     T precise = networkStorage.getList(channel).findPrecise(request);
                     if (precise == null)
                         return null;
-                    return precise.copyWithStackSize(Math.min(precise.getStackSize(), request.getStackSize()));
+                    return IAEStack.copy(precise, Math.min(precise.getStackSize(), request.getStackSize()));
                 } else {
                     throw new UnsupportedOperationException();
                 }

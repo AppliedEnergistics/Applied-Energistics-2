@@ -126,12 +126,12 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         }
     }
 
-    public <T extends IAEStack<T>> IMEInventoryHandler<T> getInventoryHandler(IStorageChannel<T> channel) {
+    public <T extends IAEStack> IMEInventoryHandler<T> getInventoryHandler(IStorageChannel<T> channel) {
         return (IMEInventoryHandler<T>) this.storageNetworks.computeIfAbsent(channel, this::buildNetworkStorage);
     }
 
     @Override
-    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         return (IMEMonitor<T>) this.storageMonitors.get(channel);
     }
 
@@ -204,12 +204,12 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         tracker.applyChanges();
     }
 
-    private <T extends IAEStack<T>, C extends IStorageChannel<T>> void postChangesToNetwork(final C chan,
-            final int upOrDown, final IItemList<T> availableItems, final IActionSource src) {
+    private <T extends IAEStack, C extends IStorageChannel<T>> void postChangesToNetwork(final C chan,
+                                                                                         final int upOrDown, final IItemList<T> availableItems, final IActionSource src) {
         this.storageMonitors.get(chan).postChange(upOrDown > 0, (Iterable) availableItems, src);
     }
 
-    private <T extends IAEStack<T>, C extends IStorageChannel<T>> NetworkInventoryHandler<T> buildNetworkStorage(
+    private <T extends IAEStack, C extends IStorageChannel<T>> NetworkInventoryHandler<T> buildNetworkStorage(
             final C chan) {
         var security = (SecurityService) this.getGrid().getService(ISecurityService.class);
 
@@ -225,9 +225,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @Override
-    public <T extends IAEStack<T>> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-            Iterable<? extends IAEStack<T>> input,
-            final IActionSource src) {
+    public <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
+                                                                 Iterable<? extends IAEStack> input,
+                                                                 final IActionSource src) {
         this.storageMonitors.get(chan).postChange(true, (Iterable) input, src);
     }
 
@@ -251,7 +251,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         return this.myGrid;
     }
 
-    private class CellChangeTrackerRecord<T extends IAEStack<T>> {
+    private class CellChangeTrackerRecord<T extends IAEStack> {
 
         final IStorageChannel<T> channel;
         final int up_or_down;
@@ -272,7 +272,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         }
     }
 
-    private class CellChangeTracker<T extends IAEStack<T>> {
+    private class CellChangeTracker<T extends IAEStack> {
 
         final List<CellChangeTrackerRecord<T>> data = new ArrayList<>();
 

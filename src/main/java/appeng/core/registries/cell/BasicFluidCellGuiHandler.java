@@ -36,7 +36,7 @@ import appeng.menu.me.fluids.FluidTerminalMenu;
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 
     @Override
-    public <T extends IAEStack<T>> boolean isHandlerFor(final IStorageChannel<T> channel) {
+    public <T extends IAEStack> boolean isHandlerFor(final IStorageChannel<T> channel) {
         return channel == StorageChannels.fluids();
     }
 

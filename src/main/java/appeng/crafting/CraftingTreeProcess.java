@@ -59,7 +59,7 @@ public class CraftingTreeProcess {
         final IPatternDetails.IInput[] inputs = this.details.getInputs();
         for (int x = 0; x < inputs.length; ++x) {
             var input = inputs[x];
-            this.nodes.put(new CraftingTreeNode(cc, job, input.getPossibleInputs()[0].copy(), this, x),
+            this.nodes.put(new CraftingTreeNode(cc, job, IAEStack.copy(input.getPossibleInputs()[0]), this, x),
                     input.getMultiplier());
         }
     }
@@ -125,7 +125,7 @@ public class CraftingTreeProcess {
 
         // add crafting results..
         for (var out : this.details.getOutputs()) {
-            var o = out.copy();
+            var o = (IAEStack) IAEStack.copy(out);
             o.setStackSize(o.getStackSize() * times);
             inv.injectItems(o, Actionable.MODULATE);
         }
@@ -144,10 +144,10 @@ public class CraftingTreeProcess {
         return tot;
     }
 
-    IAEStack<?> getMatchingOutput(IAEStack<?> requestedItem) {
+    IAEStack getMatchingOutput(IAEStack requestedItem) {
         for (var is : this.details.getOutputs()) {
             if (is.equals(requestedItem)) {
-                return is.copy();
+                return IAEStack.copy(is);
             }
         }
 

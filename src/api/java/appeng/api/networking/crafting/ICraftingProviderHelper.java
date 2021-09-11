@@ -44,5 +44,5 @@ public interface ICraftingProviderHelper {
     /**
      * Set an item can Emitable
      */
-    void setEmitable(IAEStack<?> what);
+    void setEmitable(IAEStack what);
 }

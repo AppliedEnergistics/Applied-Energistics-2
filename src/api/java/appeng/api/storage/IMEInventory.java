@@ -40,7 +40,7 @@ import appeng.api.storage.data.IItemList;
  * If you want to request at most a stack of an item, you need to use {@link ItemStack#getMaxStackSize()} before
  * extracting from this inventory.
  */
-public interface IMEInventory<T extends IAEStack<T>> {
+public interface IMEInventory<T extends IAEStack> {
 
     /**
      * Store new items, or simulate the addition of new items into the ME Inventory.
@@ -93,7 +93,7 @@ public interface IMEInventory<T extends IAEStack<T>> {
      * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
      */
     @SuppressWarnings("unchecked")
-    default <SC extends IAEStack<SC>> IMEInventory<SC> cast(IStorageChannel<SC> channel) {
+    default <SC extends IAEStack> IMEInventory<SC> cast(IStorageChannel<SC> channel) {
         if (getChannel() == channel) {
             return (IMEInventory<SC>) this;
         }

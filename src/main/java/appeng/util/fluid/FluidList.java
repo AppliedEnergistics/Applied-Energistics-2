@@ -22,6 +22,7 @@ import java.util.*;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.iterators.MeaningfulStackIterator;
 
@@ -38,11 +39,11 @@ public final class FluidList implements IItemList<IAEFluidStack> {
         final IAEFluidStack st = this.getFluidRecord(option);
 
         if (st != null) {
-            st.add(option);
+            IAEStack.add(st, option);
             return;
         }
 
-        final IAEFluidStack opt = option.copy();
+        final IAEFluidStack opt = IAEStack.copy(option);
 
         this.putFluidRecord(opt);
     }
@@ -84,7 +85,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
             return;
         }
 
-        final IAEFluidStack opt = option.copy();
+        final IAEFluidStack opt = IAEStack.copy(option);
 
         this.putFluidRecord(opt);
     }
@@ -107,7 +108,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
             return;
         }
 
-        final IAEFluidStack opt = option.copy();
+        final IAEFluidStack opt = IAEStack.copy(option);
         opt.setStackSize(0);
         opt.setCraftable(true);
 
@@ -127,7 +128,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
             return;
         }
 
-        final IAEFluidStack opt = option.copy();
+        final IAEFluidStack opt = IAEStack.copy(option);
         opt.setStackSize(0);
         opt.setCraftable(false);
         opt.setCountRequestable(option.getCountRequestable());

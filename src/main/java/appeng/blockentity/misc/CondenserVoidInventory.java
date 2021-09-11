@@ -27,7 +27,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-class CondenserVoidInventory<T extends IAEStack<T>> implements IMEMonitor<T> {
+class CondenserVoidInventory<T extends IAEStack> implements IMEMonitor<T> {
 
     private final CondenserBlockEntity target;
     private final IStorageChannel<T> channel;

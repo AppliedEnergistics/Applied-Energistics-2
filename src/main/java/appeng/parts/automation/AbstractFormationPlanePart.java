@@ -38,7 +38,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IPriorityHost;
 
-public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends UpgradeablePart
+public abstract class AbstractFormationPlanePart<T extends IAEStack> extends UpgradeablePart
         implements ICellProvider, IPriorityHost, IMEInventory<T> {
 
     private boolean wasActive = false;

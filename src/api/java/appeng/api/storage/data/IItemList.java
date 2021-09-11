@@ -37,7 +37,7 @@ import appeng.api.storage.IStorageChannel;
  * IFluidStorageChannel.class).createList() - Replace with the corresponding {@link IStorageChannel} type for non native
  * channels
  */
-public interface IItemList<T extends IAEStack<T>> extends IItemContainer<T>, Iterable<T> {
+public interface IItemList<T extends IAEStack> extends IItemContainer<T>, Iterable<T> {
 
     /**
      * add a stack to the list stackSize is used to add to stackSize, this will merge the stack with an item already in

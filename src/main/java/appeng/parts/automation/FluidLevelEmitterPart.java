@@ -135,8 +135,8 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    public void onStackChange(IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src,
-            IStorageChannel<?> chan) {
+    public void onStackChange(IItemList<?> o, IAEStack fullStack, IAEStack diffStack, IActionSource src,
+                              IStorageChannel<?> chan) {
         if (chan == StorageChannels.fluids()
                 && fullStack.equals(this.config.getFluidInSlot(0))) {
             this.lastReportedValue = fullStack.getStackSize();

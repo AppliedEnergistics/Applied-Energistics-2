@@ -28,17 +28,17 @@ public class ExecutingCraftingJob {
     private static final String NBT_CRAFTING_PROGRESS = "craftingProgress";
 
     final CraftingLink link;
-    final IAEStack<?> finalOutput;
+    final IAEStack finalOutput;
     final ListCraftingInventory waitingFor;
     final Map<IPatternDetails, TaskProgress> tasks = new HashMap<>();
     final ElapsedTimeTracker timeTracker;
 
-    ExecutingCraftingJob(ICraftingPlan plan, Consumer<IAEStack<?>> postCraftingDifference, CraftingLink link) {
-        this.finalOutput = plan.finalOutput().copy();
+    ExecutingCraftingJob(ICraftingPlan plan, Consumer<IAEStack> postCraftingDifference, CraftingLink link) {
+        this.finalOutput = IAEStack.copy(plan.finalOutput());
         this.waitingFor = new ListCraftingInventory() {
             @Override
-            public void postChange(IAEStack<?> template, long delta) {
-                postCraftingDifference.accept(template.copyWithStackSize(delta));
+            public void postChange(IAEStack template, long delta) {
+                postCraftingDifference.accept(IAEStack.copy(template, delta));
             }
         };
 
@@ -58,7 +58,7 @@ public class ExecutingCraftingJob {
         this.link = link;
     }
 
-    ExecutingCraftingJob(CompoundTag data, Consumer<IAEStack<?>> postCraftingDifference, CraftingCpuLogic cpu) {
+    ExecutingCraftingJob(CompoundTag data, Consumer<IAEStack> postCraftingDifference, CraftingCpuLogic cpu) {
         this.link = new CraftingLink(data.getCompound(NBT_LINK), cpu.cluster);
         IGrid grid = cpu.cluster.getGrid();
         if (grid != null) {
@@ -68,8 +68,8 @@ public class ExecutingCraftingJob {
         this.finalOutput = GenericStackHelper.readGenericStack(data.getCompound(NBT_FINAL_OUTPUT));
         this.waitingFor = new ListCraftingInventory() {
             @Override
-            public void postChange(IAEStack<?> template, long delta) {
-                postCraftingDifference.accept(template.copyWithStackSize(delta));
+            public void postChange(IAEStack template, long delta) {
+                postCraftingDifference.accept(IAEStack.copy(template, delta));
             }
         };
         this.waitingFor.readFromNBT(data.getList(NBT_WAITING_FOR, 10));

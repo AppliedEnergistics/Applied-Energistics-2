@@ -98,7 +98,7 @@ public class CraftingCpuHelper {
             long remainingMultiplier = inputs[x].getMultiplier();
             for (var template : getValidItemTemplates(sourceInv, inputs[x], level)) {
                 long extracted = extractTemplates(sourceInv, template, remainingMultiplier);
-                list.add(template.copyWithStackSize(template.getStackSize() * extracted));
+                list.add(IAEStack.copy(template, template.getStackSize() * extracted));
                 remainingMultiplier -= extracted;
                 if (remainingMultiplier == 0)
                     break;
@@ -129,7 +129,7 @@ public class CraftingCpuHelper {
         }
     }
 
-    public static Iterable<IAEStack<?>> getExpectedOutputs(IPatternDetails details) {
+    public static Iterable<IAEStack> getExpectedOutputs(IPatternDetails details) {
         var outputs = Arrays.asList(details.getOutputs());
 
         // TODO: fire event?
@@ -148,17 +148,17 @@ public class CraftingCpuHelper {
     /**
      * Get all stack templates that can be used for this pattern's input.
      */
-    public static Iterable<IAEStack<?>> getValidItemTemplates(ICraftingInventory inv,
-            IPatternDetails.IInput input, Level level) {
-        IAEStack<?>[] possibleInputs = input.getPossibleInputs();
-        List<IAEStack<?>> substitutes;
+    public static Iterable<IAEStack> getValidItemTemplates(ICraftingInventory inv,
+                                                           IPatternDetails.IInput input, Level level) {
+        IAEStack[] possibleInputs = input.getPossibleInputs();
+        List<IAEStack> substitutes;
         if (input.allowFuzzyMatch()) {
             substitutes = new ArrayList<>(possibleInputs.length);
 
             for (var stack : possibleInputs) {
                 for (var fuzz : inv.findFuzzyTemplates(stack)) {
                     // Set the correct amount, it has to match that of the template!
-                    substitutes.add(fuzz.copyWithStackSize(stack.getStackSize()));
+                    substitutes.add(IAEStack.copy(fuzz, stack.getStackSize()));
                 }
             }
         } else {
@@ -171,10 +171,10 @@ public class CraftingCpuHelper {
     /**
      * Extract a whole number of templates, and return how many were extracted.
      */
-    public static long extractTemplates(ICraftingInventory inv, IAEStack<?> template, long multiplier) {
+    public static long extractTemplates(ICraftingInventory inv, IAEStack template, long multiplier) {
         long maxTotal = template.getStackSize() * multiplier;
         // Extract as much as possible.
-        var extracted = inv.extractItems(template.copyWithStackSize(maxTotal), Actionable.SIMULATE);
+        var extracted = inv.extractItems(IAEStack.copy(template, maxTotal), Actionable.SIMULATE);
         if (extracted == null)
             return 0;
         // Adjust to have a whole number of templates.
@@ -182,7 +182,7 @@ public class CraftingCpuHelper {
         maxTotal = template.getStackSize() * multiplier;
         if (maxTotal == 0)
             return 0;
-        extracted = inv.extractItems(template.copyWithStackSize(maxTotal), Actionable.MODULATE);
+        extracted = inv.extractItems(IAEStack.copy(template, maxTotal), Actionable.MODULATE);
         if (extracted == null || extracted.getStackSize() != maxTotal) {
             throw new IllegalStateException("Failed to correctly extract whole number. Invalid simulation!");
         }

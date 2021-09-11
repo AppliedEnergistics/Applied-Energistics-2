@@ -191,7 +191,7 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
     }
 
     @Override
-    public void onRequestChange(final ICraftingService craftingGrid, final IAEStack<?> what) {
+    public void onRequestChange(final ICraftingService craftingGrid, final IAEStack what) {
         this.updateState();
     }
 

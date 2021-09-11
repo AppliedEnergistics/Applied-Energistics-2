@@ -8,7 +8,7 @@ import appeng.api.storage.data.IAEStack;
 /**
  * Allows ME interfaces to inject crafting inputs regardless of the storage channel. Obtained from the storage channel.
  */
-public interface IForeignInventory<T extends IAEStack<T>> {
+public interface IForeignInventory<T extends IAEStack> {
     /**
      * @see IMEInventory#injectItems
      */

@@ -33,7 +33,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
-public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T>
+public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
         implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T> {
 
     private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();

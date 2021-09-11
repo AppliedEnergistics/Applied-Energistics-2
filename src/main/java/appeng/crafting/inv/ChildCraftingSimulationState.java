@@ -13,12 +13,12 @@ public class ChildCraftingSimulationState extends CraftingSimulationState {
     }
 
     @Override
-    protected IAEStack<?> simulateExtractParent(IAEStack<?> input) {
+    protected IAEStack simulateExtractParent(IAEStack input) {
         return parent.extractItems(input, Actionable.SIMULATE);
     }
 
     @Override
-    protected Collection<IAEStack<?>> findFuzzyParent(IAEStack<?> input) {
+    protected Collection<IAEStack> findFuzzyParent(IAEStack input) {
         return parent.findFuzzyTemplates(input);
     }
 }

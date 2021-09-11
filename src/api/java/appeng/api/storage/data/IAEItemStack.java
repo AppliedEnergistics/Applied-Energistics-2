@@ -36,7 +36,7 @@ import net.minecraft.world.item.ItemStack;
  *
  * Construct with IAppEngApi.instance().storage().getStorageChannel( IItemStorageChannel.class).createStack( ItemStack )
  */
-public interface IAEItemStack extends IAEStack<IAEItemStack> {
+public interface IAEItemStack extends IAEStack {
 
     /**
      * creates a standard MC ItemStack for the item.
@@ -53,19 +53,10 @@ public interface IAEItemStack extends IAEStack<IAEItemStack> {
     boolean hasTagCompound();
 
     /**
-     * Combines two IAEItemStacks via addition.
-     *
-     * @param option to add to the current one.
-     */
-    @Override
-    void add(IAEItemStack option);
-
-    /**
      * create a AE Item clone
      *
      * @return the copy
      */
-    @Override
     IAEItemStack copy();
 
     /**

@@ -85,19 +85,19 @@ public class TestPatternItem extends AEBaseItem {
     }
 
     private static class PatternBuilder {
-        private final IAEStack<?>[] outputs;
+        private final IAEStack[] outputs;
         private final List<IPatternDetails.IInput> inputs = new ArrayList<>();
         private final ItemStack definition;
 
-        public PatternBuilder(ItemStack definition, IAEStack<?>... outputs) {
+        public PatternBuilder(ItemStack definition, IAEStack... outputs) {
             this.definition = definition;
             this.outputs = outputs;
         }
 
-        public PatternBuilder addPreciseInput(long multiplier, IAEStack<?>... possibleInputs) {
+        public PatternBuilder addPreciseInput(long multiplier, IAEStack... possibleInputs) {
             inputs.add(new IPatternDetails.IInput() {
                 @Override
-                public IAEStack<?>[] getPossibleInputs() {
+                public IAEStack[] getPossibleInputs() {
                     return possibleInputs;
                 }
 
@@ -107,7 +107,7 @@ public class TestPatternItem extends AEBaseItem {
                 }
 
                 @Override
-                public boolean isValid(IAEStack<?> input, Level level) {
+                public boolean isValid(IAEStack input, Level level) {
                     for (var possibleInput : possibleInputs) {
                         if (possibleInput.equals(input)) {
                             return true;
@@ -123,7 +123,7 @@ public class TestPatternItem extends AEBaseItem {
 
                 @Nullable
                 @Override
-                public IAEStack<?> getContainerItem(IAEStack<?> template) {
+                public IAEStack getContainerItem(IAEStack template) {
                     return null;
                 }
             });
@@ -148,7 +148,7 @@ public class TestPatternItem extends AEBaseItem {
                 }
 
                 @Override
-                public IAEStack<?>[] getOutputs() {
+                public IAEStack[] getOutputs() {
                     return outputs;
                 }
             };

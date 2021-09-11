@@ -24,16 +24,16 @@ public class NetworkCraftingSimulationState extends CraftingSimulationState {
     }
 
     @Override
-    protected IAEStack<?> simulateExtractParent(IAEStack<?> input) {
+    protected IAEStack simulateExtractParent(IAEStack input) {
         var precise = list.findPrecise(input);
         if (precise == null)
             return null;
         else
-            return input.copyWithStackSize(Math.min(input.getStackSize(), precise.getStackSize()));
+            return IAEStack.copy(input, Math.min(input.getStackSize(), precise.getStackSize()));
     }
 
     @Override
-    protected Collection<IAEStack<?>> findFuzzyParent(IAEStack<?> input) {
+    protected Collection<IAEStack> findFuzzyParent(IAEStack input) {
         return list.findFuzzy(input, FuzzyMode.IGNORE_ALL);
     }
 }

@@ -112,15 +112,15 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         return true;
     }
 
-    public void setJob(final IAEStack<?> genericStack) {
+    public void setJob(final IAEStack genericStack) {
         // TODO: fix for generic stacks
         if (genericStack == null || genericStack instanceof IAEItemStack) {
             IAEItemStack is = (IAEItemStack) genericStack;
             if (is == null != (this.dspPlay == null)) {
-                this.dspPlay = is == null ? null : is.copy();
+                this.dspPlay = is == null ? null : IAEStack.copy(is);
                 this.markForUpdate();
             } else if (is != null && this.dspPlay != null && is.getStackSize() != this.dspPlay.getStackSize()) {
-                this.dspPlay = is.copy();
+                this.dspPlay = IAEStack.copy(is);
                 this.markForUpdate();
             }
         }

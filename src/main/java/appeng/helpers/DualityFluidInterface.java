@@ -84,7 +84,7 @@ public class DualityFluidInterface
      * Returns an ME compatible monitor for the interfaces local storage.
      */
     @Override
-    protected <T extends IAEStack<T>> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
+    protected <T extends IAEStack> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
         if (channel == StorageChannels.fluids()) {
             if (localInvHandler == null) {
                 localInvHandler = new InterfaceInventory();
@@ -201,27 +201,29 @@ public class DualityFluidInterface
         final IAEFluidStack stored = this.tanks.getFluidInSlot(slot);
 
         if (req == null && stored != null && stored.getStackSize() > 0) {
-            final IAEFluidStack work = stored.copy();
-            this.requireWork[slot] = work.setStackSize(-work.getStackSize());
+            var work = IAEStack.copy(stored);
+            work.setStackSize(-work.getStackSize());
+            this.requireWork[slot] = work;
             return;
         } else if (req != null) {
             if (stored == null || stored.getStackSize() == 0) // need to add stuff!
             {
-                this.requireWork[slot] = req.copy();
+                this.requireWork[slot] = IAEStack.copy(req);
                 this.requireWork[slot].setStackSize(TANK_CAPACITY);
                 return;
             } else if (req.equals(stored)) // same type ( qty different? )!
             {
                 if (stored.getStackSize() < TANK_CAPACITY) {
-                    this.requireWork[slot] = req.copy();
+                    this.requireWork[slot] = IAEStack.copy(req);
                     this.requireWork[slot].setStackSize(TANK_CAPACITY - stored.getStackSize());
                     return;
                 }
             } else
             // Stored != null; dispose!
             {
-                final IAEFluidStack work = stored.copy();
-                this.requireWork[slot] = work.setStackSize(-work.getStackSize());
+                var work = IAEStack.copy(stored);
+                work.setStackSize(-work.getStackSize());
+                this.requireWork[slot] = work;
                 return;
             }
         }
@@ -256,7 +258,7 @@ public class DualityFluidInterface
                     }
                 }
             } else if (work.getStackSize() < 0) {
-                IAEFluidStack toStore = work.copy();
+                IAEFluidStack toStore = IAEStack.copy(work);
                 toStore.setStackSize(-toStore.getStackSize());
 
                 // make sure strange things didn't happen...

@@ -37,8 +37,8 @@ public class BasicCellHandler implements ICellHandler {
     }
 
     @Override
-    public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(final ItemStack is,
-            final ISaveProvider container, final IStorageChannel<T> channel) {
+    public <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(final ItemStack is,
+                                                                          final ISaveProvider container, final IStorageChannel<T> channel) {
         final ICellInventory<T> inv = BasicCellInventory.createInventory(is, container);
         if (inv == null || inv.getChannel() != channel) {
             return null;

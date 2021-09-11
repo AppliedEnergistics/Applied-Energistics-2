@@ -46,14 +46,14 @@ public class ApiStorage implements IStorageHelper {
     }
 
     @Override
-    public <T extends IAEStack<T>> T poweredInsert(IEnergySource energy, IMEInventory<T> inv, T input,
-            IActionSource src, Actionable mode) {
+    public <T extends IAEStack> T poweredInsert(IEnergySource energy, IMEInventory<T> inv, T input,
+                                                IActionSource src, Actionable mode) {
         return Platform.poweredInsert(energy, inv, input, src, mode);
     }
 
     @Override
-    public <T extends IAEStack<T>> T poweredExtraction(IEnergySource energy, IMEInventory<T> inv, T request,
-            IActionSource src, Actionable mode) {
+    public <T extends IAEStack> T poweredExtraction(IEnergySource energy, IMEInventory<T> inv, T request,
+                                                    IActionSource src, Actionable mode) {
         return Platform.poweredExtraction(energy, inv, request, src, mode);
     }
 

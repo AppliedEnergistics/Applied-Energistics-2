@@ -21,6 +21,7 @@ package appeng.parts.reporting;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -149,17 +150,16 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
     private void insertItem(final Player player, final InteractionHand hand, final boolean allItems) {
         getMainNode().ifPresent(grid -> {
-            final IEnergySource energy = grid.getEnergyService();
-            final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
-                    .getInventory(StorageChannels.items());
+            var energy = grid.getEnergyService();
+            var cell = grid.getStorageService().getInventory(StorageChannels.items());
 
             if (allItems) {
                 if (this.getDisplayed() != null) {
-                    final IAEItemStack input = this.getDisplayed().copy();
+                    var input = IAEStack.copy(this.getDisplayed());
                     IItemHandler inv = new PlayerMainInvWrapper(player.getInventory());
 
                     for (int x = 0; x < inv.getSlots(); x++) {
-                        final ItemStack targetStack = inv.getStackInSlot(x);
+                        var targetStack = inv.getStackInSlot(x);
                         if (input.equals(targetStack)) {
                             final ItemStack canExtract = inv.extractItem(x, targetStack.getCount(), true);
                             if (!canExtract.isEmpty()) {

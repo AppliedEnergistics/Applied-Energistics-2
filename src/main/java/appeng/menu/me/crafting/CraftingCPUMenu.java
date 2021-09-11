@@ -63,7 +63,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
     private final IncrementalUpdateHelper<?> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
-    private final Consumer<IAEStack<?>> cpuChangeListener = stack -> incrementalUpdateHelper.addChange(cast(stack));
+    private final Consumer<IAEStack> cpuChangeListener = stack -> incrementalUpdateHelper.addChange(cast(stack));
 
     public CraftingCPUMenu(MenuType<?> menuType, int id, final Inventory ip, final Object te) {
         super(menuType, id, ip, te);

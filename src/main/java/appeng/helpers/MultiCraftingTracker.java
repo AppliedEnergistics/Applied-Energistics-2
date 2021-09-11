@@ -21,6 +21,7 @@ package appeng.helpers;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import appeng.api.storage.data.IAEStack;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.nbt.CompoundTag;
@@ -101,7 +102,7 @@ public class MultiCraftingTracker {
                     // :P
                 }
             } else if (this.getLink(x) == null) {
-                final IAEItemStack aisC = ais.copy();
+                final IAEItemStack aisC = IAEStack.copy(ais);
                 aisC.setStackSize(itemToCraft);
 
                 this.setJob(x, cg.beginCraftingJob(level, mySrc, aisC, null));

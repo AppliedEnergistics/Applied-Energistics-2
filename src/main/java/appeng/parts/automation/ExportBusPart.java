@@ -215,7 +215,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     }
 
     @Override
-    public IAEStack<?> injectCraftedItems(final ICraftingLink link, final IAEStack<?> stack, final Actionable mode) {
+    public IAEStack injectCraftedItems(final ICraftingLink link, final IAEStack stack, final Actionable mode) {
         // Cast is safe: we know we only requested items.
         var items = (IAEItemStack) stack;
         final InventoryAdaptor d = this.getHandler();
@@ -265,7 +265,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         final long canFit = o.isEmpty() ? this.itemToSend : this.itemToSend - o.getCount();
 
         if (canFit > 0) {
-            ais = ais.copy();
+            ais = IAEStack.copy(ais);
             ais.setStackSize(canFit);
             final IAEItemStack itemsToAdd = Platform.poweredExtraction(energy, inv, ais, this.mySrc);
 

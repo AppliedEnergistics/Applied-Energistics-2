@@ -56,8 +56,8 @@ public interface IStorageHelper {
      * @param mode    Simulate or modulate
      * @return extracted items or {@code null} of nothing was extracted.
      */
-    <T extends IAEStack<T>> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> inv, final T request,
-            final IActionSource src, final Actionable mode);
+    <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> inv, final T request,
+                                             final IActionSource src, final Actionable mode);
 
     /**
      * Inserts items into a {@link IMEInventory} respecting power requirements.
@@ -69,8 +69,8 @@ public interface IStorageHelper {
      * @param mode   Simulate or modulate
      * @return items not inserted or {@code null} if everything was inserted.
      */
-    <T extends IAEStack<T>> T poweredInsert(final IEnergySource energy, final IMEInventory<T> inv, final T input,
-            final IActionSource src, final Actionable mode);
+    <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> inv, final T input,
+                                         final IActionSource src, final Actionable mode);
 
     /**
      * A utility function to notify the {@link IStorageService} of grid inventory changes that result from storage cells

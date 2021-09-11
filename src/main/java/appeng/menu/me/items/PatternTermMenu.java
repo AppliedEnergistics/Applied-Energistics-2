@@ -18,6 +18,7 @@
 
 package appeng.menu.me.items;
 
+import appeng.api.storage.data.IAEStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -285,7 +286,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         if (packetPatternSlot.slotItem != null && this.monitor != null /*
                                                                         * TODO should this check powered / powerSource?
                                                                         */) {
-            final IAEItemStack out = packetPatternSlot.slotItem.copy();
+            final IAEItemStack out = IAEStack.copy(packetPatternSlot.slotItem);
             InventoryAdaptor inv = new AdaptorItemHandler(new WrapperCursorItemHandler(this));
             final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(this.getPlayerInventory().player);
 

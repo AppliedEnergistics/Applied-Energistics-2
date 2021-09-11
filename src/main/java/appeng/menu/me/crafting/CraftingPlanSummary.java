@@ -20,6 +20,7 @@ package appeng.menu.me.crafting;
 
 import java.util.List;
 
+import appeng.api.storage.data.IAEStack;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -105,11 +106,15 @@ public class CraftingPlanSummary {
             plan.addStorage(missing);
         }
         for (var emitted : job.emittedItems()) {
-            plan.addRequestable(emitted.copy().setCountRequestable(emitted.getStackSize()));
+            var requestable = (IAEStack) IAEStack.copy(emitted);
+            requestable.setCountRequestable(emitted.getStackSize());
+            plan.addRequestable(requestable);
         }
         for (var entry : job.patternTimes().entrySet()) {
             for (var out : entry.getKey().getOutputs()) {
-                plan.addRequestable(out.copy().setCountRequestable(out.getStackSize() * entry.getValue()));
+                var requestable = (IAEStack) IAEStack.copy(out);
+                requestable.setCountRequestable(out.getStackSize() * entry.getValue());
+                plan.addRequestable(requestable);
             }
         }
 
@@ -122,7 +127,7 @@ public class CraftingPlanSummary {
             long storedAmount;
             if (job.simulation()) {
                 IMEMonitor networkInventory = sg.getInventory(out.getChannel());
-                var available = networkInventory.extractItems(out.copy(), Actionable.SIMULATE, actionSource);
+                var available = networkInventory.extractItems(IAEStack.copy(out), Actionable.SIMULATE, actionSource);
 
                 storedAmount = available == null ? 0 : available.getStackSize();
                 missingAmount = out.getStackSize() - storedAmount;

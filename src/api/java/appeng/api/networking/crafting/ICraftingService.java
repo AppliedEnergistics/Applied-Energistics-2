@@ -44,7 +44,7 @@ public interface ICraftingService extends IGridService {
      *
      * @return a collection of crafting patterns for the item in question.
      */
-    ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack<?> whatToCraft,
+    ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack whatToCraft,
             IPatternDetails details, int slot, Level level);
 
     /**
@@ -58,7 +58,7 @@ public interface ICraftingService extends IGridService {
      * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan} do not wait
      *         on this, your be waiting forever.
      */
-    Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack<?> craftWhat,
+    Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat,
             ICraftingCallback callback);
 
     /**
@@ -90,7 +90,7 @@ public interface ICraftingService extends IGridService {
      *
      * @return true if the item can be requested via a crafting emitter.
      */
-    boolean canEmitFor(IAEStack<?> what);
+    boolean canEmitFor(IAEStack what);
 
     /**
      * is this item being crafted?
@@ -99,7 +99,7 @@ public interface ICraftingService extends IGridService {
      *
      * @return true if it is being crafting
      */
-    boolean isRequesting(IAEStack<?> what);
+    boolean isRequesting(IAEStack what);
 
     /**
      * The total amount being requested across all crafting cpus of a grid.
@@ -108,5 +108,5 @@ public interface ICraftingService extends IGridService {
      *
      * @return The total amount being requested.
      */
-    long requesting(IAEStack<?> what);
+    long requesting(IAEStack what);
 }

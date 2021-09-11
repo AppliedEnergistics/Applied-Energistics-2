@@ -42,7 +42,7 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider {
             BlockState blockState, IProbeHitData data) {
         if (part instanceof IStorageMonitorPart monitor) {
 
-            final IAEStack<?> displayed = monitor.getDisplayed();
+            final IAEStack displayed = monitor.getDisplayed();
             final boolean isLocked = monitor.isLocked();
 
             // TODO: generalize

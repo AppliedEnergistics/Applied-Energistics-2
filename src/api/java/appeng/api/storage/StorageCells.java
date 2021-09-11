@@ -125,8 +125,8 @@ public final class StorageCells {
      * @return the handler registered for this channel.
      */
     @Nullable
-    public static synchronized <T extends IAEStack<T>> ICellGuiHandler getGuiHandler(IStorageChannel<T> channel,
-            ItemStack is) {
+    public static synchronized <T extends IAEStack> ICellGuiHandler getGuiHandler(IStorageChannel<T> channel,
+                                                                                  ItemStack is) {
         ICellGuiHandler fallBack = null;
 
         for (final ICellGuiHandler ch : guiHandlers) {
@@ -152,9 +152,9 @@ public final class StorageCells {
      * @return new ICellInventoryHandler, or null if there isn't one.
      */
     @Nullable
-    public static synchronized <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(ItemStack is,
-            ISaveProvider host,
-            IStorageChannel<T> chan) {
+    public static synchronized <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is,
+                                                                                              ISaveProvider host,
+                                                                                              IStorageChannel<T> chan) {
         if (is.isEmpty()) {
             return null;
         }

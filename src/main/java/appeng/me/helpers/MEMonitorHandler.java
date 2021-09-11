@@ -45,7 +45,7 @@ import appeng.api.storage.data.IItemList;
  * <p>
  * TODO: Needs to be redesigned to solve performance issues.
  */
-public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T> {
+public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
 
     private final IMEInventoryHandler<T> internalHandler;
     private final IItemList<T> cachedList;
@@ -78,7 +78,7 @@ public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T> {
         if (mode == Actionable.SIMULATE) {
             return this.getHandler().injectItems(input, mode, src);
         }
-        return this.monitorDifference(input.copy(), this.getHandler().injectItems(input, mode, src), false, src);
+        return this.monitorDifference(IAEStack.copy(input), this.getHandler().injectItems(input, mode, src), false, src);
     }
 
     protected IMEInventoryHandler<T> getHandler() {
@@ -87,7 +87,7 @@ public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T> {
 
     private T monitorDifference(final T original, final T leftOvers, final boolean extraction,
             final IActionSource src) {
-        final T diff = original.copy();
+        final T diff = IAEStack.copy(original);
 
         if (extraction) {
             diff.setStackSize(leftOvers == null ? 0 : -leftOvers.getStackSize());
@@ -129,7 +129,7 @@ public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T> {
         if (mode == Actionable.SIMULATE) {
             return this.getHandler().extractItems(request, mode, src);
         }
-        return this.monitorDifference(request.copy(), this.getHandler().extractItems(request, mode, src), true, src);
+        return this.monitorDifference(IAEStack.copy(request), this.getHandler().extractItems(request, mode, src), true, src);
     }
 
     @Override

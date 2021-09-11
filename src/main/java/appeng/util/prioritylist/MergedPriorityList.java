@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import appeng.api.storage.data.IAEStack;
 
-public final class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList<T> {
+public final class MergedPriorityList<T extends IAEStack> implements IPartitionList<T> {
 
     private final Collection<IPartitionList<T>> positive = new ArrayList<>();
     private final Collection<IPartitionList<T>> negative = new ArrayList<>();

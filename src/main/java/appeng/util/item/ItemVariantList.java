@@ -24,6 +24,7 @@ import java.util.Map;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.util.iterators.MeaningfulStackIterator;
 
 /**
@@ -36,11 +37,11 @@ abstract class ItemVariantList {
         final IAEItemStack st = this.getRecords().get(((AEItemStack) option).getSharedStack());
 
         if (st != null) {
-            st.add(option);
+            IAEStack.add(st, option);
             return;
         }
 
-        final IAEItemStack opt = option.copy();
+        final IAEItemStack opt = IAEStack.copy(option);
 
         this.putItemRecord(opt);
     }
@@ -57,7 +58,7 @@ abstract class ItemVariantList {
             return;
         }
 
-        final IAEItemStack opt = option.copy();
+        final IAEItemStack opt = IAEStack.copy(option);
 
         this.putItemRecord(opt);
     }
@@ -70,7 +71,7 @@ abstract class ItemVariantList {
             return;
         }
 
-        final IAEItemStack opt = option.copy();
+        final IAEItemStack opt = IAEStack.copy(option);
         opt.setStackSize(0);
         opt.setCraftable(true);
 
@@ -85,7 +86,7 @@ abstract class ItemVariantList {
             return;
         }
 
-        final IAEItemStack opt = option.copy();
+        final IAEItemStack opt = IAEStack.copy(option);
         opt.setStackSize(0);
         opt.setCraftable(false);
         opt.setCountRequestable(option.getCountRequestable());
