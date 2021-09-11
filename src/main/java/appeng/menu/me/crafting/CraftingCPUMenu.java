@@ -18,8 +18,6 @@
 
 package appeng.menu.me.crafting;
 
-import static appeng.menu.me.crafting.CraftingStatus.cast;
-
 import java.util.function.Consumer;
 
 import net.minecraft.network.chat.TextComponent;
@@ -60,10 +58,10 @@ public class CraftingCPUMenu extends AEBaseMenu {
             })
             .build("craftingcpu");
 
-    private final IncrementalUpdateHelper<?> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
+    private final IncrementalUpdateHelper<IAEStack> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
-    private final Consumer<IAEStack> cpuChangeListener = stack -> incrementalUpdateHelper.addChange(cast(stack));
+    private final Consumer<IAEStack> cpuChangeListener = incrementalUpdateHelper::addChange;
 
     public CraftingCPUMenu(MenuType<?> menuType, int id, final Inventory ip, final Object te) {
         super(menuType, id, ip, te);
@@ -104,7 +102,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
             MixedItemList allItems = new MixedItemList();
             cpu.craftingLogic.getAllItems(allItems);
             for (var stack : allItems) {
-                incrementalUpdateHelper.addChange(cast(stack));
+                incrementalUpdateHelper.addChange(stack);
             }
 
             this.cpu.craftingLogic.addListener(cpuChangeListener);

@@ -21,6 +21,7 @@ package appeng.menu.me.crafting;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.storage.data.IAEStack;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -119,7 +120,7 @@ public class CraftingStatus {
         return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build());
     }
 
-    public static CraftingStatus create(IncrementalUpdateHelper<?> changes,
+    public static CraftingStatus create(IncrementalUpdateHelper<IAEStack> changes,
             CraftingCpuLogic logic) {
 
         boolean full = changes.isFullUpdate();
@@ -131,13 +132,13 @@ public class CraftingStatus {
             long pendingCount = logic.getPendingOutputs(stack);
 
             ItemStack item = stack.asItemStackRepresentation();
-            if (!full && changes.getSerial(cast(stack)) != null) {
+            if (!full && changes.getSerial(stack) != null) {
                 // The item was already sent to the client, so we can skip the item stack
                 item = ItemStack.EMPTY;
             }
 
             newEntries.add(new CraftingStatusEntry(
-                    changes.getOrAssignSerial(cast(stack)),
+                    changes.getOrAssignSerial(stack),
                     item,
                     storedCount,
                     activeCount,
@@ -154,11 +155,6 @@ public class CraftingStatus {
                 remainingItems,
                 startItems,
                 newEntries.build());
-    }
-
-    // TODO: ugly
-    public static <T, U> U cast(T t) {
-        return (U) t;
     }
 
 }
