@@ -30,7 +30,7 @@ import net.minecraft.world.level.Level;
 /**
  * Allows you to create a grid-wide service. AE2 uses these for providing item, spatial, and tunnel services.
  * <p>
- * Any class that implements this needs to be registered with {@link IGridServiceRegistry}.
+ * Any class that implements this needs to be registered with {@link GridServices}.
  */
 public interface IGridServiceProvider {
     /**
