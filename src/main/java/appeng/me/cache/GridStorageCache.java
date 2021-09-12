@@ -249,6 +249,8 @@ public class GridStorageCache implements IStorageGrid
 		}
 
 		tracker.applyChanges();
+
+		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
 	}
 
 	private <T extends IAEStack<T>, C extends IStorageChannel<T>> void postChangesToNetwork( final C chan, final int upOrDown, final IItemList<T> availableItems, final IActionSource src )
