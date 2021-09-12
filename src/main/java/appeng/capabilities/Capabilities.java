@@ -20,7 +20,6 @@ package appeng.capabilities;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.storage.IStorageMonitorableAccessor;
@@ -36,13 +35,6 @@ public final class Capabilities {
     public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
 
     public static Capability<IEnergyStorage> FORGE_ENERGY;
-
-    /**
-     * Register AE2 provided capabilities.
-     */
-    public static void register() {
-        CapabilityManager.INSTANCE.register(IStorageMonitorableAccessor.class);
-    }
 
     @CapabilityInject(IStorageMonitorableAccessor.class)
     private static void capIStorageMonitorableAccessorRegistered(Capability<IStorageMonitorableAccessor> cap) {

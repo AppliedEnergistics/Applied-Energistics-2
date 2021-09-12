@@ -62,14 +62,6 @@ repositories {
     maven { url = 'https://repo.spongepowered.org/maven' }
 }
 
-///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
-configurations {
-    apiImplementation.extendsFrom(implementation)
-    library
-    implementation.extendsFrom(library)
-}
-///////////////////// TODO-117 END TEMP FIX UNTIL MIXIN IS BACK
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -101,10 +93,6 @@ dependencies {
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:3.9.0")
     testImplementation("org.mockito:mockito-inline:3.9.0")
-
-///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
-    library "org.spongepowered:mixin:0.8.4"
-///////////////////// TODO-117 END TEMP FIX UNTIL MIXIN IS BACK
 
     // Annotation Processors
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
@@ -159,6 +147,10 @@ sourceSets {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
+}
+
+configurations {
+    apiImplementation.extendsFrom(implementation)
 }
 
 test {
@@ -415,15 +407,4 @@ if (System.getProperty("idea.sync.active") == "true") {
 // Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
-}
-
-// Temporary compile fix, breaks reobfJar. Remove once Sponge Mixin Gradle Plugin gets fixed
-// https://github.com/SpongePowered/MixinGradle/issues/29
-net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace.metaClass.extraMapping = {
-}
-
-minecraft.runs.all {
-    lazyToken('minecraft_classpath') {
-        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
-    }
 }
