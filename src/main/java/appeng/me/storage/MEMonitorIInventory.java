@@ -46,7 +46,6 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 {
 
 	private final InventoryAdaptor adaptor;
-	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private IItemList<IAEItemStack> cache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
@@ -158,11 +157,11 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 		for( final ItemSlot is : adaptor )
 		{
-			final ItemStack newIS = !is.isExtractable() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY ? ItemStack.EMPTY : is.getItemStack();
-			if( !newIS.isEmpty() )
+			if( this.mode == StorageFilter.EXTRACTABLE_ONLY && !is.isExtractable() )
 			{
-				currentlyOnStorage.add( is.getAEItemStack() );
+				continue;
 			}
+			currentlyOnStorage.add( is.getAEItemStack() );
 		}
 
 		for( final IAEItemStack is : cache )
@@ -265,7 +264,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	@Override
 	public IItemList<IAEItemStack> getStorageList()
 	{
-		return this.list;
+		return this.cache;
 	}
 
 	private StorageFilter getMode()

@@ -19,14 +19,11 @@
 package appeng.me.storage;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import appeng.fluids.util.AEFluidStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -48,16 +45,14 @@ import appeng.api.storage.data.IItemList;
 public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITickingMonitor
 {
 	private final IFluidHandler handler;
-	private final IItemList<IAEFluidStack> list = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+	private IItemList<IAEFluidStack> cache = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
-	private final NavigableMap<Integer, CachedFluidStack> memory;
 	private IActionSource mySource;
 	private StorageFilter mode = StorageFilter.EXTRACTABLE_ONLY;
 
 	public MEMonitorIFluidHandler( final IFluidHandler handler )
 	{
 		this.handler = handler;
-		this.memory = new ConcurrentSkipListMap<>();
 	}
 
 	@Override
@@ -82,11 +77,6 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 			return input.copy();
 		}
 
-		if( type == Actionable.MODULATE )
-		{
-			this.onTick();
-		}
-
 		if( filled == input.getStackSize() )
 		{
 			return null;
@@ -94,6 +84,15 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
 		final IAEFluidStack o = input.copy();
 		o.setStackSize( input.getStackSize() - filled );
+
+		if( type == Actionable.MODULATE )
+		{
+			IAEFluidStack added = o.copy();
+			this.cache.add( added );
+			this.postDifference( Collections.singletonList( added ) );
+			this.onTick();
+		}
+
 		return o;
 	}
 
@@ -107,13 +106,18 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 			return null;
 		}
 
-		if( type == Actionable.MODULATE )
-		{
-			this.onTick();
-		}
-
 		final IAEFluidStack o = request.copy();
 		o.setStackSize( removed.amount );
+
+		if( type == Actionable.MODULATE )
+		{
+			IAEFluidStack cachedStack = this.cache.findPrecise( request );
+			if( cachedStack != null )
+			{
+				cachedStack.decStackSize( o.getStackSize() );
+				this.postDifference( Collections.singletonList( o.copy().setStackSize( -o.getStackSize() ) ) );
+			}
+		}
 		return o;
 	}
 
@@ -126,109 +130,49 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 	@Override
 	public TickRateModulation onTick()
 	{
-		final List<IAEFluidStack> changes = new ArrayList<>();
-
-		this.list.resetStatus();
-		int high = 0;
 		boolean changed = false;
 
-		final IFluidTankProperties[] props = this.handler.getTankProperties();
-		for( int slot = 0; slot < this.handler.getTankProperties().length; ++slot )
+		final List<IAEFluidStack> changes = new ArrayList<>();
+		final IFluidTankProperties[] tankProperties = this.handler.getTankProperties();
+
+		IItemList<IAEFluidStack> currentlyOnStorage = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+
+		for( IFluidTankProperties tankProperty : tankProperties )
 		{
-			final CachedFluidStack old = this.memory.get( slot );
-			high = Math.max( high, slot );
-
-			final FluidStack newIS = !props[slot].canDrain() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY ? null : props[slot].getContents();
-			final FluidStack oldIS = old == null ? null : old.fluidStack;
-
-			if( isDifferent( newIS, oldIS ) )
+			if( this.mode == StorageFilter.EXTRACTABLE_ONLY && this.handler.drain( 1, false ) == null )
 			{
-				final CachedFluidStack cis = new CachedFluidStack( newIS );
-				this.memory.put( slot, cis );
-
-				if( old != null && old.aeStack != null )
-				{
-					old.aeStack.setStackSize( -old.aeStack.getStackSize() );
-					changes.add( old.aeStack );
-				}
-
-				if( cis.aeStack != null )
-				{
-					changes.add( cis.aeStack );
-					this.list.add( cis.aeStack );
-				}
-
-				changed = true;
+				continue;
 			}
-			else
+			currentlyOnStorage.add( AEFluidStack.fromFluidStack( tankProperty.getContents() ) );
+		}
+
+		for( final IAEFluidStack is : cache )
+		{
+			is.setStackSize( -is.getStackSize() );
+		}
+
+		for( final IAEFluidStack is : currentlyOnStorage )
+		{
+			cache.add( is );
+		}
+
+		for( final IAEFluidStack is : cache )
+		{
+			if( is.getStackSize() != 0 )
 			{
-				final int newSize = newIS == null ? 0 : newIS.amount;
-				final int diff = newSize - ( oldIS == null ? 0 : oldIS.amount );
-
-				IAEFluidStack stack = null;
-
-				if( newIS != null )
-				{
-					stack = ( old == null || old.aeStack == null ? AEApi.instance()
-							.storage()
-							.getStorageChannel( IFluidStorageChannel.class )
-							.createStack( newIS ) : old.aeStack.copy() );
-				}
-				if( stack != null )
-				{
-					stack.setStackSize( newSize );
-					this.list.add( stack );
-				}
-
-				if( diff != 0 && stack != null )
-				{
-					final CachedFluidStack cis = new CachedFluidStack( newIS );
-					this.memory.put( slot, cis );
-
-					final IAEFluidStack a = stack.copy();
-					a.setStackSize( diff );
-					changes.add( a );
-					changed = true;
-				}
+				changes.add( is );
 			}
 		}
 
-		// detect dropped items; should fix non IISided Inventory Changes.
-		final NavigableMap<Integer, CachedFluidStack> end = this.memory.tailMap( high, false );
-		if( !end.isEmpty() )
-		{
-			for( final CachedFluidStack cis : end.values() )
-			{
-				if( cis != null && cis.aeStack != null )
-				{
-					final IAEFluidStack a = cis.aeStack.copy();
-					a.setStackSize( -a.getStackSize() );
-					changes.add( a );
-					changed = true;
-				}
-			}
-			end.clear();
-		}
+		cache = currentlyOnStorage;
 
 		if( !changes.isEmpty() )
 		{
 			this.postDifference( changes );
+			changed = true;
 		}
 
 		return changed ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
-	}
-
-	private static boolean isDifferent( FluidStack a, FluidStack b )
-	{
-		if( a == b )
-		{
-			return false;
-		}
-		if( a == null || b == null )
-		{
-			return true;
-		}
-		return !a.getFluid().equals( b.getFluid() );
 	}
 
 	private void postDifference( final Iterable<IAEFluidStack> a )
@@ -291,9 +235,9 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 	@Override
 	public IItemList<IAEFluidStack> getAvailableItems( final IItemList out )
 	{
-		for( final CachedFluidStack is : this.memory.values() )
+		for( final IAEFluidStack fs : cache )
 		{
-			out.addStorage( is.aeStack );
+			out.addStorage( fs );
 		}
 
 		return out;
@@ -302,7 +246,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 	@Override
 	public IItemList<IAEFluidStack> getStorageList()
 	{
-		return this.list;
+		return this.cache;
 	}
 
 	private StorageFilter getMode()
@@ -326,24 +270,4 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 		this.mySource = mySource;
 	}
 
-	private static class CachedFluidStack
-	{
-
-		private final FluidStack fluidStack;
-		private final IAEFluidStack aeStack;
-
-		CachedFluidStack( final FluidStack is )
-		{
-			if( is == null )
-			{
-				this.fluidStack = null;
-				this.aeStack = null;
-			}
-			else
-			{
-				this.fluidStack = is.copy();
-				this.aeStack = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( is );
-			}
-		}
-	}
 }

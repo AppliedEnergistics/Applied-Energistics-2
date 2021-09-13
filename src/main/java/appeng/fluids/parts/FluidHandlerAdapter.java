@@ -232,18 +232,11 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
 			for( IFluidTankProperties tankProperty : tankProperties )
 			{
-				FluidStack newFS = tankProperty.getContents();
-				if( this.mode == StorageFilter.EXTRACTABLE_ONLY && newFS != null )
+				if( this.mode == StorageFilter.EXTRACTABLE_ONLY && this.fluidHandler.drain( 1, false ) == null )
 				{
-					if( this.fluidHandler.drain( 1, false ) == null )
-					{
-						newFS = null;
-					}
+					continue;
 				}
-				if( newFS != null )
-				{
-					currentlyOnStorage.add( AEFluidStack.fromFluidStack( newFS ) );
-				}
+				currentlyOnStorage.add( AEFluidStack.fromFluidStack( tankProperty.getContents() ) );
 			}
 
 			for ( final IAEFluidStack is : currentlyCached )

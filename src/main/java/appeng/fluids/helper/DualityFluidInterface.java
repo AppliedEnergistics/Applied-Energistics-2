@@ -91,12 +91,10 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private int isWorking = -1;
 	private int priority;
 
-	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance()
-			.storage()
-			.getStorageChannel( IItemStorageChannel.class ) );
-	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), AEApi.instance()
-			.storage()
-			.getStorageChannel( IFluidStorageChannel.class ) );
+	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+	private boolean resetConfigCache;
+	private IMEMonitor<IAEFluidStack> configCachedHandler;
 
 	public DualityFluidInterface( final AENetworkProxy networkProxy, final IFluidInterfaceHost ih )
 	{
@@ -146,7 +144,12 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		{
 			if( this.hasConfig() )
 			{
-				return (IMEMonitor<T>) new InterfaceInventory( this );
+				if( resetConfigCache )
+				{
+					resetConfigCache = false;
+					configCachedHandler = new InterfaceInventory( this );
+				}
+				return (IMEMonitor<T>) configCachedHandler;
 			}
 
 			return (IMEMonitor<T>) this.fluids;
@@ -450,7 +453,12 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 		if( inventory == this.config )
 		{
+			boolean cfg = hasConfig();
 			this.readConfig();
+			if( cfg != hasConfig )
+			{
+				resetConfigCache = true;
+			}
 		}
 		else if( inventory == this.tanks )
 		{
@@ -555,7 +563,6 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		InterfaceInventory( final DualityFluidInterface tileInterface )
 		{
 			super( tileInterface.tanks );
-			this.setActionSource( new MachineSource( tileInterface.iHost ) );
 		}
 
 		@Override

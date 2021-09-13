@@ -338,6 +338,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 			{
 				this.monitor = (ITickingMonitor) inv;
 				this.monitor.setActionSource( new MachineSource( this ) );
+				this.monitor.setMode( (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
 			}
 
 			if( inv != null )

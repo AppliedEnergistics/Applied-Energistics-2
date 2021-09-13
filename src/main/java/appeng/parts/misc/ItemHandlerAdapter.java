@@ -320,13 +320,13 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 			IItemList<IAEItemStack> currentlyOnStorage = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
-			for ( final ItemSlot is : this )
+			for( final ItemSlot is : this )
 			{
-				final ItemStack newIS = !is.isExtractable() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY ? ItemStack.EMPTY : is.getItemStack();
-				if( !newIS.isEmpty() )
+				if( this.mode == StorageFilter.EXTRACTABLE_ONLY && !is.isExtractable() )
 				{
-					currentlyOnStorage.add( is.getAEItemStack() );
+					continue;
 				}
+				currentlyOnStorage.add( is.getAEItemStack() );
 			}
 
 			for ( final IAEItemStack is : currentlyCached )
