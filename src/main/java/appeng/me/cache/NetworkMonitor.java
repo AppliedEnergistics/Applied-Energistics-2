@@ -235,36 +235,39 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	protected void postChange( final boolean add, final Iterable<T> changes, final IActionSource src )
 	{
-		if( GLOBAL_DEPTH.contains( this ) )
+		if( this.localDepthSemaphore > 0 || GLOBAL_DEPTH.contains( this ) )
 		{
 			return;
 		}
 
+		this.localDepthSemaphore++;
 		GLOBAL_DEPTH.push( this );
 
 		this.sendEvent = true;
 
-		for( final T changedItem : changes )
+		for( final T changed : changes )
 		{
-			if( !add && changedItem != null )
+			T change = changed;
+			if( !add && change != null )
 			{
-				changedItem.setStackSize( -changedItem.getStackSize() );
+				change = changed.copy();
+				change.setStackSize( -change.getStackSize() );
 			}
 
-			incGridCurrentCount( changedItem.getStackSize() );
-			this.cachedList.add( changedItem );
+			incGridCurrentCount( change.getStackSize() );
+			this.cachedList.add( change );
 
-			if( this.myGridCache.getInterestManager().containsKey( changedItem ) )
+			if( this.myGridCache.getInterestManager().containsKey( change ) )
 			{
-				final Collection<ItemWatcher> list = this.myGridCache.getInterestManager().get( changedItem );
+				final Collection<ItemWatcher> list = this.myGridCache.getInterestManager().get( change );
 
 				if( !list.isEmpty() )
 				{
-					IAEStack<T> fullStack = this.getStorageList().findPrecise( changedItem );
+					IAEStack<T> fullStack = this.getStorageList().findPrecise( change );
 
 					if( fullStack == null )
 					{
-						fullStack = changedItem.copy();
+						fullStack = change.copy();
 						fullStack.setStackSize( 0 );
 					}
 
@@ -272,7 +275,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 					for( final ItemWatcher iw : list )
 					{
-						iw.getHost().onStackChange( this.getStorageList(), fullStack, changedItem, src, this.getChannel() );
+						iw.getHost().onStackChange( this.getStorageList(), fullStack, change, src, this.getChannel() );
 					}
 
 					this.myGridCache.getInterestManager().disableTransactions();
@@ -283,6 +286,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		this.notifyListenersOfChange( changes, src );
 
 		final NetworkMonitor<?> last = GLOBAL_DEPTH.pop();
+		this.localDepthSemaphore--;
 
 		if( last != this )
 		{

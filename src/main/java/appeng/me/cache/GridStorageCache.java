@@ -109,6 +109,9 @@ public class GridStorageCache implements IStorageGrid
 				this.watchers.remove( node );
 			}
 		}
+
+		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
+
 	}
 
 	@Override
@@ -137,6 +140,9 @@ public class GridStorageCache implements IStorageGrid
 			this.watchers.put( node, iw );
 			swh.updateWatcher( iw );
 		}
+
+		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
+
 	}
 
 	@Override

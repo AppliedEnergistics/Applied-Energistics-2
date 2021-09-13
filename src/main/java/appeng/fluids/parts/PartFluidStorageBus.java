@@ -326,6 +326,10 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 
 		this.handlerHash = newHandlerHash;
 		this.handler = null;
+		if( this.monitor != null )
+		{
+			( (IBaseMonitor<IAEFluidStack>) monitor ).removeListener( this );
+		}
 		this.monitor = null;
 		if( target != null )
 		{

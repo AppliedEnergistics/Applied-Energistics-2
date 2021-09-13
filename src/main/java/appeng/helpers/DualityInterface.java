@@ -23,7 +23,6 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
-import appeng.api.definitions.IItemDefinition;
 import appeng.integration.modules.gregtech.GTCEInventoryAdaptor;
 import appeng.util.*;
 import appeng.util.inv.*;
@@ -35,7 +34,6 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -142,15 +140,17 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private int isWorking = -1;
 	private final Accessor accessor = new Accessor();
 	private EnumSet<EnumFacing> visitedFaces = EnumSet.noneOf( EnumFacing.class );
-	private EnumMap<EnumFacing,List<ItemStack>> waitingToSendFacing = new EnumMap<>(EnumFacing.class);
+	private EnumMap<EnumFacing, List<ItemStack>> waitingToSendFacing = new EnumMap<>( EnumFacing.class );
 	private GTCEInventoryAdaptor GTad;
+	private boolean resetConfigCache = true;
+	private IMEMonitor<IAEItemStack> configCachedHandler;
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
 		this.gridProxy = networkProxy;
 		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 
-		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 4);
+		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 4 );
 		this.cm.registerSetting( Settings.BLOCK, YesNo.NO );
 		this.cm.registerSetting( Settings.INTERFACE_TERMINAL, YesNo.YES );
 
@@ -180,7 +180,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 		if( inv == this.config && ( !removed.isEmpty() || !added.isEmpty() ) )
 		{
+			boolean cfg = hasConfig();
 			this.readConfig();
+			if( cfg != hasConfig )
+			{
+				resetConfigCache = true;
+			}
 		}
 		else if( inv == this.patterns && ( !removed.isEmpty() || !added.isEmpty() ) )
 		{
@@ -975,7 +980,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			if( this.hasConfig() )
 			{
-				return (IMEMonitor<T>) new InterfaceInventory( this );
+				if( resetConfigCache )
+				{
+					resetConfigCache = false;
+					configCachedHandler = new InterfaceInventory( this );
+				}
+				return (IMEMonitor<T>) configCachedHandler;
 			}
 
 			return (IMEMonitor<T>) this.items;
@@ -1583,7 +1593,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		public InterfaceInventory( final DualityInterface tileInterface )
 		{
 			super( new AdaptorItemHandler( tileInterface.storage ) );
-			this.setActionSource( new MachineSource( DualityInterface.this.iHost ) );
 		}
 
 		@Override

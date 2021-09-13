@@ -510,16 +510,14 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		this.handlerHash = newHandlerHash;
 		this.handler = null;
+		if( this.monitor != null )
+		{
+			( (IBaseMonitor<IAEItemStack>) monitor ).removeListener( this );
+		}
 		this.monitor = null;
 		if( target != null )
 		{
 			IMEInventory<IAEItemStack> inv = this.getInventoryWrapper( target );
-
-			if( inv instanceof MEMonitorIInventory )
-			{
-				final MEMonitorIInventory h = (MEMonitorIInventory) inv;
-				h.setMode( (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
-			}
 
 			if( inv instanceof ITickingMonitor )
 			{
