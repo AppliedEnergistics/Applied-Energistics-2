@@ -125,6 +125,8 @@ public class CableBusBakedModel implements BakedModel {
         if (layer == RenderType.cutout()) {
 
             // First, handle the cable at the center of the cable bus
+            // TODO TMP: remove
+            cableModelCache.invalidate(renderState);
             final List<BakedQuad> cableModel = cableModelCache.getUnchecked(renderState);
             quads.addAll(cableModel);
 

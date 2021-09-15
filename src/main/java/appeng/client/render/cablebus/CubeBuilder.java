@@ -112,10 +112,10 @@ public class CubeBuilder {
 
         switch (face) {
             case DOWN -> {
-                this.putVertexTR(builder, face, x2, y1, z1, uv);
-                this.putVertexBR(builder, face, x2, y1, z2, uv);
-                this.putVertexBL(builder, face, x1, y1, z2, uv);
-                this.putVertexTL(builder, face, x1, y1, z1, uv);
+                this.putVertexTL(builder, face, x1, y1, z2, uv);
+                this.putVertexBL(builder, face, x1, y1, z1, uv);
+                this.putVertexBR(builder, face, x2, y1, z1, uv);
+                this.putVertexTR(builder, face, x2, y1, z2, uv);
             }
             case UP -> {
                 this.putVertexTL(builder, face, x1, y2, z1, uv);
@@ -124,28 +124,28 @@ public class CubeBuilder {
                 this.putVertexTR(builder, face, x2, y2, z1, uv);
             }
             case NORTH -> {
-                this.putVertexBR(builder, face, x2, y2, z1, uv);
-                this.putVertexTR(builder, face, x2, y1, z1, uv);
-                this.putVertexTL(builder, face, x1, y1, z1, uv);
-                this.putVertexBL(builder, face, x1, y2, z1, uv);
+                this.putVertexTL(builder, face, x2, y2, z1, uv);
+                this.putVertexBL(builder, face, x2, y1, z1, uv);
+                this.putVertexBR(builder, face, x1, y1, z1, uv);
+                this.putVertexTR(builder, face, x1, y2, z1, uv);
             }
             case SOUTH -> {
-                this.putVertexBL(builder, face, x1, y2, z2, uv);
-                this.putVertexTL(builder, face, x1, y1, z2, uv);
-                this.putVertexTR(builder, face, x2, y1, z2, uv);
-                this.putVertexBR(builder, face, x2, y2, z2, uv);
+                this.putVertexTL(builder, face, x1, y2, z2, uv);
+                this.putVertexBL(builder, face, x1, y1, z2, uv);
+                this.putVertexBR(builder, face, x2, y1, z2, uv);
+                this.putVertexTR(builder, face, x2, y2, z2, uv);
             }
             case WEST -> {
-                this.putVertexTL(builder, face, x1, y1, z1, uv);
-                this.putVertexTR(builder, face, x1, y1, z2, uv);
-                this.putVertexBR(builder, face, x1, y2, z2, uv);
-                this.putVertexBL(builder, face, x1, y2, z1, uv);
+                this.putVertexTL(builder, face, x1, y2, z1, uv);
+                this.putVertexBL(builder, face, x1, y1, z1, uv);
+                this.putVertexBR(builder, face, x1, y1, z2, uv);
+                this.putVertexTR(builder, face, x1, y2, z2, uv);
             }
             case EAST -> {
-                this.putVertexBR(builder, face, x2, y2, z1, uv);
-                this.putVertexBL(builder, face, x2, y2, z2, uv);
-                this.putVertexTL(builder, face, x2, y1, z2, uv);
-                this.putVertexTR(builder, face, x2, y1, z1, uv);
+                this.putVertexTL(builder, face, x2, y2, z2, uv);
+                this.putVertexBL(builder, face, x2, y1, z2, uv);
+                this.putVertexBR(builder, face, x2, y1, z1, uv);
+                this.putVertexTR(builder, face, x2, y2, z1, uv);
             }
         }
 
