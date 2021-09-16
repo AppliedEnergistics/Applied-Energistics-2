@@ -54,6 +54,7 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ICraftingMachine;
@@ -276,7 +277,7 @@ public class DualityItemInterface
                 for (int x = 0; x < accountedFor.length; x++) {
                     final ItemStack is = this.patterns.getStackInSlot(x);
                     // TODO: used to be always false, and still is! ...
-                    if (details.getDefinition() == is) {
+                    if (details.copyDefinition() == is) {
                         accountedFor[x] = found = true;
                     }
                 }
@@ -367,7 +368,7 @@ public class DualityItemInterface
     }
 
     private void addToCraftingList(final ItemStack is) {
-        var details = AEApi.patternDetailsHelper().decodePattern(is,
+        var details = AEApi.patterns().decodePattern(is,
                 this.host.getBlockEntity().getLevel());
 
         if (details != null) {

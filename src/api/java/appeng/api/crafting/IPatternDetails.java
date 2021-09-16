@@ -1,4 +1,4 @@
-package appeng.api.networking.crafting;
+package appeng.api.crafting;
 
 import javax.annotation.Nullable;
 
@@ -8,8 +8,9 @@ import net.minecraft.world.level.Level;
 import appeng.api.storage.data.IAEStack;
 
 public interface IPatternDetails {
-    ItemStack getDefinition();
+    ItemStack copyDefinition();
 
+    // TODO: is this even useful?
     boolean isCrafting();
 
     IInput[] getInputs();

@@ -25,7 +25,7 @@ package appeng.api.implementations.blockentities;
 
 import net.minecraft.core.Direction;
 
-import appeng.api.networking.crafting.IPatternDetails;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.data.MixedItemList;
 
 public interface ICraftingMachine {

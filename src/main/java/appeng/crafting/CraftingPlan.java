@@ -2,8 +2,8 @@ package appeng.crafting;
 
 import java.util.Map;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedItemList;
 

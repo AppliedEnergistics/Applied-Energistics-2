@@ -9,9 +9,9 @@ import net.minecraft.nbt.ListTag;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.crafting.CraftingLink;
@@ -79,7 +79,7 @@ public class ExecutingCraftingJob {
         for (int i = 0; i < tasksTag.size(); ++i) {
             final CompoundTag item = tasksTag.getCompound(i);
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
-            var details = AEApi.patternDetailsHelper().decodePattern(pattern.createItemStack(),
+            var details = AEApi.patterns().decodePattern(pattern.createItemStack(),
                     cpu.cluster.getLevel());
             if (details != null) {
                 final TaskProgress tp = new TaskProgress();
@@ -103,7 +103,7 @@ public class ExecutingCraftingJob {
 
         final ListTag list = new ListTag();
         for (var e : this.tasks.entrySet()) {
-            final CompoundTag item = this.writeItem(AEItemStack.fromItemStack(e.getKey().getDefinition()));
+            final CompoundTag item = this.writeItem(AEItemStack.fromItemStack(e.getKey().copyDefinition()));
             item.putLong(NBT_CRAFTING_PROGRESS, e.getValue().value);
             list.add(item);
         }

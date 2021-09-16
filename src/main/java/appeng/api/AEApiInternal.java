@@ -29,7 +29,6 @@ public final class AEApiInternal {
         AEApi.initialize(
                 new ApiStorage(),
                 new ApiPatternDetails(),
-                new ApiCrafting(),
                 new ApiGrid(),
                 new ApiPart(),
                 new ApiClientHelper());

@@ -1,6 +1,6 @@
 package appeng.crafting.inv;
 
-import appeng.api.networking.crafting.IPatternDetails;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEStack;
 
 /**

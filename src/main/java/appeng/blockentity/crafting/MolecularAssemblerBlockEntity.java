@@ -39,10 +39,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
@@ -50,8 +50,6 @@ import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -67,7 +65,8 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
-import appeng.crafting.pattern.CraftingPatternDetailsAdapter;
+import appeng.crafting.pattern.AECraftingPattern;
+import appeng.crafting.pattern.AEPatternDecoder;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.NullMenu;
 import appeng.parts.automation.DefinitionUpgradeInventory;
@@ -98,7 +97,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private boolean isPowered = false;
     private Direction pushDirection = null;
     private ItemStack myPattern = ItemStack.EMPTY;
-    private ICraftingPatternDetails myPlan = null;
+    private AECraftingPattern myPlan = null;
     private double progress = 0;
     private boolean isAwake = false;
     private boolean forcePlan = false;
@@ -129,12 +128,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             boolean isEmpty = ItemHandlerUtil.isEmpty(this.gridInv) && ItemHandlerUtil.isEmpty(this.patternInv);
 
             // Only accept our own crafting patterns!
-            if (isEmpty && patternDetails instanceof CraftingPatternDetailsAdapter adapter) {
+            if (isEmpty && patternDetails instanceof AECraftingPattern pattern) {
                 this.forcePlan = true;
-                this.myPlan = adapter.getLegacy();
+                this.myPlan = pattern;
                 this.pushDirection = where;
 
-                this.fillGrid(table, adapter);
+                this.fillGrid(table, pattern);
 
                 this.updateSleepiness();
                 this.saveChanges();
@@ -144,9 +143,9 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return false;
     }
 
-    private void fillGrid(MixedItemList[] table, CraftingPatternDetailsAdapter adapter) {
+    private void fillGrid(MixedItemList[] table, AECraftingPattern adapter) {
         for (int sparseIndex = 0; sparseIndex < 9; ++sparseIndex) {
-            int inputId = adapter.getInputIndexFromSparseIndex(sparseIndex);
+            int inputId = adapter.getCompressedIndexFromSparse(sparseIndex);
             if (inputId != -1) {
                 var list = table[inputId];
                 // Cast should be safe because our crafting patterns only provide IAEItemStacks
@@ -210,7 +209,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     public CompoundTag save(final CompoundTag data) {
         super.save(data);
         if (this.forcePlan && this.myPlan != null) {
-            final ItemStack pattern = this.myPlan.getPattern();
+            final ItemStack pattern = this.myPlan.copyDefinition();
             if (!pattern.isEmpty()) {
                 final CompoundTag compound = new CompoundTag();
                 pattern.save(compound);
@@ -231,10 +230,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
                 final Level level = this.getLevel();
-                final ICraftingPatternDetails ph = AEApi.crafting().decodePattern(myPat, level);
-                if (ph != null && ph.isCraftable()) {
+                var details = AEPatternDecoder.INSTANCE.decodePattern(myPat, level, false);
+                if (details instanceof AECraftingPattern craftingPattern) {
                     this.forcePlan = true;
-                    this.myPlan = ph;
+                    this.myPlan = craftingPattern;
                     this.pushDirection = Direction.values()[data.getInt("pushDirection")];
                 }
             }
@@ -256,12 +255,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
             if (!ItemStack.isSame(is, this.myPattern)) {
                 final Level level = this.getLevel();
-                final ICraftingPatternDetails ph = AEApi.crafting().decodePattern(is, level);
+                var details = AEPatternDecoder.INSTANCE.decodePattern(is, level, false);
 
-                if (ph != null && ph.isCraftable()) {
+                if (details instanceof AECraftingPattern craftingPattern) {
                     this.progress = 0;
                     this.myPattern = is;
-                    this.myPlan = ph;
+                    this.myPlan = craftingPattern;
                 }
             }
         } else {
@@ -419,7 +418,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         if (this.gridInv.getStackInSlot(9).isEmpty()) {
             for (int x = 0; x < 9; x++) {
                 final ItemStack is = this.gridInv.getStackInSlot(x);
-                if (!is.isEmpty() && (this.myPlan == null || !this.myPlan.isValidItemForSlot(x, is, this.level))) {
+                if (!is.isEmpty()
+                        && (this.myPlan == null || !this.myPlan.isValid(x, IAEItemStack.of(is), this.level))) {
                     this.gridInv.setStackInSlot(9, is);
                     this.gridInv.setStackInSlot(x, ItemStack.EMPTY);
                     this.saveChanges();
@@ -546,7 +546,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             }
 
             if (this.hasPattern()) {
-                return MolecularAssemblerBlockEntity.this.myPlan.isValidItemForSlot(slot, stack,
+                return MolecularAssemblerBlockEntity.this.myPlan.isValid(slot, IAEItemStack.of(stack),
                         MolecularAssemblerBlockEntity.this.getLevel());
             }
             return false;

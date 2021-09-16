@@ -962,5 +962,4 @@ public class Platform {
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
         return level instanceof ServerLevel serverLevel && serverLevel.isPositionTickingWithEntitiesLoaded(pos);
     }
-
 }

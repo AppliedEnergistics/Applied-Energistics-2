@@ -23,6 +23,7 @@
 
 package appeng.api.networking.crafting;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.data.MixedItemList;
 
 /**

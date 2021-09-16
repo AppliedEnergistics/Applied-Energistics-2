@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 
 import appeng.api.client.IClientHelper;
-import appeng.api.crafting.ICraftingHelper;
 import appeng.api.crafting.IPatternDetailsHelper;
 import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
@@ -74,18 +73,9 @@ public final class AEApi {
     }
 
     @Nonnull
-    public static IPatternDetailsHelper patternDetailsHelper() {
+    public static IPatternDetailsHelper patterns() {
         Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
-        return patternDetails;
-    }
-
-    /**
-     * @return A helper for working with crafting related tasks.
-     */
-    @Nonnull
-    public static ICraftingHelper crafting() {
-        Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
-        return crafting;
+        return patterns;
     }
 
     /**
@@ -117,8 +107,7 @@ public final class AEApi {
 
     private static boolean initialized;
     private static IStorageHelper storage;
-    private static IPatternDetailsHelper patternDetails;
-    private static ICraftingHelper crafting;
+    private static IPatternDetailsHelper patterns;
     private static IGridHelper grid;
     private static IPartHelper partHelper;
     private static IClientHelper client;
@@ -126,14 +115,12 @@ public final class AEApi {
     static void initialize(
             IStorageHelper storage,
             IPatternDetailsHelper patternDetails,
-            ICraftingHelper crafting,
             IGridHelper grid,
             IPartHelper partHelper,
             IClientHelper client) {
         Preconditions.checkState(!initialized, "AE2 API was already initialized");
         AEApi.storage = storage;
-        AEApi.patternDetails = patternDetails;
-        AEApi.crafting = crafting;
+        AEApi.patterns = patternDetails;
         AEApi.grid = grid;
         AEApi.partHelper = partHelper;
         AEApi.client = client;

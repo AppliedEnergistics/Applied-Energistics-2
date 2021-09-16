@@ -37,12 +37,13 @@ import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.crafting.ICraftingHelper;
+import appeng.api.crafting.IPatternDetailsHelper;
 import appeng.api.implementations.blockentities.ISegmentedInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
@@ -88,7 +89,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     private final PatternTermSlot craftOutputSlot;
     private final RestrictedInputSlot blankPatternSlot;
     private final RestrictedInputSlot encodedPatternSlot;
-    private final ICraftingHelper craftingHelper = AEApi.crafting();
+    private final IPatternDetailsHelper craftingHelper = AEApi.patterns();
 
     private CraftingRecipe currentRecipe;
     private boolean currentRecipeCraftingMode;
@@ -210,12 +211,20 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
 
         if (this.isCraftingMode()) {
-            output = craftingHelper.encodeCraftingPattern(output, this.currentRecipe, in, out[0], isSubstitute());
+            output = craftingHelper.encodeAE2CraftingPattern(output, this.currentRecipe, in, out[0], isSubstitute());
         } else {
-            output = craftingHelper.encodeProcessingPattern(output, in, out);
+            output = craftingHelper.encodeAE2ProcessingPattern(output, toAeStacks(in), toAeStacks(out));
         }
         this.encodedPatternSlot.set(output);
 
+    }
+
+    private static IAEStack[] toAeStacks(ItemStack... stacks) {
+        IAEStack[] out = new IAEStack[stacks.length];
+        for (int i = 0; i < stacks.length; ++i) {
+            out[i] = AEItemStack.fromItemStack(stacks[i]);
+        }
+        return out;
     }
 
     private ItemStack[] getInputs() {

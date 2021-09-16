@@ -100,25 +100,25 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        var patternHelper = AEApi.patternDetailsHelper();
+        var patternHelper = AEApi.patterns();
 
         // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
-            case ENCODED_CRAFTING_PATTERN:
+            case ENCODED_AE_CRAFTING_PATTERN:
+                if (!EncodedPatternItem.isAE2Pattern(stack)) {
+                    return false;
+                }
                 var de = patternHelper.decodePattern(stack, getLevel());
                 if (de != null) {
                     return de.isCrafting();
                 }
                 return false;
-            case VALID_ENCODED_PATTERN_W_OUTPUT:
-            case ENCODED_PATTERN_W_OUTPUT:
             case ENCODED_PATTERN:
                 return patternHelper.isEncodedPattern(stack);
+            case ENCODED_AE_PATTERN:
+                return EncodedPatternItem.isAE2Pattern(stack);
             case BLANK_PATTERN:
                 return AEItems.BLANK_PATTERN.isSameAs(stack);
-
-            case PATTERN:
-                return AEItems.BLANK_PATTERN.isSameAs(stack) || patternHelper.isEncodedPattern(stack);
 
             case INSCRIBER_PLATE:
                 if (AEItems.NAME_PRESS.isSameAs(stack)) {
@@ -217,16 +217,6 @@ public class RestrictedInputSlot extends AppEngSlot {
         this.allowEdit = allowEdit;
     }
 
-    @Override
-    protected boolean getCurrentValidationState() {
-        if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
-            // Allow either an empty slot, or a valid encoded pattern
-            ItemStack stack = getItem();
-            return stack.isEmpty() || AEApi.crafting().decodePattern(stack, getLevel()) != null;
-        }
-        return true;
-    }
-
     public enum PlacableItemType {
         STORAGE_CELLS(Icon.BACKGROUND_STORAGE_CELL),
         ORE(Icon.BACKGROUND_ORE),
@@ -236,9 +226,8 @@ public class RestrictedInputSlot extends AppEngSlot {
          */
         GRID_LINKABLE_ITEM(Icon.BACKGROUND_WIRELESS_TERM),
         TRASH(Icon.BACKGROUND_TRASH),
-        VALID_ENCODED_PATTERN_W_OUTPUT(Icon.BACKGROUND_ENCODED_PATTERN),
-        ENCODED_PATTERN_W_OUTPUT(Icon.BACKGROUND_ENCODED_PATTERN),
-        ENCODED_CRAFTING_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        ENCODED_AE_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        ENCODED_AE_CRAFTING_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         ENCODED_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
         BLANK_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),

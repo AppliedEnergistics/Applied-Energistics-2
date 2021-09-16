@@ -25,8 +25,8 @@ import javax.annotation.Nullable;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedItemList;
 import appeng.crafting.execution.CraftingCpuHelper;

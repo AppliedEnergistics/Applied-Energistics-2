@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import appeng.api.config.Actionable;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedItemList;
 import appeng.crafting.inv.CraftingSimulationState;

@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.networking.crafting.IPatternDetails;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.util.Platform;
@@ -118,7 +118,7 @@ public class ProcessingPatternBuilder {
     public IPatternDetails build() {
         return new IPatternDetails() {
             @Override
-            public ItemStack getDefinition() {
+            public ItemStack copyDefinition() {
                 throw new UnsupportedOperationException();
             }
 

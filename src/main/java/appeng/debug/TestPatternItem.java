@@ -17,8 +17,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.AEApi;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.IPatternDetailsDecoder;
-import appeng.api.networking.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -40,7 +40,7 @@ public class TestPatternItem extends AEBaseItem {
     }
 
     static {
-        AEApi.patternDetailsHelper().registerDecoder(new IPatternDetailsDecoder() {
+        AEApi.patterns().registerDecoder(new IPatternDetailsDecoder() {
             @Override
             public boolean isEncodedPattern(ItemStack stack) {
                 return decodePattern(stack, null, false) != null;
@@ -133,7 +133,7 @@ public class TestPatternItem extends AEBaseItem {
         public IPatternDetails build() {
             return new IPatternDetails() {
                 @Override
-                public ItemStack getDefinition() {
+                public ItemStack copyDefinition() {
                     return definition;
                 }
 

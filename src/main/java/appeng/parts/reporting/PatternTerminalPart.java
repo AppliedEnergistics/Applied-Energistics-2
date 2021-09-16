@@ -31,11 +31,12 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.AppEng;
+import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
@@ -121,19 +122,20 @@ public class PatternTerminalPart extends AbstractTerminalPart {
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getStackInSlot(1);
-            final ICraftingPatternDetails details = AEApi.crafting().decodePattern(is,
+            final IPatternDetails details = AEApi.patterns().decodePattern(is,
                     this.getHost().getBlockEntity().getLevel());
-            if (details != null) {
-                this.setCraftingRecipe(details.isCraftable());
-                this.setSubstitution(details.canSubstitute());
+            if (details instanceof IAEPatternDetails aeDetails) {
+                this.setCraftingRecipe(aeDetails.isCraftable());
+                this.setSubstitution(aeDetails.canSubstitute());
 
-                for (int x = 0; x < this.crafting.getSlots() && x < details.getSparseInputs().length; x++) {
-                    final IAEItemStack item = details.getSparseInputs()[x];
+                // TODO: broken casts
+                for (int x = 0; x < this.crafting.getSlots() && x < aeDetails.getSparseInputs().length; x++) {
+                    final IAEItemStack item = (IAEItemStack) aeDetails.getSparseInputs()[x];
                     this.crafting.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
 
-                for (int x = 0; x < this.output.getSlots() && x < details.getSparseOutputs().length; x++) {
-                    final IAEItemStack item = details.getSparseOutputs()[x];
+                for (int x = 0; x < this.output.getSlots() && x < aeDetails.getSparseOutputs().length; x++) {
+                    final IAEItemStack item = (IAEItemStack) aeDetails.getSparseOutputs()[x];
                     this.output.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
             }
