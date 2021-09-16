@@ -28,16 +28,15 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.client.gui.Icon;
 import appeng.core.AELog;
 import appeng.menu.AEBaseMenu;
-import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot {
     private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
-    private final IItemHandler itemHandler;
+    private final InternalInventory inventory;
     private final int invSlot;
 
     private boolean isDraggable = true;
@@ -54,9 +53,9 @@ public class AppEngSlot extends Slot {
     private Boolean validState = null;
     private boolean rendering = false;
 
-    public AppEngSlot(final IItemHandler inv, final int invSlot) {
+    public AppEngSlot(final InternalInventory inv, final int invSlot) {
         super(EMPTY_INVENTORY, invSlot, 0, 0);
-        this.itemHandler = inv;
+        this.inventory = inv;
         this.invSlot = invSlot;
     }
 
@@ -70,13 +69,13 @@ public class AppEngSlot extends Slot {
     }
 
     public void clearStack() {
-        ItemHandlerUtil.setStackInSlot(this.itemHandler, this.invSlot, ItemStack.EMPTY);
+        this.inventory.setItemDirect(this.invSlot, ItemStack.EMPTY);
     }
 
     @Override
     public boolean mayPlace(@Nonnull final ItemStack stack) {
         if (this.isSlotEnabled()) {
-            return this.itemHandler.isItemValid(this.invSlot, stack);
+            return this.inventory.isItemValid(this.invSlot, stack);
         }
         return false;
     }
@@ -88,7 +87,7 @@ public class AppEngSlot extends Slot {
             return ItemStack.EMPTY;
         }
 
-        if (this.itemHandler.getSlots() <= this.getSlotIndex()) {
+        if (this.getSlotIndex() >= this.inventory.size()) {
             return ItemStack.EMPTY;
         }
 
@@ -99,13 +98,13 @@ public class AppEngSlot extends Slot {
             return this.getDisplayStack();
         }
 
-        return this.itemHandler.getStackInSlot(this.invSlot);
+        return this.inventory.getStackInSlot(this.invSlot);
     }
 
     @Override
     public void set(final ItemStack stack) {
         if (this.isSlotEnabled()) {
-            ItemHandlerUtil.setStackInSlot(this.itemHandler, this.invSlot, stack);
+            this.inventory.setItemDirect(this.invSlot, stack);
             this.setChanged();
         }
     }
@@ -116,8 +115,8 @@ public class AppEngSlot extends Slot {
         }
     }
 
-    public IItemHandler getItemHandler() {
-        return this.itemHandler;
+    public InternalInventory getInventory() {
+        return this.inventory;
     }
 
     @Override
@@ -129,7 +128,7 @@ public class AppEngSlot extends Slot {
 
     @Override
     public int getMaxStackSize() {
-        return this.itemHandler.getSlotLimit(this.invSlot);
+        return this.inventory.getSlotLimit(this.invSlot);
     }
 
     @Override
@@ -140,7 +139,7 @@ public class AppEngSlot extends Slot {
     @Override
     public boolean mayPickup(final Player player) {
         if (this.isSlotEnabled()) {
-            return !this.itemHandler.extractItem(this.invSlot, 1, true).isEmpty();
+            return !this.inventory.extractItem(this.invSlot, 1, true).isEmpty();
         }
         return false;
     }
@@ -148,12 +147,12 @@ public class AppEngSlot extends Slot {
     @Override
     @Nonnull
     public ItemStack remove(int amount) {
-        return this.itemHandler.extractItem(this.invSlot, amount, false);
+        return this.inventory.extractItem(this.invSlot, amount, false);
     }
 
     @Override
     public boolean isSameInventory(Slot other) {
-        return other instanceof AppEngSlot && ((AppEngSlot) other).itemHandler == this.itemHandler;
+        return other instanceof AppEngSlot && ((AppEngSlot) other).inventory == this.inventory;
     }
 
     @Override
@@ -171,7 +170,7 @@ public class AppEngSlot extends Slot {
      * rendered.
      */
     public ItemStack getDisplayStack() {
-        return this.itemHandler.getStackInSlot(this.invSlot);
+        return this.inventory.getStackInSlot(this.invSlot);
     }
 
     public float getOpacityOfIcon() {

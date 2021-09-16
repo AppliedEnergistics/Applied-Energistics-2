@@ -16,41 +16,33 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.blockentity.inventory;
-
-import java.util.Iterator;
+package appeng.util.inv;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
-import appeng.util.iterators.InvIterator;
 
-public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterable<ItemStack> {
-    private final IAEAppEngInventory te;
+public class AppEngInternalAEInventory extends BaseInternalInventory {
+    private final InternalInventoryHost te;
     private final IAEItemStack[] inv;
     private final int size;
     private int maxStack;
     private boolean dirtyFlag = false;
 
-    public AppEngInternalAEInventory(final IAEAppEngInventory te, final int s) {
+    public AppEngInternalAEInventory(final InternalInventoryHost te, final int s) {
         this.te = te;
         this.size = s;
         this.maxStack = 64;
         this.inv = new IAEItemStack[s];
-    }
-
-    public void setMaxStackSize(final int s) {
-        this.maxStack = s;
     }
 
     public IAEItemStack getAEStackInSlot(final int var1) {
@@ -79,22 +71,22 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     public void readFromNBT(final CompoundTag data, final String name) {
-        final CompoundTag c = data.getCompound(name);
-        if (c != null) {
+        if (data.contains(name, Tag.TAG_COMPOUND)) {
+            var c = data.getCompound(name);
             this.readFromNBT(c);
         }
     }
 
-    private void readFromNBT(final CompoundTag target) {
+    private void readFromNBT(CompoundTag target) {
         for (int x = 0; x < this.size; x++) {
             try {
-                final CompoundTag c = target.getCompound("#" + x);
-
-                if (c != null) {
+                String name = "#" + x;
+                if (target.contains(name, Tag.TAG_COMPOUND)) {
+                    var c = target.getCompound(name);
                     this.inv[x] = AEItemStack.fromNBT(c);
                 }
-            } catch (final Exception e) {
-                AELog.debug(e);
+            } catch (Exception e) {
+                AELog.warn(e);
             }
         }
     }
@@ -103,12 +95,10 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         return Math.min(this.getSlotLimit(slot), stack.getMaxStackSize());
     }
 
-    @Override
-    public int getSlots() {
+    public int size() {
         return this.size;
     }
 
-    @Override
     public ItemStack getStackInSlot(final int var1) {
         if (this.inv[var1] == null) {
             return ItemStack.EMPTY;
@@ -117,7 +107,6 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         return this.inv[var1].createItemStack();
     }
 
-    @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -147,13 +136,12 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
             } else {
                 existing.grow(reachedLimit ? limit : stack.getCount());
             }
-            this.fireOnChangeInventory(slot, InvOperation.INSERT, ItemStack.EMPTY,
+            this.fireOnChangeInventory(slot, ItemStack.EMPTY,
                     reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
         }
         return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
-    @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (this.inv[slot] != null) {
             final ItemStack split = this.getStackInSlot(slot);
@@ -161,13 +149,13 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
             if (amount >= split.getCount()) {
                 if (!simulate) {
                     this.inv[slot] = null;
-                    this.fireOnChangeInventory(slot, InvOperation.EXTRACT, split, ItemStack.EMPTY);
+                    this.fireOnChangeInventory(slot, split, ItemStack.EMPTY);
                 }
                 return split;
             } else {
                 if (!simulate) {
                     split.grow(-amount);
-                    this.fireOnChangeInventory(slot, InvOperation.EXTRACT,
+                    this.fireOnChangeInventory(slot,
                             ItemHandlerHelper.copyStackWithSize(split, amount), ItemStack.EMPTY);
                 }
                 return ItemHandlerHelper.copyStackWithSize(split, amount);
@@ -177,51 +165,42 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     @Override
-    public void setStackInSlot(final int slot, final ItemStack newItemStack) {
-        ItemStack oldStack = this.getStackInSlot(slot).copy();
-        this.inv[slot] = StorageChannels.items()
-                .createStack(newItemStack);
+    public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+        ItemStack oldStack = this.getStackInSlot(slotIndex).copy();
+        this.inv[slotIndex] = StorageChannels.items()
+                .createStack(stack);
 
         if (this.te != null && !this.te.isRemote()) {
-            ItemStack newStack = newItemStack.copy();
-            InvOperation op = InvOperation.SET;
+            ItemStack newStack = stack.copy();
 
             if (ItemStack.isSame(oldStack, newStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
                     newStack.shrink(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;
-                    op = InvOperation.INSERT;
                 } else {
                     oldStack.shrink(newStack.getCount());
                     newStack = ItemStack.EMPTY;
-                    op = InvOperation.EXTRACT;
                 }
             }
-            this.fireOnChangeInventory(slot, op, oldStack, newStack);
+            this.fireOnChangeInventory(slotIndex, oldStack, newStack);
         }
     }
 
-    private void fireOnChangeInventory(int slot, InvOperation op, ItemStack removed, ItemStack inserted) {
+    private void fireOnChangeInventory(int slot, ItemStack removed, ItemStack inserted) {
         if (this.te != null && !this.te.isRemote() && !this.dirtyFlag) {
             this.dirtyFlag = true;
-            this.te.onChangeInventory(this, slot, op, removed, inserted);
+            this.te.onChangeInventory(this, slot, removed, inserted);
             this.te.saveChanges();
             this.dirtyFlag = false;
         }
     }
 
-    @Override
     public int getSlotLimit(int slot) {
-        return this.maxStack > 64 ? 64 : this.maxStack;
+        return Math.min(this.maxStack, 64);
     }
 
-    @Override
-    public Iterator<ItemStack> iterator() {
-        return new InvIterator(this);
-    }
-
-    @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         return true;
     }
+
 }

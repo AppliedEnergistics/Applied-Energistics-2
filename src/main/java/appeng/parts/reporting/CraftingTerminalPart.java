@@ -25,17 +25,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
+import appeng.util.inv.AppEngInternalInventory;
 
 public class CraftingTerminalPart extends AbstractTerminalPart {
 
@@ -91,7 +91,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(INV_CRAFTING)) {
             return craftingGrid;
         } else {

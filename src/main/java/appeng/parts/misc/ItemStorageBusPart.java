@@ -27,13 +27,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
@@ -41,7 +41,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.storage.ItemHandlerAdapter;
 import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
-import appeng.util.inv.InvOperation;
+import appeng.util.inv.AppEngInternalAEInventory;
 
 public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IItemHandler> {
 
@@ -83,7 +83,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IIt
 
     @Override
     protected int getStackConfigSize() {
-        return this.config.getSlots();
+        return this.config.size();
     }
 
     @Nullable
@@ -93,9 +93,9 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IIt
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
-        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
+        super.onChangeInventory(inv, slot, removedStack, newStack);
 
         if (inv == this.config) {
             this.scheduleCacheReset(true);
@@ -115,7 +115,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, IIt
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(ISegmentedInventory.CONFIG)) {
             return this.config;
         } else {

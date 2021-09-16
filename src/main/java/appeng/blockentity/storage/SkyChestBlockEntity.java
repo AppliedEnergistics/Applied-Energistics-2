@@ -35,7 +35,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -51,13 +50,12 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.menu.implementations.SkyChestMenu;
-import appeng.util.inv.InvOperation;
+import appeng.util.inv.AppEngInternalInventory;
 
 @SuppressWarnings("JavadocReference")
 @OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
@@ -108,7 +106,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.inv;
     }
 
@@ -139,7 +137,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
 
     }
@@ -204,18 +202,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
                         .withParameter(LootContextParams.THIS_ENTITY, openingPlayer);
             }
 
-            // Convert our inventory into a Container so the loot-table interaction works like in Vanilla
-            var lootOutput = new SimpleContainer(this.inv.getSlots());
-            for (int i = 0; i < this.inv.getSlots(); i++) {
-                lootOutput.setItem(i, this.inv.getStackInSlot(i));
-            }
-
-            loottable.fill(lootOutput, lootBuilder.create(LootContextParamSets.CHEST));
-
-            // Convert it back
-            for (int i = 0; i < this.inv.getSlots(); i++) {
-                this.inv.setStackInSlot(i, lootOutput.getItem(i));
-            }
+            loottable.fill(this.inv.toContainer(), lootBuilder.create(LootContextParamSets.CHEST));
         }
     }
 

@@ -40,10 +40,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
@@ -67,7 +67,6 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DriveWatcher;
 import appeng.menu.implementations.DriveMenu;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestOrDrive, IPriorityHost, ICellProvider {
@@ -304,12 +303,12 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (this.isCached) {
             this.isCached = false; // recalculate the storage cell.
@@ -332,7 +331,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             }
 
             double power = 2.0;
-            for (int slot = 0; slot < this.inv.getSlots(); slot++) {
+            for (int slot = 0; slot < this.inv.size(); slot++) {
                 power += updateStateForSlot(slot);
             }
             this.getMainNode().setIdlePowerUsage(power);
@@ -415,12 +414,12 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     private class CellValidInventoryFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             return !stack.isEmpty() && StorageCells.isCellHandled(stack);
         }
 

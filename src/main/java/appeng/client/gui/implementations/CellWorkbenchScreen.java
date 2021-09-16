@@ -21,7 +21,6 @@ package appeng.client.gui.implementations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.CopyMode;
@@ -62,12 +61,10 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
         this.copyMode.setState(this.menu.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
         boolean hasFuzzy = false;
-        final IItemHandler inv = this.menu.getUpgrades();
-        for (int x = 0; x < inv.getSlots(); x++) {
-            final ItemStack is = inv.getStackInSlot(x);
-            if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule
-                    && ((IUpgradeModule) is.getItem()).getType(is) == Upgrades.FUZZY) {
+        for (ItemStack upgrade : menu.getUpgrades()) {
+            if (IUpgradeModule.getTypeFromStack(upgrade) == Upgrades.FUZZY) {
                 hasFuzzy = true;
+                break;
             }
         }
         this.fuzzyMode.setVisibility(hasFuzzy);

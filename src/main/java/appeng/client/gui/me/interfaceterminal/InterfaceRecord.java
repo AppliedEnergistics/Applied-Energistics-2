@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.network.chat.Component;
 
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.helpers.DualityItemInterface;
 import appeng.menu.implementations.InterfaceTerminalMenu;
+import appeng.util.inv.AppEngInternalInventory;
 
 /**
  * This class is used on the client-side to represent an interface and it's inventory as it is shown in the
@@ -50,7 +50,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     private final long order;
 
     public InterfaceRecord(long serverId, int slots, long order, Component name) {
-        this.inventory = new AppEngInternalInventory(null, slots);
+        this.inventory = new AppEngInternalInventory(slots);
         this.displayName = name.getString();
         this.searchName = this.displayName.toLowerCase();
         this.serverId = serverId;

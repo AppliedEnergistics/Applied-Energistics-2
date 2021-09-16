@@ -20,11 +20,9 @@ package appeng.me.storage;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
-import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
@@ -45,42 +43,33 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
     public BasicCellInventoryHandler(final IMEInventory c, final IStorageChannel<T> channel) {
         super(c, channel);
 
-        final ICellInventory ci = this.getCellInv();
+        var ci = this.getCellInv();
         if (ci != null) {
             final IItemList<T> priorityList = channel.createList();
 
-            final IItemHandler upgrades = ci.getUpgradesInventory();
-            final IItemHandler config = ci.getConfigInventory();
+            var upgrades = ci.getUpgradesInventory();
+            var config = ci.getConfigInventory();
             final FuzzyMode fzMode = ci.getFuzzyMode();
 
             boolean hasInverter = false;
             boolean hasFuzzy = false;
 
-            for (int x = 0; x < upgrades.getSlots(); x++) {
-                final ItemStack is = upgrades.getStackInSlot(x);
-                if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
-                    final Upgrades u = ((IUpgradeModule) is.getItem()).getType(is);
-                    if (u != null) {
-                        switch (u) {
-                            case FUZZY:
-                                hasFuzzy = true;
-                                break;
-                            case INVERTER:
-                                hasInverter = true;
-                                break;
-                            default:
+            for (var upgrade : upgrades) {
+                var u = IUpgradeModule.getTypeFromStack(upgrade);
+                if (u != null) {
+                    switch (u) {
+                        case FUZZY -> hasFuzzy = true;
+                        case INVERTER -> hasInverter = true;
+                        default -> {
                         }
                     }
                 }
             }
 
-            for (int x = 0; x < config.getSlots(); x++) {
-                final ItemStack is = config.getStackInSlot(x);
-                if (!is.isEmpty()) {
-                    final T configItem = channel.createStack(is);
-                    if (configItem != null) {
-                        priorityList.add(configItem);
-                    }
+            for (ItemStack stack : config) {
+                T configItem = channel.createStack(stack);
+                if (configItem != null) {
+                    priorityList.add(configItem);
                 }
             }
 

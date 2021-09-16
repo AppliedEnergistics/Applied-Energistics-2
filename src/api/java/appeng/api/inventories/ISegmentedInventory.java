@@ -21,12 +21,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.blockentities;
+package appeng.api.inventories;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.items.IItemHandler;
 
 /**
  * Allows access to specific segments of a machines inventory.
@@ -68,5 +67,5 @@ public interface ISegmentedInventory {
      * @return Null if the machine has no sub-inventory with the given id.
      */
     @Nullable
-    IItemHandler getSubInventory(ResourceLocation id);
+    InternalInventory getSubInventory(ResourceLocation id);
 }

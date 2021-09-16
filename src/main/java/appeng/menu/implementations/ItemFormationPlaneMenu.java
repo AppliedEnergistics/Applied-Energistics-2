@@ -20,13 +20,12 @@ package appeng.menu.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.ItemFormationPlaneScreen;
 import appeng.menu.SlotSemantic;
@@ -56,7 +55,7 @@ public class ItemFormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> 
 
     @Override
     protected void setupConfig() {
-        final IItemHandler config = this.getHost().getSubInventory(ISegmentedInventory.CONFIG);
+        var config = this.getHost().getSubInventory(ISegmentedInventory.CONFIG);
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
                 int invIdx = y * 9 + x;

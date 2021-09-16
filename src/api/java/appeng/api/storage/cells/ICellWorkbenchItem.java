@@ -26,10 +26,10 @@ package appeng.api.storage.cells;
 import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.IUpgradeInventory;
+import appeng.api.inventories.InternalInventory;
 
 public interface ICellWorkbenchItem {
 
@@ -60,7 +60,7 @@ public interface ICellWorkbenchItem {
      *
      * onInventoryChange will be called when saving is needed.
      */
-    IItemHandler getConfigInventory(ItemStack is);
+    InternalInventory getConfigInventory(ItemStack is);
 
     /**
      * @return the current fuzzy status.

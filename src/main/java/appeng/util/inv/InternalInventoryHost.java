@@ -16,39 +16,19 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util.iterators;
-
-import java.util.Iterator;
+package appeng.util.inv;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
-public final class InvIterator implements Iterator<ItemStack> {
-    private final IItemHandler inventory;
-    private final int size;
+import appeng.api.inventories.InternalInventory;
 
-    private int counter = 0;
+/**
+ * Interface that allows listening to events of {@link AppEngInternalInventory} and {@link AppEngInternalAEInventory}.
+ */
+public interface InternalInventoryHost {
+    void saveChanges();
 
-    public InvIterator(final IItemHandler inventory) {
-        this.inventory = inventory;
-        this.size = this.inventory.getSlots();
-    }
+    void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack, ItemStack newStack);
 
-    @Override
-    public boolean hasNext() {
-        return this.counter < this.size;
-    }
-
-    @Override
-    public ItemStack next() {
-        final ItemStack result = this.inventory.getStackInSlot(this.counter);
-        this.counter++;
-
-        return result;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
+    boolean isRemote();
 }

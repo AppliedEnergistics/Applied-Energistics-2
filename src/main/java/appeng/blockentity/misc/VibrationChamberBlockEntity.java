@@ -31,20 +31,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperFilteredItemHandler;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity implements IGridTickable {
@@ -53,7 +52,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     public static final int MAX_BURN_SPEED = 200;
     public static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
-    private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new FuelSlotFilter());
+    private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new FuelSlotFilter());
 
     private int burnSpeed = 100;
     private double burnTime = 0;
@@ -109,17 +108,17 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(@Nonnull Direction facing) {
+    protected InternalInventory getExposedInventoryForSide(@Nonnull Direction facing) {
         return this.invExt;
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (this.getBurnTime() <= 0 && this.canEatFuel()) {
             getMainNode().ifPresent((grid, node) -> {
@@ -208,9 +207,9 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 is.shrink(1);
 
                 if (is.isEmpty()) {
-                    this.inv.setStackInSlot(0, fuelItem.getContainerItem(is));
+                    this.inv.setItemDirect(0, fuelItem.getContainerItem(is));
                 } else {
-                    this.inv.setStackInSlot(0, is);
+                    this.inv.setItemDirect(0, is);
                 }
                 this.saveChanges();
             }
@@ -267,12 +266,12 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
 
     private static class FuelSlotFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return !hasBurnTime(inv.getStackInSlot(slot));
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             return hasBurnTime(stack);
         }
     }

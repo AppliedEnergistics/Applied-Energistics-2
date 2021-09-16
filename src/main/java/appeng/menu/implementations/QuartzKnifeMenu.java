@@ -27,9 +27,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
-import net.minecraftforge.items.IItemHandler;
 
-import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.items.contents.QuartzKnifeObj;
@@ -38,6 +37,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
+import appeng.util.inv.AppEngInternalInventory;
 
 /**
  * @see appeng.client.gui.implementations.QuartzKnifeScreen
@@ -52,7 +52,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
 
     private final QuartzKnifeObj toolInv;
 
-    private final IItemHandler inSlot = new AppEngInternalInventory(null, 1, 1);
+    private final InternalInventory inSlot = new AppEngInternalInventory(null, 1, 1);
 
     private String currentName = "";
 
@@ -98,13 +98,13 @@ public class QuartzKnifeMenu extends AEBaseMenu {
     }
 
     private class QuartzKniveSlot extends OutputSlot {
-        QuartzKniveSlot(IItemHandler inv, int invSlot, Icon icon) {
+        QuartzKniveSlot(InternalInventory inv, int invSlot, Icon icon) {
             super(inv, invSlot, icon);
         }
 
         @Override
         public ItemStack getItem() {
-            final IItemHandler baseInv = this.getItemHandler();
+            var baseInv = this.getInventory();
             final ItemStack input = baseInv.getStackInSlot(0);
             if (input == ItemStack.EMPTY) {
                 return ItemStack.EMPTY;
@@ -138,7 +138,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
         }
 
         private void makePlate() {
-            if (isServer() && !this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
+            if (isServer() && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
                 final ItemStack item = QuartzKnifeMenu.this.toolInv.getItemStack();
                 final ItemStack before = item.copy();
                 Inventory playerInv = QuartzKnifeMenu.this.getPlayerInventory();

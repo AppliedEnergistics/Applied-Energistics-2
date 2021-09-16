@@ -189,7 +189,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         if (this.standardRecipe.matches(this.testFrame, level)) {
             final ItemStack testOutput = this.standardRecipe.assemble(this.testFrame);
 
-            if (Platform.itemComparisons().isSameItem(this.correctOutput, testOutput)) {
+            if (ItemStack.isSameItemSameTags(this.correctOutput, testOutput)) {
                 this.testFrame.setItem(slotIndex, this.crafting.getItem(slotIndex));
                 this.markItemAs(slotIndex, i, TestStatus.ACCEPT);
                 return true;

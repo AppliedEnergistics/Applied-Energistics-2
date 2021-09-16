@@ -44,8 +44,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -69,7 +67,6 @@ import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
-import appeng.util.Platform;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
@@ -214,12 +211,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 getSlots(SlotSemantic.PLAYER_INVENTORY).isEmpty(),
                 "Player inventory was already created");
 
-        IItemHandler ih = new PlayerInvWrapper(playerInventory);
-
         for (int i = 0; i < playerInventory.items.size(); i++) {
             Slot slot;
             if (this.lockedPlayerInventorySlots.contains(i)) {
-                slot = new DisabledSlot(ih, i);
+                slot = new DisabledSlot(playerInventory, i);
             } else {
                 slot = new Slot(playerInventory, i, 0, 0);
             }
@@ -336,7 +331,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                     final ItemStack destination = cs.getItem();
 
                     if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
-                        if (Platform.itemComparisons().isSameItem(destination, tis)) {
+                        if (ItemStack.isSameItemSameTags(destination, tis)) {
                             break;
                         } else if (destination.isEmpty()) {
                             cs.set(tis.copy());
@@ -403,7 +398,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private boolean x(Slot clickSlot, ItemStack tis, Slot d) {
         final ItemStack t = d.getItem().copy();
 
-        if (Platform.itemComparisons().isSameItem(t, tis)) {
+        if (ItemStack.isSameItemSameTags(t, tis)) {
             int maxSize = t.getMaxStackSize();
             if (maxSize > d.getMaxStackSize()) {
                 maxSize = d.getMaxStackSize();

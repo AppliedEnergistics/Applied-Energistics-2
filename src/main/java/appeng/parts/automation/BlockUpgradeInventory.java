@@ -21,12 +21,12 @@ package appeng.parts.automation;
 import net.minecraft.world.level.block.Block;
 
 import appeng.api.config.Upgrades;
-import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InternalInventoryHost;
 
 public class BlockUpgradeInventory extends UpgradeInventory {
     private final Block block;
 
-    public BlockUpgradeInventory(final Block block, final IAEAppEngInventory parent, final int s) {
+    public BlockUpgradeInventory(final Block block, final InternalInventoryHost parent, final int s) {
         super(parent, s);
         this.block = block;
     }

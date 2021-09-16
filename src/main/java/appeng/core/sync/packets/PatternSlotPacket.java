@@ -22,8 +22,8 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.sync.BasePacket;
@@ -61,7 +61,7 @@ public class PatternSlotPacket extends BasePacket {
     }
 
     // api
-    public PatternSlotPacket(final IItemHandler pat, final IAEItemStack slotItem, final boolean shift) {
+    public PatternSlotPacket(final InternalInventory pat, final IAEItemStack slotItem, final boolean shift) {
 
         this.slotItem = slotItem;
         this.shift = shift;

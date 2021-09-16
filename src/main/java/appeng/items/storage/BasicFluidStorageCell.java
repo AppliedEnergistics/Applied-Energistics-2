@@ -18,18 +18,15 @@
 
 package appeng.items.storage;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.core.definitions.AEItems;
 import appeng.helpers.FluidCellConfig;
-import appeng.util.InventoryAdaptor;
 
 /**
  * @author DrummerMC
@@ -69,15 +66,8 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public InternalInventory getConfigInventory(final ItemStack is) {
         return new FluidCellConfig(is);
     }
 
-    @Override
-    protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final Player player) {
-        final ItemStack extraA = ia.addItems(AEItems.EMPTY_STORAGE_CELL.stack());
-        if (!extraA.isEmpty()) {
-            player.drop(extraA, false);
-        }
-    }
 }

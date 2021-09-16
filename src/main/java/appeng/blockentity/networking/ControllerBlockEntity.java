@@ -25,11 +25,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridControllerChange;
@@ -41,7 +40,6 @@ import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.ControllerBlock.ControllerBlockState;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
 
 public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
 
@@ -164,12 +162,12 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
-        return EmptyHandler.INSTANCE;
+    public InternalInventory getInternalInventory() {
+        return InternalInventory.empty();
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
     }
 

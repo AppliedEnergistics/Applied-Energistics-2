@@ -26,22 +26,21 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.parts.BasicStatePart;
 import appeng.util.ConfigManager;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
+import appeng.util.inv.InternalInventoryHost;
 
 public abstract class UpgradeablePart extends BasicStatePart
-        implements IAEAppEngInventory, IConfigurableObject, IUpgradeableObject {
+        implements InternalInventoryHost, IConfigurableObject, IUpgradeableObject {
     private final IConfigManager config;
     private final UpgradeInventory upgrades;
 
@@ -61,7 +60,7 @@ public abstract class UpgradeablePart extends BasicStatePart
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.upgrades) {
             this.upgradesChanged();
@@ -138,7 +137,7 @@ public abstract class UpgradeablePart extends BasicStatePart
 
     @Nullable
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(UPGRADES)) {
             return upgrades;
         } else {

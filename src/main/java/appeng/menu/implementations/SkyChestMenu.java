@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.menu.AEBaseMenu;
@@ -45,8 +44,8 @@ public class SkyChestMenu extends AEBaseMenu {
         this.chest = chest;
         chest.startOpen(ip.player);
 
-        IItemHandler inv = chest.getInternalInventory();
-        for (int i = 0; i < inv.getSlots(); i++) {
+        var inv = chest.getInternalInventory();
+        for (int i = 0; i < inv.size(); i++) {
             this.addSlot(new AppEngSlot(inv, i), SlotSemantic.STORAGE);
         }
 

@@ -34,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
@@ -45,7 +44,8 @@ import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
@@ -64,20 +64,16 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperChainedItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.CombinedInternalInventory;
+import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.AEItemFilters;
 
 public class IOPortBlockEntity extends AENetworkInvBlockEntity
@@ -89,11 +85,12 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
     private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
-    private final IItemHandler combinedInventory = new WrapperChainedItemHandler(this.inputCells, this.outputCells);
+    private final InternalInventory combinedInventory = new CombinedInternalInventory(this.inputCells,
+            this.outputCells);
 
-    private final IItemHandler inputCellsExt = new WrapperFilteredItemHandler(this.inputCells,
+    private final InternalInventory inputCellsExt = new FilteredInternalInventory(this.inputCells,
             AEItemFilters.INSERT_ONLY);
-    private final IItemHandler outputCellsExt = new WrapperFilteredItemHandler(this.outputCells,
+    private final InternalInventory outputCellsExt = new FilteredInternalInventory(this.outputCells,
             AEItemFilters.EXTRACT_ONLY);
 
     private final UpgradeInventory upgrades;
@@ -193,7 +190,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     @Nullable
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
         } else if (id.equals(ISegmentedInventory.CELLS)) {
@@ -205,19 +202,20 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     private boolean hasWork() {
         if (this.isEnabled()) {
-            return !ItemHandlerUtil.isEmpty(this.inputCells);
+
+            return !this.inputCells.isEmpty();
         }
 
         return false;
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.combinedInventory;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (this.inputCells == inv) {
             this.updateTask();
@@ -225,7 +223,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(final Direction facing) {
+    protected InternalInventory getExposedInventoryForSide(final Direction facing) {
         if (facing == this.getUp() || facing == this.getUp().getOpposite()) {
             return this.inputCellsExt;
         } else {
@@ -381,9 +379,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     private boolean moveSlot(final int x) {
-        final InventoryAdaptor ad = new AdaptorItemHandler(this.outputCells);
-        if (ad.addItems(this.inputCells.getStackInSlot(x)).isEmpty()) {
-            this.inputCells.setStackInSlot(x, ItemStack.EMPTY);
+        if (this.outputCells.addItems(this.inputCells.getStackInSlot(x)).isEmpty()) {
+            this.inputCells.setItemDirect(x, ItemStack.EMPTY);
             return true;
         }
         return false;
@@ -425,12 +422,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(level, pos, drops);
 
-        for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSlots(); upgradeIndex++) {
-            final ItemStack stackInSlot = this.upgrades.getStackInSlot(upgradeIndex);
-
-            if (!stackInSlot.isEmpty()) {
-                drops.add(stackInSlot);
-            }
+        for (var upgrade : upgrades) {
+            drops.add(upgrade);
         }
     }
 }
