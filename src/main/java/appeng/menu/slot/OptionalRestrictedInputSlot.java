@@ -19,14 +19,15 @@
 package appeng.menu.slot;
 
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.items.IItemHandler;
+
+import appeng.api.inventories.InternalInventory;
 
 public class OptionalRestrictedInputSlot extends RestrictedInputSlot {
 
     private final int groupNum;
     private final IOptionalSlotHost host;
 
-    public OptionalRestrictedInputSlot(final PlacableItemType valid, final IItemHandler inv,
+    public OptionalRestrictedInputSlot(final PlacableItemType valid, final InternalInventory inv,
             final IOptionalSlotHost host, final int invSlot, final int grpNum,
             final Inventory invPlayer) {
         super(valid, inv, invSlot);

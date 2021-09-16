@@ -30,11 +30,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -46,8 +45,6 @@ import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.parts.reporting.CraftingTerminalPart;
-import appeng.util.Platform;
-import appeng.util.inv.WrapperInvItemHandler;
 
 /**
  * Can only be used with a host that implements {@link ISegmentedInventory} and exposes an inventory named "crafting" to
@@ -71,7 +68,7 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
         super(TYPE, id, ip, host, false);
         this.craftingInventoryHost = (ISegmentedInventory) host;
 
-        final IItemHandler craftingGridInv = this.craftingInventoryHost
+        var craftingGridInv = this.craftingInventoryHost
                 .getSubInventory(CraftingTerminalPart.INV_CRAFTING);
 
         for (int i = 0; i < 9; i++) {
@@ -84,7 +81,7 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
 
         this.createPlayerInventorySlots(ip);
 
-        this.slotsChanged(new WrapperInvItemHandler(craftingGridInv));
+        this.slotsChanged(craftingGridInv.toContainer());
     }
 
     /**
@@ -113,10 +110,7 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
-        if (id.equals(IMenuCraftingPacket.PLAYER)) {
-            return new PlayerInvWrapper(this.getPlayerInventory());
-        }
+    public InternalInventory getSubInventory(ResourceLocation id) {
         return this.craftingInventoryHost.getSubInventory(id);
     }
 
@@ -145,7 +139,7 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
         // already contains some of the needed items
         for (Slot slot : getSlots(SlotSemantic.CRAFTING_GRID)) {
             ItemStack stackInSlot = slot.getItem();
-            if (!stackInSlot.isEmpty() && Platform.itemComparisons().isSameItem(itemStack, stackInSlot)) {
+            if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameTags(itemStack, stackInSlot)) {
                 if (itemStack.getCount() >= amount) {
                     return true;
                 }

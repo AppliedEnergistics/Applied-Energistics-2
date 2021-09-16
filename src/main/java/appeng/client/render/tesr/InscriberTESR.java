@@ -37,7 +37,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.blockentity.misc.InscriberBlockEntity;
@@ -143,7 +142,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
 
         // render items.
 
-        IItemHandler inv = blockEntity.getInternalInventory();
+        var inv = blockEntity.getInternalInventory();
 
         int items = 0;
         if (!inv.getStackInSlot(0).isEmpty()) {

@@ -60,23 +60,7 @@ repositories {
         }
     }
     maven { url = 'https://repo.spongepowered.org/maven' }
-    ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN AND JEI ARE BACK
-    maven {
-        url = 'https://storage.bhs.cloud.ovh.net/v1/AUTH_5f0553a5313d4e93b3ecd2520d172e98/appliedenergistics2-temp-dependencies'
-        content {
-            includeGroup "mixin"
-        }
-    }
-    ///////////////////// TODO-117 TEMP FIX UNTIL MIXIN AND JEI ARE BACK
 }
-
-///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
-configurations {
-    apiImplementation.extendsFrom(implementation)
-    library
-    implementation.extendsFrom(library)
-}
-///////////////////// TODO-117 END TEMP FIX UNTIL MIXIN IS BACK
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -103,19 +87,16 @@ dependencies {
     }
 
     // unit test dependencies
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:3.9.0")
     testImplementation("org.mockito:mockito-inline:3.9.0")
 
-///////////////////// TODO-117 TEMP FIX UNTIL MIXIN IS BACK
-    library "mixin:mixin-runtime:0.0.0-9999"
-///////////////////// TODO-117 END TEMP FIX UNTIL MIXIN IS BACK
-
     // Annotation Processors
-    annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 group = artifact_group
 archivesBaseName = artifact_basename
@@ -167,6 +148,10 @@ sourceSets {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
+}
+
+configurations {
+    apiImplementation.extendsFrom(implementation)
 }
 
 test {
@@ -423,15 +408,4 @@ if (System.getProperty("idea.sync.active") == "true") {
 // Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
-}
-
-// Temporary compile fix, breaks reobfJar. Remove once Sponge Mixin Gradle Plugin gets fixed
-// https://github.com/SpongePowered/MixinGradle/issues/29
-net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace.metaClass.extraMapping = {
-}
-
-minecraft.runs.all {
-    lazyToken('minecraft_classpath') {
-        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
-    }
 }

@@ -19,11 +19,13 @@
 package appeng.menu.slot;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+
+import appeng.api.inventories.InternalInventory;
 
 public class OptionalTypeOnlyFakeSlot extends OptionalFakeSlot {
 
-    public OptionalTypeOnlyFakeSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, final int invSlot,
+    public OptionalTypeOnlyFakeSlot(final InternalInventory inv, final IOptionalSlotHost containerBus,
+            final int invSlot,
             final int groupNum) {
         super(inv, containerBus, invSlot, groupNum);
     }

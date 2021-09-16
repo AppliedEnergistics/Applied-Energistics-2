@@ -19,17 +19,16 @@
 package appeng.items.contents;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.blockentity.inventory.AppEngInternalInventory;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
+public class NetworkToolViewer implements INetworkTool, InternalInventoryHost {
 
     private final AppEngInternalInventory inv;
     private final ItemStack is;
@@ -54,7 +53,7 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
     }
 
     @Override
-    public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack,
+    public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack,
             ItemStack newStack) {
     }
 
@@ -75,23 +74,22 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
 
     private static class NetworkToolInventoryFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
-            return stack.getItem() instanceof IUpgradeModule
-                    && ((IUpgradeModule) stack.getItem()).getType(stack) != null;
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            return IUpgradeModule.getTypeFromStack(stack) != null;
         }
     }
 
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public IItemHandler getInventory() {
+    public InternalInventory getInventory() {
         return this.inv;
     }
 }

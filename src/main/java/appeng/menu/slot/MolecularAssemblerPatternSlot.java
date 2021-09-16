@@ -19,15 +19,15 @@
 package appeng.menu.slot;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 
 public class MolecularAssemblerPatternSlot extends AppEngSlot {
 
     private final MolecularAssemblerMenu mac;
 
-    public MolecularAssemblerPatternSlot(final MolecularAssemblerMenu mac, final IItemHandler inv,
+    public MolecularAssemblerPatternSlot(final MolecularAssemblerMenu mac, final InternalInventory inv,
             final int invSlot) {
         super(inv, invSlot);
         this.mac = mac;

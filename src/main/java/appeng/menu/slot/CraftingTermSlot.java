@@ -31,9 +31,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
@@ -46,18 +46,19 @@ import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.NullMenu;
 import appeng.menu.me.items.CraftingTermMenu;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.WrapperCursorItemHandler;
-import appeng.util.inv.WrapperInvItemHandler;
+import appeng.util.inv.CarriedItemInventory;
+import appeng.util.inv.PlayerInternalInventory;
 import appeng.util.item.AEItemStack;
 
+/**
+ * This is the crafting result slot of the crafting terminal, which also handles performing the actual crafting when a
+ * player clicks it.
+ */
 public class CraftingTermSlot extends AppEngCraftingSlot {
 
-    private final IItemHandler craftInv;
-    private final IItemHandler pattern;
+    private final InternalInventory craftInv;
+    private final InternalInventory pattern;
 
     private final IActionSource mySrc;
     private final IEnergySource energySrc;
@@ -65,7 +66,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IMenuCraftingPacket menu;
 
     public CraftingTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
-            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
+            final IStorageMonitorable storage, final InternalInventory cMatrix, final InternalInventory secondMatrix,
             final IMenuCraftingPacket ccp) {
         super(player, cMatrix);
         this.energySrc = energySrc;
@@ -74,10 +75,6 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         this.pattern = cMatrix;
         this.craftInv = secondMatrix;
         this.menu = ccp;
-    }
-
-    public IItemHandler getCraftingMatrix() {
-        return this.craftInv;
     }
 
     @Override
@@ -100,28 +97,32 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         final IMEMonitor<IAEItemStack> inv = this.storage
                 .getInventory(StorageChannels.items());
         final int howManyPerCraft = this.getItem().getCount();
-        int maxTimesToCraft = 0;
 
-        InventoryAdaptor ia = null;
+        int maxTimesToCraft;
+        InternalInventory target;
         if (action == InventoryAction.CRAFT_SHIFT) // craft into player inventory...
         {
-            ia = InventoryAdaptor.getAdaptor(who);
+            target = new PlayerInternalInventory(who.getInventory());
             maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
         } else if (action == InventoryAction.CRAFT_STACK) // craft into hand, full stack
         {
-            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(getMenu()));
+            target = new CarriedItemInventory(getMenu());
             maxTimesToCraft = (int) Math.floor((double) this.getItem().getMaxStackSize() / (double) howManyPerCraft);
         } else
         // pick up what was crafted...
         {
-            ia = new AdaptorItemHandler(new WrapperCursorItemHandler(getMenu()));
+            // This is a shortcut to ensure that for mods that create recipes with result counts larger than
+            // the max stack size, it remains possible to pick up those items at least _once_.
+            if (getMenu().getCarried().isEmpty()) {
+                var rs = getItem().copy();
+                if (!rs.isEmpty()) {
+                    getMenu().setCarried(this.craftItem(who, rs, inv, inv.getStorageList()));
+                }
+                return;
+            }
+
+            target = new CarriedItemInventory(getMenu());
             maxTimesToCraft = 1;
-        }
-
-        maxTimesToCraft = this.capCraftingAttempts(maxTimesToCraft);
-
-        if (ia == null) {
-            return;
         }
 
         final ItemStack rs = this.getItem().copy();
@@ -130,9 +131,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
 
         for (int x = 0; x < maxTimesToCraft; x++) {
-            if (ia.simulateAdd(rs).isEmpty()) {
+            if (target.simulateAdd(rs).isEmpty()) {
                 final IItemList<IAEItemStack> all = inv.getStorageList();
-                final ItemStack extra = ia.addItems(this.craftItem(who, rs, inv, all));
+                final ItemStack extra = target.addItems(this.craftItem(who, rs, inv, all));
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();
                     drops.add(extra);
@@ -173,17 +174,13 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return super.getRemainingItems(ic, level);
     }
 
-    private int capCraftingAttempts(final int maxTimesToCraft) {
-        return maxTimesToCraft;
-    }
-
     private ItemStack craftItem(final Player p, final ItemStack request, final IMEMonitor<IAEItemStack> inv,
-            final IItemList all) {
+            IItemList<IAEItemStack> all) {
         // update crafting matrix...
         ItemStack is = this.getItem();
 
         if (!is.isEmpty() && ItemStack.isSame(request, is)) {
-            final ItemStack[] set = new ItemStack[this.getPattern().getSlots()];
+            final ItemStack[] set = new ItemStack[this.getPattern().size()];
             // Safeguard for empty slots in the inventory for now
             Arrays.fill(set, ItemStack.EMPTY);
 
@@ -213,7 +210,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                         if (!isBad) {
                             super.onTake(p, is);
                             // actually necessary to cleanup this case...
-                            p.containerMenu.slotsChanged(new WrapperInvItemHandler(this.craftInv));
+                            p.containerMenu.slotsChanged(this.craftInv.toContainer());
                             return request;
                         }
                     }
@@ -223,7 +220,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 is = r.assemble(ic);
 
                 if (inv != null) {
-                    for (int x = 0; x < this.getPattern().getSlots(); x++) {
+                    for (int x = 0; x < this.getPattern().size(); x++) {
                         if (!this.getPattern().getStackInSlot(x).isEmpty()) {
                             set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,
                                     this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
@@ -240,7 +237,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 this.postCraft(p, inv, set, is);
             }
 
-            p.containerMenu.slotsChanged(new WrapperInvItemHandler(this.craftInv));
+            p.containerMenu.slotsChanged(this.craftInv.toContainer());
 
             return is;
         }
@@ -264,9 +261,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         // add one of each item to the items on the board...
         if (!p.getCommandSenderWorld().isClientSide()) {
             // set new items onto the crafting table...
-            for (int x = 0; x < this.craftInv.getSlots(); x++) {
+            for (int x = 0; x < this.craftInv.size(); x++) {
                 if (this.craftInv.getStackInSlot(x).isEmpty()) {
-                    ItemHandlerUtil.setStackInSlot(this.craftInv, x, set[x]);
+                    this.craftInv.setItemDirect(x, set[x]);
                 } else if (!set[x].isEmpty()) {
                     // eek! put it back!
                     final IAEItemStack fail = inv.injectItems(AEItemStack.fromItemStack(set[x]), Actionable.MODULATE,
@@ -283,7 +280,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
     }
 
-    IItemHandler getPattern() {
+    InternalInventory getPattern() {
         return this.pattern;
     }
 }

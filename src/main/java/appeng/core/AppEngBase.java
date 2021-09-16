@@ -59,7 +59,6 @@ import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -69,6 +68,7 @@ import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.ticking.TickHandler;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
+import appeng.init.InitCapabilities;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
@@ -150,6 +150,7 @@ public abstract class AppEngBase implements AppEng {
         modEventBus.addGenericListener(StructureFeature.class, this::registerStructures);
         modEventBus.addGenericListener(Feature.class, this::registerFeatures);
 
+        modEventBus.addListener(InitCapabilities::init);
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
 
@@ -180,7 +181,6 @@ public abstract class AppEngBase implements AppEng {
         // This has to be here because it relies on caps and god knows when those are available...
         InitP2PAttunements.init();
 
-        Capabilities.register();
         InitDispenserBehavior.init();
 
         AEConfig.instance().save();

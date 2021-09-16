@@ -20,13 +20,12 @@ package appeng.menu.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.menu.SlotSemantic;
@@ -55,7 +54,7 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
 
     @Override
     protected void setupConfig() {
-        final IItemHandler cells = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
+        var cells = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
 
         for (int i = 0; i < 6; i++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, cells, i),

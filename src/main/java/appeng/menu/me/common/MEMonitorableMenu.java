@@ -31,7 +31,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -157,10 +156,10 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
 
         // Create slots for the view cells, in case the terminal host supports those
         if (!hideViewCells() && host instanceof IViewCellStorage) {
-            IItemHandler viewCellStorage = ((IViewCellStorage) host).getViewCellStorage();
-            this.viewCellSlots = new ArrayList<>(viewCellStorage.getSlots());
-            for (int i = 0; i < viewCellStorage.getSlots(); i++) {
-                RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.VIEW_CELL,
+            var viewCellStorage = ((IViewCellStorage) host).getViewCellStorage();
+            this.viewCellSlots = new ArrayList<>(viewCellStorage.size());
+            for (int i = 0; i < viewCellStorage.size(); i++) {
+                var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.VIEW_CELL,
                         viewCellStorage, i);
                 this.addSlot(slot, SlotSemantic.VIEW_CELL);
                 this.viewCellSlots.add(slot);

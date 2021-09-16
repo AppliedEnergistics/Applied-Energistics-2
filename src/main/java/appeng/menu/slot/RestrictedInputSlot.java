@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.features.GridLinkables;
@@ -33,6 +32,8 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.blockentity.misc.InscriberRecipes;
@@ -55,7 +56,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     private boolean allowEdit = true;
     private int stackLimit = -1;
 
-    public RestrictedInputSlot(final PlacableItemType valid, final IItemHandler inv, final int invSlot) {
+    public RestrictedInputSlot(PlacableItemType valid, InternalInventory inv, final int invSlot) {
         super(inv, invSlot);
         this.which = valid;
         this.setIcon(valid.icon);
@@ -176,8 +177,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case BIOMETRIC_CARD:
                 return stack.getItem() instanceof IBiometricCard;
             case UPGRADES:
-                return stack.getItem() instanceof IUpgradeModule
-                        && ((IUpgradeModule) stack.getItem()).getType(stack) != null;
+                return IUpgradeModule.getTypeFromStack(stack) != null;
             default:
                 break;
         }

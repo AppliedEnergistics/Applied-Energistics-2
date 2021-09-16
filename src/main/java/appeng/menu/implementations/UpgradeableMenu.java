@@ -26,7 +26,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -106,9 +105,9 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
     protected abstract void setupConfig();
 
     protected final void setupUpgrades() {
-        final IItemHandler upgrades = this.getHost().getUpgrades();
+        var upgrades = this.getHost().getUpgrades();
 
-        for (int i = 0; i < getUpgrades().getSlots(); i++) {
+        for (int i = 0; i < getUpgrades().size(); i++) {
             var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, i);
             slot.setNotDraggable();
             this.addSlot(slot, SlotSemantic.UPGRADE);

@@ -18,11 +18,11 @@
 
 package appeng.menu.slot;
 
-import net.minecraftforge.items.IItemHandler;
+import appeng.api.inventories.InternalInventory;
 
 public class PatternOutputsSlot extends OptionalFakeSlot {
 
-    public PatternOutputsSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, final int invSlot,
+    public PatternOutputsSlot(final InternalInventory inv, final IOptionalSlotHost containerBus, final int invSlot,
             final int groupNum) {
         super(inv, containerBus, invSlot, groupNum);
     }

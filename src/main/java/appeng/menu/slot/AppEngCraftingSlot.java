@@ -25,20 +25,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.crafting.CraftingEvent;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.WrapperInvItemHandler;
+import appeng.helpers.Inventories;
+import appeng.util.inv.AppEngInternalInventory;
 
 public class AppEngCraftingSlot extends AppEngSlot {
 
     /**
      * The craft matrix inventory linked to this result slot.
      */
-    private final IItemHandler craftingGrid;
+    private final InternalInventory craftingGrid;
 
     /**
      * The player that is using the GUI where this slot resides.
@@ -50,8 +48,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
      */
     private int amountCrafted;
 
-    public AppEngCraftingSlot(Player player, IItemHandler craftingGrid) {
-        super(new ItemStackHandler(1), 0);
+    public AppEngCraftingSlot(Player player, InternalInventory craftingGrid) {
+        super(new AppEngInternalInventory(1), 0);
         this.player = player;
         this.craftingGrid = craftingGrid;
     }
@@ -82,18 +80,18 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
     @Override
     public void onTake(final Player playerIn, final ItemStack stack) {
-        CraftingEvent.fireCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftingGrid));
+        CraftingEvent.fireCraftingEvent(playerIn, stack, this.craftingGrid.toContainer());
         this.checkTakeAchievements(stack);
         ForgeHooks.setCraftingPlayer(playerIn);
         final CraftingContainer ic = new CraftingContainer(this.getMenu(), 3, 3);
 
-        for (int x = 0; x < this.craftingGrid.getSlots(); x++) {
+        for (int x = 0; x < this.craftingGrid.size(); x++) {
             ic.setItem(x, this.craftingGrid.getStackInSlot(x));
         }
 
-        final NonNullList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.level);
+        var aitemstack = this.getRemainingItems(ic, playerIn.level);
 
-        ItemHandlerUtil.copy(ic, this.craftingGrid, false);
+        Inventories.copy(ic, this.craftingGrid, false);
 
         ForgeHooks.setCraftingPlayer(null);
 
@@ -107,7 +105,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
             if (!itemstack2.isEmpty()) {
                 if (this.craftingGrid.getStackInSlot(i).isEmpty()) {
-                    ItemHandlerUtil.setStackInSlot(this.craftingGrid, i, itemstack2);
+                    this.craftingGrid.setItemDirect(i, itemstack2);
                 } else if (!this.player.getInventory().add(itemstack2)) {
                     this.player.drop(itemstack2, false);
                 }
@@ -119,7 +117,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * Overrides what is being shown as the crafting output, but doesn't notify parent menu.
      */
     public void setDisplayedCraftingOutput(ItemStack stack) {
-        ((IItemHandlerModifiable) getItemHandler()).setStackInSlot(0, stack);
+        getInventory().setItemDirect(0, stack);
     }
 
     /**

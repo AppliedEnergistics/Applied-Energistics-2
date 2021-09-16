@@ -22,26 +22,25 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.GridLinkables;
 import appeng.api.implementations.items.IBiometricCard;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.InternalInventoryHost;
 
 /**
  * @see appeng.client.gui.implementations.SecurityStationScreen
  */
-public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngInventory {
+public class SecurityStationMenu extends ItemTerminalMenu implements InternalInventoryHost {
 
     private static final String ACTION_TOGGLE_PERMISSION = "togglePermission";
 
@@ -132,7 +131,7 @@ public class SecurityStationMenu extends ItemTerminalMenu implements IAEAppEngIn
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (!this.linkableOut.hasItem() && this.linkableIn.hasItem()) {
             var term = this.linkableIn.getItem().copy();

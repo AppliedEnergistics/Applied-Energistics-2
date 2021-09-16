@@ -37,7 +37,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -47,7 +46,8 @@ import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ICraftingMachine;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
@@ -57,7 +57,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.MixedItemList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -71,12 +70,10 @@ import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.NullMenu;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.InvOperation;
-import appeng.util.inv.WrapperChainedItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.CombinedInternalInventory;
+import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
@@ -91,8 +88,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private final CraftingContainer craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
-    private final IItemHandler gridInvExt = new WrapperFilteredItemHandler(this.gridInv, new CraftingGridFilter());
-    private final IItemHandler internalInv = new WrapperChainedItemHandler(this.gridInv, this.patternInv);
+    private final InternalInventory gridInvExt = new FilteredInternalInventory(this.gridInv, new CraftingGridFilter());
+    private final InternalInventory internalInv = new CombinedInternalInventory(this.gridInv, this.patternInv);
     private final UpgradeInventory upgrades;
     private boolean isPowered = false;
     private Direction pushDirection = null;
@@ -125,7 +122,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     public boolean pushPattern(final IPatternDetails patternDetails, final MixedItemList[] table,
             final Direction where) {
         if (this.myPattern.isEmpty()) {
-            boolean isEmpty = ItemHandlerUtil.isEmpty(this.gridInv) && ItemHandlerUtil.isEmpty(this.patternInv);
+            boolean isEmpty = this.gridInv.isEmpty() && this.patternInv.isEmpty();
 
             // Only accept our own crafting patterns!
             if (isEmpty && patternDetails instanceof AECraftingPattern pattern) {
@@ -188,7 +185,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public boolean acceptsPlans() {
-        return ItemHandlerUtil.isEmpty(this.patternInv);
+        return this.patternInv.isEmpty();
     }
 
     @Override
@@ -280,7 +277,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
         } else if (id.equals(INV_MAIN)) {
@@ -291,17 +288,17 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public InternalInventory getInternalInventory() {
         return this.internalInv;
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(Direction side) {
+    protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.gridInvExt;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
@@ -316,11 +313,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(level, pos, drops);
 
-        for (int h = 0; h < this.upgrades.getSlots(); h++) {
-            final ItemStack is = this.upgrades.getStackInSlot(h);
-            if (!is.isEmpty()) {
-                drops.add(is);
-            }
+        for (var upgrade : upgrades) {
+            drops.add(upgrade);
         }
     }
 
@@ -384,10 +378,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 this.pushOut(output.copy());
 
                 for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
-                    this.gridInv.setStackInSlot(x, Platform.getContainerItem(this.craftingInv.getItem(x)));
+                    this.gridInv.setItemDirect(x, Platform.getContainerItem(this.craftingInv.getItem(x)));
                 }
 
-                if (ItemHandlerUtil.isEmpty(this.patternInv)) {
+                if (this.patternInv.isEmpty()) {
                     this.forcePlan = false;
                     this.myPlan = null;
                     this.pushDirection = null;
@@ -420,8 +414,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 final ItemStack is = this.gridInv.getStackInSlot(x);
                 if (!is.isEmpty()
                         && (this.myPlan == null || !this.myPlan.isValid(x, IAEItemStack.of(is), this.level))) {
-                    this.gridInv.setStackInSlot(9, is);
-                    this.gridInv.setStackInSlot(x, ItemStack.EMPTY);
+                    this.gridInv.setItemDirect(9, is);
+                    this.gridInv.setItemDirect(x, ItemStack.EMPTY);
                     this.saveChanges();
                     return;
                 }
@@ -453,7 +447,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             this.recalculatePlan();
         }
 
-        this.gridInv.setStackInSlot(9, output);
+        this.gridInv.setItemDirect(9, output);
     }
 
     private ItemStack pushTo(ItemStack output, final Direction d) {
@@ -467,8 +461,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return output;
         }
 
-        final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(te, d.getOpposite());
-
+        var adaptor = InternalInventory.wrapExternal(te, d.getOpposite());
         if (adaptor == null) {
             return output;
         }
@@ -531,16 +524,16 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private class CraftingGridFilter implements IAEItemFilter {
         private boolean hasPattern() {
             return MolecularAssemblerBlockEntity.this.myPlan != null
-                    && !ItemHandlerUtil.isEmpty(MolecularAssemblerBlockEntity.this.patternInv);
+                    && !MolecularAssemblerBlockEntity.this.patternInv.isEmpty();
         }
 
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return slot == 9;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             if (slot >= 9) {
                 return false;
             }

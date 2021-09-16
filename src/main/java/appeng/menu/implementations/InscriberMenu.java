@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.InscriberBlockEntity;
@@ -57,7 +56,7 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     public InscriberMenu(int id, final Inventory ip, final InscriberBlockEntity host) {
         super(TYPE, id, ip, host);
 
-        IItemHandler inv = host.getInternalInventory();
+        var inv = host.getInternalInventory();
 
         RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0);
         top.setStackLimit(1);

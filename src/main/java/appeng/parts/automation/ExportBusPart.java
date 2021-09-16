@@ -36,6 +36,7 @@ import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.inventories.ItemTransfer;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
@@ -61,7 +62,6 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemIOBusMenu;
 import appeng.parts.PartModel;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -124,7 +124,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
         var grid = getMainNode().getGrid();
         if (grid != null) {
-            final InventoryAdaptor destination = this.getHandler();
+            var destination = this.getHandler();
             final IMEMonitor<IAEItemStack> inv = grid.getStorageService()
                     .getInventory(StorageChannels.items());
             final IEnergyService energy = grid.getEnergyService();
@@ -218,7 +218,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     public IAEStack injectCraftedItems(final ICraftingLink link, final IAEStack stack, final Actionable mode) {
         // Cast is safe: we know we only requested items.
         var items = (IAEItemStack) stack;
-        final InventoryAdaptor d = this.getHandler();
+        var d = this.getHandler();
 
         var grid = getMainNode().getGrid();
         if (grid != null) {
@@ -256,7 +256,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         return this.getInstalledUpgrades(Upgrades.CRAFTING) > 0;
     }
 
-    private void pushItemIntoTarget(final InventoryAdaptor d, final IEnergyService energy,
+    private void pushItemIntoTarget(ItemTransfer d, final IEnergyService energy,
             final IMEInventory<IAEItemStack> inv, IAEItemStack ais) {
         final ItemStack is = ais.createItemStack();
         is.setCount((int) this.itemToSend);

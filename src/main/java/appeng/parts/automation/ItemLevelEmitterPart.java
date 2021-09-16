@@ -32,7 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -40,7 +39,8 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
@@ -63,7 +63,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
@@ -71,7 +70,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemLevelEmitterMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
+import appeng.util.inv.AppEngInternalAEInventory;
 
 public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatcherHost,
         ICraftingWatcherNode, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
@@ -356,13 +355,13 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.config) {
             this.configureWatchers();
         }
 
-        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
+        super.onChangeInventory(inv, slot, removedStack, newStack);
     }
 
     @Override
@@ -394,7 +393,7 @@ public class ItemLevelEmitterPart extends UpgradeablePart implements IStackWatch
     }
 
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(ISegmentedInventory.CONFIG)) {
             return config;
         } else {

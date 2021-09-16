@@ -22,7 +22,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.blockentities.ISegmentedInventory;
+import appeng.api.inventories.ISegmentedInventory;
 import appeng.client.gui.implementations.ItemIOBusScreen;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.FakeTypeOnlySlot;

@@ -18,17 +18,11 @@
 
 package appeng.parts.reporting;
 
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.parts.IPartModel;
@@ -40,8 +34,8 @@ import appeng.items.parts.PartModels;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.inv.PlayerInternalInventory;
 import appeng.util.item.AEItemStack;
 
 public class ConversionMonitorPart extends AbstractMonitorPart {
@@ -155,12 +149,12 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             if (allItems) {
                 if (this.getDisplayed() != null) {
                     var input = this.getDisplayed().copy();
-                    IItemHandler inv = new PlayerMainInvWrapper(player.getInventory());
+                    var inv = new PlayerInternalInventory(player.getInventory());
 
-                    for (int x = 0; x < inv.getSlots(); x++) {
+                    for (int x = 0; x < inv.size(); x++) {
                         var targetStack = inv.getStackInSlot(x);
                         if (input.equals(targetStack)) {
-                            final ItemStack canExtract = inv.extractItem(x, targetStack.getCount(), true);
+                            var canExtract = inv.extractItem(x, targetStack.getCount(), true);
                             if (!canExtract.isEmpty()) {
                                 input.setStackSize(canExtract.getCount());
                                 final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
@@ -201,12 +195,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                     new PlayerSource(player, this));
             if (retrieved != null) {
                 ItemStack newItems = retrieved.createItemStack();
-                final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
-                newItems = adaptor.addItems(newItems);
-                if (!newItems.isEmpty()) {
-                    final BlockEntity te = this.getBlockEntity();
-                    final List<ItemStack> list = Collections.singletonList(newItems);
-                    Platform.spawnDrops(player.level, te.getBlockPos().relative(this.getSide()), list);
+                if (!player.getInventory().add(newItems)) {
+                    player.drop(newItems, false);
                 }
 
                 if (player.containerMenu != null) {

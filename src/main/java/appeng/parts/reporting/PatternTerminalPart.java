@@ -27,14 +27,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.items.parts.PartModels;
@@ -42,7 +41,7 @@ import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
+import appeng.util.inv.AppEngInternalInventory;
 
 public class PatternTerminalPart extends AbstractTerminalPart {
 
@@ -118,7 +117,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getStackInSlot(1);
@@ -129,14 +128,14 @@ public class PatternTerminalPart extends AbstractTerminalPart {
                 this.setSubstitution(aeDetails.canSubstitute());
 
                 // TODO: broken casts
-                for (int x = 0; x < this.crafting.getSlots() && x < aeDetails.getSparseInputs().length; x++) {
+                for (int x = 0; x < this.crafting.size() && x < aeDetails.getSparseInputs().length; x++) {
                     final IAEItemStack item = (IAEItemStack) aeDetails.getSparseInputs()[x];
-                    this.crafting.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                    this.crafting.setItemDirect(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
 
-                for (int x = 0; x < this.output.getSlots() && x < aeDetails.getSparseOutputs().length; x++) {
+                for (int x = 0; x < this.output.size() && x < aeDetails.getSparseOutputs().length; x++) {
                     final IAEItemStack item = (IAEItemStack) aeDetails.getSparseOutputs()[x];
-                    this.output.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                    this.output.setItemDirect(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
             }
         } else if (inv == this.crafting) {
@@ -148,7 +147,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
 
     private void fixCraftingRecipes() {
         if (this.craftingMode) {
-            for (int x = 0; x < this.crafting.getSlots(); x++) {
+            for (int x = 0; x < this.crafting.size(); x++) {
                 final ItemStack is = this.crafting.getStackInSlot(x);
                 if (!is.isEmpty()) {
                     is.setCount(1);
@@ -176,7 +175,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
 
     @Nullable
     @Override
-    public IItemHandler getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(INV_CRAFTING)) {
             return this.crafting;
         } else if (id.equals(INV_OUTPUT)) {

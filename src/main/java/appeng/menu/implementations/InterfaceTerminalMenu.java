@@ -31,17 +31,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
@@ -53,12 +52,8 @@ import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.AEBaseMenu;
 import appeng.parts.misc.ItemInterfacePart;
 import appeng.parts.reporting.InterfaceTerminalPart;
-import appeng.util.InventoryAdaptor;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.WrapperCursorItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
-import appeng.util.inv.WrapperRangeItemHandler;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 /**
@@ -157,95 +152,86 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
             // Can occur if the client sent an interaction packet right before an inventory got removed
             return;
         }
-        if (slot < 0 || slot >= inv.server.getSlots()) {
+        if (slot < 0 || slot >= inv.server.size()) {
             // Client refers to an invalid slot. This should NOT happen
             AELog.warn("Client refers to invalid slot %d of inventory %s", slot, inv.name.getString());
             return;
         }
 
         final ItemStack is = inv.server.getStackInSlot(slot);
-        final boolean hasItemInHand = !getCarried().isEmpty();
 
-        final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(this));
+        var interfaceSlot = new FilteredInternalInventory(inv.server.getSlotInv(slot), new PatternSlotFilter());
 
-        final IItemHandler theSlot = new WrapperFilteredItemHandler(
-                new WrapperRangeItemHandler(inv.server, slot, slot + 1), new PatternSlotFilter());
-        final InventoryAdaptor interfaceSlot = new AdaptorItemHandler(theSlot);
-
+        var carried = getCarried();
         switch (action) {
             case PICKUP_OR_SET_DOWN:
 
-                if (hasItemInHand) {
-                    ItemStack inSlot = theSlot.getStackInSlot(0);
+                if (!carried.isEmpty()) {
+                    ItemStack inSlot = interfaceSlot.getStackInSlot(0);
                     if (inSlot.isEmpty()) {
-                        setCarried(interfaceSlot.addItems(getCarried()));
+                        setCarried(interfaceSlot.addItems(carried));
                     } else {
                         inSlot = inSlot.copy();
-                        final ItemStack inHand = getCarried().copy();
+                        final ItemStack inHand = carried.copy();
 
-                        ItemHandlerUtil.setStackInSlot(theSlot, 0, ItemStack.EMPTY);
+                        interfaceSlot.setItemDirect(0, ItemStack.EMPTY);
                         setCarried(ItemStack.EMPTY);
 
                         setCarried(interfaceSlot.addItems(inHand.copy()));
 
-                        if (getCarried().isEmpty()) {
+                        if (carried.isEmpty()) {
                             setCarried(inSlot);
                         } else {
                             setCarried(inHand);
-                            ItemHandlerUtil.setStackInSlot(theSlot, 0, inSlot);
+                            interfaceSlot.setItemDirect(0, inSlot);
                         }
                     }
                 } else {
-                    ItemHandlerUtil.setStackInSlot(theSlot, 0, playerHand.addItems(theSlot.getStackInSlot(0)));
+                    setCarried(interfaceSlot.getStackInSlot(0));
+                    interfaceSlot.setItemDirect(0, ItemStack.EMPTY);
                 }
 
                 break;
             case SPLIT_OR_PLACE_SINGLE:
 
-                if (hasItemInHand) {
-                    ItemStack extra = playerHand.removeItems(1, ItemStack.EMPTY, null);
+                if (!carried.isEmpty()) {
+                    ItemStack extra = carried.split(1);
                     if (!extra.isEmpty()) {
                         extra = interfaceSlot.addItems(extra);
                     }
                     if (!extra.isEmpty()) {
-                        playerHand.addItems(extra);
+                        carried.grow(extra.getCount());
                     }
                 } else if (!is.isEmpty()) {
-                    ItemStack extra = interfaceSlot.removeItems((is.getCount() + 1) / 2, ItemStack.EMPTY, null);
-                    if (!extra.isEmpty()) {
-                        extra = playerHand.addItems(extra);
-                    }
-                    if (!extra.isEmpty()) {
-                        interfaceSlot.addItems(extra);
-                    }
+                    setCarried(interfaceSlot.extractItem(0, (is.getCount() + 1) / 2, false));
                 }
 
                 break;
-            case SHIFT_CLICK:
-
-                final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(player);
-
-                ItemHandlerUtil.setStackInSlot(theSlot, 0, playerInv.addItems(theSlot.getStackInSlot(0)));
-
+            case SHIFT_CLICK: {
+                var stack = interfaceSlot.getStackInSlot(0).copy();
+                if (!player.getInventory().add(stack)) {
+                    interfaceSlot.setItemDirect(0, stack);
+                } else {
+                    interfaceSlot.setItemDirect(0, ItemStack.EMPTY);
+                }
+            }
                 break;
             case MOVE_REGION:
-
-                final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor(player);
-                for (int x = 0; x < inv.server.getSlots(); x++) {
-                    ItemHandlerUtil.setStackInSlot(inv.server, x,
-                            playerInvAd.addItems(inv.server.getStackInSlot(x)));
+                for (int x = 0; x < inv.server.size(); x++) {
+                    var stack = inv.server.getStackInSlot(x);
+                    if (!player.getInventory().add(stack)) {
+                        interfaceSlot.setItemDirect(0, stack);
+                    } else {
+                        interfaceSlot.setItemDirect(0, ItemStack.EMPTY);
+                    }
                 }
 
                 break;
             case CREATIVE_DUPLICATE:
-
-                if (player.getAbilities().instabuild && !hasItemInHand) {
+                if (player.getAbilities().instabuild && carried.isEmpty()) {
                     setCarried(is.isEmpty() ? ItemStack.EMPTY : is.copy());
                 }
-
                 break;
-            default:
-                return;
         }
     }
 
@@ -275,7 +261,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         for (final Entry<IItemInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
             this.byId.put(inv.serverId, inv);
-            this.addItems(data, inv, 0, inv.server.getSlots());
+            this.addItems(data, inv, 0, inv.server.size());
         }
         return new InterfaceTerminalPacket(true, data);
     }
@@ -284,7 +270,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         CompoundTag data = null;
         for (final Entry<IItemInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
-            for (int x = 0; x < inv.server.getSlots(); x++) {
+            for (int x = 0; x < inv.server.size(); x++) {
                 if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
                     if (data == null) {
                         data = new CompoundTag();
@@ -326,7 +312,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
             final ItemStack is = inv.server.getStackInSlot(x + offset);
 
             // "update" client side.
-            ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
+            inv.client.setItemDirect(x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
 
             if (!is.isEmpty()) {
                 is.save(itemNBT);
@@ -344,13 +330,13 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         private final long serverId = inventorySerial++;
         private final Component name;
         // This is used to track the inventory contents we sent to the client for change detection
-        private final IItemHandler client;
+        private final InternalInventory client;
         // This is a reference to the real inventory used by this machine
-        private final IItemHandler server;
+        private final InternalInventory server;
 
-        public InvTracker(final DualityItemInterface dual, final IItemHandler patterns, final Component name) {
+        public InvTracker(final DualityItemInterface dual, final InternalInventory patterns, final Component name) {
             this.server = patterns;
-            this.client = new AppEngInternalInventory(null, this.server.getSlots());
+            this.client = new AppEngInternalInventory(this.server.size());
             this.name = name;
             this.sortBy = dual.getSortValue();
         }
@@ -358,12 +344,12 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
 
     private static class PatternSlotFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
         }
     }

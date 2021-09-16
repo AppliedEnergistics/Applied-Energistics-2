@@ -34,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -45,6 +44,7 @@ import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.items.IBiometricCard;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSecurityChange;
@@ -60,17 +60,15 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
 import appeng.util.ConfigManager;
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.InvOperation;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.InternalInventoryHost;
 import appeng.util.item.AEItemStack;
 
-public class SecurityStationBlockEntity extends AENetworkBlockEntity implements ITerminalHost, IAEAppEngInventory,
+public class SecurityStationBlockEntity extends AENetworkBlockEntity implements ITerminalHost, InternalInventoryHost,
         ISecurityProvider, IColorableBlockEntity {
 
     private static int difference = 0;
@@ -101,14 +99,14 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
 
     }
 
     @Override
     public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
-        if (!ItemHandlerUtil.isEmpty(this.getConfigSlot())) {
+        if (!this.getConfigSlot().isEmpty()) {
             drops.add(this.getConfigSlot().getStackInSlot(0));
         }
 

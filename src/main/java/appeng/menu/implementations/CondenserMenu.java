@@ -20,7 +20,6 @@ package appeng.menu.implementations;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -53,7 +52,7 @@ public class CondenserMenu extends AEBaseMenu implements IProgressProvider {
         super(TYPE, id, ip, condenser);
         this.condenser = condenser;
 
-        IItemHandler inv = condenser.getInternalInventory();
+        var inv = condenser.getInternalInventory();
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.TRASH, inv, 0),
                 SlotSemantic.MACHINE_INPUT);

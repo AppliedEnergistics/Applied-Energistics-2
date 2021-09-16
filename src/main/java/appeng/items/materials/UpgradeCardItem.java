@@ -32,17 +32,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
-import appeng.util.InventoryAdaptor;
-import appeng.util.inv.AdaptorItemHandler;
 
 public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
     private final Upgrades cardType;
@@ -75,7 +73,7 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
         InteractionHand hand = context.getHand();
         if (player != null && InteractionUtil.isInAlternateUseMode(player)) {
             final BlockEntity te = context.getLevel().getBlockEntity(context.getClickedPos());
-            IItemHandler upgrades = null;
+            IUpgradeInventory upgrades = null;
 
             if (te instanceof IPartHost) {
                 final SelectedPart sp = ((IPartHost) te).selectPart(context.getClickLocation());
@@ -87,18 +85,14 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
             }
 
             ItemStack heldStack = player.getItemInHand(hand);
-            if (upgrades != null && !heldStack.isEmpty() && heldStack.getItem() instanceof IUpgradeModule um) {
-                final Upgrades u = um.getType(heldStack);
-
-                if (u != null) {
-                    if (player.getCommandSenderWorld().isClientSide()) {
-                        return InteractionResult.PASS;
-                    }
-
-                    final InventoryAdaptor ad = new AdaptorItemHandler(upgrades);
-                    player.setItemInHand(hand, ad.addItems(heldStack));
-                    return InteractionResult.sidedSuccess(player.getCommandSenderWorld().isClientSide());
+            var u = IUpgradeModule.getTypeFromStack(heldStack);
+            if (upgrades != null && u != null) {
+                if (player.getCommandSenderWorld().isClientSide()) {
+                    return InteractionResult.PASS;
                 }
+
+                player.setItemInHand(hand, upgrades.addItems(heldStack));
+                return InteractionResult.sidedSuccess(player.getCommandSenderWorld().isClientSide());
             }
         }
 

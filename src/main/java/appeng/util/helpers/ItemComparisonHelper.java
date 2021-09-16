@@ -19,12 +19,11 @@
 package appeng.util.helpers;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import appeng.api.config.FuzzyMode;
 
 /**
  * A helper class for comparing {@link Item}, {@link ItemStack} or NBT
@@ -46,56 +45,11 @@ public class ItemComparisonHelper {
     }
 
     /**
-     * Compares two {@link ItemStack} and their NBT tag for equality.
-     * <p>
-     * Use this when a precise check is required and the same item is required. Not just something with different NBT
-     * tags.
-     *
-     * @return true, if both are identical.
-     */
-    public boolean isSameItem(@Nonnull final ItemStack is, @Nonnull final ItemStack filter) {
-        return ItemStack.isSame(is, filter) && this.isNbtTagEqual(is.getTag(), filter.getTag());
-    }
-
-    /**
-     * Similar to {@link ItemComparisonHelper#isEqualItem(ItemStack, ItemStack)}, but it can further check, if both
-     * match the same {@link FuzzyMode} or are considered equal by the {@link OreDictionary}
-     *
-     * @param mode how to compare the two {@link ItemStack}s
-     * @return true, if both are matching the mode or considered equal by the {@link OreDictionary}
-     */
-    public boolean isFuzzyEqualItem(final ItemStack a, final ItemStack b, final FuzzyMode mode) {
-        if (a.isEmpty() && b.isEmpty()) {
-            return true;
-        }
-
-        if (a.isEmpty() || b.isEmpty()) {
-            return false;
-        }
-
-        // test damageable items..
-        if (a.getItem() == b.getItem() && a.getItem().canBeDepleted()) {
-            if (mode == FuzzyMode.IGNORE_ALL) {
-                return true;
-            } else if (mode == FuzzyMode.PERCENT_99) {
-                return a.getDamageValue() > 1 == b.getDamageValue() > 1;
-            } else {
-                final float percentDamagedOfA = (float) a.getDamageValue() / a.getMaxDamage();
-                final float percentDamagedOfB = (float) b.getDamageValue() / b.getMaxDamage();
-
-                return percentDamagedOfA > mode.breakPoint == percentDamagedOfB > mode.breakPoint;
-            }
-        }
-
-        return a.sameItem(b);
-    }
-
-    /**
      * recursive test for NBT Equality, this was faster then trying to compare / generate hashes, its also more reliable
      * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
      * performance wise, so try an use shared tag compounds as long as the system remains in AE.
      */
-    public boolean isNbtTagEqual(final CompoundTag left, final CompoundTag right) {
+    public boolean isNbtTagEqual(@Nullable CompoundTag left, @Nullable CompoundTag right) {
         if (left == right) {
             return true;
         }
@@ -111,10 +65,6 @@ public class ItemComparisonHelper {
             return false;
         }
 
-        if (left != null) {
-            return left.equals(right);
-        }
-
-        return false;
+        return left.equals(right);
     }
 }

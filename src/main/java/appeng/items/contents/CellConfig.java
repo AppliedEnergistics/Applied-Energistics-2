@@ -20,7 +20,7 @@ package appeng.items.contents;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.blockentity.inventory.AppEngInternalInventory;
+import appeng.util.inv.AppEngInternalInventory;
 
 public class CellConfig extends AppEngInternalInventory {
 
@@ -33,7 +33,7 @@ public class CellConfig extends AppEngInternalInventory {
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    protected void onContentsChanged(int slot, ItemStack oldStack) {
         this.writeToNBT(this.is.getOrCreateTag(), "list");
     }
 }

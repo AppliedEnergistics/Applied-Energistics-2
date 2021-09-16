@@ -34,13 +34,11 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;
-import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AEConfig;
@@ -50,7 +48,6 @@ import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.InteractionUtil;
-import appeng.util.InventoryAdaptor;
 
 /**
  * @author DrummerMC
@@ -114,7 +111,7 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public InternalInventory getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 
@@ -150,32 +147,27 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
             }
 
             final Inventory playerInventory = player.getInventory();
-            final IMEInventoryHandler inv = StorageCells.getCellInventory(stack, null,
-                    this.getChannel());
+            var inv = StorageCells.getCellInventory(stack, null, this.getChannel());
             if (inv != null && playerInventory.getSelected() == stack) {
-                final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player);
                 var list = inv.getAvailableItems();
-                if (list.isEmpty() && ia != null) {
+                if (list.isEmpty()) {
                     playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
                     // drop core
-                    final ItemStack extraB = ia.addItems(new ItemStack(coreItem));
-                    if (!extraB.isEmpty()) {
-                        player.drop(extraB, false);
+                    var core = new ItemStack(coreItem);
+                    if (!player.addItem(core)) {
+                        player.drop(core, false);
                     }
 
                     // drop upgrades
-                    final IItemHandler upgradesInventory = this.getUpgradesInventory(stack);
-                    for (int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSlots(); upgradeIndex++) {
-                        final ItemStack upgradeStack = upgradesInventory.getStackInSlot(upgradeIndex);
-                        final ItemStack leftStack = ia.addItems(upgradeStack);
-                        if (!leftStack.isEmpty() && upgradeStack.getItem() instanceof IUpgradeModule) {
-                            player.drop(upgradeStack, false);
+                    for (ItemStack upgrade : this.getUpgradesInventory(stack)) {
+                        if (!player.addItem(upgrade)) {
+                            player.drop(upgrade, false);
                         }
                     }
 
                     // drop empty storage cell case
-                    this.dropEmptyStorageCellCase(ia, player);
+                    this.dropEmptyStorageCellCase(player);
 
                     if (player.inventoryMenu != null) {
                         player.inventoryMenu.broadcastChanges();
@@ -188,7 +180,12 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
         return false;
     }
 
-    protected abstract void dropEmptyStorageCellCase(final InventoryAdaptor ia, final Player player);
+    protected void dropEmptyStorageCellCase(final Player player) {
+        var storageCell = AEItems.EMPTY_STORAGE_CELL.stack();
+        if (!player.addItem(storageCell)) {
+            player.drop(storageCell, false);
+        }
+    }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
