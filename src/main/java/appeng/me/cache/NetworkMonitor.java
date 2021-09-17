@@ -125,6 +125,10 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	public long getGridCurrentCount()
 	{
+		if( forceUpdate )
+		{
+			getStorageList();
+		}
 		if( myChannel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			return gridItemCount;
@@ -136,17 +140,16 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		return 0;
 	}
 
-	public long incGridCurrentCount(long count)
+	public void incGridCurrentCount(long count)
 	{
 		if( myChannel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			return gridItemCount += count;
+			gridItemCount += count;
 		}
 		else if( myChannel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
-			return gridFluidCount += count;
+			gridFluidCount += count;
 		}
-		return 0;
 	}
 
 	@Nonnull
@@ -157,7 +160,20 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		{
 			forceUpdate = false;
 			this.cachedList.resetStatus();
-			return this.getAvailableItems( this.cachedList );
+			this.getAvailableItems( this.cachedList );
+
+			long count = 0;
+			for (T stack : this.cachedList) {
+				count += stack.getStackSize();
+			}
+			if( myChannel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+			{
+				gridItemCount = count;
+			}
+			else if( myChannel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
+			{
+				gridFluidCount = count;
+			}
 		}
 
 		return this.cachedList;
