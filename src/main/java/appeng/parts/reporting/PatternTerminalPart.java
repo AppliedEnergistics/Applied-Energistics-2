@@ -30,8 +30,8 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;

@@ -11,13 +11,12 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
+import appeng.api.inventories.PlatformInventoryWrapper;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.*;
 import appeng.api.storage.data.IAEStack;
 import appeng.capabilities.Capabilities;
 import appeng.me.storage.ItemHandlerAdapter;
-import appeng.util.InventoryAdaptor;
-import appeng.util.inv.AdaptorItemHandler;
 
 public interface IInterfaceTarget {
     @Nullable
@@ -94,7 +93,7 @@ public interface IInterfaceTarget {
             protected void onInjectOrExtract() {
             }
         };
-        InventoryAdaptor adaptor = new AdaptorItemHandler(handler);
+        var adaptor = new PlatformInventoryWrapper(handler);
         return new IInterfaceTarget() {
             @Nullable
             @Override

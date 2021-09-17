@@ -147,7 +147,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 var list = table[inputId];
                 // Cast should be safe because our crafting patterns only provide IAEItemStacks
                 var stack = (IAEItemStack) list.iterator().next();
-                this.gridInv.setStackInSlot(sparseIndex, stack.getDefinition().copy());
+                this.gridInv.setItemDirect(sparseIndex, stack.getDefinition().copy());
                 stack.decStackSize(1);
             }
         }

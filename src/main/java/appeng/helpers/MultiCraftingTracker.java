@@ -27,10 +27,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.AEApi;
-import appeng.api.networking.crafting.*;
 import appeng.api.inventories.ItemTransfer;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;

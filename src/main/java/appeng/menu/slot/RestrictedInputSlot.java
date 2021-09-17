@@ -33,7 +33,6 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.blockentity.misc.InscriberRecipes;

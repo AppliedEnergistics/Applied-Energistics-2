@@ -10,7 +10,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
  * Wraps an inventory implementing the platforms standard inventory interface (i.e. IItemHandler on Forge) such that it
  * can be used as an {@link InternalInventory}.
  */
-class PlatformInventoryWrapper implements InternalInventory {
+public class PlatformInventoryWrapper implements InternalInventory {
     private final IItemHandler handler;
 
     public PlatformInventoryWrapper(IItemHandler handler) {

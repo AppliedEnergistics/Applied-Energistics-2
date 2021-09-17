@@ -58,7 +58,6 @@ import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.inventories.ItemTransfer;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -74,8 +73,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.inventory.AppEngInternalAEInventory;
-import appeng.blockentity.inventory.AppEngInternalInventory;
 import appeng.crafting.execution.GenericStackHelper;
 import appeng.helpers.iface.IInterfaceTarget;
 import appeng.me.storage.ItemHandlerAdapter;
@@ -92,7 +89,8 @@ import appeng.util.item.AEItemStack;
 
 public class DualityItemInterface
         extends DualityInterface
-        implements InternalInventoryHost, IConfigManagerListener, ICraftingProvider, ICraftingMedium, ICraftingRequester,
+        implements InternalInventoryHost, IConfigManagerListener, ICraftingProvider, ICraftingMedium,
+        ICraftingRequester,
         IUpgradeableObject,
         IConfigurableObject {
 
@@ -433,8 +431,8 @@ public class DualityItemInterface
             for (final Direction s : possibleDirections) {
                 var adjacentPos = blockEntity.getBlockPos().relative(s);
 
-                final BlockEntity te = level.getBlockEntity(adjacentPos);
-                var adapter = IInterfaceTarget.get(level, adjPos, te, s.getOpposite(), this.actionSource);
+                var be = level.getBlockEntity(adjacentPos);
+                var adapter = IInterfaceTarget.get(level, adjacentPos, be, s.getOpposite(), this.actionSource);
                 if (adapter != null) {
                     var leftover = adapter.injectItems(whatToSend, Actionable.MODULATE);
 
