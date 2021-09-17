@@ -492,7 +492,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     private static void convertItemToFluid(Slot slot) {
         var fluidStack = FluidUtil.getFluidContained(slot.getItem());
         fluidStack.ifPresent(fs -> {
-            slot.set(FluidDummyItem.fromFluidStack(fs));
+            slot.set(FluidDummyItem.fromFluidStack(fs, true));
         });
     }
 

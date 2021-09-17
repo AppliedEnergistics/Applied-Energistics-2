@@ -150,7 +150,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         } else if (aeStack.getChannel() == StorageChannels.items()) {
             return aeStack.cast(StorageChannels.items()).createItemStack();
         } else if (aeStack.getChannel() == StorageChannels.fluids()) {
-            return FluidDummyItem.fromFluidStack(aeStack.cast(StorageChannels.fluids()).getFluidStack());
+            return FluidDummyItem.fromFluidStack(aeStack.cast(StorageChannels.fluids()).getFluidStack(), true);
         } else {
             throw new IllegalArgumentException("Only item and fluid stacks are supported");
         }

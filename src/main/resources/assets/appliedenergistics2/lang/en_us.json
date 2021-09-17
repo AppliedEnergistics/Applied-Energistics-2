@@ -364,6 +364,8 @@
   "gui.tooltips.appliedenergistics2.FilterMode": "Search Filter Mode",
   "gui.tooltips.appliedenergistics2.FilterModeClear": "Clear on each opening.",
   "gui.tooltips.appliedenergistics2.FilterModeKeep": "Restore previous search filter.",
+  "gui.tooltips.appliedenergistics2.FindContainedFluids": "Replace items by contained fluid.",
+  "gui.tooltips.appliedenergistics2.FindContainedFluidsDesc": "Replace items that contain a fluid (such as buckets) by their contained fluid.",
   "gui.tooltips.appliedenergistics2.FuzzyMode": "Fuzzy Comparison",
   "gui.tooltips.appliedenergistics2.IOMode": "Input/Output Mode",
   "gui.tooltips.appliedenergistics2.InterfaceBlockingMode": "Blocking Mode",

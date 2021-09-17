@@ -88,12 +88,12 @@
       "left": 74,
       "bottom": 163
     },
+    "convertItemsToFluids": {
+      "left": 94,
+      "bottom": 163
+    },
     "encodePattern": {
       "left": 147,
-      "bottom": 142
-    },
-    "convertItemsToFluids": {
-      "left": 190,
       "bottom": 142
     }
   }

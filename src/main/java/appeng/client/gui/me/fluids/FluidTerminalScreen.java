@@ -18,10 +18,8 @@
 
 package appeng.client.gui.me.fluids;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -76,14 +74,12 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<IAEFluidStack> entry, int x,
             int y) {
         IAEFluidStack fluidStack = entry.getStack();
-        String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
-                .format(entry.getStoredAmount() / 1000.0) + " B";
 
         String modName = Platform.getModName(Platform.getModId(fluidStack));
 
         List<Component> list = new ArrayList<>();
         list.add(fluidStack.getFluidStack().getDisplayName());
-        list.add(new TextComponent(formattedAmount));
+        list.add(new TextComponent(Platform.formatFluidAmount(entry.getStoredAmount())));
         list.add(new TextComponent(modName));
 
         this.renderComponentToolTip(poseStack, list, x, y, this.font);

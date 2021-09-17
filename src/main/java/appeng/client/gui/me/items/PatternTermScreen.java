@@ -78,7 +78,9 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
         ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
         widgets.add("encodePattern", encodeBtn);
 
-        ActionButton convertItemsToFluidsBtn = new ActionButton(ActionItems.WRENCH, act -> menu.convertItemsToFluids());
+        ActionButton convertItemsToFluidsBtn = new ActionButton(ActionItems.FIND_CONTAINED_FLUID,
+                act -> menu.convertItemsToFluids());
+        convertItemsToFluidsBtn.setHalfSize(true);
         widgets.add("convertItemsToFluids", convertItemsToFluidsBtn);
     }
 

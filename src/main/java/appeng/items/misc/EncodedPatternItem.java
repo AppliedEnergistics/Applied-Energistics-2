@@ -39,8 +39,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.AEApi;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
@@ -167,8 +169,7 @@ public class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
 
-            lines.add((first ? label : and).copy().append(anOut.getStackSize() + "x ")
-                    .append(Platform.getItemDisplayName(anOut)));
+            lines.add((first ? label : and).copy().append(getStackComponent(anOut)));
             first = false;
         }
 
@@ -178,8 +179,7 @@ public class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
 
-            lines.add((first ? with : and).copy().append(anIn.getStackSize() + "x ")
-                    .append(Platform.getItemDisplayName(anIn)));
+            lines.add((first ? with : and).copy().append(getStackComponent(anIn)));
             first = false;
         }
 
@@ -189,6 +189,21 @@ public class EncodedPatternItem extends AEBaseItem {
 
             lines.add(substitutionLabel.copy().append(canSubstitute));
         }
+    }
+
+    private static Component getStackComponent(IAEStack stack) {
+        String amountInfo;
+        Component displayName;
+        if (stack.getChannel() == StorageChannels.items()) {
+            amountInfo = String.valueOf(stack.getStackSize());
+            displayName = Platform.getItemDisplayName(stack);
+        } else if (stack.getChannel() == StorageChannels.fluids()) {
+            amountInfo = Platform.formatFluidAmount(stack.getStackSize());
+            displayName = Platform.getFluidDisplayName(stack.cast(StorageChannels.fluids()));
+        } else {
+            throw new IllegalArgumentException("Unsupported storage channel: " + stack.getChannel());
+        }
+        return new TextComponent(amountInfo + " x ").append(displayName);
     }
 
     public ItemStack getOutput(final ItemStack item) {
