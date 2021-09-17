@@ -86,7 +86,7 @@ public class ApiPatternDetails implements IPatternDetailsHelper {
     private static void checkItemsOrFluids(IAEStack[] stacks) {
         for (var stack : stacks) {
             if (stack != null) {
-                if (stack.getChannel() != StorageChannels.items() || stack.getChannel() != StorageChannels.fluids()) {
+                if (stack.getChannel() != StorageChannels.items() && stack.getChannel() != StorageChannels.fluids()) {
                     throw new IllegalArgumentException("Unsupported storage channel: " + stack.getChannel());
                 }
             }

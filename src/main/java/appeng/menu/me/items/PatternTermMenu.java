@@ -31,6 +31,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -47,6 +48,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IMenuCraftingPacket;
+import appeng.items.misc.FluidDummyItem;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.NullMenu;
@@ -61,6 +63,7 @@ import appeng.menu.slot.PatternTermSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
+import appeng.util.fluid.AEFluidStack;
 import appeng.util.inv.CarriedItemInventory;
 import appeng.util.inv.PlayerInternalInventory;
 import appeng.util.item.AEItemStack;
@@ -74,6 +77,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     private static final String ACTION_ENCODE = "encode";
     private static final String ACTION_CLEAR = "clear";
     private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
+    private static final String ACTION_CONVERT_ITEMS_TO_FLUIDS = "convertItemsToFluids";
 
     public static MenuType<PatternTermMenu> TYPE = MenuTypeBuilder
             .create(PatternTermMenu::new, ITerminalHost.class)
@@ -139,6 +143,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         registerClientAction(ACTION_CLEAR, this::clear);
         registerClientAction(ACTION_SET_CRAFT_MODE, Boolean.class, getPatternTerminal()::setCraftingRecipe);
         registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, getPatternTerminal()::setSubstitution);
+        registerClientAction(ACTION_CONVERT_ITEMS_TO_FLUIDS, this::convertItemsToFluids);
     }
 
     @Override
@@ -220,7 +225,11 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     private static IAEStack[] toAeStacks(ItemStack... stacks) {
         IAEStack[] out = new IAEStack[stacks.length];
         for (int i = 0; i < stacks.length; ++i) {
-            out[i] = AEItemStack.fromItemStack(stacks[i]);
+            if (stacks[i].getItem() == AEItems.DUMMY_FLUID_ITEM.asItem()) {
+                out[i] = AEFluidStack.fromFluidStack(AEItems.DUMMY_FLUID_ITEM.asItem().getFluidStack(stacks[i]));
+            } else {
+                out[i] = AEItemStack.fromItemStack(stacks[i]);
+            }
         }
         return out;
     }
@@ -463,6 +472,28 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         } else {
             this.substitute = substitute;
         }
+    }
+
+    public void convertItemsToFluids() {
+        if (isClient()) {
+            sendClientAction(ACTION_CONVERT_ITEMS_TO_FLUIDS);
+            return;
+        }
+        if (!getPatternTerminal().isCraftingRecipe()) {
+            for (var slot : this.craftingGridSlots) {
+                convertItemToFluid(slot);
+            }
+            for (var slot : this.processingOutputSlots) {
+                convertItemToFluid(slot);
+            }
+        }
+    }
+
+    private static void convertItemToFluid(Slot slot) {
+        var fluidStack = FluidUtil.getFluidContained(slot.getItem());
+        fluidStack.ifPresent(fs -> {
+            slot.set(FluidDummyItem.fromFluidStack(fs));
+        });
     }
 
     public FakeCraftingMatrixSlot[] getCraftingGridSlots() {

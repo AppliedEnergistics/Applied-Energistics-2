@@ -49,7 +49,7 @@ public class AEPatternHelper {
         for (int x = 0; x < tag.size(); ++x) {
             var stack = GenericStackHelper.readGenericStack(tag.getCompound(x));
             if (stack != null) {
-                if (stack.getChannel() != StorageChannels.items() || stack.getChannel() != StorageChannels.fluids()) {
+                if (stack.getChannel() != StorageChannels.items() && stack.getChannel() != StorageChannels.fluids()) {
                     throw new IllegalArgumentException("Only items and fluids are supported in AE2 patterns.");
                 }
             }

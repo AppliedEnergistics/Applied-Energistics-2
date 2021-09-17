@@ -52,12 +52,6 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class EncodedPatternItem extends AEBaseItem {
-
-    public static final String NBT_INGREDIENTS = "in";
-    public static final String NBT_PRODUCTS = "out";
-    public static final String NBT_SUBSITUTE = "substitute";
-    public static final String NBT_RECIPE_ID = "recipe";
-
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 

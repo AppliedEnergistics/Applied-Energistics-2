@@ -27,6 +27,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
+import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
 
 /**
@@ -37,6 +38,12 @@ import appeng.items.AEBaseItem;
  * @since rv6 2018-01-22
  */
 public class FluidDummyItem extends AEBaseItem {
+
+    public static ItemStack fromFluidStack(FluidStack fs) {
+        var stack = new ItemStack(AEItems.DUMMY_FLUID_ITEM);
+        AEItems.DUMMY_FLUID_ITEM.asItem().setFluidStack(stack, fs);
+        return stack;
+    }
 
     public FluidDummyItem(Item.Properties properties) {
         super(properties);
