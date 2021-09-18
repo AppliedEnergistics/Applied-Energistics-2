@@ -25,6 +25,8 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.FluidSlotWidget;
@@ -36,6 +38,7 @@ import appeng.menu.implementations.FluidLevelEmitterMenu;
 
 public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterMenu> {
 
+    private final SettingToggleButton<YesNo> craftingMode;
     private final SettingToggleButton<RedstoneMode> redstoneMode;
 
     private final NumberEntryWidget level;
@@ -46,23 +49,32 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
         addSlot(new FluidSlotWidget(this.menu.getFluidConfigInventory(), 0), SlotSemantic.CONFIG);
 
+        this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
+        this.craftingMode = new ServerSettingToggleButton<>(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
+        this.addToLeftToolbar(this.redstoneMode);
+        this.addToLeftToolbar(craftingMode);
+
         this.level = new NumberEntryWidget(NumberEntryType.LEVEL_FLUID_VOLUME);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.setValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::onClose);
         widgets.add("level", this.level);
-
-        this.redstoneMode = new ServerSettingToggleButton<>(
-                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
-        this.addToLeftToolbar(this.redstoneMode);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.redstoneMode.set(this.menu.getRedStoneMode());
+        // configure enabled status...
+        final boolean notCraftingMode = !menu.hasUpgrade(Upgrades.CRAFTING);
+        this.level.setActive(notCraftingMode);
+
+        this.redstoneMode.active = notCraftingMode;
+        this.redstoneMode.set(menu.getRedStoneMode());
+
+        this.craftingMode.set(this.menu.getCraftingMode());
+        this.craftingMode.setVisibility(!notCraftingMode);
     }
 
     private void saveReportingValue() {

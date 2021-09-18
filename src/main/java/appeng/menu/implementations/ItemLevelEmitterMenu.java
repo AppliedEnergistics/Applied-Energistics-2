@@ -23,11 +23,9 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantic;
-import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;
 import appeng.parts.automation.ItemLevelEmitterPart;
 
@@ -44,9 +42,6 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu<ItemLevelEmitterPart> 
                 menu.reportingValue = buffer.readVarLong();
             })
             .build("item_level_emitter");
-
-    @GuiSync(3)
-    public YesNo cmType;
 
     // Only synced once on menu-open, and only used on client
     private long reportingValue;
@@ -90,16 +85,6 @@ public class ItemLevelEmitterMenu extends UpgradeableMenu<ItemLevelEmitterPart> 
         this.setCraftingMode(cm.getSetting(Settings.CRAFT_VIA_REDSTONE));
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_EMITTER));
-    }
-
-    @Override
-    public YesNo getCraftingMode() {
-        return this.cmType;
-    }
-
-    @Override
-    public void setCraftingMode(final YesNo cmType) {
-        this.cmType = cmType;
     }
 
 }

@@ -38,7 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
-import appeng.api.networking.storage.IStackWatcherHost;
+import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
@@ -65,7 +65,7 @@ import appeng.util.item.AEItemStack;
  * @since rv3
  */
 public abstract class AbstractMonitorPart extends AbstractDisplayPart
-        implements IStorageMonitorPart, IStackWatcherHost {
+        implements IStorageMonitorPart, IStackWatcherNode {
     private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
     private IAEItemStack configuredItem;
     private String lastHumanReadableText;
@@ -75,7 +75,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public AbstractMonitorPart(final ItemStack is) {
         super(is);
 
-        getMainNode().addService(IStackWatcherHost.class, this);
+        getMainNode().addService(IStackWatcherNode.class, this);
     }
 
     @Override
@@ -266,8 +266,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void onStackChange(final IItemList o, final IAEStack fullStack, final IAEStack diffStack,
-            final IActionSource src, final IStorageChannel chan) {
+    public <T extends IAEStack> void onStackChange(IItemList<T> o, IAEStack fullStack, IAEStack diffStack,
+            IActionSource src, IStorageChannel<T> chan) {
         if (this.configuredItem != null) {
             if (fullStack == null) {
                 this.configuredItem.setStackSize(0);

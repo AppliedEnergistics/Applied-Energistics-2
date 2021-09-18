@@ -37,7 +37,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStackWatcher;
-import appeng.api.networking.storage.IStackWatcherHost;
+import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
@@ -118,7 +118,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             }
         }
 
-        var watcher = node.getService(IStackWatcherHost.class);
+        var watcher = node.getService(IStackWatcherNode.class);
         if (watcher != null) {
             final ItemWatcher iw = new ItemWatcher(this, watcher);
             this.watchers.put(node, iw);

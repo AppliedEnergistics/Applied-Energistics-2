@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import appeng.api.networking.energy.IEnergyWatcher;
-import appeng.api.networking.energy.IEnergyWatcherHost;
+import appeng.api.networking.energy.IEnergyWatcherNode;
 import appeng.me.service.EnergyService;
 
 /**
@@ -32,10 +32,10 @@ import appeng.me.service.EnergyService;
 public class EnergyWatcher implements IEnergyWatcher {
 
     private final EnergyService service;
-    private final IEnergyWatcherHost watcherHost;
+    private final IEnergyWatcherNode watcherHost;
     private final Set<EnergyThreshold> myInterests = new HashSet<>();
 
-    public EnergyWatcher(final EnergyService service, final IEnergyWatcherHost host) {
+    public EnergyWatcher(final EnergyService service, final IEnergyWatcherNode host) {
         this.service = service;
         this.watcherHost = host;
     }
@@ -44,7 +44,7 @@ public class EnergyWatcher implements IEnergyWatcher {
         this.watcherHost.onThresholdPass(service);
     }
 
-    public IEnergyWatcherHost getHost() {
+    public IEnergyWatcherNode getHost() {
         return this.watcherHost;
     }
 

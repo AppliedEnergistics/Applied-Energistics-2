@@ -28,7 +28,7 @@ import appeng.api.storage.data.IAEStack;
 /**
  * DO NOT IMPLEMENT.
  *
- * Will be injected when adding an {@link IStackWatcherHost} to a grid.
+ * Will be injected when adding an {@link IStackWatcherNode} to a grid.
  */
 public interface IStackWatcher {
     /**

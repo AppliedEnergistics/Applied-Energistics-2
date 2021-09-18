@@ -67,6 +67,7 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu<FluidLevelEmitt
 
     @Override
     protected void setupConfig() {
+        this.setupUpgrades();
     }
 
     @Override
@@ -76,6 +77,7 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu<FluidLevelEmitt
 
     @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setCraftingMode(cm.getSetting(Settings.CRAFT_VIA_REDSTONE));
         this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_EMITTER));
     }
 

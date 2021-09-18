@@ -46,12 +46,9 @@ public class ItemLevelEmitterScreen extends UpgradeableScreen<ItemLevelEmitterMe
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        this.redstoneMode = new ServerSettingToggleButton<>(
-                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
-        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE,
-                FuzzyMode.IGNORE_ALL);
-        this.craftingMode = new ServerSettingToggleButton<>(
-                Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
+        this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
+        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        this.craftingMode = new ServerSettingToggleButton<>(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
         this.addToLeftToolbar(this.redstoneMode);
         this.addToLeftToolbar(this.craftingMode);
         this.addToLeftToolbar(this.fuzzyMode);
