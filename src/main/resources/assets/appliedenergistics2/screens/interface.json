@@ -15,11 +15,6 @@
       "left": 8,
       "top": 53,
       "grid": "HORIZONTAL"
-    },
-    "ENCODED_PATTERN": {
-      "left": 8,
-      "top": 97,
-      "grid": "HORIZONTAL"
     }
   },
   "text": {
@@ -48,15 +43,6 @@
       "position": {
         "left": 8,
         "top": 73
-      }
-    },
-    "interface_patterns": {
-      "text": {
-        "translate": "gui.appliedenergistics2.Patterns"
-      },
-      "position": {
-        "left": 8,
-        "top": 86
       }
     }
   },

@@ -22,17 +22,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.ItemInterfaceScreen;
 import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IItemInterfaceHost;
 import appeng.menu.SlotSemantic;
-import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.RestrictedInputSlot;
 
 /**
  * @see ItemInterfaceScreen
@@ -44,22 +40,10 @@ public class ItemInterfaceMenu extends UpgradeableMenu<IItemInterfaceHost> {
             .requirePermission(SecurityPermissions.BUILD)
             .build("interface");
 
-    @GuiSync(3)
-    public YesNo bMode = YesNo.NO;
-
-    @GuiSync(4)
-    public YesNo iTermMode = YesNo.YES;
-
     public ItemInterfaceMenu(int id, final Inventory ip, IItemInterfaceHost host) {
         super(TYPE, id, ip, host);
 
         DualityItemInterface duality = host.getInterfaceDuality();
-
-        for (int x = 0; x < DualityItemInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                    duality.getPatterns(), x),
-                    SlotSemantic.ENCODED_PATTERN);
-        }
 
         for (int x = 0; x < DualityItemInterface.NUMBER_OF_CONFIG_SLOTS; x++) {
             this.addSlot(new FakeSlot(duality.getConfig(), x), SlotSemantic.CONFIG);
@@ -71,29 +55,11 @@ public class ItemInterfaceMenu extends UpgradeableMenu<IItemInterfaceHost> {
     }
 
     @Override
-    protected void setupConfig() {
-        this.setupUpgrades();
+    protected void loadSettingsFromHost(IConfigManager cm) {
     }
 
     @Override
-    protected void loadSettingsFromHost(IConfigManager cm) {
-        this.setBlockingMode(cm.getSetting(Settings.BLOCKING_MODE));
-        this.setInterfaceTerminalMode(cm.getSetting(Settings.INTERFACE_TERMINAL));
-    }
-
-    public YesNo getBlockingMode() {
-        return this.bMode;
-    }
-
-    private void setBlockingMode(final YesNo bMode) {
-        this.bMode = bMode;
-    }
-
-    public YesNo getInterfaceTerminalMode() {
-        return this.iTermMode;
-    }
-
-    private void setInterfaceTerminalMode(final YesNo iTermMode) {
-        this.iTermMode = iTermMode;
+    protected void setupConfig() {
+        this.setupUpgrades();
     }
 }

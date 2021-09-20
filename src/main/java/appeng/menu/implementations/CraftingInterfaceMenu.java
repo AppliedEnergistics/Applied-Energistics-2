@@ -10,7 +10,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AELog;
-import appeng.helpers.DualityItemInterface;
 import appeng.helpers.iface.DualityCraftingInterface;
 import appeng.helpers.iface.GenericStackInv;
 import appeng.helpers.iface.GenericStackSyncHelper;
@@ -43,7 +42,7 @@ public class CraftingInterfaceMenu extends AEBaseMenu implements IGenericSyncMen
         this.duality = host.getDuality();
         this.syncHelper = new GenericStackSyncHelper(getReturnInv(), 0);
 
-        for (int x = 0; x < DualityItemInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
+        for (int x = 0; x < DualityCraftingInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
                     duality.getPatternInv(), x),
                     SlotSemantic.ENCODED_PATTERN);

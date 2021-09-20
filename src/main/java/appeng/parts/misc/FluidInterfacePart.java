@@ -18,9 +18,6 @@
 
 package appeng.parts.misc;
 
-import java.util.EnumSet;
-
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -125,11 +122,6 @@ public class FluidInterfacePart extends BasicStatePart implements IFluidInterfac
         }
 
         return true;
-    }
-
-    @Override
-    public EnumSet<Direction> getTargets() {
-        return EnumSet.of(this.getSide());
     }
 
     @Override
