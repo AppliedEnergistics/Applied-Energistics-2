@@ -37,10 +37,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
-import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
-import appeng.blockentity.crafting.CraftingStorageBlockEntity;
-import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
+import appeng.blockentity.crafting.*;
 import appeng.blockentity.grindstone.CrankBlockEntity;
 import appeng.blockentity.grindstone.GrinderBlockEntity;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
@@ -146,6 +143,9 @@ public final class AEBlockEntities {
             AEBlocks.CRAFTING_STORAGE_4K, AEBlocks.CRAFTING_STORAGE_16K, AEBlocks.CRAFTING_STORAGE_64K);
     public static final BlockEntityType<CraftingMonitorBlockEntity> CRAFTING_MONITOR = create("crafting_monitor",
             CraftingMonitorBlockEntity.class, CraftingMonitorBlockEntity::new, AEBlocks.CRAFTING_MONITOR);
+    public static final BlockEntityType<CraftingInterfaceBlockEntity> CRAFTING_INTERFACE = create(
+            "crafting_interface",
+            CraftingInterfaceBlockEntity.class, CraftingInterfaceBlockEntity::new, AEBlocks.CRAFTING_INTERFACE);
     public static final BlockEntityType<MolecularAssemblerBlockEntity> MOLECULAR_ASSEMBLER = create(
             "molecular_assembler",
             MolecularAssemblerBlockEntity.class, MolecularAssemblerBlockEntity::new, AEBlocks.MOLECULAR_ASSEMBLER);

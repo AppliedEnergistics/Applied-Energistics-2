@@ -120,7 +120,7 @@ public class DualityItemInterface
                 .addService(ICraftingRequester.class, this);
 
         this.upgrades = new StackUpgradeInventory(is, this, 1);
-        this.cm.registerSetting(Settings.BLOCK, YesNo.NO);
+        this.cm.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
         this.cm.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
 
         this.craftingTracker = new MultiCraftingTracker(this, 9);
@@ -686,7 +686,7 @@ public class DualityItemInterface
     }
 
     private boolean isBlocking() {
-        return this.cm.getSetting(Settings.BLOCK) == YesNo.YES;
+        return this.cm.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
     private boolean acceptsItems(IInterfaceTarget adapter, MixedItemList[] inputs) {

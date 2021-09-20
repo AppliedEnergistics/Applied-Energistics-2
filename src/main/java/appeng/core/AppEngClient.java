@@ -61,18 +61,7 @@ import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.helpers.IMouseWheelItem;
-import appeng.init.client.InitAdditionalModels;
-import appeng.init.client.InitAutoRotatingModel;
-import appeng.init.client.InitBlockColors;
-import appeng.init.client.InitBlockEntityRenderers;
-import appeng.init.client.InitBuiltInModels;
-import appeng.init.client.InitEntityLayerDefinitions;
-import appeng.init.client.InitEntityRendering;
-import appeng.init.client.InitItemColors;
-import appeng.init.client.InitItemModelsProperties;
-import appeng.init.client.InitParticleFactories;
-import appeng.init.client.InitRenderTypes;
-import appeng.init.client.InitScreens;
+import appeng.init.client.*;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -177,6 +166,7 @@ public class AppEngClient extends AppEngBase {
     private void postClientSetup(Minecraft minecraft) {
         StyleManager.initialize(minecraft.getResourceManager());
         InitScreens.init();
+        InitStackRenderHandlers.init();
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -349,15 +349,15 @@ public class Platform {
     }
 
     public static String getModId(final IAEFluidStack fs) {
-        if (fs == null || fs.getFluidStack().isEmpty()) {
+        if (fs == null) {
             return "** Null";
         }
 
-        final ResourceLocation n = ForgeRegistries.FLUIDS.getKey(fs.getFluidStack().getFluid());
+        final ResourceLocation n = ForgeRegistries.FLUIDS.getKey(fs.getFluid());
         return n == null ? "** Null" : n.getNamespace();
     }
 
-    public static String getModName(String modId) {
+    public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
                 + ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName()).orElse(null);
     }

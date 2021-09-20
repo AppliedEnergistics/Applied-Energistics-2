@@ -237,7 +237,7 @@ public class CraftingCpuLogic {
 
         if (input.equals(job.finalOutput)) {
             // Final output is special: it goes directly into the requester
-            IAEStack.add(leftOver, (IAEStack) job.link.injectItems(input, type));
+            IAEStack.add(leftOver, job.link.injectItems(input, type));
 
             if (type == Actionable.MODULATE) {
                 // Update count and displayed CPU stack, and finish the job if possible.
@@ -252,7 +252,7 @@ public class CraftingCpuLogic {
                 }
             }
         } else {
-            IAEStack.add(leftOver, (IAEStack) input);
+            IAEStack.add(leftOver, input);
 
             if (type == Actionable.MODULATE) {
                 inventory.injectItems(input, Actionable.MODULATE);

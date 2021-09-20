@@ -381,9 +381,8 @@ public abstract class MEMonitorableScreen<T extends IAEStack, C extends MEMonito
 
     }
 
-    // TODO This is incorrectly named in MCP, it's renderSlot, essentially
     @Override
-    protected void renderSlot(PoseStack poseStack, Slot s) {
+    public void renderSlot(PoseStack poseStack, Slot s) {
         RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, s);
         if (repoSlot != null) {
             if (!this.repo.hasPower()) {

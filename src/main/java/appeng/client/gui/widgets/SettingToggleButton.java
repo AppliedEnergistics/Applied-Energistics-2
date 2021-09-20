@@ -218,9 +218,9 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.FULLNESS_FULL, Settings.FULLNESS_MODE, FullnessMode.FULL, ButtonToolTips.OperationMode,
                     ButtonToolTips.MoveWhenFull);
 
-            registerApp(Icon.BLOCKING_MODE_YES, Settings.BLOCK, YesNo.YES, ButtonToolTips.InterfaceBlockingMode,
+            registerApp(Icon.BLOCKING_MODE_YES, Settings.BLOCKING_MODE, YesNo.YES, ButtonToolTips.InterfaceBlockingMode,
                     ButtonToolTips.Blocking);
-            registerApp(Icon.BLOCKING_MODE_NO, Settings.BLOCK, YesNo.NO, ButtonToolTips.InterfaceBlockingMode,
+            registerApp(Icon.BLOCKING_MODE_NO, Settings.BLOCKING_MODE, YesNo.NO, ButtonToolTips.InterfaceBlockingMode,
                     ButtonToolTips.NonBlocking);
 
             registerApp(Icon.VIEW_MODE_CRAFTING, Settings.CRAFT_ONLY, YesNo.YES, ButtonToolTips.Craft,

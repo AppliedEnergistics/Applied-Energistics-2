@@ -187,7 +187,7 @@ public abstract class DualityInterface {
         @Override
         public <T> Optional<T> context(Class<T> key) {
             if (key == InterfaceRequestContext.class) {
-                return (Optional<T>) Optional.of(this.context);
+                return Optional.of(key.cast(this.context));
             }
 
             return super.context(key);

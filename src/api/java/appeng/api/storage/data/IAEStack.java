@@ -68,6 +68,10 @@ public interface IAEStack {
         return result;
     }
 
+    static long getStackSizeOrZero(@Nullable IAEStack stack) {
+        return stack == null ? 0 : stack.getStackSize();
+    }
+
     /**
      * number of items in the stack.
      *

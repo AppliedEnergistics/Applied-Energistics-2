@@ -144,25 +144,25 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
             if (this.craftingWatcher != null && myStack != null) {
                 this.craftingWatcher.add(myStack);
             }
+        } else {
+            getMainNode().ifPresent(grid -> {
+                var monitor = grid.getStorageService().getInventory(getChannel());
 
-            return;
+                if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
+                    monitor.addListener(handlerReceiver, grid);
+                } else {
+                    monitor.removeListener(handlerReceiver);
+
+                    if (this.stackWatcher != null) {
+                        this.stackWatcher.add(myStack);
+                    }
+                }
+
+                this.updateReportingValue(monitor);
+            });
         }
 
-        getMainNode().ifPresent(grid -> {
-            var monitor = grid.getStorageService().getInventory(getChannel());
-
-            if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
-                monitor.addListener(handlerReceiver, grid);
-            } else {
-                monitor.removeListener(handlerReceiver);
-
-                if (this.stackWatcher != null) {
-                    this.stackWatcher.add(myStack);
-                }
-            }
-
-            this.updateReportingValue(monitor);
-        });
+        updateState();
     }
 
     private void updateReportingValue(final IMEMonitor<T> monitor) {

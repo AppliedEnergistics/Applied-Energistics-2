@@ -77,7 +77,7 @@ public class ItemInterfaceMenu extends UpgradeableMenu<IItemInterfaceHost> {
 
     @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
-        this.setBlockingMode(cm.getSetting(Settings.BLOCK));
+        this.setBlockingMode(cm.getSetting(Settings.BLOCKING_MODE));
         this.setInterfaceTerminalMode(cm.getSetting(Settings.INTERFACE_TERMINAL));
     }
 

@@ -44,7 +44,7 @@ public class ItemInterfaceScreen extends UpgradeableScreen<ItemInterfaceMenu> {
 
         widgets.addOpenPriorityButton();
 
-        this.blockMode = new ServerSettingToggleButton<>(Settings.BLOCK, YesNo.NO);
+        this.blockMode = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
         this.addToLeftToolbar(this.blockMode);
 
         this.interfaceMode = new ToggleButton(Icon.INTERFACE_TERMINAL_SHOW, Icon.INTERFACE_TERMINAL_HIDE,

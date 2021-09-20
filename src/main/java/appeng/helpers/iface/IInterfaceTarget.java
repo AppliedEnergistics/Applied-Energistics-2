@@ -16,6 +16,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.*;
 import appeng.api.storage.data.IAEStack;
 import appeng.capabilities.Capabilities;
+import appeng.crafting.execution.GenericStackHelper;
 import appeng.me.storage.ItemHandlerAdapter;
 
 public interface IInterfaceTarget {
@@ -46,9 +47,7 @@ public interface IInterfaceTarget {
                 @Nullable
                 @Override
                 public IAEStack injectItems(IAEStack what, Actionable type) {
-                    if (what == null)
-                        return null;
-                    return IInterfaceTarget.channelInjectItems(what.getChannel(), monitorable, what, type, src);
+                    return GenericStackHelper.injectMonitorable(monitorable, what, type, src);
                 }
 
                 @Override
@@ -62,16 +61,6 @@ public interface IInterfaceTarget {
                 }
             };
         }
-    }
-
-    private static <T extends IAEStack> T channelInjectItems(IStorageChannel<T> channel,
-            IStorageMonitorable monitorable, IAEStack what, Actionable type, IActionSource src) {
-        var castedWhat = what.cast(channel);
-        var inventory = monitorable.getInventory(channel);
-        if (inventory != null) {
-            return inventory.injectItems(castedWhat, type, src);
-        }
-        return null;
     }
 
     private static <T extends IAEStack> boolean isChannelBusy(IStorageChannel<T> channel,

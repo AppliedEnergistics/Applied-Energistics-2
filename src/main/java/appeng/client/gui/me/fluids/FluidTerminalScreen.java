@@ -32,6 +32,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.style.FluidBlitter;
@@ -65,7 +66,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     protected void renderGridInventoryEntry(PoseStack poseStack, int x, int y,
             GridInventoryEntry<IAEFluidStack> entry) {
         IAEFluidStack fs = entry.getStack();
-        FluidBlitter.create(fs.getFluidStack())
+        FluidBlitter.create(IAEStack.copy(fs, 1).getFluidStack())
                 .dest(x, y, 16, 16)
                 .blit(poseStack, getBlitOffset());
     }
@@ -75,7 +76,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
             int y) {
         IAEFluidStack fluidStack = entry.getStack();
 
-        String modName = Platform.getModName(Platform.getModId(fluidStack));
+        String modName = Platform.formatModName(Platform.getModId(fluidStack));
 
         List<Component> list = new ArrayList<>();
         list.add(fluidStack.getFluidStack().getDisplayName());
