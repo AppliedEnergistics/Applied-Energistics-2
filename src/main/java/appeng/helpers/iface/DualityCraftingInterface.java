@@ -1,17 +1,27 @@
 package appeng.helpers.iface;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -40,6 +50,7 @@ import appeng.api.storage.data.MixedItemList;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.crafting.execution.GenericStackHelper;
+import appeng.helpers.ICustomNameObject;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
@@ -79,7 +90,7 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
         this.configManager.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
 
         this.returnInv = new CraftingInterfaceReturnInventory(() -> {
-            this.mainNode.ifPresent((grid, node) -> grid.getTickManager().wakeDevice(node));
+            this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         });
     }
 
@@ -245,7 +256,7 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
         if (stack != null && stack.getStackSize() != 0) {
             this.sendList.add(stack);
 
-            this.mainNode.ifPresent((grid, node) -> grid.getTickManager().wakeDevice(node));
+            this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         }
     }
 
@@ -309,7 +320,7 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
     public void onMainNodeStateChanged() {
         this.mainNode.ifPresent((grid, node) -> {
             grid.postEvent(new GridCraftingPatternChange(this, node));
-            grid.getTickManager().wakeDevice(node);
+            grid.getTickManager().alertDevice(node);
         });
     }
 
@@ -349,5 +360,80 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
             return hasWorkToDo() ? couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER
                     : TickRateModulation.SLEEP;
         }
+    }
+
+    // TODO: get rid of this awful code
+    private static final Collection<Block> BAD_BLOCKS = new HashSet<>(100);
+
+    public Component getTermName() {
+        final BlockEntity host = this.host.getBlockEntity();
+        final Level hostWorld = host.getLevel();
+
+        if (((ICustomNameObject) this.host).hasCustomInventoryName()) {
+            return ((ICustomNameObject) this.host).getCustomInventoryName();
+        }
+
+        final EnumSet<Direction> possibleDirections = this.host.getTargets();
+        for (final Direction direction : possibleDirections) {
+            final BlockPos targ = host.getBlockPos().relative(direction);
+            final BlockEntity directedBlockEntity = hostWorld.getBlockEntity(targ);
+
+            if (directedBlockEntity == null) {
+                continue;
+            }
+
+            if (directedBlockEntity instanceof ICraftingInterfaceHost interfaceHost) {
+                if (interfaceHost.getDuality().sameGrid(this.mainNode.getGrid())) {
+                    continue;
+                }
+            }
+
+            var adaptor = InternalInventory.wrapExternal(directedBlockEntity, direction.getOpposite());
+            if (directedBlockEntity instanceof ICraftingMachine || adaptor != null) {
+                if (adaptor != null && !adaptor.mayAllowTransfer()) {
+                    continue;
+                }
+
+                final BlockState directedBlockState = hostWorld.getBlockState(targ);
+                final Block directedBlock = directedBlockState.getBlock();
+                ItemStack what = new ItemStack(directedBlock, 1);
+                try {
+                    Vec3 from = new Vec3(host.getBlockPos().getX() + 0.5, host.getBlockPos().getY() + 0.5,
+                            host.getBlockPos().getZ() + 0.5);
+                    from = from.add(direction.getStepX() * 0.501, direction.getStepY() * 0.501,
+                            direction.getStepZ() * 0.501);
+                    final Vec3 to = from.add(direction.getStepX(), direction.getStepY(),
+                            direction.getStepZ());
+                    final BlockHitResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
+                    // https://github.com/MinecraftForge/MinecraftForge/pull/6708
+                    if (hit != null && !BAD_BLOCKS.contains(directedBlock)
+                            && hit.getBlockPos().equals(directedBlockEntity.getBlockPos())) {
+                        final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
+                                directedBlockEntity.getBlockPos(), null);
+                        if (!g.isEmpty()) {
+                            what = g;
+                        }
+                    }
+                } catch (final Throwable t) {
+                    BAD_BLOCKS.add(directedBlock); // nope!
+                }
+
+                if (what.getItem() != Items.AIR) {
+                    return new TranslatableComponent(what.getDescriptionId());
+                }
+
+                final Item item = Item.byBlock(directedBlock);
+                if (item == Items.AIR) {
+                    return new TranslatableComponent(directedBlock.getDescriptionId());
+                }
+            }
+        }
+
+        return new TextComponent("Nothing");
+    }
+
+    public long getSortValue() {
+        final BlockEntity te = this.host.getBlockEntity();
+        return te.getBlockPos().getZ() << 24 ^ te.getBlockPos().getX() << 8 ^ te.getBlockPos().getY();
     }
 }

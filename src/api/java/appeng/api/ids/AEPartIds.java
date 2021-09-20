@@ -242,6 +242,7 @@ public final class AEPartIds {
     public static final ResourceLocation ITEM_LEVEL_EMITTER = id("item_level_emitter");
     public static final ResourceLocation FLUID_LEVEL_EMITTER = id("fluid_level_emitter");
     public static final ResourceLocation ENERGY_LEVEL_EMITTER = id("energy_level_emitter");
+    public static final ResourceLocation CRAFTING_INTERFACE = id("cable_crafting_interface");
     public static final ResourceLocation FLUID_INTERFACE = id("cable_fluid_interface");
     public static final ResourceLocation ITEM_INTERFACE = id("cable_item_interface");
     public static final ResourceLocation INTERFACE_TERMINAL = id("interface_terminal");

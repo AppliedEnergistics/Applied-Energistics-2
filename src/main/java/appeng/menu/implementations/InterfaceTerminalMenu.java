@@ -20,7 +20,6 @@ package appeng.menu.implementations;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
@@ -41,16 +40,16 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
-import appeng.blockentity.misc.ItemInterfaceBlockEntity;
+import appeng.blockentity.crafting.CraftingInterfaceBlockEntity;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
-import appeng.helpers.DualityItemInterface;
-import appeng.helpers.IItemInterfaceHost;
 import appeng.helpers.InventoryAction;
+import appeng.helpers.iface.DualityCraftingInterface;
+import appeng.helpers.iface.ICraftingInterfaceHost;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.AEBaseMenu;
-import appeng.parts.misc.ItemInterfacePart;
+import appeng.parts.crafting.CraftingInterfacePart;
 import appeng.parts.reporting.InterfaceTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -73,7 +72,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
     // We use this serial number to uniquely identify all inventories we send to the client
     // It is used in packets sent by the client to interact with these inventories
     private static long inventorySerial = Long.MIN_VALUE;
-    private final Map<IItemInterfaceHost, InvTracker> diList = new IdentityHashMap<>();
+    private final Map<ICraftingInterfaceHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
 
     public InterfaceTerminalMenu(int id, final Inventory ip, final InterfaceTerminalPart anchor) {
@@ -93,8 +92,8 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
 
         VisitorState state = new VisitorState();
         if (grid != null) {
-            visitInterfaceHosts(grid, ItemInterfaceBlockEntity.class, state);
-            visitInterfaceHosts(grid, ItemInterfacePart.class, state);
+            visitInterfaceHosts(grid, CraftingInterfaceBlockEntity.class, state);
+            visitInterfaceHosts(grid, CraftingInterfacePart.class, state);
         }
 
         InterfaceTerminalPacket packet;
@@ -128,10 +127,10 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         boolean forceFullUpdate;
     }
 
-    private <T extends IItemInterfaceHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
+    private <T extends ICraftingInterfaceHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
-            final DualityItemInterface dual = ih.getInterfaceDuality();
+            var dual = ih.getDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
                 continue;
             }
@@ -243,23 +242,22 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
             return new InterfaceTerminalPacket(true, new CompoundTag());
         }
 
-        for (var ih : grid.getActiveMachines(ItemInterfaceBlockEntity.class)) {
-            final DualityItemInterface dual = ih.getInterfaceDuality();
+        for (var ih : grid.getActiveMachines(CraftingInterfaceBlockEntity.class)) {
+            var dual = ih.getDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
-                this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
+                this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
 
-        for (var ih : grid.getActiveMachines(ItemInterfacePart.class)) {
-            final DualityItemInterface dual = ih.getInterfaceDuality();
+        for (var ih : grid.getActiveMachines(CraftingInterfacePart.class)) {
+            var dual = ih.getDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
-                this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
+                this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
 
         CompoundTag data = new CompoundTag();
-        for (final Entry<IItemInterfaceHost, InvTracker> en : this.diList.entrySet()) {
-            final InvTracker inv = en.getValue();
+        for (var inv : this.diList.values()) {
             this.byId.put(inv.serverId, inv);
             this.addItems(data, inv, 0, inv.server.size());
         }
@@ -268,8 +266,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
 
     private InterfaceTerminalPacket createIncrementalUpdate() {
         CompoundTag data = null;
-        for (final Entry<IItemInterfaceHost, InvTracker> en : this.diList.entrySet()) {
-            final InvTracker inv = en.getValue();
+        for (var inv : this.diList.values()) {
             for (int x = 0; x < inv.server.size(); x++) {
                 if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
                     if (data == null) {
@@ -334,7 +331,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         // This is a reference to the real inventory used by this machine
         private final InternalInventory server;
 
-        public InvTracker(final DualityItemInterface dual, final InternalInventory patterns, final Component name) {
+        public InvTracker(final DualityCraftingInterface dual, final InternalInventory patterns, final Component name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(this.server.size());
             this.name = name;

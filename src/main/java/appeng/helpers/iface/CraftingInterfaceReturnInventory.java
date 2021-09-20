@@ -111,7 +111,7 @@ public class CraftingInterfaceReturnInventory extends GenericStackInv {
 
                 @Override
                 public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
-                    stacks[slot] = AEItemStack.fromItemStack(stack);
+                    setStack(slot, AEItemStack.fromItemStack(stack));
                 }
             }.insertItem(0, stack, simulate);
         }
