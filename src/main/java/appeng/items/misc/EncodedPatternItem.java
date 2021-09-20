@@ -154,8 +154,8 @@ public class EncodedPatternItem extends AEBaseItem {
         final boolean isCrafting = details instanceof AECraftingPattern;
         final boolean substitute = isCrafting && ((AECraftingPattern) details).canSubstitute;
 
-        var in = details.getSparseInputs();
-        var out = details.getSparseOutputs();
+        var in = details.getInputs();
+        var out = details.getOutputs();
 
         final Component label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
                 .append(": ");
@@ -179,7 +179,10 @@ public class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
 
-            lines.add((first ? with : and).copy().append(getStackComponent(anIn)));
+            var primaryInputTemplate = anIn.getPossibleInputs()[0];
+            var primaryInput = IAEStack.copy(primaryInputTemplate,
+                    primaryInputTemplate.getStackSize() * anIn.getMultiplier());
+            lines.add((first ? with : and).copy().append(getStackComponent(primaryInput)));
             first = false;
         }
 

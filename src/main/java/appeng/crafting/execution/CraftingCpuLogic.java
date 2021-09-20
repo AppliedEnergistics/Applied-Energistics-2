@@ -157,9 +157,11 @@ public class CraftingCpuLogic {
             }
 
             IPatternDetails details = task.getKey();
+            var expectedOutputs = new MixedItemList();
             // Contains the inputs for the pattern.
             @Nullable
-            var craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService, level);
+            var craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService, level,
+                    expectedOutputs);
 
             // Try to push to each medium.
             for (ICraftingMedium medium : craftingService.getMediums(details)) {
@@ -172,7 +174,7 @@ public class CraftingCpuLogic {
                     CraftingCpuHelper.extractPatternPower(details, energyService, Actionable.MODULATE);
                     pushedPatterns++;
 
-                    for (var expectedOutput : CraftingCpuHelper.getExpectedOutputs(details)) {
+                    for (var expectedOutput : expectedOutputs) {
                         job.waitingFor.injectItems(expectedOutput, Actionable.MODULATE);
                         postChange(expectedOutput);
                     }
@@ -190,8 +192,9 @@ public class CraftingCpuLogic {
                     }
 
                     // Prepare next inputs.
+                    expectedOutputs.resetStatus();
                     craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService,
-                            level);
+                            level, expectedOutputs);
                 }
             }
 

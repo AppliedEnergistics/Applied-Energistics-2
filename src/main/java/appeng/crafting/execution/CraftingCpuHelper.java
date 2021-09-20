@@ -83,7 +83,8 @@ public class CraftingCpuHelper {
             IPatternDetails details,
             ICraftingInventory sourceInv,
             IEnergyService energyService,
-            Level level) {
+            Level level,
+            MixedItemList expectedOutputs) {
         // Check energy first.
         if (!extractPatternPower(details, energyService, Actionable.SIMULATE))
             return null;
@@ -99,6 +100,13 @@ public class CraftingCpuHelper {
             for (var template : getValidItemTemplates(sourceInv, inputs[x], level)) {
                 long extracted = extractTemplates(sourceInv, template, remainingMultiplier);
                 list.add(IAEStack.copy(template, template.getStackSize() * extracted));
+
+                // Container items!
+                var containerItem = inputs[x].getContainerItem(template);
+                if (containerItem != null) {
+                    expectedOutputs.add(IAEStack.copy(containerItem, containerItem.getStackSize() * extracted));
+                }
+
                 remainingMultiplier -= extracted;
                 if (remainingMultiplier == 0)
                     break;
@@ -117,6 +125,11 @@ public class CraftingCpuHelper {
             return null;
         }
 
+        // Add pattern outputs.
+        for (var output : details.getOutputs()) {
+            expectedOutputs.addStorage(output);
+        }
+
         return inputHolder;
     }
 
@@ -130,22 +143,6 @@ public class CraftingCpuHelper {
                 }
             }
         }
-    }
-
-    public static Iterable<IAEStack> getExpectedOutputs(IPatternDetails details) {
-        var outputs = Arrays.asList(details.getOutputs());
-
-        // TODO: fire event?
-        // TODO: add back container items.
-        /*
-         * if (details.isCraftable()) { CraftingEvent.fireAutoCraftingEvent(level, details, craftingContainer);
-         * 
-         * for (int x = 0; x < craftingContainer.getContainerSize(); x++) { final ItemStack output =
-         * Platform.getContainerItem(craftingContainer.getItem(x)); if (!output.isEmpty()) {
-         * outputs.add(AEItemStack.fromItemStack(output)); } } }
-         */
-
-        return outputs;
     }
 
     /**

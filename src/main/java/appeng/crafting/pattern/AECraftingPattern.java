@@ -50,22 +50,6 @@ public class AECraftingPattern implements IAEPatternDetails {
         this.canSubstitute = AEPatternHelper.canSubstitute(definition.getTag());
         this.sparseInputs = AEPatternHelper.getCraftingInputs(definition.getTag());
 
-        // Compress inputs
-        var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
-        this.inputs = new Input[condensedInputs.length];
-        for (int j = 0; j < condensedInputs.length; ++j) {
-            var condensedInput = condensedInputs[j];
-
-            for (int i = 0; i < 9; ++i) {
-                if (sparseInputs[i] != null && sparseInputs[i].equals(condensedInput)) {
-                    if (inputs[j] == null) {
-                        inputs[j] = new Input(i);
-                    }
-                    sparseToCompressed[i] = j;
-                }
-            }
-        }
-
         // Find recipe
         var recipeId = AEPatternHelper.getRecipeId(definition.getTag());
         var recipe = level.getRecipeManager().byKey(recipeId).orElse(null);
@@ -82,6 +66,22 @@ public class AECraftingPattern implements IAEPatternDetails {
             }
         }
         this.outputs = new IAEItemStack[] { AEItemStack.fromItemStack(this.recipe.assemble(testFrame)) };
+
+        // Compress inputs
+        var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
+        this.inputs = new Input[condensedInputs.length];
+        for (int j = 0; j < condensedInputs.length; ++j) {
+            var condensedInput = condensedInputs[j];
+
+            for (int i = 0; i < 9; ++i) {
+                if (sparseInputs[i] != null && sparseInputs[i].equals(condensedInput)) {
+                    if (inputs[j] == null) {
+                        inputs[j] = new Input(i, condensedInput);
+                    }
+                    sparseToCompressed[i] = j;
+                }
+            }
+        }
     }
 
     @Override
@@ -175,7 +175,7 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     public boolean isValid(int slot, IAEItemStack stack, Level level) {
-        if (canSubstitute) {
+        if (!canSubstitute) {
             return Objects.equals(sparseInputs[slot], stack);
         }
 
@@ -213,7 +213,7 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     private void setTestResult(int slot, IAEItemStack stack, boolean result) {
-        if (!stack.hasTagCompound()) {
+        if (stack != null && !stack.hasTagCompound()) {
             var cache = isValidCache[slot];
             if (cache == null) {
                 cache = isValidCache[slot] = new IdentityHashMap<>();
@@ -249,9 +249,11 @@ public class AECraftingPattern implements IAEPatternDetails {
     private class Input implements IInput {
         private final int slot;
         private final IAEItemStack[] possibleInputs;
+        private final long multiplier;
 
-        private Input(int slot) {
+        private Input(int slot, IAEItemStack condensedInput) {
             this.slot = slot;
+            this.multiplier = condensedInput.getStackSize();
 
             if (canSubstitute) {
                 this.possibleInputs = new IAEItemStack[] { sparseInputs[slot] };
@@ -273,7 +275,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
         @Override
         public long getMultiplier() {
-            return 1;
+            return multiplier;
         }
 
         @Override
