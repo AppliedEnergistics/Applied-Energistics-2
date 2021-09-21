@@ -44,6 +44,7 @@ import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
@@ -268,7 +269,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                     ais.setStackSize(ais.getDefinition().getMaxStackSize());
                     while (true) {
                         final IAEItemStack g = (IAEItemStack) inv.extractItems(ais.copy(), Actionable.MODULATE);
-                        if (g == null) {
+                        if (IAEStack.getStackSizeOrZero(g) == 0) {
                             break;
                         }
 

@@ -176,7 +176,6 @@ public class CraftingCpuLogic {
 
                     for (var expectedOutput : expectedOutputs) {
                         job.waitingFor.injectItems(expectedOutput, Actionable.MODULATE);
-                        postChange(expectedOutput);
                     }
 
                     cluster.markDirty();
@@ -218,17 +217,16 @@ public class CraftingCpuLogic {
 
         // Only accept items we are waiting for.
         IAEStack waitingFor = job.waitingFor.extractItems(input, Actionable.SIMULATE);
-        if (waitingFor == null || waitingFor.getStackSize() <= 0)
+        if (IAEStack.getStackSizeOrZero(waitingFor) <= 0)
             return input;
 
-        IAEStack leftOver = IAEStack.copy(input, (long) 0);
+        IAEStack leftOver = IAEStack.copy(input, 0);
         input = IAEStack.copy(input);
 
         // Make sure we don't insert more than what we are waiting for.
         if (input.getStackSize() > waitingFor.getStackSize()) {
             long difference = input.getStackSize() - waitingFor.getStackSize();
             leftOver.incStackSize(difference);
-            input = IAEStack.copy(input);
             input.decStackSize(difference);
         }
 
@@ -241,6 +239,16 @@ public class CraftingCpuLogic {
         if (input.equals(job.finalOutput)) {
             // Final output is special: it goes directly into the requester
             IAEStack.add(leftOver, job.link.injectItems(input, type));
+
+            // Note: we ignore any remainder (could be the entire input if there is no requester),
+            // we already marked the items as done, and we might even finish the job.
+
+            // This means that the job can be marked as finished even if some items were not actually inserted.
+            // In some cases, repeated failed inserts of a fraction of the final output might prevent some recipes from
+            // being pushed.
+            // TODO: Look into fixing this, perhaps we could use the network monitor to check how much was really
+            // TODO: inserted into the network.
+            // TODO: Another solution is to wait until all recipes have been pushed before cancelling the job.
 
             if (type == Actionable.MODULATE) {
                 // Update count and displayed CPU stack, and finish the job if possible.
@@ -262,7 +270,7 @@ public class CraftingCpuLogic {
             }
         }
 
-        return leftOver;
+        return leftOver.getStackSize() == 0 ? null : leftOver;
     }
 
     /**
@@ -357,6 +365,9 @@ public class CraftingCpuLogic {
         for (CraftingWatcher watcher : craftingService.getInterestManager().get(stack)) {
             watcher.getHost().onRequestChange(craftingService, stack);
         }
+
+        // Also notify opened menus
+        postChange(stack);
     }
 
     public boolean hasJob() {

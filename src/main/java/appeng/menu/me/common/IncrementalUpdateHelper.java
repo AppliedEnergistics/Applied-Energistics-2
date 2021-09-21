@@ -81,6 +81,8 @@ public class IncrementalUpdateHelper<T extends IAEStack> implements Iterable<T> 
     }
 
     public void addChange(T entry) {
+        // Ensure the stack size is not 0 to avoid deleting the mapping by mistake.
+        entry = IAEStack.copy(entry, 1);
         if (!changes.add(entry)) {
             changes.remove(entry);
             changes.add(entry);

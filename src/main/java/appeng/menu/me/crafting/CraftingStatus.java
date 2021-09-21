@@ -137,12 +137,17 @@ public class CraftingStatus {
                 item = ItemStack.EMPTY;
             }
 
-            newEntries.add(new CraftingStatusEntry(
+            var entry = new CraftingStatusEntry(
                     changes.getOrAssignSerial(stack),
                     item,
                     storedCount,
                     activeCount,
-                    pendingCount));
+                    pendingCount);
+            newEntries.add(entry);
+
+            if (entry.isDeleted()) {
+                stack.reset(); // Ensure it is deleted on commit, since the client will also clear it.
+            }
         }
 
         long elapsedTime = logic.getElapsedTimeTracker().getElapsedTime();
