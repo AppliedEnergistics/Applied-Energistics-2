@@ -10,23 +10,23 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AELog;
-import appeng.helpers.iface.DualityCraftingInterface;
+import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.GenericStackInv;
 import appeng.helpers.iface.GenericStackSyncHelper;
-import appeng.helpers.iface.ICraftingInterfaceHost;
+import appeng.helpers.iface.IPatternProviderHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.RestrictedInputSlot;
 
-public class CraftingInterfaceMenu extends AEBaseMenu implements IGenericSyncMenu {
+public class PatternProviderMenu extends AEBaseMenu implements IGenericSyncMenu {
 
-    public static final MenuType<CraftingInterfaceMenu> TYPE = MenuTypeBuilder
-            .create(CraftingInterfaceMenu::new, ICraftingInterfaceHost.class)
+    public static final MenuType<PatternProviderMenu> TYPE = MenuTypeBuilder
+            .create(PatternProviderMenu::new, IPatternProviderHost.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("crafting_interface");
+            .build("pattern_provider");
 
-    private final DualityCraftingInterface duality;
+    private final DualityPatternProvider duality;
     private final GenericStackSyncHelper syncHelper;
 
     @GuiSync(3)
@@ -34,7 +34,7 @@ public class CraftingInterfaceMenu extends AEBaseMenu implements IGenericSyncMen
     @GuiSync(4)
     public YesNo showInInterfaceTerminal = YesNo.YES;
 
-    public CraftingInterfaceMenu(int id, Inventory playerInventory, ICraftingInterfaceHost host) {
+    public PatternProviderMenu(int id, Inventory playerInventory, IPatternProviderHost host) {
         super(TYPE, id, playerInventory, host);
 
         this.createPlayerInventorySlots(playerInventory);
@@ -42,7 +42,7 @@ public class CraftingInterfaceMenu extends AEBaseMenu implements IGenericSyncMen
         this.duality = host.getDuality();
         this.syncHelper = new GenericStackSyncHelper(getReturnInv(), 0);
 
-        for (int x = 0; x < DualityCraftingInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
+        for (int x = 0; x < DualityPatternProvider.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
                     duality.getPatternInv(), x),
                     SlotSemantic.ENCODED_PATTERN);
@@ -76,7 +76,7 @@ public class CraftingInterfaceMenu extends AEBaseMenu implements IGenericSyncMen
                 getReturnInv().setStack(entry.getKey(), entry.getValue());
             }
         } else {
-            AELog.warn("Client tried to override crafting interface return stacks!");
+            AELog.warn("Client tried to override pattern provider return stacks!");
         }
     }
 

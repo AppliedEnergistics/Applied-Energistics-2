@@ -175,7 +175,7 @@ public final class AEBlocks {
     public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_64K = block(AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_64K), CraftingStorageItem::new);
     public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = block(AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL)));
 
-    public static final BlockDefinition<CraftingInterfaceBlock> CRAFTING_INTERFACE = block(AEBlockIds.CRAFTING_INTERFACE, CraftingInterfaceBlock::new);
+    public static final BlockDefinition<PatternProviderBlock> PATTERN_PROVIDER = block(AEBlockIds.PATTERN_PROVIDER, PatternProviderBlock::new);
     public static final BlockDefinition<MolecularAssemblerBlock> MOLECULAR_ASSEMBLER = block(AEBlockIds.MOLECULAR_ASSEMBLER, () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).noOcclusion()));
 
     public static final BlockDefinition<LightDetectorBlock> LIGHT_DETECTOR = block(AEBlockIds.LIGHT_DETECTOR, LightDetectorBlock::new);

@@ -2,7 +2,7 @@
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
-    "texture": "guis/crafting_interface.png",
+    "texture": "guis/pattern_provider.png",
     "srcRect": [0, 0, 176, 185]
   },
   "slots": {

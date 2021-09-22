@@ -57,13 +57,13 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
 /**
- * Shared code between the crafting interface block and part.
+ * Shared code between the pattern provider block and part.
  */
-public class DualityCraftingInterface implements InternalInventoryHost, ICraftingProvider, ICraftingMedium {
+public class DualityPatternProvider implements InternalInventoryHost, ICraftingProvider, ICraftingMedium {
 
     public static final int NUMBER_OF_PATTERN_SLOTS = 9;
 
-    private final ICraftingInterfaceHost host;
+    private final IPatternProviderHost host;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final ConfigManager configManager = new ConfigManager();
@@ -76,9 +76,9 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
     private final List<IAEStack> sendList = new ArrayList<>();
     private Direction sendDirection;
     // Stack returning logic
-    private final CraftingInterfaceReturnInventory returnInv;
+    private final PatternProviderReturnInventory returnInv;
 
-    public DualityCraftingInterface(IManagedGridNode mainNode, ICraftingInterfaceHost host) {
+    public DualityPatternProvider(IManagedGridNode mainNode, IPatternProviderHost host) {
         this.host = host;
         this.mainNode = mainNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -89,7 +89,7 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
         this.configManager.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
         this.configManager.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
 
-        this.returnInv = new CraftingInterfaceReturnInventory(() -> {
+        this.returnInv = new PatternProviderReturnInventory(() -> {
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         });
     }
@@ -194,7 +194,7 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
             var adjPos = be.getBlockPos().relative(direction);
             var adjBe = level.getBlockEntity(adjPos);
 
-            if (adjBe instanceof ICraftingInterfaceHost adjHost) {
+            if (adjBe instanceof IPatternProviderHost adjHost) {
                 if (adjHost.getDuality().sameGrid(this.mainNode.getGrid())) {
                     continue;
                 }
@@ -263,7 +263,7 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
     private boolean sendStacksOut() {
         if (sendDirection == null) {
             if (!sendList.isEmpty()) {
-                throw new IllegalStateException("Invalid crafting interface state, this is a bug.");
+                throw new IllegalStateException("Invalid pattern provider state, this is a bug.");
             }
             return false;
         }
@@ -382,7 +382,7 @@ public class DualityCraftingInterface implements InternalInventoryHost, ICraftin
                 continue;
             }
 
-            if (directedBlockEntity instanceof ICraftingInterfaceHost interfaceHost) {
+            if (directedBlockEntity instanceof IPatternProviderHost interfaceHost) {
                 if (interfaceHost.getDuality().sameGrid(this.mainNode.getGrid())) {
                     continue;
                 }

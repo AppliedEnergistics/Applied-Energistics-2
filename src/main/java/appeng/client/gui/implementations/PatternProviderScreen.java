@@ -16,15 +16,15 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.menu.SlotSemantic;
-import appeng.menu.implementations.CraftingInterfaceMenu;
+import appeng.menu.implementations.PatternProviderMenu;
 
-public class CraftingInterfaceScreen extends AEBaseScreen<CraftingInterfaceMenu> {
+public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
 
     private final SettingToggleButton<YesNo> blockingModeButton;
     private final ToggleButton showInInterfaceTerminalButton;
 
-    public CraftingInterfaceScreen(CraftingInterfaceMenu menu, Inventory playerInventory, Component title,
-            ScreenStyle style) {
+    public PatternProviderScreen(PatternProviderMenu menu, Inventory playerInventory, Component title,
+                                 ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();

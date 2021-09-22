@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.helpers.iface.DualityPatternProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -22,15 +23,14 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
-import appeng.helpers.iface.DualityCraftingInterface;
-import appeng.helpers.iface.ICraftingInterfaceHost;
+import appeng.helpers.iface.IPatternProviderHost;
 import appeng.util.Platform;
 
-public class CraftingInterfaceBlockEntity extends AENetworkBlockEntity implements ICraftingInterfaceHost {
-    private final DualityCraftingInterface duality = new DualityCraftingInterface(this.getMainNode(), this);
+public class PatternProviderBlockEntity extends AENetworkBlockEntity implements IPatternProviderHost {
+    private final DualityPatternProvider duality = new DualityPatternProvider(this.getMainNode(), this);
     private boolean omniDirectional = false;
 
-    public CraftingInterfaceBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public PatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
     }
 
@@ -131,11 +131,11 @@ public class CraftingInterfaceBlockEntity extends AENetworkBlockEntity implement
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEBlocks.CRAFTING_INTERFACE.stack();
+        return AEBlocks.PATTERN_PROVIDER.stack();
     }
 
     @Override
-    public DualityCraftingInterface getDuality() {
+    public DualityPatternProvider getDuality() {
         return duality;
     }
 

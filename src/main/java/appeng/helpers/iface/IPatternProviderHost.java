@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.helpers.IPriorityHost;
-import appeng.menu.implementations.CraftingInterfaceMenu;
+import appeng.menu.implementations.PatternProviderMenu;
 
-public interface ICraftingInterfaceHost extends IConfigurableObject, IPriorityHost {
-    DualityCraftingInterface getDuality();
+public interface IPatternProviderHost extends IConfigurableObject, IPriorityHost {
+    DualityPatternProvider getDuality();
 
     /**
      * @return The block entity that is in-world and hosts the interface.
@@ -43,6 +43,6 @@ public interface ICraftingInterfaceHost extends IConfigurableObject, IPriorityHo
 
     @Override
     default MenuType<?> getMenuType() {
-        return CraftingInterfaceMenu.TYPE;
+        return PatternProviderMenu.TYPE;
     }
 }

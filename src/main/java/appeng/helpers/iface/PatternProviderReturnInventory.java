@@ -24,7 +24,7 @@ import appeng.crafting.execution.GenericStackHelper;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.item.AEItemStack;
 
-public class CraftingInterfaceReturnInventory extends GenericStackInv {
+public class PatternProviderReturnInventory extends GenericStackInv {
     public static int NUMBER_OF_SLOTS = 5;
 
     // TODO: how do we expose this for foreign storage channels?
@@ -33,7 +33,7 @@ public class CraftingInterfaceReturnInventory extends GenericStackInv {
     private final IFluidHandler fluidHandler = new FluidHandler();
     private final LazyOptional<IFluidHandler> fluidHandlerOpt = LazyOptional.of(() -> fluidHandler);
 
-    public CraftingInterfaceReturnInventory(Listener listener) {
+    public PatternProviderReturnInventory(Listener listener) {
         super(listener, NUMBER_OF_SLOTS);
     }
 

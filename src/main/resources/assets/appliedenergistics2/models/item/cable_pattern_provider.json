@@ -3,6 +3,6 @@
   "textures": {
     "sides": "appliedenergistics2:part/monitor_sides",
     "back": "appliedenergistics2:part/monitor_back",
-    "front": "appliedenergistics2:part/crafting_interface"
+    "front": "appliedenergistics2:part/pattern_provider"
   }
 }

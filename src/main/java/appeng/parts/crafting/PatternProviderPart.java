@@ -20,18 +20,18 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
-import appeng.helpers.iface.DualityCraftingInterface;
-import appeng.helpers.iface.ICraftingInterfaceHost;
+import appeng.helpers.iface.DualityPatternProvider;
+import appeng.helpers.iface.IPatternProviderHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class CraftingInterfacePart extends BasicStatePart implements ICraftingInterfaceHost {
+public class PatternProviderPart extends BasicStatePart implements IPatternProviderHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
-            "part/crafting_interface_base");
+            "part/pattern_provider_base");
 
     // TODO: unify the following between the 3 interface parts?
     @PartModels
@@ -46,11 +46,11 @@ public class CraftingInterfacePart extends BasicStatePart implements ICraftingIn
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/item_interface_has_channel"));
 
-    private final DualityCraftingInterface duality;
+    private final DualityPatternProvider duality;
 
-    public CraftingInterfacePart(ItemStack is) {
+    public PatternProviderPart(ItemStack is) {
         super(is);
-        this.duality = new DualityCraftingInterface(this.getMainNode(), this);
+        this.duality = new DualityPatternProvider(this.getMainNode(), this);
     }
 
     @Override
@@ -102,11 +102,11 @@ public class CraftingInterfacePart extends BasicStatePart implements ICraftingIn
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEParts.CRAFTING_INTERFACE.stack();
+        return AEParts.PATTERN_PROVIDER.stack();
     }
 
     @Override
-    public DualityCraftingInterface getDuality() {
+    public DualityPatternProvider getDuality() {
         return duality;
     }
 

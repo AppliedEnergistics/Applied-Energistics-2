@@ -19,17 +19,17 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.crafting.CraftingInterfaceBlockEntity;
+import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.CraftingInterfaceMenu;
+import appeng.menu.implementations.PatternProviderMenu;
 import appeng.util.InteractionUtil;
 
-public class CraftingInterfaceBlock extends AEBaseEntityBlock<CraftingInterfaceBlockEntity> {
+public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlockEntity> {
 
     private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
-    public CraftingInterfaceBlock() {
+    public PatternProviderBlock() {
         super(defaultProps(Material.METAL));
     }
 
@@ -40,7 +40,7 @@ public class CraftingInterfaceBlock extends AEBaseEntityBlock<CraftingInterfaceB
     }
 
     @Override
-    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, CraftingInterfaceBlockEntity be) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, PatternProviderBlockEntity be) {
         return currentState.setValue(OMNIDIRECTIONAL, be.isOmniDirectional());
     }
 
@@ -55,7 +55,7 @@ public class CraftingInterfaceBlock extends AEBaseEntityBlock<CraftingInterfaceB
         final BlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                MenuOpener.open(CraftingInterfaceMenu.TYPE, p,
+                MenuOpener.open(PatternProviderMenu.TYPE, p,
                         MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
@@ -70,8 +70,8 @@ public class CraftingInterfaceBlock extends AEBaseEntityBlock<CraftingInterfaceB
 
     @Override
     protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
-        if (rotatable instanceof CraftingInterfaceBlockEntity craftingInterface) {
-            craftingInterface.setSide(axis);
+        if (rotatable instanceof PatternProviderBlockEntity patternProvider) {
+            patternProvider.setSide(axis);
         }
     }
 }

@@ -59,7 +59,7 @@ public final class InitMenuTypes {
                 IOPortMenu.TYPE,
                 ItemLevelEmitterMenu.TYPE,
                 EnergyLevelEmitterMenu.TYPE,
-                CraftingInterfaceMenu.TYPE,
+                PatternProviderMenu.TYPE,
                 MolecularAssemblerMenu.TYPE,
                 ItemTerminalMenu.TYPE,
                 MEPortableCellMenu.TYPE,
