@@ -35,7 +35,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.features.ChargerRegistry;
-import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
@@ -53,10 +52,9 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
-public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICrankable, IGridTickable {
+public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
     private static final int POWER_MAXIMUM_AMOUNT = 1600;
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
-    private static final int POWER_PER_CRANK_TURN = 160;
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
 
@@ -108,32 +106,6 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
         this.setPowerSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
-    }
-
-    @Override
-    public boolean canTurn() {
-        return this.getInternalCurrentPower() < this.getInternalMaxPower();
-    }
-
-    @Override
-    public void applyTurn() {
-        this.injectExternalPower(PowerUnits.AE, POWER_PER_CRANK_TURN, Actionable.MODULATE);
-
-        final ItemStack myItem = this.inv.getStackInSlot(0);
-        if (this.getInternalCurrentPower() > POWER_THRESHOLD) {
-
-            if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem)) {
-                this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
-
-                ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
-                this.inv.setItemDirect(0, charged);
-            }
-        }
-    }
-
-    @Override
-    public boolean canCrankAttach(final Direction directionToCrank) {
-        return this.getUp() == directionToCrank || this.getUp().getOpposite() == directionToCrank;
     }
 
     @Override

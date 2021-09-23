@@ -36,13 +36,10 @@ public final class AEBlockIds {
     /// WORLDGEN/MISC
     ///
     public static final ResourceLocation QUARTZ_ORE = id("quartz_ore");
-    public static final ResourceLocation QUARTZ_ORE_CHARGED = id("charged_quartz_ore");
     public static final ResourceLocation QUARTZ_FIXTURE = id("quartz_fixture");
     public static final ResourceLocation SKY_STONE_CHEST = id("sky_stone_chest");
     public static final ResourceLocation SMOOTH_SKY_STONE_CHEST = id("smooth_sky_stone_chest");
     public static final ResourceLocation SKY_COMPASS = id("sky_compass");
-    public static final ResourceLocation GRINDSTONE = id("grindstone");
-    public static final ResourceLocation CRANK = id("crank");
     public static final ResourceLocation LIGHT_DETECTOR = id("light_detector");
     public static final ResourceLocation PAINT = id("paint");
 

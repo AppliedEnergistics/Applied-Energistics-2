@@ -214,7 +214,6 @@ public final class AEItemIds {
     public static final ResourceLocation FLUID_CELL_COMPONENT_16K = id("16k_fluid_cell_component");
     public static final ResourceLocation FLUID_CELL_COMPONENT_64K = id("64k_fluid_cell_component");
     public static final ResourceLocation EMPTY_STORAGE_CELL = id("empty_storage_cell");
-    public static final ResourceLocation WOODEN_GEAR = id("wooden_gear");
     public static final ResourceLocation WIRELESS_RECEIVER = id("wireless_receiver");
     public static final ResourceLocation WIRELESS_BOOSTER = id("wireless_booster");
     public static final ResourceLocation FORMATION_CORE = id("formation_core");

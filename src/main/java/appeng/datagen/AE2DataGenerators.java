@@ -32,7 +32,6 @@ import appeng.datagen.providers.recipes.CraftingRecipes;
 import appeng.datagen.providers.recipes.DecorationBlockRecipes;
 import appeng.datagen.providers.recipes.DecorationRecipes;
 import appeng.datagen.providers.recipes.EntropyRecipes;
-import appeng.datagen.providers.recipes.GrinderRecipes;
 import appeng.datagen.providers.recipes.InscriberRecipes;
 import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
 import appeng.datagen.providers.recipes.SmeltingRecipes;
@@ -66,7 +65,6 @@ public class AE2DataGenerators {
             generator.addProvider(new DecorationBlockRecipes(generator));
             generator.addProvider(new MatterCannonAmmoProvider(generator));
             generator.addProvider(new EntropyRecipes(generator));
-            generator.addProvider(new GrinderRecipes(generator));
             generator.addProvider(new InscriberRecipes(generator));
             generator.addProvider(new SmeltingRecipes(generator));
             generator.addProvider(new CraftingRecipes(generator));

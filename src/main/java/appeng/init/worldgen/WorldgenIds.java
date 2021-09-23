@@ -46,16 +46,4 @@ final class WorldgenIds {
     public static final ResourceKey<ConfiguredFeature<?, ?>> QUARTZ_ORE_KEY = ResourceKey
             .create(Registry.CONFIGURED_FEATURE_REGISTRY, QUARTZ_ORE);
 
-    /**
-     * ID of the {@link ConfiguredFeature} and {@link Feature} that generate charged quartz ore.
-     */
-    public static final ResourceLocation CHARGED_QUARTZ_ORE = AppEng.makeId("charged_quartz_ore");
-
-    /**
-     * Resource key of the {@link ConfiguredFeature} that generates charged quartz ore.
-     */
-    @SuppressWarnings("unused")
-    public static final ResourceKey<ConfiguredFeature<?, ?>> CHARGED_QUARTZ_ORE_KEY = ResourceKey
-            .create(Registry.CONFIGURED_FEATURE_REGISTRY, CHARGED_QUARTZ_ORE);
-
 }

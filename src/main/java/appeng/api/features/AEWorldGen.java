@@ -82,8 +82,6 @@ public final class AEWorldGen {
             List<ResourceLocation> meteoriteBiomeBlacklist) {
         settings.get(AEWorldGenType.CERTUS_QUARTZ).configBiomeBlacklist.clear();
         settings.get(AEWorldGenType.CERTUS_QUARTZ).configBiomeBlacklist.addAll(quartzBiomeBlacklist);
-        settings.get(AEWorldGenType.CHARGED_CERTUS_QUARTZ).configBiomeBlacklist.clear();
-        settings.get(AEWorldGenType.CHARGED_CERTUS_QUARTZ).configBiomeBlacklist.addAll(quartzBiomeBlacklist);
         settings.get(AEWorldGenType.METEORITES).configBiomeBlacklist.clear();
         settings.get(AEWorldGenType.METEORITES).configBiomeBlacklist.addAll(meteoriteBiomeBlacklist);
     }

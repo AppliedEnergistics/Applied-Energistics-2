@@ -43,7 +43,6 @@ import appeng.client.gui.implementations.FluidIOBusScreen;
 import appeng.client.gui.implementations.FluidInterfaceScreen;
 import appeng.client.gui.implementations.FluidLevelEmitterScreen;
 import appeng.client.gui.implementations.FluidStorageBusScreen;
-import appeng.client.gui.implementations.GrinderScreen;
 import appeng.client.gui.implementations.IOPortScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.client.gui.implementations.ItemFormationPlaneScreen;
@@ -86,7 +85,6 @@ import appeng.menu.implementations.FluidIOBusMenu;
 import appeng.menu.implementations.FluidInterfaceMenu;
 import appeng.menu.implementations.FluidLevelEmitterMenu;
 import appeng.menu.implementations.FluidStorageBusMenu;
-import appeng.menu.implementations.GrinderMenu;
 import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.implementations.InterfaceTerminalMenu;
@@ -132,7 +130,6 @@ public final class InitScreens {
     }
 
     public static void init() {
-        register(GrinderMenu.TYPE, GrinderScreen::new, "/screens/grinder.json");
         register(QNBMenu.TYPE, QNBScreen::new, "/screens/qnb.json");
         register(SkyChestMenu.TYPE, SkyChestScreen::new, "/screens/sky_chest.json");
         register(ChestMenu.TYPE, ChestScreen::new, "/screens/chest.json");

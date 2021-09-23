@@ -193,7 +193,6 @@ public final class AEItems {
     public static final ItemDefinition<StorageComponentItem> ITEM_16K_CELL_COMPONENT = item(AEItemIds.ITEM_CELL_COMPONENT_16K, p -> new StorageComponentItem(p, 16));
     public static final ItemDefinition<StorageComponentItem> ITEM_64K_CELL_COMPONENT = item(AEItemIds.ITEM_CELL_COMPONENT_64K, p -> new StorageComponentItem(p, 64));
     public static final ItemDefinition<MaterialItem> EMPTY_STORAGE_CELL = item(AEItemIds.EMPTY_STORAGE_CELL, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> WOODEN_GEAR = item(AEItemIds.WOODEN_GEAR, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> WIRELESS_RECEIVER = item(AEItemIds.WIRELESS_RECEIVER, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> WIRELESS_BOOSTER = item(AEItemIds.WIRELESS_BOOSTER, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> FORMATION_CORE = item(AEItemIds.FORMATION_CORE, MaterialItem::new);

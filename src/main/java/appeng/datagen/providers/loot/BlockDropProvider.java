@@ -65,12 +65,6 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
                                     LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
                                             .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
                                             .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
-            .put(AEBlocks.QUARTZ_ORE_CHARGED.block(),
-                    b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE_CHARGED.block(),
-                            applyExplosionDecay(AEBlocks.QUARTZ_ORE_CHARGED.block(),
-                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
-                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
-                                            .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
             .build();
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

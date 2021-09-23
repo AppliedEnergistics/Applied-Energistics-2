@@ -41,7 +41,6 @@ import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.items.misc.EncodedPatternItem;
-import appeng.recipes.handlers.GrinderRecipes;
 import appeng.util.Platform;
 
 /**
@@ -137,8 +136,6 @@ public class RestrictedInputSlot extends AppEngSlot {
 
             case VIEW_CELL:
                 return AEItems.VIEW_CELL.isSameAs(stack);
-            case ORE:
-                return GrinderRecipes.isValidIngredient(getLevel(), stack);
             case FUEL:
                 return VibrationChamberBlockEntity.hasBurnTime(stack);
             case POWERED_TOOL:

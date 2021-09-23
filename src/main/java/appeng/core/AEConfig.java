@@ -98,9 +98,6 @@ public final class AEConfig {
     private double spatialPowerExponent;
     private double spatialPowerMultiplier;
 
-    // Grindstone
-    private float oreDoublePercentage;
-
     // Batteries
     private int wirelessTerminalBattery;
     private int entropyManipulatorBattery;
@@ -151,8 +148,6 @@ public final class AEConfig {
 
         CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
         CondenserOutput.SINGULARITY.requiredPower = COMMON.condenserSingularityPower.get();
-
-        this.oreDoublePercentage = COMMON.oreDoublePercentage.get().floatValue();
 
         this.wirelessBaseCost = COMMON.wirelessBaseCost.get();
         this.wirelessCostMultiplier = COMMON.wirelessCostMultiplier.get();
@@ -315,10 +310,6 @@ public final class AEConfig {
 
     public double getSpatialPowerMultiplier() {
         return this.spatialPowerMultiplier;
-    }
-
-    public float getOreDoublePercentage() {
-        return this.oreDoublePercentage;
     }
 
     public DoubleSupplier getWirelessTerminalBattery() {
@@ -517,9 +508,6 @@ public final class AEConfig {
         public final BooleanValue debugLog;
         public final BooleanValue chunkLoggerTrace;
 
-        // Grindstone
-        public final DoubleValue oreDoublePercentage;
-
         // Batteries
         public final ConfigValue<Integer> wirelessTerminalBattery;
         public final ConfigValue<Integer> entropyManipulatorBattery;
@@ -621,11 +609,6 @@ public final class AEConfig {
             debugLog = builder.define("debugLog", false);
             chunkLoggerTrace = builder.comment("Enable stack trace logging for the chunk loading debug command")
                     .define("chunkLoggerTrace", false);
-            builder.pop();
-
-            builder.push("GrindStone");
-            this.oreDoublePercentage = builder.comment("Chance to actually get an output with stacksize > 1.")
-                    .defineInRange("oreDoublePercentage", 90.0, 0.0, 100.0);
             builder.pop();
 
             builder.push("battery");
