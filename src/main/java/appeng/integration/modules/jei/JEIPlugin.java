@@ -19,7 +19,6 @@
 package appeng.integration.modules.jei;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +31,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -191,7 +189,7 @@ public class JEIPlugin implements IModPlugin {
                         // The following code allows the player to show recipes involving fluids in AE fluid terminals
                         // or AE
                         // fluid tanks shown in fluid interfaces and other UI.
-                        if (containerScreen instanceof AEBaseScreen<?> baseScreen) {
+                        if (containerScreen instanceof AEBaseScreen<?>baseScreen) {
                             return baseScreen.getIngredientUnderMouse(mouseX, mouseY);
                         }
 

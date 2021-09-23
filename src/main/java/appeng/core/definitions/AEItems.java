@@ -153,10 +153,6 @@ public final class AEItems {
     public static final ItemDefinition<MaterialItem> CERTUS_QUARTZ_CRYSTAL = item(AEItemIds.CERTUS_QUARTZ_CRYSTAL, MaterialItem::new);
     public static final ItemDefinition<CustomEntityItem> CERTUS_QUARTZ_CRYSTAL_CHARGED = item(AEItemIds.CERTUS_QUARTZ_CRYSTAL_CHARGED, p -> new CustomEntityItem(p, ChargedQuartzEntity::new));
     public static final ItemDefinition<MaterialItem> CERTUS_QUARTZ_DUST = item(AEItemIds.CERTUS_QUARTZ_DUST, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> NETHER_QUARTZ_DUST = item(AEItemIds.NETHER_QUARTZ_DUST, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> FLOUR = item(AEItemIds.FLOUR, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> GOLD_DUST = item(AEItemIds.GOLD_DUST, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> IRON_DUST = item(AEItemIds.IRON_DUST, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SILICON = item(AEItemIds.SILICON, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> MATTER_BALL = item(AEItemIds.MATTER_BALL, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> FLUIX_CRYSTAL = item(AEItemIds.FLUIX_CRYSTAL, MaterialItem::new);

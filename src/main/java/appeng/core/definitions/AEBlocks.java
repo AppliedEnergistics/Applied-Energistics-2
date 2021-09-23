@@ -51,6 +51,7 @@ import appeng.block.crafting.CraftingStorageBlock;
 import appeng.block.crafting.CraftingStorageItem;
 import appeng.block.crafting.CraftingUnitBlock;
 import appeng.block.crafting.MolecularAssemblerBlock;
+import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.CellWorkbenchBlock;
 import appeng.block.misc.ChargerBlock;
 import appeng.block.misc.CondenserBlock;

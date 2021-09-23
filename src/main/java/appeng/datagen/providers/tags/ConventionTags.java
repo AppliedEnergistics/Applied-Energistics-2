@@ -63,7 +63,6 @@ public final class ConventionTags {
     public static Tag.Named<Item> ALL_NETHER_QUARTZ = tag("appliedenergistics2:all_nether_quartz");
     public static Tag.Named<Item> NETHER_QUARTZ = Tags.Items.GEMS_QUARTZ;
     public static Tag.Named<Item> NETHER_QUARTZ_ORE = Tags.Items.ORES_QUARTZ;
-    public static Tag.Named<Item> NETHER_QUARTZ_DUST = tag("forge:dusts/quartz");
 
     // Includes synthetic/purified
     public static Tag.Named<Item> ALL_FLUIX = tag("appliedenergistics2:all_fluix");
@@ -72,11 +71,9 @@ public final class ConventionTags {
 
     public static Tag.Named<Item> GOLD_INGOT = Tags.Items.INGOTS_GOLD;
     public static Tag.Named<Item> GOLD_ORE = Tags.Items.ORES_GOLD;
-    public static Tag.Named<Item> GOLD_DUST = tag("forge:dusts/gold");
 
     public static Tag.Named<Item> IRON_INGOT = Tags.Items.INGOTS_IRON;
     public static Tag.Named<Item> IRON_ORE = Tags.Items.ORES_IRON;
-    public static Tag.Named<Item> IRON_DUST = tag("forge:dusts/iron");
 
     public static Tag.Named<Item> DIAMOND = Tags.Items.GEMS_DIAMOND;
     public static Tag.Named<Item> REDSTONE = Tags.Items.DUSTS_REDSTONE;

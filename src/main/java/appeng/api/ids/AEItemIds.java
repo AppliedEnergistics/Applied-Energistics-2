@@ -170,10 +170,6 @@ public final class AEItemIds {
     public static final ResourceLocation CERTUS_QUARTZ_CRYSTAL = id("certus_quartz_crystal");
     public static final ResourceLocation CERTUS_QUARTZ_CRYSTAL_CHARGED = id("charged_certus_quartz_crystal");
     public static final ResourceLocation CERTUS_QUARTZ_DUST = id("certus_quartz_dust");
-    public static final ResourceLocation NETHER_QUARTZ_DUST = id("nether_quartz_dust");
-    public static final ResourceLocation FLOUR = id("flour");
-    public static final ResourceLocation GOLD_DUST = id("gold_dust");
-    public static final ResourceLocation IRON_DUST = id("iron_dust");
     public static final ResourceLocation SILICON = id("silicon");
     public static final ResourceLocation MATTER_BALL = id("matter_ball");
     public static final ResourceLocation FLUIX_CRYSTAL = id("fluix_crystal");

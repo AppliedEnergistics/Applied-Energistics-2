@@ -27,7 +27,6 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
