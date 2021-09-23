@@ -10,7 +10,7 @@ body:
     attributes:
       label: Describe the feature
       description: |
-        Tell us how our idea should work.
+        Tell us how your idea should work.
     validations:
       required: true
   - type: textarea
@@ -24,7 +24,7 @@ body:
   - type: textarea
     id: Additional
     attributes:
-      label: Reasons why it should be considered
+      label: Additional details
       description: |
         Use this for further details, e.g. screenshots, links to mods for integrations.
         Features will only be considered for the latest/next version, no backports at all.
