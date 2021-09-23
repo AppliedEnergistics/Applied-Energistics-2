@@ -53,8 +53,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.ENDER_DUST.asItem());
 
         tag(ConventionTags.ALL_QUARTZ_DUST)
-                .addTag(ConventionTags.CERTUS_QUARTZ_DUST)
-                .addTag(ConventionTags.NETHER_QUARTZ_DUST);
+                .addTag(ConventionTags.CERTUS_QUARTZ_DUST);
 
         tag(ConventionTags.ALL_CERTUS_QUARTZ)
                 .addTag(ConventionTags.CERTUS_QUARTZ)
@@ -89,9 +88,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.CERTUS_QUARTZ_KNIFE.asItem())
                 .add(AEItems.NETHER_QUARTZ_KNIFE.asItem());
 
-        tag(ConventionTags.NETHER_QUARTZ_DUST)
-                .add(AEItems.NETHER_QUARTZ_DUST.asItem());
-
         tag(AETags.METAL_INGOTS)
                 .addOptionalTag(new ResourceLocation("forge:ingots/copper"))
                 .addOptionalTag(new ResourceLocation("forge:ingots/tin"))
@@ -113,12 +109,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEParts.SEMI_DARK_MONITOR.asItem())
                 .add(AEParts.DARK_MONITOR.asItem());
 
-        tag(ConventionTags.GOLD_DUST)
-                .add(AEItems.GOLD_DUST.asItem());
-        tag(ConventionTags.IRON_DUST)
-                .add(AEItems.IRON_DUST.asItem());
-        tag(ConventionTags.NETHER_QUARTZ_DUST)
-                .add(AEItems.NETHER_QUARTZ_DUST.asItem());
         tag(ConventionTags.FLUIX_DUST)
                 .add(AEItems.FLUIX_DUST.asItem());
         tag(ConventionTags.CERTUS_QUARTZ_DUST)

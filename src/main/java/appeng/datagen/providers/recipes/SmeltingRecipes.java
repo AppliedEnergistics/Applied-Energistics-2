@@ -23,8 +23,8 @@ import java.util.function.Consumer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.Tags.Items;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -43,34 +43,22 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     @Override
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(AEItems.FLOUR), Items.BREAD, 0, DEFAULT_SMELTING_TIME)
-                .unlockedBy("has_flour", has(AEItems.FLOUR))
-                .save(consumer, AppEng.makeId("smelting/bread"));
-
         SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(ConventionTags.GOLD_DUST), Items.GOLD_INGOT, 0, DEFAULT_SMELTING_TIME)
-                .unlockedBy("has_gold_dust", has(AEItems.GOLD_DUST))
-                .save(consumer, AppEng.makeId("smelting/gold_ingot"));
-
-        SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(ConventionTags.IRON_DUST), Items.IRON_INGOT, 0, DEFAULT_SMELTING_TIME)
-                .unlockedBy("has_iron_dust", has(AEItems.IRON_DUST))
-                .save(consumer, AppEng.makeId("smelting/iron_ingot"));
-
-        SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(ConventionTags.NETHER_QUARTZ_DUST), AEItems.SILICON, 0, DEFAULT_SMELTING_TIME)
-                .unlockedBy("has_nether_quartz_dust", has(ConventionTags.NETHER_QUARTZ_DUST))
-                .save(consumer, AppEng.makeId("smelting/silicon_from_nether_quartz_dust"));
-
-        SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(ConventionTags.CERTUS_QUARTZ_DUST), AEItems.SILICON, 0, DEFAULT_SMELTING_TIME)
+                .smelting(Ingredient.of(ConventionTags.CERTUS_QUARTZ_DUST), AEItems.SILICON, .35f,
+                        DEFAULT_SMELTING_TIME)
                 .unlockedBy("has_certus_quartz_dust", has(ConventionTags.CERTUS_QUARTZ_DUST))
                 .save(consumer, AppEng.makeId("smelting/silicon_from_certus_quartz_dust"));
 
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(AEBlocks.SKY_STONE_BLOCK), AEBlocks.SMOOTH_SKY_STONE_BLOCK,
-                0, DEFAULT_SMELTING_TIME)
+        SimpleCookingRecipeBuilder
+                .smelting(Ingredient.of(AEBlocks.SKY_STONE_BLOCK), AEBlocks.SMOOTH_SKY_STONE_BLOCK, 0.35f,
+                        DEFAULT_SMELTING_TIME)
                 .unlockedBy("has_sky_stone_block", has(AEBlocks.SKY_STONE_BLOCK))
                 .save(consumer, AppEng.makeId("smelting/smooth_sky_stone_block"));
+
+        SimpleCookingRecipeBuilder
+                .blasting(Ingredient.of(Items.ENDER_PEARLS), AEItems.ENDER_DUST, 1f, DEFAULT_SMELTING_TIME)
+                .unlockedBy("has_ender_pearls", has(Items.ENDER_PEARLS))
+                .save(consumer, AppEng.makeId("blasting/ender_dust"));
 
     }
 }
