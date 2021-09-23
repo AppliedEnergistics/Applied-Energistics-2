@@ -27,7 +27,6 @@ import appeng.client.render.crafting.CraftingMonitorTESR;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.client.render.tesr.ChargerTESR;
 import appeng.client.render.tesr.ChestBlockEntityRenderer;
-import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
@@ -44,7 +43,6 @@ public final class InitBlockEntityRenderers {
 
         BlockEntityRenderers.register(AEBlockEntities.INSCRIBER, InscriberTESR::new);
         BlockEntityRenderers.register(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
-        BlockEntityRenderers.register(AEBlockEntities.CRANK, CrankTESR::new);
         BlockEntityRenderers.register(AEBlockEntities.CHARGER, ChargerTESR.FACTORY);
         BlockEntityRenderers.register(AEBlockEntities.DRIVE, DriveLedBlockEntityRenderer::new);
         BlockEntityRenderers.register(AEBlockEntities.CHEST, ChestBlockEntityRenderer::new);

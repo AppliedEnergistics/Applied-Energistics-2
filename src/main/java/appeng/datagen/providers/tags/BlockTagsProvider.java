@@ -55,7 +55,8 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 .addTag(ConventionTags.STAINED_GLASS_BLOCK);
 
         tag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK)
-                .add(AEBlocks.QUARTZ_ORE.block(), AEBlocks.QUARTZ_ORE_CHARGED.block());
+                .add(AEBlocks.QUARTZ_ORE.block());
+
         tag(Tags.Blocks.ORES)
                 .addTag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK);
 
@@ -123,7 +124,6 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
 
     private void addEffectiveTools() {
         Map<BlockDefinition<?>, List<Tag.Named<Block>>> specialTags = new HashMap<>();
-        specialTags.put(AEBlocks.CRANK, List.of(BlockTags.MINEABLE_WITH_AXE));
         for (var skyStoneBlock : SKY_STONE_BLOCKS) {
             specialTags.put(skyStoneBlock, List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL));
         }

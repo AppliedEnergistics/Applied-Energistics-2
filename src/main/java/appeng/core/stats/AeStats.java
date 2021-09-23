@@ -29,10 +29,7 @@ public enum AeStats {
     ItemsInserted("items_inserted"),
 
     // done
-    ItemsExtracted("items_extracted"),
-
-    // done
-    TurnedCranks("turned_cranks");
+    ItemsExtracted("items_extracted");
 
     private final ResourceLocation registryName;
 

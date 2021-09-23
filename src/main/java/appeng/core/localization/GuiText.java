@@ -25,7 +25,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 public enum GuiText {
     inventory("container"), // mc's default Inventory localization.
 
-    Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, SkyChest,
+    Chest, StoredEnergy, Of, Condenser, Drive, SkyChest,
 
     VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
     TerminalViewCellsTooltip,
@@ -66,7 +66,7 @@ public enum GuiText {
 
     inWorldFluix, inWorldPurificationCertus, inWorldPurificationNether,
 
-    inWorldPurificationFluix, inWorldSingularity, ChargedQuartz,
+    inWorldPurificationFluix, inWorldSingularity, ChargedQuartz, ChargedQuartzFind,
 
     NoSecondOutput, OfSecondOutput, MultipleOutputs,
 
@@ -82,7 +82,7 @@ public enum GuiText {
 
     InterfaceTerminalHint, WirelessRange, TransparentFacades, TransparentFacadesHint,
 
-    NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses, ChargedQuartzFind,
+    NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses,
 
     Included, Excluded, Partitioned, Precise, Fuzzy,
 

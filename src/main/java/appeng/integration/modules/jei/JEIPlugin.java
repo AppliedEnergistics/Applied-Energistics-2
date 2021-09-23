@@ -56,7 +56,6 @@ import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.config.CondenserOutput;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.implementations.GrinderScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -69,7 +68,6 @@ import appeng.integration.abstraction.JEIFacade;
 import appeng.items.parts.FacadeItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternTermMenu;
-import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 
 @JeiPlugin
@@ -88,9 +86,6 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
-        registry.addRecipeCategories(new GrinderRecipeCategory(registry.getJeiHelpers().getGuiHelper()),
-                new CondenserCategory(registry.getJeiHelpers().getGuiHelper()),
-                new InscriberRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -110,7 +105,6 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
-        registration.addRecipes(recipeManager.byType(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
         registration.addRecipes(recipeManager.byType(InscriberRecipe.TYPE).values(), InscriberRecipeCategory.UID);
         registration.addRecipes(ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY),
                 CondenserCategory.UID);
@@ -120,9 +114,6 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        ItemStack grindstone = AEBlocks.GRINDSTONE.stack();
-        registration.addRecipeCatalyst(grindstone, GrinderRecipeCategory.UID);
-
         ItemStack condenser = AEBlocks.CONDENSER.stack();
         registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
 
@@ -214,11 +205,7 @@ public class JEIPlugin implements IModPlugin {
                     public Collection<IGuiClickableArea> getGuiClickableAreas(
                             AbstractContainerScreen<?> containerScreen, double mouseX,
                             double mouseY) {
-                        if (containerScreen instanceof GrinderScreen) {
-                            return Arrays.asList(
-                                    IGuiClickableArea.createBasic(18, 34, 55, 22, GrinderRecipeCategory.UID),
-                                    IGuiClickableArea.createBasic(103, 40, 55, 22, GrinderRecipeCategory.UID));
-                        } else if (containerScreen instanceof InscriberScreen) {
+                        if (containerScreen instanceof InscriberScreen) {
                             return Collections.singletonList(
                                     IGuiClickableArea.createBasic(82, 39, 26, 16, InscriberRecipeCategory.UID));
                         }

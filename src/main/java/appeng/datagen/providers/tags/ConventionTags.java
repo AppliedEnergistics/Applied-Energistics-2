@@ -87,7 +87,6 @@ public final class ConventionTags {
     public static Tag.Named<Item> WHEAT_CROP = Tags.Items.CROPS_WHEAT;
 
     public static Tag.Named<Item> WOOD_STICK = Tags.Items.RODS_WOODEN;
-    public static Tag.Named<Item> WOOD_GEAR = tag("forge:gears/wooden");
     public static Tag.Named<Item> CHEST = Tags.Items.CHESTS_WOODEN;
 
     public static Tag.Named<Item> STONE = Tags.Items.STONE;

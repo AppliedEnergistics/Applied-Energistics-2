@@ -116,9 +116,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEParts.SEMI_DARK_MONITOR.asItem())
                 .add(AEParts.DARK_MONITOR.asItem());
 
-        tag(ConventionTags.WOOD_GEAR)
-                .add(AEItems.WOODEN_GEAR.asItem());
-
         tag(ConventionTags.GOLD_DUST)
                 .add(AEItems.GOLD_DUST.asItem());
         tag(ConventionTags.IRON_DUST)

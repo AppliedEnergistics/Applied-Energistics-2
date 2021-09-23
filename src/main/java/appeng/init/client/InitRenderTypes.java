@@ -40,7 +40,6 @@ public final class InitRenderTypes {
             AEBlocks.SECURITY_STATION,
             AEBlocks.CONTROLLER,
             AEBlocks.MOLECULAR_ASSEMBLER,
-            AEBlocks.QUARTZ_ORE_CHARGED,
             AEBlocks.QUARTZ_GLASS,
             AEBlocks.QUARTZ_VIBRANT_GLASS,
             AEBlocks.QUARTZ_FIXTURE,

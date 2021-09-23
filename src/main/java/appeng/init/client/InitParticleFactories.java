@@ -21,7 +21,6 @@ package appeng.init.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 
-import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
@@ -37,7 +36,6 @@ public final class InitParticleFactories {
 
     public static void init() {
         ParticleEngine particles = Minecraft.getInstance().particleEngine;
-        particles.register(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
         particles.register(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
         particles.register(ParticleTypes.ENERGY, EnergyFx.Factory::new);
         particles.register(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);

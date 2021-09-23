@@ -31,7 +31,6 @@ import appeng.menu.implementations.FluidIOBusMenu;
 import appeng.menu.implementations.FluidInterfaceMenu;
 import appeng.menu.implementations.FluidLevelEmitterMenu;
 import appeng.menu.implementations.FluidStorageBusMenu;
-import appeng.menu.implementations.GrinderMenu;
 import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.implementations.InterfaceTerminalMenu;
@@ -81,7 +80,6 @@ public final class InitMenuTypes {
                 CraftingTermMenu.TYPE,
                 DriveMenu.TYPE,
                 ItemFormationPlaneMenu.TYPE,
-                GrinderMenu.TYPE,
                 InscriberMenu.TYPE,
                 ItemInterfaceMenu.TYPE,
                 InterfaceTerminalMenu.TYPE,

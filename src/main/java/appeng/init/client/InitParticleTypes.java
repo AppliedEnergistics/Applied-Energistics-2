@@ -29,7 +29,6 @@ public final class InitParticleTypes {
     }
 
     public static void init(IForgeRegistry<ParticleType<?>> registry) {
-        registry.register(ParticleTypes.CHARGED_ORE);
         registry.register(ParticleTypes.CRAFTING);
         registry.register(ParticleTypes.ENERGY);
         registry.register(ParticleTypes.LIGHTNING_ARC);

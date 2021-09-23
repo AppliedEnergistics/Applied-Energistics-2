@@ -28,6 +28,5 @@ package appeng.api.features;
  */
 public enum AEWorldGenType {
     CERTUS_QUARTZ,
-    CHARGED_CERTUS_QUARTZ,
     METEORITES
 }

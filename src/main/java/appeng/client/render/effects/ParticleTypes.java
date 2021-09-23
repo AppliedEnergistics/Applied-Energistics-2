@@ -30,7 +30,6 @@ public final class ParticleTypes {
     private ParticleTypes() {
     }
 
-    public static final SimpleParticleType CHARGED_ORE = new SimpleParticleType(false);
     public static final SimpleParticleType CRAFTING = new SimpleParticleType(false);
     public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<EnergyParticleData>(false,
             EnergyParticleData.DESERIALIZER) {
@@ -51,7 +50,6 @@ public final class ParticleTypes {
     public static final SimpleParticleType VIBRANT = new SimpleParticleType(false);
 
     static {
-        CHARGED_ORE.setRegistryName(AppEng.MOD_ID, "charged_ore_fx");
         CRAFTING.setRegistryName(AppEng.MOD_ID, "crafting_fx");
         ENERGY.setRegistryName(AppEng.MOD_ID, "energy_fx");
         LIGHTNING_ARC.setRegistryName(AppEng.MOD_ID, "lightning_arc_fx");

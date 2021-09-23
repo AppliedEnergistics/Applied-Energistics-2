@@ -50,11 +50,9 @@ import appeng.server.ISubCommand;
 public class TestOreGenCommand implements ISubCommand {
 
     private final BlockState quartzOre;
-    private final BlockState chargedQuartzOre;
 
     public TestOreGenCommand() {
         quartzOre = AEBlocks.QUARTZ_ORE.block().defaultBlockState();
-        chargedQuartzOre = AEBlocks.QUARTZ_ORE_CHARGED.block().defaultBlockState();
     }
 
     @Override
@@ -90,13 +88,11 @@ public class TestOreGenCommand implements ISubCommand {
                 .collect(Collectors.toList());
         AggregatedStats minHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.minHeight);
         AggregatedStats maxHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.maxHeight);
-        AggregatedStats chargedCount = AggregatedStats.create(chunksWithOre, cs -> (double) cs.chargedOreCount);
 
         sendLine(sender, "Checked %d chunks", stats.chunks.size());
         sendLine(sender, "  Count: %s", oreCount);
         sendLine(sender, "  Min-Height: %s", minHeight);
         sendLine(sender, "  Max-Height: %s", maxHeight);
-        sendLine(sender, "  Sub-Type Count: %s", chargedCount);
     }
 
     private void checkChunk(CommandSourceStack sender, ServerLevel level, ChunkPos cp, Stats stats) {
@@ -117,13 +113,10 @@ public class TestOreGenCommand implements ISubCommand {
                 for (int y = 0; y < level.getHeight(); y++) {
                     blockPos.setY(y);
                     BlockState state = chunk.getBlockState(blockPos);
-                    if (state == quartzOre || state == chargedQuartzOre) {
+                    if (state == quartzOre) {
                         chunkStats.minHeight = Math.min(chunkStats.minHeight, y);
                         chunkStats.maxHeight = Math.max(chunkStats.maxHeight, y);
                         chunkStats.quartzOreCount++;
-                        if (state == chargedQuartzOre) {
-                            chunkStats.chargedOreCount++;
-                        }
                     }
                 }
             }
@@ -141,7 +134,6 @@ public class TestOreGenCommand implements ISubCommand {
 
     private static class ChunkStats {
         public int quartzOreCount = 0;
-        public int chargedOreCount = 0;
         public int minHeight = Integer.MAX_VALUE;
         public int maxHeight = Integer.MIN_VALUE;
     }

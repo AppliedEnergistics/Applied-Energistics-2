@@ -55,10 +55,6 @@ public final class InitBiomeModifications {
 
             ConfiguredFeature<?, ?> quartzOreFeature = getConfiguredFeature(WorldgenIds.QUARTZ_ORE);
             e.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, quartzOreFeature);
-
-            ConfiguredFeature<?, ?> chargedQuartzOreFeature = getConfiguredFeature(WorldgenIds.CHARGED_QUARTZ_ORE);
-            e.getGeneration().addFeature(Decoration.UNDERGROUND_DECORATION,
-                    chargedQuartzOreFeature);
         }
     }
 
