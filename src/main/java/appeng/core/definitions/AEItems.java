@@ -162,9 +162,6 @@ public final class AEItems {
     public static final ItemDefinition<MaterialItem> FLUIX_CRYSTAL = item(AEItemIds.FLUIX_CRYSTAL, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> FLUIX_DUST = item(AEItemIds.FLUIX_DUST, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> FLUIX_PEARL = item(AEItemIds.FLUIX_PEARL, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> PURIFIED_CERTUS_QUARTZ_CRYSTAL = item(AEItemIds.PURIFIED_CERTUS_QUARTZ_CRYSTAL, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> PURIFIED_NETHER_QUARTZ_CRYSTAL = item(AEItemIds.PURIFIED_NETHER_QUARTZ_CRYSTAL, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> PURIFIED_FLUIX_CRYSTAL = item(AEItemIds.PURIFIED_FLUIX_CRYSTAL, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> CALCULATION_PROCESSOR_PRESS = item(AEItemIds.CALCULATION_PROCESSOR_PRESS, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> ENGINEERING_PROCESSOR_PRESS = item(AEItemIds.ENGINEERING_PROCESSOR_PRESS, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> LOGIC_PROCESSOR_PRESS = item(AEItemIds.LOGIC_PROCESSOR_PRESS, MaterialItem::new);
@@ -212,13 +209,10 @@ public final class AEItems {
     ///
 
     public static final ItemDefinition<CrystalSeedItem> CERTUS_CRYSTAL_SEED = item(AEItemIds.CERTUS_CRYSTAL_SEED,
-            p -> new CrystalSeedItem(p, PURIFIED_CERTUS_QUARTZ_CRYSTAL.asItem()))
+            p -> new CrystalSeedItem(p, CERTUS_QUARTZ_CRYSTAL.asItem()))
             ;
     public static final ItemDefinition<CrystalSeedItem> FLUIX_CRYSTAL_SEED = item(AEItemIds.FLUIX_CRYSTAL_SEED,
-            p -> new CrystalSeedItem(p, PURIFIED_FLUIX_CRYSTAL.asItem()))
-            ;
-    public static final ItemDefinition<CrystalSeedItem> NETHER_QUARTZ_SEED = item(AEItemIds.NETHER_QUARTZ_SEED,
-            p -> new CrystalSeedItem(p, PURIFIED_NETHER_QUARTZ_CRYSTAL.asItem()))
+            p -> new CrystalSeedItem(p, FLUIX_CRYSTAL.asItem()))
             ;
 
     ///

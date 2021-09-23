@@ -165,11 +165,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(ConventionTags.FLUIX_DUST)
                 .unlockedBy("has_dusts/fluix", has(ConventionTags.FLUIX_DUST))
                 .save(consumer, AppEng.makeId("misc/seeds_fluix"));
-        ShapelessRecipeBuilder.shapeless(AEItems.NETHER_QUARTZ_SEED, 2)
-                .requires(ItemTags.SAND)
-                .requires(ConventionTags.NETHER_QUARTZ_DUST)
-                .unlockedBy("has_dusts/quartz", has(ConventionTags.NETHER_QUARTZ_DUST))
-                .save(consumer, AppEng.makeId("misc/seeds_nether"));
         ShapedRecipeBuilder.shaped(AEBlocks.TINY_TNT)
                 .pattern("ab")
                 .pattern("ba")
@@ -259,9 +254,9 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("bcb")
                 .pattern("aba")
                 .define('a', AEBlocks.SMOOTH_SKY_STONE_BLOCK)
-                .define('b', AEItems.PURIFIED_FLUIX_CRYSTAL)
+                .define('b', AEItems.FLUIX_CRYSTAL)
                 .define('c', AEItems.ENGINEERING_PROCESSOR)
-                .unlockedBy("has_purified_fluix_crystal", has(AEItems.PURIFIED_FLUIX_CRYSTAL))
+                .unlockedBy("has_purified_fluix_crystal", has(AEItems.FLUIX_CRYSTAL))
                 .unlockedBy("has_engineering_processor", has(AEItems.ENGINEERING_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/blocks/controller"));
         ShapedRecipeBuilder.shaped(AEBlocks.CHARGER)
