@@ -37,17 +37,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.inventories.BaseInternalInventory;
-import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
 
 public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
     private static final Queue<ItemStack> SHARED_POSSIBLE_ITEMS = new ArrayDeque<>();
 
-    private final InternalInventory handler = new QueuedItemHandler();
+    private final IItemHandler handler = new QueuedItemHandler();
 
     private Item filter = Items.AIR;
     private final Queue<ItemStack> possibleItems = new ArrayDeque<>();
@@ -117,10 +116,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         }
     }
 
-    class QueuedItemHandler extends BaseInternalInventory {
-        @Override
-        public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
-        }
+    class QueuedItemHandler implements IItemHandler {
 
         @Override
         @Nonnull
@@ -137,11 +133,6 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
             return false;
-        }
-
-        @Override
-        public int size() {
-            return 1;
         }
 
         @Override
@@ -166,6 +157,11 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
             getPossibleItems().add(is);
             return is.copy();
+        }
+
+        @Override
+        public int getSlots() {
+            return 1;
         }
     }
 }
