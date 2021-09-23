@@ -1,0 +1,72 @@
+name: Bug report
+description: You found a bug or encountered a crash? Please report it here.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Provide a summary of the issue in the Title above, please do not "[Tag]" it.
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: |
+        Please describe as best as possible.
+        Always use the most recent version from [our releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) or curseforge, it might already be fixed.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce the bug
+      description: |
+        Please provide the steps to reproduce it, otherwise we might not be able to fix it.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: |
+        A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional details
+      description: |
+        In case you want to optionally provide further informations, which will not fit anywhere else.
+  - type: dropdown
+    id: minecraft
+    attributes:
+      label: Which minecraft version are you using?
+      options:
+        - 1.17
+        - 1.16
+        - 1.15 - UNSUPPORTED
+        - 1.12 - UNSUPPORTED
+        - 1.10 - UNSUPPORTED
+        - 1.7  - UNSUPPORTED
+    validations:
+      required: true
+  - type: dropdown
+    id: modloader
+    attributes:
+      label: On which mod loaders does it happen?
+      multiple: true
+      options:
+        - Forge
+        - Fabric
+    validations:
+      required: true
+  - type: input
+    id: crashlog
+    attributes:
+      label: Crash log
+      description: |
+        Provide a link to a crashlog. E.g. on [Gist](https://gist.github.com/), [pastebin](https://pastebin.com/), or similar.
+        If it is not a crash report, you can hold F3+C for over 10 seconds to force one. This provides with more details to reproduce it without needing to manually acquire them.
+        Please do not have it expire after some time. We might have to go back to it in the future to compare it with other bug reports, or simply have to delay it when being pretty minor.
+    validations:
+      required: true
