@@ -12,7 +12,7 @@ body:
       label: Describe the bug
       description: |
         Please describe as best as possible.
-        Always use the most recent version from [our releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) or curseforge, it might already be fixed.
+        Always use the most recent version from [our releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) (preferably) or [curseforge](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2), it might already be fixed.
     validations:
       required: true
   - type: textarea
