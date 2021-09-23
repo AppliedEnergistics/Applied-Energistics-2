@@ -50,15 +50,6 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_certus_crystal", has(ConventionTags.CERTUS_QUARTZ))
                 .save(consumer, AppEng.makeId("decorative/certus_quartz_block"));
 
-        ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_BLOCK)
-                .pattern("aaa")
-                .pattern("a a")
-                .pattern("aaa")
-                .define('a', AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL)
-                .unlockedBy(criterionName(AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL),
-                        has(AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL))
-                .save(consumer, AppEng.makeId("decorative/certus_quartz_block_pure"));
-
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_PILLAR, 2)
                 .pattern("a")
                 .pattern("a")
@@ -78,23 +69,6 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .define('a', AEItems.FLUIX_CRYSTAL)
                 .unlockedBy(criterionName(AEItems.FLUIX_CRYSTAL), has(AEItems.FLUIX_CRYSTAL))
                 .save(consumer, AppEng.makeId("decorative/fluix_block"));
-
-        ShapedRecipeBuilder.shaped(AEBlocks.FLUIX_BLOCK)
-                .pattern("aaa")
-                .pattern("a a")
-                .pattern("aaa")
-                .define('a', AEItems.PURIFIED_FLUIX_CRYSTAL)
-                .unlockedBy(criterionName(AEItems.PURIFIED_FLUIX_CRYSTAL), has(AEItems.PURIFIED_FLUIX_CRYSTAL))
-                .save(consumer, AppEng.makeId("decorative/fluix_block_pure"));
-
-        ShapedRecipeBuilder.shaped(Blocks.QUARTZ_BLOCK)
-                .pattern("aaa")
-                .pattern("a a")
-                .pattern("aaa")
-                .define('a', AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL)
-                .unlockedBy(criterionName(AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL),
-                        has(AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL))
-                .save(consumer, AppEng.makeId("decorative/quartz_block_pure"));
 
         ShapedRecipeBuilder.shaped(AEBlocks.LIGHT_DETECTOR)
                 .pattern("ab")

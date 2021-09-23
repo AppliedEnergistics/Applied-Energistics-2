@@ -58,14 +58,11 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
 
         tag(ConventionTags.ALL_CERTUS_QUARTZ)
                 .addTag(ConventionTags.CERTUS_QUARTZ)
-                .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
-                .add(AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL.asItem());
+                .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
         tag(ConventionTags.ALL_FLUIX)
-                .add(AEItems.FLUIX_CRYSTAL.asItem())
-                .add(AEItems.PURIFIED_FLUIX_CRYSTAL.asItem());
+                .add(AEItems.FLUIX_CRYSTAL.asItem());
         tag(ConventionTags.ALL_NETHER_QUARTZ)
-                .addTag(ConventionTags.NETHER_QUARTZ)
-                .add(AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL.asItem());
+                .addTag(ConventionTags.NETHER_QUARTZ);
         tag(ConventionTags.ALL_QUARTZ)
                 .addTag(ConventionTags.NETHER_QUARTZ)
                 .addTag(ConventionTags.CERTUS_QUARTZ)

@@ -86,6 +86,9 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
+        registry.addRecipeCategories(
+                new CondenserCategory(registry.getJeiHelpers().getGuiHelper()),
+                new InscriberRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -122,16 +125,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     private void registerDescriptions(IRecipeRegistration registry) {
-
-        final Component[] message;
-        if (AEConfig.instance().isGenerateQuartzOre()) {
-            // " " Used to enforce a new paragraph
-            message = new Component[] { GuiText.ChargedQuartz.text(), new TextComponent(" "),
-                    GuiText.ChargedQuartzFind.text() };
-        } else {
-            message = new Component[] { GuiText.ChargedQuartz.text() };
-        }
-        this.addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, message);
+        this.addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.text());
 
         if (AEConfig.instance().isGenerateMeteorites()) {
             this.addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS,
@@ -143,7 +137,7 @@ public class JEIPlugin implements IModPlugin {
         }
 
         if (AEConfig.instance().isInWorldFluixEnabled()) {
-            this.addDescription(registry, AEItems.FLUIX_CRYSTAL, GuiText.inWorldFluix.text());
+            this.addDescription(registry, AEItems.FLUIX_DUST, GuiText.inWorldFluix.text());
         }
 
         if (AEConfig.instance().isInWorldSingularityEnabled()) {
@@ -151,11 +145,14 @@ public class JEIPlugin implements IModPlugin {
         }
 
         if (AEConfig.instance().isInWorldPurificationEnabled()) {
-            this.addDescription(registry, AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL,
+            this.addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL,
                     GuiText.inWorldPurificationCertus.text());
-            this.addDescription(registry, AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL,
-                    GuiText.inWorldPurificationNether.text());
-            this.addDescription(registry, AEItems.PURIFIED_FLUIX_CRYSTAL,
+            this.addDescription(registry, AEItems.CERTUS_CRYSTAL_SEED,
+                    GuiText.inWorldPurificationCertus.text());
+
+            this.addDescription(registry, AEItems.FLUIX_CRYSTAL,
+                    GuiText.inWorldPurificationFluix.text());
+            this.addDescription(registry, AEItems.FLUIX_CRYSTAL_SEED,
                     GuiText.inWorldPurificationFluix.text());
         }
     }
@@ -194,7 +191,7 @@ public class JEIPlugin implements IModPlugin {
                         // The following code allows the player to show recipes involving fluids in AE fluid terminals
                         // or AE
                         // fluid tanks shown in fluid interfaces and other UI.
-                        if (containerScreen instanceof AEBaseScreen<?>baseScreen) {
+                        if (containerScreen instanceof AEBaseScreen<?> baseScreen) {
                             return baseScreen.getIngredientUnderMouse(mouseX, mouseY);
                         }
 

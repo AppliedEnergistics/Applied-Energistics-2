@@ -62,7 +62,7 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 AEItems.CALCULATION_PROCESSOR_PRESS,
                 AEItems.CALCULATION_PROCESSOR_PRINT,
                 AEItems.CALCULATION_PROCESSOR,
-                Ingredient.of(AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL));
+                Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL));
 
         processor(consumer, "engineering_processor",
                 AEItems.ENGINEERING_PROCESSOR_PRESS,

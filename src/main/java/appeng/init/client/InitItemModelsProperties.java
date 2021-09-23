@@ -55,7 +55,6 @@ public final class InitItemModelsProperties {
 
         registerSeedGrowth(AEItems.CERTUS_CRYSTAL_SEED);
         registerSeedGrowth(AEItems.FLUIX_CRYSTAL_SEED);
-        registerSeedGrowth(AEItems.NETHER_QUARTZ_SEED);
 
         // Register the client-only item model property for chargeable items
         ForgeRegistries.ITEMS.forEach(item -> {

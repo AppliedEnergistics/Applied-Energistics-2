@@ -62,7 +62,7 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
             .put(AEBlocks.QUARTZ_ORE.block(),
                     b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE.block(),
                             applyExplosionDecay(AEBlocks.QUARTZ_ORE.block(),
-                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
+                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST.asItem())
                                             .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
                                             .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
             .build();

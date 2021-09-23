@@ -138,7 +138,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 final double ySpeed = RANDOM.nextDouble() * .25 - 0.125;
                 final double zSpeed = RANDOM.nextDouble() * .25 - 0.125;
 
-                final ItemEntity entity = new ItemEntity(this.level, x, y, z, AEItems.FLUIX_CRYSTAL.stack(2));
+                final ItemEntity entity = new ItemEntity(this.level, x, y, z, AEItems.FLUIX_DUST.stack(2));
                 entity.setDeltaMovement(xSpeed, ySpeed, zSpeed);
                 this.level.addFreshEntity(entity);
 
