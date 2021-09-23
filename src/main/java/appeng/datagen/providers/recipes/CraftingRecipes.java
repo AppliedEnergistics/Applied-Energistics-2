@@ -264,7 +264,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("a  ")
                 .pattern("aba")
                 .define('a', ConventionTags.IRON_INGOT)
-                .define('b', ConventionTags.ALL_FLUIX)
+                .define('b', Items.AMETHYST_SHARD)
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(consumer, AppEng.makeId("network/blocks/crystal_processing_charger"));
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_GROWTH_ACCELERATOR)
@@ -293,7 +293,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("aba")
                 .define('a', ConventionTags.IRON_INGOT)
                 .define('b', AEBlocks.QUARTZ_GLASS)
-                .define('c', ConventionTags.ALL_FLUIX)
+                .define('c', Items.AMETHYST_SHARD)
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(consumer, AppEng.makeId("network/blocks/energy_energy_acceptor"));
         ShapelessRecipeBuilder.shapeless(AEBlocks.ENERGY_ACCEPTOR)
@@ -345,7 +345,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("aba")
                 .define('a', ConventionTags.IRON_INGOT)
                 .define('b', Items.STICKY_PISTON)
-                .define('c', ConventionTags.ALL_FLUIX)
+                .define('c', Items.AMETHYST_SHARD)
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(consumer, AppEng.makeId("network/blocks/inscribers"));
         ShapedRecipeBuilder.shaped(AEBlocks.CONDENSER)
@@ -482,7 +482,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', AEParts.TERMINAL)
                 .define('c', AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT))
                 .define('d', ConventionTags.IRON_INGOT)
-                .define('e', ConventionTags.ALL_FLUIX)
+                .define('e', Items.AMETHYST_SHARD)
                 .unlockedBy("has_glass_cable", has(AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT)))
                 .unlockedBy("has_terminal", has(AEParts.TERMINAL))
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
