@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,6 +37,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
 @OnlyIn(Dist.CLIENT)
+@ThreadSafe
 public class AEStackRendering {
     private static volatile Map<IStorageChannel<?>, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
 

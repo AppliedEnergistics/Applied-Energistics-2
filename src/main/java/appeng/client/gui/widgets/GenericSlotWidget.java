@@ -67,7 +67,8 @@ public class GenericSlotWidget extends CustomSlotWidget {
             IAEStackRenderHandler renderHandler = AEStackRendering.get(stack.getChannel());
 
             if (renderHandler != null) {
-                renderHandler.drawRepresentation(screen, poseStack, getTooltipAreaX(), getTooltipAreaY(), stack);
+                renderHandler.drawRepresentation(Minecraft.getInstance(), poseStack, getTooltipAreaX(),
+                        getTooltipAreaY(), stack);
 
                 // The font renderer uses this global stack, so we have to apply the current transform to it.
                 var globalStack = RenderSystem.getModelViewStack();

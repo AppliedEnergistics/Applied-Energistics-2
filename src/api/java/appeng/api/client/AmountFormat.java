@@ -24,7 +24,17 @@
 package appeng.api.client;
 
 public enum AmountFormat {
+    /**
+     * Display the full amount.
+     */
     FULL,
+    /**
+     * Display the summary with the regular font, for example "1.23K" instead of 1234.
+     */
     PREVIEW_REGULAR,
+    /**
+     * Display the summary with a large font, for example "1.2K" instead of 1234. Should be shorter than
+     * {@link #PREVIEW_REGULAR} as the font is larger.
+     */
     PREVIEW_LARGE_FONT
 }

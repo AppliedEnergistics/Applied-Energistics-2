@@ -22,7 +22,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,14 +45,14 @@ public class InitStackRenderHandlers {
         var itemSSRenderer = new StackSizeRenderer();
         AEStackRendering.register(StorageChannels.items(), new IAEStackRenderHandler<>() {
             @Override
-            public void drawRepresentation(AbstractContainerScreen<?> screen, PoseStack poseStack, int x, int y,
+            public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y,
                     IAEItemStack stack) {
                 ItemStack displayStack = stack.asItemStackRepresentation();
                 // The item renderer uses this global stack, so we have to apply the current transform to it.
                 var globalStack = RenderSystem.getModelViewStack();
                 globalStack.pushPose();
                 globalStack.mulPoseMatrix(poseStack.last().pose());
-                Minecraft.getInstance().getItemRenderer().renderGuiItem(displayStack, x, y);
+                minecraft.getItemRenderer().renderGuiItem(displayStack, x, y);
                 globalStack.popPose();
                 // Ensure the global state is correctly reset.
                 RenderSystem.applyModelViewMatrix();
@@ -81,7 +80,7 @@ public class InitStackRenderHandlers {
         var fluidSSRenderer = new FluidStackSizeRenderer();
         AEStackRendering.register(StorageChannels.fluids(), new IAEStackRenderHandler<>() {
             @Override
-            public void drawRepresentation(AbstractContainerScreen<?> screen, PoseStack poseStack, int x, int y,
+            public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y,
                     IAEFluidStack stack) {
                 FluidBlitter.create(IAEStack.copy(stack, 1).getFluidStack())
                         .dest(x, y, 16, 16)

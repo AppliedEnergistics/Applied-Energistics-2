@@ -25,7 +25,7 @@ package appeng.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,12 +37,24 @@ import appeng.api.storage.data.IAEStack;
  */
 @OnlyIn(Dist.CLIENT)
 public interface IAEStackRenderHandler<T extends IAEStack> {
-    // TODO: pass Minecraft instead of screen
-    void drawRepresentation(AbstractContainerScreen<?> screen, PoseStack poseStack, int x, int y, T stack);
+    /**
+     * Draw the stack, for example the item or the fluid sprite, but not the amount.
+     */
+    void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, T stack);
 
+    /**
+     * Name of the stack, ignoring the amount.
+     */
     Component getDisplayName(T stack);
 
+    /**
+     * Format the amount into a user-readable string. See {@link AmountFormat} for an explanation of the different
+     * formats.
+     */
     String formatAmount(long amount, AmountFormat format);
 
+    /**
+     * Return the modid of the stack.
+     */
     String getModid(T stack);
 }
