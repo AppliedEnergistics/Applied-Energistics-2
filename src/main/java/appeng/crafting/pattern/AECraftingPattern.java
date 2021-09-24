@@ -108,11 +108,6 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     @Override
-    public boolean isCrafting() {
-        return true;
-    }
-
-    @Override
     public IInput[] getInputs() {
         return inputs;
     }

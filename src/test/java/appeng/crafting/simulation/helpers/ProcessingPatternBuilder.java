@@ -123,11 +123,6 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public boolean isCrafting() {
-                return false;
-            }
-
-            @Override
             public IInput[] getInputs() {
                 return inputs.toArray(IInput[]::new);
             }

@@ -39,6 +39,7 @@ import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
+import appeng.crafting.pattern.AECraftingPattern;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
 import appeng.util.Platform;
@@ -109,10 +110,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                     return false;
                 }
                 var de = patternHelper.decodePattern(stack, getLevel());
-                if (de != null) {
-                    return de.isCrafting();
-                }
-                return false;
+                return de instanceof AECraftingPattern;
             case ENCODED_PATTERN:
                 return patternHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:

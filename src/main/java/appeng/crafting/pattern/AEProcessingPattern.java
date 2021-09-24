@@ -51,11 +51,6 @@ public class AEProcessingPattern implements IAEPatternDetails {
     }
 
     @Override
-    public boolean isCrafting() {
-        return false;
-    }
-
-    @Override
     public IInput[] getInputs() {
         return inputs;
     }
