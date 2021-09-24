@@ -303,11 +303,6 @@ public class AECraftingPattern implements IAEPatternDetails {
             }
         }
 
-        @Override
-        public boolean allowFuzzyMatch() {
-            return canSubstitute;
-        }
-
         @Nullable
         @Override
         public IAEStack getContainerItem(IAEStack template) {

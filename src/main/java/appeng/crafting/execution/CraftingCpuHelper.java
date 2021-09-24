@@ -19,7 +19,6 @@
 package appeng.crafting.execution;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -171,18 +170,14 @@ public class CraftingCpuHelper {
     public static Iterable<IAEStack> getValidItemTemplates(ICraftingInventory inv,
             IPatternDetails.IInput input, Level level) {
         IAEStack[] possibleInputs = input.getPossibleInputs();
-        List<IAEStack> substitutes;
-        if (input.allowFuzzyMatch()) {
-            substitutes = new ArrayList<>(possibleInputs.length);
 
-            for (var stack : possibleInputs) {
-                for (var fuzz : inv.findFuzzyTemplates(stack)) {
-                    // Set the correct amount, it has to match that of the template!
-                    substitutes.add(IAEStack.copy(fuzz, stack.getStackSize()));
-                }
+        List<IAEStack> substitutes = new ArrayList<>(possibleInputs.length);
+
+        for (var stack : possibleInputs) {
+            for (var fuzz : inv.findFuzzyTemplates(stack)) {
+                // Set the correct amount, it has to match that of the template!
+                substitutes.add(IAEStack.copy(fuzz, stack.getStackSize()));
             }
-        } else {
-            substitutes = Arrays.asList(possibleInputs);
         }
 
         return Iterables.filter(substitutes, stack -> input.isValid(stack, level));

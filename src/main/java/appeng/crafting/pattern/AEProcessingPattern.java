@@ -109,11 +109,6 @@ public class AEProcessingPattern implements IAEPatternDetails {
             return input.equals(template[0]);
         }
 
-        @Override
-        public boolean allowFuzzyMatch() {
-            return false;
-        }
-
         @Nullable
         @Override
         public IAEStack getContainerItem(IAEStack template) {

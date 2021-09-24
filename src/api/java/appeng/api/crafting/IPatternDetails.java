@@ -79,11 +79,6 @@ public interface IPatternDetails {
         boolean isValid(IAEStack input, Level level);
 
         /**
-         * True to allow fuzzy matching the possible inputs. Any fuzzy matched input is checked against isValid.
-         */
-        boolean allowFuzzyMatch();
-
-        /**
          * Optionally return a container item. This will generally be null for processing patterns, and return
          * {@link ItemStack#getContainerItem()} for crafting patterns.
          */

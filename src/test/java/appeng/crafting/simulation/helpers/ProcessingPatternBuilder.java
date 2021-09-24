@@ -52,11 +52,6 @@ public class ProcessingPatternBuilder {
                 return false;
             }
 
-            @Override
-            public boolean allowFuzzyMatch() {
-                return false;
-            }
-
             @Nullable
             @Override
             public IAEStack getContainerItem(IAEStack template) {
@@ -90,11 +85,6 @@ public class ProcessingPatternBuilder {
                     return itemStack.getItem() == item;
                 }
                 return false;
-            }
-
-            @Override
-            public boolean allowFuzzyMatch() {
-                return true;
             }
 
             @Nullable
