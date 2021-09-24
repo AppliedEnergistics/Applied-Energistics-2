@@ -18,7 +18,8 @@
 
 package appeng.crafting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 

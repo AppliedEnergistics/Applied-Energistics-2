@@ -24,10 +24,12 @@ package appeng.blockentity;
  */
 public interface CommonTickingBlockEntity extends ServerTickingBlockEntity, ClientTickingBlockEntity {
 
+    @Override
     default void serverTick() {
         commonTick();
     }
 
+    @Override
     default void clientTick() {
         commonTick();
     }

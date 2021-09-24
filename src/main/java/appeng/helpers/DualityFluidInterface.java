@@ -130,6 +130,7 @@ public class DualityFluidInterface
         return new DimensionalBlockPos(this.host.getBlockEntity());
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
         if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
@@ -324,12 +325,14 @@ public class DualityFluidInterface
         return level == null || level.isClientSide();
     }
 
+    @Override
     public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.tanks.writeToNBT(data, "storage");
         this.config.writeToNBT(data, "config");
     }
 
+    @Override
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");

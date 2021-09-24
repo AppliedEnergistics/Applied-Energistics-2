@@ -461,6 +461,7 @@ public class AEBaseBlockEntity extends BlockEntity
         this.customName = name;
     }
 
+    @Override
     @Nullable
     @OverridingMethodsMustInvokeSuper
     public InternalInventory getSubInventory(ResourceLocation id) {

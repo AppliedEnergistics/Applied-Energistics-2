@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.core.api;
 
 import java.util.List;
@@ -18,6 +36,7 @@ import appeng.api.crafting.IPatternDetailsHelper;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
+import appeng.crafting.pattern.AEPatternDecoder;
 import appeng.crafting.pattern.AEPatternHelper;
 
 public class ApiPatternDetails implements IPatternDetailsHelper {
@@ -25,7 +44,7 @@ public class ApiPatternDetails implements IPatternDetailsHelper {
 
     public ApiPatternDetails() {
         // Register support for our own stacks.
-        registerDecoder(appeng.crafting.pattern.AEPatternDecoder.INSTANCE);
+        registerDecoder(AEPatternDecoder.INSTANCE);
     }
 
     @Override
@@ -57,7 +76,7 @@ public class ApiPatternDetails implements IPatternDetailsHelper {
     }
 
     @Override
-    public ItemStack encodeAE2CraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in,
+    public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes) {
         if (stack == null) {
             stack = AEItems.ENCODED_PATTERN.stack();
@@ -70,7 +89,7 @@ public class ApiPatternDetails implements IPatternDetailsHelper {
     }
 
     @Override
-    public ItemStack encodeAE2ProcessingPattern(@Nullable ItemStack stack, IAEStack[] in, IAEStack[] out) {
+    public ItemStack encodeProcessingPattern(@Nullable ItemStack stack, IAEStack[] in, IAEStack[] out) {
         checkItemsOrFluids(in);
         checkItemsOrFluids(out);
         if (stack == null) {

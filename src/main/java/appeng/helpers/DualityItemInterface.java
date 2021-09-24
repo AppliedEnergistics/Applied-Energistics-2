@@ -18,7 +18,7 @@
 
 package appeng.helpers;
 
-import java.util.*;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,9 +44,13 @@ import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.crafting.*;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.*;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -134,6 +138,7 @@ public class DualityItemInterface
         return level == null || level.isClientSide();
     }
 
+    @Override
     public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
 
@@ -144,6 +149,7 @@ public class DualityItemInterface
         this.craftingTracker.writeToNBT(data);
     }
 
+    @Override
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
 
@@ -471,6 +477,7 @@ public class DualityItemInterface
         this.craftingTracker.jobStateChange(link);
     }
 
+    @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
         if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return LazyOptional.of(this.storage::toItemHandler).cast();

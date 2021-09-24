@@ -214,9 +214,9 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
 
         if (this.isCraftingMode()) {
-            output = craftingHelper.encodeAE2CraftingPattern(output, this.currentRecipe, in, out[0], isSubstitute());
+            output = craftingHelper.encodeCraftingPattern(output, this.currentRecipe, in, out[0], isSubstitute());
         } else {
-            output = craftingHelper.encodeAE2ProcessingPattern(output, toAeStacks(in), toAeStacks(out));
+            output = craftingHelper.encodeProcessingPattern(output, toAeStacks(in), toAeStacks(out));
         }
         this.encodedPatternSlot.set(output);
 

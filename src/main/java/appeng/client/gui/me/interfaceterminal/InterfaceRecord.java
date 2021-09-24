@@ -20,9 +20,9 @@ package appeng.client.gui.me.interfaceterminal;
 
 import javax.annotation.Nonnull;
 
-import appeng.helpers.iface.DualityPatternProvider;
 import net.minecraft.network.chat.Component;
 
+import appeng.helpers.iface.DualityPatternProvider;
 import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.util.inv.AppEngInternalInventory;
 

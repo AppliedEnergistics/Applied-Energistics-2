@@ -23,8 +23,6 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import appeng.blockentity.crafting.PatternProviderBlockEntity;
-import appeng.helpers.iface.DualityPatternProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Component.Serializer;
@@ -42,10 +40,12 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
+import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.helpers.InventoryAction;
+import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.IPatternProviderHost;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.AEBaseMenu;
@@ -128,7 +128,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
     }
 
     private <T extends IPatternProviderHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
-                                                                      VisitorState state) {
+            VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             var dual = ih.getDuality();
             if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
