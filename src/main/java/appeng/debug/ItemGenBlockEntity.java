@@ -81,7 +81,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
     @Nullable
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.handler);
+            return (LazyOptional<T>) LazyOptional.of(this.handler::toItemHandler);
         }
         return super.getCapability(capability, facing);
     }
