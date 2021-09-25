@@ -28,7 +28,11 @@ import appeng.api.storage.data.IAEStack;
 public interface ICraftingSimulationState extends ICraftingInventory {
     void emitItems(IAEStack what);
 
-    void addBytes(long bytes);
+    void addBytes(double bytes);
+
+    default void addStackBytes(IAEStack stack, long multiplier) {
+        addBytes((double) stack.getStackSize() * multiplier / stack.getChannel().getUnitsPerByte() * 8);
+    }
 
     void addCrafting(IPatternDetails details, long crafts);
 }

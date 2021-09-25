@@ -50,7 +50,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     /**
      * Byte count.
      */
-    private long bytes = 0;
+    private double bytes = 0;
     private final Map<IPatternDetails, Long> crafts = new HashMap<>();
     /**
      * Minimum amount of each item that needs to be extracted from the network. This is the maximum of (unmodified -
@@ -168,7 +168,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     }
 
     @Override
-    public void addBytes(long bytes) {
+    public void addBytes(double bytes) {
         this.bytes += bytes;
     }
 
@@ -223,7 +223,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
             CraftingCalculation calculation) {
         return new CraftingPlan(
                 calculation.getOutput(),
-                state.bytes,
+                (long) Math.ceil(state.bytes),
                 calculation.isSimulation(),
                 calculation.hasMultiplePaths(),
                 state.requiredExtract,

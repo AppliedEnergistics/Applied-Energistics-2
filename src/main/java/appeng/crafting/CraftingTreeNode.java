@@ -139,13 +139,7 @@ public class CraftingTreeNode {
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
-        if (this.parent == null) {
-            // Raw amount, so we need to divide by transfer factor.
-            long transferFactor = this.what.getChannel().transferFactor();
-            inv.addBytes((requestedAmount + transferFactor - 1) / transferFactor);
-        } else {
-            inv.addBytes(requestedAmount);
-        }
+        inv.addStackBytes(this.what, requestedAmount);
 
         /*
          * 1) COLLECT ITEMS FROM THE INVENTORY

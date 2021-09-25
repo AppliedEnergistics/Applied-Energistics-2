@@ -119,7 +119,7 @@ public class CraftingTreeProcess {
         if (containerItems != null) {
             for (var stack : containerItems) {
                 inv.injectItems(stack, Actionable.MODULATE);
-                inv.addBytes(stack.getStackSize());
+                inv.addStackBytes(stack, 1);
             }
         }
 
