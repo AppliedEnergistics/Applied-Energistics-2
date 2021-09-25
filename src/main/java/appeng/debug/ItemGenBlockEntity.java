@@ -37,16 +37,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import appeng.api.inventories.BaseInternalInventory;
+import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
 
 public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
     private static final Queue<ItemStack> SHARED_POSSIBLE_ITEMS = new ArrayDeque<>();
 
-    private final IItemHandler handler = new QueuedItemHandler();
+    private final InternalInventory handler = new QueuedItemHandler();
 
     private Item filter = Items.AIR;
     private final Queue<ItemStack> possibleItems = new ArrayDeque<>();
@@ -80,7 +81,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
     @Nullable
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.handler);
+            return (LazyOptional<T>) LazyOptional.of(this.handler::toItemHandler);
         }
         return super.getCapability(capability, facing);
     }
@@ -116,7 +117,10 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         }
     }
 
-    class QueuedItemHandler implements IItemHandler {
+    class QueuedItemHandler extends BaseInternalInventory {
+        @Override
+        public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+        }
 
         @Override
         @Nonnull
@@ -133,6 +137,11 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
             return false;
+        }
+
+        @Override
+        public int size() {
+            return 1;
         }
 
         @Override
@@ -157,11 +166,6 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
             getPossibleItems().add(is);
             return is.copy();
-        }
-
-        @Override
-        public int getSlots() {
-            return 1;
         }
     }
 }
