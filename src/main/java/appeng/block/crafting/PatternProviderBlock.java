@@ -49,6 +49,7 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
 
     public PatternProviderBlock() {
         super(defaultProps(Material.METAL));
+        registerDefaultState(defaultBlockState().setValue(OMNIDIRECTIONAL, true));
     }
 
     @Override

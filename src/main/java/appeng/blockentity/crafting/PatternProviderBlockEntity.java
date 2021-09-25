@@ -46,7 +46,7 @@ import appeng.util.Platform;
 
 public class PatternProviderBlockEntity extends AENetworkBlockEntity implements IPatternProviderHost {
     private final DualityPatternProvider duality = new DualityPatternProvider(this.getMainNode(), this);
-    private boolean omniDirectional = false;
+    private boolean omniDirectional = true;
 
     public PatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
