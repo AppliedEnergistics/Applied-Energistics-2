@@ -489,11 +489,38 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
     }
 
+    /**
+     * @return True, if any slot can be converted from item->fluid.
+     */
+    public boolean canConvertItemsToFluids() {
+        if (isCraftingMode()) {
+            return false;
+        }
+
+        for (var slot : this.craftingGridSlots) {
+            if (canConvertItemToFluid(slot)) {
+                return true;
+            }
+        }
+        for (var slot : this.processingOutputSlots) {
+            if (canConvertItemToFluid(slot)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static void convertItemToFluid(Slot slot) {
         var fluidStack = FluidUtil.getFluidContained(slot.getItem());
         fluidStack.ifPresent(fs -> {
             slot.set(FluidDummyItem.fromFluidStack(fs, true));
         });
+    }
+
+    private static boolean canConvertItemToFluid(Slot slot) {
+        var fluidStack = FluidUtil.getFluidContained(slot.getItem());
+        return !fluidStack.isEmpty();
     }
 
     public FakeCraftingMatrixSlot[] getCraftingGridSlots() {
