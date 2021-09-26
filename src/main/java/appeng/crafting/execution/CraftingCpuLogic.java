@@ -41,7 +41,6 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedItemList;
 import appeng.core.AELog;
@@ -310,6 +309,12 @@ public class CraftingCpuLogic {
 
         // Clear waitingFor list and post all the relevant changes.
         job.waitingFor.clear();
+        // Notify opened menus of cancelled scheduled tasks.
+        for (var entry : job.tasks.entrySet()) {
+            for (var output : entry.getKey().getOutputs()) {
+                postChange(output);
+            }
+        }
         // Finish job.
         this.job = null;
 
@@ -348,8 +353,8 @@ public class CraftingCpuLogic {
 
         for (IAEStack is : this.inventory.list) {
             this.postChange(is);
-            IMEMonitor networkInventory = sg.getInventory(is.getChannel());
-            IAEStack remainder = networkInventory.injectItems(IAEStack.copy(is), Actionable.MODULATE, cluster.getSrc());
+            IAEStack remainder = GenericStackHelper.injectMonitorable(sg, IAEStack.copy(is), Actionable.MODULATE,
+                    cluster.getSrc());
 
             // The network was unable to receive all of the items, i.e. no or not enough storage space left
             if (remainder != null) {
