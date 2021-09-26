@@ -30,12 +30,20 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
+/**
+ * Registry for {@link IAEStackRenderHandler}. Also contains convenience functions to render a stack without having to
+ * query the render handler first.
+ */
 @OnlyIn(Dist.CLIENT)
 @ThreadSafe
 public class AEStackRendering {
@@ -57,5 +65,43 @@ public class AEStackRendering {
     @Nullable
     public static <T extends IAEStack> IAEStackRenderHandler<T> get(IStorageChannel<T> channel) {
         return (IAEStackRenderHandler<T>) renderers.get(channel);
+    }
+
+    public static <T extends IAEStack> IAEStackRenderHandler<T> getOrThrow(IStorageChannel<T> channel) {
+        var renderHandler = get(channel);
+
+        if (renderHandler == null) {
+            throw new IllegalArgumentException("Missing render handler for channel " + channel);
+        }
+
+        return renderHandler;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static IAEStackRenderHandler getUnchecked(IAEStack stack) {
+        return getOrThrow(stack.getChannel());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, IAEStack stack) {
+        getUnchecked(stack).drawRepresentation(minecraft, poseStack, x, y, stack);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Component getDisplayName(IAEStack stack) {
+        return getUnchecked(stack).getDisplayName(stack);
+    }
+
+    public static String formatAmount(IAEStack stack, AmountFormat format) {
+        return formatAmount(stack, stack.getStackSize(), format);
+    }
+
+    public static String formatAmount(IAEStack stack, long amount, AmountFormat format) {
+        return getUnchecked(stack).formatAmount(amount, format);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static String getModid(IAEStack stack) {
+        return getUnchecked(stack).getModid(stack);
     }
 }

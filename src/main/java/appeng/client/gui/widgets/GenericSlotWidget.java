@@ -34,7 +34,6 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.client.AmountFormat;
-import appeng.api.client.IAEStackRenderHandler;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.helpers.iface.GenericStackInv;
 import appeng.util.Platform;
@@ -63,26 +62,21 @@ public class GenericSlotWidget extends CustomSlotWidget {
     public void drawContent(PoseStack poseStack, Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         var stack = inv.getStack(slot);
         if (stack != null) {
-            // TODO rawtype
-            IAEStackRenderHandler renderHandler = AEStackRendering.get(stack.getChannel());
+            AEStackRendering.drawRepresentation(Minecraft.getInstance(), poseStack, getTooltipAreaX(),
+                    getTooltipAreaY(), stack);
 
-            if (renderHandler != null) {
-                renderHandler.drawRepresentation(Minecraft.getInstance(), poseStack, getTooltipAreaX(),
-                        getTooltipAreaY(), stack);
+            // The font renderer uses this global stack, so we have to apply the current transform to it.
+            var globalStack = RenderSystem.getModelViewStack();
+            globalStack.pushPose();
+            globalStack.mulPoseMatrix(poseStack.last().pose());
+            RenderSystem.applyModelViewMatrix();
 
-                // The font renderer uses this global stack, so we have to apply the current transform to it.
-                var globalStack = RenderSystem.getModelViewStack();
-                globalStack.pushPose();
-                globalStack.mulPoseMatrix(poseStack.last().pose());
-                RenderSystem.applyModelViewMatrix();
+            var text = AEStackRendering.formatAmount(stack, AmountFormat.PREVIEW_LARGE_FONT);
+            StackSizeRenderer.renderSizeLabel(screen.getMinecraft().font, getTooltipAreaX(), getTooltipAreaY(), text,
+                    true);
 
-                var text = renderHandler.formatAmount(stack.getStackSize(), AmountFormat.PREVIEW_LARGE_FONT);
-                StackSizeRenderer.renderSizeLabel(screen.getMinecraft().font, getTooltipAreaX(), getTooltipAreaY(),
-                        text, true);
-
-                globalStack.popPose();
-                RenderSystem.applyModelViewMatrix();
-            }
+            globalStack.popPose();
+            RenderSystem.applyModelViewMatrix();
         }
 
     }
@@ -92,15 +86,10 @@ public class GenericSlotWidget extends CustomSlotWidget {
     public List<Component> getTooltipMessage() {
         var stack = inv.getStack(slot);
         if (stack != null) {
-            // TODO rawtype
-            IAEStackRenderHandler renderHandler = AEStackRendering.get(stack.getChannel());
-
-            if (renderHandler != null) {
-                var list = new ArrayList<Component>();
-                list.add(renderHandler.getDisplayName(stack));
-                list.add(new TextComponent(Platform.formatModName(renderHandler.getModid(stack))));
-                return list;
-            }
+            var list = new ArrayList<Component>();
+            list.add(AEStackRendering.getDisplayName(stack));
+            list.add(new TextComponent(Platform.formatModName(AEStackRendering.getModid(stack))));
+            return list;
         }
         return List.of();
     }
