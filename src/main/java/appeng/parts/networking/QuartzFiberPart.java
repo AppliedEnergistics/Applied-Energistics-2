@@ -65,6 +65,7 @@ public class QuartzFiberPart extends AEBasePart {
                 .setIdlePowerUsage(0)
                 .setVisualRepresentation(is)
                 .setFlags(GridFlags.CANNOT_CARRY)
+                .setInWorldNode(true)
                 .addService(IEnergyGridProvider.class, energyBridge);
     }
 

@@ -62,13 +62,14 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             return;
         }
 
-        Direction newForward = facing;
+        Direction newForward;
 
         if (!this.omniDirectional && this.getForward() == facing.getOpposite()) {
             newForward = facing;
         } else if (!this.omniDirectional
                 && (this.getForward() == facing || this.getForward() == facing.getOpposite())) {
             this.omniDirectional = true;
+            newForward = facing;
         } else if (this.omniDirectional) {
             newForward = facing.getOpposite();
             this.omniDirectional = false;

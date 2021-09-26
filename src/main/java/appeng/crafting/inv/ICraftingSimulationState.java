@@ -31,6 +31,7 @@ public interface ICraftingSimulationState extends ICraftingInventory {
     void addBytes(double bytes);
 
     default void addStackBytes(IAEStack stack, long multiplier) {
+        // Crafting storage is 8 times bigger than normal storage, this is intentional.
         addBytes((double) stack.getStackSize() * multiplier / stack.getChannel().getUnitsPerByte() * 8);
     }
 
