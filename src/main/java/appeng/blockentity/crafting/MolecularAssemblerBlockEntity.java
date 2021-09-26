@@ -151,6 +151,13 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 stack.decStackSize(1);
             }
         }
+
+        // Sanity check
+        for (MixedItemList list : table) {
+            if (!list.isEmpty()) {
+                throw new RuntimeException("Could not fill grid with some items, including " + list.iterator().next());
+            }
+        }
     }
 
     private void updateSleepiness() {

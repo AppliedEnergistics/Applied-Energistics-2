@@ -88,6 +88,9 @@ public class AECraftingPattern implements IAEPatternDetails {
         // Compress inputs
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
         this.inputs = new Input[condensedInputs.length];
+        for (int i = 0; i < 9; ++i) {
+            sparseToCompressed[i] = -1;
+        }
         for (int j = 0; j < condensedInputs.length; ++j) {
             var condensedInput = condensedInputs[j];
 
@@ -268,7 +271,7 @@ public class AECraftingPattern implements IAEPatternDetails {
             this.slot = slot;
             this.multiplier = condensedInput.getStackSize();
 
-            if (canSubstitute) {
+            if (!canSubstitute) {
                 this.possibleInputs = new IAEItemStack[] { sparseInputs[slot] };
             } else {
                 ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();

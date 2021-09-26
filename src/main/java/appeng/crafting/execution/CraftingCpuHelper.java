@@ -176,7 +176,10 @@ public class CraftingCpuHelper {
         for (var stack : possibleInputs) {
             for (var fuzz : inv.findFuzzyTemplates(stack)) {
                 // Set the correct amount, it has to match that of the template!
-                substitutes.add(IAEStack.copy(fuzz, stack.getStackSize()));
+                var fuzzCopy = IAEStack.copy(fuzz, stack.getStackSize());
+                // Craftable flag is true in the ICraftingInventory to avoid cleanup, but we don't want to leak it.
+                fuzzCopy.setCraftable(false);
+                substitutes.add(fuzzCopy);
             }
         }
 
