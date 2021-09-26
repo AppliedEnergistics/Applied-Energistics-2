@@ -23,6 +23,8 @@
 
 package appeng.api.client;
 
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
@@ -46,6 +48,13 @@ public interface IAEStackRenderHandler<T extends IAEStack> {
      * Name of the stack, ignoring the amount.
      */
     Component getDisplayName(T stack);
+
+    /**
+     * Return the full tooltip, with the name of the stack and any additional lines.
+     */
+    default List<Component> getTooltip(T stack) {
+        return List.of(getDisplayName(stack));
+    }
 
     /**
      * Format the amount into a user-readable string. See {@link AmountFormat} for an explanation of the different

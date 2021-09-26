@@ -18,6 +18,23 @@
 
 package appeng.integration.modules.waila.tile;
 
+import java.util.ArrayList;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+import mcp.mobius.waila.api.BlockAccessor;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -30,21 +47,6 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
-import mcp.mobius.waila.api.BlockAccessor;
-import mcp.mobius.waila.api.ITooltip;
-import mcp.mobius.waila.api.config.IPluginConfig;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-
-import java.util.ArrayList;
 
 /**
  * Add debug info to the waila tooltip if the user is holding a debug card.
@@ -170,7 +172,7 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
 
     @Override
     public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity,
-                                 boolean showDetails) {
+            boolean showDetails) {
         if (isVisible(player) && blockEntity instanceof IGridConnectedBlockEntity gridConnected) {
             addServerDataMainNode(tag, gridConnected.getMainNode());
         }
@@ -198,7 +200,7 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
             var max = tickManager.getMaximumTime(node);
             var sum = tickManager.getOverallTime(node);
 
-            tag.putLongArray(TAG_TICK_TIME, new long[]{avg, max, sum});
+            tag.putLongArray(TAG_TICK_TIME, new long[] { avg, max, sum });
 
             var status = tickManager.getStatus(node);
             tag.putBoolean(TAG_TICK_SLEEPING, status.sleeping());

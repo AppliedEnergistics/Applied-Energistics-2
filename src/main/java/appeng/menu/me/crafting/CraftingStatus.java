@@ -24,7 +24,6 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.data.IAEStack;
 import appeng.crafting.execution.CraftingCpuLogic;
@@ -35,8 +34,8 @@ import appeng.menu.me.common.IncrementalUpdateHelper;
  * Describes a currently running crafting job. A crafting status can either be a full update which replaces any
  * previously kept state on the client ({@link #isFullStatus()}, or an incremental update, which uses previously sent
  * {@link CraftingStatusEntry#getSerial() serials} to update entries on the client that were previously sent. To reduce
- * the packet size for updates, the {@link CraftingStatusEntry#getItem() display item} for entries that were previously
- * sent to the client are set to {@link ItemStack#EMPTY}.
+ * the packet size for updates, the {@link CraftingStatusEntry#getStack() stack} for entries that were previously sent
+ * to the client are set to {@code null}.
  */
 public class CraftingStatus {
 
@@ -131,15 +130,15 @@ public class CraftingStatus {
             long activeCount = logic.getWaitingFor(stack);
             long pendingCount = logic.getPendingOutputs(stack);
 
-            ItemStack item = stack.asItemStackRepresentation();
+            IAEStack sentStack = IAEStack.copy(stack);
             if (!full && changes.getSerial(stack) != null) {
                 // The item was already sent to the client, so we can skip the item stack
-                item = ItemStack.EMPTY;
+                sentStack = null;
             }
 
             var entry = new CraftingStatusEntry(
                     changes.getOrAssignSerial(stack),
-                    item,
+                    sentStack,
                     storedCount,
                     activeCount,
                     pendingCount);

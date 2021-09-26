@@ -138,7 +138,7 @@ public class CraftingPlanSummary {
             long craftAmount = out.getCountRequestable();
 
             entries.add(new CraftingPlanSummaryEntry(
-                    out.asItemStackRepresentation(),
+                    out,
                     missingAmount,
                     storedAmount,
                     craftAmount));

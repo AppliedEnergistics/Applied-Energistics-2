@@ -23,9 +23,7 @@
 
 package appeng.api.client;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
@@ -90,6 +88,12 @@ public class AEStackRendering {
     @SuppressWarnings("unchecked")
     public static Component getDisplayName(IAEStack stack) {
         return getUnchecked(stack).getDisplayName(stack);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Component> getTooltip(IAEStack stack) {
+        // The array list is used to ensure mutability of the returned tooltip.
+        return new ArrayList<Component>(getUnchecked(stack).getTooltip(stack));
     }
 
     public static String formatAmount(IAEStack stack, AmountFormat format) {

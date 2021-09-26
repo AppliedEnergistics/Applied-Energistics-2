@@ -134,7 +134,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
             if (existingEntry != null) {
                 entries.put(entry.getSerial(), new CraftingStatusEntry(
                         existingEntry.getSerial(),
-                        existingEntry.getItem(),
+                        existingEntry.getStack(),
                         entry.getStoredAmount(),
                         entry.getActiveAmount(),
                         entry.getPendingAmount()));

@@ -18,12 +18,15 @@
 
 package appeng.init.client;
 
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.client.AmountFormat;
@@ -61,6 +64,13 @@ public class InitStackRenderHandlers {
             @Override
             public Component getDisplayName(IAEItemStack stack) {
                 return stack.getDefinition().getHoverName();
+            }
+
+            @Override
+            public List<Component> getTooltip(IAEItemStack stack) {
+                return stack.getDefinition().copy().getTooltipLines(null,
+                        Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
+                                : TooltipFlag.Default.NORMAL);
             }
 
             @Override

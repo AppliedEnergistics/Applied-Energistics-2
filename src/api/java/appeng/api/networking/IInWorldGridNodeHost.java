@@ -29,7 +29,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
 
 /**

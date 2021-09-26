@@ -18,7 +18,10 @@
 
 package appeng.crafting.execution;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.config.Actionable;
@@ -46,6 +49,23 @@ public class GenericStackHelper {
         // TODO: what if a channel gets removed?
         var channel = StorageChannels.get(new ResourceLocation(tag.getString("chan")));
         return channel.createFromNBT(tag);
+    }
+
+    public static void writeGenericStack(FriendlyByteBuf buf, @Nullable IAEStack stack) {
+        buf.writeBoolean(stack == null);
+        if (stack != null) {
+            buf.writeResourceLocation(stack.getChannel().getId());
+            stack.writeToPacket(buf);
+        }
+    }
+
+    @Nullable
+    public static IAEStack readGenericStack(FriendlyByteBuf buf) {
+        if (buf.readBoolean()) {
+            return null;
+        }
+        var channel = StorageChannels.get(buf.readResourceLocation());
+        return channel.readFromPacket(buf);
     }
 
     public static IAEStack injectMonitorable(IStorageMonitorable monitorable, IAEStack what, Actionable mode,

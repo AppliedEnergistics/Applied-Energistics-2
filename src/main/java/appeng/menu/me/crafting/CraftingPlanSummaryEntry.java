@@ -19,27 +19,29 @@
 package appeng.menu.me.crafting;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
+
+import appeng.api.storage.data.IAEStack;
+import appeng.crafting.execution.GenericStackHelper;
 
 /**
  * Describes an entry in the crafting plan which describes how many items of one type are missing, already stored in the
  * network, or have to be crafted.
  */
 public class CraftingPlanSummaryEntry {
-    private final ItemStack item;
+    private final IAEStack stack;
     private final long missingAmount;
     private final long storedAmount;
     private final long craftAmount;
 
-    public CraftingPlanSummaryEntry(ItemStack item, long missingAmount, long storedAmount, long craftAmount) {
-        this.item = item;
+    public CraftingPlanSummaryEntry(IAEStack stack, long missingAmount, long storedAmount, long craftAmount) {
+        this.stack = stack;
         this.missingAmount = missingAmount;
         this.storedAmount = storedAmount;
         this.craftAmount = craftAmount;
     }
 
-    public ItemStack getItem() {
-        return item;
+    public IAEStack getStack() {
+        return stack;
     }
 
     public long getMissingAmount() {
@@ -55,18 +57,18 @@ public class CraftingPlanSummaryEntry {
     }
 
     public void write(FriendlyByteBuf buffer) {
-        buffer.writeItemStack(item, true);
+        GenericStackHelper.writeGenericStack(buffer, stack);
         buffer.writeVarLong(missingAmount);
         buffer.writeVarLong(storedAmount);
         buffer.writeVarLong(craftAmount);
     }
 
     public static CraftingPlanSummaryEntry read(FriendlyByteBuf buffer) {
-        ItemStack item = buffer.readItem();
+        IAEStack stack = GenericStackHelper.readGenericStack(buffer);
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();
         long craftAmount = buffer.readVarLong();
-        return new CraftingPlanSummaryEntry(item, missingAmount, storedAmount, craftAmount);
+        return new CraftingPlanSummaryEntry(stack, missingAmount, storedAmount, craftAmount);
     }
 
 }

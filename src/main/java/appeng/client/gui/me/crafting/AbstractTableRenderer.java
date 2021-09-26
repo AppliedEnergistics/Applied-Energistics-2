@@ -26,8 +26,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
+import appeng.api.client.AEStackRendering;
+import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 
@@ -111,10 +112,10 @@ public abstract class AbstractTableRenderer<T> {
                 }
                 poseStack.popPose();
 
-                ItemStack is = getEntryItem(entry);
+                var entryStack = getEntryStack(entry);
 
                 int itemY = cellY + (CELL_HEIGHT - 16) / 2;
-                screen.drawItem(itemX, itemY, is);
+                AEStackRendering.drawRepresentation(Minecraft.getInstance(), poseStack, itemX, itemY, entryStack);
 
                 int overlay = getEntryOverlayColor(entry);
                 if (overlay != 0) {
@@ -148,7 +149,7 @@ public abstract class AbstractTableRenderer<T> {
     /**
      * Get the item to show for an entry.
      */
-    protected abstract ItemStack getEntryItem(T entry);
+    protected abstract IAEStack getEntryStack(T entry);
 
     /**
      * Get the tooltip lines to show for an entry.
