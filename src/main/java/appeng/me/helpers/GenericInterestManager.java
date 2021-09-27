@@ -23,10 +23,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEStack;
-import appeng.util.item.AEItemStack;
 import com.google.common.collect.Multimap;
+
+import appeng.api.storage.data.IAEStack;
 
 
 public class GenericInterestManager<T>
@@ -102,30 +101,12 @@ public class GenericInterestManager<T>
 
 	public boolean containsKey( final IAEStack stack )
 	{
-		if( stack.isItem() && ( ( AEItemStack ) stack ).getItem().isDamageable() )
-		{
-			return this.container.keySet().stream().filter( s -> s.isItem() )
-					.anyMatch( s -> s.fuzzyComparison( stack, FuzzyMode.IGNORE_ALL ) );
-		}
 		return this.container.containsKey( stack );
 	}
 
 	public Collection<T> get( final IAEStack stack )
 	{
-		Collection<T> watchers = new ArrayList<>();
-		if( stack.isItem() && ( ( AEItemStack ) stack ).getItem().isDamageable() )
-		{
-			this.container.keySet().stream().filter( s -> s.isItem() )
-					.filter( k -> k.fuzzyComparison( stack, FuzzyMode.IGNORE_ALL ) )
-					.forEach( key ->
-							watchers.addAll( this.container.get( key ) )
-					);
-		}
-		else
-		{
-			return this.container.get( stack );
-		}
-		return watchers;
+		return this.container.get( stack );
 	}
 
 	private class SavedTransactions

@@ -62,6 +62,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	private boolean wasActive = false;
 	private int priority = 0;
 	protected boolean accessChanged;
+	protected boolean readOncePass;
 
 	public PartSharedStorageBus( ItemStack is )
 	{
@@ -86,8 +87,9 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 		}
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void updateChannels( final MENetworkChannelsChanged changedChannels )
+	public void chanRender( final MENetworkChannelsChanged changedChannels )
 	{
 		this.updateStatus();
 	}
@@ -153,7 +155,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	@Override
 	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
-		if( settingName instanceof AccessRestriction )
+		if( settingName.name().equals( "ACCESS" ) )
 		{
 			this.accessChanged = true;
 		}
@@ -178,7 +180,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 					this.resetCache();
 				}
 			}
-			if( te == null || te instanceof TileFluidInterface )
+			else if( te == null || te instanceof TileFluidInterface )
 			{
 				this.resetCache( true );
 				this.resetCache();
@@ -195,6 +197,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	{
 		super.readFromNBT( data );
 		this.priority = data.getInteger( "priority" );
+		this.accessChanged = false;
 	}
 
 	@Override

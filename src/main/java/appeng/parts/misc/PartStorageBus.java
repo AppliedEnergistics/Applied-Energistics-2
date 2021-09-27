@@ -23,9 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import appeng.fluids.parts.FluidHandlerAdapter;
-import appeng.me.storage.MEPassThrough;
-import appeng.parts.AEBasePart;
 import appeng.tile.misc.TileInterface;
 import appeng.tile.networking.TileCableBus;
 import appeng.util.ConfigManager;
@@ -92,7 +89,6 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.PartModel;
 import appeng.parts.automation.PartUpgradeable;
 import appeng.tile.inventory.AppEngInternalAEInventory;
@@ -128,6 +124,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	private boolean wasActive = false;
 	private byte resetCacheLogic = 0;
 	private boolean accessChanged;
+	private boolean readOncePass;
 
 	@Reflected
 	public PartStorageBus( final ItemStack is )
@@ -164,8 +161,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		}
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void updateChannels( final MENetworkChannelsChanged changedChannels )
+	public void chanRender( final MENetworkChannelsChanged changedChannels )
 	{
 		this.updateStatus();
 	}
@@ -179,7 +177,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
-		if( settingName instanceof AccessRestriction )
+		if( settingName.name().equals( "ACCESS" ) )
 		{
 			this.accessChanged = true;
 		}
@@ -211,6 +209,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
 		this.priority = data.getInteger( "priority" );
+		this.accessChanged = false;
 	}
 
 	@Override
@@ -269,24 +268,34 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource source )
 	{
-		if( this.mySrc.machine().map( machine -> machine == this ).orElse( false ) && monitor != null )
+		if( this.getProxy().isActive() )
 		{
 			AccessRestriction currentAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getSetting( Settings.ACCESS );
+			if( readOncePass )
+			{
+				readOncePass = false;
+				try
+				{
+					this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change, source );
+				}
+				catch( final GridAccessException e )
+				{
+					// :(
+				}
+				return;
+			}
 			if( !currentAccess.hasPermission( AccessRestriction.READ ) )
 			{
 				return;
 			}
-		}
-		try
-		{
-			if( this.getProxy().isActive() )
+			try
 			{
-				this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change, this.mySrc );
+				this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change, source );
 			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :(
+			catch( final GridAccessException e )
+			{
+				// :(
+			}
 		}
 	}
 
@@ -321,7 +330,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 					this.resetCache();
 				}
 			}
-			if( te == null || te instanceof TileInterface )
+			else if( te == null || te instanceof TileInterface )
 			{
 				this.resetCache( true );
 				this.resetCache();
@@ -377,8 +386,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.resetCacheLogic = 0;
 
 		final MEInventoryHandler<IAEItemStack> in = this.getInternalHandler();
+
 		IItemList<IAEItemStack> before = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-		boolean denyRead = false;
 		if( in != null )
 		{
 			if( accessChanged )
@@ -387,7 +396,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				AccessRestriction oldAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getOldSetting( Settings.ACCESS );
 				if( oldAccess.hasPermission( AccessRestriction.READ ) && !currentAccess.hasPermission( AccessRestriction.READ ) )
 				{
-					denyRead = true;
+					readOncePass = true;
 				}
 				in.setBaseAccess( oldAccess );
 				before = in.getAvailableItems( before );
@@ -408,17 +417,15 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		final MEInventoryHandler<IAEItemStack> out = this.getInternalHandler();
 
-		if( in != out || denyRead )
-		{
-			IItemList<IAEItemStack> after = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+		IItemList<IAEItemStack> after = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
-			if( out != null && !denyRead )
+		if( in != out )
+		{
+			if( out != null )
 			{
 				after = out.getAvailableItems( after );
 			}
-
 			Platform.postListChanges( before, after, this, this.mySrc );
-
 		}
 	}
 
@@ -522,7 +529,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			if( inv instanceof ITickingMonitor )
 			{
 				this.monitor = (ITickingMonitor) inv;
-				this.monitor.setActionSource( new MachineSource( this ) );
+				this.monitor.setActionSource( mySrc );
 				this.monitor.setMode( (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
 			}
 
@@ -561,7 +568,10 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 				if( inv instanceof IBaseMonitor )
 				{
-					( (IBaseMonitor<IAEItemStack>) inv ).addListener( this, this.handler );
+					if( ( (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getSetting( Settings.ACCESS ) ).hasPermission( AccessRestriction.READ ) )
+					{
+						( (IBaseMonitor<IAEItemStack>) inv ).addListener( this, this.handler );
+					}
 				}
 			}
 		}

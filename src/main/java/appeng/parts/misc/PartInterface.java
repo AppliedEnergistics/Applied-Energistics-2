@@ -95,14 +95,16 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 		super( is );
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void stateChange( final MENetworkChannelsChanged c )
+	public void chanRender( final MENetworkChannelsChanged c )
 	{
 		this.duality.notifyNeighbors();
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void stateChange( final MENetworkPowerStatusChange c )
+	public void powerRender( final MENetworkPowerStatusChange c )
 	{
 		this.duality.notifyNeighbors();
 	}

@@ -19,6 +19,7 @@
 package appeng.me.helpers;
 
 
+import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,4 +56,24 @@ public class MachineSource implements IActionSource
 		return Optional.empty();
 	}
 
+	@Override
+	public boolean equals( Object o )
+	{
+		if( this == o )
+		{
+			return true;
+		}
+		if( o == null || getClass() != o.getClass() )
+		{
+			return false;
+		}
+		MachineSource that = (MachineSource) o;
+		return via.equals( that.via );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash( via );
+	}
 }

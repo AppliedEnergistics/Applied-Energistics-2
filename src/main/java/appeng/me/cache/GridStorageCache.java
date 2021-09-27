@@ -109,9 +109,6 @@ public class GridStorageCache implements IStorageGrid
 				this.watchers.remove( node );
 			}
 		}
-
-		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
-
 	}
 
 	@Override
@@ -140,9 +137,6 @@ public class GridStorageCache implements IStorageGrid
 			this.watchers.put( node, iw );
 			swh.updateWatcher( iw );
 		}
-
-		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
-
 	}
 
 	@Override
@@ -334,7 +328,10 @@ public class GridStorageCache implements IStorageGrid
 
 		public void applyChanges()
 		{
-			GridStorageCache.this.postChangesToNetwork( this.channel, this.up_or_down, this.list, this.src );
+			if( !this.list.isEmpty() )
+			{
+				GridStorageCache.this.postChangesToNetwork( this.channel, this.up_or_down, this.list, this.src );
+			}
 		}
 	}
 

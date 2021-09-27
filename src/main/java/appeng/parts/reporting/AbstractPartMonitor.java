@@ -417,7 +417,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	@Override
 	public void onStackChange( IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src, IStorageChannel<?> chan )
 	{
-		this.configuredAmount = this.configuredAmount + diffStack.getStackSize();
+		this.configuredAmount = fullStack.getStackSize();
 
 		if( this.configuredItem != null )
 		{

@@ -288,24 +288,4 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 		this.mySource = mySource;
 	}
 
-	private static class CachedItemStack
-	{
-
-		private final ItemStack itemStack;
-		private final IAEItemStack aeStack;
-
-		public CachedItemStack( final ItemStack is )
-		{
-			if( is.isEmpty() )
-			{
-				this.itemStack = ItemStack.EMPTY;
-				this.aeStack = null;
-			}
-			else
-			{
-				this.itemStack = is.copy();
-				this.aeStack = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
-			}
-		}
-	}
 }

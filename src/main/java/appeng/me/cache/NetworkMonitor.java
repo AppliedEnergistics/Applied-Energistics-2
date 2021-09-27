@@ -40,9 +40,7 @@ import com.google.common.collect.Queues;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
 
 
@@ -50,6 +48,9 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 {
 	@Nonnull
 	private static final Deque<NetworkMonitor<?>> GLOBAL_DEPTH = Queues.newArrayDeque();
+	private static final Set<NetworkMonitor<?>> MONITORS = new HashSet<>();
+	protected static boolean nested = false;
+	protected boolean isNested = false;
 
 	@Nonnull
 	private final GridStorageCache myGridCache;
@@ -125,10 +126,6 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	public long getGridCurrentCount()
 	{
-		if( forceUpdate )
-		{
-			getStorageList();
-		}
 		if( myChannel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			return gridItemCount;
@@ -140,42 +137,23 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		return 0;
 	}
 
-	public void incGridCurrentCount(long count)
+	public long incGridCurrentCount(long count)
 	{
 		if( myChannel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			gridItemCount += count;
+			return gridItemCount += count;
 		}
 		else if( myChannel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
-			gridFluidCount += count;
+			return gridFluidCount += count;
 		}
+		return 0;
 	}
 
 	@Nonnull
 	@Override
 	public IItemList<T> getStorageList()
 	{
-		if( forceUpdate )
-		{
-			forceUpdate = false;
-			this.cachedList.resetStatus();
-			this.getAvailableItems( this.cachedList );
-
-			long count = 0;
-			for (T stack : this.cachedList) {
-				count += stack.getStackSize();
-			}
-			if( myChannel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-			{
-				gridItemCount = count;
-			}
-			else if( myChannel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
-			{
-				gridFluidCount = count;
-			}
-		}
-
 		return this.cachedList;
 	}
 
@@ -222,6 +200,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		{
 			final Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
 			final IMEMonitorHandlerReceiver<T> receiver = o.getKey();
+
 			if( receiver.isValid( o.getValue() ) )
 			{
 				receiver.postChange( this, diff, src );
@@ -251,27 +230,29 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	protected void postChange( final boolean add, final Iterable<T> changes, final IActionSource src )
 	{
-		if( this.localDepthSemaphore > 0 || GLOBAL_DEPTH.contains( this ) )
+		if( MONITORS.contains( this ) )
 		{
+			nested = true;
 			return;
 		}
 
-		this.localDepthSemaphore++;
+		MONITORS.add( this );
+
 		GLOBAL_DEPTH.push( this );
 
 		this.sendEvent = true;
 
-		for( final T changed : changes )
+		for( final T change : changes )
 		{
-			T change = changed;
+			//T change = changed;
 			if( !add && change != null )
 			{
-				change = changed.copy();
+				//change = changed.copy();
 				change.setStackSize( -change.getStackSize() );
 			}
 
 			incGridCurrentCount( change.getStackSize() );
-			this.cachedList.add( change );
+			this.cachedList.addStorage( change );
 
 			if( this.myGridCache.getInterestManager().containsKey( change ) )
 			{
@@ -302,7 +283,16 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		this.notifyListenersOfChange( changes, src );
 
 		final NetworkMonitor<?> last = GLOBAL_DEPTH.pop();
-		this.localDepthSemaphore--;
+
+		if( GLOBAL_DEPTH.isEmpty() )
+		{
+			for( NetworkMonitor<?> nm : MONITORS )
+			{
+				nm.setupForceUpdate();
+			}
+			nested = false;
+			MONITORS.clear();
+		}
 
 		if( last != this )
 		{
@@ -310,9 +300,60 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		}
 	}
 
+	void setupForceUpdate()
+	{
+		if( nested != isNested )
+		{
+			isNested = nested;
+			forceUpdate();
+		}
+	}
+
 	void forceUpdate()
 	{
-		this.forceUpdate = true;
+		forceUpdate = false;
+		this.cachedList.resetStatus();
+		this.getAvailableItems( this.cachedList );
+
+		long count = 0;
+		for( T stack : this.cachedList )
+		{
+			count += stack.getStackSize();
+
+			if( this.myGridCache.getInterestManager().containsKey( stack ) )
+			{
+				final Collection<ItemWatcher> list = this.myGridCache.getInterestManager().get( stack );
+
+				if( !list.isEmpty() )
+				{
+					IAEStack<T> fullStack = this.getStorageList().findPrecise( stack );
+
+					if( fullStack == null )
+					{
+						fullStack = stack.copy();
+						fullStack.setStackSize( 0 );
+					}
+
+					this.myGridCache.getInterestManager().enableTransactions();
+
+					for ( final ItemWatcher iw : list )
+					{
+						iw.getHost().onStackChange( this.getStorageList(), fullStack, stack, null, this.getChannel() );
+					}
+
+					this.myGridCache.getInterestManager().disableTransactions();
+				}
+			}
+		}
+
+		if( myChannel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		{
+			gridItemCount = count;
+		}
+		else if( myChannel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
+		{
+			gridFluidCount = count;
+		}
 
 		final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
 		while ( i.hasNext() )
@@ -338,6 +379,5 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 			this.sendEvent = false;
 			this.myGridCache.getGrid().postEvent( new MENetworkStorageEvent( this, this.myChannel ) );
 		}
-
 	}
 }

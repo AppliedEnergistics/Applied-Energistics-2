@@ -25,6 +25,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.util.ConfigManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -170,7 +171,6 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 
 		final MEInventoryHandler<IAEFluidStack> in = this.getInternalHandler();
 		IItemList<IAEFluidStack> before = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
-		boolean denyRead = false;
 		if( in != null )
 		{
 			if( accessChanged )
@@ -179,7 +179,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 				AccessRestriction oldAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getOldSetting( Settings.ACCESS );
 				if( oldAccess.hasPermission( AccessRestriction.READ ) && !currentAccess.hasPermission( AccessRestriction.READ ) )
 				{
-					denyRead = true;
+					readOncePass = true;
 				}
 				in.setBaseAccess( oldAccess );
 				before = in.getAvailableItems( before );
@@ -199,16 +199,14 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		}
 
 		final MEInventoryHandler<IAEFluidStack> out = this.getInternalHandler();
+		IItemList<IAEFluidStack> after = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 
-		if( in != out || denyRead )
+		if( in != out )
 		{
-			IItemList<IAEFluidStack> after = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
-
-			if( out != null && !denyRead )
+			if( out != null )
 			{
 				after = out.getAvailableItems( after );
 			}
-
 			Platform.postListChanges( before, after, this, this.source );
 		}
 	}
@@ -284,24 +282,34 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	@Override
 	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change, final IActionSource source )
 	{
-		if( this.source.machine().map( machine -> machine == this ).orElse( false ) && monitor != null )
+		if( this.getProxy().isActive() )
 		{
 			AccessRestriction currentAccess = (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getSetting( Settings.ACCESS );
+			if( readOncePass )
+			{
+				readOncePass = false;
+				try
+				{
+					this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, source );
+				}
+				catch( final GridAccessException e )
+				{
+					// :(
+				}
+				return;
+			}
 			if( !currentAccess.hasPermission( AccessRestriction.READ ) )
 			{
 				return;
 			}
-		}
-		try
-		{
-			if( this.getProxy().isActive() )
+			try
 			{
-				this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
+				this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, source );
 			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :(
+			catch( final GridAccessException e )
+			{
+				// :(
+			}
 		}
 	}
 
@@ -337,7 +345,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 			if( inv instanceof ITickingMonitor )
 			{
 				this.monitor = (ITickingMonitor) inv;
-				this.monitor.setActionSource( new MachineSource( this ) );
+				this.monitor.setActionSource( this.source );
 				this.monitor.setMode( (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
 			}
 
@@ -375,7 +383,10 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 
 				if( inv instanceof IBaseMonitor )
 				{
-					( (IBaseMonitor<IAEFluidStack>) inv ).addListener( this, this.handler );
+					if( ( (AccessRestriction) ( (ConfigManager) this.getConfigManager() ).getSetting( Settings.ACCESS ) ).hasPermission( AccessRestriction.READ ) )
+					{
+						( (IBaseMonitor<IAEFluidStack>) inv ).addListener( this, this.handler );
+					}
 				}
 			}
 		}

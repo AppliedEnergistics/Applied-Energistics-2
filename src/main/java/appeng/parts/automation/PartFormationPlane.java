@@ -187,8 +187,9 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 		this.stateChanged();
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void updateChannels( final MENetworkChannelsChanged changedChannels )
+	public void chanRender( final MENetworkChannelsChanged changedChannels )
 	{
 		this.stateChanged();
 	}

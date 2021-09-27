@@ -26,11 +26,12 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Actionable;
-import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
+
+import java.util.Collections;
 
 
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
@@ -39,16 +40,16 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	private int oldStatus = 0;
 	private final ItemStack is;
 	private final ICellHandler handler;
-	private final IChestOrDrive cord;
+	private final TileDrive drive;
 	private IActionSource source;
 
-	public DriveWatcher( final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han, final IChestOrDrive cod )
+	public DriveWatcher( final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han, final TileDrive drive )
 	{
 		super( i, i.getChannel() );
 		this.is = is;
 		this.handler = han;
-		this.cord = cod;
-		this.source = new MachineSource( cod );
+		this.drive = drive;
+		this.source = new MachineSource( drive );
 	}
 
 	public int getStatus()
@@ -69,16 +70,18 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 
 			if( newStatus != this.oldStatus )
 			{
-				this.cord.blinkCell( this.getSlot() );
+				this.drive.blinkCell( this.getSlot() );
 				this.oldStatus = newStatus;
 			}
-			try
+			if (this.drive.getProxy().isActive())
 			{
-				( (TileDrive) this.cord ).getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), ImmutableList.of( input.copy().setStackSize( input.getStackSize() - ( a == null ? 0 : a.getStackSize() ) ) ), this.source );
-			}
-			catch( GridAccessException e )
-			{
-				e.printStackTrace();
+				try
+				{
+					this.drive.getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( a == null ? 0 : a.getStackSize() ) ) ), this.source );
+				} catch ( GridAccessException e )
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -96,17 +99,18 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 
 			if( newStatus != this.oldStatus )
 			{
-				this.cord.blinkCell( this.getSlot() );
+				this.drive.blinkCell( this.getSlot() );
 				this.oldStatus = newStatus;
 			}
-
-			try
+			if (this.drive.getProxy().isActive())
 			{
-				( (TileDrive) this.cord ).getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), ImmutableList.of( request.copy().setStackSize( -a.getStackSize() ) ), this.source );
-			}
-			catch( GridAccessException e )
-			{
-				e.printStackTrace();
+				try
+				{
+					this.drive.getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), Collections.singletonList( request.copy().setStackSize( -a.getStackSize() ) ), this.source );
+				} catch ( GridAccessException e )
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 

@@ -184,8 +184,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		return flipState ? this.reportingValue >= this.lastReportedValue + 1 : this.reportingValue < this.lastReportedValue + 1;
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void powerStatusChange( final MENetworkPowerStatusChange powerEvent )
+	public void powerRender( final MENetworkPowerStatusChange powerEvent )
 	{
 		if (this.getProxy().isActive())
 		{
@@ -194,8 +195,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.updateState();
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void channelChanged( final MENetworkChannelsChanged c )
+	public void chanRender( final MENetworkChannelsChanged c )
 	{
 		if (this.getProxy().isActive())
 		{
@@ -288,37 +290,24 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		try
 		{
-
-			if( myStack == null )
+			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
 			{
-				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).addListener( this, this.getProxy().getGrid() );
+				this.getProxy()
+						.getStorage()
+						.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+						.addListener( this,
+								this.getProxy().getGrid() );
 			}
 			else
 			{
 				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).removeListener( this );
+
 				if( this.myWatcher != null )
 				{
-					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-					{
-						Optional<OreReference> ores = OreHelper.INSTANCE.getOre( myStack.getDefinition() );
-						if( ores.isPresent() )
-						{
-							for( IAEItemStack iaeItemStack : ores.get().getAEEquivalents() )
-							{
-								this.myWatcher.add( iaeItemStack );
-							}
-						}
-						else
-						{
-							this.myWatcher.add( myStack );
-						}
-					}
-					else
-					{
-						this.myWatcher.add( myStack );
-					}
+					this.myWatcher.add( myStack );
 				}
 			}
+
 			this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
 		}
 		catch( final GridAccessException e )
