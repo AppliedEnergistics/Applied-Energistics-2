@@ -32,7 +32,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -100,11 +100,6 @@ public class CraftAmountMenu extends AEBaseMenu {
         this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
 
-    public IGrid getGrid() {
-        final IActionHost h = (IActionHost) this.getTarget();
-        return h.getActionableNode().getGrid();
-    }
-
     public Level getLevel() {
         return this.getPlayerInventory().player.level;
     }
@@ -147,11 +142,10 @@ public class CraftAmountMenu extends AEBaseMenu {
 
             this.itemToCreate.setStackSize(amount);
 
-            Future<ICraftingJob> futureJob = null;
+            Future<ICraftingPlan> futureJob = null;
             try {
                 final ICraftingService cg = g.getService(ICraftingService.class);
-                futureJob = cg.beginCraftingJob(getLevel(), getGrid(), getActionSrc(),
-                        this.itemToCreate, null);
+                futureJob = cg.beginCraftingJob(getLevel(), getActionSrc(), this.itemToCreate);
 
                 final MenuLocator locator = getLocator();
                 if (locator != null) {

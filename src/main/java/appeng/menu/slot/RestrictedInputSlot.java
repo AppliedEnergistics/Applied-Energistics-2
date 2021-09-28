@@ -25,7 +25,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import appeng.api.AEApi;
-import appeng.api.crafting.ICraftingHelper;
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.ids.AETags;
@@ -34,13 +33,13 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
+import appeng.crafting.pattern.AECraftingPattern;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
 import appeng.util.Platform;
@@ -102,24 +101,22 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        final ICraftingHelper crafting = AEApi.crafting();
+        var patternHelper = AEApi.patterns();
 
+        // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
-            case ENCODED_CRAFTING_PATTERN:
-                final ICraftingPatternDetails de = crafting.decodePattern(stack, getLevel());
-                if (de != null) {
-                    return de.isCraftable();
+            case ENCODED_AE_CRAFTING_PATTERN:
+                if (!EncodedPatternItem.isAE2Pattern(stack)) {
+                    return false;
                 }
-                return false;
-            case VALID_ENCODED_PATTERN_W_OUTPUT:
-            case ENCODED_PATTERN_W_OUTPUT:
+                var de = patternHelper.decodePattern(stack, getLevel());
+                return de instanceof AECraftingPattern;
             case ENCODED_PATTERN:
-                return crafting.isEncodedPattern(stack);
+                return patternHelper.isEncodedPattern(stack);
+            case ENCODED_AE_PATTERN:
+                return EncodedPatternItem.isAE2Pattern(stack);
             case BLANK_PATTERN:
                 return AEItems.BLANK_PATTERN.isSameAs(stack);
-
-            case PATTERN:
-                return AEItems.BLANK_PATTERN.isSameAs(stack) || crafting.isEncodedPattern(stack);
 
             case INSCRIBER_PLATE:
                 if (AEItems.NAME_PRESS.isSameAs(stack)) {
@@ -217,16 +214,6 @@ public class RestrictedInputSlot extends AppEngSlot {
         this.allowEdit = allowEdit;
     }
 
-    @Override
-    protected boolean getCurrentValidationState() {
-        if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
-            // Allow either an empty slot, or a valid encoded pattern
-            ItemStack stack = getItem();
-            return stack.isEmpty() || AEApi.crafting().decodePattern(stack, getLevel()) != null;
-        }
-        return true;
-    }
-
     public enum PlacableItemType {
         STORAGE_CELLS(Icon.BACKGROUND_STORAGE_CELL),
         ORE(Icon.BACKGROUND_ORE),
@@ -236,9 +223,8 @@ public class RestrictedInputSlot extends AppEngSlot {
          */
         GRID_LINKABLE_ITEM(Icon.BACKGROUND_WIRELESS_TERM),
         TRASH(Icon.BACKGROUND_TRASH),
-        VALID_ENCODED_PATTERN_W_OUTPUT(Icon.BACKGROUND_ENCODED_PATTERN),
-        ENCODED_PATTERN_W_OUTPUT(Icon.BACKGROUND_ENCODED_PATTERN),
-        ENCODED_CRAFTING_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        ENCODED_AE_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        ENCODED_AE_CRAFTING_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         ENCODED_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
         BLANK_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),

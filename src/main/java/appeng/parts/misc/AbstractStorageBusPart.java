@@ -79,7 +79,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
 /**
  * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
  */
-public abstract class AbstractStorageBusPart<T extends IAEStack<T>, A> extends UpgradeablePart
+public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends UpgradeablePart
         implements IGridTickable, ICellProvider, IMEMonitorHandlerReceiver<T>, IPriorityHost {
     private final Capability<A> handlerCapability;
     protected final IActionSource source;
@@ -462,11 +462,11 @@ public abstract class AbstractStorageBusPart<T extends IAEStack<T>, A> extends U
     }
 
     @Override
-    public final List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
+    public final <U extends IAEStack> List<IMEInventoryHandler<U>> getCellArray(final IStorageChannel<U> channel) {
         if (channel == getStorageChannel()) {
             var out = this.getMainNode().isActive() ? this.getInternalHandler() : null;
             if (out != null) {
-                return Collections.singletonList(out);
+                return Collections.singletonList(out.cast(channel));
             }
         }
         return Collections.emptyList();

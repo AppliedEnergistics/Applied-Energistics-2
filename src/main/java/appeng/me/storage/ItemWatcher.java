@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import appeng.api.networking.storage.IStackWatcher;
-import appeng.api.networking.storage.IStackWatcherHost;
+import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.service.StorageService;
 
@@ -33,15 +33,15 @@ import appeng.me.service.StorageService;
 public class ItemWatcher implements IStackWatcher {
 
     private final StorageService service;
-    private final IStackWatcherHost myObject;
+    private final IStackWatcherNode myObject;
     private final Set<IAEStack> myInterests = new HashSet<>();
 
-    public ItemWatcher(final StorageService service, final IStackWatcherHost host) {
+    public ItemWatcher(final StorageService service, final IStackWatcherNode host) {
         this.service = service;
         this.myObject = host;
     }
 
-    public IStackWatcherHost getHost() {
+    public IStackWatcherNode getHost() {
         return this.myObject;
     }
 
@@ -51,7 +51,7 @@ public class ItemWatcher implements IStackWatcher {
             return false;
         }
 
-        return this.myInterests.add(e.copy()) && this.service.getInterestManager().put(e, this);
+        return this.myInterests.add(IAEStack.<IAEStack>copy(e)) && this.service.getInterestManager().put(e, this);
     }
 
     @Override

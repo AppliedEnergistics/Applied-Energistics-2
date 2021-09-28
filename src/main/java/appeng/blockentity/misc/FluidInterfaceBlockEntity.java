@@ -18,8 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -97,11 +95,6 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return this.duality.getCableConnectionType(dir);
-    }
-
-    @Override
-    public EnumSet<Direction> getTargets() {
-        return EnumSet.allOf(Direction.class);
     }
 
     @Override

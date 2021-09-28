@@ -46,6 +46,7 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
     private final TabButton tabProcessButton;
     private final ActionButton substitutionsEnabledBtn;
     private final ActionButton substitutionsDisabledBtn;
+    private final ActionButton convertItemsToFluidsBtn;
 
     public PatternTermScreen(PatternTermMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -77,6 +78,11 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
 
         ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
         widgets.add("encodePattern", encodeBtn);
+
+        convertItemsToFluidsBtn = new ActionButton(ActionItems.FIND_CONTAINED_FLUID,
+                act -> menu.convertItemsToFluids());
+        convertItemsToFluidsBtn.setHalfSize(true);
+        widgets.add("convertItemsToFluids", convertItemsToFluidsBtn);
     }
 
     @Override
@@ -104,6 +110,9 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
 
         setSlotsHidden(SlotSemantic.CRAFTING_RESULT, !this.menu.isCraftingMode());
         setSlotsHidden(SlotSemantic.PROCESSING_RESULT, this.menu.isCraftingMode());
+
+        // If the menu allows converting items to fluids, show the button
+        this.convertItemsToFluidsBtn.visible = this.menu.canConvertItemsToFluids();
     }
 
     @Override

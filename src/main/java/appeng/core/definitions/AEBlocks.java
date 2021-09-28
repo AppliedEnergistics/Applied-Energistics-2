@@ -51,6 +51,7 @@ import appeng.block.crafting.CraftingStorageBlock;
 import appeng.block.crafting.CraftingStorageItem;
 import appeng.block.crafting.CraftingUnitBlock;
 import appeng.block.crafting.MolecularAssemblerBlock;
+import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.grindstone.CrankBlock;
 import appeng.block.grindstone.GrinderBlock;
 import appeng.block.misc.CellWorkbenchBlock;
@@ -179,6 +180,7 @@ public final class AEBlocks {
     public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_64K = block(AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_64K), CraftingStorageItem::new);
     public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = block(AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL)));
 
+    public static final BlockDefinition<PatternProviderBlock> PATTERN_PROVIDER = block(AEBlockIds.PATTERN_PROVIDER, PatternProviderBlock::new);
     public static final BlockDefinition<MolecularAssemblerBlock> MOLECULAR_ASSEMBLER = block(AEBlockIds.MOLECULAR_ASSEMBLER, () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).noOcclusion()));
 
     public static final BlockDefinition<LightDetectorBlock> LIGHT_DETECTOR = block(AEBlockIds.LIGHT_DETECTOR, LightDetectorBlock::new);

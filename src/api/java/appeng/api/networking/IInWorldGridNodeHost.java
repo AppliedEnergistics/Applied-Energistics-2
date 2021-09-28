@@ -29,12 +29,11 @@ import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
 
 /**
- * Implement to create a networked {@link BlockEntity} or {@link IPart} must be implemented for a part, or block entity
- * to become part of a grid.
+ * Implement to create a networked {@link BlockEntity}. Must be implemented for a block entity to be available for
+ * in-world connection attempts by adjacent grid nodes.
  */
 public interface IInWorldGridNodeHost {
 

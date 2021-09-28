@@ -188,6 +188,9 @@ public final class AEConfig {
                         .collect(Collectors.toList()),
                 COMMON.meteoriteBiomeBlacklist.get().stream().map(ResourceLocation::new)
                         .collect(Collectors.toList()));
+
+        AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
+        AELog.setDebugLogEnabled(COMMON.debugLog.get());
     }
 
     public static AEConfig instance() {
@@ -413,14 +416,6 @@ public final class AEConfig {
 
     public boolean isPacketLogEnabled() {
         return COMMON.packetLog.get();
-    }
-
-    public boolean isCraftingLogEnabled() {
-        return COMMON.craftingLog.get();
-    }
-
-    public boolean isDebugLogEnabled() {
-        return COMMON.debugLog.get();
     }
 
     public boolean isChunkLoggerTraceEnabled() {

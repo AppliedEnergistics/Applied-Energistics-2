@@ -46,7 +46,7 @@ import appeng.api.storage.data.IAEStack;
  * 
  * The standard AE implementation also only provides 1-63 Types.
  */
-public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem {
+public interface IStorageCell<T extends IAEStack> extends ICellWorkbenchItem {
 
     /**
      * It wont work if the return is not a multiple of 8. The limit is ({@link Integer#MAX_VALUE} + 1) / 8.

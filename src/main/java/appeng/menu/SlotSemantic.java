@@ -61,7 +61,9 @@ public enum SlotSemantic {
 
     PROCESSING_RESULT(false),
 
-    BIOMETRIC_CARD(false);
+    BIOMETRIC_CARD(false),
+
+    READONLY_STACKS(false);
 
     private final boolean playerSide;
 

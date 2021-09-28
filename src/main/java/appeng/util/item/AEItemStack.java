@@ -37,6 +37,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.util.Platform;
 
 public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack {
@@ -128,22 +129,15 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public void add(final IAEItemStack option) {
-        if (option == null) {
-            return;
+    public boolean fuzzyEquals(final IAEStack other, final FuzzyMode mode) {
+        if (other instanceof AEItemStack otherItemStack) {
+            var itemStack = this.getDefinition();
+            var otherStack = otherItemStack.getDefinition();
+
+            return this.fuzzyItemStackComparison(itemStack, otherStack, mode);
+        } else {
+            return false;
         }
-
-        this.incStackSize(option.getStackSize());
-        this.setCountRequestable(this.getCountRequestable() + option.getCountRequestable());
-        this.setCraftable(this.isCraftable() || option.isCraftable());
-    }
-
-    @Override
-    public boolean fuzzyComparison(final IAEItemStack other, final FuzzyMode mode) {
-        final ItemStack itemStack = this.getDefinition();
-        final ItemStack otherStack = other.getDefinition();
-
-        return this.fuzzyItemStackComparison(itemStack, otherStack, mode);
     }
 
     @Override

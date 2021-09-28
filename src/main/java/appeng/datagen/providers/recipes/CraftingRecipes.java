@@ -400,6 +400,25 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('e', AEItems.LOGIC_PROCESSOR)
                 .unlockedBy("has_drive", has(AEBlocks.DRIVE))
                 .save(consumer, AppEng.makeId("network/blocks/io_port"));
+        ShapedRecipeBuilder.shaped(AEBlocks.PATTERN_PROVIDER)
+                .pattern("aba")
+                .pattern("c d")
+                .pattern("aba")
+                .define('a', ConventionTags.IRON_INGOT)
+                .define('b', Items.CRAFTING_TABLE)
+                .define('c', AEItems.ANNIHILATION_CORE)
+                .define('d', AEItems.FORMATION_CORE)
+                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
+                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
+                .save(consumer, AppEng.makeId("network/blocks/pattern_providers_interface"));
+        ShapelessRecipeBuilder.shapeless(AEBlocks.PATTERN_PROVIDER)
+                .requires(AEParts.PATTERN_PROVIDER)
+                .unlockedBy("has_cable_pattern_provider", has(AEParts.PATTERN_PROVIDER))
+                .save(consumer, AppEng.makeId("network/blocks/pattern_providers_interface_alt"));
+        ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_PROVIDER)
+                .requires(AEBlocks.PATTERN_PROVIDER)
+                .unlockedBy("has_pattern_provider", has(AEBlocks.PATTERN_PROVIDER))
+                .save(consumer, AppEng.makeId("network/blocks/pattern_providers_interface_part"));
         ShapedRecipeBuilder.shaped(AEBlocks.ITEM_INTERFACE)
                 .pattern("aba")
                 .pattern("c d")

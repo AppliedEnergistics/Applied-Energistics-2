@@ -18,12 +18,10 @@
 
 package appeng.parts.misc;
 
-import java.util.EnumSet;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -121,12 +119,6 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     }
 
     @Override
-    public void addToWorld() {
-        super.addToWorld();
-        this.duality.initialize();
-    }
-
-    @Override
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
         this.duality.addDrops(drops);
     }
@@ -152,11 +144,6 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     @Override
     public DualityItemInterface getInterfaceDuality() {
         return this.duality;
-    }
-
-    @Override
-    public EnumSet<Direction> getTargets() {
-        return EnumSet.of(this.getSide());
     }
 
     @Override

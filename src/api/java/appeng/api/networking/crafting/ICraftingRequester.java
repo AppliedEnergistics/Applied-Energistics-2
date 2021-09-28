@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableSet;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 
 public interface ICraftingRequester extends IActionHost, IGridNodeService {
 
@@ -49,7 +49,7 @@ public interface ICraftingRequester extends IActionHost, IGridNodeService {
      *
      * @return unwanted item
      */
-    IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode);
+    IAEStack injectCraftedItems(ICraftingLink link, IAEStack items, Actionable mode);
 
     /**
      * called when the job changes from in progress, to either complete, or canceled.

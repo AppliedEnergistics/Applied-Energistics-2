@@ -22,14 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
+import appeng.api.client.AEStackRendering;
+import appeng.api.client.AmountFormat;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftingStatusEntry;
-import appeng.util.ReadableNumberConverter;
 
 public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingStatusEntry> {
 
@@ -43,40 +44,46 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     protected List<Component> getEntryDescription(CraftingStatusEntry entry) {
         List<Component> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
-            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getStoredAmount());
+            String amount = AEStackRendering.formatAmount(entry.getStack(), entry.getStoredAmount(),
+                    AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.FromStorage.text(amount));
         }
 
         if (entry.getActiveAmount() > 0) {
-            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getActiveAmount());
+            String amount = AEStackRendering.formatAmount(entry.getStack(), entry.getActiveAmount(),
+                    AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.Crafting.text(amount));
         }
 
         if (entry.getPendingAmount() > 0) {
-            String amount = ReadableNumberConverter.INSTANCE.toWideReadableForm(entry.getPendingAmount());
+            String amount = AEStackRendering.formatAmount(entry.getStack(), entry.getPendingAmount(),
+                    AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.Scheduled.text(amount));
         }
         return lines;
     }
 
     @Override
-    protected ItemStack getEntryItem(CraftingStatusEntry entry) {
-        return entry.getItem();
+    protected IAEStack getEntryStack(CraftingStatusEntry entry) {
+        return entry.getStack();
     }
 
     @Override
     protected List<Component> getEntryTooltip(CraftingStatusEntry entry) {
-        List<Component> lines = new ArrayList<>(screen.getTooltipFromItem(entry.getItem()));
+        List<Component> lines = AEStackRendering.getTooltip(entry.getStack());
 
         // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {
-            lines.add(GuiText.FromStorage.text(entry.getStoredAmount()));
+            lines.add(GuiText.FromStorage
+                    .text(AEStackRendering.formatAmount(entry.getStack(), entry.getStoredAmount(), AmountFormat.FULL)));
         }
         if (entry.getActiveAmount() > 0) {
-            lines.add(GuiText.Crafting.text(entry.getActiveAmount()));
+            lines.add(GuiText.Crafting
+                    .text(AEStackRendering.formatAmount(entry.getStack(), entry.getActiveAmount(), AmountFormat.FULL)));
         }
         if (entry.getPendingAmount() > 0) {
-            lines.add(GuiText.Scheduled.text(entry.getPendingAmount()));
+            lines.add(GuiText.Scheduled.text(
+                    AEStackRendering.formatAmount(entry.getStack(), entry.getPendingAmount(), AmountFormat.FULL)));
         }
 
         return lines;

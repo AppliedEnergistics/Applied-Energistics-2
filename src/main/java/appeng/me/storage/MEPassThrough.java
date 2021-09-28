@@ -27,7 +27,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler<T> {
+public class MEPassThrough<T extends IAEStack> implements IMEInventoryHandler<T> {
 
     private final IStorageChannel<T> wrappedChannel;
     private IMEInventory<T> internal;

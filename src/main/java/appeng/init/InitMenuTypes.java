@@ -41,6 +41,7 @@ import appeng.menu.implementations.ItemInterfaceMenu;
 import appeng.menu.implementations.ItemLevelEmitterMenu;
 import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.menu.implementations.MolecularAssemblerMenu;
+import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.implementations.QuartzKnifeMenu;
@@ -87,6 +88,7 @@ public final class InitMenuTypes {
                 IOPortMenu.TYPE,
                 ItemLevelEmitterMenu.TYPE,
                 EnergyLevelEmitterMenu.TYPE,
+                PatternProviderMenu.TYPE,
                 MolecularAssemblerMenu.TYPE,
                 ItemTerminalMenu.TYPE,
                 MEPortableCellMenu.TYPE,

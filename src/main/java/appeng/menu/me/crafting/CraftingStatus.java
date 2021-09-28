@@ -24,19 +24,18 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 
-import appeng.api.networking.crafting.CraftingItemList;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.api.storage.data.IAEStack;
+import appeng.crafting.execution.CraftingCpuLogic;
+import appeng.crafting.execution.ElapsedTimeTracker;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 
 /**
  * Describes a currently running crafting job. A crafting status can either be a full update which replaces any
  * previously kept state on the client ({@link #isFullStatus()}, or an incremental update, which uses previously sent
  * {@link CraftingStatusEntry#getSerial() serials} to update entries on the client that were previously sent. To reduce
- * the packet size for updates, the {@link CraftingStatusEntry#getItem() display item} for entries that were previously
- * sent to the client are set to {@link ItemStack#EMPTY}.
+ * the packet size for updates, the {@link CraftingStatusEntry#getStack() stack} for entries that were previously sent
+ * to the client are set to {@code null}.
  */
 public class CraftingStatus {
 
@@ -49,17 +48,17 @@ public class CraftingStatus {
     private final boolean fullStatus;
 
     /**
-     * @see CraftingCPUCluster#getElapsedTime()
+     * @see ElapsedTimeTracker
      */
     private final long elapsedTime;
 
     /**
-     * @see CraftingCPUCluster#getRemainingItemCount()
+     * @see ElapsedTimeTracker
      */
     private final long remainingItemCount;
 
     /**
-     * @see CraftingCPUCluster#getStartItemCount()
+     * @see ElapsedTimeTracker
      */
     private final long startItemCount;
 
@@ -120,38 +119,39 @@ public class CraftingStatus {
         return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build());
     }
 
-    public static CraftingStatus create(IncrementalUpdateHelper<IAEItemStack> changes,
-            CraftingCPUCluster cpu) {
+    public static CraftingStatus create(IncrementalUpdateHelper<IAEStack> changes,
+            CraftingCpuLogic logic) {
 
         boolean full = changes.isFullUpdate();
 
         ImmutableList.Builder<CraftingStatusEntry> newEntries = ImmutableList.builder();
-        for (IAEItemStack stack : changes) {
-            IAEItemStack stored = cpu.getItemStack(stack, CraftingItemList.STORAGE);
-            IAEItemStack active = cpu.getItemStack(stack, CraftingItemList.ACTIVE);
-            IAEItemStack pending = cpu.getItemStack(stack, CraftingItemList.PENDING);
+        for (var stack : changes) {
+            long storedCount = logic.getStored(stack);
+            long activeCount = logic.getWaitingFor(stack);
+            long pendingCount = logic.getPendingOutputs(stack);
 
-            long storedCount = stored != null ? stored.getStackSize() : 0;
-            long activeCount = active != null ? active.getStackSize() : 0;
-            long pendingCount = pending != null ? pending.getStackSize() : 0;
-
-            ItemStack item = stack.getDefinition();
+            IAEStack sentStack = IAEStack.copy(stack);
             if (!full && changes.getSerial(stack) != null) {
                 // The item was already sent to the client, so we can skip the item stack
-                item = ItemStack.EMPTY;
+                sentStack = null;
             }
 
-            newEntries.add(new CraftingStatusEntry(
+            var entry = new CraftingStatusEntry(
                     changes.getOrAssignSerial(stack),
-                    item,
+                    sentStack,
                     storedCount,
                     activeCount,
-                    pendingCount));
+                    pendingCount);
+            newEntries.add(entry);
+
+            if (entry.isDeleted()) {
+                stack.reset(); // Ensure it is deleted on commit, since the client will also clear it.
+            }
         }
 
-        long elapsedTime = cpu.getElapsedTime();
-        long remainingItems = cpu.getRemainingItemCount();
-        long startItems = cpu.getStartItemCount();
+        long elapsedTime = logic.getElapsedTimeTracker().getElapsedTime();
+        long remainingItems = logic.getElapsedTimeTracker().getRemainingItemCount();
+        long startItems = logic.getElapsedTimeTracker().getStartItemCount();
 
         return new CraftingStatus(
                 full,

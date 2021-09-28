@@ -75,4 +75,9 @@ public final class ItemStorageChannel implements IItemStorageChannel {
 
         return AEItemStack.fromPacket(input);
     }
+
+    @Override
+    public IAEItemStack copy(IAEItemStack stack) {
+        return stack.copy();
+    }
 }

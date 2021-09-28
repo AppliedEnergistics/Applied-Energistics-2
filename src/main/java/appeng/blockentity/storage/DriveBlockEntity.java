@@ -56,6 +56,7 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -84,7 +85,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     private final DriveWatcher<?>[] invBySlot = new DriveWatcher[SLOT_COUNT];
     private final IActionSource mySrc;
     private boolean isCached = false;
-    private final Map<IStorageChannel<?>, List<IMEInventoryHandler>> inventoryHandlers;
+    private final Map<IStorageChannel<?>, List<IMEInventoryHandler<?>>> inventoryHandlers;
     private int priority = 0;
     private boolean wasActive = false;
     // This is only used on the client
@@ -377,12 +378,12 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         this.updateState();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
+    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(final IStorageChannel<T> channel) {
         if (this.getMainNode().isActive()) {
             this.updateState();
-
-            return this.inventoryHandlers.get(channel);
+            return (List) this.inventoryHandlers.get(channel);
         }
         return Collections.emptyList();
     }
@@ -411,7 +412,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         this.level.blockEntityChanged(this.worldPosition);
     }
 
-    private class CellValidInventoryFilter implements IAEItemFilter {
+    private static class CellValidInventoryFilter implements IAEItemFilter {
 
         @Override
         public boolean allowExtract(InternalInventory inv, int slot, int amount) {

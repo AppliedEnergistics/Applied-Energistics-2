@@ -78,7 +78,7 @@ import appeng.util.IConfigManagerListener;
 /**
  * @see MEMonitorableScreen
  */
-public abstract class MEMonitorableMenu<T extends IAEStack<T>> extends AEBaseMenu
+public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
         implements IConfigManagerListener, IConfigurableObject, IMEMonitorHandlerReceiver<T>, IMEInteractionHandler {
 
     private final List<RestrictedInputSlot> viewCellSlots;

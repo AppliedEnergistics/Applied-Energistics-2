@@ -52,15 +52,19 @@ public class StackSizeRenderer {
         }
 
         if (stackSize > 0) {
-            renderSizeLabel(fontRenderer, xPos, yPos, this.getToBeRenderedStackSize(stackSize));
+            renderSizeLabel(fontRenderer, xPos, yPos,
+                    this.getToBeRenderedStackSize(stackSize, AEConfig.instance().isUseLargeFonts()));
         }
     }
 
-    public void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text) {
+    public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text) {
+        renderSizeLabel(fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
+    }
 
-        final float scaleFactor = AEConfig.instance().isUseLargeFonts() ? 0.85f : 0.5f;
+    public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text, boolean largeFonts) {
+        final float scaleFactor = largeFonts ? 0.85f : 0.5f;
         final float inverseScaleFactor = 1.0f / scaleFactor;
-        final int offset = AEConfig.instance().isUseLargeFonts() ? 0 : -1;
+        final int offset = largeFonts ? 0 : -1;
 
         Transformation tm = new Transformation(new Vector3f(0, 0, 300), // Taken from
                 // ItemRenderer.renderItemOverlayIntoGUI
@@ -76,8 +80,8 @@ public class StackSizeRenderer {
         RenderSystem.enableBlend();
     }
 
-    protected String getToBeRenderedStackSize(final long originalSize) {
-        if (AEConfig.instance().isUseLargeFonts()) {
+    public String getToBeRenderedStackSize(final long originalSize, boolean useLargeFonts) {
+        if (useLargeFonts) {
             return SLIM_CONVERTER.toSlimReadableForm(originalSize);
         } else {
             return WIDE_CONVERTER.toWideReadableForm(originalSize);

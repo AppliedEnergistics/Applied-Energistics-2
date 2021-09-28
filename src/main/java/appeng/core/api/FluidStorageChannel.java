@@ -95,4 +95,9 @@ public final class FluidStorageChannel implements IFluidStorageChannel {
         Preconditions.checkNotNull(nbt);
         return AEFluidStack.fromNBT(nbt);
     }
+
+    @Override
+    public IAEFluidStack copy(IAEFluidStack stack) {
+        return stack.copy();
+    }
 }

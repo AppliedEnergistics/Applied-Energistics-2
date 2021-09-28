@@ -49,7 +49,7 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergyWatcher;
-import appeng.api.networking.energy.IEnergyWatcherHost;
+import appeng.api.networking.energy.IEnergyWatcherNode;
 import appeng.api.networking.events.GridPowerIdleChange;
 import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
@@ -557,7 +557,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
             }
         }
 
-        var ews = node.getService(IEnergyWatcherHost.class);
+        var ews = node.getService(IEnergyWatcherNode.class);
         if (ews != null) {
             var iw = new EnergyWatcher(this, ews);
             this.watchers.put(node, iw);

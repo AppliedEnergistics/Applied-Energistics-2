@@ -35,6 +35,7 @@ import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.core.sync.packets.FluidSlotPacket;
+import appeng.core.sync.packets.GenericSlotPacket;
 import appeng.core.sync.packets.GuiDataSyncPacket;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -101,6 +102,8 @@ public class BasePacketHandler {
         ME_INTERFACE_UPDATE(InterfaceTerminalPacket.class, InterfaceTerminalPacket::new),
 
         FLUID_TANK(FluidSlotPacket.class, FluidSlotPacket::new),
+
+        GENERIC_SLOT(GenericSlotPacket.class, GenericSlotPacket::new),
 
         NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new),
 

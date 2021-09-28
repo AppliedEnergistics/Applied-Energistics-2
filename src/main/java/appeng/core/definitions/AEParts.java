@@ -45,6 +45,7 @@ import appeng.parts.automation.FormationPlanePart;
 import appeng.parts.automation.IdentityAnnihilationPlanePart;
 import appeng.parts.automation.ImportBusPart;
 import appeng.parts.automation.ItemLevelEmitterPart;
+import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.misc.CableAnchorPart;
 import appeng.parts.misc.FluidInterfacePart;
 import appeng.parts.misc.FluidStorageBusPart;
@@ -113,6 +114,7 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<ItemTerminalPart>> TERMINAL = createPart(AEPartIds.TERMINAL, ItemTerminalPart.class, ItemTerminalPart::new);
     public static final ItemDefinition<PartItem<StorageMonitorPart>> STORAGE_MONITOR = createPart(AEPartIds.STORAGE_MONITOR, StorageMonitorPart.class, StorageMonitorPart::new);
     public static final ItemDefinition<PartItem<ConversionMonitorPart>> CONVERSION_MONITOR = createPart(AEPartIds.ITEM_CONVERSION_MONITOR, ConversionMonitorPart.class, ConversionMonitorPart::new);
+    public static final ItemDefinition<PartItem<PatternProviderPart>> PATTERN_PROVIDER = createPart(AEPartIds.PATTERN_PROVIDER, PatternProviderPart.class, PatternProviderPart::new);
     public static final ItemDefinition<PartItem<ItemInterfacePart>> ITEM_INTERFACE = createPart(AEPartIds.ITEM_INTERFACE, ItemInterfacePart.class, ItemInterfacePart::new);
     public static final ItemDefinition<PartItem<FluidInterfacePart>> FLUID_INTERFACE = createPart(AEPartIds.FLUID_INTERFACE, FluidInterfacePart.class, FluidInterfacePart::new);
     public static final ItemDefinition<PartItem<InterfaceTerminalPart>> INTERFACE_TERMINAL = createPart(AEPartIds.INTERFACE_TERMINAL, InterfaceTerminalPart.class, InterfaceTerminalPart::new);

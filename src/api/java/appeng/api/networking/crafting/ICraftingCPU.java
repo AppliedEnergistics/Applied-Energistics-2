@@ -25,21 +25,12 @@ package appeng.api.networking.crafting;
 
 import net.minecraft.network.chat.Component;
 
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.data.IAEItemStack;
-
-public interface ICraftingCPU extends IBaseMonitor<IAEItemStack> {
+public interface ICraftingCPU {
 
     /**
      * @return true if the CPU currently has a job.
      */
     boolean isBusy();
-
-    /**
-     * @return the action source for the CPU.
-     */
-    IActionSource getActionSource();
 
     /**
      * @return the available storage in bytes

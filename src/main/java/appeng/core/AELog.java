@@ -43,6 +43,9 @@ public final class AELog {
 
     private static final String DEFAULT_EXCEPTION_MESSAGE = "Exception: ";
 
+    private static boolean craftingLogEnabled;
+    private static boolean debugLogEnabled;
+
     private AELog() {
     }
 
@@ -244,7 +247,7 @@ public final class AELog {
      * @return true when the debug log is enabled.
      */
     public static boolean isDebugLogEnabled() {
-        return AEConfig.instance().isDebugLogEnabled();
+        return debugLogEnabled;
     }
 
     //
@@ -277,7 +280,7 @@ public final class AELog {
      * @return true when the crafting log is enabled.
      */
     public static boolean isCraftingLogEnabled() {
-        return AEConfig.instance().isCraftingLogEnabled();
+        return craftingLogEnabled;
     }
 
     /**
@@ -303,8 +306,7 @@ public final class AELog {
      * @return true when the crafting debug log is enabled.
      */
     public static boolean isCraftingDebugLogEnabled() {
-        return AEConfig.instance().isCraftingLogEnabled()
-                && AEConfig.instance().isDebugLogEnabled();
+        return isCraftingLogEnabled() && isDebugLogEnabled();
     }
 
     /**
@@ -320,5 +322,13 @@ public final class AELog {
         if (AELog.isCraftingDebugLogEnabled()) {
             log(Level.DEBUG, message, params);
         }
+    }
+
+    public static void setCraftingLogEnabled(boolean newValue) {
+        craftingLogEnabled = newValue;
+    }
+
+    public static void setDebugLogEnabled(boolean newValue) {
+        debugLogEnabled = newValue;
     }
 }

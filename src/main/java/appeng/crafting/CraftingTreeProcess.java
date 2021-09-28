@@ -22,254 +22,146 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-
 import appeng.api.config.Actionable;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.menu.NullMenu;
-import appeng.util.Platform;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.MixedItemList;
+import appeng.crafting.inv.CraftingSimulationState;
 
+/**
+ * A crafting tree process is what represents a pattern in the crafting process. It has a parent node (its output), and
+ * a list of child nodes for its inputs.
+ */
 public class CraftingTreeProcess {
 
     private final CraftingTreeNode parent;
-    final ICraftingPatternDetails details;
-    private final CraftingJob job;
+    final IPatternDetails details;
+    private final CraftingCalculation job;
     private final Map<CraftingTreeNode, Long> nodes = new HashMap<>();
-    private final int depth;
     boolean possible = true;
-    private Level level;
-    private long crafts = 0;
     private boolean containerItems;
+    /**
+     * If true, we perform this pattern by 1 at the time. This ensures that container items or outputs get reused when
+     * possible.
+     */
     private boolean limitQty;
-    private boolean fullSimulation;
-    private long bytes = 0;
 
-    public CraftingTreeProcess(final ICraftingService cc, final CraftingJob job, final ICraftingPatternDetails details,
-            final CraftingTreeNode craftingTreeNode, final int depth) {
+    public CraftingTreeProcess(final ICraftingService cc, final CraftingCalculation job,
+            final IPatternDetails details,
+            final CraftingTreeNode craftingTreeNode) {
         this.parent = craftingTreeNode;
         this.details = details;
         this.job = job;
-        this.depth = depth;
-        final Level level = job.getLevel();
 
-        if (details.isCraftable()) {
-            final IAEItemStack[] list = details.getSparseInputs();
+        updateLimitQty();
 
-            final CraftingContainer ic = new CraftingContainer(new NullMenu(), 3, 3);
-            final IAEItemStack[] is = details.getSparseInputs();
-            for (int x = 0; x < ic.getContainerSize(); x++) {
-                ic.setItem(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
-            }
-
-            CraftingEvent.fireAutoCraftingEvent(level, details, ic);
-
-            for (int x = 0; x < ic.getContainerSize(); x++) {
-                final ItemStack g = ic.getItem(x);
-                if (!g.isEmpty() && g.getCount() > 1) {
-                    this.fullSimulation = true;
-                }
-            }
-
-            for (final IAEItemStack part : details.getInputs()) {
-                final ItemStack g = part.createItemStack();
-
-                boolean isAnInput = false;
-                for (final IAEItemStack a : details.getOutputs()) {
-                    if (!g.isEmpty() && a != null && a.equals(g)) {
-                        isAnInput = true;
-                    }
-                }
-
-                if (isAnInput) {
-                    this.limitQty = true;
-                }
-
-                if (g.getItem().hasContainerItem(g)) {
-                    this.limitQty = this.containerItems = true;
-                }
-            }
-
-            final boolean complicated = false;
-
-            if (this.containerItems || complicated) {
-                for (int x = 0; x < list.length; x++) {
-                    final IAEItemStack part = list[x];
-                    if (part != null) {
-                        this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, x, depth + 1),
-                                part.getStackSize());
-                    }
-                }
-            } else {
-                // this is minor different then below, this slot uses the pattern, but kinda
-                // fudges it.
-                for (final IAEItemStack part : details.getInputs()) {
-                    for (int x = 0; x < list.length; x++) {
-                        final IAEItemStack comparePart = list[x];
-                        if (part != null && part.equals(comparePart)) {
-                            // use the first slot...
-                            this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, x, depth + 1),
-                                    part.getStackSize());
-                            break;
-                        }
-                    }
-                }
-            }
-        } else {
-            for (final IAEItemStack part : details.getInputs()) {
-                final ItemStack g = part.createItemStack();
-
-                boolean isAnInput = false;
-                for (final IAEItemStack a : details.getOutputs()) {
-                    if (!g.isEmpty() && a != null && a.equals(g)) {
-                        isAnInput = true;
-                    }
-                }
-
-                if (isAnInput) {
-                    this.limitQty = true;
-                }
-            }
-
-            for (final IAEItemStack part : details.getInputs()) {
-                this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, -1, depth + 1), part.getStackSize());
-            }
+        final IPatternDetails.IInput[] inputs = this.details.getInputs();
+        for (int x = 0; x < inputs.length; ++x) {
+            var input = inputs[x];
+            this.nodes.put(new CraftingTreeNode(cc, job, IAEStack.copy(input.getPossibleInputs()[0]), this, x),
+                    input.getMultiplier());
         }
     }
 
-    boolean notRecursive(final ICraftingPatternDetails details) {
+    /**
+     * @see CraftingTreeNode#notRecursive
+     */
+    boolean notRecursive(final IPatternDetails details) {
         return this.parent == null || this.parent.notRecursive(details);
     }
 
-    long getTimes(final long remaining, final long stackSize) {
-        if (this.limitQty || this.fullSimulation) {
-            return 1;
+    /**
+     * Check if this pattern has one of its outputs as input. If that's the case, update {@code limitQty} to make sure
+     * we simulate this pattern one by one. Also check for container items.
+     */
+    private void updateLimitQty() {
+        // TODO: consider checking substitute inputs as well?
+        for (final IPatternDetails.IInput input : details.getInputs()) {
+            var primaryInput = input.getPossibleInputs()[0];
+            boolean isAnInput = false;
+
+            for (var output : details.getOutputs()) {
+                if (output.equals(primaryInput)) {
+                    isAnInput = true;
+                    break;
+                }
+            }
+
+            if (isAnInput) {
+                this.limitQty = true;
+            }
+
+            if (input.getContainerItem(primaryInput) != null) {
+                this.limitQty = this.containerItems = true;
+            }
         }
-        return remaining / stackSize + (remaining % stackSize != 0 ? 1 : 0);
     }
 
-    void request(final MECraftingInventory inv, final long i, final IActionSource src)
+    boolean limitsQuantity() {
+        return this.limitQty;
+    }
+
+    void request(final CraftingSimulationState inv, final long times)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
-        if (this.fullSimulation) {
-            final CraftingContainer ic = new CraftingContainer(new NullMenu(), 3, 3);
+        var containerItems = this.containerItems ? new MixedItemList() : null;
 
-            for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {
-                final IAEItemStack item = entry.getKey().getStack(entry.getValue());
-                final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize(), src);
-
-                ic.setItem(entry.getKey().getSlot(), stack.createItemStack());
-            }
-
-            CraftingEvent.fireAutoCraftingEvent(level, details, ic);
-
-            for (int x = 0; x < ic.getContainerSize(); x++) {
-                ItemStack is = ic.getItem(x);
-                is = Platform.getContainerItem(is);
-
-                final IAEItemStack o = StorageChannels.items()
-                        .createStack(is);
-                if (o != null) {
-                    this.bytes++;
-                    inv.injectItems(o, Actionable.MODULATE, src);
-                }
-            }
-        } else {
-            // request and remove inputs...
-            for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {
-                final IAEItemStack item = entry.getKey().getStack(entry.getValue());
-                final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize() * i, src);
-
-                if (this.containerItems) {
-                    final ItemStack is = Platform.getContainerItem(stack.createItemStack());
-                    final IAEItemStack o = StorageChannels.items()
-                            .createStack(is);
-                    if (o != null) {
-                        this.bytes++;
-                        inv.injectItems(o, Actionable.MODULATE, src);
-                    }
-                }
-            }
+        // request and remove inputs...
+        for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {
+            entry.getKey().request(inv, entry.getValue() * times, containerItems);
         }
 
-        // assume its possible.
+        // by now we must have succeeded, otherwise an exception would have been thrown by request() above
+
+        // add container items
+        if (containerItems != null) {
+            for (var stack : containerItems) {
+                inv.injectItems(stack, Actionable.MODULATE);
+                inv.addStackBytes(stack, 1);
+            }
+        }
 
         // add crafting results..
-        for (final IAEItemStack out : this.details.getOutputs()) {
-            final IAEItemStack o = out.copy();
-            o.setStackSize(o.getStackSize() * i);
-            inv.injectItems(o, Actionable.MODULATE, src);
+        for (var out : this.details.getOutputs()) {
+            var o = (IAEStack) IAEStack.copy(out);
+            o.setStackSize(o.getStackSize() * times);
+            inv.injectItems(o, Actionable.MODULATE);
         }
 
-        this.crafts += i;
+        inv.addCrafting(details, times);
+        inv.addBytes(times);
     }
 
-    void dive(final CraftingJob job) {
-        job.addTask(this.getAmountCrafted(this.parent.getStack(1)), this.crafts, this.details, this.depth);
-        for (final CraftingTreeNode pro : this.nodes.keySet()) {
-            pro.dive(job);
+    long getNodeCount() {
+        long tot = 0;
+
+        for (CraftingTreeNode node : this.nodes.keySet()) {
+            tot += node.getNodeCount();
         }
 
-        job.addBytes(8 + this.crafts + this.bytes);
+        return tot;
     }
 
-    IAEItemStack getAmountCrafted(IAEItemStack what2) {
-        for (final IAEItemStack is : this.details.getOutputs()) {
-            if (is.equals(what2)) {
-                what2 = what2.copy();
-                what2.setStackSize(is.getStackSize());
-                return what2;
+    long getOutputCount(IAEStack what) {
+        long tot = 0;
+
+        for (var is : this.details.getOutputs()) {
+            if (is.equals(what)) {
+                tot += is.getStackSize();
             }
         }
 
-        // more fuzzy!
-        for (final IAEItemStack is : this.details.getOutputs()) {
-            if (is.getItem() == what2.getItem()
-                    && (is.getItem().canBeDepleted() || is.getItemDamage() == what2.getItemDamage())) {
-                what2 = is.copy();
-                what2.setStackSize(is.getStackSize());
-                return what2;
+        return tot;
+    }
+
+    boolean hasMultiplePaths() {
+        for (var entry : nodes.entrySet()) {
+            if (entry.getKey().hasMultiplePaths()) {
+                return true;
             }
         }
-
-        throw new IllegalStateException("Crafting Tree construction failed.");
-    }
-
-    void setSimulate() {
-        this.crafts = 0;
-        this.bytes = 0;
-
-        for (final CraftingTreeNode pro : this.nodes.keySet()) {
-            pro.setSimulate();
-        }
-    }
-
-    void setJob(final MECraftingInventory storage, final CraftingCPUCluster craftingCPUCluster, final IActionSource src)
-            throws CraftBranchFailure {
-        craftingCPUCluster.addCrafting(this.details, this.crafts);
-
-        for (final CraftingTreeNode pro : this.nodes.keySet()) {
-            pro.setJob(storage, craftingCPUCluster, src);
-        }
-    }
-
-    void getPlan(final IItemList<IAEItemStack> plan) {
-        for (IAEItemStack i : this.details.getOutputs()) {
-            i = i.copy();
-            i.setCountRequestable(i.getStackSize() * this.crafts);
-            plan.addRequestable(i);
-        }
-
-        for (final CraftingTreeNode pro : this.nodes.keySet()) {
-            pro.getPlan(plan);
-        }
+        return false;
     }
 }

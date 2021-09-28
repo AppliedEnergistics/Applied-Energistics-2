@@ -18,41 +18,20 @@
 
 package appeng.parts.automation;
 
-import java.util.Random;
+import javax.annotation.Nullable;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Setting;
-import appeng.api.config.Settings;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.networking.storage.IStackWatcher;
-import appeng.api.networking.storage.IStackWatcherHost;
-import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
-import appeng.api.util.AECableType;
-import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
@@ -60,16 +39,12 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.FluidLevelEmitterMenu;
 import appeng.parts.PartModel;
-import appeng.util.IConfigManagerListener;
-import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
 import appeng.util.inv.IAEFluidInventory;
 
-public class FluidLevelEmitterPart extends UpgradeablePart
-        implements IStackWatcherHost, IConfigManagerListener, IAEFluidInventory,
-        IMEMonitorHandlerReceiver<IAEFluidStack>,
-        IConfigurableFluidInventory {
+public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart<IAEFluidStack> implements
+        IAEFluidInventory, IConfigurableFluidInventory {
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_level_emitter_base_off");
@@ -93,199 +68,26 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     public static final PartModel MODEL_ON_ON = new PartModel(MODEL_BASE_ON, MODEL_STATUS_ON);
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private static final int FLAG_ON = 4;
-
-    private boolean prevState = false;
-    private long lastReportedValue = 0;
-    private long reportingValue = 0;
-    private IStackWatcher stackWatcher = null;
     private final AEFluidInventory config = new AEFluidInventory(this, 1);
 
     public FluidLevelEmitterPart(ItemStack is) {
-        super(is);
+        super(is, false);
+    }
 
-        getMainNode().addService(IStackWatcherHost.class, this);
-
-        this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
+    @Nullable
+    @Override
+    protected IAEFluidStack getConfiguredStack() {
+        return config.getFluidInSlot(0);
     }
 
     @Override
-    protected int getUpgradeSlots() {
-        return 0;
-    }
-
-    public long getReportingValue() {
-        return this.reportingValue;
-    }
-
-    public void setReportingValue(final long v) {
-        this.reportingValue = v;
-        this.updateState();
-    }
-
-    @Override
-    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
-        this.configureWatchers();
-    }
-
-    @Override
-    public void updateWatcher(IStackWatcher newWatcher) {
-        this.stackWatcher = newWatcher;
-        this.configureWatchers();
-    }
-
-    @Override
-    public void onStackChange(IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src,
-            IStorageChannel<?> chan) {
-        if (chan == StorageChannels.fluids()
-                && fullStack.equals(this.config.getFluidInSlot(0))) {
-            this.lastReportedValue = fullStack.getStackSize();
-            this.updateState();
-        }
+    protected IStorageChannel<IAEFluidStack> getChannel() {
+        return StorageChannels.fluids();
     }
 
     @Override
     public void onFluidInventoryChanged(IAEFluidTank inv, int slot) {
         this.configureWatchers();
-    }
-
-    @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        updateState();
-    }
-
-    @Override
-    public int isProvidingStrongPower() {
-        return this.prevState ? 15 : 0;
-    }
-
-    @Override
-    public int isProvidingWeakPower() {
-        return this.prevState ? 15 : 0;
-    }
-
-    @Override
-    protected int calculateClientFlags() {
-        return super.calculateClientFlags() | (this.prevState ? FLAG_ON : 0);
-    }
-
-    @Override
-    public boolean isValid(Object effectiveGrid) {
-        var grid = this.getMainNode().getGrid();
-        return grid != null && grid == effectiveGrid;
-    }
-
-    @Override
-    public void postChange(final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change,
-            final IActionSource actionSource) {
-        this.updateReportingValue((IMEMonitor<IAEFluidStack>) monitor);
-    }
-
-    @Override
-    public void onListUpdate() {
-        getMainNode().ifPresent(grid -> {
-            var channel = StorageChannels.fluids();
-            this.updateReportingValue(grid.getStorageService().getInventory(channel));
-        });
-    }
-
-    private void updateState() {
-        final boolean isOn = this.isLevelEmitterOn();
-        if (this.prevState != isOn) {
-            this.getHost().markForUpdate();
-            final BlockEntity te = this.getHost().getBlockEntity();
-            this.prevState = isOn;
-            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
-            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos().relative(this.getSide()));
-        }
-    }
-
-    private void configureWatchers() {
-        final IFluidStorageChannel channel = StorageChannels.fluids();
-
-        if (this.stackWatcher != null) {
-            this.stackWatcher.reset();
-
-            final IAEFluidStack myStack = this.config.getFluidInSlot(0);
-
-            getMainNode().ifPresent(grid -> {
-                if (myStack != null) {
-                    grid.getStorageService().getInventory(channel).removeListener(this);
-                    this.stackWatcher.add(myStack);
-                } else {
-                    grid.getStorageService().getInventory(channel).addListener(this, grid);
-                }
-
-                this.updateReportingValue(grid.getStorageService().getInventory(channel));
-            });
-        }
-    }
-
-    private void updateReportingValue(final IMEMonitor<IAEFluidStack> monitor) {
-        final IAEFluidStack myStack = this.config.getFluidInSlot(0);
-
-        if (myStack == null) {
-            this.lastReportedValue = 0;
-            for (final IAEFluidStack st : monitor.getStorageList()) {
-                this.lastReportedValue += st.getStackSize();
-            }
-        } else {
-            final IAEFluidStack r = monitor.getStorageList().findPrecise(myStack);
-            if (r == null) {
-                this.lastReportedValue = 0;
-            } else {
-                this.lastReportedValue = r.getStackSize();
-            }
-        }
-        this.updateState();
-    }
-
-    private boolean isLevelEmitterOn() {
-        if (isRemote()) {
-            return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
-        }
-
-        if (!this.getMainNode().isActive()) {
-            return false;
-        }
-
-        final boolean flipState = this.getConfigManager()
-                .getSetting(Settings.REDSTONE_EMITTER) == RedstoneMode.LOW_SIGNAL;
-        return flipState ? this.reportingValue > this.lastReportedValue : this.reportingValue <= this.lastReportedValue;
-    }
-
-    @Override
-    public AECableType getExternalCableConnectionType() {
-        return AECableType.SMART;
-    }
-
-    @Override
-    public float getCableConnectionLength(AECableType cable) {
-        return 16;
-    }
-
-    @Override
-    public boolean canConnectRedstone() {
-        return true;
-    }
-
-    @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
-        bch.addBox(7, 7, 11, 9, 9, 16);
-    }
-
-    @Override
-    public void animateTick(final Level level, final BlockPos pos, final Random r) {
-        if (this.isLevelEmitterOn()) {
-            final Direction d = this.getSide();
-
-            final double d0 = d.getStepX() * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
-            final double d1 = d.getStepY() * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
-            final double d2 = d.getStepZ() * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
-
-            level.addParticle(DustParticleOptions.REDSTONE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
-                    0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D);
-        }
     }
 
     @Override
@@ -322,18 +124,12 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     @Override
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
-        this.lastReportedValue = data.getLong("lastReportedValue");
-        this.reportingValue = data.getLong("reportingValue");
-        this.prevState = data.getBoolean("prevState");
         this.config.readFromNBT(data, "config");
     }
 
     @Override
     public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
-        data.putLong("lastReportedValue", this.lastReportedValue);
-        data.putLong("reportingValue", this.reportingValue);
-        data.putBoolean("prevState", this.prevState);
         this.config.writeToNBT(data, "config");
     }
 

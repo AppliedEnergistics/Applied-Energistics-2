@@ -18,6 +18,8 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -25,15 +27,10 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.MixedItemList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -44,7 +41,7 @@ import appeng.menu.me.common.IncrementalUpdateHelper;
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen
  */
-public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerReceiver<IAEItemStack> {
+public class CraftingCPUMenu extends AEBaseMenu {
 
     private static final String ACTION_CANCEL_CRAFTING = "cancelCrafting";
 
@@ -61,9 +58,10 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
             })
             .build("craftingcpu");
 
-    private final IncrementalUpdateHelper<IAEItemStack> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
+    private final IncrementalUpdateHelper<IAEStack> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
+    private final Consumer<IAEStack> cpuChangeListener = incrementalUpdateHelper::addChange;
 
     public CraftingCPUMenu(MenuType<?> menuType, int id, final Inventory ip, final Object te) {
         super(menuType, id, ip, te);
@@ -92,7 +90,7 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
         }
 
         if (this.cpu != null) {
-            this.cpu.removeListener(this);
+            this.cpu.craftingLogic.removeListener(cpuChangeListener);
         }
 
         this.incrementalUpdateHelper.clear();
@@ -101,14 +99,13 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
             this.cpu = (CraftingCPUCluster) c;
 
             // Initially send all items as a full-update to the client when the CPU changes
-            IItemList<IAEItemStack> allItems = StorageChannels.items()
-                    .createList();
-            this.cpu.getListOfItem(allItems, CraftingItemList.ALL);
-            for (IAEItemStack stack : allItems) {
+            MixedItemList allItems = new MixedItemList();
+            cpu.craftingLogic.getAllItems(allItems);
+            for (var stack : allItems) {
                 incrementalUpdateHelper.addChange(stack);
             }
 
-            this.cpu.addListener(this, null);
+            this.cpu.craftingLogic.addListener(cpuChangeListener);
         } else {
             this.cpu = null;
             // Clear the crafting status
@@ -130,37 +127,19 @@ public class CraftingCPUMenu extends AEBaseMenu implements IMEMonitorHandlerRece
     public void removed(Player player) {
         super.removed(player);
         if (this.cpu != null) {
-            this.cpu.removeListener(this);
+            this.cpu.craftingLogic.removeListener(cpuChangeListener);
         }
     }
 
     @Override
     public void broadcastChanges() {
         if (isServer() && this.cpu != null && this.incrementalUpdateHelper.hasChanges()) {
-            CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu);
+            CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);
             this.incrementalUpdateHelper.commitChanges();
 
             sendPacketToClient(new CraftingStatusPacket(status));
         }
         super.broadcastChanges();
-    }
-
-    @Override
-    public boolean isValid(final Object verificationToken) {
-        return true;
-    }
-
-    @Override
-    public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
-            final IActionSource actionSource) {
-        for (IAEItemStack is : change) {
-            this.incrementalUpdateHelper.addChange(is);
-        }
-    }
-
-    @Override
-    public void onListUpdate() {
-
     }
 
     IGrid getGrid() {

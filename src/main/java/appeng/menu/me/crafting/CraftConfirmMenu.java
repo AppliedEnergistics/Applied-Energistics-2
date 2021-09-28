@@ -35,8 +35,8 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -77,8 +77,8 @@ public class CraftConfirmMenu extends AEBaseMenu {
     private ICraftingCPU selectedCpu;
 
     private IAEItemStack itemToCreate;
-    private Future<ICraftingJob> job;
-    private ICraftingJob result;
+    private Future<ICraftingPlan> job;
+    private ICraftingPlan result;
 
     @GuiSync(3)
     public boolean autoStart = false;
@@ -139,7 +139,7 @@ public class CraftConfirmMenu extends AEBaseMenu {
             try {
                 this.result = this.job.get();
 
-                if (!this.result.isSimulation() && this.isAutoStart()) {
+                if (!this.result.simulation() && this.isAutoStart()) {
                     this.startJob();
                     return;
                 }
@@ -198,7 +198,7 @@ public class CraftConfirmMenu extends AEBaseMenu {
             originalGui = PatternTermMenu.TYPE;
         }
 
-        if (this.result != null && !this.result.isSimulation()) {
+        if (this.result != null && !this.result.simulation()) {
             final ICraftingService cc = this.getGrid().getService(ICraftingService.class);
             final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
@@ -269,7 +269,7 @@ public class CraftConfirmMenu extends AEBaseMenu {
         this.itemToCreate = itemToCreate;
     }
 
-    public void setJob(final Future<ICraftingJob> job) {
+    public void setJob(final Future<ICraftingPlan> job) {
         this.job = job;
     }
 

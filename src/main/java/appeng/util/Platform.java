@@ -19,10 +19,12 @@
 package appeng.util;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 import java.util.WeakHashMap;
@@ -354,15 +356,15 @@ public class Platform {
     }
 
     public static String getModId(final IAEFluidStack fs) {
-        if (fs == null || fs.getFluidStack().isEmpty()) {
+        if (fs == null) {
             return "** Null";
         }
 
-        final ResourceLocation n = ForgeRegistries.FLUIDS.getKey(fs.getFluidStack().getFluid());
+        final ResourceLocation n = ForgeRegistries.FLUIDS.getKey(fs.getFluid());
         return n == null ? "** Null" : n.getNamespace();
     }
 
-    public static String getModName(String modId) {
+    public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
                 + ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName()).orElse(null);
     }
@@ -538,12 +540,12 @@ public class Platform {
         return forward;
     }
 
-    public static <T extends IAEStack<T>> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
+    public static <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
             final T request, final IActionSource src) {
         return poweredExtraction(energy, cell, request, src, Actionable.MODULATE);
     }
 
-    public static <T extends IAEStack<T>> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
+    public static <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
             final T request, final IActionSource src, final Actionable mode) {
         Preconditions.checkNotNull(energy);
         Preconditions.checkNotNull(cell);
@@ -551,7 +553,7 @@ public class Platform {
         Preconditions.checkNotNull(src);
         Preconditions.checkNotNull(mode);
 
-        final T possible = cell.extractItems(request.copy(), Actionable.SIMULATE, src);
+        final T possible = cell.extractItems(IAEStack.copy(request), Actionable.SIMULATE, src);
 
         long retrieved = 0;
         if (possible != null) {
@@ -575,19 +577,20 @@ public class Platform {
                 }
                 return ret;
             } else {
-                return possible.setStackSize(itemToExtract);
+                possible.setStackSize(itemToExtract);
+                return possible;
             }
         }
 
         return null;
     }
 
-    public static <T extends IAEStack<T>> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
+    public static <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
             final T input, final IActionSource src) {
         return poweredInsert(energy, cell, input, src, Actionable.MODULATE);
     }
 
-    public static <T extends IAEStack<T>> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
+    public static <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
             final T input, final IActionSource src, final Actionable mode) {
         Preconditions.checkNotNull(energy);
         Preconditions.checkNotNull(cell);
@@ -595,7 +598,7 @@ public class Platform {
         Preconditions.checkNotNull(src);
         Preconditions.checkNotNull(mode);
 
-        final T overflow = cell.injectItems(input.copy(), Actionable.SIMULATE, src);
+        final T overflow = cell.injectItems(IAEStack.copy(input), Actionable.SIMULATE, src);
 
         long transferAmount = input.getStackSize();
         if (overflow != null) {
@@ -612,12 +615,12 @@ public class Platform {
                 energy.extractAEPower(transferAmount / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
                 if (itemToAdd < input.getStackSize()) {
                     final long original = input.getStackSize();
-                    final T leftover = input.copy();
-                    final T split = input.copy();
+                    final T leftover = IAEStack.copy(input);
+                    final T split = IAEStack.copy(input);
 
                     leftover.decStackSize(itemToAdd);
                     split.setStackSize(itemToAdd);
-                    leftover.add(cell.injectItems(split, Actionable.MODULATE, src));
+                    IAEStack.add(leftover, cell.injectItems(split, Actionable.MODULATE, src));
 
                     src.player().ifPresent(player -> {
                         final long diff = original - leftover.getStackSize();
@@ -636,7 +639,7 @@ public class Platform {
 
                 return ret;
             } else {
-                final T ret = input.copy().setStackSize(input.getStackSize() - itemToAdd);
+                var ret = IAEStack.copy(input, input.getStackSize() - itemToAdd);
                 return ret != null && ret.getStackSize() > 0 ? ret : null;
             }
         }
@@ -656,7 +659,7 @@ public class Platform {
         }
     }
 
-    private static <T extends IAEStack<T>> void postWholeCellChanges(IStorageService service,
+    private static <T extends IAEStack> void postWholeCellChanges(IStorageService service,
             IStorageChannel<T> channel,
             ItemStack removedCell,
             ItemStack addedCell,
@@ -682,7 +685,7 @@ public class Platform {
         service.postAlterationOfStoredItems(channel, myChanges, src);
     }
 
-    public static <T extends IAEStack<T>> void postListChanges(final IItemList<T> before, final IItemList<T> after,
+    public static <T extends IAEStack> void postListChanges(final IItemList<T> before, final IItemList<T> after,
             final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source) {
         final List<T> changes = new ArrayList<>();
 
@@ -874,6 +877,7 @@ public class Platform {
      * Gets the container item for the given item or EMPTY. A container item is what remains when the item is used for
      * crafting, i.E. the empty bucket for a bucket of water.
      */
+    // TODO: investigate if all these special cases make sense. E.g. item == null isn't possible anymore.
     public static ItemStack getContainerItem(final ItemStack stackInSlot) {
         if (stackInSlot == null) {
             return ItemStack.EMPTY;
@@ -894,6 +898,10 @@ public class Platform {
         }
 
         return ci;
+    }
+
+    public static IAEItemStack getContainerItem(IAEItemStack stack) {
+        return StorageChannels.items().createStack(getContainerItem(stack.createItemStack()));
     }
 
     public static void notifyBlocksOfNeighbors(final Level level, final BlockPos pos) {
@@ -948,6 +956,10 @@ public class Platform {
         return serverLevel.getBlockEntity(pos);
     }
 
+    public static String formatFluidAmount(long amount) {
+        return NumberFormat.getNumberInstance(Locale.US).format(amount / 1000.0) + " B";
+    }
+
     /**
      * Checks that the chunk at the given position in the given level is in a state where block entities would tick.
      * 
@@ -956,5 +968,4 @@ public class Platform {
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
         return level instanceof ServerLevel serverLevel && serverLevel.isPositionTickingWithEntitiesLoaded(pos);
     }
-
 }

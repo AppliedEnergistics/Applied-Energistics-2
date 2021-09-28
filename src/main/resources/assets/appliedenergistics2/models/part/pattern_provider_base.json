@@ -1,0 +1,80 @@
+{
+  "textures": {
+    "sides": "appliedenergistics2:part/export_bus_sides",
+    "sidesStatus": "appliedenergistics2:part/monitor_sides_status",
+    "back": "appliedenergistics2:part/monitor_back",
+    "front": "appliedenergistics2:part/pattern_provider",
+    "particle": "appliedenergistics2:part/monitor_back"
+  },
+  "elements": [
+    {
+      "from": [2, 2, 0],
+      "to": [14, 14, 2],
+      "faces": {
+        "down": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "north": {
+          "texture": "#front"
+        },
+        "west": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 3],
+      "to": [11, 11, 4],
+      "faces": {
+        "down": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "north": {
+          "texture": "#front"
+        },
+        "west": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 2],
+      "to": [11, 11, 3],
+      "faces": {
+        "down": {
+          "texture": "#sidesStatus"
+        },
+        "up": {
+          "texture": "#sidesStatus"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sidesStatus"
+        },
+        "west": {
+          "texture": "#sidesStatus"
+        }
+      }
+    }
+  ]
+}

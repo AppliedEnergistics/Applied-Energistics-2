@@ -23,11 +23,8 @@
 
 package appeng.api.networking.crafting;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-
-import appeng.api.crafting.ICraftingHelper;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.storage.data.IAEStack;
 
 /**
  * Passed to a ICraftingProvider as a interface to manipulate the available crafting jobs.
@@ -36,13 +33,11 @@ public interface ICraftingProviderHelper {
 
     /**
      * Add new Pattern to AE's crafting cache.
-     * 
-     * This will only accept instances created by {@link ICraftingHelper#decodePattern(ItemStack, Level)}
      */
-    void addCraftingOption(ICraftingMedium medium, ICraftingPatternDetails api);
+    void addCraftingOption(ICraftingMedium medium, IPatternDetails api, int priority);
 
     /**
      * Set an item can Emitable
      */
-    void setEmitable(IAEItemStack what);
+    void setEmitable(IAEStack what);
 }

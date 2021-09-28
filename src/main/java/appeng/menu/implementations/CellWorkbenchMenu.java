@@ -177,7 +177,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
                 ? ((IStorageCell<?>) is.getItem()).getChannel()
                 : StorageChannels.items();
 
-        Iterator<? extends IAEStack<?>> i = iterateCellItems(is, channel);
+        Iterator<? extends IAEStack> i = iterateCellItems(is, channel);
 
         for (int x = 0; x < inv.size(); x++) {
             if (i.hasNext()) {
@@ -196,7 +196,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         return Objects.requireNonNull(this.getHost().getSubInventory(ISegmentedInventory.CONFIG));
     }
 
-    private <T extends IAEStack<T>> Iterator<? extends IAEStack<T>> iterateCellItems(ItemStack is,
+    private <T extends IAEStack> Iterator<? extends IAEStack> iterateCellItems(ItemStack is,
             IStorageChannel<T> channel) {
         final IMEInventory<T> cellInv = StorageCells.getCellInventory(is, null, channel);
         if (cellInv != null) {

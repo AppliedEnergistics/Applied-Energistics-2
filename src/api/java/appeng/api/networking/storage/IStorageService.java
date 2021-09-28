@@ -45,8 +45,8 @@ public interface IStorageService extends IGridService, IStorageMonitorable {
      *
      * @param input injected items
      */
-    <T extends IAEStack<T>> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-            Iterable<? extends IAEStack<T>> input,
+    <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
+            Iterable<T> input,
             IActionSource src);
 
     /**

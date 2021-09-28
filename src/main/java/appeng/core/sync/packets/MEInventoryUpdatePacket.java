@@ -66,7 +66,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     /**
      * @param <T> Type of stack stored in list.
      */
-    private record StorageList<T extends IAEStack<T>> (
+    private record StorageList<T extends IAEStack> (
             IStorageChannel<T> storageChannel,
             List<GridInventoryEntry<T>> list) {
         public static StorageList<?> read(FriendlyByteBuf data) {
@@ -74,7 +74,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
             return read(storageChannel, data);
         }
 
-        private static <T extends IAEStack<T>> StorageList<T> read(IStorageChannel<T> storageChannel,
+        private static <T extends IAEStack> StorageList<T> read(IStorageChannel<T> storageChannel,
                 FriendlyByteBuf data) {
             var count = data.readShort();
             var list = new ArrayList<GridInventoryEntry<T>>(count);
@@ -119,7 +119,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
         this.storageList = null;
     }
 
-    public static class Builder<T extends IAEStack<T>> {
+    public static class Builder<T extends IAEStack> {
         private final List<MEInventoryUpdatePacket> packets = new ArrayList<>();
 
         private final int containerId;
@@ -257,7 +257,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
         }
     }
 
-    public static <T extends IAEStack<T>> Builder<T> builder(IStorageChannel<T> storageChannel,
+    public static <T extends IAEStack> Builder<T> builder(IStorageChannel<T> storageChannel,
             int containerId,
             boolean fullUpdate) {
         return new Builder<>(storageChannel, containerId, fullUpdate);

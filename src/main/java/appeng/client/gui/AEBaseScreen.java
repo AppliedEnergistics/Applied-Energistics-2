@@ -216,14 +216,15 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         for (final CustomSlotWidget c : this.guiSlots) {
             this.drawGuiSlot(poseStack, c, mouseX, mouseY, partialTicks);
         }
+        poseStack.popPose();
         RenderSystem.disableDepthTest();
         for (final CustomSlotWidget c : this.guiSlots) {
-            Tooltip tooltip = c.getTooltip(mouseX, mouseY);
+            // Custom slot widgets aren't aware of the screen's position, so we have to cheat with the mouse pos!
+            Tooltip tooltip = c.getTooltip(mouseX - this.leftPos, mouseY - this.topPos);
             if (tooltip != null) {
                 drawTooltip(poseStack, tooltip, mouseX, mouseY);
             }
         }
-        poseStack.popPose();
         RenderSystem.enableDepthTest();
 
         renderTooltips(poseStack, mouseX, mouseY);
@@ -643,7 +644,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * This overrides the base-class method through some access transformer hackery...
      */
     @Override
-    protected void renderSlot(PoseStack poseStack, Slot s) {
+    public void renderSlot(PoseStack poseStack, Slot s) {
         if (s instanceof AppEngSlot) {
             try {
                 renderAppEngSlot(poseStack, (AppEngSlot) s);

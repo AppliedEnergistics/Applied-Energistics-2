@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IAEStack;
 
 /**
  * Allows you to provide cells to the grid's storage system. Implementations that are attached as grid node services
@@ -44,14 +45,11 @@ public interface ICellProvider extends IGridNodeService {
 
     /**
      * List of inventories (i.e. one per cell) available for the given storage channel.
-     * <p/>
-     * You must return the correct Handler for the correct channel, if your handler returns a IAEItemStack handler, for
-     * a Fluid Channel stuffs going to explode, same with the reverse.
      *
      * @return a valid list of handlers
      */
     @Nonnull
-    List<IMEInventoryHandler> getCellArray(IStorageChannel<?> channel);
+    <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(IStorageChannel<T> channel);
 
     /**
      * the storage's priority.

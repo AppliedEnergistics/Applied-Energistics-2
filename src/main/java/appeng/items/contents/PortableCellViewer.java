@@ -74,7 +74,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
     }
 
     @Override
-    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         if (channel == StorageChannels.items()) {
             return cast(channel);
         }

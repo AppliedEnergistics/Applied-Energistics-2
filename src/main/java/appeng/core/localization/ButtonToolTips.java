@@ -57,6 +57,7 @@ public enum ButtonToolTips {
 
     Stash, StashDesc, Encode, EncodeDescription, Substitutions, SubstitutionsOn, SubstitutionsOff,
     SubstitutionsDescEnabled, SubstitutionsDescDisabled, CraftOnly, CraftEither,
+    FindContainedFluids, FindContainedFluidsDesc,
 
     Craft, Mod, DoesntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafting, ReportInaccessibleItems,
     ReportInaccessibleItemsYes, ReportInaccessibleItemsNo, ReportInaccessibleFluids, ReportInaccessibleFluidsYes,

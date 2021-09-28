@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,6 +55,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.IConfigurableFluidInventory;
@@ -191,12 +191,10 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
+    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(final IStorageChannel<T> channel) {
         if (this.getMainNode().isActive()
                 && channel == StorageChannels.fluids()) {
-            final List<IMEInventoryHandler> handler = new ArrayList<>(1);
-            handler.add(this.myHandler);
-            return handler;
+            return List.of(this.myHandler.cast(channel));
         }
         return Collections.emptyList();
     }

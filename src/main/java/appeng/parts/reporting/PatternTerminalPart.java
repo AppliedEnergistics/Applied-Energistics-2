@@ -30,11 +30,14 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.StorageChannels;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.AppEng;
+import appeng.crafting.pattern.IAEPatternDetails;
+import appeng.items.misc.FluidDummyItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
@@ -120,20 +123,18 @@ public class PatternTerminalPart extends AbstractTerminalPart {
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getStackInSlot(1);
-            final ICraftingPatternDetails details = AEApi.crafting().decodePattern(is,
+            final IPatternDetails details = AEApi.patterns().decodePattern(is,
                     this.getHost().getBlockEntity().getLevel());
-            if (details != null) {
-                this.setCraftingRecipe(details.isCraftable());
-                this.setSubstitution(details.canSubstitute());
+            if (details instanceof IAEPatternDetails aeDetails) {
+                this.setCraftingRecipe(aeDetails.isCraftable());
+                this.setSubstitution(aeDetails.canSubstitute());
 
-                for (int x = 0; x < this.crafting.size() && x < details.getSparseInputs().length; x++) {
-                    final IAEItemStack item = details.getSparseInputs()[x];
-                    this.crafting.setItemDirect(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                for (int x = 0; x < this.crafting.size() && x < aeDetails.getSparseInputs().length; x++) {
+                    this.crafting.setItemDirect(x, getDisplayStack(aeDetails.getSparseInputs()[x]));
                 }
 
-                for (int x = 0; x < this.output.size() && x < details.getSparseOutputs().length; x++) {
-                    final IAEItemStack item = details.getSparseOutputs()[x];
-                    this.output.setItemDirect(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                for (int x = 0; x < this.output.size() && x < aeDetails.getSparseOutputs().length; x++) {
+                    this.output.setItemDirect(x, getDisplayStack(aeDetails.getSparseOutputs()[x]));
                 }
             }
         } else if (inv == this.crafting) {
@@ -141,6 +142,18 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         }
 
         this.getHost().markForSave();
+    }
+
+    private ItemStack getDisplayStack(@Nullable IAEStack aeStack) {
+        if (aeStack == null) {
+            return ItemStack.EMPTY;
+        } else if (aeStack.getChannel() == StorageChannels.items()) {
+            return aeStack.cast(StorageChannels.items()).createItemStack();
+        } else if (aeStack.getChannel() == StorageChannels.fluids()) {
+            return FluidDummyItem.fromFluidStack(aeStack.cast(StorageChannels.fluids()).getFluidStack(), true);
+        } else {
+            throw new IllegalArgumentException("Only item and fluid stacks are supported");
+        }
     }
 
     private void fixCraftingRecipes() {

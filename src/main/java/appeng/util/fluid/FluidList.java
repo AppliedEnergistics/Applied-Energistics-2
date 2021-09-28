@@ -22,11 +22,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.util.iterators.MeaningfulStackIterator;
 
 public final class FluidList implements IItemList<IAEFluidStack> {
 
@@ -41,7 +44,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
         final IAEFluidStack st = this.getFluidRecord(option);
 
         if (st != null) {
-            st.add(option);
+            IAEStack.add(st, option);
             return;
         }
 
@@ -61,11 +64,12 @@ public final class FluidList implements IItemList<IAEFluidStack> {
 
     @Override
     public Collection<IAEFluidStack> findFuzzy(final IAEFluidStack filter, final FuzzyMode fuzzy) {
-        if (filter == null) {
+        var precise = findPrecise(filter);
+        if (precise == null) {
             return Collections.emptyList();
+        } else {
+            return List.of(precise);
         }
-
-        return Collections.singletonList(this.findPrecise(filter));
     }
 
     @Override
@@ -153,7 +157,7 @@ public final class FluidList implements IItemList<IAEFluidStack> {
 
     @Override
     public Iterator<IAEFluidStack> iterator() {
-        return new MeaningfulFluidIterator<>(this.records.values().iterator());
+        return new MeaningfulStackIterator<>(this.records.values());
     }
 
     @Override

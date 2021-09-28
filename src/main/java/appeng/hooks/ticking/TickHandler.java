@@ -49,7 +49,7 @@ import net.minecraftforge.fml.LogicalSide;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.crafting.CraftingJob;
+import appeng.crafting.CraftingCalculation;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.util.ILevelRunnable;
@@ -64,7 +64,7 @@ public class TickHandler {
 
     private static final TickHandler INSTANCE = new TickHandler();
     private final Queue<ILevelRunnable> serverQueue = new ArrayDeque<>();
-    private final Multimap<LevelAccessor, CraftingJob> craftingJobs = LinkedListMultimap.create();
+    private final Multimap<LevelAccessor, CraftingCalculation> craftingJobs = LinkedListMultimap.create();
     private final Map<LevelAccessor, Queue<ILevelRunnable>> callQueue = new HashMap<>();
     private final ServerBlockEntityRepo blockEntities = new ServerBlockEntityRepo();
     private final ServerGridRepo grids = new ServerGridRepo();
@@ -317,11 +317,11 @@ public class TickHandler {
         }
     }
 
-    public void registerCraftingSimulation(final Level level, final CraftingJob craftingJob) {
+    public void registerCraftingSimulation(final Level level, final CraftingCalculation craftingCalculation) {
         Preconditions.checkArgument(!level.isClientSide, "Trying to register a crafting job for a client-level");
 
         synchronized (this.craftingJobs) {
-            this.craftingJobs.put(level, craftingJob);
+            this.craftingJobs.put(level, craftingCalculation);
         }
     }
 
@@ -330,17 +330,17 @@ public class TickHandler {
      */
     private void simulateCraftingJobs(LevelAccessor level) {
         synchronized (this.craftingJobs) {
-            final Collection<CraftingJob> jobSet = this.craftingJobs.get(level);
+            final Collection<CraftingCalculation> jobSet = this.craftingJobs.get(level);
 
             if (!jobSet.isEmpty()) {
                 final int jobSize = jobSet.size();
                 final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
                 final int simTime = Math.max(1, microSecondsPerTick / jobSize);
 
-                final Iterator<CraftingJob> i = jobSet.iterator();
+                final Iterator<CraftingCalculation> i = jobSet.iterator();
 
                 while (i.hasNext()) {
-                    final CraftingJob cj = i.next();
+                    final CraftingCalculation cj = i.next();
                     if (!cj.simulateFor(simTime)) {
                         i.remove();
                     }

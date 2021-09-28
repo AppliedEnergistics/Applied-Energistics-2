@@ -28,7 +28,7 @@ import javax.annotation.Nonnegative;
 /**
  * DO NOT IMPLEMENT.
  *
- * Will be injected when adding an {@link IEnergyWatcherHost} to a grid.
+ * Will be injected when adding an {@link IEnergyWatcherNode} to a grid.
  */
 public interface IEnergyWatcher {
     /**

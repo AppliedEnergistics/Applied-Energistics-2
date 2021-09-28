@@ -66,7 +66,7 @@ public final class Settings {
     public static final Setting<SearchBoxMode> SEARCH_MODE = register("search_mode", SearchBoxMode.class);
     public static final Setting<RelativeDirection> IO_DIRECTION = register("io_direction", RelativeDirection.LEFT,
             RelativeDirection.RIGHT);
-    public static final Setting<YesNo> BLOCK = register("block", YesNo.YES, YesNo.NO);
+    public static final Setting<YesNo> BLOCKING_MODE = register("blocking_mode", YesNo.YES, YesNo.NO);
     public static final Setting<OperationMode> OPERATION_MODE = register("operation_mode", OperationMode.class);
     public static final Setting<FullnessMode> FULLNESS_MODE = register("fullness_mode", FullnessMode.class);
     public static final Setting<YesNo> CRAFT_ONLY = register("craft_only", YesNo.YES, YesNo.NO);

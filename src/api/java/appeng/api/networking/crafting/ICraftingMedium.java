@@ -23,10 +23,12 @@
 
 package appeng.api.networking.crafting;
 
-import net.minecraft.world.inventory.CraftingContainer;
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.storage.data.MixedItemList;
 
 /**
- * A place to send Items for crafting purposes, this is considered part of AE's External crafting system.
+ * A place to send Items for crafting purposes, registered by a {@link ICraftingProvider} with
+ * {@link ICraftingProviderHelper#addCraftingOption}.
  */
 public interface ICraftingMedium {
 
@@ -35,11 +37,11 @@ public interface ICraftingMedium {
      * possible the output should be directed.
      *
      * @param patternDetails details
-     * @param table          crafting table
+     * @param inputHolder    the requested stacks, for each input slot of the pattern
      *
      * @return if the pattern was successfully pushed.
      */
-    boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingContainer table);
+    boolean pushPattern(IPatternDetails patternDetails, MixedItemList[] inputHolder);
 
     /**
      * @return if this is false, the crafting engine will refuse to send new jobs to this medium.

@@ -27,7 +27,7 @@ import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 
-public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
+public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
 
     private CellState oldStatus = CellState.EMPTY;
     private final ItemStack is;

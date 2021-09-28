@@ -30,7 +30,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 
-public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T> {
+public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandler<T> {
 
     private final IMEInventoryHandler<T> internal;
     private int myPriority;

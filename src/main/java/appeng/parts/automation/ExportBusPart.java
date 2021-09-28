@@ -51,6 +51,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -142,8 +143,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     if (ais == null || this.itemToSend <= 0 || this.craftOnly()) {
                         if (this.isCraftingEnabled()) {
                             this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                    destination, this.getBlockEntity().getLevel(), grid, cg,
-                                    this.mySrc)
+                                    destination, this.getBlockEntity().getLevel(), cg, this.mySrc)
                                     || this.didSomething;
                         }
                         continue;
@@ -164,8 +164,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
 
                     if (this.itemToSend == before && this.isCraftingEnabled()) {
                         this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais,
-                                destination, this.getBlockEntity().getLevel(), grid, cg,
-                                this.mySrc)
+                                destination, this.getBlockEntity().getLevel(), cg, this.mySrc)
                                 || this.didSomething;
                     }
                 }
@@ -216,7 +215,9 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     }
 
     @Override
-    public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack items, final Actionable mode) {
+    public IAEStack injectCraftedItems(final ICraftingLink link, final IAEStack stack, final Actionable mode) {
+        // Cast is safe: we know we only requested items.
+        var items = (IAEItemStack) stack;
         var d = this.getHandler();
 
         var grid = getMainNode().getGrid();

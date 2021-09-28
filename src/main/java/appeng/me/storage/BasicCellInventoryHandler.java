@@ -38,7 +38,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @version rv6 - 2018-01-23
  * @since rv6 2018-01-23
  */
-public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T>
+public class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T>
         implements ICellInventoryHandler<T> {
     public BasicCellInventoryHandler(final IMEInventory c, final IStorageChannel<T> channel) {
         super(c, channel);

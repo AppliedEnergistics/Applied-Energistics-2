@@ -84,7 +84,7 @@ public class DualityFluidInterface
      * Returns an ME compatible monitor for the interfaces local storage.
      */
     @Override
-    protected <T extends IAEStack<T>> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
+    protected <T extends IAEStack> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
         if (channel == StorageChannels.fluids()) {
             if (localInvHandler == null) {
                 localInvHandler = new InterfaceInventory();
@@ -130,6 +130,7 @@ public class DualityFluidInterface
         return new DimensionalBlockPos(this.host.getBlockEntity());
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
         if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
@@ -201,8 +202,9 @@ public class DualityFluidInterface
         final IAEFluidStack stored = this.tanks.getFluidInSlot(slot);
 
         if (req == null && stored != null && stored.getStackSize() > 0) {
-            final IAEFluidStack work = stored.copy();
-            this.requireWork[slot] = work.setStackSize(-work.getStackSize());
+            var work = stored.copy();
+            work.setStackSize(-work.getStackSize());
+            this.requireWork[slot] = work;
             return;
         } else if (req != null) {
             if (stored == null || stored.getStackSize() == 0) // need to add stuff!
@@ -220,8 +222,9 @@ public class DualityFluidInterface
             } else
             // Stored != null; dispose!
             {
-                final IAEFluidStack work = stored.copy();
-                this.requireWork[slot] = work.setStackSize(-work.getStackSize());
+                var work = stored.copy();
+                work.setStackSize(-work.getStackSize());
+                this.requireWork[slot] = work;
                 return;
             }
         }
@@ -322,12 +325,14 @@ public class DualityFluidInterface
         return level == null || level.isClientSide();
     }
 
+    @Override
     public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.tanks.writeToNBT(data, "storage");
         this.config.writeToNBT(data, "config");
     }
 
+    @Override
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");

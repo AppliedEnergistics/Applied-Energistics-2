@@ -111,42 +111,45 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
     }
 
     public void postUpdate(CraftingStatus status) {
+        Map<Long, CraftingStatusEntry> entries;
         if (this.status == null || status.isFullStatus()) {
-            this.status = status;
+            // Start from scratch.
+            // We can't just reuse the status because we have to filter out deleted entries.
+            entries = new LinkedHashMap<>();
         } else {
-            // Merge the status entries
-            Map<Long, CraftingStatusEntry> entries = new LinkedHashMap<>(this.status.getEntries().size());
+            // Merge the status entries.
+            entries = new LinkedHashMap<>(this.status.getEntries().size());
             for (CraftingStatusEntry entry : this.status.getEntries()) {
                 entries.put(entry.getSerial(), entry);
             }
+        }
 
-            for (CraftingStatusEntry entry : status.getEntries()) {
-                if (entry.isDeleted()) {
-                    entries.remove(entry.getSerial());
-                    continue;
-                }
-
-                CraftingStatusEntry existingEntry = entries.get(entry.getSerial());
-                if (existingEntry != null) {
-                    entries.put(entry.getSerial(), new CraftingStatusEntry(
-                            existingEntry.getSerial(),
-                            existingEntry.getItem(),
-                            entry.getStoredAmount(),
-                            entry.getActiveAmount(),
-                            entry.getPendingAmount()));
-                } else {
-                    entries.put(entry.getSerial(), entry);
-                }
+        for (CraftingStatusEntry entry : status.getEntries()) {
+            if (entry.isDeleted()) {
+                entries.remove(entry.getSerial());
+                continue;
             }
 
-            List<CraftingStatusEntry> sortedEntries = new ArrayList<>(entries.values());
-            this.status = new CraftingStatus(
-                    true,
-                    status.getElapsedTime(),
-                    status.getRemainingItemCount(),
-                    status.getStartItemCount(),
-                    sortedEntries);
+            CraftingStatusEntry existingEntry = entries.get(entry.getSerial());
+            if (existingEntry != null) {
+                entries.put(entry.getSerial(), new CraftingStatusEntry(
+                        existingEntry.getSerial(),
+                        existingEntry.getStack(),
+                        entry.getStoredAmount(),
+                        entry.getActiveAmount(),
+                        entry.getPendingAmount()));
+            } else {
+                entries.put(entry.getSerial(), entry);
+            }
         }
+
+        List<CraftingStatusEntry> sortedEntries = new ArrayList<>(entries.values());
+        this.status = new CraftingStatus(
+                true,
+                status.getElapsedTime(),
+                status.getRemainingItemCount(),
+                status.getStartItemCount(),
+                sortedEntries);
     }
 
 }

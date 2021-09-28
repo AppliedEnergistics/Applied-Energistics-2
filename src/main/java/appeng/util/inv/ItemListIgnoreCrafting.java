@@ -25,7 +25,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-public class ItemListIgnoreCrafting<T extends IAEStack<T>> implements IItemList<T> {
+public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T> {
 
     private final IItemList<T> target;
 
@@ -36,7 +36,7 @@ public class ItemListIgnoreCrafting<T extends IAEStack<T>> implements IItemList<
     @Override
     public void add(T option) {
         if (option != null && option.isCraftable()) {
-            option = option.copy();
+            option = IAEStack.copy(option);
             option.setCraftable(false);
         }
 

@@ -33,7 +33,7 @@ import appeng.api.config.FuzzyMode;
  * Don't Implement.
  *
  */
-public interface IItemContainer<T extends IAEStack<T>> {
+public interface IItemContainer<T extends IAEStack> {
 
     /**
      * add a stack to the list, this will merge the stack with an item already in the list if found.

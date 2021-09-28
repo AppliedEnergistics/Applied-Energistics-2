@@ -18,9 +18,6 @@
 
 package appeng.helpers;
 
-import java.util.EnumSet;
-
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.IUpgradeableObject;
@@ -31,8 +28,6 @@ public interface IInterfaceHost extends IConfigurableObject, IUpgradeableObject,
      * @return The block entity that is in-world and hosts the interface.
      */
     BlockEntity getBlockEntity();
-
-    EnumSet<Direction> getTargets();
 
     void saveChanges();
 }

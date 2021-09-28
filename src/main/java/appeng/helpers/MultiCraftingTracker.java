@@ -28,9 +28,8 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.AEApi;
 import appeng.api.inventories.ItemTransfer;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionSource;
@@ -41,7 +40,7 @@ public class MultiCraftingTracker {
     private final int size;
     private final ICraftingRequester owner;
 
-    private Future<ICraftingJob>[] jobs = null;
+    private Future<ICraftingPlan>[] jobs = null;
     private ICraftingLink[] links = null;
 
     public MultiCraftingTracker(final ICraftingRequester o, final int size) {
@@ -72,9 +71,9 @@ public class MultiCraftingTracker {
     }
 
     public boolean handleCrafting(final int x, final long itemToCraft, final IAEItemStack ais, ItemTransfer d,
-            final Level level, final IGrid g, final ICraftingService cg, final IActionSource mySrc) {
+            final Level level, final ICraftingService cg, final IActionSource mySrc) {
         if (ais != null && d.simulateAdd(ais.createItemStack()).isEmpty()) {
-            final Future<ICraftingJob> craftingJob = this.getJob(x);
+            final Future<ICraftingPlan> craftingJob = this.getJob(x);
 
             if (this.getLink(x) != null) {
                 return false;
@@ -83,7 +82,7 @@ public class MultiCraftingTracker {
             if (craftingJob != null) {
 
                 try {
-                    ICraftingJob job = null;
+                    ICraftingPlan job = null;
                     if (craftingJob.isDone()) {
                         job = craftingJob.get();
                     }
@@ -108,7 +107,7 @@ public class MultiCraftingTracker {
                 final IAEItemStack aisC = ais.copy();
                 aisC.setStackSize(itemToCraft);
 
-                this.setJob(x, cg.beginCraftingJob(level, g, mySrc, aisC, null));
+                this.setJob(x, cg.beginCraftingJob(level, mySrc, aisC));
             }
         }
         return false;
@@ -157,7 +156,7 @@ public class MultiCraftingTracker {
         }
 
         if (this.jobs != null) {
-            for (final Future<ICraftingJob> l : this.jobs) {
+            for (final Future<ICraftingPlan> l : this.jobs) {
                 if (l != null) {
                     l.cancel(true);
                 }
@@ -202,7 +201,7 @@ public class MultiCraftingTracker {
         }
     }
 
-    private Future<ICraftingJob> getJob(final int slot) {
+    private Future<ICraftingPlan> getJob(final int slot) {
         if (this.jobs == null) {
             return null;
         }
@@ -210,7 +209,7 @@ public class MultiCraftingTracker {
         return this.jobs[slot];
     }
 
-    private void setJob(final int slot, final Future<ICraftingJob> l) {
+    private void setJob(final int slot, final Future<ICraftingPlan> l) {
         if (this.jobs == null) {
             this.jobs = new Future[this.size];
         }
@@ -219,7 +218,7 @@ public class MultiCraftingTracker {
 
         boolean hasStuff = false;
 
-        for (final Future<ICraftingJob> job : this.jobs) {
+        for (final Future<ICraftingPlan> job : this.jobs) {
             if (job != null) {
                 hasStuff = true;
                 break;

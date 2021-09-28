@@ -35,7 +35,7 @@ import net.minecraftforge.fluids.FluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-public interface IStorageChannel<T extends IAEStack<T>> {
+public interface IStorageChannel<T extends IAEStack> {
 
     /**
      * @return The unique ID of this storage channel.
@@ -74,8 +74,8 @@ public interface IStorageChannel<T extends IAEStack<T>> {
      * <p>
      * The parameter is unbound to allow a slightly more flexible approach. But the general intention is about
      * converting an {@link ItemStack} or {@link FluidStack} into the corresponding {@link IAEStack}. Another valid case
-     * might be to use it instead of {@link IAEStack#copy()}, but this might not be supported by all types. IAEStacks
-     * that use custom items for {@link IAEStack#asItemStackRepresentation()} must also be able to convert these.
+     * might be to use it instead of {@link IAEStack#copy}, but this might not be supported by all types. IAEStacks that
+     * use custom items for {@link IAEStack#asItemStackRepresentation()} must also be able to convert these.
      *
      * @param input The object to turn into an {@link IAEStack}
      * @return The converted stack or null
@@ -92,4 +92,5 @@ public interface IStorageChannel<T extends IAEStack<T>> {
     @Nullable
     T createFromNBT(@Nonnull CompoundTag nbt);
 
+    T copy(T stack);
 }

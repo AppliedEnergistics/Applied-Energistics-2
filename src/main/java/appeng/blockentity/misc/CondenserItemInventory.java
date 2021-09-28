@@ -113,8 +113,10 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
         if (!added.isEmpty()) {
             this.changeSet.add(AEItemStack.fromItemStack(added));
         }
-        if (!removed.isEmpty()) {
-            this.changeSet.add(AEItemStack.fromItemStack(removed).setStackSize(-removed.getCount()));
+        var change = AEItemStack.fromItemStack(removed);
+        if (change != null) {
+            change.setStackSize(-removed.getCount());
+            this.changeSet.add(change);
         }
     }
 

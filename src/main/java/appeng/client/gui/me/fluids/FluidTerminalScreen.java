@@ -18,10 +18,8 @@
 
 package appeng.client.gui.me.fluids;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -34,6 +32,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.style.FluidBlitter;
@@ -67,7 +66,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     protected void renderGridInventoryEntry(PoseStack poseStack, int x, int y,
             GridInventoryEntry<IAEFluidStack> entry) {
         IAEFluidStack fs = entry.getStack();
-        FluidBlitter.create(fs.getFluidStack())
+        FluidBlitter.create(IAEStack.copy(fs, 1).getFluidStack())
                 .dest(x, y, 16, 16)
                 .blit(poseStack, getBlitOffset());
     }
@@ -76,14 +75,12 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<IAEFluidStack> entry, int x,
             int y) {
         IAEFluidStack fluidStack = entry.getStack();
-        String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
-                .format(entry.getStoredAmount() / 1000.0) + " B";
 
-        String modName = Platform.getModName(Platform.getModId(fluidStack));
+        String modName = Platform.formatModName(Platform.getModId(fluidStack));
 
         List<Component> list = new ArrayList<>();
         list.add(fluidStack.getFluidStack().getDisplayName());
-        list.add(new TextComponent(formattedAmount));
+        list.add(new TextComponent(Platform.formatFluidAmount(entry.getStoredAmount())));
         list.add(new TextComponent(modName));
 
         this.renderComponentToolTip(poseStack, list, x, y, this.font);

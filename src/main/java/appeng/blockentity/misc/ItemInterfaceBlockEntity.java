@@ -18,8 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import java.io.IOException;
-import java.util.EnumSet;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -27,7 +25,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -51,7 +48,6 @@ import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IItemInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.util.Platform;
 
 public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
         implements IItemInterfaceHost, IPriorityHost, IUpgradeableObject, IConfigurableObject {
@@ -65,9 +61,6 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
 
     private final DualityItemInterface duality = new DualityItemInterface(this.getMainNode(), this,
             getItemFromBlockEntity());
-
-    // Indicates that this interface has no specific direction set
-    private boolean omniDirectional = true;
 
     public ItemInterfaceBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -83,65 +76,14 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
         this.duality.notifyNeighbors();
     }
 
-    public void setSide(final Direction facing) {
-        if (isRemote()) {
-            return;
-        }
-
-        Direction newForward = facing;
-
-        if (!this.omniDirectional && this.getForward() == facing.getOpposite()) {
-            newForward = facing;
-        } else if (!this.omniDirectional
-                && (this.getForward() == facing || this.getForward() == facing.getOpposite())) {
-            this.omniDirectional = true;
-        } else if (this.omniDirectional) {
-            newForward = facing.getOpposite();
-            this.omniDirectional = false;
-        } else {
-            newForward = Platform.rotateAround(this.getForward(), facing);
-        }
-
-        if (this.omniDirectional) {
-            this.setOrientation(Direction.NORTH, Direction.UP);
-        } else {
-            Direction newUp = Direction.UP;
-            if (newForward == Direction.UP || newForward == Direction.DOWN) {
-                newUp = Direction.NORTH;
-            }
-            this.setOrientation(newForward, newUp);
-        }
-
-        this.configureNodeSides();
-        this.markForUpdate();
-        this.saveChanges();
-    }
-
-    private void configureNodeSides() {
-        if (this.omniDirectional) {
-            this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
-        } else {
-            this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
-        }
-    }
-
     @Override
     public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
         this.duality.addDrops(drops);
     }
 
     @Override
-    public void onReady() {
-        this.configureNodeSides();
-
-        super.onReady();
-        this.duality.initialize();
-    }
-
-    @Override
     public CompoundTag save(final CompoundTag data) {
         super.save(data);
-        data.putBoolean("omniDirectional", this.omniDirectional);
         this.duality.writeToNBT(data);
         return data;
     }
@@ -149,23 +91,7 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     @Override
     public void load(final CompoundTag data) {
         super.load(data);
-        this.omniDirectional = data.getBoolean("omniDirectional");
-
         this.duality.readFromNBT(data);
-    }
-
-    @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
-        final boolean c = super.readFromStream(data);
-        boolean oldOmniDirectional = this.omniDirectional;
-        this.omniDirectional = data.readBoolean();
-        return oldOmniDirectional != this.omniDirectional || c;
-    }
-
-    @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
-        super.writeToStream(data);
-        data.writeBoolean(this.omniDirectional);
     }
 
     @Override
@@ -190,23 +116,8 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public EnumSet<Direction> getTargets() {
-        if (this.omniDirectional) {
-            return EnumSet.allOf(Direction.class);
-        }
-        return EnumSet.of(this.getForward());
-    }
-
-    @Override
     public BlockEntity getBlockEntity() {
         return this;
-    }
-
-    /**
-     * @return True if this interface is omni-directional.
-     */
-    public boolean isOmniDirectional() {
-        return this.omniDirectional;
     }
 
     @Override

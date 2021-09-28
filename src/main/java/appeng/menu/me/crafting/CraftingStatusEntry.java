@@ -19,7 +19,9 @@
 package appeng.menu.me.crafting;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
+
+import appeng.api.storage.data.IAEStack;
+import appeng.crafting.execution.GenericStackHelper;
 
 /**
  * Describes an entry in a crafting job, which describes how many items of one type are yet to be crafted, or currently
@@ -27,14 +29,14 @@ import net.minecraft.world.item.ItemStack;
  */
 public class CraftingStatusEntry {
     private final long serial;
-    private final ItemStack item;
+    private final IAEStack stack;
     private final long storedAmount;
     private final long activeAmount;
     private final long pendingAmount;
 
-    public CraftingStatusEntry(long serial, ItemStack item, long storedAmount, long activeAmount, long pendingAmount) {
+    public CraftingStatusEntry(long serial, IAEStack stack, long storedAmount, long activeAmount, long pendingAmount) {
         this.serial = serial;
-        this.item = item;
+        this.stack = stack;
         this.storedAmount = storedAmount;
         this.activeAmount = activeAmount;
         this.pendingAmount = pendingAmount;
@@ -56,8 +58,8 @@ public class CraftingStatusEntry {
         return pendingAmount;
     }
 
-    public ItemStack getItem() {
-        return item;
+    public IAEStack getStack() {
+        return stack;
     }
 
     public void write(FriendlyByteBuf buffer) {
@@ -65,7 +67,7 @@ public class CraftingStatusEntry {
         buffer.writeVarLong(activeAmount);
         buffer.writeVarLong(storedAmount);
         buffer.writeVarLong(pendingAmount);
-        buffer.writeItemStack(item, true);
+        GenericStackHelper.writeGenericStack(buffer, stack);
     }
 
     public static CraftingStatusEntry read(FriendlyByteBuf buffer) {
@@ -73,8 +75,8 @@ public class CraftingStatusEntry {
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();
         long craftAmount = buffer.readVarLong();
-        ItemStack item = buffer.readItem();
-        return new CraftingStatusEntry(serial, item, storedAmount, missingAmount, craftAmount);
+        IAEStack stack = GenericStackHelper.readGenericStack(buffer);
+        return new CraftingStatusEntry(serial, stack, storedAmount, missingAmount, craftAmount);
     }
 
     /**

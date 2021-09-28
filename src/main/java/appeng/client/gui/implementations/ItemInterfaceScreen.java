@@ -21,49 +21,16 @@ package appeng.client.gui.implementations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
-import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.ServerSettingToggleButton;
-import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.gui.widgets.ToggleButton;
-import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.menu.implementations.ItemInterfaceMenu;
 
 public class ItemInterfaceScreen extends UpgradeableScreen<ItemInterfaceMenu> {
-
-    private final SettingToggleButton<YesNo> blockMode;
-    private final ToggleButton interfaceMode;
 
     public ItemInterfaceScreen(ItemInterfaceMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         widgets.addOpenPriorityButton();
-
-        this.blockMode = new ServerSettingToggleButton<>(Settings.BLOCK, YesNo.NO);
-        this.addToLeftToolbar(this.blockMode);
-
-        this.interfaceMode = new ToggleButton(Icon.INTERFACE_TERMINAL_SHOW, Icon.INTERFACE_TERMINAL_HIDE,
-                GuiText.InterfaceTerminal.text(), GuiText.InterfaceTerminalHint.text(),
-                btn -> selectNextInterfaceMode());
-        this.addToLeftToolbar(this.interfaceMode);
-    }
-
-    @Override
-    protected void updateBeforeRender() {
-        super.updateBeforeRender();
-
-        this.blockMode.set(this.menu.getBlockingMode());
-        this.interfaceMode.setState(this.menu.getInterfaceTerminalMode() == YesNo.YES);
-    }
-
-    private void selectNextInterfaceMode() {
-        final boolean backwards = isHandlingRightClick();
-        NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.INTERFACE_TERMINAL, backwards));
     }
 
 }

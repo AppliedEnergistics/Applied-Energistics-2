@@ -36,13 +36,13 @@ import appeng.menu.me.fluids.FluidTerminalMenu;
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 
     @Override
-    public <T extends IAEStack<T>> boolean isHandlerFor(final IStorageChannel<T> channel) {
+    public <T extends IAEStack> boolean isHandlerFor(final IStorageChannel<T> channel) {
         return channel == StorageChannels.fluids();
     }
 
     @Override
     public void openChestGui(final Player player, final IChestOrDrive chest, final ICellHandler cellHandler,
-            final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan) {
+            final IMEInventoryHandler inv, final ItemStack is) {
         MenuOpener.open(FluidTerminalMenu.TYPE, player,
                 MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }

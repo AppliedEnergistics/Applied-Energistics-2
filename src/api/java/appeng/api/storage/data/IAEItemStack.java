@@ -23,8 +23,12 @@
 
 package appeng.api.storage.data;
 
+import java.util.Objects;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.api.storage.StorageChannels;
 
 /**
  * An alternate version of ItemStack for AE to keep tabs on things easier, and to support larger storage. stackSizes of
@@ -33,10 +37,16 @@ import net.minecraft.world.item.ItemStack;
  * You may hold on to these if you want, just make sure you let go of them when your not using them.
  *
  * Don't Implement.
- *
- * Construct with IAppEngApi.instance().storage().getStorageChannel( IItemStorageChannel.class).createStack( ItemStack )
  */
-public interface IAEItemStack extends IAEStack<IAEItemStack> {
+public interface IAEItemStack extends IAEStack {
+
+    /**
+     * Create from a vanilla stack.
+     */
+    static IAEItemStack of(ItemStack stack) {
+        Objects.requireNonNull(stack);
+        return StorageChannels.items().createStack(stack);
+    }
 
     /**
      * creates a standard MC ItemStack for the item.
@@ -53,19 +63,10 @@ public interface IAEItemStack extends IAEStack<IAEItemStack> {
     boolean hasTagCompound();
 
     /**
-     * Combines two IAEItemStacks via addition.
-     *
-     * @param option to add to the current one.
-     */
-    @Override
-    void add(IAEItemStack option);
-
-    /**
      * create a AE Item clone
      *
      * @return the copy
      */
-    @Override
     IAEItemStack copy();
 
     /**

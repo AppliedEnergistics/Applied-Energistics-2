@@ -37,6 +37,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
 import appeng.items.misc.FluidDummyItem;
 import appeng.util.Platform;
@@ -115,16 +116,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public void add(final IAEFluidStack option) {
-        if (option == null) {
-            return;
-        }
-        this.incStackSize(option.getStackSize());
-        this.setCountRequestable(this.getCountRequestable() + option.getCountRequestable());
-        this.setCraftable(this.isCraftable() || option.isCraftable());
-    }
-
-    @Override
     public void writeToNBT(final CompoundTag data) {
         data.putString(NBT_FLUID_ID, this.fluid.getRegistryName().toString());
         if (this.hasTagCompound()) {
@@ -136,20 +127,17 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public boolean fuzzyComparison(final IAEFluidStack other, final FuzzyMode mode) {
-        return this.fluid == other.getFluid();
+    public boolean fuzzyEquals(IAEStack other, final FuzzyMode mode) {
+        if (other instanceof AEFluidStack fluidStack) {
+            return this.fluid == fluidStack.getFluid();
+        } else {
+            return false;
+        }
     }
 
     @Override
     public IAEFluidStack copy() {
         return new AEFluidStack(this);
-    }
-
-    @Override
-    public IAEFluidStack empty() {
-        final IAEFluidStack dup = this.copy();
-        dup.reset();
-        return dup;
     }
 
     @Override

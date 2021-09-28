@@ -49,6 +49,7 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
@@ -201,10 +202,12 @@ public class JEIRecipePacket extends BasePacket {
 
                 if (cct.useRealItems()) {
                     IAEItemStack request = findBestMatchingItemStack(ingredient, filter, storage, cct);
-                    out = request != null
-                            ? Platform.poweredExtraction(energy, storage, request.setStackSize(1),
-                                    cct.getActionSource())
-                            : null;
+                    if (request != null) {
+                        request.setStackSize(1);
+                        out = Platform.poweredExtraction(energy, storage, request, cct.getActionSource());
+                    } else {
+                        out = null;
+                    }
                 } else {
                     out = findBestMatchingPattern(ingredient, filter, crafting, storage, cct);
                     if (out == null) {
@@ -313,10 +316,10 @@ public class JEIRecipePacket extends BasePacket {
      */
     private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
             ICraftingService crafting, IMEMonitor<IAEItemStack> storage, IMenuCraftingPacket cct) {
-        Stream<IAEItemStack> stacks = Arrays.stream(ingredients.getItems())//
+        var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemStack::fromItemStack)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
-                .map(s -> s.setCraftable(!crafting.getCraftingFor(s, null, 0, null).isEmpty()))//
+                .peek(s -> s.setCraftable(!crafting.getCraftingFor(s).isEmpty()))//
                 .filter(IAEItemStack::isCraftable);
         return getMostStored(stacks, storage, cct);
     }
@@ -330,8 +333,8 @@ public class JEIRecipePacket extends BasePacket {
         return stacks//
                 .map(s -> {
                     // Determine the stored count
-                    IAEItemStack stored = storage.extractItems(s.copy().setStackSize(Long.MAX_VALUE),
-                            Actionable.SIMULATE, cct.getActionSource());
+                    var r = IAEStack.copy(s, Long.MAX_VALUE);
+                    IAEItemStack stored = storage.extractItems(r, Actionable.SIMULATE, cct.getActionSource());
                     return Pair.of(s, stored != null ? stored.getStackSize() : 0);
                 })//
                 .min((left, right) -> Long.compare(right.getSecond(), left.getSecond()))//

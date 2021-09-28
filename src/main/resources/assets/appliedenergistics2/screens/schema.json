@@ -336,7 +336,8 @@
           "CRAFTING_GRID",
           "CRAFTING_RESULT",
           "PROCESSING_RESULT",
-          "BIOMETRIC_CARD"
+          "BIOMETRIC_CARD",
+          "READONLY_STACKS"
         ]
       }
     },

@@ -67,6 +67,8 @@ public final class BlockEntityDataProvider implements IComponentProvider, IServe
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         // Removes the built-in Forge-Energy progressbar
         tooltip.remove(new ResourceLocation("minecraft:fe"));
+        // Removes the built-in Forge fluid bars, because usually we have 6 tanks...
+        tooltip.remove(new ResourceLocation("minecraft:fluid"));
 
         for (var provider : providers) {
             provider.appendTooltip(tooltip, accessor, config);

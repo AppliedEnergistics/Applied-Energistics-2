@@ -24,10 +24,10 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
+import appeng.crafting.pattern.AECraftingPattern;
+import appeng.crafting.pattern.AEPatternDecoder;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
@@ -36,6 +36,7 @@ import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.MolecularAssemblerPatternSlot;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
+import appeng.util.item.AEItemStack;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen
@@ -69,9 +70,9 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
 
         if (is.getItem() instanceof EncodedPatternItem) {
             final Level level = this.getBlockEntity().getLevel();
-            final ICraftingPatternDetails ph = AEApi.crafting().decodePattern(is, level);
-            if (ph != null && ph.isCraftable()) {
-                return ph.isValidItemForSlot(slotIndex, i, level);
+            var details = AEPatternDecoder.INSTANCE.decodePattern(is, level, false);
+            if (details instanceof AECraftingPattern craftingPattern) {
+                return craftingPattern.isValid(slotIndex, AEItemStack.fromItemStack(i), level);
             }
         }
 
@@ -87,7 +88,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
         }
 
         encodedPatternSlot = this.addSlot(
-                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10),
+                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_AE_CRAFTING_PATTERN, mac, 10),
                 SlotSemantic.ENCODED_PATTERN);
 
         this.addSlot(new OutputSlot(mac, 9, null), SlotSemantic.MACHINE_OUTPUT);

@@ -23,7 +23,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.core.AEConfig;
 
 /**
  * @author AlgorithmX2
@@ -37,17 +36,17 @@ public class FluidStackSizeRenderer extends StackSizeRenderer {
     private static final String[] NUMBER_FORMATS = new String[] { "#.000", "#.00", "#.0", "#" };
 
     @Override
-    protected String getToBeRenderedStackSize(final long originalSize) {
+    public String getToBeRenderedStackSize(final long originalSize, boolean useLargeFonts) {
         // Handle any value below 100 (large font) or 1000 (small font) Buckets with a
         // custom formatter,
         // otherwise pass it to the normal number converter
-        if (originalSize < 1000 * 100 && AEConfig.instance().isUseLargeFonts()) {
+        if (originalSize < 1000 * 100 && useLargeFonts) {
             return this.getSlimRenderedStacksize(originalSize);
-        } else if (originalSize < 1000 * 1000 && !AEConfig.instance().isUseLargeFonts()) {
+        } else if (originalSize < 1000 * 1000 && !useLargeFonts) {
             return this.getWideRenderedStacksize(originalSize);
         }
 
-        return super.getToBeRenderedStackSize(originalSize / 1000);
+        return super.getToBeRenderedStackSize(originalSize / 1000, useLargeFonts);
     }
 
     private String getSlimRenderedStacksize(final long originalSize) {

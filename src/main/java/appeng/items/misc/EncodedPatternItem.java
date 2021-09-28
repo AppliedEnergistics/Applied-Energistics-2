@@ -18,21 +18,13 @@
 
 package appeng.items.misc;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -47,29 +39,30 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.AEApi;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
+import appeng.crafting.pattern.AECraftingPattern;
+import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.InvalidPatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class EncodedPatternItem extends AEBaseItem {
-
-    public static final String NBT_INGREDIENTS = "in";
-    public static final String NBT_PRODUCTS = "out";
-    public static final String NBT_SUBSITUTE = "substitute";
-    public static final String NBT_RECIPE_ID = "recipe";
-
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
     public EncodedPatternItem(Item.Properties properties) {
         super(properties);
+    }
+
+    public static boolean isAE2Pattern(ItemStack stack) {
+        return stack.getItem() instanceof EncodedPatternItem;
     }
 
     @Override
@@ -113,13 +106,14 @@ public class EncodedPatternItem extends AEBaseItem {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        final ICraftingPatternDetails details = AEApi.crafting().decodePattern(stack, level);
+        var details = (IAEPatternDetails) AEApi.patterns().decodePattern(stack, level);
 
         if (details == null) {
             if (!stack.hasTag()) {
                 return;
             }
 
+            // TODO: needs update for new pattern logic
             stack.setHoverName(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
@@ -157,11 +151,11 @@ public class EncodedPatternItem extends AEBaseItem {
             stack.removeTagKey("display");
         }
 
-        final boolean isCrafting = details.isCraftable();
-        final boolean substitute = details.canSubstitute();
+        final boolean isCrafting = details instanceof AECraftingPattern;
+        final boolean substitute = isCrafting && ((AECraftingPattern) details).canSubstitute;
 
-        final Collection<IAEItemStack> in = details.getInputs();
-        final Collection<IAEItemStack> out = details.getOutputs();
+        var in = details.getInputs();
+        var out = details.getOutputs();
 
         final Component label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
                 .append(": ");
@@ -170,24 +164,25 @@ public class EncodedPatternItem extends AEBaseItem {
         final Component with = GuiText.With.text().copy().append(": ");
 
         boolean first = true;
-        for (final IAEItemStack anOut : out) {
+        for (var anOut : out) {
             if (anOut == null) {
                 continue;
             }
 
-            lines.add((first ? label : and).copy().append(anOut.getStackSize() + "x ")
-                    .append(Platform.getItemDisplayName(anOut)));
+            lines.add((first ? label : and).copy().append(getStackComponent(anOut)));
             first = false;
         }
 
         first = true;
-        for (final IAEItemStack anIn : in) {
+        for (var anIn : in) {
             if (anIn == null) {
                 continue;
             }
 
-            lines.add((first ? with : and).copy().append(anIn.getStackSize() + "x ")
-                    .append(Platform.getItemDisplayName(anIn)));
+            var primaryInputTemplate = anIn.getPossibleInputs()[0];
+            var primaryInput = IAEStack.copy(primaryInputTemplate,
+                    primaryInputTemplate.getStackSize() * anIn.getMultiplier());
+            lines.add((first ? with : and).copy().append(getStackComponent(primaryInput)));
             first = false;
         }
 
@@ -197,6 +192,21 @@ public class EncodedPatternItem extends AEBaseItem {
 
             lines.add(substitutionLabel.copy().append(canSubstitute));
         }
+    }
+
+    private static Component getStackComponent(IAEStack stack) {
+        String amountInfo;
+        Component displayName;
+        if (stack.getChannel() == StorageChannels.items()) {
+            amountInfo = String.valueOf(stack.getStackSize());
+            displayName = Platform.getItemDisplayName(stack);
+        } else if (stack.getChannel() == StorageChannels.fluids()) {
+            amountInfo = Platform.formatFluidAmount(stack.getStackSize());
+            displayName = Platform.getFluidDisplayName(stack.cast(StorageChannels.fluids()));
+        } else {
+            throw new IllegalArgumentException("Unsupported storage channel: " + stack.getChannel());
+        }
+        return new TextComponent(amountInfo + " x ").append(displayName);
     }
 
     public ItemStack getOutput(final ItemStack item) {
@@ -211,142 +221,23 @@ public class EncodedPatternItem extends AEBaseItem {
             return ItemStack.EMPTY;
         }
 
-        final ICraftingPatternDetails details = AEApi.crafting().decodePattern(item, level);
+        var details = AEApi.patterns().decodePattern(item, level);
+        out = ItemStack.EMPTY;
 
-        out = details != null ? details.getOutputs().get(0).createItemStack() : ItemStack.EMPTY;
+        if (details != null) {
+            var output = details.getPrimaryOutput();
+
+            // Can only be an item or fluid stack.
+            if (output instanceof IAEItemStack itemStack) {
+                out = itemStack.createItemStack();
+            } else if (output instanceof IAEFluidStack fluidStack) {
+                var dummyFluid = AEItems.DUMMY_FLUID_ITEM.asItem();
+                out = new ItemStack(dummyFluid);
+                dummyFluid.setFluidStack(out, fluidStack.getFluidStack());
+            }
+        }
 
         SIMPLE_CACHE.put(item, out);
         return out;
     }
-
-    public boolean isEncodedPattern(ItemStack itemStack) {
-        return itemStack != null && !itemStack.isEmpty() && itemStack.getItem() == this && itemStack.getTag() != null
-                && itemStack.getTag().contains(NBT_INGREDIENTS, Tag.TAG_LIST)
-                && itemStack.getTag().contains(NBT_PRODUCTS, Tag.TAG_LIST);
-    }
-
-    public ResourceLocation getCraftingRecipeId(ItemStack itemStack) {
-        Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
-                itemStack);
-        final CompoundTag tag = itemStack.getTag();
-        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
-
-        return tag.contains(NBT_RECIPE_ID, Tag.TAG_STRING)
-                ? new ResourceLocation(tag.getString(NBT_RECIPE_ID))
-                : null;
-    }
-
-    public List<IAEItemStack> getIngredients(ItemStack itemStack) {
-        Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
-                itemStack);
-        final CompoundTag tag = itemStack.getTag();
-        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
-
-        final ListTag inTag = tag.getList(NBT_INGREDIENTS, 10);
-        Preconditions.checkArgument(inTag.size() < 10, "Cannot use more than 9 ingredients");
-
-        final List<IAEItemStack> in = new ArrayList<>(inTag.size());
-        for (int x = 0; x < inTag.size(); x++) {
-            CompoundTag ingredient = inTag.getCompound(x);
-            final ItemStack gs = ItemStack.of(ingredient);
-
-            Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
-
-            in.add(StorageChannels.items().createStack(gs));
-        }
-
-        return in;
-    }
-
-    public List<IAEItemStack> getProducts(ItemStack itemStack) {
-        Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
-                itemStack);
-        final CompoundTag tag = itemStack.getTag();
-        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
-
-        final ListTag outTag = tag.getList(NBT_PRODUCTS, 10);
-        Preconditions.checkArgument(outTag.size() < 4, "Cannot use more than 3 ingredients");
-
-        final List<IAEItemStack> out = new ArrayList<>(outTag.size());
-        for (int x = 0; x < outTag.size(); x++) {
-            CompoundTag ingredient = outTag.getCompound(x);
-            final ItemStack gs = ItemStack.of(ingredient);
-
-            Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
-
-            out.add(StorageChannels.items().createStack(gs));
-        }
-
-        return out;
-
-    }
-
-    public boolean allowsSubstitution(ItemStack itemStack) {
-        final CompoundTag tag = itemStack.getTag();
-
-        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
-
-        return getCraftingRecipeId(itemStack) != null && tag.getBoolean(NBT_SUBSITUTE);
-    }
-
-    /**
-     * Use the public API instead {@link appeng.core.api.ApiCrafting}
-     */
-    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out,
-            ResourceLocation recipeId, boolean allowSubstitutes) {
-        CompoundTag encodedValue = encodeInputsAndOutputs(in, out);
-        encodedValue.putString(EncodedPatternItem.NBT_RECIPE_ID, recipeId.toString());
-        encodedValue.putBoolean(EncodedPatternItem.NBT_SUBSITUTE, allowSubstitutes);
-        stack.setTag(encodedValue);
-    }
-
-    /**
-     * Use the public API instead {@link appeng.core.api.ApiCrafting}
-     */
-    public static void encodeProcessingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out) {
-        stack.setTag(encodeInputsAndOutputs(in, out));
-    }
-
-    private static CompoundTag encodeInputsAndOutputs(ItemStack[] in, ItemStack[] out) {
-        final CompoundTag encodedValue = new CompoundTag();
-
-        final ListTag tagIn = new ListTag();
-        final ListTag tagOut = new ListTag();
-
-        boolean hasInput = false;
-        for (final ItemStack i : in) {
-            tagIn.add(createItemTag(i));
-            if (!i.isEmpty()) {
-                hasInput = true;
-            }
-        }
-
-        Preconditions.checkArgument(hasInput, "cannot encode a pattern that has no inputs.");
-
-        boolean hasNonEmptyOutput = false;
-        for (final ItemStack i : out) {
-            tagOut.add(createItemTag(i));
-            if (!i.isEmpty()) {
-                hasNonEmptyOutput = true;
-            }
-        }
-
-        // Patterns without any outputs are corrupt! Never encode such a pattern.
-        Preconditions.checkArgument(hasNonEmptyOutput, "cannot encode a pattern that has no output.");
-
-        encodedValue.put(EncodedPatternItem.NBT_INGREDIENTS, tagIn);
-        encodedValue.put(EncodedPatternItem.NBT_PRODUCTS, tagOut);
-        return encodedValue;
-    }
-
-    private static Tag createItemTag(final ItemStack i) {
-        final CompoundTag c = new CompoundTag();
-
-        if (!i.isEmpty()) {
-            i.save(c);
-        }
-
-        return c;
-    }
-
 }

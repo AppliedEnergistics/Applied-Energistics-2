@@ -143,9 +143,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
     private void insertItem(final Player player, final InteractionHand hand, final boolean allItems) {
         getMainNode().ifPresent(grid -> {
-            final IEnergySource energy = grid.getEnergyService();
-            final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
-                    .getInventory(StorageChannels.items());
+            var energy = grid.getEnergyService();
+            var cell = grid.getStorageService().getInventory(StorageChannels.items());
 
             if (allItems) {
                 if (this.getDisplayed() != null) {

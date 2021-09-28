@@ -43,12 +43,13 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -235,7 +236,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     public void breakCluster() {
         if (this.cluster != null) {
             this.cluster.cancel();
-            final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
+            final ListCraftingInventory inv = this.cluster.craftingLogic.getInventory();
 
             final LinkedList<BlockPos> places = new LinkedList<>();
 
@@ -261,20 +262,22 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                         this.cluster + " does not contain any kind of blocks, which were destroyed.");
             }
 
-            for (IAEItemStack ais : inv.getAvailableItems()) {
-                ais = ais.copy();
-                ais.setStackSize(ais.getDefinition().getMaxStackSize());
-                while (true) {
-                    final IAEItemStack g = inv.extractItems(ais.copy(), Actionable.MODULATE,
-                            this.cluster.getActionSource());
-                    if (g == null) {
-                        break;
+            for (var stack : inv.list) {
+                // Drop items, void other types of stacks (fluids...).
+                if (stack instanceof IAEItemStack ais) {
+                    ais = ais.copy();
+                    ais.setStackSize(ais.getDefinition().getMaxStackSize());
+                    while (true) {
+                        final IAEItemStack g = (IAEItemStack) inv.extractItems(ais.copy(), Actionable.MODULATE);
+                        if (IAEStack.getStackSizeOrZero(g) == 0) {
+                            break;
+                        }
+
+                        final BlockPos pos = places.poll();
+                        places.add(pos);
+
+                        Platform.spawnDrops(this.level, pos, Collections.singletonList(g.createItemStack()));
                     }
-
-                    final BlockPos pos = places.poll();
-                    places.add(pos);
-
-                    Platform.spawnDrops(this.level, pos, Collections.singletonList(g.createItemStack()));
                 }
             }
 

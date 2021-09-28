@@ -77,7 +77,7 @@ public abstract class CustomSlotWidget extends GuiComponent implements ITooltip 
 
     @Override
     public boolean isTooltipAreaVisible() {
-        return false;
+        return true;
     }
 
     public boolean isSlotEnabled() {

@@ -173,10 +173,12 @@ public class ManagedGridNode implements IManagedGridNode {
         this.node.markReady();
     }
 
+    @Override
     public IGridNode getNode() {
         return this.node;
     }
 
+    @Override
     public void loadFromNBT(CompoundTag tag) {
         if (node == null) {
             getInitData().data = tag;
@@ -241,6 +243,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
+    @Override
     public ManagedGridNode setExposedOnSides(@Nonnull Set<Direction> directions) {
         if (node == null) {
             getInitData().exposedOnSides = ImmutableSet.copyOf(directions);
@@ -250,6 +253,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
+    @Override
     public ManagedGridNode setIdlePowerUsage(double usagePerTick) {
         if (node == null) {
             getInitData().idlePowerUsage = usagePerTick;
@@ -259,6 +263,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
+    @Override
     public ManagedGridNode setVisualRepresentation(@Nonnull ItemStack visualRepresentation) {
         if (node == null) {
             getInitData().visualRepresentation = Objects.requireNonNull(visualRepresentation);
@@ -268,6 +273,7 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
+    @Override
     public ManagedGridNode setGridColor(@Nonnull AEColor gridColor) {
         if (this.node == null) {
             getInitData().gridColor = gridColor;

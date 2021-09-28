@@ -24,22 +24,18 @@
 package appeng.api.implementations.blockentities;
 
 import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.CraftingContainer;
 
-import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.storage.data.MixedItemList;
 
 public interface ICraftingMachine {
 
     /**
      * inserts a crafting plan, and the necessary items into the crafting machine.
      *
-     * @param patternDetails    details of pattern
-     * @param table             crafting table
-     * @param ejectionDirection ejection direction
-     *
      * @return if it was accepted, all or nothing.
      */
-    boolean pushPattern(ICraftingPatternDetails patternDetails, CraftingContainer table, Direction ejectionDirection);
+    boolean pushPattern(IPatternDetails patternDetails, MixedItemList[] inputs, Direction ejectionDirection);
 
     /**
      * check if the crafting machine is accepting pushes via pushPattern, if this is false, all calls to push will fail,

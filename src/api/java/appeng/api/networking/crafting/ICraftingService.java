@@ -24,44 +24,48 @@
 package appeng.api.networking.crafting;
 
 import java.util.concurrent.Future;
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.world.level.Level;
 
-import appeng.api.networking.IGrid;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 
 public interface ICraftingService extends IGridService {
 
     /**
      * @param whatToCraft requested craft
-     * @param level       crafting level
-     * @param slot        slot index
-     * @param details     pattern details
      *
      * @return a collection of crafting patterns for the item in question.
      */
-    ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft,
-            ICraftingPatternDetails details, int slot, Level level);
+    ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack whatToCraft);
+
+    /**
+     * Important: Never mutate the passed or returned stacks.
+     *
+     * @return another fuzzy equals stack that can be crafted and matches the filter, or null if none exists
+     */
+    @Nullable
+    IAEStack getFuzzyCraftable(IAEStack whatToCraft, Predicate<IAEStack> filter);
 
     /**
      * Begin calculating a crafting job.
      *
      * @param level     crafting level
-     * @param grid      network
      * @param actionSrc source
      * @param craftWhat result
-     * @param callback  callback -- optional
      *
-     * @return a future which will at an undetermined point in the future get you the {@link ICraftingJob} do not wait
+     * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan} do not wait
      *         on this, your be waiting forever.
      */
-    Future<ICraftingJob> beginCraftingJob(Level level, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat,
-            ICraftingCallback callback);
+    Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat);
 
     /**
      * Submit the job to the Crafting system for processing.
@@ -79,7 +83,7 @@ public interface ICraftingService extends IGridService {
      *         {@link ICraftingRequester} methods. if you send null, this object should be discarded after verifying the
      *         return state.
      */
-    ICraftingLink submitJob(ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target,
+    ICraftingLink submitJob(ICraftingPlan job, ICraftingRequester requestingMachine, ICraftingCPU target,
             boolean prioritizePower, IActionSource src);
 
     /**
@@ -92,7 +96,7 @@ public interface ICraftingService extends IGridService {
      *
      * @return true if the item can be requested via a crafting emitter.
      */
-    boolean canEmitFor(IAEItemStack what);
+    boolean canEmitFor(IAEStack what);
 
     /**
      * is this item being crafted?
@@ -101,7 +105,7 @@ public interface ICraftingService extends IGridService {
      *
      * @return true if it is being crafting
      */
-    boolean isRequesting(IAEItemStack what);
+    boolean isRequesting(IAEStack what);
 
     /**
      * The total amount being requested across all crafting cpus of a grid.
@@ -110,5 +114,5 @@ public interface ICraftingService extends IGridService {
      *
      * @return The total amount being requested.
      */
-    long requesting(IAEItemStack what);
+    long requesting(IAEStack what);
 }

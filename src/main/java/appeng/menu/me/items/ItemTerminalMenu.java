@@ -29,6 +29,7 @@ import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
 import appeng.menu.MenuLocator;
@@ -115,7 +116,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                 }
 
                 if (liftQty > 0) {
-                    IAEItemStack ais = stack.copy().setStackSize(1);
+                    IAEItemStack ais = IAEStack.copy(stack, 1);
                     ais = Platform.poweredExtraction(powerSource, monitor, ais, this.getActionSource());
                     if (ais != null) {
                         if (item.isEmpty()) {
@@ -232,7 +233,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
             return false;
         }
 
-        var ais = stack.copy().setStackSize(toExtract);
+        var ais = IAEStack.copy(stack, toExtract);
         ais = Platform.poweredExtraction(powerSource, monitor, ais, getActionSource());
         if (ais == null) {
             return false; // No items available
