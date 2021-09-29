@@ -38,11 +38,11 @@ class FluidRepo extends Repo<IAEFluidStack> {
     @Override
     protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, IAEFluidStack stack) {
         if (searchMode == SearchMode.MOD) {
-            String modId = Platform.getModId(stack).toLowerCase();
+            String modId = Platform.getModId(stack);
             return searchPattern.matcher(modId).find();
         }
 
-        String displayName = Platform.getFluidDisplayName(stack).getString().toLowerCase();
+        String displayName = Platform.getFluidDisplayName(stack).getString();
         return searchPattern.matcher(displayName).find();
     }
 
