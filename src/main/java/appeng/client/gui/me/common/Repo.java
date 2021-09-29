@@ -141,9 +141,11 @@ public abstract class Repo<T extends IAEStack<T>> implements IClientRepo<T> {
 
         Pattern m;
         try {
-            m = Pattern.compile(innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE);
+            m = Pattern.compile(innerSearch.toLowerCase(),
+                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
         } catch (PatternSyntaxException ignored) {
-            m = Pattern.compile(Pattern.quote(innerSearch.toLowerCase()), Pattern.CASE_INSENSITIVE);
+            m = Pattern.compile(Pattern.quote(innerSearch.toLowerCase()),
+                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
         }
 
         ViewItems viewMode = this.sortSrc.getSortDisplay();
