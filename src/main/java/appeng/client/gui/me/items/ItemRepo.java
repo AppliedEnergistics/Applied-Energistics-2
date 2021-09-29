@@ -43,13 +43,13 @@ public class ItemRepo extends Repo<IAEItemStack> {
     @Override
     protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, IAEItemStack stack) {
         if (searchMode == SearchMode.MOD) {
-            String modId = Platform.getModId(stack);
+            String modId = Platform.getModId(stack).toLowerCase();
             return searchPattern.matcher(modId).find();
         }
 
         AEItemStack aeStack = (AEItemStack) stack;
 
-        String displayName = aeStack.getDisplayName().getString();
+        String displayName = aeStack.getDisplayName().getString().toLowerCase();
         if (searchPattern.matcher(displayName).find()) {
             return true;
         }
@@ -58,7 +58,7 @@ public class ItemRepo extends Repo<IAEItemStack> {
             List<Component> tooltip = aeStack.getToolTip();
 
             for (Component line : tooltip) {
-                if (searchPattern.matcher(line.getString()).find()) {
+                if (searchPattern.matcher(line.getString().toLowerCase()).find()) {
                     return true;
                 }
             }
