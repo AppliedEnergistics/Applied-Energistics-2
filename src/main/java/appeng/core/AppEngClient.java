@@ -24,6 +24,7 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
+import appeng.siteexport.SiteExport;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.minecraft.client.KeyMapping;
@@ -96,6 +97,8 @@ public class AppEngClient extends AppEngBase {
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
     public AppEngClient() {
+        SiteExport.initialize();
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(this::registerParticleFactories);
