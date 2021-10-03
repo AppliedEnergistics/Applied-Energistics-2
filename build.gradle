@@ -256,7 +256,11 @@ jar {
     }
 }
 
-task javadocs(type: Javadoc) {
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath + sourceSets.main.output
+
+    // Only generate Javadoc for API classes
     include "appeng/api/**"
 
     options.addStringOption('Xdoclint:none', '-quiet')
@@ -264,18 +268,18 @@ task javadocs(type: Javadoc) {
     options.charSet = 'UTF-8'
 }
 
-task javadocJar(type: Jar, dependsOn: javadocs) {
-    classifier = "javadoc"
+task javadocJar(type: Jar, dependsOn: javadoc, group: "build") {
+    archiveClassifier = "javadoc"
     from javadoc.destinationDir
 }
 
 task sourcesJar(type: Jar) {
-    classifier = "sources"
+    archiveClassifier = "sources"
     from sourceSets.main.allJava
 }
 
-task apiJar(type: Jar) {
-    classifier = "api"
+task apiJar(type: Jar, group: "build") {
+    archiveClassifier = "api"
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
