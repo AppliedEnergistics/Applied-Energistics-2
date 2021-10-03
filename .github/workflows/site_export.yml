@@ -14,6 +14,10 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '16'
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install xvfb
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Use gradle cache for faster builds
@@ -30,7 +34,10 @@ jobs:
       - name: Validate assets
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
-        run: ./gradlew runSiteExport --no-daemon --info
+        run: |
+          export LIBGL_ALWAYS_SOFTWARE=true
+          xvfb-run glxinfo
+          xvfb-run --auto-servernum ./gradlew runSiteExport --no-daemon --info
       - name: Upload Site Export
         uses: actions/upload-artifact@v2
         with:
