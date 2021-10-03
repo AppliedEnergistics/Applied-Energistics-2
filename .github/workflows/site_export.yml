@@ -1,4 +1,4 @@
-name: 'Build branches'
+name: 'Site Export'
 
 on:
   workflow_dispatch:
