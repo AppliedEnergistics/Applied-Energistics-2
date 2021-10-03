@@ -24,7 +24,6 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
-import appeng.siteexport.SiteExport;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.minecraft.client.KeyMapping;
@@ -75,6 +74,7 @@ import appeng.init.client.InitParticleFactories;
 import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
+import appeng.siteexport.SiteExport;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 

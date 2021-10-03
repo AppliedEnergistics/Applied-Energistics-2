@@ -1,7 +1,11 @@
 package appeng.siteexport;
 
-import appeng.core.AppEng;
-import appeng.core.CreativeTab;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
 import com.mojang.blaze3d.pipeline.TextureTarget;
@@ -11,6 +15,12 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Matrix4f;
 import com.mojang.serialization.Lifecycle;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL12;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
@@ -30,16 +40,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL12;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import appeng.core.AppEng;
+import appeng.core.CreativeTab;
 
 @OnlyIn(Dist.CLIENT)
 public final class SiteExport {
@@ -171,8 +174,8 @@ public final class SiteExport {
 
     }
 
-
-    private static void processRecipes(Minecraft client, Set<Item> usedVanillaItems, SiteExportWriter siteExport) throws Exception {
+    private static void processRecipes(Minecraft client, Set<Item> usedVanillaItems, SiteExportWriter siteExport)
+            throws Exception {
 
         // Fake a level in a temporary folder
         var tempLevel = Files.createTempDirectory("templevel");
@@ -184,9 +187,11 @@ public final class SiteExport {
         // Save a barebones level.dat
         var levelsettings = MinecraftServer.DEMO_SETTINGS;
         var worldgensettings = WorldGenSettings.demoSettings(registryAccess);
-        levelAccess.saveDataTag(registryAccess, new PrimaryLevelData(levelsettings, worldgensettings, Lifecycle.stable()));
+        levelAccess.saveDataTag(registryAccess,
+                new PrimaryLevelData(levelsettings, worldgensettings, Lifecycle.stable()));
 
-        try (var stem = client.makeServerStem(registryAccess, Minecraft::loadDataPacks, Minecraft::loadWorldData, false, levelAccess)) {
+        try (var stem = client.makeServerStem(registryAccess, Minecraft::loadDataPacks, Minecraft::loadWorldData, false,
+                levelAccess)) {
             var recipeManager = stem.serverResources().getRecipeManager();
 
             dumpRecipes(recipeManager, usedVanillaItems, siteExport);

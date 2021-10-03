@@ -1,16 +1,5 @@
 package appeng.siteexport;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
-import net.minecraft.DetectedVersion;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +11,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
+
+import net.minecraft.DetectedVersion;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 public class SiteExportWriter {
 
