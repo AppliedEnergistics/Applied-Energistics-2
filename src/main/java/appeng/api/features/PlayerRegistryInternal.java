@@ -43,7 +43,7 @@ import appeng.core.AppEng;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-public final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry {
+final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry {
 
     private static final String NAME = AppEng.MOD_ID + "_players";
     private static final String TAG_PLAYER_IDS = "playerIds";
@@ -60,11 +60,7 @@ public final class PlayerRegistryInternal extends SavedData implements IPlayerRe
         this.server = server;
     }
 
-    public static void init() {
-        Holder.lookup = PlayerRegistryInternal::get;
-    }
-
-    private static PlayerRegistryInternal get(MinecraftServer server) {
+    static PlayerRegistryInternal get(MinecraftServer server) {
         var overworld = server.getLevel(ServerLevel.OVERWORLD);
         if (overworld == null) {
             throw new IllegalStateException("Cannot retrieve player data for a server that has no overworld.");

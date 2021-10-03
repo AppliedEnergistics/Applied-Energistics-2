@@ -22,13 +22,11 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 
 import appeng.api.AEApiInternal;
-import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitLootConditions;
 import appeng.init.InitStats;
 import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridServices;
-import appeng.init.internal.InitPlayerRegistry;
 import appeng.init.internal.InitStorageChannels;
 
 /**
@@ -52,8 +50,6 @@ public class AppEngBootstrap {
             InitStorageChannels.init();
             InitGridServices.init();
             InitBlockEntityMoveStrategies.init();
-            InitPlayerRegistry.init();
-            P2PTunnelAttunementInternal.init();
 
             // This has to be initialized here because Forge's common setup event will not run in datagens.
             InitStats.init();

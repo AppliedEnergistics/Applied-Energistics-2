@@ -24,11 +24,9 @@
 package appeng.api.features;
 
 import java.util.UUID;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.server.MinecraftServer;
@@ -41,16 +39,11 @@ import net.minecraft.world.level.Level;
  * gives a common place to look up and get IDs for the security framework.
  */
 public interface IPlayerRegistry {
-    class Holder {
-        static Function<MinecraftServer, IPlayerRegistry> lookup;
-    }
-
     /**
      * Gets the mapping between {@link GameProfile} ids and AE2's player ids for the given server.
      */
     static IPlayerRegistry getMapping(MinecraftServer server) {
-        Preconditions.checkState(Holder.lookup != null, "AE2 is not initialized yet.");
-        return Holder.lookup.apply(server);
+        return PlayerRegistryInternal.get(server);
     }
 
     /**
