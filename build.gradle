@@ -136,22 +136,11 @@ ext.isAlpha = project.version.contains("alpha")
 ext.isBeta = project.version.contains("beta")
 
 sourceSets {
-    api
     main {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
         resources {
             srcDir 'src/generated/resources'
         }
     }
-    test {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-    }
-}
-
-configurations {
-    apiImplementation.extendsFrom(implementation)
 }
 
 test {
@@ -173,7 +162,6 @@ def commonRunProperties = {
     mods {
         appliedenergistics2 {
             source sourceSets.main
-            source sourceSets.api
         }
     }
 }
@@ -252,9 +240,7 @@ jar {
     finalizedBy 'signJar'
 
     from sourceSets.main.output.classesDirs
-    from sourceSets.api.output.classesDirs
     from sourceSets.main.output.resourcesDir
-    from sourceSets.api.output.resourcesDir
 
     manifest {
         attributes([
@@ -271,8 +257,6 @@ jar {
 }
 
 task javadocs(type: Javadoc) {
-    classpath = sourceSets.main.compileClasspath
-    source = sourceSets.api.java
     include "appeng/api/**"
 
     options.addStringOption('Xdoclint:none', '-quiet')
@@ -288,18 +272,14 @@ task javadocJar(type: Jar, dependsOn: javadocs) {
 task sourcesJar(type: Jar) {
     classifier = "sources"
     from sourceSets.main.allJava
-    from sourceSets.api.allJava
 }
 
 task apiJar(type: Jar) {
     classifier = "api"
-    from sourceSets.api.output
+    // api jar ist just a development aid and serves as both a binary and source jar simultaneously
+    from sourceSets.main.output
+    from sourceSets.main.allJava
     include "appeng/api/**"
-
-    // TODO: when FG bug is fixed, remove allJava from the api jar.
-    // https://github.com/MinecraftForge/ForgeGradle/issues/369
-    // Gradle should be able to pull them from the -sources jar.
-    from sourceSets.api.allJava
 }
 
 artifacts {
