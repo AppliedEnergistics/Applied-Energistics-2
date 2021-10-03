@@ -85,7 +85,6 @@ public final class SiteExport {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     private static void runExport(Minecraft client) throws Exception {
 
         var siteExport = new SiteExportWriter();
