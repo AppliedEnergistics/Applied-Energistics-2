@@ -43,7 +43,7 @@ class InscriberRecipeWrapper implements Display {
                 EntryIngredients.ofIngredient(recipe.getTopOptional()),
                 EntryIngredients.ofIngredient(recipe.getMiddleInput()),
                 EntryIngredients.ofIngredient(recipe.getBottomOptional()));
-        this.outputs = ImmutableList.of(EntryIngredients.of(recipe.getOutput()));
+        this.outputs = ImmutableList.of(EntryIngredients.of(recipe.getResultItem()));
     }
 
     @Override
