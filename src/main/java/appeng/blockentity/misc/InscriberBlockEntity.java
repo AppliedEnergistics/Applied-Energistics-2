@@ -260,7 +260,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
             if (this.finalStep == 8) {
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getOutput().copy();
+                    final ItemStack outputCopy = out.getResultItem().copy();
 
                     if (this.sideItemHandler.insertItem(1, outputCopy, false).isEmpty()) {
                         this.setProcessingTime(0);
@@ -308,7 +308,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
                 this.setProcessingTime(this.getMaxProcessingTime());
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getOutput().copy();
+                    final ItemStack outputCopy = out.getResultItem().copy();
                     if (this.sideItemHandler.insertItem(1, outputCopy, true).isEmpty()) {
                         this.setSmash(true);
                         this.finalStep = 0;
