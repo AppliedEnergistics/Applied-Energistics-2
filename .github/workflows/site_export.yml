@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install xvfb mesa-utils
+          sudo apt-get install xvfb mesa-utils pngcrush
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Use gradle cache for faster builds
@@ -38,6 +38,8 @@ jobs:
           export LIBGL_ALWAYS_SOFTWARE=true
           xvfb-run glxinfo
           xvfb-run --auto-servernum ./gradlew runSiteExport --no-daemon --info
+      - name: Optimize PNG
+        run: pngcrush -ow run/item_sheet.png
       - name: Upload Site Export
         uses: actions/upload-artifact@v2
         with:
