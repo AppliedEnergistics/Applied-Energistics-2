@@ -106,7 +106,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     @Override
     public void setIngredients(InscriberRecipe recipe, IIngredients ingredients) {
         ingredients.setInputIngredients(recipe.getIngredients());
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getOutput());
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
     }
 
     @Override
