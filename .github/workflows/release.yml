@@ -9,18 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Validate semver
+      - name: Export release tag as environment variable
         env:
           TAG: ${{ github.event.release.tag_name }}
         run: |
-          echo $TAG | grep -oP '^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
-          echo "RELEASE=${TAG:1}" >> $GITHUB_ENV
-      - name: Export keystore
-        env:
-          KEY_STORE: ${{ secrets.KEY_STORE }}
-        run: |
-          echo $KEY_STORE | base64 -d > $HOME/keystore.jks
-          echo "KEY_STORE_FILE=$HOME/keystore.jks" >> $GITHUB_ENV
+          echo "TAG=${TAG}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - name: Set up JDK 16
         uses: actions/setup-java@v2
@@ -37,31 +30,19 @@ jobs:
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
         env:
-          KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
-          KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
-          KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew build --no-daemon --max-workers 1
       - name: Upload to curseforge
         env:
-          KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
-          KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
-          KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
           CHANGELOG: ${{ github.event.release.body }}
           CURSEFORGE: ${{ secrets.CURSEFORGE }}
         run: ./gradlew curseforge --no-daemon --max-workers 1
       - name: Publish to github packages
         env:
-          KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
-          KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
-          KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew publishMavenPublicationToGitHubPackagesRepository --no-daemon --max-workers 1
       - name: Publish to modmaven
         env:
-          KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
-          KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
-          KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
           MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
           MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
         run: ./gradlew publishMavenPublicationToModmavenRepository --no-daemon --max-workers 1
