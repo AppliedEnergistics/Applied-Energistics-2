@@ -23,8 +23,9 @@
 
 package appeng.api.features;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,6 +33,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.capabilities.Capability;
@@ -43,11 +45,11 @@ import appeng.api.config.TunnelType;
  */
 @ThreadSafe
 public final class P2PTunnelAttunement {
+    private static final int INITIAL_CAPACITY = 40;
 
-    static BiConsumer<ItemStack, TunnelType> addNewItemAttunement;
-    static BiConsumer<String, TunnelType> addNewModAttunement;
-    static BiConsumer<Capability<?>, TunnelType> addNewCapAttunement;
-    static Function<ItemStack, TunnelType> getTunnelTypeByItem;
+    private static final Map<ItemStack, TunnelType> tunnels = new HashMap<>(INITIAL_CAPACITY);
+    private static final Map<String, TunnelType> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
+    private static final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>(INITIAL_CAPACITY);
 
     private P2PTunnelAttunement() {
     }
@@ -59,23 +61,27 @@ public final class P2PTunnelAttunement {
      * @param type    - the type of tunnel
      */
     public synchronized static void addNewAttunement(@Nonnull ItemStack trigger, @Nonnull TunnelType type) {
-        Preconditions.checkState(addNewItemAttunement != null, "AE2 is not initialized yet");
-        addNewItemAttunement.accept(trigger, type);
+        Objects.requireNonNull(trigger, "trigger");
+        Objects.requireNonNull(type, "type");
+        Preconditions.checkArgument(!trigger.isEmpty(), "!trigger.isEmpty()");
+        tunnels.put(trigger, type);
     }
 
     public synchronized static void addNewAttunement(@Nonnull ItemLike trigger, @Nonnull TunnelType type) {
-        Preconditions.checkState(addNewItemAttunement != null, "AE2 is not initialized yet");
-        addNewItemAttunement.accept(new ItemStack(trigger), type);
+        Objects.requireNonNull(trigger, "trigger");
+        addNewAttunement(new ItemStack(trigger), type);
     }
 
     public synchronized static void addNewAttunement(@Nonnull String modId, @Nonnull TunnelType type) {
-        Preconditions.checkState(addNewModAttunement != null, "AE2 is not initialized yet");
-        addNewModAttunement.accept(modId, type);
+        Objects.requireNonNull(modId, "modId");
+        Objects.requireNonNull(type, "type");
+        modIdTunnels.put(modId, type);
     }
 
     public synchronized static void addNewAttunement(@Nonnull Capability<?> cap, @Nonnull TunnelType type) {
-        Preconditions.checkState(addNewCapAttunement != null, "AE2 is not initialized yet");
-        addNewCapAttunement.accept(cap, type);
+        Objects.requireNonNull(cap, "cap");
+        Objects.requireNonNull(type, "type");
+        capTunnels.put(cap, type);
     }
 
     /**
@@ -86,7 +92,38 @@ public final class P2PTunnelAttunement {
      */
     @Nullable
     public synchronized static TunnelType getTunnelTypeByItem(ItemStack trigger) {
-        Preconditions.checkState(getTunnelTypeByItem != null, "AE2 is not initialized yet");
-        return getTunnelTypeByItem.apply(trigger);
+        if (!trigger.isEmpty()) {
+            // First match exact items
+            for (final Map.Entry<ItemStack, TunnelType> entry : tunnels.entrySet()) {
+                final ItemStack is = entry.getKey();
+
+                if (is.getItem() == trigger.getItem()) {
+                    return entry.getValue();
+                }
+
+                if (ItemStack.isSame(is, trigger)) {
+                    return entry.getValue();
+                }
+            }
+
+            // Next, check if the Item you're holding supports any registered capability
+            for (Direction face : Direction.values()) {
+                for (Map.Entry<Capability<?>, TunnelType> entry : capTunnels.entrySet()) {
+                    if (trigger.getCapability(entry.getKey(), face).isPresent()) {
+                        return entry.getValue();
+                    }
+                }
+            }
+
+            // Use the mod id as last option.
+            for (final Map.Entry<String, TunnelType> entry : modIdTunnels.entrySet()) {
+                if (trigger.getItem().getRegistryName() != null
+                        && trigger.getItem().getRegistryName().getNamespace().equals(entry.getKey())) {
+                    return entry.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 }
