@@ -16,8 +16,8 @@ jobs:
           java-version: '16'
       - name: Install dependencies
         run: |
-          apt-get update
-          apt-get install xvfb
+          sudo apt-get update
+          sudo apt-get install xvfb
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Use gradle cache for faster builds
