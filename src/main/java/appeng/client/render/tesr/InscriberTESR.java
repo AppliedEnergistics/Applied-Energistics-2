@@ -170,7 +170,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
                     // completing
                     // the press animation
                     renderPresses = ir.getProcessType() == InscriberProcessType.INSCRIBE;
-                    is = ir.getOutput().copy();
+                    is = ir.getResultItem().copy();
                 }
             }
             this.renderItem(ms, is, 0.0f, buffers, combinedLight, combinedOverlay);

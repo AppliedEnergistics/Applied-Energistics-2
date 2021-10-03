@@ -102,10 +102,6 @@ public class InscriberRecipe implements Recipe<Container> {
         return middleInput;
     }
 
-    public ItemStack getOutput() {
-        return output;
-    }
-
     public Ingredient getTopOptional() {
         return topOptional;
     }
