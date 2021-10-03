@@ -46,11 +46,11 @@ jobs:
           MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
           MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
         run: ./gradlew publishMavenPublicationToModmavenRepository --no-daemon --max-workers 1
-      - name: Prepare artifact metadata
+      - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
-          echo ::set-output name=ARTIFACT_PATH::./build/libs/appliedenergistics2-${RELEASE}.jar
-          echo ::set-output name=ARTIFACT_NAME::appliedenergistics2-${RELEASE}.jar
+          echo ::set-output name=ARTIFACT_PATH::./build/libs/appliedenergistics2-${VERSION}.jar
+          echo ::set-output name=ARTIFACT_NAME::appliedenergistics2-${VERSION}.jar
       - name: Upload Release Artifact
         uses: actions/upload-release-asset@v1.0.1
         env:
