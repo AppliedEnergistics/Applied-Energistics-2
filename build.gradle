@@ -256,17 +256,21 @@ jar {
     }
 }
 
+def publicApiIncludePatterns = {
+    exclude "**/*Internal.*"
+    exclude "**/*Internal\$*.*"
+    include "appeng/api/**"
+}
+
 javadoc {
     source = sourceSets.main.allJava
     classpath = sourceSets.main.compileClasspath + sourceSets.main.output
-
-    // Only generate Javadoc for API classes
-    include "appeng/api/**"
 
     options.addStringOption('Xdoclint:none', '-quiet')
     options.encoding = 'UTF-8'
     options.charSet = 'UTF-8'
 }
+javadoc publicApiIncludePatterns
 
 task javadocJar(type: Jar, dependsOn: javadoc, group: "build") {
     archiveClassifier = "javadoc"
@@ -283,8 +287,8 @@ task apiJar(type: Jar, group: "build") {
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
-    include "appeng/api/**"
 }
+apiJar publicApiIncludePatterns
 
 artifacts {
     archives javadocJar
