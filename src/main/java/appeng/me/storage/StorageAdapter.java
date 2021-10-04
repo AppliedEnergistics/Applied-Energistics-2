@@ -20,6 +20,10 @@ import appeng.util.Platform;
 
 public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAEStack>
         implements IMEInventory<T>, IBaseMonitor<T>, ITickingMonitor {
+    /**
+     * Clamp reported values to avoid overflows when amounts get too close to Long.MAX_VALUE.
+     */
+    private static final long MAX_REPORTED_AMOUNT = 1L << 42;
     private final Map<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
     private IActionSource source;
     private final IVariantConversion<V, T> conversion;
@@ -177,7 +181,8 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
                         }
                     }
 
-                    frontBuffer.addStorage(conversion.createStack(view.getResource(), view.getAmount()));
+                    long amount = Math.min(view.getAmount(), MAX_REPORTED_AMOUNT);
+                    frontBuffer.addStorage(conversion.createStack(view.getResource(), amount));
                 }
             }
 
