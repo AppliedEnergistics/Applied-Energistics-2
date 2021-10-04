@@ -39,9 +39,10 @@ import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
-import appeng.me.storage.FluidHandlerAdapter;
+import appeng.me.storage.StorageAdapter;
 import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.parts.PartModel;
+import appeng.util.IVariantConversion;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
 import appeng.util.inv.IAEFluidInventory;
@@ -74,7 +75,7 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, S
     @Nullable
     @Override
     protected IMEInventory<IAEFluidStack> getHandlerAdapter(Storage<FluidVariant> handler, Runnable alertDevice) {
-        return new FluidHandlerAdapter(handler, false) {
+        return new StorageAdapter<>(IVariantConversion.FLUID, handler, false) {
             @Override
             protected void onInjectOrExtract() {
                 alertDevice.run();

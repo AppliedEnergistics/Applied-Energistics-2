@@ -39,9 +39,10 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
-import appeng.me.storage.ItemHandlerAdapter;
+import appeng.me.storage.StorageAdapter;
 import appeng.menu.implementations.ItemStorageBusMenu;
 import appeng.parts.PartModel;
+import appeng.util.IVariantConversion;
 import appeng.util.inv.AppEngInternalAEInventory;
 
 public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Storage<ItemVariant>> {
@@ -74,7 +75,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Sto
     @Nullable
     @Override
     protected IMEInventory<IAEItemStack> getHandlerAdapter(Storage<ItemVariant> handler, Runnable alertDevice) {
-        return new ItemHandlerAdapter(handler) {
+        return new StorageAdapter<>(IVariantConversion.ITEM, handler, false) {
             @Override
             protected void onInjectOrExtract() {
                 alertDevice.run();

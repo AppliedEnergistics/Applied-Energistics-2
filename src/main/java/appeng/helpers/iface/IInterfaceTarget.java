@@ -41,8 +41,8 @@ import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.crafting.execution.GenericStackHelper;
-import appeng.me.storage.FluidHandlerAdapter;
-import appeng.me.storage.ItemHandlerAdapter;
+import appeng.me.storage.StorageAdapter;
+import appeng.util.IVariantConversion;
 
 public interface IInterfaceTarget {
     @Nullable
@@ -111,12 +111,12 @@ public interface IInterfaceTarget {
 
     private static IInterfaceTarget wrapHandlers(Storage<ItemVariant> itemHandler, Storage<FluidVariant> fluidHandler,
             IActionSource src) {
-        var itemAdapter = new ItemHandlerAdapter(itemHandler) {
+        var itemAdapter = new StorageAdapter<>(IVariantConversion.ITEM, itemHandler, false) {
             @Override
             protected void onInjectOrExtract() {
             }
         };
-        var fluidAdapter = new FluidHandlerAdapter(fluidHandler, false) {
+        var fluidAdapter = new StorageAdapter<>(IVariantConversion.FLUID, fluidHandler, false) {
             @Override
             protected void onInjectOrExtract() {
             }

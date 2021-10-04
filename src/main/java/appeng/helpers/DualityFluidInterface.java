@@ -45,9 +45,10 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.me.storage.FluidHandlerAdapter;
 import appeng.me.storage.NullInventory;
+import appeng.me.storage.StorageAdapter;
 import appeng.util.ConfigManager;
+import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
@@ -338,10 +339,12 @@ public class DualityFluidInterface
         return this.tanks;
     }
 
-    private class InterfaceInventory extends FluidHandlerAdapter implements IMEMonitor<IAEFluidStack> {
+    private class InterfaceInventory extends StorageAdapter<FluidVariant, IAEFluidStack>
+            implements IMEMonitor<IAEFluidStack> {
 
         InterfaceInventory() {
-            super(tanks, cm.getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY);
+            super(IVariantConversion.FLUID, tanks,
+                    cm.getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY);
             this.setActionSource(actionSource);
         }
 

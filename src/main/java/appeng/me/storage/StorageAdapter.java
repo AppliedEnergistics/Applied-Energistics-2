@@ -1,32 +1,9 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
-
 package appeng.me.storage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 import appeng.api.config.Actionable;
@@ -36,26 +13,23 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.util.IVariantConversion;
 import appeng.util.Platform;
-import appeng.util.fluid.AEFluidStack;
 
-/**
- * Wraps an Fluid Handler in such a way that it can be used as an IMEInventory for fluids.
- */
-public abstract class FluidHandlerAdapter
-        implements IMEInventory<IAEFluidStack>, IBaseMonitor<IAEFluidStack>, ITickingMonitor {
-    private final Map<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
+public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAEStack>
+        implements IMEInventory<T>, IBaseMonitor<T>, ITickingMonitor {
+    private final Map<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
     private IActionSource source;
-    private final Storage<FluidVariant> fluidHandler;
-    private final FluidHandlerAdapter.InventoryCache cache;
+    private final IVariantConversion<V, T> conversion;
+    private final Storage<V> storage;
+    private final InventoryCache cache;
 
-    public FluidHandlerAdapter(Storage<FluidVariant> fluidHandler, boolean extractOnlyMode) {
-        this.fluidHandler = fluidHandler;
-        this.cache = new FluidHandlerAdapter.InventoryCache(this.fluidHandler, extractOnlyMode);
+    public StorageAdapter(IVariantConversion<V, T> conversion, Storage<V> storage, boolean extractOnlyMode) {
+        this.conversion = conversion;
+        this.storage = storage;
+        this.cache = new InventoryCache(this.storage, extractOnlyMode);
     }
 
     /**
@@ -65,13 +39,13 @@ public abstract class FluidHandlerAdapter
     protected abstract void onInjectOrExtract();
 
     @Override
-    public IAEFluidStack injectItems(IAEFluidStack input, Actionable type, IActionSource src) {
+    public T injectItems(T input, Actionable type, IActionSource src) {
 
         try (var tx = Platform.openOrJoinTx()) {
-            var filled = this.fluidHandler.insert(input.getFluid(), input.getStackSize(), tx);
+            var filled = this.storage.insert(conversion.getVariant(input), input.getStackSize(), tx);
 
             if (filled == 0) {
-                return input.copy();
+                return IAEStack.copy(input);
             }
 
             if (type == Actionable.MODULATE) {
@@ -89,11 +63,11 @@ public abstract class FluidHandlerAdapter
     }
 
     @Override
-    public IAEFluidStack extractItems(IAEFluidStack request, Actionable mode, IActionSource src) {
+    public T extractItems(T request, Actionable mode, IActionSource src) {
 
         try (var tx = Platform.openOrJoinTx()) {
 
-            var drained = this.fluidHandler.extract(request.getFluid(), request.getStackSize(), tx);
+            var drained = this.storage.extract(conversion.getVariant(request), request.getStackSize(), tx);
 
             if (drained <= 0) {
                 return null;
@@ -111,7 +85,7 @@ public abstract class FluidHandlerAdapter
 
     @Override
     public TickRateModulation onTick() {
-        List<IAEFluidStack> changes = this.cache.update();
+        List<T> changes = this.cache.update();
         if (!changes.isEmpty()) {
             this.postDifference(changes);
             return TickRateModulation.URGENT;
@@ -121,13 +95,13 @@ public abstract class FluidHandlerAdapter
     }
 
     @Override
-    public IItemList<IAEFluidStack> getAvailableItems(IItemList<IAEFluidStack> out) {
+    public IItemList<T> getAvailableItems(IItemList<T> out) {
         return this.cache.getAvailableItems(out);
     }
 
     @Override
-    public IStorageChannel<IAEFluidStack> getChannel() {
-        return StorageChannels.fluids();
+    public IStorageChannel<T> getChannel() {
+        return conversion.getChannel();
     }
 
     @Override
@@ -136,21 +110,21 @@ public abstract class FluidHandlerAdapter
     }
 
     @Override
-    public void addListener(final IMEMonitorHandlerReceiver<IAEFluidStack> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorHandlerReceiver<T> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorHandlerReceiver<IAEFluidStack> l) {
+    public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
         this.listeners.remove(l);
     }
 
-    private void postDifference(Iterable<IAEFluidStack> a) {
-        final Iterator<Map.Entry<IMEMonitorHandlerReceiver<IAEFluidStack>, Object>> i = this.listeners.entrySet()
+    private void postDifference(Iterable<T> a) {
+        final Iterator<Map.Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet()
                 .iterator();
         while (i.hasNext()) {
-            final Map.Entry<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> l = i.next();
-            final IMEMonitorHandlerReceiver<IAEFluidStack> key = l.getKey();
+            final Map.Entry<IMEMonitorHandlerReceiver<T>, Object> l = i.next();
+            final IMEMonitorHandlerReceiver<T> key = l.getKey();
             if (key.isValid(l.getValue())) {
                 key.postChange(this, a, this.source);
             } else {
@@ -159,19 +133,19 @@ public abstract class FluidHandlerAdapter
         }
     }
 
-    private static class InventoryCache {
-        private IItemList<IAEFluidStack> frontBuffer = StorageChannels.fluids().createList();
-        private IItemList<IAEFluidStack> backBuffer = StorageChannels.fluids().createList();
-        private final Storage<FluidVariant> fluidHandler;
+    private class InventoryCache {
+        private IItemList<T> frontBuffer = conversion.getChannel().createList();
+        private IItemList<T> backBuffer = conversion.getChannel().createList();
+        private final Storage<V> fluidHandler;
         private final boolean extractableOnly;
 
-        public InventoryCache(Storage<FluidVariant> fluidHandler,
+        public InventoryCache(Storage<V> fluidHandler,
                 boolean extractableOnly) {
             this.fluidHandler = fluidHandler;
             this.extractableOnly = extractableOnly;
         }
 
-        public List<IAEFluidStack> update() {
+        public List<T> update() {
             // Flip back & front buffer and start building a new list
             var tmp = backBuffer;
             backBuffer = frontBuffer;
@@ -190,10 +164,9 @@ public abstract class FluidHandlerAdapter
                         // Use an inner TX to prevent two tanks that can be extracted from only mutually exclusively
                         // from not being influenced by our extraction test here.
                         try (var innerTx = tx.openNested()) {
-                            var extracted = view.extract(view.getResource(), FluidConstants.DROPLET, innerTx);
+                            var extracted = view.extract(view.getResource(), 1, innerTx);
                             // If somehow extracting the minimal amount doesn't work, check if everything could be
-                            // extracted
-                            // because the tank might have a minimum (or fixed) allowed extraction amount.
+                            // extracted because the tank might have a minimum (or fixed) allowed extraction amount.
                             if (extracted == 0) {
                                 extracted = view.extract(view.getResource(), view.getAmount(), innerTx);
                             }
@@ -204,18 +177,18 @@ public abstract class FluidHandlerAdapter
                         }
                     }
 
-                    frontBuffer.addStorage(AEFluidStack.of(view.getResource(), view.getAmount()));
+                    frontBuffer.addStorage(conversion.createStack(view.getResource(), view.getAmount()));
                 }
             }
 
             // Diff the front-buffer against the backbuffer
-            var changes = new ArrayList<IAEFluidStack>();
+            var changes = new ArrayList<T>();
             for (var stack : frontBuffer) {
                 var old = backBuffer.findPrecise(stack);
                 if (old == null) {
-                    changes.add(stack.copy()); // new entry
+                    changes.add(IAEStack.copy(stack)); // new entry
                 } else if (old.getStackSize() != stack.getStackSize()) {
-                    var change = stack.copy();
+                    var change = IAEStack.copy(stack);
                     change.decStackSize(old.getStackSize());
                     changes.add(change); // changed amount
                 }
@@ -230,7 +203,7 @@ public abstract class FluidHandlerAdapter
             return changes;
         }
 
-        public IItemList<IAEFluidStack> getAvailableItems(IItemList<IAEFluidStack> out) {
+        public IItemList<T> getAvailableItems(IItemList<T> out) {
             for (var stack : frontBuffer) {
                 out.addStorage(stack);
             }

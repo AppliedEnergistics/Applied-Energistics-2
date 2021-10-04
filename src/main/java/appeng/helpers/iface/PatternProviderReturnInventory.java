@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -36,21 +35,19 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.crafting.execution.GenericStackHelper;
+import appeng.util.IVariantConversion;
 
 public class PatternProviderReturnInventory extends GenericStackInv {
     public static int NUMBER_OF_SLOTS = 5;
 
     // TODO: how do we expose this for foreign storage channels?
     private final Participant participant = new Participant();
-    private final ItemStorage itemStorage = new ItemStorage();
-    private final FluidStorage fluidStorage = new FluidStorage();
+    private final Storage<ItemVariant> itemStorage = new GenericStorage<>(IVariantConversion.ITEM);
+    private final Storage<FluidVariant> fluidStorage = new GenericStorage<>(IVariantConversion.FLUID);
 
     public PatternProviderReturnInventory(Listener listener) {
         super(listener, NUMBER_OF_SLOTS);
@@ -88,7 +85,7 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         return itemStorage;
     }
 
-    public FluidStorage getFluidStorage() {
+    public Storage<FluidVariant> getFluidStorage() {
         return fluidStorage;
     }
 
@@ -113,12 +110,12 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         }
     }
 
-    private abstract class AbstractStorage<V extends TransferVariant<?>, T extends IAEStack>
+    private class GenericStorage<V extends TransferVariant<?>, T extends IAEStack>
             implements InsertionOnlyStorage<V> {
-        private final IStorageChannel<T> channel;
+        private final IVariantConversion<V, T> conversion;
 
-        protected AbstractStorage(IStorageChannel<T> channel) {
-            this.channel = channel;
+        protected GenericStorage(IVariantConversion<V, T> conversion) {
+            this.conversion = conversion;
         }
 
         @Override
@@ -128,18 +125,19 @@ public class PatternProviderReturnInventory extends GenericStackInv {
 
             for (int slot = 0; slot < stacks.length; ++slot) {
                 if (stacks[slot] == null) {
-                    long inserted = Math.min(maxAmount - totalInserted, getCapacity());
+                    long inserted = Math.min(maxAmount - totalInserted, conversion.getBaseSlotSize(resource));
 
                     if (inserted > 0) {
                         participant.updateSnapshots(transaction);
-                        stacks[slot] = createStack(resource, inserted);
+                        stacks[slot] = conversion.createStack(resource, inserted);
                         totalInserted += inserted;
                     }
-                } else if (stacks[slot].getChannel() == channel) {
-                    var fs = stacks[slot].cast(channel);
+                } else if (stacks[slot].getChannel() == conversion.getChannel()) {
+                    var fs = stacks[slot].cast(conversion.getChannel());
 
-                    if (variantMatches(fs, resource)) {
-                        long inserted = Math.min(maxAmount - totalInserted, getCapacity() - fs.getStackSize());
+                    if (conversion.variantMatches(fs, resource)) {
+                        long inserted = Math.min(maxAmount - totalInserted,
+                                conversion.getBaseSlotSize(resource) - fs.getStackSize());
 
                         if (inserted > 0) {
                             participant.updateSnapshots(transaction);
@@ -156,53 +154,6 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         @Override
         public Iterator<StorageView<V>> iterator(TransactionContext transaction) {
             return Collections.emptyIterator();
-        }
-
-        public abstract long getCapacity();
-
-        public abstract boolean variantMatches(T stack, V variant);
-
-        public abstract T createStack(V variant, long amount);
-    }
-
-    private class FluidStorage extends AbstractStorage<FluidVariant, IAEFluidStack> {
-        protected FluidStorage() {
-            super(StorageChannels.fluids());
-        }
-
-        public long getCapacity() {
-            return 4 * FluidConstants.BUCKET;
-        }
-
-        @Override
-        public boolean variantMatches(IAEFluidStack stack, FluidVariant variant) {
-            return stack.getFluid().equals(variant);
-        }
-
-        @Override
-        public IAEFluidStack createStack(FluidVariant variant, long amount) {
-            return IAEFluidStack.of(variant, amount);
-        }
-    }
-
-    private class ItemStorage extends AbstractStorage<ItemVariant, IAEItemStack> {
-        protected ItemStorage() {
-            super(StorageChannels.items());
-        }
-
-        @Override
-        public long getCapacity() {
-            return 64;
-        }
-
-        @Override
-        public boolean variantMatches(IAEItemStack stack, ItemVariant variant) {
-            return variant.matches(stack.getDefinition());
-        }
-
-        @Override
-        public IAEItemStack createStack(ItemVariant variant, long amount) {
-            return IAEItemStack.of(variant.toStack((int) amount));
         }
     }
 }
