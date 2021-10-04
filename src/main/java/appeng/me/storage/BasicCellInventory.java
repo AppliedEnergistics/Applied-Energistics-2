@@ -157,8 +157,8 @@ public class BasicCellInventory<T extends IAEStack> extends AbstractCellInventor
 
         if (this.canHoldNewItem()) // room for new type, and for at least one item!
         {
-            final int remainingItemCount = (int) this.getRemainingItemCount()
-                    - this.getBytesPerType() * this.itemsPerByte;
+            long remainingItemCount = this.getRemainingItemCount()
+                    - (long) this.getBytesPerType() * this.itemsPerByte;
             if (remainingItemCount > 0) {
                 if (input.getStackSize() > remainingItemCount) {
                     final T toReturn = IAEStack.copy(input);
@@ -223,7 +223,7 @@ public class BasicCellInventory<T extends IAEStack> extends AbstractCellInventor
     }
 
     @Override
-    protected boolean loadCellItem(CompoundTag compoundTag, int stackSize) {
+    protected boolean loadCellItem(CompoundTag compoundTag, long stackSize) {
         // Now load the item stack
         final T t;
         try {
