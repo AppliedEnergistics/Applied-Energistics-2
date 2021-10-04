@@ -2,7 +2,9 @@ package appeng.siteexport;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +24,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
@@ -42,25 +43,40 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
 import appeng.core.AppEng;
-import appeng.core.CreativeTab;
 
+/**
+ * Exports a data package for use by the website.
+ */
 @OnlyIn(Dist.CLIENT)
-public final class SiteExport {
-
+public final class SiteExporter {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final int FB_WIDTH = 64;
-    private static final int FB_HEIGHT = 64;
+    private static final int FB_WIDTH = 128;
+    private static final int FB_HEIGHT = 128;
 
     private static volatile boolean processing;
+    private static Path outputFolder;
 
     public static void initialize() {
         if (!"true".equals(System.getProperty("ae2.siteexport.run"))) {
             return;
         }
 
+        outputFolder = getOutputFolder();
+
         LOGGER.info("Will run AE2 site export and exit...");
-        MinecraftForge.EVENT_BUS.addListener(SiteExport::onRenderTick);
+        MinecraftForge.EVENT_BUS.addListener(SiteExporter::onRenderTick);
+    }
+
+    private static Path getOutputFolder() {
+        String folder = System.getProperty("ae2.siteexport.output", "site-export");
+        Path folderPath = Paths.get(folder);
+        try {
+            Files.createDirectories(folderPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return folderPath;
     }
 
     private static void onRenderTick(TickEvent.ClientTickEvent.RenderTickEvent evt) {
@@ -108,29 +124,23 @@ public final class SiteExport {
         fb.clear(true);
 
         // Iterate over all Applied Energistics items
-        NonNullList<ItemStack> stacks = NonNullList.create();
-        CreativeTab.INSTANCE.fillItemList(stacks);
+        var stacks = new ArrayList<ItemStack>();
+        for (Item item : Registry.ITEM) {
+            if (item.getRegistryName().getNamespace().equals(AppEng.MOD_ID)) {
+                stacks.add(new ItemStack(item));
+            }
+        }
 
         // Also add Vanilla items
         for (Item usedVanillaItem : usedVanillaItems) {
             stacks.add(new ItemStack(usedVanillaItem));
         }
 
-        // Compute the square grid size needed to have enough cells for the number of
-        // items we
-        // want to render
-        int s = (int) Math.ceil(Math.sqrt(stacks.size()));
-        // Add a transparent margin to avoid problems with texture interpolation
-        // grabbing pixels
-        // from adjacent items.
-        final int MARGIN = 1;
-        final int CELL_WIDTH = FB_WIDTH + 2 * MARGIN;
-        final int CELL_HEIGHT = FB_HEIGHT + 2 * MARGIN;
-        NativeImage result = new NativeImage(s * CELL_WIDTH, s * CELL_HEIGHT, true);
+        Path iconsFolder = outputFolder.resolve("icons");
+        if (Files.exists(iconsFolder)) {
+            MoreFiles.deleteRecursively(iconsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
+        }
 
-        siteExport.addSpriteSheet("item_sheet.png", result.getWidth(), result.getHeight(), s, s, MARGIN);
-
-        int idx = 0;
         for (ItemStack stack : stacks) {
             // Render the item normally
             fb.bindWrite(true);
@@ -144,33 +154,23 @@ public final class SiteExport {
             nativeImage.flipY();
             fb.unbindRead();
 
-            // Copy it to the sprite-sheet
-            int xIdx = idx % s;
-            int xOut = xIdx * CELL_WIDTH + MARGIN;
-            int yIdx = idx / s;
-            int yOut = yIdx * CELL_HEIGHT + MARGIN;
-            idx++;
-            for (int y = 0; y < FB_HEIGHT; y++) {
-                for (int x = 0; x < FB_WIDTH; x++) {
-                    result.setPixelRGBA(xOut + x, yOut + y, nativeImage.getPixelRGBA(x, y));
-                }
-            }
+            // Save the rendered icon
+            String itemId = stack.getItem().getRegistryName().toString();
+            var iconPath = iconsFolder.resolve(itemId.replace(':', '/') + ".png");
+            Files.createDirectories(iconPath.getParent());
+            nativeImage.writeToFile(iconPath);
 
-            // Add it to the index
-            siteExport.add(stack, xIdx, yIdx);
+            siteExport.addItem(stack, outputFolder.relativize(iconPath).toString());
         }
 
         try {
-            result.writeToFile(Paths.get("item_sheet.png"));
-            siteExport.write(Paths.get("site_export.json"));
+            siteExport.write(outputFolder.resolve("site_export.json"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         nativeImage.close();
-        result.close();
         fb.destroyBuffers();
-
     }
 
     private static void processRecipes(Minecraft client, Set<Item> usedVanillaItems, SiteExportWriter siteExport)
@@ -219,6 +219,10 @@ public final class SiteExport {
             }
 
             if (recipe instanceof CraftingRecipe craftingRecipe) {
+                if (craftingRecipe.isSpecial() || craftingRecipe.getResultItem().isEmpty()) {
+                    continue;
+                }
+
                 addVanillaItem(vanillaItems, craftingRecipe.getResultItem());
 
                 for (Ingredient ingredient : craftingRecipe.getIngredients()) {

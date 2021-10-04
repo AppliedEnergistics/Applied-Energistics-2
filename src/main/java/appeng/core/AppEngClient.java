@@ -74,7 +74,7 @@ import appeng.init.client.InitParticleFactories;
 import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
-import appeng.siteexport.SiteExport;
+import appeng.siteexport.SiteExporter;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -97,7 +97,7 @@ public class AppEngClient extends AppEngBase {
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
     public AppEngClient() {
-        SiteExport.initialize();
+        SiteExporter.initialize();
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 

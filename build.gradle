@@ -180,6 +180,7 @@ minecraft {
         siteExport {
             parent runs.client
             property "ae2.siteexport.run", "true"
+            property "ae2.siteexport.output", file("${project.buildDir}/site-export")
             // ForgeGradle will just force-exit the Gradle Daemon which fails our builds in case
             // a daemon is used for any reason.
             forceExit false

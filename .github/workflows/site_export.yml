@@ -39,11 +39,11 @@ jobs:
           xvfb-run glxinfo
           xvfb-run --auto-servernum ./gradlew runSiteExport --no-daemon --info
       - name: Optimize PNG
-        run: pngcrush -ow run/item_sheet.png
+        run: |
+          find build/site-export -name "*.png" -exec pngcrush -ow {} \;
       - name: Upload Site Export
         uses: actions/upload-artifact@v2
         with:
           name: site-export
           path: |
-            run/site_export.json
-            run/item_sheet.png
+            build/site-export

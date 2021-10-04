@@ -6,23 +6,24 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
 
 import net.minecraft.DetectedVersion;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+
+import appeng.siteexport.model.CraftingRecipeJson;
+import appeng.siteexport.model.ItemInfoJson;
+import appeng.siteexport.model.SiteExportJson;
 
 public class SiteExportWriter {
 
@@ -34,24 +35,55 @@ public class SiteExportWriter {
         siteExport.gameVersion = DetectedVersion.tryDetectVersion().getName();
     }
 
-    public void addSpriteSheet(String sheetPath, int width, int height, int rows, int cols, int margin) {
-        var spriteSheet = new SpriteSheetJson();
-        spriteSheet.filename = sheetPath;
-        spriteSheet.width = width;
-        spriteSheet.height = height;
-        spriteSheet.cols = cols;
-        spriteSheet.rows = rows;
-        spriteSheet.margin = margin;
-        siteExport.spriteSheet = spriteSheet;
+    public void addItem(ItemStack stack, String iconPath) {
+        var tooltipLines = stack.getTooltipLines(null, TooltipFlag.Default.NORMAL);
+        var itemInfo = new ItemInfoJson();
+        itemInfo.id = stack.getItem().getRegistryName().toString();
+        itemInfo.icon = iconPath;
+        itemInfo.displayName = stack.getDisplayName().getString();
+        itemInfo.tooltipLines = tooltipLines.stream().map(this::resolveLine).toList();
+
+        siteExport.items.put(itemInfo.id, itemInfo);
     }
 
-    public void add(ItemStack stack, int x, int y) {
-        SpriteIndexEntryJson entry = new SpriteIndexEntryJson(stack, x, y);
-        siteExport.spriteSheet.sprites.add(entry);
+    private String resolveLine(Component component) {
+        var builder = new StringBuilder();
+        component.visit((style, text) -> {
+            if (style.isEmpty() || text.isEmpty()) {
+                builder.append(text);
+            } else {
+                var classes = new StringBuilder();
+                if (style.isBold()) {
+                    classes.append(" b");
+                }
+                if (style.isItalic()) {
+                    classes.append(" i");
+                }
+                if (style.isUnderlined()) {
+                    classes.append(" u");
+                }
+                if (style.isStrikethrough()) {
+                    classes.append(" s");
+                }
+                var color = style.getColor();
+                if (color != null) {
+                    classes.append(" c-").append(color.serialize());
+                }
+                if (classes.length() > 0) {
+                    classes.deleteCharAt(0);
+                }
+                builder.append("<span class=\"").append(classes).append("\">")
+                        .append(text)
+                        .append("</span>");
+            }
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return builder.toString();
     }
 
     public void addRecipe(CraftingRecipe recipe) {
-        RecipeJson json = new RecipeJson();
+        var json = new CraftingRecipeJson();
         json.id = recipe.getId().toString();
         json.shapeless = recipe instanceof ShapelessRecipe;
 
@@ -70,77 +102,17 @@ public class SiteExportWriter {
             }
         }
 
-        siteExport.recipes.put(json.id, json);
+        siteExport.craftingRecipes.put(json.id, json);
     }
 
     public void write(Path file) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .create();
         try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
             gson.toJson(siteExport, writer);
         }
-    }
-
-    private static class SiteExportJson {
-        public String generated;
-
-        public String gameVersion;
-
-        public String modVersion;
-
-        public SpriteSheetJson spriteSheet;
-
-        public Map<String, RecipeJson> recipes = new HashMap<>();
-    }
-
-    private static class RecipeJson {
-        public boolean shapeless;
-        public String id;
-        public String[][] ingredients;
-        public String resultItem;
-        public int resultCount;
-    }
-
-    private static class SpriteSheetJson {
-        public String filename;
-        public int width;
-        public int height;
-        public int cols;
-        public int rows;
-        public int margin;
-        public List<SpriteIndexEntryJson> sprites = new ArrayList<>();
-    }
-
-    private static class SpriteIndexEntryJson {
-        private String itemId;
-        private JsonElement tag;
-        private int x;
-        private int y;
-
-        public SpriteIndexEntryJson(ItemStack is, int x, int y) {
-            this.itemId = Registry.ITEM.getKey(is.getItem()).toString();
-            if (is.hasTag()) {
-                this.tag = NbtOps.INSTANCE.convertMap(JsonOps.INSTANCE, is.getTag());
-            }
-            this.x = x;
-            this.y = y;
-        }
-
-        public String getItemId() {
-            return itemId;
-        }
-
-        public JsonElement getTag() {
-            return tag;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
     }
 
 }
