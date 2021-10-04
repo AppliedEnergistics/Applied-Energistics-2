@@ -35,12 +35,12 @@ public class SiteExportWriter {
         siteExport.gameVersion = DetectedVersion.tryDetectVersion().getName();
     }
 
-    public void addItem(ItemStack stack, String iconPath) {
+    public void addItem(String id, ItemStack stack, String iconPath) {
         var tooltipLines = stack.getTooltipLines(null, TooltipFlag.Default.NORMAL);
         var itemInfo = new ItemInfoJson();
-        itemInfo.id = stack.getItem().getRegistryName().toString();
+        itemInfo.id = id;
         itemInfo.icon = iconPath;
-        itemInfo.displayName = stack.getDisplayName().getString();
+        itemInfo.displayName = stack.getHoverName().getString();
         itemInfo.tooltipLines = tooltipLines.stream().map(this::resolveLine).toList();
 
         siteExport.items.put(itemInfo.id, itemInfo);

@@ -26,6 +26,7 @@ import org.lwjgl.opengl.GL12;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.world.item.Item;
@@ -126,7 +127,7 @@ public final class SiteExporter {
         // Iterate over all Applied Energistics items
         var stacks = new ArrayList<ItemStack>();
         for (Item item : Registry.ITEM) {
-            if (item.getRegistryName().getNamespace().equals(AppEng.MOD_ID)) {
+            if (getItemId(item).getNamespace().equals(AppEng.MOD_ID)) {
                 stacks.add(new ItemStack(item));
             }
         }
@@ -155,12 +156,12 @@ public final class SiteExporter {
             fb.unbindRead();
 
             // Save the rendered icon
-            String itemId = stack.getItem().getRegistryName().toString();
+            String itemId = getItemId(stack.getItem()).toString();
             var iconPath = iconsFolder.resolve(itemId.replace(':', '/') + ".png");
             Files.createDirectories(iconPath.getParent());
             nativeImage.writeToFile(iconPath);
 
-            siteExport.addItem(stack, outputFolder.relativize(iconPath).toString());
+            siteExport.addItem(itemId, stack, outputFolder.relativize(iconPath).toString());
         }
 
         try {
@@ -171,6 +172,10 @@ public final class SiteExporter {
 
         nativeImage.close();
         fb.destroyBuffers();
+    }
+
+    private static ResourceLocation getItemId(Item item) {
+        return Registry.ITEM.getKey(item);
     }
 
     private static void processRecipes(Minecraft client, Set<Item> usedVanillaItems, SiteExportWriter siteExport)
