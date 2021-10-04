@@ -108,7 +108,7 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
 
     @Override
     public IStorageChannel<T> getChannel() {
-        return this.getHandler().getChannel();
+        return myChannel;
     }
 
     @Override
