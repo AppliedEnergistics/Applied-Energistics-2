@@ -189,7 +189,10 @@ public final class MeteoritePlacer {
         // spawn meteor
         this.placeMeteoriteSkyStone();
 
-        placeChest();
+        // If the meteorite's center is within the BB of the current placer, place the chest
+        if (boundingBox.isInside(pos)) {
+            placeChest();
+        }
     }
 
     private void placeChest() {
