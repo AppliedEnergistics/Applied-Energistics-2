@@ -408,7 +408,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
                 }
             }
 
-            if (directedBlockEntity instanceof ICraftingMachine craftingMachine) {
+            var craftingMachine = ICraftingMachine.of(directedBlockEntity, direction.getOpposite());
+            if (craftingMachine != null) {
                 var displayName = craftingMachine.getDisplayName();
                 if (displayName.isPresent()) {
                     return displayName.get();
@@ -417,7 +418,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
 
             var adaptor = InternalInventory.wrapExternal(directedBlockEntity, direction.getOpposite());
             if (adaptor != null) {
-                if (adaptor != null && !adaptor.mayAllowTransfer()) {
+                if (!adaptor.mayAllowTransfer()) {
                     continue;
                 }
 
