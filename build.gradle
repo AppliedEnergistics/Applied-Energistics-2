@@ -52,7 +52,7 @@ dependencies {
     modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
     modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}"
-    modRuntime "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
+    modRuntimeOnly "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

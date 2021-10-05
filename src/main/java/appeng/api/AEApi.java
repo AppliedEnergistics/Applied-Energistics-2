@@ -23,6 +23,9 @@
 
 package appeng.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
@@ -68,13 +71,13 @@ public final class AEApi {
      */
     @Nonnull
     public static IStorageHelper storage() {
-        Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
+        Preconditions.checkState(apiInitialized, "AE2 API is not initialized yet.");
         return storage;
     }
 
     @Nonnull
     public static IPatternDetailsHelper patterns() {
-        Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
+        Preconditions.checkState(apiInitialized, "AE2 API is not initialized yet.");
         return patterns;
     }
 
@@ -83,7 +86,7 @@ public final class AEApi {
      */
     @Nonnull
     public static IGridHelper grid() {
-        Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
+        Preconditions.checkState(apiInitialized, "AE2 API is not initialized yet.");
         return grid;
     }
 
@@ -92,7 +95,7 @@ public final class AEApi {
      */
     @Nonnull
     public static IPartHelper partHelper() {
-        Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
+        Preconditions.checkState(apiInitialized, "AE2 API is not initialized yet.");
         return partHelper;
     }
 
@@ -101,29 +104,55 @@ public final class AEApi {
      */
     @Nonnull
     public static IClientHelper client() {
-        Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
+        Preconditions.checkState(apiInitialized, "AE2 API is not initialized yet.");
         return client;
     }
 
-    private static boolean initialized;
+    /**
+     * Run the given callback once AE2 has fully initialized, and registered all its game objects. If AE2 is already
+     * initialized, the code will run immediately.
+     * <p/>
+     * This can be useful for addons that rely on AE2's items being available.
+     */
+    public static synchronized void whenModInitialized(Runnable r) {
+        if (modInitialized) {
+            r.run();
+        } else {
+            afterModRunnables.add(r);
+        }
+    }
+
+    private static boolean apiInitialized;
+    private static boolean modInitialized;
+    private static final List<Runnable> afterModRunnables = new ArrayList<>();
     private static IStorageHelper storage;
     private static IPatternDetailsHelper patterns;
     private static IGridHelper grid;
     private static IPartHelper partHelper;
     private static IClientHelper client;
 
-    static void initialize(
+    synchronized static void initialize(
             IStorageHelper storage,
             IPatternDetailsHelper patternDetails,
             IGridHelper grid,
             IPartHelper partHelper,
             IClientHelper client) {
-        Preconditions.checkState(!initialized, "AE2 API was already initialized");
+        Preconditions.checkState(!apiInitialized, "AE2 API was already initialized");
         AEApi.storage = storage;
         AEApi.patterns = patternDetails;
         AEApi.grid = grid;
         AEApi.partHelper = partHelper;
         AEApi.client = client;
-        initialized = true;
+        apiInitialized = true;
+    }
+
+    synchronized static void runAfterModInitialized() {
+        Preconditions.checkState(apiInitialized, "AE2 API must be initialized");
+        Preconditions.checkState(!modInitialized, "AE2 Mod was already initialized");
+        modInitialized = true; // In case any runnable calls whenModInitialized() recursively
+        for (var delayedRunnable : afterModRunnables) {
+            delayedRunnable.run();
+        }
+        afterModRunnables.clear();
     }
 }
