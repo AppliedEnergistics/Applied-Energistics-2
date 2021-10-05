@@ -67,8 +67,8 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
 
     @Override
     public void onReady() {
-        this.onNeighborChange(true);
         super.onReady();
+        this.onNeighborChange(true);
     }
 
     @Override
@@ -90,8 +90,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
 
         final boolean oldValid = this.isValid;
 
-        this.isValid = xx && !yy && !zz || !xx && yy && !zz || !xx && !yy && zz
-                || (xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) <= 1;
+        this.isValid = (xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) <= 1;
 
         if (oldValid != this.isValid || force) {
             if (this.isValid) {
