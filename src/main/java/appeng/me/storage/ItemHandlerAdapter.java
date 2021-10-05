@@ -39,7 +39,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.core.AELog;
 import appeng.util.item.AEItemStack;
 
@@ -186,7 +186,7 @@ public abstract class ItemHandlerAdapter
     }
 
     @Override
-    public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out) {
+    public IAEStackList<IAEItemStack> getAvailableItems(IAEStackList<IAEItemStack> out) {
         return this.cache.getAvailableItems(out);
     }
 
@@ -227,7 +227,7 @@ public abstract class ItemHandlerAdapter
             this.itemHandler = itemHandler;
         }
 
-        public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out) {
+        public IAEStackList<IAEItemStack> getAvailableItems(IAEStackList<IAEItemStack> out) {
             Arrays.stream(this.cachedAeStacks).forEach(out::add);
             return out;
         }

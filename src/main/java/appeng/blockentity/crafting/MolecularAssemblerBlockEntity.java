@@ -54,7 +54,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
@@ -119,7 +119,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public boolean pushPattern(final IPatternDetails patternDetails, final MixedItemList[] table,
+    public boolean pushPattern(final IPatternDetails patternDetails, final MixedStackList[] table,
             final Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = this.gridInv.isEmpty() && this.patternInv.isEmpty();
@@ -140,7 +140,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return false;
     }
 
-    private void fillGrid(MixedItemList[] table, AECraftingPattern adapter) {
+    private void fillGrid(MixedStackList[] table, AECraftingPattern adapter) {
         for (int sparseIndex = 0; sparseIndex < 9; ++sparseIndex) {
             int inputId = adapter.getCompressedIndexFromSparse(sparseIndex);
             if (inputId != -1) {
@@ -153,7 +153,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         // Sanity check
-        for (MixedItemList list : table) {
+        for (MixedStackList list : table) {
             if (!list.isEmpty()) {
                 throw new RuntimeException("Could not fill grid with some items, including " + list.iterator().next());
             }

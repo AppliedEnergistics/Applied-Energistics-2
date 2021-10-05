@@ -39,7 +39,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
 /**
  * Abstract level emitter logic for storage-based level emitters (item and fluid).
@@ -74,7 +74,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
         }
 
         @Override
-        public <U extends IAEStack> void onStackChange(IItemList<U> o, IAEStack fullStack, IAEStack diffStack,
+        public <U extends IAEStack> void onStackChange(IAEStackList<U> o, IAEStack fullStack, IAEStack diffStack,
                 IActionSource src, IStorageChannel<U> chan) {
             if (fullStack.equals(getConfiguredStack())
                     && getInstalledUpgrades(Upgrades.FUZZY) == 0) {

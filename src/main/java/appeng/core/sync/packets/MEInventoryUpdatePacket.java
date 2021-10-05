@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
@@ -149,7 +149,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
         }
 
         public void addFull(IncrementalUpdateHelper<T> updateHelper,
-                IItemList<T> stacks) {
+                IAEStackList<T> stacks) {
             for (T item : stacks) {
                 long serial = updateHelper.getOrAssignSerial(item);
                 add(new GridInventoryEntry<>(serial, item, item.getStackSize(), item.getCountRequestable(),
@@ -157,7 +157,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
             }
         }
 
-        public void addChanges(IncrementalUpdateHelper<T> updateHelper, IItemList<T> stacks) {
+        public void addChanges(IncrementalUpdateHelper<T> updateHelper, IAEStackList<T> stacks) {
             for (T key : updateHelper) {
                 T sendKey;
                 Long serial = updateHelper.getSerial(key);

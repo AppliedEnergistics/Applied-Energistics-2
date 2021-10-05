@@ -29,7 +29,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.util.Platform;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
@@ -54,7 +54,7 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
         }
 
         this.monitor = null;
-        final IItemList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList()
+        final IAEStackList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList()
                 : this.getInternal()
                         .getAvailableItems(new ItemListIgnoreCrafting(this.getWrappedChannel().createList()));
 
@@ -63,7 +63,7 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
             this.monitor = (IMEMonitor<T>) i;
         }
 
-        final IItemList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList()
+        final IAEStackList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList()
                 : this.getInternal()
                         .getAvailableItems(new ItemListIgnoreCrafting(this.getWrappedChannel().createList()));
 
@@ -75,7 +75,7 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     }
 
     @Override
-    public IItemList<T> getAvailableItems(final IItemList out) {
+    public IAEStackList<T> getAvailableItems(final IAEStackList out) {
         super.getAvailableItems(new ItemListIgnoreCrafting(out));
         return out;
     }
@@ -91,9 +91,9 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     }
 
     @Override
-    public IItemList<T> getStorageList() {
+    public IAEStackList<T> getStorageList() {
         if (this.monitor == null) {
-            final IItemList<T> out = this.getWrappedChannel().createList();
+            final IAEStackList<T> out = this.getWrappedChannel().createList();
             this.getInternal().getAvailableItems(new ItemListIgnoreCrafting(out));
             return out;
         }

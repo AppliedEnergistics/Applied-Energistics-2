@@ -29,7 +29,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
@@ -45,7 +45,7 @@ public class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHa
 
         var ci = this.getCellInv();
         if (ci != null) {
-            final IItemList<T> priorityList = channel.createList();
+            final IAEStackList<T> priorityList = channel.createList();
 
             var upgrades = ci.getUpgradesInventory();
             var config = ci.getConfigInventory();

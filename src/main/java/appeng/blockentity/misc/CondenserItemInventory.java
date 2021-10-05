@@ -32,7 +32,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.util.item.AEItemStack;
@@ -71,7 +71,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
     }
 
     @Override
-    public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> out) {
+    public IAEStackList<IAEItemStack> getAvailableItems(final IAEStackList<IAEItemStack> out) {
         if (!this.target.getOutputSlot().getStackInSlot(0).isEmpty()) {
             out.add(AEItemStack.fromItemStack(this.target.getOutputSlot().getStackInSlot(0)));
         }
@@ -79,7 +79,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
     }
 
     @Override
-    public IItemList<IAEItemStack> getStorageList() {
+    public IAEStackList<IAEItemStack> getStorageList() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.resetStatus();

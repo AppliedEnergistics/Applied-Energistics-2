@@ -32,9 +32,9 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
-public final class ItemList implements IItemList<IAEItemStack> {
+public final class ItemList implements IAEStackList<IAEItemStack> {
 
     private final Reference2ObjectMap<Item, ItemVariantList> records = new Reference2ObjectOpenHashMap<>();
     /**

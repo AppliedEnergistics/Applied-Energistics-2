@@ -40,7 +40,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
@@ -132,7 +132,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         for (int x = 0; x < maxTimesToCraft; x++) {
             if (target.simulateAdd(rs).isEmpty()) {
-                final IItemList<IAEItemStack> all = inv.getStorageList();
+                final IAEStackList<IAEItemStack> all = inv.getStorageList();
                 final ItemStack extra = target.addItems(this.craftItem(who, rs, inv, all));
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();
@@ -175,7 +175,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     private ItemStack craftItem(final Player p, final ItemStack request, final IMEMonitor<IAEItemStack> inv,
-            IItemList<IAEItemStack> all) {
+            IAEStackList<IAEItemStack> all) {
         // update crafting matrix...
         ItemStack is = this.getItem();
 

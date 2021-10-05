@@ -29,7 +29,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
@@ -57,7 +57,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
             }
 
             if (currentViewCell.getItem() instanceof ViewCellItem) {
-                final IItemList<IAEItemStack> priorityList = StorageChannels.items().createList();
+                final IAEStackList<IAEItemStack> priorityList = StorageChannels.items().createList();
 
                 var vc = (ICellWorkbenchItem) currentViewCell.getItem();
                 var upgrades = vc.getUpgradesInventory(currentViewCell);

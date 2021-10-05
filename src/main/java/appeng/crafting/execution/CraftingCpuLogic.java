@@ -42,7 +42,7 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.core.AELog;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingWatcher;
@@ -177,7 +177,7 @@ public class CraftingCpuLogic {
             }
 
             IPatternDetails details = task.getKey();
-            var expectedOutputs = new MixedItemList();
+            var expectedOutputs = new MixedStackList();
             // Contains the inputs for the pattern.
             @Nullable
             var craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService, level,
@@ -478,7 +478,7 @@ public class CraftingCpuLogic {
     /**
      * Used by the menu to gather all the kinds of stored items.
      */
-    public void getAllItems(MixedItemList out) {
+    public void getAllItems(MixedStackList out) {
         for (var stack : this.inventory.list) {
             out.add(stack);
         }

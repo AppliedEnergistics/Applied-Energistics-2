@@ -24,7 +24,7 @@
 package appeng.api.networking.crafting;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 
 /**
  * A place to send Items for crafting purposes, registered by a {@link ICraftingProvider} with
@@ -41,7 +41,7 @@ public interface ICraftingMedium {
      *
      * @return if the pattern was successfully pushed.
      */
-    boolean pushPattern(IPatternDetails patternDetails, MixedItemList[] inputHolder);
+    boolean pushPattern(IPatternDetails patternDetails, MixedStackList[] inputHolder);
 
     /**
      * @return if this is false, the crafting engine will refuse to send new jobs to this medium.

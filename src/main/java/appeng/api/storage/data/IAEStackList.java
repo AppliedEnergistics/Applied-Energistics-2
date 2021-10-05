@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2021 TeamAppliedEnergistics
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -37,7 +37,7 @@ import appeng.api.storage.IStorageChannel;
  * IFluidStorageChannel.class).createList() - Replace with the corresponding {@link IStorageChannel} type for non native
  * channels
  */
-public interface IItemList<T extends IAEStack> extends IItemContainer<T>, Iterable<T> {
+public interface IAEStackList<T extends IAEStack> extends IAEStackContainer<T>, Iterable<T> {
 
     /**
      * add a stack to the list stackSize is used to add to stackSize, this will merge the stack with an item already in

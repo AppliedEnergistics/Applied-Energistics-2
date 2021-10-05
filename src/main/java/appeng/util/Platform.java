@@ -94,7 +94,7 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -685,7 +685,7 @@ public class Platform {
         service.postAlterationOfStoredItems(channel, myChanges, src);
     }
 
-    public static <T extends IAEStack> void postListChanges(final IItemList<T> before, final IItemList<T> after,
+    public static <T extends IAEStack> void postListChanges(final IAEStackList<T> before, final IAEStackList<T> after,
             final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source) {
         final List<T> changes = new ArrayList<>();
 
@@ -820,7 +820,7 @@ public class Platform {
     public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
             final IMEMonitor<IAEItemStack> src, final Level level, final Recipe<CraftingContainer> r,
             final ItemStack output, final CraftingContainer ci, final ItemStack providedTemplate, final int slot,
-            final IItemList<IAEItemStack> items, final Actionable realForFake,
+            final IAEStackList<IAEItemStack> items, final Actionable realForFake,
             final IPartitionList<IAEItemStack> filter) {
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {

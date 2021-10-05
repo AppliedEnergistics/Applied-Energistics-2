@@ -29,7 +29,7 @@ import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
@@ -135,7 +135,7 @@ public class CraftingTreeNode {
      * @throws CraftBranchFailure If the request failed.
      */
     void request(final CraftingSimulationState inv, long requestedAmount,
-            @Nullable MixedItemList containerItems)
+            @Nullable MixedStackList containerItems)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
@@ -247,7 +247,7 @@ public class CraftingTreeNode {
 
     // Only item stacks are supported.
     private void addContainerItems(IAEStack template, long multiplier,
-            @Nullable MixedItemList outputList) {
+            @Nullable MixedStackList outputList) {
         if (outputList != null) {
             var containerItem = parentInput.getContainerItem(template);
             if (containerItem != null) {

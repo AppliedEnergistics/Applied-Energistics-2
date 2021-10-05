@@ -59,7 +59,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -313,7 +313,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     private long transferContents(final IEnergySource energy, final IMEInventory src, final IMEInventory destination,
             long itemsToMove, final IStorageChannel chan) {
-        final IItemList<? extends IAEStack> myList;
+        final IAEStackList<? extends IAEStack> myList;
         if (src instanceof IMEMonitor) {
             myList = ((IMEMonitor) src).getStorageList();
         } else {
@@ -391,7 +391,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             return true;
         }
 
-        final IItemList<? extends IAEStack> myList;
+        final IAEStackList<? extends IAEStack> myList;
 
         if (src instanceof IMEMonitor) {
             myList = ((IMEMonitor) src).getStorageList();

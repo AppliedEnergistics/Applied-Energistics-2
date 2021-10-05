@@ -36,7 +36,7 @@ import appeng.api.networking.security.ISecurityService;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.me.service.SecurityService;
 
 public class NetworkInventoryHandler<T extends IAEStack> implements IMEInventoryHandler<T> {
@@ -198,7 +198,7 @@ public class NetworkInventoryHandler<T extends IAEStack> implements IMEInventory
     }
 
     @Override
-    public IItemList<T> getAvailableItems(IItemList<T> out) {
+    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
         if (this.diveIteration(this, Actionable.SIMULATE)) {
             return out;
         }

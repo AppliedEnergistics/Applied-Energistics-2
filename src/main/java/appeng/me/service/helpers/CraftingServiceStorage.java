@@ -31,7 +31,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.me.service.CraftingService;
 
 /**
@@ -88,7 +88,7 @@ public class CraftingServiceStorage implements ICellProvider {
             }
 
             @Override
-            public IItemList<T> getAvailableItems(IItemList<T> out) {
+            public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
                 // Add craftable items so the terminals can see them.
                 return craftingService.addCrafting(channel, out);
             }

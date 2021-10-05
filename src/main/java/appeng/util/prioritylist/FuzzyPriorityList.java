@@ -22,14 +22,14 @@ import java.util.Collection;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
 public class FuzzyPriorityList<T extends IAEStack> implements IPartitionList<T> {
 
-    private final IItemList<T> list;
+    private final IAEStackList<T> list;
     private final FuzzyMode mode;
 
-    public FuzzyPriorityList(final IItemList<T> in, final FuzzyMode mode) {
+    public FuzzyPriorityList(final IAEStackList<T> in, final FuzzyMode mode) {
         this.list = in;
         this.mode = mode;
     }

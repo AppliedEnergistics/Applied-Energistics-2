@@ -35,7 +35,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
@@ -92,7 +92,7 @@ public final class DisassembleRecipe extends CustomRecipe {
                     // make sure the storage cell stackInSlot empty...
                     var cellInv = StorageCells.getCellInventory(stackInSlot, null, StorageChannels.items());
                     if (cellInv != null) {
-                        final IItemList<IAEItemStack> list = cellInv.getAvailableItems();
+                        final IAEStackList<IAEItemStack> list = cellInv.getAvailableItems();
                         if (!list.isEmpty()) {
                             return ItemStack.EMPTY;
                         }

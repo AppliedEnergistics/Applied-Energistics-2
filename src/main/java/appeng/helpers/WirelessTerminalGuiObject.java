@@ -39,7 +39,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessBlockEntity;
@@ -107,7 +107,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     }
 
     @Override
-    public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> out) {
+    public IAEStackList<IAEItemStack> getAvailableItems(final IAEStackList<IAEItemStack> out) {
         if (this.itemStorage != null) {
             return this.itemStorage.getAvailableItems(out);
         }
@@ -115,7 +115,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     }
 
     @Override
-    public IItemList<IAEItemStack> getStorageList() {
+    public IAEStackList<IAEItemStack> getStorageList() {
         if (this.itemStorage != null) {
             return this.itemStorage.getStorageList();
         }

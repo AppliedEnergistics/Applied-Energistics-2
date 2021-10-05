@@ -37,7 +37,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.util.fluid.AEFluidStack;
 
 /**
@@ -111,7 +111,7 @@ public abstract class FluidHandlerAdapter
     }
 
     @Override
-    public IItemList<IAEFluidStack> getAvailableItems(IItemList<IAEFluidStack> out) {
+    public IAEStackList<IAEFluidStack> getAvailableItems(IAEStackList<IAEFluidStack> out) {
         return this.cache.getAvailableItems(out);
     }
 
@@ -191,7 +191,7 @@ public abstract class FluidHandlerAdapter
             return changes;
         }
 
-        public IItemList<IAEFluidStack> getAvailableItems(IItemList<IAEFluidStack> out) {
+        public IAEStackList<IAEFluidStack> getAvailableItems(IAEStackList<IAEFluidStack> out) {
             Arrays.stream(this.cachedAeStacks).forEach(out::add);
             return out;
         }

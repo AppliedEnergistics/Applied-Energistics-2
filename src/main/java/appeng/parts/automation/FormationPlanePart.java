@@ -63,7 +63,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.PartModels;
@@ -106,7 +106,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
         this.myHandler.setPriority(this.getPriority());
 
-        final IItemList<IAEItemStack> priorityList = StorageChannels.items().createList();
+        final IAEStackList<IAEItemStack> priorityList = StorageChannels.items().createList();
 
         final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
         for (int x = 0; x < this.config.size() && x < slotsToUse; x++) {

@@ -24,7 +24,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
 public class NullInventory<T extends IAEStack> implements IMEInventoryHandler<T> {
 
@@ -45,7 +45,7 @@ public class NullInventory<T extends IAEStack> implements IMEInventoryHandler<T>
     }
 
     @Override
-    public IItemList<T> getAvailableItems(IItemList<T> out) {
+    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
         return out;
     }
 

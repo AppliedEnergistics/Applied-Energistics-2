@@ -31,7 +31,7 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.core.AppEng;
 import appeng.items.misc.FluidDummyItem;
 import appeng.util.fluid.AEFluidStack;
@@ -61,7 +61,7 @@ public final class FluidStorageChannel implements IFluidStorageChannel {
     }
 
     @Override
-    public IItemList<IAEFluidStack> createList() {
+    public IAEStackList<IAEFluidStack> createList() {
         return new FluidList();
     }
 
