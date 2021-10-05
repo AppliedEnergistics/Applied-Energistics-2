@@ -20,7 +20,6 @@ package appeng.helpers.iface;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 
@@ -215,6 +214,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         for (var direction : host.getTargets()) {
             var adjPos = be.getBlockPos().relative(direction);
             var adjBe = level.getBlockEntity(adjPos);
+            var adjBeSide = direction.getOpposite();
 
             if (adjBe instanceof IPatternProviderHost adjHost) {
                 if (adjHost.getDuality().sameGrid(this.mainNode.getGrid())) {
@@ -222,16 +222,15 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
                 }
             }
 
-            if (adjBe instanceof ICraftingMachine craftingMachine) {
-                if (craftingMachine.acceptsPlans()) {
-                    if (craftingMachine.pushPattern(patternDetails, inputHolder, direction.getOpposite())) {
-                        return true;
-                    }
-                    continue;
+            var craftingMachine = ICraftingMachine.of(adjBe, adjBeSide);
+            if (craftingMachine != null && craftingMachine.acceptsPlans()) {
+                if (craftingMachine.pushPattern(patternDetails, inputHolder, adjBeSide)) {
+                    return true;
                 }
+                continue;
             }
 
-            var adapter = IInterfaceTarget.get(level, adjPos, adjBe, direction.getOpposite(), this.actionSource);
+            var adapter = IInterfaceTarget.get(level, adjPos, adjBe, adjBeSide, this.actionSource);
             if (adapter == null)
                 continue;
 
@@ -395,8 +394,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
             return ((ICustomNameObject) this.host).getCustomInventoryName();
         }
 
-        final EnumSet<Direction> possibleDirections = this.host.getTargets();
-        for (final Direction direction : possibleDirections) {
+        for (var direction : this.host.getTargets()) {
             final BlockPos targ = host.getBlockPos().relative(direction);
             final BlockEntity directedBlockEntity = hostWorld.getBlockEntity(targ);
 
@@ -410,8 +408,15 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
                 }
             }
 
+            if (directedBlockEntity instanceof ICraftingMachine craftingMachine) {
+                var displayName = craftingMachine.getDisplayName();
+                if (displayName.isPresent()) {
+                    return displayName.get();
+                }
+            }
+
             var adaptor = InternalInventory.wrapExternal(directedBlockEntity, direction.getOpposite());
-            if (directedBlockEntity instanceof ICraftingMachine || adaptor != null) {
+            if (adaptor != null) {
                 if (adaptor != null && !adaptor.mayAllowTransfer()) {
                     continue;
                 }
