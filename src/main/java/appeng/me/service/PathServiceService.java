@@ -18,11 +18,10 @@
 
 package appeng.me.service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 import appeng.api.AEApi;
 import appeng.api.features.IPlayerRegistry;
@@ -218,7 +217,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
 
             startingNode.beginVisit(cv);
 
-            if (cv.isValid() && cv.getFound() == this.controllers.size()) {
+            if (cv.isValid() && cv.getFound() == this.controllers.size() && !hasControllerCross()) {
                 this.controllerState = ControllerState.CONTROLLER_ONLINE;
             } else {
                 this.controllerState = ControllerState.CONTROLLER_CONFLICT;
@@ -228,6 +227,31 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
         if (old != this.controllerState) {
             this.myGrid.postEvent(new GridControllerChange());
         }
+    }
+
+    /**
+     * Return true if controllers have a cross pattern, i.e. two neighbors on two or three axes.
+     */
+    private boolean hasControllerCross() {
+        Set<BlockPos> posSet = new HashSet<>();
+        for (var controller : controllers) {
+            posSet.add(controller.getBlockPos().immutable());
+        }
+
+        for (var pos : posSet) {
+            boolean northSouth = posSet.contains(pos.relative(Direction.NORTH))
+                    && posSet.contains(pos.relative(Direction.SOUTH));
+            boolean eastWest = posSet.contains(pos.relative(Direction.EAST))
+                    && posSet.contains(pos.relative(Direction.WEST));
+            boolean upDown = posSet.contains(pos.relative(Direction.UP))
+                    && posSet.contains(pos.relative(Direction.DOWN));
+
+            if ((northSouth ? 1 : 0) + (eastWest ? 1 : 0) + (upDown ? 1 : 0) > 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private int calculateRequiredChannels() {

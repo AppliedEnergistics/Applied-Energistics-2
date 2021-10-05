@@ -24,6 +24,9 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
 import appeng.blockentity.networking.ControllerBlockEntity;
 
+/**
+ * Validates that the controller shape doesn't exceed the max size, and counts the number of adjacent controllers.
+ */
 public class ControllerValidator implements IGridVisitor {
 
     private boolean isValid = true;
@@ -63,11 +66,10 @@ public class ControllerValidator implements IGridVisitor {
             }
 
             this.setValid(false);
-        } else {
-            return false;
         }
 
-        return this.isValid();
+        // Only visit neighbors if this is a controller. This ensures that we only visit adjacent controllers.
+        return false;
     }
 
     public boolean isValid() {

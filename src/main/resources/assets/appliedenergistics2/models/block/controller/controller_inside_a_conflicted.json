@@ -1,7 +1,7 @@
 {
   "parent": "appliedenergistics2:block/controller/controller_block_lights",
   "textures": {
-    "block": "appliedenergistics2:block/controller_powered",
+    "block": "appliedenergistics2:block/controller_inside_a_powered",
     "lights": "appliedenergistics2:block/controller_conflict"
   }
 }
