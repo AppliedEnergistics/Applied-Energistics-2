@@ -27,12 +27,10 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Queues;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.events.GridStorageEvent;
 import appeng.api.networking.security.IActionSource;
@@ -75,11 +73,6 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public boolean canAccept(final T input) {
-        return this.getHandler().canAccept(input);
-    }
-
-    @Override
     public T extractItems(final T request, final Actionable mode, final IActionSource src) {
         if (mode == Actionable.SIMULATE) {
             return this.getHandler().extractItems(request, mode, src);
@@ -97,11 +90,6 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public AccessRestriction getAccess() {
-        return this.getHandler().getAccess();
-    }
-
-    @Override
     public IItemList<T> getAvailableItems(final IItemList<T> out) {
         return this.getHandler().getAvailableItems(out);
     }
@@ -109,11 +97,6 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
     @Override
     public IStorageChannel<T> getChannel() {
         return myChannel;
-    }
-
-    @Override
-    public int getPriority() {
-        return this.getHandler().getPriority();
     }
 
     @Nonnull
@@ -146,21 +129,10 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public boolean isPrioritized(final T input) {
-        return this.getHandler().isPrioritized(input);
-    }
-
-    @Override
     public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
         this.listeners.remove(l);
     }
 
-    @Override
-    public boolean validForPass(final int pass) {
-        return this.getHandler().validForPass(pass);
-    }
-
-    @Nullable
     private IMEInventoryHandler<T> getHandler() {
         return this.service.getInventoryHandler(this.myChannel);
     }
@@ -169,7 +141,7 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
         return this.listeners.entrySet().iterator();
     }
 
-    private T monitorDifference(final T original, final T leftOvers, final boolean extraction,
+    private void monitorDifference(final T original, final T leftOvers, final boolean extraction,
             final IActionSource src) {
         final T diff = IAEStack.copy(original);
 
@@ -182,8 +154,6 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
         if (diff.getStackSize() != 0) {
             this.postChangesToListeners(ImmutableList.of(diff), src);
         }
-
-        return leftOvers;
     }
 
     private void notifyListenersOfChange(final Iterable<T> diff, final IActionSource src) {
