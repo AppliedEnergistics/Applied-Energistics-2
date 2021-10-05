@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.core.definitions.AEItems;
@@ -84,9 +83,12 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     }
 
     @Override
-    protected void loadSettingsFromHost(IConfigManager cm) {
-        this.maxProcessingTime = getHost().getMaxProcessingTime();
-        this.processingTime = getHost().getProcessingTime();
+    protected void standardDetectAndSendChanges() {
+        if (isServer()) {
+            this.maxProcessingTime = getHost().getMaxProcessingTime();
+            this.processingTime = getHost().getProcessingTime();
+        }
+        super.standardDetectAndSendChanges();
     }
 
     @Override
