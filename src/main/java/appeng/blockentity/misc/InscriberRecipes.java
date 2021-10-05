@@ -33,10 +33,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
-import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.materials.NamePressItem;
+import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
 
 /**

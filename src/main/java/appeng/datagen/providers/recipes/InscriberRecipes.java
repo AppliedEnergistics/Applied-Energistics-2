@@ -34,10 +34,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
+import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 
 public class InscriberRecipes extends AE2RecipeProvider {
@@ -49,13 +49,13 @@ public class InscriberRecipes extends AE2RecipeProvider {
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
         // Silicon Press Copying & Printing
-        inscribe(AEItems.SILICON_PRESS, new ItemStack(Items.IRON_BLOCK))
-                .setTop(Ingredient.of(AEItems.SILICON_PRESS))
-                .setMode(InscriberProcessType.PRESS)
+        inscribe(AEItems.SILICON_PRESS, AEItems.SILICON_PRESS.stack())
+                .setTop(Ingredient.of(Items.IRON_BLOCK))
+                .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, "silicon_press");
         inscribe(Ingredient.of(ConventionTags.SILICON), AEItems.SILICON_PRINT.stack())
                 .setTop(Ingredient.of(AEItems.SILICON_PRESS))
-                .setMode(InscriberProcessType.PRESS)
+                .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, "silicon_print");
 
         processor(consumer, "calculation_processor",
@@ -87,20 +87,20 @@ public class InscriberRecipes extends AE2RecipeProvider {
         // Making the print
         inscribe(printMaterial, new ItemStack(print))
                 .setTop(Ingredient.of(press))
-                .setMode(InscriberProcessType.PRESS)
+                .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, name + "_print");
 
         // Making the processor
         inscribe(Items.REDSTONE, new ItemStack(processor))
                 .setTop(Ingredient.of(print))
                 .setBottom(Ingredient.of(AEItems.SILICON_PRINT))
-                .setMode(InscriberProcessType.INSCRIBE)
+                .setMode(InscriberProcessType.PRESS)
                 .save(consumer, name);
 
         // Copying the press
         inscribe(Items.IRON_BLOCK, new ItemStack(press))
                 .setTop(Ingredient.of(press))
-                .setMode(InscriberProcessType.PRESS)
+                .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, name + "_press");
     }
 
