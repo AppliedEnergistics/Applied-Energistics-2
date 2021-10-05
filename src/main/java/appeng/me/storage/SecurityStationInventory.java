@@ -29,13 +29,13 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.core.definitions.AEItems;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
 
-    private final IItemList<IAEItemStack> storedItems = StorageChannels.items().createList();
+    private final IAEStackList<IAEItemStack> storedItems = StorageChannels.items().createList();
     private final SecurityStationBlockEntity blockEntity;
 
     public SecurityStationInventory(final SecurityStationBlockEntity ts) {
@@ -88,7 +88,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
     }
 
     @Override
-    public IItemList<IAEItemStack> getAvailableItems(final IItemList out) {
+    public IAEStackList<IAEItemStack> getAvailableItems(final IAEStackList out) {
         for (final IAEItemStack ais : this.getStoredItems()) {
             out.add(ais);
         }
@@ -135,7 +135,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
         return false;
     }
 
-    public IItemList<IAEItemStack> getStoredItems() {
+    public IAEStackList<IAEItemStack> getStoredItems() {
         return this.storedItems;
     }
 }

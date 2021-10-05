@@ -26,7 +26,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -101,7 +101,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
     }
 
     @Override
-    public IItemList<T> getAvailableItems(final IItemList<T> out) {
+    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
         if (!this.hasReadAccess) {
             return out;
         }

@@ -37,7 +37,7 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.crafting.inv.ICraftingInventory;
 import appeng.crafting.inv.ListCraftingInventory;
 
@@ -98,23 +98,23 @@ public class CraftingCpuHelper {
     }
 
     @Nullable
-    public static MixedItemList[] extractPatternInputs(
+    public static MixedStackList[] extractPatternInputs(
             IPatternDetails details,
             ICraftingInventory sourceInv,
             IEnergyService energyService,
             Level level,
-            MixedItemList expectedOutputs) {
+            MixedStackList expectedOutputs) {
         // Check energy first.
         if (!extractPatternPower(details, energyService, Actionable.SIMULATE))
             return null;
 
         // Extract inputs into the container.
         var inputs = details.getInputs();
-        MixedItemList[] inputHolder = new MixedItemList[inputs.length];
+        MixedStackList[] inputHolder = new MixedStackList[inputs.length];
         boolean found = true;
 
         for (int x = 0; x < inputs.length; x++) {
-            MixedItemList list = inputHolder[x] = new MixedItemList();
+            MixedStackList list = inputHolder[x] = new MixedStackList();
             long remainingMultiplier = inputs[x].getMultiplier();
             for (var template : getValidItemTemplates(sourceInv, inputs[x], level)) {
                 long extracted = extractTemplates(sourceInv, template, remainingMultiplier);
@@ -153,7 +153,7 @@ public class CraftingCpuHelper {
     }
 
     public static void reinjectPatternInputs(ICraftingInventory sourceInv,
-            MixedItemList[] inputHolder) {
+            MixedStackList[] inputHolder) {
         for (var list : inputHolder) {
             // List may be null if we failed to extract some of the pattern's inputs.
             if (list != null) {

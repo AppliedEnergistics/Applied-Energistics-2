@@ -68,7 +68,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.crafting.execution.GenericStackHelper;
@@ -204,7 +204,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     }
 
     @Override
-    public boolean pushPattern(IPatternDetails patternDetails, MixedItemList[] inputHolder) {
+    public boolean pushPattern(IPatternDetails patternDetails, MixedStackList[] inputHolder) {
         if (!sendList.isEmpty() || !this.mainNode.isActive() || !this.patterns.contains(patternDetails)) {
             return false;
         }
@@ -262,7 +262,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
-    private boolean adapterAcceptsAll(IInterfaceTarget target, MixedItemList[] inputHolder) {
+    private boolean adapterAcceptsAll(IInterfaceTarget target, MixedStackList[] inputHolder) {
         for (var inputList : inputHolder) {
             for (var input : inputList) {
                 var leftover = target.injectItems(input, Actionable.SIMULATE);

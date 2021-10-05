@@ -28,7 +28,7 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
 /**
  * @author DrummerMC
@@ -48,7 +48,7 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
     private int maxItemTypes;
     private short storedItems;
     private int storedItemCount;
-    protected IItemList<T> cellItems;
+    protected IAEStackList<T> cellItems;
     private final ItemStack i;
     protected final IStorageCell<T> cellType;
     protected final int itemsPerByte;
@@ -81,7 +81,7 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
         this.cellItems = null;
     }
 
-    protected IItemList<T> getCellItems() {
+    protected IAEStackList<T> getCellItems() {
         if (this.cellItems == null) {
             this.cellItems = this.getChannel().createList();
             this.loadCellItems();
@@ -182,7 +182,7 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
     protected abstract boolean loadCellItem(CompoundTag compoundTag, int stackSize);
 
     @Override
-    public IItemList<T> getAvailableItems(final IItemList<T> out) {
+    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
         for (final T item : this.getCellItems()) {
             out.add(item);
         }

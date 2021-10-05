@@ -41,7 +41,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
@@ -381,7 +381,7 @@ public class DualityFluidInterface
         }
 
         @Override
-        public IItemList<IAEFluidStack> getStorageList() {
+        public IAEStackList<IAEFluidStack> getStorageList() {
             return getAvailableItems();
         }
     }

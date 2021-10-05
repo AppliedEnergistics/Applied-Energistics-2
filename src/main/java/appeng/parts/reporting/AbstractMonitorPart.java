@@ -45,7 +45,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.client.render.TesrRenderHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.IWideReadableNumberConverter;
@@ -266,7 +266,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public <T extends IAEStack> void onStackChange(IItemList<T> o, IAEStack fullStack, IAEStack diffStack,
+    public <T extends IAEStack> void onStackChange(IAEStackList<T> o, IAEStack fullStack, IAEStack diffStack,
             IActionSource src, IStorageChannel<T> chan) {
         if (this.configuredItem != null) {
             if (fullStack == null) {

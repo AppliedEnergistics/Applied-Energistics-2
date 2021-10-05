@@ -28,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
 /**
  * AE's Equivalent to IInventory, used to reading contents, and manipulating contents of ME Inventories.
@@ -66,18 +66,18 @@ public interface IMEInventory<T extends IAEStack> {
     /**
      * request a full report of all available items, storage.
      *
-     * @param out the IItemList the results will be written too
+     * @param out the IAEStackList the results will be written too
      *
      * @return returns same list that was passed in, is passed out
      */
-    IItemList<T> getAvailableItems(IItemList<T> out);
+    IAEStackList<T> getAvailableItems(IAEStackList<T> out);
 
     /**
      * request a full report of all available items, storage.
      *
      * @return a new list of this inventories content
      */
-    default IItemList<T> getAvailableItems() {
+    default IAEStackList<T> getAvailableItems() {
         return getAvailableItems(getChannel().createList());
     }
 

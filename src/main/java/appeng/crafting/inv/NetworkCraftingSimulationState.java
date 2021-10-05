@@ -27,10 +27,10 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 
 public class NetworkCraftingSimulationState extends CraftingSimulationState {
-    private final MixedItemList list = new MixedItemList();
+    private final MixedStackList list = new MixedStackList();
 
     public NetworkCraftingSimulationState(IStorageMonitorable monitorable, IActionSource src) {
         for (var channel : StorageChannels.getAll()) {

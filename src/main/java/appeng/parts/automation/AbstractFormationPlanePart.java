@@ -33,7 +33,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IPriorityHost;
@@ -117,7 +117,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack> extends Upg
     }
 
     @Override
-    public IItemList<T> getAvailableItems(final IItemList<T> out) {
+    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
         return out;
     }
 

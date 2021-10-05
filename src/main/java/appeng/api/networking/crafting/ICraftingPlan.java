@@ -27,7 +27,7 @@ import java.util.Map;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 
 /**
  * Result of a {@linkplain ICraftingService#beginCraftingJob crafting job calculation}. Do not edit any of the
@@ -58,17 +58,17 @@ public interface ICraftingPlan {
     /**
      * List of items that were used. (They would need to be extracted to start the job).
      */
-    MixedItemList usedItems();
+    MixedStackList usedItems();
 
     /**
      * List of items that need to be emitted for this job.
      */
-    MixedItemList emittedItems();
+    MixedStackList emittedItems();
 
     /**
      * List of missing items if this is a simulation.
      */
-    MixedItemList missingItems();
+    MixedStackList missingItems();
 
     /**
      * Map of each pattern to the number of times it needs to be crafted. Can be used to retrieve the crafted items:

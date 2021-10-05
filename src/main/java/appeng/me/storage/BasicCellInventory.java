@@ -123,7 +123,7 @@ public class BasicCellInventory<T extends IAEStack> extends AbstractCellInventor
         // This is slightly hacky as it expects a read-only access, but fine for now.
         // TODO: Guarantee a read-only access. E.g. provide an isEmpty() method and
         // ensure CellInventory does not write
-        // any NBT data for empty cells instead of relying on an empty IItemContainer
+        // any NBT data for empty cells instead of relying on an empty IAEStackContainer
         if (this.isStorageCell(input)) {
             final ICellInventory<?> meInventory = createInventory(((IAEItemStack) input).createItemStack(), null);
             if (!isCellEmpty(meInventory)) {

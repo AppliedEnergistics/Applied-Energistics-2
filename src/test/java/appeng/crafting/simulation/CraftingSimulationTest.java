@@ -19,7 +19,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.core.AELog;
 import appeng.crafting.CraftingPlan;
 import appeng.crafting.simulation.helpers.ProcessingPatternBuilder;
@@ -252,8 +252,8 @@ public class CraftingSimulationTest {
             return patternsMatch(Map.of(p1, t1, p2, t2, p3, t3));
         }
 
-        private CraftingPlanAssert listMatches(MixedItemList actualList, IAEStack... expectedStacks) {
-            var expectedList = new MixedItemList();
+        private CraftingPlanAssert listMatches(MixedStackList actualList, IAEStack... expectedStacks) {
+            var expectedList = new MixedStackList();
             for (var stack : expectedStacks) {
                 expectedList.addStorage(stack);
             }

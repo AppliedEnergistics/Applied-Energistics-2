@@ -38,17 +38,17 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingPlan;
 import appeng.me.helpers.BaseActionSource;
 
 public class SimulationEnv {
     private final Map<IAEStack, List<IPatternDetails>> patterns = new HashMap<>();
-    private final MixedItemList craftableItemsList = new MixedItemList();
+    private final MixedStackList craftableItemsList = new MixedStackList();
     private final Set<IAEStack> emitableItems = new HashSet<>();
-    private final MixedItemList networkStorage = new MixedItemList();
+    private final MixedStackList networkStorage = new MixedStackList();
 
     public IPatternDetails addPattern(IPatternDetails pattern) {
         var output = pattern.getPrimaryOutput();
@@ -187,12 +187,12 @@ public class SimulationEnv {
     private <T extends IAEStack> IMEMonitor<T> createMonitorMock(IStorageChannel<T> channel) {
         return new IMEMonitor<>() {
             @Override
-            public IItemList<T> getAvailableItems(IItemList<T> out) {
+            public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public IItemList<T> getStorageList() {
+            public IAEStackList<T> getStorageList() {
                 return networkStorage.getList(channel);
             }
 

@@ -44,7 +44,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IMenuCraftingPacket;
@@ -341,7 +341,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
             final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
                     .getInventory(StorageChannels.items());
-            final IItemList<IAEItemStack> all = storage.getStorageList();
+            final IAEStackList<IAEItemStack> all = storage.getStorageList();
 
             final ItemStack is = r.assemble(ic);
 

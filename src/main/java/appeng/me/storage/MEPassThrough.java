@@ -25,7 +25,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
 public class MEPassThrough<T extends IAEStack> implements IMEInventoryHandler<T> {
 
@@ -56,7 +56,7 @@ public class MEPassThrough<T extends IAEStack> implements IMEInventoryHandler<T>
     }
 
     @Override
-    public IItemList<T> getAvailableItems(final IItemList<T> out) {
+    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
         return this.internal.getAvailableItems(out);
     }
 

@@ -41,7 +41,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.me.storage.ItemWatcher;
 
 public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
@@ -53,7 +53,7 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
     @Nonnull
     private final IStorageChannel<T> myChannel;
     @Nonnull
-    private final IItemList<T> cachedList;
+    private final IAEStackList<T> cachedList;
     @Nonnull
     private final Map<IMEMonitorHandlerReceiver<T>, Object> listeners;
 
@@ -102,7 +102,7 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public IItemList<T> getAvailableItems(final IItemList<T> out) {
+    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
         return this.getHandler().getAvailableItems(out);
     }
 
@@ -118,7 +118,7 @@ public class NetworkMonitor<T extends IAEStack> implements IMEMonitor<T> {
 
     @Nonnull
     @Override
-    public IItemList<T> getStorageList() {
+    public IAEStackList<T> getStorageList() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.resetStatus();

@@ -45,7 +45,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.me.helpers.MachineSource;
@@ -205,7 +205,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     private <T extends IAEStack, C extends IStorageChannel<T>> void postChangesToNetwork(final C chan,
-            final int upOrDown, final IItemList<T> availableItems, final IActionSource src) {
+            final int upOrDown, final IAEStackList<T> availableItems, final IActionSource src) {
         this.storageMonitors.get(chan).postChange(upOrDown > 0, (Iterable) availableItems, src);
     }
 
@@ -255,7 +255,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
         final IStorageChannel<T> channel;
         final int up_or_down;
-        final IItemList<T> list;
+        final IAEStackList<T> list;
         final IActionSource src;
 
         public CellChangeTrackerRecord(final IStorageChannel<T> channel, final int i, final IMEInventoryHandler<T> h,

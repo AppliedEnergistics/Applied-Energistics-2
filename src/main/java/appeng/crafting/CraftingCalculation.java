@@ -32,7 +32,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.core.AELog;
 import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
@@ -45,7 +45,7 @@ public class CraftingCalculation {
 
     private final NetworkCraftingSimulationState networkInv;
     private final Level level;
-    private final MixedItemList missing = new MixedItemList();
+    private final MixedStackList missing = new MixedStackList();
     private final Object monitor = new Object();
     private final Stopwatch watch = Stopwatch.createUnstarted();
     private final CraftingTreeNode tree;
@@ -159,7 +159,7 @@ public class CraftingCalculation {
         return this.output;
     }
 
-    public MixedItemList getMissingItems() {
+    public MixedStackList getMissingItems() {
         return missing;
     }
 

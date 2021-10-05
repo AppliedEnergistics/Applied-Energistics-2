@@ -29,7 +29,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.core.AppEng;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
@@ -48,7 +48,7 @@ public final class ItemStorageChannel implements IItemStorageChannel {
     }
 
     @Override
-    public IItemList<IAEItemStack> createList() {
+    public IAEStackList<IAEItemStack> createList() {
         return new ItemList();
     }
 

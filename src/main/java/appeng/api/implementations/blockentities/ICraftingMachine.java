@@ -26,7 +26,7 @@ package appeng.api.implementations.blockentities;
 import net.minecraft.core.Direction;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 
 public interface ICraftingMachine {
 
@@ -35,7 +35,7 @@ public interface ICraftingMachine {
      *
      * @return if it was accepted, all or nothing.
      */
-    boolean pushPattern(IPatternDetails patternDetails, MixedItemList[] inputs, Direction ejectionDirection);
+    boolean pushPattern(IPatternDetails patternDetails, MixedStackList[] inputs, Direction ejectionDirection);
 
     /**
      * check if the crafting machine is accepting pushes via pushPattern, if this is false, all calls to push will fail,

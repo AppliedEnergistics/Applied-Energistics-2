@@ -37,7 +37,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
 /**
  * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of
@@ -48,7 +48,7 @@ import appeng.api.storage.data.IItemList;
 public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
 
     private final IMEInventoryHandler<T> internalHandler;
-    private final IItemList<T> cachedList;
+    private final IAEStackList<T> cachedList;
     private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
 
     protected boolean hasChanged = true;
@@ -145,7 +145,7 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public IItemList<T> getStorageList() {
+    public IAEStackList<T> getStorageList() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.resetStatus();
@@ -166,7 +166,7 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public IItemList<T> getAvailableItems(final IItemList<T> out) {
+    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
         return this.getHandler().getAvailableItems(out);
     }
 

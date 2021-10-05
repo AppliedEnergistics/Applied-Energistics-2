@@ -29,7 +29,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingPlan;
 
@@ -37,16 +37,16 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     /**
      * Partial cache of the parent's items, never modified.
      */
-    private final MixedItemList unmodifiedCache;
+    private final MixedStackList unmodifiedCache;
     /**
      * Partial cache of the parent's items, but modifiable. The different between this cache and the unmodified cache is
      * the items that were injected/extracted.
      */
-    private final MixedItemList modifiableCache;
+    private final MixedStackList modifiableCache;
     /**
      * List of items to emit.
      */
-    private final MixedItemList emittedItems;
+    private final MixedStackList emittedItems;
     /**
      * Byte count.
      */
@@ -56,13 +56,13 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
      * Minimum amount of each item that needs to be extracted from the network. This is the maximum of (unmodified -
      * modifiable).
      */
-    private final MixedItemList requiredExtract;
+    private final MixedStackList requiredExtract;
 
     protected CraftingSimulationState() {
-        this.unmodifiedCache = new MixedItemList();
-        this.modifiableCache = new MixedItemList();
-        this.emittedItems = new MixedItemList();
-        this.requiredExtract = new MixedItemList();
+        this.unmodifiedCache = new MixedStackList();
+        this.modifiableCache = new MixedStackList();
+        this.emittedItems = new MixedStackList();
+        this.requiredExtract = new MixedStackList();
     }
 
     protected abstract IAEStack simulateExtractParent(IAEStack input);
@@ -110,7 +110,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         }
     }
 
-    private long getAmount(MixedItemList list, IAEStack template) {
+    private long getAmount(MixedStackList list, IAEStack template) {
         IAEStack precise = list.findPrecise(template);
         if (precise == null)
             return 0;

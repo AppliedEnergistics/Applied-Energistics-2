@@ -27,13 +27,13 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 import appeng.items.contents.CellConfig;
 import appeng.util.item.AEItemStack;
 
 public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> {
 
-    private final IItemList<IAEItemStack> itemListCache = StorageChannels.items().createList();
+    private final IAEStackList<IAEItemStack> itemListCache = StorageChannels.items().createList();
 
     protected CreativeCellInventory(final ItemStack o) {
         final CellConfig cc = new CellConfig(o);
@@ -72,7 +72,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack> 
     }
 
     @Override
-    public IItemList<IAEItemStack> getAvailableItems(final IItemList out) {
+    public IAEStackList<IAEItemStack> getAvailableItems(final IAEStackList out) {
         for (final IAEItemStack ais : this.itemListCache) {
             out.add(ais);
         }

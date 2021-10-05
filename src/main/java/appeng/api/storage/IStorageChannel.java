@@ -33,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
 public interface IStorageChannel<T extends IAEStack> {
 
@@ -64,10 +64,10 @@ public interface IStorageChannel<T extends IAEStack> {
     }
 
     /**
-     * Create a new {@link IItemList} of the specific type.
+     * Create a new {@link IAEStackList} of the specific type.
      */
     @Nonnull
-    IItemList<T> createList();
+    IAEStackList<T> createList();
 
     /**
      * Create a new {@link IAEStack} subtype of the specific object.

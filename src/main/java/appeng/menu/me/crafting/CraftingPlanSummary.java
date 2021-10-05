@@ -31,7 +31,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 
 /**
  * A crafting plan intended to be sent to the client.
@@ -97,7 +97,7 @@ public class CraftingPlanSummary {
      * @param actionSource The action source used to determine the amount of items already stored.
      */
     public static CraftingPlanSummary fromJob(IGrid grid, IActionSource actionSource, ICraftingPlan job) {
-        final MixedItemList plan = new MixedItemList();
+        final MixedStackList plan = new MixedStackList();
         // TODO: clean this up, for now the point is to match the old behavior
         for (var used : job.usedItems()) {
             plan.addStorage(used);

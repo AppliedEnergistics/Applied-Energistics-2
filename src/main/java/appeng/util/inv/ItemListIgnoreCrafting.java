@@ -23,13 +23,13 @@ import java.util.Iterator;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStackList;
 
-public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T> {
+public class ItemListIgnoreCrafting<T extends IAEStack> implements IAEStackList<T> {
 
-    private final IItemList<T> target;
+    private final IAEStackList<T> target;
 
-    public ItemListIgnoreCrafting(final IItemList<T> cla) {
+    public ItemListIgnoreCrafting(final IAEStackList<T> cla) {
         this.target = cla;
     }
 

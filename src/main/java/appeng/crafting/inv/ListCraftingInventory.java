@@ -27,11 +27,11 @@ import net.minecraft.nbt.ListTag;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.crafting.execution.GenericStackHelper;
 
 public class ListCraftingInventory implements ICraftingInventory {
-    public final MixedItemList list = new MixedItemList();
+    public final MixedStackList list = new MixedStackList();
 
     public void postChange(IAEStack template, long delta) {
     }

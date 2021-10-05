@@ -26,7 +26,7 @@ import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.crafting.inv.CraftingSimulationState;
 
 /**
@@ -106,7 +106,7 @@ public class CraftingTreeProcess {
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
-        var containerItems = this.containerItems ? new MixedItemList() : null;
+        var containerItems = this.containerItems ? new MixedStackList() : null;
 
         // request and remove inputs...
         for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {

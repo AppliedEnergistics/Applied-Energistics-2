@@ -37,15 +37,15 @@ import appeng.api.storage.IStorageChannel;
 /**
  * List of generic IAEStacks.
  */
-public final class MixedItemList implements Iterable<IAEStack> {
-    private final Map<IStorageChannel<?>, IItemList<?>> lists = new IdentityHashMap<>();
+public final class MixedStackList implements Iterable<IAEStack> {
+    private final Map<IStorageChannel<?>, IAEStackList<?>> lists = new IdentityHashMap<>();
 
     @SuppressWarnings("unchecked")
-    public <T extends IAEStack> IItemList<T> getList(IStorageChannel<T> channel) {
-        return (IItemList<T>) lists.computeIfAbsent(channel, IStorageChannel::createList);
+    public <T extends IAEStack> IAEStackList<T> getList(IStorageChannel<T> channel) {
+        return (IAEStackList<T>) lists.computeIfAbsent(channel, IStorageChannel::createList);
     }
 
-    private IItemList getList(IAEStack stack) {
+    private IAEStackList getList(IAEStack stack) {
         return getList(stack.getChannel());
     }
 
@@ -90,7 +90,7 @@ public final class MixedItemList implements Iterable<IAEStack> {
     }
 
     public boolean isEmpty() {
-        for (IItemList<?> list : lists.values()) {
+        for (IAEStackList<?> list : lists.values()) {
             if (!list.isEmpty()) {
                 return false;
             }
@@ -100,19 +100,19 @@ public final class MixedItemList implements Iterable<IAEStack> {
 
     public int size() {
         int tot = 0;
-        for (IItemList<?> list : lists.values()) {
+        for (IAEStackList<?> list : lists.values()) {
             tot += list.size();
         }
         return tot;
     }
 
     public void resetStatus() {
-        lists.values().forEach(IItemList::resetStatus);
+        lists.values().forEach(IAEStackList::resetStatus);
     }
 
     @Override
     public Iterator<IAEStack> iterator() {
         return Iterators.concat(
-                Iterators.transform(lists.values().iterator(), IItemList::iterator));
+                Iterators.transform(lists.values().iterator(), IAEStackList::iterator));
     }
 }

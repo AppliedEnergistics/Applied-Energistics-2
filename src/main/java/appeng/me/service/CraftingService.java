@@ -73,8 +73,8 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
-import appeng.api.storage.data.MixedItemList;
+import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.MixedStackList;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 import appeng.crafting.CraftingCalculation;
@@ -116,7 +116,7 @@ public class CraftingService
     private final IGrid grid;
     private final Map<IPatternDetails, SortedMultiset<CraftingMedium>> craftingMethods = new HashMap<>();
     private final Map<IAEStack, ImmutableList<IPatternDetails>> craftableItems = new HashMap<>();
-    private final MixedItemList craftableItemsList = new MixedItemList();
+    private final MixedStackList craftableItemsList = new MixedStackList();
     private final Set<IAEStack> emitableItems = new HashSet<>();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
@@ -313,7 +313,7 @@ public class CraftingService
         return input;
     }
 
-    public <T extends IAEStack> IItemList<T> addCrafting(IStorageChannel<T> channel, final IItemList<T> out) {
+    public <T extends IAEStack> IAEStackList<T> addCrafting(IStorageChannel<T> channel, final IAEStackList<T> out) {
         // add craftable items!
         for (var stack : this.craftableItems.keySet()) {
             if (stack.getChannel() == channel) {
