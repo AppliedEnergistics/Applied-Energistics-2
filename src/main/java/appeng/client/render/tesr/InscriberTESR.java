@@ -38,11 +38,11 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
-import appeng.api.features.InscriberProcessType;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.datagen.providers.tags.ConventionTags;
+import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
 
 /**

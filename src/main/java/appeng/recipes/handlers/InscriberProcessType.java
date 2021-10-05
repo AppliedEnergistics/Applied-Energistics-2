@@ -16,16 +16,16 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.api.features;
+package appeng.recipes.handlers;
 
 public enum InscriberProcessType {
     /**
-     * uses the optionals as catalyst
+     * Doesn't spend the optional inputs (top and bottom). Used for example to make printed circuits, or copy presses.
      */
     INSCRIBE,
 
     /**
-     * spends the optionals
+     * Spends the optional inputs. Used for example to turn printed circuits into processors.
      */
     PRESS
 }

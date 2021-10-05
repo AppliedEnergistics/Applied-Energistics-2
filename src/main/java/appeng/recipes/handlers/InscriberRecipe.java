@@ -28,7 +28,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
 
 public class InscriberRecipe implements Recipe<Container> {
