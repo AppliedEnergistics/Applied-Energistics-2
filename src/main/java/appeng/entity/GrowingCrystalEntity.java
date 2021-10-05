@@ -18,6 +18,8 @@
 
 package appeng.entity;
 
+import java.util.Random;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -40,22 +42,18 @@ import appeng.items.misc.CrystalSeedItem;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
-    // Growth tick progress per tick by number of adjacent accelerators
-    // Expressed as 1/1000th of a growth tick, applied to progress_1000
-    // each time this entity ticks.
-    private static final int[] GROWTH_TICK_PROGRESS = { 1, // no accelerators
-            40, // 1 accelerator
-            92, // 2 accelerators
-            159, // 3 accelerators
-            247, // 4 accelerators
-            361, // 5 accelerators
-            509 // 6 accelerators
-    };
+    private static final Random CLIENT_EFFECTS_RNG = new Random();
 
-    /**
-     * The accumulated progress towards a single growth tick of the crystal in 1/1000th of a growth tick.
-     */
-    private int progress_1000 = 0;
+    // Growth tick progress per tick by number of adjacent accelerators
+    private static final int[] GROWTH_TICK_PROGRESS = {
+            1, // no accelerators, 20 minutes
+            10, // 1 accelerator, 2 minutes
+            20, // 2 accelerators, 1 minute
+            30, // 3 accelerators, 40 seconds
+            40, // 4 accelerators, 30 seconds
+            50, // 5 accelerators, 24 seconds
+            60 // 6 accelerators, 20 seconds
+    };
 
     public GrowingCrystalEntity(EntityType<? extends GrowingCrystalEntity> type, Level level) {
         super(type, level);
@@ -80,7 +78,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
         applyGrowthTick((IGrowableCrystal) gc, is);
     }
 
-    private void applyGrowthTick(IGrowableCrystal cry, ItemStack is) {
+    private void applyGrowthTick(IGrowableCrystal crystal, ItemStack is) {
         if (!AEConfig.instance().isInWorldPurificationEnabled()) {
             return;
         }
@@ -92,69 +90,60 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
         BlockPos pos = new BlockPos(x, y, z);
         final BlockState state = this.level.getBlockState(pos);
 
-        final float multiplier = cry.getMultiplier(state, level, pos);
+        final float multiplier = crystal.getMultiplier(state, level, pos);
 
+        // Crystal is in unsuitable material, reset progress and quit
         if (multiplier <= 0) {
-            // Crystal is in unsuitable material, reset progress and quit
-            this.progress_1000 = 0;
             return;
         }
 
         final int progressPerTick = (int) Math.max(1, this.getSpeed(pos) * multiplier);
 
         if (level.isClientSide()) {
-            // On the client, we reuse the growth-tick-progress
-            // as a tick-counter for particle effects
-            int len = getTicksBetweenParticleEffects(progressPerTick);
-            if (++this.progress_1000 >= len) {
-                this.progress_1000 = 0;
+            // Upper bound for a random chance to spawn a particle, depends on the growth speed.
+            int bound = getTicksBetweenParticleEffects(progressPerTick);
+
+            if (CLIENT_EFFECTS_RNG.nextInt(bound) == 0) {
                 AppEng.instance().spawnEffect(EffectType.Vibrant, this.level, this.getX(), this.getY() + 0.2,
                         this.getZ(), null);
             }
         } else {
-            this.progress_1000 += progressPerTick;
+            // We need to copy the stack or the change detection will not work and not sync this new stack to the client
+            ItemStack newItem = is.copy();
 
-            if (this.progress_1000 >= 1000) {
-                // We need to copy the stack or the change detection will not work and not sync
-                // this new stack to the client
-                ItemStack newItem = is.copy();
+            // We still loop here to avoid overflows and can immediately stop once the crystal is fully grown.
+            // Should a crystal decide to use a high multiplier for a certain material, it should be possible to go
+            // faster. Copy value in case the original is needed again.
+            int loopCounter = progressPerTick;
+            do {
+                newItem = crystal.triggerGrowth(newItem);
+                loopCounter--;
+            } while (loopCounter > 0 && newItem.getItem() == is.getItem());
 
-                // If we did not use a while loop here, the fastest growth for a crystal
-                // would be limited to a minimum of 30 seconds (based on 600 required growth
-                // ticks).
-                // Should a crystal decide to use a high multiplier for a certain material,
-                // it should be possible to go faster.
-                do {
-                    newItem = cry.triggerGrowth(newItem);
-                    this.progress_1000 -= 1000;
-                    // We assume that if the item changes, the process is complete and we can break
-                } while (this.progress_1000 >= 1000 && newItem.getItem() == is.getItem());
+            this.setItem(newItem);
 
-                this.setItem(newItem);
-
-                if (is.getItem() != newItem.getItem()
-                        && this.getPersistentData().contains(CrystalSeedItem.TAG_PREVENT_MAGNET)) {
-                    this.getPersistentData().remove(CrystalSeedItem.TAG_PREVENT_MAGNET);
-                }
+            if (is.getItem() != newItem.getItem()
+                    && this.getPersistentData().contains(CrystalSeedItem.TAG_PREVENT_MAGNET)) {
+                this.getPersistentData().remove(CrystalSeedItem.TAG_PREVENT_MAGNET);
             }
         }
     }
 
     private static int getTicksBetweenParticleEffects(int progressPerTick) {
-        if (progressPerTick > 500) {
-            return 1; // 20 times per second
-        } else if (progressPerTick > 360) {
+        if (progressPerTick >= GROWTH_TICK_PROGRESS[6]) {
+            return 1; // on average 20 times per second
+        } else if (progressPerTick >= GROWTH_TICK_PROGRESS[5]) {
             return 3;
-        } else if (progressPerTick > 240) {
+        } else if (progressPerTick >= GROWTH_TICK_PROGRESS[4]) {
             return 7;
-        } else if (progressPerTick > 150) {
+        } else if (progressPerTick >= GROWTH_TICK_PROGRESS[3]) {
             return 10;
-        } else if (progressPerTick > 90) {
+        } else if (progressPerTick >= GROWTH_TICK_PROGRESS[2]) {
             return 15;
-        } else if (progressPerTick > 2) {
+        } else if (progressPerTick >= GROWTH_TICK_PROGRESS[1]) {
             return 20;
         } else {
-            return 40; // Every 2 seconds
+            return 40; // on average every 2 seconds
         }
     }
 
