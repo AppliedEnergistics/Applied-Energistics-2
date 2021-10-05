@@ -30,8 +30,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
-import appeng.api.features.InscriberProcessType;
-
 public class InscriberRecipeSerializer implements RecipeSerializer<InscriberRecipe> {
 
     public static final InscriberRecipeSerializer INSTANCE = new InscriberRecipeSerializer();
