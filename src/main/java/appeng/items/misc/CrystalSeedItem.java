@@ -60,14 +60,15 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     /**
      * Name of NBT tag used to store the growth progress value.
      */
-    private static final String TAG_GROWTH_TICKS = "p";
+    public static final String TAG_GROWTH_TICKS = "p";
 
     public static final String TAG_PREVENT_MAGNET = "PreventRemoteMovement";
 
     /**
-     * The number of growth ticks required to finish growing.
+     * The number of growth ticks required to finish growing in minecraft ticks 24000 ticks equals one minecraft day or
+     * 20 minutes.
      */
-    public static final int GROWTH_TICKS_REQUIRED = 600;
+    public static final int GROWTH_TICKS_REQUIRED = 24000;
 
     /**
      * The item to convert to, when growth finishes.

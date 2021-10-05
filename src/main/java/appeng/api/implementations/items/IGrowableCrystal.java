@@ -26,12 +26,23 @@ package appeng.api.implementations.items;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface IGrowableCrystal {
 
+    /**
+     * Trigger a single growth tick, which can happen multiple times in quick succession.
+     * 
+     * Each call should be consider as grow by the smallest step possible.
+     * 
+     * Must return the updated {@link ItemStack}, can change the {@link Item} once fully grown or for other reasons.
+     * 
+     * @param is The {@link ItemStack} to trigger
+     * @return Return the updated itemstack, can be a different item.
+     */
     ItemStack triggerGrowth(ItemStack is);
 
     /**
