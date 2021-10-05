@@ -49,6 +49,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 
+import appeng.api.IAEAddonEntrypoint;
 import appeng.api.parts.CableRenderMode;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -304,4 +305,16 @@ public abstract class AppEngBase implements AppEng {
         return CableRenderMode.STANDARD;
     }
 
+    protected final void notifyAddons(String sideSpecificEntrypoint) {
+        var entrypoints = FabricLoader.getInstance().getEntrypoints(AppEng.MOD_ID, IAEAddonEntrypoint.class);
+        for (var entrypoint : entrypoints) {
+            entrypoint.onAe2Initialized();
+        }
+
+        var sideSpecificEntrypoints = FabricLoader.getInstance()
+                .getEntrypoints(AppEng.MOD_ID + ":" + sideSpecificEntrypoint, IAEAddonEntrypoint.class);
+        for (var entrypoint : sideSpecificEntrypoints) {
+            entrypoint.onAe2Initialized();
+        }
+    }
 }

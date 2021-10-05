@@ -38,8 +38,4 @@ public final class AEApiInternal {
                 new ApiClientHelper());
     }
 
-    public static void runAfterModInitialized() {
-        AEApi.runAfterModInitialized();
-    }
-
 }
