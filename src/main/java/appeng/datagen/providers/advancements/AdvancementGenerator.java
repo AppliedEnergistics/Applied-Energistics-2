@@ -105,7 +105,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var root = Advancement.Builder.advancement()
                 .display(
-                        AEItems.CERTUS_QUARTZ_CRYSTAL,
+                        AEItems.CERTUS_QUARTZ_DUST,
                         new TranslatableComponent("achievement.ae2.Root"),
                         new TranslatableComponent("achievement.ae2.Root.desc"),
                         AppEng.makeId("textures/block/sky_stone_brick.png"),
@@ -114,8 +114,24 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* announceChat */,
                         false /* hidden */
                 )
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL))
+                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_DUST))
                 .save(consumer, "appliedenergistics2:main/root");
+
+        var quartzCrystal = Advancement.Builder.advancement()
+                .display(
+                        AEItems.CERTUS_QUARTZ_CRYSTAL,
+                        new TranslatableComponent("achievement.ae2.QuartzCrystal"),
+                        new TranslatableComponent("achievement.ae2.QuartzCrystal.desc"),
+                        null /* background */,
+                        FrameType.TASK,
+                        true /* showToast */,
+                        true /* announceChat */,
+                        false /* hidden */
+                )
+                .parent(root)
+                .addCriterion("certus",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL))
+                .save(consumer, "appliedenergistics2:main/quartz_crystal");
 
         var chargedQuartz = Advancement.Builder.advancement()
                 .display(
@@ -128,7 +144,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         true /* announceChat */,
                         false /* hidden */
                 )
-                .parent(root)
+                .parent(quartzCrystal)
                 .addCriterion("certus",
                         InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
                 .save(consumer, "appliedenergistics2:main/charged_quartz");
@@ -159,7 +175,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         true /* announceChat */,
                         false /* hidden */
                 )
-                .parent(root)
+                .parent(quartzCrystal)
                 .addCriterion("compass", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.SKY_COMPASS))
                 .save(consumer, "appliedenergistics2:main/compass");
 
@@ -281,7 +297,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var fluix = Advancement.Builder.advancement()
                 .display(
-                        AEItems.FLUIX_CRYSTAL,
+                        AEItems.FLUIX_DUST,
                         new TranslatableComponent("achievement.ae2.Fluix"),
                         new TranslatableComponent("achievement.ae2.Fluix.desc"),
                         null /* background */,
@@ -291,7 +307,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(chargedQuartz)
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.FLUIX_CRYSTAL))
+                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.FLUIX_DUST))
                 .save(consumer, "appliedenergistics2:main/fluix");
 
         var glassCable = Advancement.Builder.advancement()
