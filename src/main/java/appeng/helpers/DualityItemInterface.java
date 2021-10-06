@@ -353,9 +353,9 @@ public class DualityItemInterface
 
             long diff = toStore.getStackSize();
 
-            // Make sure the plan still matches the storage
+            // Make sure the storage has enough items to execute the plan
             var inSlot = storage.getStackInSlot(slot);
-            if (!ItemStack.isSameItemSameTags(itemStack.getDefinition(), inSlot) || inSlot.getCount() != diff) {
+            if (!ItemStack.isSameItemSameTags(itemStack.getDefinition(), inSlot) || inSlot.getCount() < diff) {
                 return true;
             }
 
