@@ -19,10 +19,17 @@
       "left": 110,
       "bottom": 138
     },
-    "PROCESSING_RESULT": {
+    "PROCESSING_PRIMARY_RESULT": {
       "left": 110,
-      "bottom": 156,
-      "grid": "VERTICAL"
+      "bottom": 138
+    },
+    "PROCESSING_FIRST_OPTIONAL_RESULT": {
+      "left": 110,
+      "bottom": 161
+    },
+    "PROCESSING_SECOND_OPTIONAL_RESULT": {
+      "left": 110,
+      "bottom": 115
     }
   },
   "text": {

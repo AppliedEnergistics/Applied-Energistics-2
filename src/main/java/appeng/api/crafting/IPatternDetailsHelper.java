@@ -50,7 +50,8 @@ public interface IPatternDetailsHelper {
      *
      * @param stack If null, a new item will be created to hold the encoded pattern. Otherwise the given item must
      *              already contains an encoded pattern that will be overwritten.
-     * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
+     * @param out   The first element is considered the primary output and must be present
+     * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      * @return A new encoded pattern, or the given stack with the pattern encoded in it.
      */
     ItemStack encodeProcessingPattern(@Nullable ItemStack stack, IAEStack[] in, IAEStack[] out);

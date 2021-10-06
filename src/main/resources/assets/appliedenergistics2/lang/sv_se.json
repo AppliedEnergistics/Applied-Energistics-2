@@ -168,7 +168,7 @@
   "gui.appliedenergistics2.CraftingStatus": "Tillverkningsstatus",
   "gui.appliedenergistics2.CraftingTerminal": "Tillverkningsterminal",
   "gui.appliedenergistics2.Crafts": "Tillverkar",
-  "gui.appliedenergistics2.Creates": "Skapar",
+  "gui.appliedenergistics2.Produces": "Skapar",
   "gui.appliedenergistics2.Cyan": "Turkos",
   "gui.appliedenergistics2.Drive": "ME-hårddisk",
   "gui.appliedenergistics2.ETAFormat": "HH:mm:ss",

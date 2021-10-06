@@ -141,7 +141,7 @@
   "gui.appliedenergistics2.CraftingStatus": "Status výroby",
   "gui.appliedenergistics2.CraftingTerminal": "Výrobní terminál",
   "gui.appliedenergistics2.Crafts": "Výroby",
-  "gui.appliedenergistics2.Creates": "Vytvoří",
+  "gui.appliedenergistics2.Produces": "Vytvoří",
   "gui.appliedenergistics2.Cyan": "Azurová",
   "gui.appliedenergistics2.Drive": "ME jednotka",
   "gui.appliedenergistics2.Efficiency": "Efektivita: %s%%",

@@ -118,7 +118,7 @@ public class EncodedPatternItem extends AEBaseItem {
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final Component label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text())
+            final Component label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Produces.text())
                     .copy().append(": ");
             final Component and = new TextComponent(" ").copy().append(GuiText.And.text())
                     .copy()
@@ -157,7 +157,7 @@ public class EncodedPatternItem extends AEBaseItem {
         var in = details.getInputs();
         var out = details.getOutputs();
 
-        final Component label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
+        final Component label = (isCrafting ? GuiText.Crafts.text() : GuiText.Produces.text()).copy()
                 .append(": ");
         final Component and = new TextComponent(" ").copy().append(GuiText.And.text())
                 .append(" ");

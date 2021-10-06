@@ -84,7 +84,7 @@
   "gui.appliedenergistics2.CraftingStatus": "Estado de Creación",
   "gui.appliedenergistics2.CraftingTerminal": "Terminal de Trabajo",
   "gui.appliedenergistics2.Crafts": "Construir",
-  "gui.appliedenergistics2.Creates": "Crear",
+  "gui.appliedenergistics2.Produces": "Crear",
   "gui.appliedenergistics2.Cyan": "Celeste",
   "gui.appliedenergistics2.Drive": "ME Rack Discos",
   "gui.appliedenergistics2.Efficiency": "Eficiencia: %s%%",

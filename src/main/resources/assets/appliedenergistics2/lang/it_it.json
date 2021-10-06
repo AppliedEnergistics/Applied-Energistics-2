@@ -152,7 +152,7 @@
   "gui.appliedenergistics2.CraftingStatus": "Stato della fabbricazione",
   "gui.appliedenergistics2.CraftingTerminal": "Terminale con banco da lavoro",
   "gui.appliedenergistics2.Crafts": "Fabbrica",
-  "gui.appliedenergistics2.Creates": "Crea",
+  "gui.appliedenergistics2.Produces": "Crea",
   "gui.appliedenergistics2.Cyan": "Ciano",
   "gui.appliedenergistics2.Drive": "Drive ME",
   "gui.appliedenergistics2.Efficiency": "Efficienza: %s%%",

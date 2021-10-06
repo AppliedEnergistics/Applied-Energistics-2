@@ -79,7 +79,7 @@ public class ApiPatternDetails implements IPatternDetailsHelper {
     public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes) {
         if (stack == null) {
-            stack = AEItems.ENCODED_PATTERN.stack();
+            stack = AEItems.CRAFTING_PATTERN.stack();
         } else {
             Preconditions.checkArgument(isEncodedPattern(stack));
         }
@@ -90,10 +90,11 @@ public class ApiPatternDetails implements IPatternDetailsHelper {
 
     @Override
     public ItemStack encodeProcessingPattern(@Nullable ItemStack stack, IAEStack[] in, IAEStack[] out) {
+        Preconditions.checkNotNull(out[0]);
         checkItemsOrFluids(in);
         checkItemsOrFluids(out);
         if (stack == null) {
-            stack = AEItems.ENCODED_PATTERN.stack();
+            stack = AEItems.PROCESSING_PATTERN.stack();
         } else {
             Preconditions.checkArgument(isEncodedPattern(stack));
         }
@@ -105,7 +106,8 @@ public class ApiPatternDetails implements IPatternDetailsHelper {
     private static void checkItemsOrFluids(IAEStack[] stacks) {
         for (var stack : stacks) {
             if (stack != null) {
-                if (stack.getChannel() != StorageChannels.items() && stack.getChannel() != StorageChannels.fluids()) {
+                if (stack.getChannel() != StorageChannels.items()
+                        && stack.getChannel() != StorageChannels.fluids()) {
                     throw new IllegalArgumentException("Unsupported storage channel: " + stack.getChannel());
                 }
             }

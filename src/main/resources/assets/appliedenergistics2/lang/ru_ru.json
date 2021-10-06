@@ -177,7 +177,7 @@
   "gui.appliedenergistics2.CraftingStatus": "Статус крафта",
   "gui.appliedenergistics2.CraftingTerminal": "Терминал крафта",
   "gui.appliedenergistics2.Crafts": "Создаёт",
-  "gui.appliedenergistics2.Creates": "Делает",
+  "gui.appliedenergistics2.Produces": "Делает",
   "gui.appliedenergistics2.Cyan": "Бирюзовый",
   "gui.appliedenergistics2.Drive": "МЭ накопитель",
   "gui.appliedenergistics2.ETAFormat": "ЧЧ:мм:сс",

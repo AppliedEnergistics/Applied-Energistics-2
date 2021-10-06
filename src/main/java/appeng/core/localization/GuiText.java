@@ -58,7 +58,7 @@ public enum GuiText {
     CopyMode, CopyModeDesc, PatternTerminal, FluidTerminal,
 
     // Pattern tooltips
-    CraftingPattern, ProcessingPattern, Crafts, Creates, And, With, Substitute, Yes, No,
+    CraftingPattern, ProcessingPattern, Crafts, Produces, And, With, Substitute, Yes, No,
 
     MolecularAssembler,
 

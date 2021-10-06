@@ -175,7 +175,7 @@
   "gui.appliedenergistics2.CraftingStatus": "제작 상황",
   "gui.appliedenergistics2.CraftingTerminal": "조합 단말기",
   "gui.appliedenergistics2.Crafts": "다음을 조합:",
-  "gui.appliedenergistics2.Creates": "다음으로 조합:",
+  "gui.appliedenergistics2.Produces": "다음으로 조합:",
   "gui.appliedenergistics2.Cyan": "청록색",
   "gui.appliedenergistics2.Drive": "ME 드라이브",
   "gui.appliedenergistics2.ETAFormat": "HH:mm:ss",

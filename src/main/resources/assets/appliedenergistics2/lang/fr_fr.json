@@ -161,7 +161,7 @@
   "gui.appliedenergistics2.CraftingStatus": "Etat de fabrication",
   "gui.appliedenergistics2.CraftingTerminal": "Terminal de fabrication",
   "gui.appliedenergistics2.Crafts": "Fabrications",
-  "gui.appliedenergistics2.Creates": "Crée",
+  "gui.appliedenergistics2.Produces": "Crée",
   "gui.appliedenergistics2.Cyan": "Cyan",
   "gui.appliedenergistics2.Drive": "Range-disque ME",
   "gui.appliedenergistics2.ETAFormat": "HH:mm:ss",

@@ -141,7 +141,9 @@ public final class AEItems {
     public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item(AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1)));
 
     public static final ItemDefinition<FacadeItem> FACADE = item(AEItemIds.FACADE, FacadeItem::new);
-    public static final ItemDefinition<EncodedPatternItem> ENCODED_PATTERN = item(AEItemIds.ENCODED_PATTERN, p -> new EncodedPatternItem(p.stacksTo(1)));
+    public static final ItemDefinition<MaterialItem> BLANK_PATTERN = item(AEItemIds.BLANK_PATTERN, MaterialItem::new);
+    public static final ItemDefinition<EncodedPatternItem> CRAFTING_PATTERN = item(AEItemIds.CRAFTING_PATTERN, p -> new EncodedPatternItem(p.stacksTo(1)));
+    public static final ItemDefinition<EncodedPatternItem> PROCESSING_PATTERN = item(AEItemIds.PROCESSING_PATTERN, p -> new EncodedPatternItem(p.stacksTo(1)));
 
     public static final ColoredItemDefinition COLORED_PAINT_BALL = createPaintBalls(AEItemIds.COLORED_PAINT_BALL, false);
     public static final ColoredItemDefinition COLORED_LUMEN_PAINT_BALL = createPaintBalls(AEItemIds.COLORED_LUMEN_PAINT_BALL, true);
@@ -194,7 +196,6 @@ public final class AEItems {
     public static final ItemDefinition<CustomEntityItem> ENDER_DUST = item(AEItemIds.ENDER_DUST, p -> new CustomEntityItem(p, SingularityEntity::new));
     public static final ItemDefinition<CustomEntityItem> SINGULARITY = item(AEItemIds.SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
     public static final ItemDefinition<CustomEntityItem> QUANTUM_ENTANGLED_SINGULARITY = item(AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
-    public static final ItemDefinition<MaterialItem> BLANK_PATTERN = item(AEItemIds.BLANK_PATTERN, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> FLUID_1K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_1K, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> FLUID_4K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_4K, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> FLUID_16K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_16K, MaterialItem::new);

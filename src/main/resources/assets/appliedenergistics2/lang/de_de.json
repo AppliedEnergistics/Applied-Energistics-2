@@ -160,7 +160,7 @@
   "gui.appliedenergistics2.CraftingStatus": "Fertigungsstatus",
   "gui.appliedenergistics2.CraftingTerminal": "Fertigungskonsole",
   "gui.appliedenergistics2.Crafts": "Fertigt",
-  "gui.appliedenergistics2.Creates": "Kreiert",
+  "gui.appliedenergistics2.Produces": "Kreiert",
   "gui.appliedenergistics2.Cyan": "Türkis",
   "gui.appliedenergistics2.Drive": "ME-Laufwerk",
   "gui.appliedenergistics2.Efficiency": "Effizienz: %s%%",
