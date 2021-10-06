@@ -44,6 +44,11 @@ import appeng.util.IVariantConversion;
 public class PatternProviderReturnInventory extends GenericStackInv {
     public static int NUMBER_OF_SLOTS = 5;
 
+    /**
+     * Used to prevent injection through the handlers when we are pushing items out in the network. Otherwise, a storage
+     * bus on the pattern provider could potentially void items.
+     */
+    private boolean injectingIntoNetwork = false;
     // TODO: how do we expose this for foreign storage channels?
     private final Participant participant = new Participant();
     private final Storage<ItemVariant> itemStorage = new GenericStorage<>(IVariantConversion.ITEM);
@@ -58,16 +63,21 @@ public class PatternProviderReturnInventory extends GenericStackInv {
      */
     public boolean injectIntoNetwork(IStorageMonitorable network, IActionSource src) {
         var didSomething = false;
+        injectingIntoNetwork = true;
 
-        for (int i = 0; i < stacks.length; ++i) {
-            if (stacks[i] != null) {
-                long sizeBefore = stacks[i].getStackSize();
-                stacks[i] = GenericStackHelper.injectMonitorable(network, stacks[i], Actionable.MODULATE, src);
+        try {
+            for (int i = 0; i < stacks.length; ++i) {
+                if (stacks[i] != null) {
+                    long sizeBefore = stacks[i].getStackSize();
+                    stacks[i] = GenericStackHelper.injectMonitorable(network, stacks[i], Actionable.MODULATE, src);
 
-                if (IAEStack.getStackSizeOrZero(stacks[i]) != sizeBefore) {
-                    didSomething = true;
+                    if (IAEStack.getStackSizeOrZero(stacks[i]) != sizeBefore) {
+                        didSomething = true;
+                    }
                 }
             }
+        } finally {
+            injectingIntoNetwork = false;
         }
 
         return didSomething;
@@ -121,6 +131,10 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         @Override
         public long insert(V resource, long maxAmount, TransactionContext transaction) {
             StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+            if (injectingIntoNetwork) {
+                // We are pushing out items already, prevent changing the stacks in unexpected ways.
+                return 0;
+            }
             long totalInserted = 0;
 
             for (int slot = 0; slot < stacks.length; ++slot) {
