@@ -360,11 +360,12 @@ public class DualityItemInterface
             }
 
             var remainder = Platform.poweredInsert(src, this.destination, toStore, this.interfaceRequestSource);
-            if (remainder != null) {
-                storage.setItemDirect(slot, remainder.createItemStack());
-            } else {
-                storage.setItemDirect(slot, ItemStack.EMPTY);
-            }
+
+            // Remove the items we just injected somewhere else into the network.
+            int toExtract = (int) (diff - IAEStack.getStackSizeOrZero(remainder));
+            storage.getSlotInv(slot).removeItems(toExtract, ItemStack.EMPTY, null);
+
+            return toExtract > 0;
         }
 
         // else wtf?
