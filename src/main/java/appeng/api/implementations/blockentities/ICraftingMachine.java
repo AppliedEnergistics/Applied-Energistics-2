@@ -36,8 +36,8 @@ import appeng.api.storage.data.MixedStackList;
 import appeng.capabilities.Capabilities;
 
 /**
- * Provides crafting services to adjacent pattern providers for automatic crafting. Can be provided via capability
- * on your block entity.
+ * Provides crafting services to adjacent pattern providers for automatic crafting. Can be provided via capability on
+ * your block entity.
  */
 public interface ICraftingMachine {
 
