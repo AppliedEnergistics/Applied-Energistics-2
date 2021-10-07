@@ -62,6 +62,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     private final IManagedGridNode outerNode = AEApi.grid()
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
+            .setInWorldNode(true)
             .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 
     public MEP2PTunnelPart(final ItemStack is) {
