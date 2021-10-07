@@ -202,10 +202,10 @@ public class GridNode implements IGridNode, IPathItem {
             }
         } else {
             while (!nextRun.isEmpty()) {
-                final Iterable<GridNode> thisRun = nextRun;
+                var thisRun = nextRun;
                 nextRun = new ArrayDeque<>();
 
-                for (final GridNode n : thisRun) {
+                for (var n : thisRun) {
                     n.visitorNode(tracker, g, nextRun);
                 }
             }
@@ -471,8 +471,8 @@ public class GridNode implements IGridNode, IPathItem {
 
     private void visitorNode(final Object tracker, final IGridVisitor g, final Deque<GridNode> nextRun) {
         if (g.visitNode(this)) {
-            for (final IGridConnection gc : this.getConnections()) {
-                final GridNode gn = (GridNode) gc.getOtherSide(this);
+            for (var gc : this.getConnections()) {
+                var gn = (GridNode) gc.getOtherSide(this);
 
                 if (tracker == gn.visitorIterationNumber) {
                     continue;

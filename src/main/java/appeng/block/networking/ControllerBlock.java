@@ -132,7 +132,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
             boolean isMoving) {
         final ControllerBlockEntity tc = this.getBlockEntity(level, pos);
         if (tc != null) {
-            tc.onNeighborChange(false);
+            tc.updateState();
         }
     }
 }

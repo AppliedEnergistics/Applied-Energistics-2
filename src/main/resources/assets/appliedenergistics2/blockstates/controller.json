@@ -122,7 +122,7 @@
         "model": "appliedenergistics2:block/controller/controller_inside_a"
       },
       "when": {
-        "state": "offline|online|conflicted",
+        "state": "offline|online",
         "type": "inside_a"
       }
     },
@@ -131,7 +131,25 @@
         "model": "appliedenergistics2:block/controller/controller_inside_b"
       },
       "when": {
-        "state": "offline|online|conflicted",
+        "state": "offline|online",
+        "type": "inside_b"
+      }
+    },
+    {
+      "apply": {
+        "model": "appliedenergistics2:block/controller/controller_inside_a_conflicted"
+      },
+      "when": {
+        "state": "conflicted",
+        "type": "inside_a"
+      }
+    },
+    {
+      "apply": {
+        "model": "appliedenergistics2:block/controller/controller_inside_b_conflicted"
+      },
+      "when": {
+        "state": "conflicted",
         "type": "inside_b"
       }
     }

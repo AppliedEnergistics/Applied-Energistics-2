@@ -18,8 +18,6 @@
 
 package appeng.blockentity.networking;
 
-import java.util.EnumSet;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -50,8 +48,6 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
                 ControllerBlockEntity::updateState);
     }
 
-    private boolean isValid = false;
-
     public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.setInternalMaxPower(8000);
@@ -67,8 +63,8 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
 
     @Override
     public void onReady() {
-        this.onNeighborChange(true);
         super.onReady();
+        updateState();
     }
 
     @Override
@@ -76,36 +72,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
         this.updateState();
     }
 
-    public void onNeighborChange(final boolean force) {
-        final boolean xx = this.checkController(this.worldPosition.relative(Direction.EAST))
-                && this.checkController(this.worldPosition.relative(Direction.WEST));
-        final boolean yy = this.checkController(this.worldPosition.relative(Direction.UP))
-                && this.checkController(this.worldPosition.relative(Direction.DOWN));
-        final boolean zz = this.checkController(this.worldPosition.relative(Direction.NORTH))
-                && this.checkController(this.worldPosition.relative(Direction.SOUTH));
-
-        // int meta = level.getBlockMetadata( xCoord, yCoord, zCoord );
-        // boolean hasPower = meta > 0;
-        // boolean isConflict = meta == 2;
-
-        final boolean oldValid = this.isValid;
-
-        this.isValid = xx && !yy && !zz || !xx && yy && !zz || !xx && !yy && zz
-                || (xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) <= 1;
-
-        if (oldValid != this.isValid || force) {
-            if (this.isValid) {
-                this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
-            } else {
-                this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
-            }
-
-            this.updateState();
-        }
-
-    }
-
-    private void updateState() {
+    public void updateState() {
         if (!this.getMainNode().isReady()) {
             return;
         }

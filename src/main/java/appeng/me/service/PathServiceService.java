@@ -18,20 +18,11 @@
 
 package appeng.me.service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import appeng.api.AEApi;
 import appeng.api.features.IPlayerRegistry;
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridMultiblock;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridServiceProvider;
+import appeng.api.networking.*;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
@@ -42,11 +33,7 @@ import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
-import appeng.me.pathfinding.AdHocChannelUpdater;
-import appeng.me.pathfinding.ControllerChannelUpdater;
-import appeng.me.pathfinding.ControllerValidator;
-import appeng.me.pathfinding.IPathItem;
-import appeng.me.pathfinding.PathSegment;
+import appeng.me.pathfinding.*;
 
 public class PathServiceService implements IPathingService, IGridServiceProvider {
 
@@ -81,7 +68,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
     @Override
     public void onServerEndTick() {
         if (this.recalculateControllerNextTick) {
-            this.recalcController();
+            this.updateControllerState();
         }
 
         if (this.updateNetwork) {
@@ -200,30 +187,11 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
         this.repath();
     }
 
-    private void recalcController() {
+    private void updateControllerState() {
         this.recalculateControllerNextTick = false;
         final ControllerState old = this.controllerState;
 
-        if (this.controllers.isEmpty()) {
-            this.controllerState = ControllerState.NO_CONTROLLER;
-        } else {
-            var startingController = this.controllers.iterator().next();
-            final IGridNode startingNode = startingController.getGridNode();
-            if (startingNode == null) {
-                this.controllerState = ControllerState.CONTROLLER_CONFLICT;
-                return;
-            }
-
-            final ControllerValidator cv = new ControllerValidator(startingController.getBlockPos());
-
-            startingNode.beginVisit(cv);
-
-            if (cv.isValid() && cv.getFound() == this.controllers.size()) {
-                this.controllerState = ControllerState.CONTROLLER_ONLINE;
-            } else {
-                this.controllerState = ControllerState.CONTROLLER_CONFLICT;
-            }
-        }
+        this.controllerState = ControllerValidator.calculateState(controllers);
 
         if (old != this.controllerState) {
             this.myGrid.postEvent(new GridControllerChange());
