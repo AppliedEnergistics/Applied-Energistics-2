@@ -36,8 +36,8 @@ import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.ItemStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.AELog;
@@ -191,7 +191,7 @@ public abstract class ItemHandlerAdapter
     }
 
     @Override
-    public IItemStorageChannel getChannel() {
+    public ItemStorageChannel getChannel() {
         return StorageChannels.items();
     }
 

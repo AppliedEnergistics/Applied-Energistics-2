@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.api;
+package appeng.api.storage;
 
 import javax.annotation.Nonnull;
 
@@ -27,16 +27,17 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.AppEng;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 
-public final class ItemStorageChannel implements IItemStorageChannel {
+public final class ItemStorageChannel implements IStorageChannel<IAEItemStack> {
 
-    public static final IItemStorageChannel INSTANCE = new ItemStorageChannel();
+    private static final ResourceLocation ID = AppEng.makeId("item");
+
+    static final ItemStorageChannel INSTANCE = new ItemStorageChannel();
 
     private ItemStorageChannel() {
     }
@@ -44,7 +45,7 @@ public final class ItemStorageChannel implements IItemStorageChannel {
     @Nonnull
     @Override
     public ResourceLocation getId() {
-        return AppEng.makeId("item");
+        return ID;
     }
 
     @Override
@@ -53,14 +54,8 @@ public final class ItemStorageChannel implements IItemStorageChannel {
     }
 
     @Override
-    public IAEItemStack createStack(Object input) {
-        Preconditions.checkNotNull(input);
-
-        if (input instanceof ItemStack) {
-            return AEItemStack.fromItemStack((ItemStack) input);
-        }
-
-        return null;
+    public IAEItemStack createStack(ItemStack is) {
+        return IAEItemStack.of(is);
     }
 
     @Override

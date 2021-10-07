@@ -36,7 +36,7 @@ public final class AEItemStackRegistry {
     private AEItemStackRegistry() {
     }
 
-    static synchronized AESharedItemStack getRegisteredStack(final @Nonnull ItemStack itemStack) {
+    public static synchronized AESharedItemStack getRegisteredStack(final @Nonnull ItemStack itemStack) {
         if (itemStack.isEmpty()) {
             throw new IllegalArgumentException("stack cannot be empty");
         }

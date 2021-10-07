@@ -23,8 +23,14 @@
 
 package appeng.api.storage.data;
 
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
+import appeng.util.fluid.AEFluidStack;
 
 /**
  * An alternate version of FluidStack for AE to keep tabs on things easier, and to support larger storage. stackSizes of
@@ -34,10 +40,15 @@ import net.minecraftforge.fluids.FluidStack;
  *
  * Don't Implement.
  *
- * Construct with IAppEngApi.instance().storage().getStorageChannel( IFluidStorageChannel.class).createStack( FluidStack
+ * Construct with IAppEngApi.instance().storage().getStorageChannel( FluidStorageChannel.class).createStack( FluidStack
  * )
  */
 public interface IAEFluidStack extends IAEStack {
+    @Nullable
+    static IAEFluidStack of(FluidStack stack) {
+        Objects.requireNonNull(stack, "stack");
+        return AEFluidStack.fromFluidStack(stack);
+    }
 
     /**
      * creates a standard Forge FluidStack for the fluid.
