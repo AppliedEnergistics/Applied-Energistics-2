@@ -79,7 +79,9 @@ public class ChestDropProvider implements IAE2DataProvider {
                         .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 12))))
                         .add(LootItem.lootTableItem(Items.GOLD_NUGGET)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 12)))))
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 12))))
+                        .add(LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))))
                 // This pool should grant one of the presses the player actually needs, with luck granting one
                 // additional.
                 .withPool(LootPool.lootPool()

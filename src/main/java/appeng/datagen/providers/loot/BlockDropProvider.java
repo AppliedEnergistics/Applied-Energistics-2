@@ -40,9 +40,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTables;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.*;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer.Builder;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
@@ -61,10 +62,16 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
             .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
             .put(AEBlocks.QUARTZ_ORE.block(),
                     b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE.block(),
-                            applyExplosionDecay(AEBlocks.QUARTZ_ORE.block(),
-                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST.asItem())
+                            EntryGroup.list(
+                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST)
                                             .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
-                                            .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))))
+                                            .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
+                                            .apply(ApplyExplosionDecay.explosionDecay())
+                                            .setWeight(19),
+                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
+                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 4.0F)))
+                                            .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
+                                            .apply(ApplyExplosionDecay.explosionDecay()))))
             .build();
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

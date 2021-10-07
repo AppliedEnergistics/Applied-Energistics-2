@@ -46,7 +46,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
     // Growth tick progress per tick by number of adjacent accelerators
     private static final int[] GROWTH_TICK_PROGRESS = {
-            2, // no accelerators, 10 minutes
+            1, // no accelerators, 20 minutes
             10, // 1 accelerator, 2 minutes
             20, // 2 accelerators, 1 minute
             30, // 3 accelerators, 40 seconds
