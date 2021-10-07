@@ -91,8 +91,10 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
 
     @Override
     public void setRemoved() {
-        this.disconnect(false);
         super.setRemoved();
+        // Ensure that this block entity is marked as removed before we try to dismantle the cluster, to prevent updates
+        // to the block state.
+        this.disconnect(false);
     }
 
     public void neighborChanged(BlockPos changedPos) {
@@ -120,6 +122,13 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     public void updateStatus(final SpatialPylonCluster c) {
+        if (this.isRemoved()) {
+            // Prevent updating the display, the block state or the node if the block entity was removed.
+            // Otherwise, setting the block state will restore the block we just destroyed.
+            // Trying to update the node just causes a crash because the node has been removed by now.
+            return;
+        }
+
         this.cluster = c;
         this.getMainNode()
                 .setExposedOnSides(c == null ? EnumSet.noneOf(Direction.class) : EnumSet.allOf(Direction.class));
