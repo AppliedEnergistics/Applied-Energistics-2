@@ -98,7 +98,7 @@ class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> impl
         // TODO FABRIC 117: DISGUSTING.
         List<ItemStack> snapshot = new ArrayList<>(inventory.size());
         for (int i = 0; i < inventory.size(); i++) {
-            snapshot.add(inventory.getStackInSlot(i));
+            snapshot.add(inventory.getStackInSlot(i).copy());
         }
         return snapshot;
     }
