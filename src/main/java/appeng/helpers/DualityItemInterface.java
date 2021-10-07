@@ -353,18 +353,19 @@ public class DualityItemInterface
 
             long diff = toStore.getStackSize();
 
-            // Make sure the plan still matches the storage
+            // Make sure the storage has enough items to execute the plan
             var inSlot = storage.getStackInSlot(slot);
-            if (!ItemStack.isSameItemSameTags(itemStack.getDefinition(), inSlot) || inSlot.getCount() != diff) {
+            if (!ItemStack.isSameItemSameTags(itemStack.getDefinition(), inSlot) || inSlot.getCount() < diff) {
                 return true;
             }
 
             var remainder = Platform.poweredInsert(src, this.destination, toStore, this.interfaceRequestSource);
-            if (remainder != null) {
-                storage.setItemDirect(slot, remainder.createItemStack());
-            } else {
-                storage.setItemDirect(slot, ItemStack.EMPTY);
-            }
+
+            // Remove the items we just injected somewhere else into the network.
+            int toExtract = (int) (diff - IAEStack.getStackSizeOrZero(remainder));
+            storage.getSlotInv(slot).removeItems(toExtract, ItemStack.EMPTY, null);
+
+            return toExtract > 0;
         }
 
         // else wtf?
