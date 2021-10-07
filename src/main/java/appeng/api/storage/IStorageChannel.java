@@ -30,7 +30,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -70,18 +69,18 @@ public interface IStorageChannel<T extends IAEStack> {
     IAEStackList<T> createList();
 
     /**
-     * Create a new {@link IAEStack} subtype of the specific object.
+     * Create a new {@link IAEStack} from an item stack.
      * <p>
-     * The parameter is unbound to allow a slightly more flexible approach. But the general intention is about
-     * converting an {@link ItemStack} or {@link FluidStack} into the corresponding {@link IAEStack}. Another valid case
-     * might be to use it instead of {@link IAEStack#copy}, but this might not be supported by all types. IAEStacks that
-     * use custom items for {@link IAEStack#asItemStackRepresentation()} must also be able to convert these.
+     * While this is a clearly defined operation for {@link ItemStorageChannel}, other storage channels might not
+     * implement this method, and always return null. They may implement it for items that have a mapping into their
+     * storage channel domain (i.e. the display-only item returned by {@link IAEStack#asItemStackRepresentation()} might
+     * be able to be turned back into an AE stack using this method).
      *
-     * @param input The object to turn into an {@link IAEStack}
+     * @param input The item stack to turn into an {@link IAEStack}
      * @return The converted stack or null
      */
     @Nullable
-    T createStack(@Nonnull Object input);
+    T createStack(@Nonnull ItemStack input);
 
     @Nullable
     T readFromPacket(@Nonnull FriendlyByteBuf input);

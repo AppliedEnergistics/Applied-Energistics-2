@@ -27,7 +27,6 @@ import appeng.init.InitLootConditions;
 import appeng.init.InitStats;
 import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridServices;
-import appeng.init.internal.InitStorageChannels;
 
 /**
  * This class is just responsible for initializing the client or server-side mod class.
@@ -47,7 +46,6 @@ public class AppEngBootstrap {
         if (!bootstrapped) {
             bootstrapped = true;
             AEApiInternal.init();
-            InitStorageChannels.init();
             InitGridServices.init();
             InitBlockEntityMoveStrategies.init();
 

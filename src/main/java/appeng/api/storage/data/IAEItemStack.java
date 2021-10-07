@@ -25,10 +25,12 @@ package appeng.api.storage.data;
 
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.StorageChannels;
+import appeng.util.item.AEItemStack;
 
 /**
  * An alternate version of ItemStack for AE to keep tabs on things easier, and to support larger storage. stackSizes of
@@ -43,9 +45,10 @@ public interface IAEItemStack extends IAEStack {
     /**
      * Create from a vanilla stack.
      */
+    @Nullable
     static IAEItemStack of(ItemStack stack) {
         Objects.requireNonNull(stack);
-        return StorageChannels.items().createStack(stack);
+        return AEItemStack.fromItemStack(stack);
     }
 
     /**

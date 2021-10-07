@@ -36,8 +36,6 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.storage.channels.IFluidStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -56,6 +54,11 @@ public final class StorageChannels {
     private static volatile Map<ResourceLocation, IStorageChannel<?>> idRegistry = ImmutableMap.of();
 
     private StorageChannels() {
+    }
+
+    static {
+        register(ItemStorageChannel.class, ItemStorageChannel.INSTANCE);
+        register(FluidStorageChannel.class, FluidStorageChannel.INSTANCE);
     }
 
     /**
@@ -145,16 +148,16 @@ public final class StorageChannels {
      * @return AE2's storage channel for items.
      */
     @Nonnull
-    public static IItemStorageChannel items() {
-        return get(IItemStorageChannel.class);
+    public static ItemStorageChannel items() {
+        return ItemStorageChannel.INSTANCE;
     }
 
     /**
      * @return AE2's storage channel for fluids.
      */
     @Nonnull
-    public static IFluidStorageChannel fluids() {
-        return get(IFluidStorageChannel.class);
+    public static FluidStorageChannel fluids() {
+        return FluidStorageChannel.INSTANCE;
     }
 
 }
