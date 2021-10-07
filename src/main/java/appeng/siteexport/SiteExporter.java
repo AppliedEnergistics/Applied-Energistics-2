@@ -4,26 +4,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
-import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.math.Matrix4f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import com.mojang.serialization.Lifecycle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +32,8 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.PrimaryLevelData;
@@ -52,8 +51,7 @@ import appeng.core.AppEng;
 public final class SiteExporter {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final int FB_WIDTH = 128;
-    private static final int FB_HEIGHT = 128;
+    private static final int ICON_DIMENSION = 128;
 
     private static volatile boolean processing;
     private static Path outputFolder;
@@ -109,21 +107,6 @@ public final class SiteExporter {
         var usedVanillaItems = new HashSet<Item>();
         processRecipes(client, usedVanillaItems, siteExport);
 
-        // Set up GL state for GUI rendering
-        RenderSystem.setProjectionMatrix(Matrix4f.orthographic(0, 16, 0, 16, 1000, 3000));
-
-        var poseStack = RenderSystem.getModelViewStack();
-        poseStack.setIdentity();
-        poseStack.translate(0.0F, 0.0F, -2000.0F);
-        Lighting.setupFor3DItems();
-
-        RenderSystem.applyModelViewMatrix();
-
-        var nativeImage = new NativeImage(FB_WIDTH, FB_HEIGHT, true);
-        var fb = new TextureTarget(FB_WIDTH, FB_HEIGHT, true, false);
-        fb.setClearColor(0, 0, 0, 0);
-        fb.clear(true);
-
         // Iterate over all Applied Energistics items
         var stacks = new ArrayList<ItemStack>();
         for (Item item : Registry.ITEM) {
@@ -137,41 +120,114 @@ public final class SiteExporter {
             stacks.add(new ItemStack(usedVanillaItem));
         }
 
-        Path iconsFolder = outputFolder.resolve("icons");
+        // All files in this folder will be directly served from the root of the web-site
+        Path assetFolder = outputFolder.resolve("public");
+
+        while (true) {
+            try {
+                renderScenes(assetFolder);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Thread.yield();
+            if (1 == 99) {
+                break;
+            }
+        }
+
+        processItems(client, siteExport, stacks, assetFolder);
+
+        Path dataFolder = outputFolder.resolve("data");
+        Files.createDirectories(dataFolder);
+        siteExport.write(dataFolder.resolve("game-data.json"));
+    }
+
+    private static void processItems(Minecraft client,
+            SiteExportWriter siteExport,
+            List<ItemStack> items,
+            Path assetFolder) throws IOException {
+        Path iconsFolder = assetFolder.resolve("icons");
         if (Files.exists(iconsFolder)) {
             MoreFiles.deleteRecursively(iconsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
         }
 
-        for (ItemStack stack : stacks) {
-            // Render the item normally
-            fb.bindWrite(true);
-            GlStateManager._clear(GL12.GL_COLOR_BUFFER_BIT | GL12.GL_DEPTH_BUFFER_BIT, false);
-            client.getItemRenderer().renderAndDecorateFakeItem(stack, 0, 0);
-            fb.unbindWrite();
+        try (var itemRenderer = new OffScreenRenderer(ICON_DIMENSION, ICON_DIMENSION)) {
+            itemRenderer.setupItemRendering();
 
-            // Load the rendered item back into CPU memory
-            fb.bindRead();
-            nativeImage.downloadTexture(0, false);
-            nativeImage.flipY();
-            fb.unbindRead();
+            for (ItemStack stack : items) {
+                String itemId = getItemId(stack.getItem()).toString();
+                var iconPath = iconsFolder.resolve(itemId.replace(':', '/') + ".png");
+                Files.createDirectories(iconPath.getParent());
 
-            // Save the rendered icon
-            String itemId = getItemId(stack.getItem()).toString();
-            var iconPath = iconsFolder.resolve(itemId.replace(':', '/') + ".png");
-            Files.createDirectories(iconPath.getParent());
-            nativeImage.writeToFile(iconPath);
+                itemRenderer.captureAsPng(() -> {
+                    client.getItemRenderer().renderAndDecorateFakeItem(stack, 0, 0);
+                }, iconPath);
 
-            siteExport.addItem(itemId, stack, outputFolder.relativize(iconPath).toString());
+                String absIconUrl = "/" + assetFolder.relativize(iconPath).toString().replace('\\', '/');
+                siteExport.addItem(itemId, stack, absIconUrl);
+            }
+        }
+    }
+
+    private static void renderScenes(Path outputFolder) throws Exception {
+        // Dirty hack to get to the frame of the AE2 controller texture we want
+        TextureManager textureManager = Minecraft.getInstance().textureManager;
+        for (int i = 0; i < 20; i++) {
+            textureManager.tick();
         }
 
-        try {
-            siteExport.write(outputFolder.resolve("site_export.json"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        for (Scene scene : SiteExportScenes.createScenes()) {
+            Path sceneOutput = outputFolder.resolve(scene.filename);
+            Files.createDirectories(sceneOutput.getParent());
 
-        nativeImage.close();
-        fb.destroyBuffers();
+            renderScene(sceneOutput, scene);
+        }
+    }
+
+    private static void renderScene(Path outputPath, Scene scene) throws Exception {
+        var blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        var rand = new Random(0);
+
+        SceneRenderSettings settings = scene.settings;
+        try (var renderer = new OffScreenRenderer(settings.width, settings.height)) {
+            if (settings.ortographic) {
+                renderer.setupOrtographicRendering();
+            } else {
+                renderer.setupPerspectiveRendering(
+                        3.3f /* zoom */,
+                        65 /* fov */,
+                        new Vector3f(2f, 2.5f, -3f),
+                        new Vector3f(0.5f, 0.5f, 0.5f));
+            }
+
+            renderer.captureAsPng(() -> {
+                var world = scene.world;
+                var worldMat = new PoseStack();
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
+                var buffers = Minecraft.getInstance().renderBuffers().bufferSource();
+
+                for (var rt : new RenderType[] {
+                        RenderType.solid(),
+                        RenderType.cutout(),
+                        RenderType.cutoutMipped()
+                }) {
+                    var buffer = buffers.getBuffer(rt);
+
+                    for (var entry : world.blocks.entrySet()) {
+                        var pos = entry.getKey();
+                        var state = entry.getValue();
+                        if (ItemBlockRenderTypes.canRenderInLayer(state, rt)) {
+                            worldMat.pushPose();
+                            worldMat.translate(pos.getX(), pos.getY(), pos.getZ());
+                            blockRenderer.renderBatched(state, pos, world, worldMat, buffer, false, rand);
+                            worldMat.popPose();
+                        }
+                    }
+                    buffers.endBatch();
+                }
+            }, outputPath);
+        }
     }
 
     private static ResourceLocation getItemId(Item item) {

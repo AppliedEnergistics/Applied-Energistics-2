@@ -7,17 +7,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.Locale;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import net.minecraft.DetectedVersion;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
@@ -36,50 +33,13 @@ public class SiteExportWriter {
     }
 
     public void addItem(String id, ItemStack stack, String iconPath) {
-        var tooltipLines = stack.getTooltipLines(null, TooltipFlag.Default.NORMAL);
         var itemInfo = new ItemInfoJson();
         itemInfo.id = id;
         itemInfo.icon = iconPath;
         itemInfo.displayName = stack.getHoverName().getString();
-        itemInfo.tooltipLines = tooltipLines.stream().map(this::resolveLine).toList();
+        itemInfo.rarity = stack.getRarity().name().toLowerCase(Locale.ROOT);
 
         siteExport.items.put(itemInfo.id, itemInfo);
-    }
-
-    private String resolveLine(Component component) {
-        var builder = new StringBuilder();
-        component.visit((style, text) -> {
-            if (style.isEmpty() || text.isEmpty()) {
-                builder.append(text);
-            } else {
-                var classes = new StringBuilder();
-                if (style.isBold()) {
-                    classes.append(" b");
-                }
-                if (style.isItalic()) {
-                    classes.append(" i");
-                }
-                if (style.isUnderlined()) {
-                    classes.append(" u");
-                }
-                if (style.isStrikethrough()) {
-                    classes.append(" s");
-                }
-                var color = style.getColor();
-                if (color != null) {
-                    classes.append(" c-").append(color.serialize());
-                }
-                if (classes.length() > 0) {
-                    classes.deleteCharAt(0);
-                }
-                builder.append("<span class=\"").append(classes).append("\">")
-                        .append(text)
-                        .append("</span>");
-            }
-            return Optional.empty();
-        }, Style.EMPTY);
-
-        return builder.toString();
     }
 
     public void addRecipe(CraftingRecipe recipe) {
