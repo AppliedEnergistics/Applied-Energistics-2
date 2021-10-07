@@ -20,6 +20,7 @@ package appeng.blockentity.crafting;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +39,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -57,6 +61,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.MixedStackList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -116,6 +121,15 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     private int getUpgradeSlots() {
         return 5;
+    }
+
+    @Override
+    public Optional<Component> getDisplayName() {
+        if (hasCustomInventoryName()) {
+            return Optional.of(getCustomInventoryName());
+        } else {
+            return Optional.of(getItemFromBlockEntity().getHoverName());
+        }
     }
 
     @Override
@@ -526,6 +540,16 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
+        if (Capabilities.CRAFTING_MACHINE == capability) {
+            return Capabilities.CRAFTING_MACHINE.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+
+        return super.getCapability(capability, facing);
     }
 
     private class CraftingGridFilter implements IAEItemFilter {

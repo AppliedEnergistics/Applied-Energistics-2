@@ -23,12 +23,40 @@
 
 package appeng.api.implementations.blockentities;
 
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.data.MixedStackList;
+import appeng.capabilities.Capabilities;
 
+/**
+ * Provides crafting services to adjacent pattern providers for automatic crafting. Can be provided via capability on
+ * your block entity.
+ */
 public interface ICraftingMachine {
+
+    @Nullable
+    static ICraftingMachine of(@Nullable BlockEntity blockEntity, Direction side) {
+        if (blockEntity == null) {
+            return null;
+        }
+
+        return blockEntity.getCapability(Capabilities.CRAFTING_MACHINE, side).orElse(null);
+    }
+
+    /**
+     * @return An optional name for this crafting machine, which can be shown in the pattern provider terminal for
+     *         adjacent pattern providers that point to this crafting machine.
+     */
+    default Optional<Component> getDisplayName() {
+        return Optional.empty();
+    }
 
     /**
      * inserts a crafting plan, and the necessary items into the crafting machine.

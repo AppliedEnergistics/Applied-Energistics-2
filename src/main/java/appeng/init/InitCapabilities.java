@@ -20,6 +20,7 @@ package appeng.init;
 
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 
+import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.storage.IStorageMonitorableAccessor;
 
 public final class InitCapabilities {
@@ -31,5 +32,6 @@ public final class InitCapabilities {
      */
     public static void init(RegisterCapabilitiesEvent evt) {
         evt.register(IStorageMonitorableAccessor.class);
+        evt.register(ICraftingMachine.class);
     }
 }
