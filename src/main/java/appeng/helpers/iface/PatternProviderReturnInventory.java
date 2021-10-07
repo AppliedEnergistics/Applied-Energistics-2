@@ -45,6 +45,11 @@ import appeng.util.item.AEItemStack;
 public class PatternProviderReturnInventory extends GenericStackInv {
     public static int NUMBER_OF_SLOTS = 5;
 
+    /**
+     * Used to prevent injection through the handlers when we are pushing items out in the network. Otherwise, a storage
+     * bus on the pattern provider could potentially void items.
+     */
+    private boolean injectingIntoNetwork = false;
     // TODO: how do we expose this for foreign storage channels?
     private final IItemHandler itemHandler = new ItemHandler();
     private final LazyOptional<IItemHandler> itemHandlerOpt = LazyOptional.of(() -> itemHandler);
@@ -60,16 +65,21 @@ public class PatternProviderReturnInventory extends GenericStackInv {
      */
     public boolean injectIntoNetwork(IStorageMonitorable network, IActionSource src) {
         var didSomething = false;
+        injectingIntoNetwork = true;
 
-        for (int i = 0; i < stacks.length; ++i) {
-            if (stacks[i] != null) {
-                long sizeBefore = stacks[i].getStackSize();
-                stacks[i] = GenericStackHelper.injectMonitorable(network, stacks[i], Actionable.MODULATE, src);
+        try {
+            for (int i = 0; i < stacks.length; ++i) {
+                if (stacks[i] != null) {
+                    long sizeBefore = stacks[i].getStackSize();
+                    stacks[i] = GenericStackHelper.injectMonitorable(network, stacks[i], Actionable.MODULATE, src);
 
-                if (IAEStack.getStackSizeOrZero(stacks[i]) != sizeBefore) {
-                    didSomething = true;
+                    if (IAEStack.getStackSizeOrZero(stacks[i]) != sizeBefore) {
+                        didSomething = true;
+                    }
                 }
             }
+        } finally {
+            injectingIntoNetwork = false;
         }
 
         return didSomething;
@@ -111,6 +121,11 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         @Nonnull
         @Override
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            if (injectingIntoNetwork) {
+                // We are pushing out items already, prevent changing the stacks in unexpected ways.
+                return stack;
+            }
+
             // Can't insert if something other than items is there.
             if (stacks[slot] != null && stacks[slot].getChannel() != StorageChannels.items()) {
                 return stack;
@@ -179,6 +194,11 @@ public class PatternProviderReturnInventory extends GenericStackInv {
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
+            if (injectingIntoNetwork) {
+                // We are pushing out items already, prevent changing the stacks in unexpected ways.
+                return 0;
+            }
+
             int filled = 0;
             for (int i = 0; i < stacks.length && resource.getAmount() - filled > 0; ++i) {
                 int remainingCapacity = 0;
