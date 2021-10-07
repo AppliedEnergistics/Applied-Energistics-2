@@ -121,17 +121,7 @@ public final class SiteExporter {
         // All files in this folder will be directly served from the root of the web-site
         Path assetFolder = outputFolder.resolve("public");
 
-        while (true) {
-            try {
-                renderScenes(assetFolder);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Thread.yield();
-            if (1 == 99) {
-                break;
-            }
-        }
+        renderScenes(assetFolder);
 
         processItems(client, siteExport, stacks, assetFolder);
 
