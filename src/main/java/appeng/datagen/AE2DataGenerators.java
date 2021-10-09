@@ -58,7 +58,7 @@ public class AE2DataGenerators {
         generator.addProvider(new DecorationBlockRecipes(generator));
         generator.addProvider(new MatterCannonAmmoProvider(generator));
         generator.addProvider(new EntropyRecipes(generator));
-        generator.addProvider(new  InscriberRecipes(generator));
+        generator.addProvider(new InscriberRecipes(generator));
         generator.addProvider(new SmeltingRecipes(generator));
         generator.addProvider(new CraftingRecipes(generator));
     }

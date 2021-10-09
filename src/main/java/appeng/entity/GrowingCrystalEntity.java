@@ -131,7 +131,6 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 //                        && this.getPersistentData().contains(CrystalSeedItem.TAG_PREVENT_MAGNET)) {
 //                    this.getPersistentData().remove(CrystalSeedItem.TAG_PREVENT_MAGNET);
 //                }
-            }
         }
     }
 

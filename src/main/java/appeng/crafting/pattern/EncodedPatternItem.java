@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -48,9 +48,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
-import appeng.crafting.pattern.AECraftingPattern;
-import appeng.crafting.pattern.IAEPatternDetails;
-import appeng.helpers.InvalidPatternHelper;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;

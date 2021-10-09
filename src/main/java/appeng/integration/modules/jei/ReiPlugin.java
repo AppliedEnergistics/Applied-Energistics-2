@@ -54,7 +54,6 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
-import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
@@ -71,12 +70,10 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
-        registry.add(new GrinderRecipeCategory());
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
         registry.add(new FacadeRecipeCategory());
 
-        registry.removePlusButton(GrinderRecipeCategory.ID);
         registry.removePlusButton(InscriberRecipeCategory.ID);
         registry.removePlusButton(CondenserCategory.ID);
 
@@ -85,7 +82,6 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        registry.registerRecipeFiller(GrinderRecipe.class, GrinderRecipe.TYPE, GrinderRecipeWrapper::new);
         registry.registerRecipeFiller(InscriberRecipe.class, InscriberRecipe.TYPE, InscriberRecipeWrapper::new);
 
         registry.add(new CondenserOutputDisplay(CondenserOutput.MATTER_BALLS));
@@ -162,9 +158,6 @@ public class ReiPlugin implements REIClientPlugin {
     }
 
     private void registerWorkingStations(CategoryRegistry registry) {
-        ItemStack grindstone = AEBlocks.GRINDSTONE.stack();
-        registry.addWorkstations(GrinderRecipeCategory.ID, EntryStacks.of(grindstone));
-
         ItemStack condenser = AEBlocks.CONDENSER.stack();
         registry.addWorkstations(CondenserCategory.ID, EntryStacks.of(condenser));
 
@@ -200,16 +193,6 @@ public class ReiPlugin implements REIClientPlugin {
             addDescription(registry, AEItems.QUANTUM_ENTANGLED_SINGULARITY,
                     GuiText.inWorldSingularity.getTranslationKey());
         }
-
-        if (AEConfig.instance().isInWorldPurificationEnabled()) {
-            addDescription(registry, AEItems.PURIFIED_CERTUS_QUARTZ_CRYSTAL,
-                    GuiText.inWorldPurificationCertus.getTranslationKey());
-            addDescription(registry, AEItems.PURIFIED_NETHER_QUARTZ_CRYSTAL,
-                    GuiText.inWorldPurificationNether.getTranslationKey());
-            addDescription(registry, AEItems.PURIFIED_FLUIX_CRYSTAL,
-                    GuiText.inWorldPurificationFluix.getTranslationKey());
-        }
-
     }
 
     private static void addDescription(DisplayRegistry registry, ItemDefinition<?> itemDefinition, String... message) {

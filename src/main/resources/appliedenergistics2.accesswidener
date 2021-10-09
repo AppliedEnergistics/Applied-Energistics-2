@@ -70,6 +70,7 @@ accessible field net/minecraft/client/renderer/block/model/BlockModel$GuiLight n
 accessible field net/minecraft/client/resources/ClientPackSource BUILT_IN Lnet/minecraft/server/packs/metadata/pack/PackMetadataSection;
 accessible method net/minecraft/client/renderer/block/model/BlockElement uvsByFace (Lnet/minecraft/core/Direction;)[F
 
+accessible field net/minecraft/data/loot/BlockLoot HAS_NO_SILK_TOUCH Lnet/minecraft/world/level/storage/loot/predicates/LootItemCondition$Builder;
 accessible method net/minecraft/data/loot/BlockLoot createDoublePlantWithSeedDrops (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
 accessible method net/minecraft/data/loot/BlockLoot createShearsDispatchTable (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer$Builder;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
 accessible method net/minecraft/data/loot/BlockLoot createCandleCakeDrops (Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
