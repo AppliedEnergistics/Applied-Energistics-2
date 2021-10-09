@@ -18,18 +18,14 @@
 
 package appeng.datagen.providers.loot;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.IAE2DataProvider;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.loot.BlockLoot;
@@ -40,38 +36,53 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTables;
-import net.minecraft.world.level.storage.loot.entries.*;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer.Builder;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.datagen.providers.IAE2DataProvider;
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.function.Function;
 
 public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
     private final Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
             .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
             .put(AEBlocks.QUARTZ_ORE.block(),
                     b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE.block(),
-                            EntryGroup.list(
-                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST)
-                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
-                                            .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
-                                            .apply(ApplyExplosionDecay.explosionDecay())
-                                            .setWeight(19),
-                                    LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
-                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 4.0F)))
-                                            .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
-                                            .apply(ApplyExplosionDecay.explosionDecay()))))
+                            LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST)
+                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
+                                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
+                                    .apply(ApplyExplosionDecay.explosionDecay())
+                    ).withPool(
+                            /*
+                                Additional pool to add a chance for crystals when no silk touch is used.
+                             */
+                            LootPool.lootPool()
+                                    .when(HAS_NO_SILK_TOUCH)
+                                    .when(
+                                            /*
+                                            5% chance initially + 5% per level of fortune to drop *any* crystals
+                                             */
+                                            BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.BLOCK_FORTUNE,
+                                                    0.05F, 0.10F, 0.15F, 0.20F))
+                                    .add(
+                                            LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 4.0F)))
+                                                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
+                                                    .apply(ApplyExplosionDecay.explosionDecay())
+                                    )
+                    ))
             .build();
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -94,10 +105,10 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
         }
 
         DataProvider.save(GSON, cache, toJson(LootTable.lootTable()
-                .withPool(LootPool.lootPool()
-                        .name("extra")
-                        .setRolls(UniformGenerator.between(1, 3))
-                        .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)))),
+                        .withPool(LootPool.lootPool()
+                                .name("extra")
+                                .setRolls(UniformGenerator.between(1, 3))
+                                .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)))),
                 getPath(outputFolder, AppEng.makeId("chests/meteorite")));
     }
 
