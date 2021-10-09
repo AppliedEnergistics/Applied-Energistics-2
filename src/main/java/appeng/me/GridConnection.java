@@ -133,7 +133,9 @@ public class GridConnection implements IGridConnection, IPathItem {
             final GridNode tmp = this.sideA;
             this.sideA = this.sideB;
             this.sideB = tmp;
-            this.fromAtoB = this.fromAtoB.getOpposite();
+            if (this.fromAtoB != null) {
+                this.fromAtoB = this.fromAtoB.getOpposite();
+            }
         }
     }
 
