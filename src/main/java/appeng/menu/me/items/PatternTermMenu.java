@@ -18,13 +18,6 @@
 
 package appeng.menu.me.items;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -53,6 +46,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
+import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.misc.FluidDummyItem;
 import appeng.items.storage.ViewCellItem;
@@ -516,22 +510,14 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     }
 
     private static void convertItemToFluid(Slot slot) {
-        var fluidStack = getFluidContained(slot.getItem());
+        var fluidStack = FluidContainerHelper.getContainedFluid(slot.getItem());
         if (fluidStack != null) {
-            slot.set(FluidDummyItem.fromFluidStack(fluidStack, true));
+            slot.set(FluidDummyItem.fromFluidStack(fluidStack.getFluidStack(), true));
         }
     }
 
     private static boolean canConvertItemToFluid(Slot slot) {
-        return getFluidContained(slot.getItem()) != null;
-    }
-
-    @Nullable
-    private static ResourceAmount<FluidVariant> getFluidContained(ItemStack stack) {
-        if (stack.isEmpty())
-            return null;
-        return StorageUtil.findExtractableContent(
-                ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM), null);
+        return FluidContainerHelper.getContainedFluid(slot.getItem()) != null;
     }
 
     public void setProcessingResult(ItemStack resultItem) {
