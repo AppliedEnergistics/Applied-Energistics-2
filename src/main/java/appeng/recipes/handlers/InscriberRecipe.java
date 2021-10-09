@@ -112,4 +112,9 @@ public class InscriberRecipe implements Recipe<Container> {
     public InscriberProcessType getProcessType() {
         return processType;
     }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 }
