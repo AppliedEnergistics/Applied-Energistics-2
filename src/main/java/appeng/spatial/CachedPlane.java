@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -100,7 +101,7 @@ public class CachedPlane {
         for (int x = 0; x < this.x_size; x++) {
             for (int z = 0; z < this.z_size; z++) {
                 this.myColumns[x][z] = new Column(level.getChunk(minX + x >> 4, minZ + z >> 4), minX + x & 0xF,
-                        minZ + z & 0xF, minCY, cy_size);
+                        minZ + z & 0xF);
             }
         }
 
@@ -131,7 +132,12 @@ public class CachedPlane {
                             c.removeBlockEntity(entry.getKey());
                         } else {
                             final BlockStorageData details = new BlockStorageData();
-                            this.myColumns[pos.getX() - minX][pos.getZ() - minZ].fillData(pos.getY(), details);
+                            Column column = this.myColumns[pos.getX() - minX][pos.getZ() - minZ];
+                            final int y = pos.getY();
+                            final LevelChunkSection[] storage = column.c.getSections();
+                            final LevelChunkSection extendedblockstorage = storage[y >> 4];
+
+                            details.state = extendedblockstorage.getBlockState(column.x, y & 15, column.z);
 
                             // don't skip air, just let the code replace it...
                             if (details.state.isAir()) {
@@ -163,27 +169,36 @@ public class CachedPlane {
             AELog.info("Block Copy Scale: " + this.x_size + ", " + this.y_size + ", " + this.z_size);
 
             long startTime = System.nanoTime();
-            final BlockStorageData aD = new BlockStorageData();
-            final BlockStorageData bD = new BlockStorageData();
 
             for (int x = 0; x < this.x_size; x++) {
                 for (int z = 0; z < this.z_size; z++) {
-                    final Column a = this.myColumns[x][z];
-                    final Column b = dst.myColumns[x][z];
+                    final Column srcCol = this.myColumns[x][z];
+                    final Column dstCol = dst.myColumns[x][z];
 
                     for (int y = 0; y < this.y_size; y++) {
-                        final int src_y = y + this.y_offset;
-                        final int dst_y = y + dst.y_offset;
+                        var src_y = this.y_offset + y;
+                        var dst_y = dst.y_offset + y;
 
-                        if (a.doNotSkip(src_y) && b.doNotSkip(dst_y)) {
-                            a.fillData(src_y, aD);
-                            b.fillData(dst_y, bD);
+                        if (srcCol.doNotSkip(src_y) && dstCol.doNotSkip(dst_y)) {
+                            var srcSection = srcCol.getSection(src_y);
+                            var dstSection = dstCol.getSection(dst_y);
 
-                            a.setBlockState(src_y, bD);
-                            b.setBlockState(dst_y, aD);
+                            var srcState = srcSection.getBlockState(srcCol.x, SectionPos.sectionRelative(src_y),
+                                    srcCol.z);
+                            if (srcState == CachedPlane.this.matrixBlockState) {
+                                srcState = Blocks.AIR.defaultBlockState();
+                            }
+                            var dstState = dstSection.getBlockState(dstCol.x, SectionPos.sectionRelative(dst_y),
+                                    dstCol.z);
+                            if (dstState == CachedPlane.this.matrixBlockState) {
+                                dstState = Blocks.AIR.defaultBlockState();
+                            }
+
+                            srcSection.setBlockState(srcCol.x, SectionPos.sectionRelative(src_y), srcCol.z, dstState);
+                            dstSection.setBlockState(dstCol.x, SectionPos.sectionRelative(dst_y), dstCol.z, srcState);
                         } else {
-                            this.markForUpdate(x + this.x_offset, src_y, z + this.z_offset);
-                            dst.markForUpdate(x + dst.x_offset, dst_y, z + dst.z_offset);
+                            this.markForUpdate(this.x_offset + x, src_y, this.z_offset + z);
+                            dst.markForUpdate(dst.x_offset + x, dst_y, dst.z_offset + z);
                         }
                     }
                 }
@@ -335,45 +350,18 @@ public class CachedPlane {
     private class Column {
         private final int x;
         private final int z;
+
         private final LevelChunk c;
         private List<Integer> skipThese = null;
 
-        public Column(final LevelChunk chunk, final int x, final int z, final int chunkY, final int chunkHeight) {
+        public Column(final LevelChunk chunk, final int x, final int z) {
             this.x = x;
             this.z = z;
             this.c = chunk;
-
-            final LevelChunkSection[] storage = this.c.getSections();
-
-            // make sure storage exists before hand...
-            for (int ay = 0; ay < chunkHeight; ay++) {
-                final int by = ay + chunkY;
-                if (storage[by] == null) {
-                    storage[by] = new LevelChunkSection(by << 4);
-                }
-            }
         }
 
-        private void setBlockState(final int y, BlockStorageData data) {
-            if (data.state == CachedPlane.this.matrixBlockState) {
-                data.state = Blocks.AIR.defaultBlockState();
-            }
-            final LevelChunkSection[] storage = this.c.getSections();
-            final LevelChunkSection extendedBlockStorage = storage[y >> 4];
-            extendedBlockStorage.setBlockState(this.x, y & 15, this.z, data.state);
-        }
-
-        private void fillData(final int y, BlockStorageData data) {
-            final LevelChunkSection[] storage = this.c.getSections();
-            final LevelChunkSection extendedblockstorage = storage[y >> 4];
-
-            data.state = extendedblockstorage.getBlockState(this.x, y & 15, this.z);
-        }
-
-        private boolean doNotSkip(final int y) {
-            final LevelChunkSection[] storage = this.c.getSections();
-            final LevelChunkSection extendedblockstorage = storage[y >> 4];
-            var blockState = extendedblockstorage.getBlockState(this.x, y & 15, this.z);
+        private boolean doNotSkip(int y) {
+            var blockState = getSection(y).getBlockState(this.x, SectionPos.sectionRelative(y), this.z);
             if (AETags.SPATIAL_BLACKLIST.contains(blockState.getBlock())) {
                 return false;
             }
@@ -381,11 +369,16 @@ public class CachedPlane {
             return this.skipThese == null || !this.skipThese.contains(y);
         }
 
-        private void setSkip(final int yCoord) {
+        private void setSkip(int y) {
             if (this.skipThese == null) {
                 this.skipThese = new ArrayList<>();
             }
-            this.skipThese.add(yCoord);
+            this.skipThese.add(y);
+        }
+
+        public LevelChunkSection getSection(int y) {
+            return c.getOrCreateSection(
+                    c.getSectionIndexFromSectionY(SectionPos.blockToSectionCoord(y)));
         }
     }
 
