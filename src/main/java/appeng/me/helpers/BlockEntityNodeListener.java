@@ -41,9 +41,4 @@ public class BlockEntityNodeListener<T extends IGridConnectedBlockEntity> implem
     public void onStateChanged(T nodeOwner, IGridNode node, State state) {
         nodeOwner.onMainNodeStateChanged(state);
     }
-
-    @Override
-    public void onGridChanged(T nodeOwner, IGridNode node) {
-        nodeOwner.onMainNodeGridChanged();
-    }
 }

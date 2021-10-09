@@ -31,6 +31,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
+import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.BlockEntityNodeListener;
@@ -100,6 +101,18 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
     public void onReady() {
         super.onReady();
         this.getMainNode().create(getLevel(), getBlockEntity().getBlockPos());
+
+        // It is possible that the BlockState depends on the state of the BlockEntity,
+        // which might be different after restoring the grid connection compared to
+        // the state that was saved to disk. This ensures the BlockState after readying
+        // the entity is up-to-date.
+        BlockState currentState = getBlockState();
+        if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
+            BlockState newState = block.getBlockEntityBlockState(currentState, this);
+            if (currentState != newState) {
+                this.markForUpdate();
+            }
+        }
     }
 
     @Override
