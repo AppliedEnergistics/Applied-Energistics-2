@@ -76,7 +76,4 @@ public interface IGridConnectedBlockEntity extends IActionHost, IOwnerAwareBlock
     default void setOwner(Player owner) {
         getMainNode().setOwningPlayer(owner);
     }
-
-    default void onMainNodeGridChanged() {
-    }
 }
