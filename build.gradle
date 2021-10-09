@@ -40,23 +40,46 @@ repositories {
             includeGroup "mcp.mobius.waila"
         }
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                url "https://maven.parchmentmc.net/"
+            }
+        }
+        filter {
+            includeGroup "org.parchmentmc.data"
+        }
+    }
 }
-
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-1.17.1:2021.09.05@zip")
+    }
+
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
 
-    modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}"
-    modRuntime "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
+    modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    modRuntime("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    include modImplementation("teamreborn:energy:${project.tr_energy_version}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}") {
+        exclude group: "net.fabricmc.fabric-api", module: "fabric-gametest-api-v1"
+    }
+    include modImplementation("teamreborn:energy:${project.tr_energy_version}"){
+        exclude group: "net.fabricmc.fabric-api"
+    }
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
