@@ -116,4 +116,8 @@ public class GrinderRecipe implements Recipe<Container> {
         return optionalResults;
     }
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 }
