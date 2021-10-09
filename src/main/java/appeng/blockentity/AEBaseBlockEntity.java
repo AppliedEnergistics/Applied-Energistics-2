@@ -246,7 +246,7 @@ public class AEBaseBlockEntity extends BlockEntity
             if (this.level != null && !this.isRemoved() && !notLoaded()) {
 
                 boolean alreadyUpdated = false;
-                // Let the block update it's own state with our internal state changes
+                // Let the block update its own state with our internal state changes
                 BlockState currentState = getBlockState();
                 if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
                     BlockState newState = block.getBlockEntityBlockState(currentState, this);

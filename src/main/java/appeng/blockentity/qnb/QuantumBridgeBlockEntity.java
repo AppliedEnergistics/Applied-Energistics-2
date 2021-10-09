@@ -130,11 +130,6 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onMainNodeGridChanged() {
-        this.updateStatus = true;
-    }
-
-    @Override
     public void onChunkUnloaded() {
         this.disconnect(false);
         super.onChunkUnloaded();

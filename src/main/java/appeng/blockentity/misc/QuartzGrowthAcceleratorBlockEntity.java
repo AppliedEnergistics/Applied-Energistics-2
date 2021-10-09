@@ -32,7 +32,6 @@ import appeng.api.implementations.blockentities.ICrystalGrowthAccelerator;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.hooks.ticking.TickHandler;
 
 public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
         implements IPowerChannelState, ICrystalGrowthAccelerator {
@@ -51,11 +50,6 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
         if (reason == IGridNodeListener.State.POWER) {
             this.markForUpdate();
         }
-    }
-
-    @Override
-    public void onMainNodeGridChanged() {
-        TickHandler.instance().addCallable(getLevel(), this::markForUpdate);
     }
 
     @Override

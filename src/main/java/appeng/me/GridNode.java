@@ -281,6 +281,7 @@ public class GridNode implements IGridNode, IPathItem {
             return;
         }
 
+        boolean wasPowered = isPowered();
         if (this.myGrid != null) {
             this.myGrid.remove(this);
 
@@ -296,6 +297,9 @@ public class GridNode implements IGridNode, IPathItem {
         this.myGrid = grid;
         this.myGrid.add(this);
         callListener(IGridNodeListener::onGridChanged);
+        if (wasPowered != isPowered()) {
+            notifyStatusChange(IGridNodeListener.State.POWER);
+        }
     }
 
     public void destroy() {
