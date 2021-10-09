@@ -177,9 +177,9 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             return;
         }
 
-        var displayName = is.getDisplayName();
-        if (displayName instanceof TextComponent) {
-            blockEntity.setName(((TextComponent) displayName).getText());
+        var hoverName = is.getHoverName();
+        if (hoverName instanceof TextComponent text) {
+            blockEntity.setName(text.getText());
         }
 
         if (is.hasTag()) {
