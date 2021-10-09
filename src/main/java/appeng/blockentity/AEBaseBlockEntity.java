@@ -78,7 +78,7 @@ public class AEBaseBlockEntity extends BlockEntity
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     private int renderFragment = 0;
     @Nullable
-    private String customName;
+    private Component customName;
     private Direction forward = Direction.NORTH;
     private Direction up = Direction.UP;
     private boolean setChangedQueued = false;
@@ -119,7 +119,7 @@ public class AEBaseBlockEntity extends BlockEntity
         super.load(data);
 
         if (data.contains("customName")) {
-            this.customName = data.getString("customName");
+            this.customName = Component.Serializer.fromJson(data.getString("customName"));
         } else {
             this.customName = null;
         }
@@ -143,7 +143,7 @@ public class AEBaseBlockEntity extends BlockEntity
         }
 
         if (this.customName != null) {
-            data.putString("customName", this.customName);
+            data.putString("customName", Component.Serializer.toJson(this.customName));
         }
 
         return data;
@@ -304,7 +304,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
         if (this.hasCustomInventoryName()) {
             final CompoundTag dsp = new CompoundTag();
-            dsp.putString("Name", this.customName);
+            dsp.putString("Name", Component.Serializer.toJson(this.customName));
             output.put("display", dsp);
         }
 
@@ -384,13 +384,12 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     public Component getCustomInventoryName() {
-        return new TextComponent(
-                this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
+        return this.hasCustomInventoryName() ? this.customName : new TextComponent(this.getClass().getSimpleName());
     }
 
     @Override
     public boolean hasCustomInventoryName() {
-        return this.customName != null && !this.customName.isEmpty();
+        return this.customName != null;
     }
 
     public void securityBreak() {
@@ -435,7 +434,7 @@ public class AEBaseBlockEntity extends BlockEntity
         return null;
     }
 
-    public void setName(final String name) {
+    public void setName(Component name) {
         this.customName = name;
     }
 

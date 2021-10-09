@@ -28,10 +28,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.menu.implementations.PatternProviderMenu;
 
-public interface IPatternProviderHost extends IConfigurableObject, IPriorityHost {
+public interface IPatternProviderHost extends IConfigurableObject, IPriorityHost, ICustomNameObject {
     DualityPatternProvider getDuality();
 
     /**

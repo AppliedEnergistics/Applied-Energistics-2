@@ -69,7 +69,6 @@ import appeng.api.storage.data.MixedStackList;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.crafting.execution.GenericStackHelper;
-import appeng.helpers.ICustomNameObject;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
@@ -384,8 +383,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         final BlockEntity host = this.host.getBlockEntity();
         final Level hostWorld = host.getLevel();
 
-        if (((ICustomNameObject) this.host).hasCustomInventoryName()) {
-            return ((ICustomNameObject) this.host).getCustomInventoryName();
+        if (this.host.hasCustomInventoryName()) {
+            return this.host.getCustomInventoryName();
         }
 
         for (var direction : this.host.getTargets()) {

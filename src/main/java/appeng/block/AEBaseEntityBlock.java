@@ -28,7 +28,6 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -177,9 +176,8 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             return;
         }
 
-        var displayName = is.getDisplayName();
-        if (displayName instanceof TextComponent) {
-            blockEntity.setName(((TextComponent) displayName).getText());
+        if (is.hasCustomHoverName()) {
+            blockEntity.setName(is.getHoverName());
         }
 
         if (is.hasTag()) {
