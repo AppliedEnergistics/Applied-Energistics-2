@@ -40,6 +40,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
@@ -173,6 +174,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
                                     Block.dropResources(state, this.level, point);
                                 }
 
+                                level.setBlock(point, Blocks.AIR.defaultBlockState(), 3);
                                 block.wasExploded(this.level, point, ex);
                             }
                         }
