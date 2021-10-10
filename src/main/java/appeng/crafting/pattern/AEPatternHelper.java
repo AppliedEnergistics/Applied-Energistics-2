@@ -151,7 +151,7 @@ class AEPatternHelper {
             ItemStack output, boolean allowSubstitution) {
         tag.put(NBT_INPUTS, encodeItemStackList(sparseInputs));
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
-        tag.put(NBT_OUTPUTS, output.serializeNBT());
+        tag.put(NBT_OUTPUTS, output.save(new CompoundTag()));
         tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
     }
 

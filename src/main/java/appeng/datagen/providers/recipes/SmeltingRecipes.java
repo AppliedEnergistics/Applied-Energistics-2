@@ -24,7 +24,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.Tags.Items;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -56,8 +55,8 @@ public class SmeltingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("smelting/smooth_sky_stone_block"));
 
         SimpleCookingRecipeBuilder
-                .blasting(Ingredient.of(Items.ENDER_PEARLS), AEItems.ENDER_DUST, 1f, DEFAULT_SMELTING_TIME)
-                .unlockedBy("has_ender_pearls", has(Items.ENDER_PEARLS))
+                .blasting(Ingredient.of(ConventionTags.ENDER_PEARL), AEItems.ENDER_DUST, 1f, DEFAULT_SMELTING_TIME)
+                .unlockedBy("has_ender_pearls", has(ConventionTags.ENDER_PEARL))
                 .save(consumer, AppEng.makeId("blasting/ender_dust"));
 
     }
