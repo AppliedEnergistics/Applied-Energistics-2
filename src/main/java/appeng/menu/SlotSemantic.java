@@ -59,7 +59,11 @@ public enum SlotSemantic {
 
     CRAFTING_RESULT(false),
 
-    PROCESSING_RESULT(false),
+    PROCESSING_PRIMARY_RESULT(false),
+
+    PROCESSING_FIRST_OPTIONAL_RESULT(false),
+
+    PROCESSING_SECOND_OPTIONAL_RESULT(false),
 
     BIOMETRIC_CARD(false),
 

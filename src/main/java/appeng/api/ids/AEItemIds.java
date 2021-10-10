@@ -39,7 +39,9 @@ public final class AEItemIds {
     public static final ResourceLocation NETWORK_TOOL = id("network_tool");
     public static final ResourceLocation VIEW_CELL = id("view_cell");
     public static final ResourceLocation MEMORY_CARD = id("memory_card");
-    public static final ResourceLocation ENCODED_PATTERN = id("encoded_pattern");
+    public static final ResourceLocation BLANK_PATTERN = id("blank_pattern");
+    public static final ResourceLocation CRAFTING_PATTERN = id("crafting_pattern");
+    public static final ResourceLocation PROCESSING_PATTERN = id("processing_pattern");
     public static final ResourceLocation BIOMETRIC_CARD = id("biometric_card");
     public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
     public static final ResourceLocation MATTER_CANNON = id("matter_cannon");
@@ -218,7 +220,6 @@ public final class AEItemIds {
     public static final ResourceLocation ENDER_DUST = id("ender_dust");
     public static final ResourceLocation SINGULARITY = id("singularity");
     public static final ResourceLocation QUANTUM_ENTANGLED_SINGULARITY = id("quantum_entangled_singularity");
-    public static final ResourceLocation BLANK_PATTERN = id("blank_pattern");
 
     private static ResourceLocation id(String id) {
         return new ResourceLocation(AEConstants.MOD_ID, id);

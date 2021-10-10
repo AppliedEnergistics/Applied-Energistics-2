@@ -24,8 +24,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
@@ -33,11 +31,9 @@ import net.minecraft.world.level.Level;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.IPatternDetailsDecoder;
 import appeng.api.crafting.IPatternDetailsHelper;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AEPatternDecoder;
-import appeng.crafting.pattern.AEPatternHelper;
 
 public class ApiPatternDetails implements IPatternDetailsHelper {
     private final List<IPatternDetailsDecoder> decoders = new CopyOnWriteArrayList<>();
@@ -76,39 +72,14 @@ public class ApiPatternDetails implements IPatternDetailsHelper {
     }
 
     @Override
-    public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in,
+    public ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes) {
-        if (stack == null) {
-            stack = AEItems.ENCODED_PATTERN.stack();
-        } else {
-            Preconditions.checkArgument(isEncodedPattern(stack));
-        }
-
-        AEPatternHelper.encodeCraftingPattern(stack, recipe, in, out, allowSubstitutes);
-        return stack;
+        return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes);
     }
 
     @Override
-    public ItemStack encodeProcessingPattern(@Nullable ItemStack stack, IAEStack[] in, IAEStack[] out) {
-        checkItemsOrFluids(in);
-        checkItemsOrFluids(out);
-        if (stack == null) {
-            stack = AEItems.ENCODED_PATTERN.stack();
-        } else {
-            Preconditions.checkArgument(isEncodedPattern(stack));
-        }
-
-        AEPatternHelper.encodeProcessingPattern(stack, in, out);
-        return stack;
+    public ItemStack encodeProcessingPattern(IAEStack[] in, IAEStack[] out) {
+        return AEItems.PROCESSING_PATTERN.asItem().encode(in, out);
     }
 
-    private static void checkItemsOrFluids(IAEStack[] stacks) {
-        for (var stack : stacks) {
-            if (stack != null) {
-                if (stack.getChannel() != StorageChannels.items() && stack.getChannel() != StorageChannels.fluids()) {
-                    throw new IllegalArgumentException("Unsupported storage channel: " + stack.getChannel());
-                }
-            }
-        }
-    }
 }

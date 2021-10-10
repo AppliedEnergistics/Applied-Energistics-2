@@ -24,7 +24,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.style.FluidBlitter;
-import appeng.items.misc.EncodedPatternItem;
+import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.items.misc.FluidDummyItem;
 
 public final class ItemRendererHooks {

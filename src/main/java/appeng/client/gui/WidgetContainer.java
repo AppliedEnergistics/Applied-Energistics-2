@@ -58,6 +58,7 @@ public class WidgetContainer {
     private final ScreenStyle style;
     private final Map<String, AbstractWidget> widgets = new HashMap<>();
     private final Map<String, ICompositeWidget> compositeWidgets = new HashMap<>();
+    private final Map<String, ResolvedTooltipArea> tooltips = new HashMap<>();
 
     public WidgetContainer(ScreenStyle style) {
         this.style = style;
@@ -148,6 +149,17 @@ public class WidgetContainer {
             widget.setPosition(widgetStyle.resolve(relativeBounds));
 
             widget.populateScreen(addWidget, bounds, screen);
+        }
+
+        tooltips.clear();
+        for (var entry : style.getTooltips().entrySet()) {
+            var pos = entry.getValue().resolve(relativeBounds);
+            var area = new Rect2i(
+                    pos.getX(), pos.getY(),
+                    entry.getValue().getWidth(),
+                    entry.getValue().getHeight());
+            tooltips.put(entry.getKey(), new ResolvedTooltipArea(
+                    area, new Tooltip(entry.getValue().getTooltip())));
         }
     }
 
@@ -264,6 +276,15 @@ public class WidgetContainer {
         NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityMenu.TYPE));
     }
 
+    /**
+     * Enables or disables a tooltip area that is defined in the widget styles.
+     */
+    public void setTooltipAreaEnabled(String id, boolean enabled) {
+        var tooltip = tooltips.get(id);
+        Preconditions.checkArgument(tooltip != null, "No tooltip with id '%s' is defined");
+        tooltip.enabled = enabled;
+    }
+
     @Nullable
     public Tooltip getTooltip(int mouseX, int mouseY) {
         for (ICompositeWidget c : this.compositeWidgets.values()) {
@@ -277,6 +298,30 @@ public class WidgetContainer {
             }
         }
 
+        for (var tooltipArea : tooltips.values()) {
+            if (tooltipArea.enabled && contains(tooltipArea.area, mouseX, mouseY)) {
+                return tooltipArea.tooltip;
+            }
+        }
+
         return null;
+    }
+
+    // NOTE: Vanilla's implementation of Rect2i is broken since it uses less-than-equal to compare against x+width,
+    // rather than less-than.
+    private static boolean contains(Rect2i area, int mouseX, int mouseY) {
+        return mouseX >= area.getX() && mouseX < area.getX() + area.getWidth()
+                && mouseY >= area.getY() && mouseY < area.getY() + area.getHeight();
+    }
+
+    private static class ResolvedTooltipArea {
+        private final Rect2i area;
+        private final Tooltip tooltip;
+        private boolean enabled = true;
+
+        public ResolvedTooltipArea(Rect2i area, Tooltip tooltip) {
+            this.area = area;
+            this.tooltip = tooltip;
+        }
     }
 }

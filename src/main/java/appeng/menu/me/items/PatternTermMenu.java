@@ -120,10 +120,15 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
                 monitorable, this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
         this.craftOutputSlot.setIcon(null);
 
-        // Create slots for the outputs of processing-mode patterns
+        // Create slots for the outputs of processing-mode patterns. Unrolled as each as a different semantic
+        this.addSlot(this.processingOutputSlots[0] = new PatternOutputsSlot(output, this, 0, 1),
+                SlotSemantic.PROCESSING_PRIMARY_RESULT);
+        this.addSlot(this.processingOutputSlots[1] = new PatternOutputsSlot(output, this, 1, 1),
+                SlotSemantic.PROCESSING_FIRST_OPTIONAL_RESULT);
+        this.addSlot(this.processingOutputSlots[2] = new PatternOutputsSlot(output, this, 2, 1),
+                SlotSemantic.PROCESSING_SECOND_OPTIONAL_RESULT);
+
         for (int i = 0; i < 3; i++) {
-            this.addSlot(this.processingOutputSlots[i] = new PatternOutputsSlot(output, this, i, 1),
-                    SlotSemantic.PROCESSING_RESULT);
             this.processingOutputSlots[i].setRenderDisabled(false);
             this.processingOutputSlots[i].setIcon(null);
         }
@@ -208,15 +213,12 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             if (output.getCount() == 0) {
                 this.blankPatternSlot.set(ItemStack.EMPTY);
             }
-
-            // let the crafting helper create a new encoded pattern
-            output = null;
         }
 
         if (this.isCraftingMode()) {
-            output = craftingHelper.encodeCraftingPattern(output, this.currentRecipe, in, out[0], isSubstitute());
+            output = craftingHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute());
         } else {
-            output = craftingHelper.encodeProcessingPattern(output, toAeStacks(in), toAeStacks(out));
+            output = craftingHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
         }
         this.encodedPatternSlot.set(output);
 

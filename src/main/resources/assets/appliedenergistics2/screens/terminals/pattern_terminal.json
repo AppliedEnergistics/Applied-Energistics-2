@@ -19,10 +19,17 @@
       "left": 110,
       "bottom": 138
     },
-    "PROCESSING_RESULT": {
+    "PROCESSING_PRIMARY_RESULT": {
       "left": 110,
-      "bottom": 156,
-      "grid": "VERTICAL"
+      "bottom": 138
+    },
+    "PROCESSING_FIRST_OPTIONAL_RESULT": {
+      "left": 110,
+      "bottom": 161
+    },
+    "PROCESSING_SECOND_OPTIONAL_RESULT": {
+      "left": 110,
+      "bottom": 115
     }
   },
   "text": {
@@ -43,6 +50,53 @@
         "left": 8,
         "bottom": 175
       }
+    }
+  },
+  "tooltips": {
+    "processing-primary-output": {
+      "left": 106,
+      "bottom": 142,
+      "width": 24,
+      "height": 24,
+      "tooltip": [
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.primary_processing_result_tooltip"
+        },
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.primary_processing_result_hint",
+          "color": "#666666"
+        }
+      ]
+    },
+    "processing-optional-output1": {
+      "left": 109,
+      "bottom": 162,
+      "width": 18,
+      "height": 18,
+      "tooltip": [
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_tooltip"
+        },
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_hint",
+          "color": "#666666"
+        }
+      ]
+    },
+    "processing-optional-output2": {
+      "left": 109,
+      "bottom": 116,
+      "width": 18,
+      "height": 18,
+      "tooltip": [
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_tooltip"
+        },
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_hint",
+          "color": "#666666"
+        }
+      ]
     }
   },
   "terminalStyle": {

@@ -80,6 +80,8 @@ public class ScreenStyle {
 
     private final Map<String, WidgetStyle> widgets = new HashMap<>();
 
+    private final Map<String, TooltipArea> tooltips = new HashMap<>();
+
     public Color getColor(PaletteColor color) {
         return palette.get(color);
     }
@@ -90,6 +92,10 @@ public class ScreenStyle {
 
     public Map<String, Text> getText() {
         return text;
+    }
+
+    public Map<String, TooltipArea> getTooltips() {
+        return tooltips;
     }
 
     public Blitter getBackground() {

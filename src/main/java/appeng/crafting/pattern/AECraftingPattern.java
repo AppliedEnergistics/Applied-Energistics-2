@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +40,7 @@ import net.minecraftforge.common.crafting.IShapedRecipe;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.items.misc.EncodedPatternItem;
+import appeng.core.definitions.AEItems;
 import appeng.menu.NullMenu;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -47,7 +48,7 @@ import appeng.util.item.AEItemStack;
 public class AECraftingPattern implements IAEPatternDetails {
     private static final int CRAFTING_GRID_DIMENSION = 3;
 
-    private final ItemStack definition;
+    private final CompoundTag definition;
     public final boolean canSubstitute;
     private final CraftingRecipe recipe;
     private final CraftingContainer testFrame;
@@ -61,15 +62,13 @@ public class AECraftingPattern implements IAEPatternDetails {
     @SuppressWarnings("unchecked")
     private final Map<Item, Boolean>[] isValidCache = new Map[9];
 
-    public AECraftingPattern(ItemStack definition, Level level) {
-        Preconditions.checkArgument(definition.getItem() instanceof EncodedPatternItem);
-
+    public AECraftingPattern(CompoundTag definition, Level level) {
         this.definition = definition;
-        this.canSubstitute = AEPatternHelper.canSubstitute(definition.getTag());
-        this.sparseInputs = AEPatternHelper.getCraftingInputs(definition.getTag());
+        this.canSubstitute = AEPatternHelper.canSubstitute(definition);
+        this.sparseInputs = AEPatternHelper.getCraftingInputs(definition);
 
         // Find recipe
-        var recipeId = AEPatternHelper.getRecipeId(definition.getTag());
+        var recipeId = AEPatternHelper.getRecipeId(definition);
         var recipe = level.getRecipeManager().byKey(recipeId).orElse(null);
         if (recipe == null || recipe.getType() != RecipeType.CRAFTING) {
             throw new IllegalStateException("recipe id is not a crafting recipe");
@@ -107,7 +106,9 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     @Override
     public ItemStack copyDefinition() {
-        return definition.copy();
+        var result = new ItemStack(AEItems.CRAFTING_PATTERN);
+        result.setTag(definition.copy());
+        return result;
     }
 
     @Override

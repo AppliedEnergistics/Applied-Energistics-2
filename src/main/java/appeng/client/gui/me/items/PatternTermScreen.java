@@ -109,7 +109,14 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
         }
 
         setSlotsHidden(SlotSemantic.CRAFTING_RESULT, !this.menu.isCraftingMode());
-        setSlotsHidden(SlotSemantic.PROCESSING_RESULT, this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantic.PROCESSING_PRIMARY_RESULT, this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantic.PROCESSING_FIRST_OPTIONAL_RESULT, this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantic.PROCESSING_SECOND_OPTIONAL_RESULT, this.menu.isCraftingMode());
+
+        // Only show tooltips for the processing output slots, if we're in processing mode
+        widgets.setTooltipAreaEnabled("processing-primary-output", !this.menu.isCraftingMode());
+        widgets.setTooltipAreaEnabled("processing-optional-output1", !this.menu.isCraftingMode());
+        widgets.setTooltipAreaEnabled("processing-optional-output2", !this.menu.isCraftingMode());
 
         // If the menu allows converting items to fluids, show the button
         this.convertItemsToFluidsBtn.visible = this.menu.canConvertItemsToFluids();

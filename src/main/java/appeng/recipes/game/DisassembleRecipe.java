@@ -60,7 +60,8 @@ public final class DisassembleRecipe extends CustomRecipe {
         this.cellMappings.put(AEItems.CELL16K, AEItems.ITEM_16K_CELL_COMPONENT);
         this.cellMappings.put(AEItems.CELL64K, AEItems.ITEM_64K_CELL_COMPONENT);
 
-        this.nonCellMappings.put(AEItems.ENCODED_PATTERN, AEItems.BLANK_PATTERN);
+        this.nonCellMappings.put(AEItems.CRAFTING_PATTERN, AEItems.BLANK_PATTERN);
+        this.nonCellMappings.put(AEItems.PROCESSING_PATTERN, AEItems.BLANK_PATTERN);
         this.nonCellMappings.put(AEBlocks.CRAFTING_STORAGE_1K, AEItems.ITEM_1K_CELL_COMPONENT);
         this.nonCellMappings.put(AEBlocks.CRAFTING_STORAGE_4K, AEItems.ITEM_4K_CELL_COMPONENT);
         this.nonCellMappings.put(AEBlocks.CRAFTING_STORAGE_16K, AEItems.ITEM_16K_CELL_COMPONENT);

@@ -26,9 +26,7 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.crafting.pattern.AECraftingPattern;
-import appeng.crafting.pattern.AEPatternDecoder;
-import appeng.items.misc.EncodedPatternItem;
+import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
@@ -68,11 +66,11 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
             return false;
         }
 
-        if (is.getItem() instanceof EncodedPatternItem) {
+        if (is.getItem() instanceof CraftingPatternItem patternItem) {
             final Level level = this.getBlockEntity().getLevel();
-            var details = AEPatternDecoder.INSTANCE.decodePattern(is, level, false);
-            if (details instanceof AECraftingPattern craftingPattern) {
-                return craftingPattern.isValid(slotIndex, AEItemStack.fromItemStack(i), level);
+            var details = patternItem.decode(is, level, false);
+            if (details != null) {
+                return details.isValid(slotIndex, AEItemStack.fromItemStack(i), level);
             }
         }
 

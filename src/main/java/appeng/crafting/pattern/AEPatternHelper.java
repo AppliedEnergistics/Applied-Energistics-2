@@ -44,8 +44,9 @@ import appeng.util.item.AEItemStack;
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
  */
-public class AEPatternHelper {
+class AEPatternHelper {
     public static final String NBT_INPUTS = "in";
+    public static final String NBT_RESULT = "result";
     public static final String NBT_OUTPUTS = "out";
     public static final String NBT_SUBSITUTE = "substitute";
     public static final String NBT_RECIPE_ID = "recipe";
@@ -122,15 +123,15 @@ public class AEPatternHelper {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
-    public static boolean isCrafting(CompoundTag nbt) {
-        return nbt.contains(NBT_RECIPE_ID);
+    public static ItemStack getCraftingResult(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have a tag.");
+
+        return ItemStack.of(nbt.getCompound(NBT_OUTPUTS));
     }
 
-    public static void encodeProcessingPattern(ItemStack out, IAEStack[] sparseInputs, IAEStack[] sparseOutputs) {
-        CompoundTag tag = new CompoundTag();
+    public static void encodeProcessingPattern(CompoundTag tag, IAEStack[] sparseInputs, IAEStack[] sparseOutputs) {
         tag.put(NBT_INPUTS, encodeStackList(sparseInputs));
         tag.put(NBT_OUTPUTS, encodeStackList(sparseOutputs));
-        out.setTag(tag);
     }
 
     private static ListTag encodeStackList(IAEStack[] stacks) {
@@ -146,14 +147,12 @@ public class AEPatternHelper {
         return tag;
     }
 
-    public static void encodeCraftingPattern(ItemStack out, CraftingRecipe recipe, ItemStack[] sparseInputs,
+    public static void encodeCraftingPattern(CompoundTag tag, CraftingRecipe recipe, ItemStack[] sparseInputs,
             ItemStack output, boolean allowSubstitution) {
-        CompoundTag tag = new CompoundTag();
         tag.put(NBT_INPUTS, encodeItemStackList(sparseInputs));
-        // TODO: encode output for recovery
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
+        tag.put(NBT_OUTPUTS, output.serializeNBT());
         tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
-        out.setTag(tag);
     }
 
     private static ListTag encodeItemStackList(ItemStack[] stacks) {
