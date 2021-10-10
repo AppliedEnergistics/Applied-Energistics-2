@@ -22,6 +22,8 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -42,7 +44,23 @@ public class AEProcessingPattern implements IAEPatternDetails {
         for (int i = 0; i < inputs.length; ++i) {
             inputs[i] = new Input(condensedInputs[i]);
         }
+
+        var primaryOutput = this.sparseOutputs[0];
         this.condensedOutputs = AEPatternHelper.condenseStacks(sparseOutputs);
+        // Ensure the primary output is the first in the list, even if it has a smaller stack size.
+        int primaryOutputIndex = -1;
+        for (int i = 0; i < condensedOutputs.length; ++i) {
+            if (primaryOutput.equals(condensedOutputs[i])) {
+                primaryOutputIndex = i;
+            }
+        }
+        Preconditions.checkState(primaryOutputIndex >= 0, "Could not find primary output after condensing stacks.");
+        if (primaryOutputIndex > 0) {
+            var condensedPrimaryOutput = condensedOutputs[primaryOutputIndex];
+            // Place the primary output at the beginning of the array.
+            System.arraycopy(condensedOutputs, 0, condensedOutputs, 1, primaryOutputIndex);
+            condensedOutputs[0] = condensedPrimaryOutput;
+        }
     }
 
     @Override
