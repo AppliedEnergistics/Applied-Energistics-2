@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.helpers;
+package appeng.crafting.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -31,7 +32,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.util.Platform;
 
-public class InvalidPatternHelper {
+class InvalidPatternHelper {
 
     private final List<PatternIngredient> outputs = new ArrayList<>();
     private final List<PatternIngredient> inputs = new ArrayList<>();
@@ -39,14 +40,14 @@ public class InvalidPatternHelper {
     private final boolean canSubstitute;
 
     public InvalidPatternHelper(final ItemStack is) {
-        final CompoundTag encodedValue = is.getTag();
+        var encodedValue = is.getTag();
 
         if (encodedValue == null) {
             throw new IllegalArgumentException("No pattern here!");
         }
 
-        final ListTag inTag = encodedValue.getList("in", 10);
-        final ListTag outTag = encodedValue.getList("out", 10);
+        final ListTag inTag = encodedValue.getList("in", Tag.TAG_COMPOUND);
+        final ListTag outTag = encodedValue.getList("out", Tag.TAG_COMPOUND);
         this.isCrafting = encodedValue.getBoolean("crafting");
 
         this.canSubstitute = this.isCrafting && encodedValue.getBoolean("substitute");
@@ -83,7 +84,7 @@ public class InvalidPatternHelper {
         return this.canSubstitute;
     }
 
-    public class PatternIngredient {
+    public static class PatternIngredient {
         private String id;
         private int count;
         private int damage;

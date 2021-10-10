@@ -16,13 +16,16 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.items.misc;
+package appeng.crafting.pattern;
 
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
@@ -38,7 +41,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -46,23 +48,16 @@ import appeng.api.storage.data.IAEStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
-import appeng.crafting.pattern.AECraftingPattern;
-import appeng.crafting.pattern.IAEPatternDetails;
-import appeng.helpers.InvalidPatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class EncodedPatternItem extends AEBaseItem {
+public abstract class EncodedPatternItem extends AEBaseItem {
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
     public EncodedPatternItem(Item.Properties properties) {
         super(properties);
-    }
-
-    public static boolean isAE2Pattern(ItemStack stack) {
-        return stack.getItem() instanceof EncodedPatternItem;
     }
 
     @Override
@@ -106,13 +101,14 @@ public class EncodedPatternItem extends AEBaseItem {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        var details = (IAEPatternDetails) AEApi.patterns().decodePattern(stack, level);
+        if (!stack.hasTag()) {
+            // This can be called very early to index tooltips for search. In those cases,
+            // there is no encoded pattern present.
+            return;
+        }
 
+        var details = decode(stack, level, false);
         if (details == null) {
-            if (!stack.hasTag()) {
-                return;
-            }
-
             // TODO: needs update for new pattern logic
             stack.setHoverName(GuiText.InvalidPattern.text().copy().withStyle(ChatFormatting.RED));
 
@@ -151,17 +147,17 @@ public class EncodedPatternItem extends AEBaseItem {
             stack.removeTagKey("display");
         }
 
-        final boolean isCrafting = details instanceof AECraftingPattern;
-        final boolean substitute = isCrafting && ((AECraftingPattern) details).canSubstitute;
+        var isCrafting = details instanceof AECraftingPattern;
+        var substitute = isCrafting && ((AECraftingPattern) details).canSubstitute;
 
         var in = details.getInputs();
         var out = details.getOutputs();
 
-        final Component label = (isCrafting ? GuiText.Crafts.text() : GuiText.Produces.text()).copy()
+        var label = (isCrafting ? GuiText.Crafts.text() : GuiText.Produces.text()).copy()
                 .append(": ");
-        final Component and = new TextComponent(" ").copy().append(GuiText.And.text())
+        var and = new TextComponent(" ").copy().append(GuiText.And.text())
                 .append(" ");
-        final Component with = GuiText.With.text().copy().append(": ");
+        var with = GuiText.With.text().copy().append(": ");
 
         boolean first = true;
         for (var anOut : out) {
@@ -187,14 +183,14 @@ public class EncodedPatternItem extends AEBaseItem {
         }
 
         if (isCrafting) {
-            final Component substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-            final Component canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
+            var substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+            var canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
 
             lines.add(substitutionLabel.copy().append(canSubstitute));
         }
     }
 
-    private static Component getStackComponent(IAEStack stack) {
+    protected static Component getStackComponent(IAEStack stack) {
         String amountInfo;
         Component displayName;
         if (stack.getChannel() == StorageChannels.items()) {
@@ -209,19 +205,22 @@ public class EncodedPatternItem extends AEBaseItem {
         return new TextComponent(amountInfo + " x ").append(displayName);
     }
 
-    public ItemStack getOutput(final ItemStack item) {
-        ItemStack out = SIMPLE_CACHE.get(item);
+    /**
+     * Returns the item stack that should be shown for this pattern when shift is held down.
+     */
+    public ItemStack getOutput(ItemStack item) {
+        var out = SIMPLE_CACHE.get(item);
 
         if (out != null) {
             return out;
         }
 
-        final Level level = AppEng.instance().getClientLevel();
+        var level = AppEng.instance().getClientLevel();
         if (level == null) {
             return ItemStack.EMPTY;
         }
 
-        var details = AEApi.patterns().decodePattern(item, level);
+        var details = decode(item, level, false);
         out = ItemStack.EMPTY;
 
         if (details != null) {
@@ -240,4 +239,10 @@ public class EncodedPatternItem extends AEBaseItem {
         SIMPLE_CACHE.put(item, out);
         return out;
     }
+
+    @Nullable
+    public abstract IAEPatternDetails decode(ItemStack stack, Level level, boolean tryRecovery);
+
+    @Nullable
+    public abstract IAEPatternDetails decode(CompoundTag tag, Level level, boolean tryRecovery);
 }

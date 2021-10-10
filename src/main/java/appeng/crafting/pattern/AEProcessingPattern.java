@@ -24,21 +24,23 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.storage.data.IAEStack;
+import appeng.core.definitions.AEItems;
 
 public class AEProcessingPattern implements IAEPatternDetails {
-    private final ItemStack definition;
+    private final CompoundTag definition;
     private final IAEStack[] sparseInputs, sparseOutputs;
     private final Input[] inputs;
     private final IAEStack[] condensedOutputs;
 
-    public AEProcessingPattern(ItemStack definition) {
+    public AEProcessingPattern(CompoundTag definition) {
         this.definition = definition;
-        this.sparseInputs = AEPatternHelper.getProcessingInputs(definition.getTag());
-        this.sparseOutputs = AEPatternHelper.getProcessingOutputs(definition.getTag());
+        this.sparseInputs = AEPatternHelper.getProcessingInputs(definition);
+        this.sparseOutputs = AEPatternHelper.getProcessingOutputs(definition);
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
         this.inputs = new Input[condensedInputs.length];
         for (int i = 0; i < inputs.length; ++i) {
@@ -65,7 +67,9 @@ public class AEProcessingPattern implements IAEPatternDetails {
 
     @Override
     public ItemStack copyDefinition() {
-        return definition.copy();
+        var result = new ItemStack(AEItems.PROCESSING_PATTERN);
+        result.setTag(definition.copy());
+        return result;
     }
 
     @Override

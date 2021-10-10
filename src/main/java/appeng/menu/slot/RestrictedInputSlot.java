@@ -39,8 +39,7 @@ import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
-import appeng.crafting.pattern.AECraftingPattern;
-import appeng.items.misc.EncodedPatternItem;
+import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.util.Platform;
 
 /**
@@ -105,15 +104,12 @@ public class RestrictedInputSlot extends AppEngSlot {
         // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
             case ENCODED_AE_CRAFTING_PATTERN:
-                if (!EncodedPatternItem.isAE2Pattern(stack)) {
-                    return false;
-                }
-                var de = patternHelper.decodePattern(stack, getLevel());
-                return de instanceof AECraftingPattern;
+                return AEItems.CRAFTING_PATTERN.isSameAs(stack);
             case ENCODED_PATTERN:
                 return patternHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:
-                return EncodedPatternItem.isAE2Pattern(stack);
+                return AEItems.CRAFTING_PATTERN.isSameAs(stack)
+                        || AEItems.PROCESSING_PATTERN.isSameAs(stack);
             case BLANK_PATTERN:
                 return AEItems.BLANK_PATTERN.isSameAs(stack);
 
@@ -220,8 +216,17 @@ public class RestrictedInputSlot extends AppEngSlot {
          */
         GRID_LINKABLE_ITEM(Icon.BACKGROUND_WIRELESS_TERM),
         TRASH(Icon.BACKGROUND_TRASH),
+        /**
+         * Accepts {@link AEItems#CRAFTING_PATTERN} or {@link AEItems#PROCESSING_PATTERN}.
+         */
         ENCODED_AE_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        /**
+         * Only accepts {@link AEItems#CRAFTING_PATTERN}.
+         */
         ENCODED_AE_CRAFTING_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        /**
+         * An encoded pattern from any mod (AE2 or otherwise). Delegates to AE2 API to identify such items.
+         */
         ENCODED_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         PATTERN(Icon.BACKGROUND_BLANK_PATTERN),
         BLANK_PATTERN(Icon.BACKGROUND_BLANK_PATTERN),

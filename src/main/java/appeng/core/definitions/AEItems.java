@@ -36,6 +36,8 @@ import appeng.api.util.AEColor;
 import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
+import appeng.crafting.pattern.CraftingPatternItem;
+import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.debug.DebugCardItem;
 import appeng.debug.DebugPartPlacerItem;
 import appeng.debug.EraserItem;
@@ -48,10 +50,7 @@ import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
 import appeng.items.materials.StorageComponentItem;
 import appeng.items.materials.UpgradeCardItem;
-import appeng.items.misc.CrystalSeedItem;
-import appeng.items.misc.EncodedPatternItem;
-import appeng.items.misc.FluidDummyItem;
-import appeng.items.misc.PaintBallItem;
+import appeng.items.misc.*;
 import appeng.items.parts.FacadeItem;
 import appeng.items.storage.BasicFluidStorageCell;
 import appeng.items.storage.BasicItemStorageCellItem;
@@ -142,8 +141,8 @@ public final class AEItems {
 
     public static final ItemDefinition<FacadeItem> FACADE = item(AEItemIds.FACADE, FacadeItem::new);
     public static final ItemDefinition<MaterialItem> BLANK_PATTERN = item(AEItemIds.BLANK_PATTERN, MaterialItem::new);
-    public static final ItemDefinition<EncodedPatternItem> CRAFTING_PATTERN = item(AEItemIds.CRAFTING_PATTERN, p -> new EncodedPatternItem(p.stacksTo(1)));
-    public static final ItemDefinition<EncodedPatternItem> PROCESSING_PATTERN = item(AEItemIds.PROCESSING_PATTERN, p -> new EncodedPatternItem(p.stacksTo(1)));
+    public static final ItemDefinition<CraftingPatternItem> CRAFTING_PATTERN = item(AEItemIds.CRAFTING_PATTERN, p -> new CraftingPatternItem(p.stacksTo(1)));
+    public static final ItemDefinition<ProcessingPatternItem> PROCESSING_PATTERN = item(AEItemIds.PROCESSING_PATTERN, p -> new ProcessingPatternItem(p.stacksTo(1)));
 
     public static final ColoredItemDefinition COLORED_PAINT_BALL = createPaintBalls(AEItemIds.COLORED_PAINT_BALL, false);
     public static final ColoredItemDefinition COLORED_LUMEN_PAINT_BALL = createPaintBalls(AEItemIds.COLORED_LUMEN_PAINT_BALL, true);

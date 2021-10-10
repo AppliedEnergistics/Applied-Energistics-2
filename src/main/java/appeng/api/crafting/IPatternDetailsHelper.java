@@ -48,19 +48,15 @@ public interface IPatternDetailsHelper {
      * Encodes a processing pattern which represents the ability to convert the given inputs into the given outputs
      * using some process external to the ME system.
      *
-     * @param stack If null, a new item will be created to hold the encoded pattern. Otherwise the given item must
-     *              already contains an encoded pattern that will be overwritten.
-     * @param out   The first element is considered the primary output and must be present
+     * @param out The first element is considered the primary output and must be present
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      * @return A new encoded pattern, or the given stack with the pattern encoded in it.
      */
-    ItemStack encodeProcessingPattern(@Nullable ItemStack stack, IAEStack[] in, IAEStack[] out);
+    ItemStack encodeProcessingPattern(IAEStack[] in, IAEStack[] out);
 
     /**
      * Encodes a crafting pattern which represents a Vanilla crafting recipe.
      *
-     * @param stack            If null, a new item will be created to hold the encoded pattern. Otherwise the given item
-     *                         must already contains an encoded pattern that will be overwritten.
      * @param recipe           The Vanilla crafting recipe to be encoded.
      * @param in               The items in the crafting grid, which are used to determine what items are supplied from
      *                         the ME system to craft using this pattern.
@@ -69,6 +65,6 @@ public interface IPatternDetailsHelper {
      *                         recipe.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      */
-    ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in, ItemStack out,
+    ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in, ItemStack out,
             boolean allowSubstitutes);
 }

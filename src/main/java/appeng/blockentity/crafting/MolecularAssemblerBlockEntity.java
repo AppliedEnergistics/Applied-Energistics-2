@@ -70,8 +70,7 @@ import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
 import appeng.crafting.pattern.AECraftingPattern;
-import appeng.crafting.pattern.AEPatternDecoder;
-import appeng.items.misc.EncodedPatternItem;
+import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.menu.NullMenu;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
@@ -244,14 +243,13 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     public void load(final CompoundTag data) {
         super.load(data);
         if (data.contains("myPlan")) {
-            final ItemStack myPat = ItemStack.of(data.getCompound("myPlan"));
+            var myPat = ItemStack.of(data.getCompound("myPlan"));
 
-            if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
-                final Level level = this.getLevel();
-                var details = AEPatternDecoder.INSTANCE.decodePattern(myPat, level, false);
-                if (details instanceof AECraftingPattern craftingPattern) {
+            if (!myPat.isEmpty() && myPat.getItem() instanceof CraftingPatternItem patternItem) {
+                var details = patternItem.decode(myPat, getLevel(), false);
+                if (details != null) {
                     this.forcePlan = true;
-                    this.myPlan = craftingPattern;
+                    this.myPlan = details;
                     this.pushDirection = Direction.values()[data.getInt("pushDirection")];
                 }
             }
@@ -270,15 +268,15 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
         final ItemStack is = this.patternInv.getStackInSlot(0);
 
-        if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
+        if (!is.isEmpty() && is.getItem() instanceof CraftingPatternItem patternItem) {
             if (!ItemStack.isSame(is, this.myPattern)) {
                 final Level level = this.getLevel();
-                var details = AEPatternDecoder.INSTANCE.decodePattern(is, level, false);
+                var details = patternItem.decode(is, level, false);
 
-                if (details instanceof AECraftingPattern craftingPattern) {
+                if (details != null) {
                     this.progress = 0;
                     this.myPattern = is;
-                    this.myPlan = craftingPattern;
+                    this.myPlan = details;
                 }
             }
         } else {
