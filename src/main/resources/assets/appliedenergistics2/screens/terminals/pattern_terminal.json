@@ -52,6 +52,53 @@
       }
     }
   },
+  "tooltips": {
+    "processing-primary-output": {
+      "left": 106,
+      "bottom": 142,
+      "width": 24,
+      "height": 24,
+      "tooltip": [
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.primary_processing_result_tooltip"
+        },
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.primary_processing_result_hint",
+          "color": "#666666"
+        }
+      ]
+    },
+    "processing-optional-output1": {
+      "left": 109,
+      "bottom": 162,
+      "width": 18,
+      "height": 18,
+      "tooltip": [
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_tooltip"
+        },
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_hint",
+          "color": "#666666"
+        }
+      ]
+    },
+    "processing-optional-output2": {
+      "left": 109,
+      "bottom": 116,
+      "width": 18,
+      "height": 18,
+      "tooltip": [
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_tooltip"
+        },
+        {
+          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_hint",
+          "color": "#666666"
+        }
+      ]
+    }
+  },
   "terminalStyle": {
     "header": {
       "texture": "guis/pattern.png",
