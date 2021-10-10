@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -66,8 +67,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
-import appeng.mixins.tags.BlockTagsAccessor;
-import appeng.mixins.tags.ItemTagsAccessor;
 import appeng.parts.BasicStatePart;
 import appeng.util.FakePlayer;
 import appeng.util.IWorldCallable;
@@ -79,9 +78,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
 
-    private static final ITag.INamedTag<Block> BLOCK_BLACKLIST = BlockTagsAccessor.register(TAG_BLACKLIST.toString());
+    private static final ITag<Block> BLOCK_BLACKLIST = TagRegistry.block(TAG_BLACKLIST);
 
-    private static final ITag.INamedTag<Item> ITEM_BLACKLIST = ItemTagsAccessor.register(TAG_BLACKLIST.toString());
+    private static final ITag<Item> ITEM_BLACKLIST = TagRegistry.item(TAG_BLACKLIST);
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
 

@@ -21,6 +21,7 @@ package appeng.items.parts;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -54,7 +55,6 @@ import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
-import appeng.mixins.tags.BlockTagsAccessor;
 
 @EnvironmentInterface(value = EnvType.CLIENT, itf = IAlphaPassItem.class)
 public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem, AEToolItem {
@@ -62,8 +62,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     /**
      * Block tag used to explicitly whitelist blocks for use in facades.
      */
-    private static final ITag.INamedTag<Block> BLOCK_WHITELIST = BlockTagsAccessor
-            .register(AppEng.makeId("whitelisted/facades").toString());
+    private static final ITag<Block> BLOCK_WHITELIST = TagRegistry.block(AppEng.makeId("whitelisted/facades"));
 
     private static final String NBT_ITEM_ID = "item";
 
