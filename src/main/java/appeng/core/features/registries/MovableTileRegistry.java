@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
@@ -36,7 +37,6 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.movable.IMovableTile;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.mixins.tags.BlockTagsAccessor;
 import appeng.spatial.DefaultSpatialHandler;
 
 public class MovableTileRegistry implements IMovableRegistry {
@@ -51,12 +51,12 @@ public class MovableTileRegistry implements IMovableRegistry {
     private final List<IMovableHandler> handlers = new ArrayList<>();
     private final DefaultSpatialHandler dsh = new DefaultSpatialHandler();
     private final IMovableHandler nullHandler = new DefaultSpatialHandler();
-    private final ITag.INamedTag<Block> blockTagWhiteList;
-    private final ITag.INamedTag<Block> blockTagBlackList;
+    private final ITag<Block> blockTagWhiteList;
+    private final ITag<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
-        this.blockTagWhiteList = BlockTagsAccessor.register(TAG_WHITELIST.toString());
-        this.blockTagBlackList = BlockTagsAccessor.register(TAG_BLACKLIST.toString());
+        this.blockTagWhiteList = TagRegistry.block(TAG_WHITELIST);
+        this.blockTagBlackList = TagRegistry.block(TAG_BLACKLIST);
     }
 
     @Override

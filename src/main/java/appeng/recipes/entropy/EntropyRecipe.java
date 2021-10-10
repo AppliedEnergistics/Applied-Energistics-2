@@ -286,4 +286,8 @@ public class EntropyRecipe implements IRecipe<IInventory> {
         }
     }
 
+    @Override
+    public boolean isDynamic() {
+        return true;
+    }
 }

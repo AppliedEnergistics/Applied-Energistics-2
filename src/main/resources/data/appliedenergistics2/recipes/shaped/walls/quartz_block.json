@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["###", "###"],
+  "key": {
+    "#": {
+      "item": "appliedenergistics2:quartz_block"
+    }
+  },
+  "result": {
+    "item": "appliedenergistics2:quartz_wall",
+    "count": 6
+  }
+}

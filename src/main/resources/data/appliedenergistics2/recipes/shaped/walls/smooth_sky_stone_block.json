@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["###", "###"],
+  "key": {
+    "#": {
+      "item": "appliedenergistics2:smooth_sky_stone_block"
+    }
+  },
+  "result": {
+    "item": "appliedenergistics2:smooth_sky_stone_wall",
+    "count": 6
+  }
+}

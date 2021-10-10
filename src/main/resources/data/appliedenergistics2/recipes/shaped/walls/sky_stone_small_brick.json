@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["###", "###"],
+  "key": {
+    "#": {
+      "item": "appliedenergistics2:sky_stone_small_brick"
+    }
+  },
+  "result": {
+    "item": "appliedenergistics2:sky_stone_small_brick_wall",
+    "count": 6
+  }
+}

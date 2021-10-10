@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.fluid.Fluid;
@@ -64,7 +65,6 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
-import appeng.mixins.tags.FluidTagsAccessor;
 import appeng.parts.BasicStatePart;
 import appeng.parts.automation.PlaneConnectionHelper;
 import appeng.parts.automation.PlaneConnections;
@@ -73,8 +73,8 @@ import appeng.util.Platform;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final ITag.INamedTag<Fluid> TAG_BLACKLIST = FluidTagsAccessor
-            .register(AppEng.makeId("blacklisted/fluid_annihilation_plane").toString());
+    public static final ITag<Fluid> TAG_BLACKLIST = TagRegistry
+            .fluid(AppEng.makeId("blacklisted/fluid_annihilation_plane"));
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
             "part/fluid_annihilation_plane_on");
