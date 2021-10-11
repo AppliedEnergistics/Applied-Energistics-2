@@ -25,7 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -37,7 +36,6 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.SkyCompassBlockEntity;
 
 public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
-
     public SkyCompassBlock(BlockBehaviour.Properties props) {
         super(props);
     }
@@ -151,10 +149,4 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
             CollisionContext context) {
         return Shapes.empty();
     }
-
-    @Override
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
-
 }
