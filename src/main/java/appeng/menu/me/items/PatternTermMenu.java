@@ -188,10 +188,10 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             return;
         }
 
-        ItemStack output = this.encodedPatternSlot.getItem();
+        var encodeOutput = this.encodedPatternSlot.getItem();
 
-        final ItemStack[] in = this.getInputs();
-        final ItemStack[] out = this.getOutputs();
+        var in = this.getValidatedInputs();
+        var out = this.getValidatedOutputs();
 
         // if there is no input, this would be silly.
         if (in == null || out == null || isCraftingMode() && currentRecipe == null) {
@@ -199,29 +199,29 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
 
         // first check the output slots, should either be null, or a pattern
-        if (!output.isEmpty() && !craftingHelper.isEncodedPattern(output)) {
+        if (!encodeOutput.isEmpty() && !craftingHelper.isEncodedPattern(encodeOutput)) {
             return;
         } // if nothing is there we should snag a new pattern.
-        else if (output.isEmpty()) {
-            output = this.blankPatternSlot.getItem();
-            if (output.isEmpty() || !isPattern(output)) {
+        else if (encodeOutput.isEmpty()) {
+            var blankPattern = this.blankPatternSlot.getItem();
+            if (!isPattern(blankPattern)) {
                 return; // no blanks.
             }
 
             // remove one, and clear the input slot.
-            output.setCount(output.getCount() - 1);
-            if (output.getCount() == 0) {
+            blankPattern.shrink(1);
+            if (blankPattern.getCount() <= 0) {
                 this.blankPatternSlot.set(ItemStack.EMPTY);
             }
         }
 
+        ItemStack encodedPattern;
         if (this.isCraftingMode()) {
-            output = craftingHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute());
+            encodedPattern = craftingHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute());
         } else {
-            output = craftingHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
+            encodedPattern = craftingHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
         }
-        this.encodedPatternSlot.set(output);
-
+        this.encodedPatternSlot.set(encodedPattern);
     }
 
     private static IAEStack[] toAeStacks(ItemStack... stacks) {
@@ -236,43 +236,39 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         return out;
     }
 
-    private ItemStack[] getInputs() {
-        final ItemStack[] input = new ItemStack[9];
-        boolean hasValue = false;
+    private ItemStack[] getValidatedInputs() {
+        var input = new ItemStack[9];
+        var valid = false;
 
         for (int x = 0; x < this.craftingGridSlots.length; x++) {
             input[x] = this.craftingGridSlots[x].getItem();
             if (!input[x].isEmpty()) {
-                hasValue = true;
+                // At least one input must be set, but it doesn't matter which one
+                valid = true;
             }
         }
 
-        if (hasValue) {
-            return input;
-        }
-
-        return null;
+        return valid ? input : null;
     }
 
-    private ItemStack[] getOutputs() {
+    private ItemStack[] getValidatedOutputs() {
         if (this.isCraftingMode()) {
-            final ItemStack out = this.getAndUpdateOutput();
+            var out = this.getAndUpdateOutput();
 
             if (!out.isEmpty() && out.getCount() > 0) {
                 return new ItemStack[] { out };
             }
         } else {
-            boolean hasValue = false;
-            final ItemStack[] list = new ItemStack[3];
+            var list = new ItemStack[3];
 
             for (int i = 0; i < this.processingOutputSlots.length; i++) {
-                final ItemStack out = this.processingOutputSlots[i].getItem();
-                list[i] = out;
-                if (!out.isEmpty()) {
-                    hasValue = true;
-                }
+                list[i] = this.processingOutputSlots[i].getItem();
+
             }
-            if (hasValue) {
+            if (list[0].isEmpty()) {
+                // The first output slot is required
+                return null;
+            } else {
                 return list;
             }
         }
@@ -523,18 +519,6 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     private static boolean canConvertItemToFluid(Slot slot) {
         var fluidStack = FluidUtil.getFluidContained(slot.getItem());
         return !fluidStack.isEmpty();
-    }
-
-    public FakeCraftingMatrixSlot[] getCraftingGridSlots() {
-        return craftingGridSlots;
-    }
-
-    public OptionalFakeSlot[] getProcessingOutputSlots() {
-        return processingOutputSlots;
-    }
-
-    public PatternTermSlot getCraftOutputSlot() {
-        return craftOutputSlot;
     }
 
 }
