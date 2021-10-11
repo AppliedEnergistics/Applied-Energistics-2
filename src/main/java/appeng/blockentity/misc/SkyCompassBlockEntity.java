@@ -18,16 +18,25 @@
 
 package appeng.blockentity.misc;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.blockentity.AEBaseBlockEntity;
+import appeng.client.render.model.AEModelData;
 
 public class SkyCompassBlockEntity extends AEBaseBlockEntity {
-
     public SkyCompassBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
     }
 
+    @Nullable
+    @Override
+    public Object getRenderAttachmentData() {
+        // Flip forward/up for rendering, the base model
+        // is facing up without any rotation
+        return new AEModelData(getForward(), getUp());
+    }
 }
