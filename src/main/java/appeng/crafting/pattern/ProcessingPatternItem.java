@@ -1,5 +1,8 @@
 package appeng.crafting.pattern;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -41,7 +44,11 @@ public class ProcessingPatternItem extends EncodedPatternItem {
     }
 
     public ItemStack encode(IAEStack[] sparseInputs, IAEStack[] sparseOutputs) {
-        Preconditions.checkNotNull(sparseInputs[0]);
+        if (Arrays.stream(sparseInputs).noneMatch(Objects::nonNull)) {
+            throw new IllegalArgumentException("At least one input must be non-null.");
+        }
+        Preconditions.checkNotNull(sparseOutputs[0],
+                "The first (primary) output must be non-null.");
         checkItemsOrFluids(sparseInputs);
         checkItemsOrFluids(sparseOutputs);
 
