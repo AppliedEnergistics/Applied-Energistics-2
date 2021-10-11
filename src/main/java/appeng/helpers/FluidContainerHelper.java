@@ -12,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.storage.data.IAEFluidStack;
 
 public final class FluidContainerHelper {
-
     private FluidContainerHelper() {
     }
 
@@ -22,6 +21,10 @@ public final class FluidContainerHelper {
 
     @Nullable
     public static IAEFluidStack getContainedFluid(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return null;
+        }
+
         var content = StorageUtil.findExtractableContent(
                 getReadOnlyStorage(stack), null);
         if (content != null) {
@@ -33,10 +36,18 @@ public final class FluidContainerHelper {
 
     @Nullable
     public static FluidVariant getContainedFluidVariant(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return null;
+        }
+
         return StorageUtil.findExtractableResource(getReadOnlyStorage(stack), null);
     }
 
     public static Storage<FluidVariant> getReadOnlyStorage(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return null;
+        }
+
         return ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
     }
 }
