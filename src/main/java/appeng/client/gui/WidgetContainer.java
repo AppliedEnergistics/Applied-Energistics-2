@@ -307,6 +307,18 @@ public class WidgetContainer {
         return null;
     }
 
+    /**
+     * Check if there's any content or compound widget at the given screen-relative mouse position.
+     */
+    public boolean hitTest(Point mousePos) {
+        for (var widget : compositeWidgets.values()) {
+            if (mousePos.isIn(widget.getBounds())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // NOTE: Vanilla's implementation of Rect2i is broken since it uses less-than-equal to compare against x+width,
     // rather than less-than.
     private static boolean contains(Rect2i area, int mouseX, int mouseY) {
