@@ -30,6 +30,7 @@ import net.minecraft.world.level.ItemLike;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
 
 public class MatterCannonAmmoProvider extends AE2RecipeProvider {
     public MatterCannonAmmoProvider(DataGenerator generator) {
@@ -65,8 +66,8 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
         registerAmmoTag(consumer, "nuggets/titanium", new ResourceLocation("c:titanium_nuggets"), 47.867f);
         registerAmmoTag(consumer, "nuggets/vanadium", new ResourceLocation("c:vanadium_nuggets"), 50.9415f);
         registerAmmoTag(consumer, "nuggets/manganese", new ResourceLocation("c:manganese_nuggets"), 54.938f);
-        registerAmmoTag(consumer, "nuggets/iron", new ResourceLocation("c:iron_nuggets"), 55.845f);
-        registerAmmoTag(consumer, "nuggets/gold", new ResourceLocation("c:gold_nuggets"), 196.96655f);
+        registerAmmoTag(consumer, "nuggets/iron", ConventionTags.IRON_NUGGET.getName(), 55.845f);
+        registerAmmoTag(consumer, "nuggets/gold", ConventionTags.GOLD_NUGGET.getName(), 196.96655f);
         registerAmmoTag(consumer, "nuggets/nickel", new ResourceLocation("c:nickel_nuggets"), 58.6934f);
         registerAmmoTag(consumer, "nuggets/cobalt", new ResourceLocation("c:cobalt_nuggets"), 58.9332f);
         registerAmmoTag(consumer, "nuggets/copper", new ResourceLocation("c:copper_nuggets"), 63.546f);
