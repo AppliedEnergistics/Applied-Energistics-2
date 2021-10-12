@@ -27,6 +27,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,17 +39,14 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
-import appeng.hooks.ICustomDurabilityBar;
 import appeng.items.AEBaseItem;
 
-public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage, ICustomDurabilityBar {
+public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
     private final DoubleSupplier powerCapacity;
 
     public AEBasePoweredItem(final DoubleSupplier powerCapacity, Item.Properties props) {
         super(props);
-        // FIXME this.setFull3D();
-
         this.powerCapacity = powerCapacity;
     }
 
@@ -84,13 +82,19 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    public boolean isBarVisible(ItemStack itemStack) {
         return true;
     }
 
     @Override
-    public double getDurabilityForDisplay(final ItemStack is) {
-        return 1 - this.getAECurrentPower(is) / this.getAEMaxPower(is);
+    public int getBarWidth(ItemStack itemStack) {
+        return (int) (13.0 - this.getAECurrentPower(itemStack) / this.getAEMaxPower(itemStack) * 13.0);
+    }
+
+    @Override
+    public int getBarColor(ItemStack itemStack) {
+        // This is the standard green color of full durability bars
+        return Mth.hsvToRgb(1 / 3.0F, 1.0F, 1.0F);
     }
 
     @Override
