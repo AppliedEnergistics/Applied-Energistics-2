@@ -566,6 +566,17 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int screenX, int screenY, int button) {
+        // Consider clicks within attached compound widgets as still inside the screen
+        var mousePos = new Point((int) Math.round(mouseX - screenX), (int) Math.round(mouseY - screenY));
+        if (widgets.hitTest(mousePos)) {
+            return false;
+        }
+
+        return super.hasClickedOutside(mouseX, mouseY, screenX, screenY, button);
+    }
+
+    @Override
     protected boolean checkHotbarKeyPressed(int keyCode, int scanCode) {
         return checkHotbarKeys(InputConstants.getKey(keyCode, scanCode));
     }
