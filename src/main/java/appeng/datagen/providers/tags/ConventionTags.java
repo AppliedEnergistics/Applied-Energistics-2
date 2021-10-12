@@ -68,9 +68,11 @@ public final class ConventionTags {
     public static Tag.Named<Item> FLUIX_DUST = tag("c:fluix_dusts");
     public static Tag.Named<Item> FLUIX_CRYSTAL = tag("c:fluix");
 
+    public static Tag.Named<Item> GOLD_NUGGET = tag("c:gold_nuggets");
     public static Tag.Named<Item> GOLD_INGOT = tag("c:gold_ingots");
     public static Tag.Named<Item> GOLD_ORE = tag("c:gold_ores");
 
+    public static Tag.Named<Item> IRON_NUGGET = tag("c:iron_nuggets");
     public static Tag.Named<Item> IRON_INGOT = tag("c:iron_ingots");
     public static Tag.Named<Item> IRON_ORE = tag("c:iron_ores");
 
