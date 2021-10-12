@@ -139,6 +139,9 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         tag(ConventionTags.NETHER_QUARTZ_ORE)
                 .add(Items.NETHER_QUARTZ_ORE);
 
+        tag(ConventionTags.COPPER_INGOT)
+                .add(Items.COPPER_INGOT);
+
         tag(ConventionTags.GOLD_NUGGET)
                 .add(Items.GOLD_NUGGET);
 
