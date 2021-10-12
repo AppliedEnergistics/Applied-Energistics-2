@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
@@ -43,6 +44,10 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     @Override
     protected void addTags() {
         copyBlockTags();
+
+        // Forge is missing this tag right now
+        tag(ConventionTags.COPPER_INGOT)
+                .add(Items.COPPER_INGOT);
 
         // Provide empty blacklist tags
         tag(AETags.ANNIHILATION_PLANE_ITEM_BLACKLIST);

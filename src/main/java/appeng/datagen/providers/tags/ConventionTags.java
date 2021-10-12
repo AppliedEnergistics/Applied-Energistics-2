@@ -69,6 +69,8 @@ public final class ConventionTags {
     public static Tag.Named<Item> FLUIX_DUST = tag("forge:dusts/fluix");
     public static Tag.Named<Item> FLUIX_CRYSTAL = tag("forge:gems/fluix");
 
+    public static Tag.Named<Item> COPPER_INGOT = tag("forge:ingots/copper");
+
     public static Tag.Named<Item> GOLD_NUGGET = Tags.Items.NUGGETS_GOLD;
     public static Tag.Named<Item> GOLD_INGOT = Tags.Items.INGOTS_GOLD;
     public static Tag.Named<Item> GOLD_ORE = Tags.Items.ORES_GOLD;
