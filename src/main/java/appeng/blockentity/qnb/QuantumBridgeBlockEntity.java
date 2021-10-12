@@ -144,6 +144,8 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         if (this.getBlockState().getBlock() == quantumRing.block()) {
             this.getMainNode().setVisualRepresentation(quantumRing.stack());
         }
+
+        this.updateStatus = true;
     }
 
     @Override
