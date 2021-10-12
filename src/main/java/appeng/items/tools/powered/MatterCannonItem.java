@@ -349,7 +349,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         hasDestroyed = true;
                         entityHit.discard();
                     } else if (entityHit.hurt(dmgSrc, dmg)) {
-                        hasDestroyed = true;
+                        hasDestroyed = !entityHit.isAlive();
                     }
                 } else if (pos instanceof BlockHitResult blockResult) {
 
