@@ -33,9 +33,4 @@ public class CraftingRecipeTransferHandler extends RecipeTransferHandler<Craftin
         return null;
     }
 
-    @Override
-    protected boolean isCrafting() {
-        return true;
-    }
-
 }

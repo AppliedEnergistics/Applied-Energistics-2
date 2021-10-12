@@ -44,9 +44,4 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
         return null;
     }
 
-    @Override
-    protected boolean isCrafting() {
-        return false;
-    }
-
 }

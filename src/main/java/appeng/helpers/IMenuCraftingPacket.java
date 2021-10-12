@@ -20,7 +20,6 @@ package appeng.helpers;
 
 import java.util.List;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
@@ -34,10 +33,9 @@ public interface IMenuCraftingPacket {
     IGridNode getNetworkNode();
 
     /**
-     * @param string name of inventory
-     * @return the inventory of the part/block entity by name.
+     * @return the inventory used for the crafting matrix.
      */
-    InternalInventory getSubInventory(ResourceLocation id);
+    InternalInventory getCraftingMatrix();
 
     /**
      * @return who are we?
