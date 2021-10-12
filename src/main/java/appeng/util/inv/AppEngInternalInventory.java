@@ -163,6 +163,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
     public void writeToNBT(CompoundTag data, String name) {
         if (isEmpty()) {
+            data.remove(name);
             return;
         }
 
