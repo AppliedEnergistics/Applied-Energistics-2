@@ -105,11 +105,6 @@ public class CraftingRecipeTransferHandler
         return null;
     }
 
-    @Override
-    protected boolean isCrafting() {
-        return true;
-    }
-
     private static class TransferWarning implements IRecipeTransferError {
 
         private final IRecipeTransferError parent;

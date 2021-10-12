@@ -56,7 +56,6 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.me.items.PatternTermMenu;
-import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
@@ -80,10 +79,8 @@ public class JEIRecipePacket extends BasePacket {
      */
     @Nullable
     private Recipe<?> recipe;
-    private boolean crafting;
 
     public JEIRecipePacket(final FriendlyByteBuf stream) {
-        this.crafting = stream.readBoolean();
         this.recipeId = new ResourceLocation(stream.readUtf());
 
         int inlineRecipeType = stream.readVarInt();
@@ -101,8 +98,8 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * Sends a recipe identified by the given recipe ID to the server for either filling a crafting grid or a pattern.
      */
-    public JEIRecipePacket(final ResourceLocation recipeId, final boolean crafting) {
-        FriendlyByteBuf data = createCommonHeader(recipeId, crafting, INLINE_RECIPE_NONE);
+    public JEIRecipePacket(ResourceLocation recipeId) {
+        FriendlyByteBuf data = createCommonHeader(recipeId, INLINE_RECIPE_NONE);
         this.configureWrite(data);
     }
 
@@ -111,17 +108,16 @@ public class JEIRecipePacket extends BasePacket {
      * <p>
      * Prefer the id-based constructor above whereever possible.
      */
-    public JEIRecipePacket(final ShapedRecipe recipe, final boolean crafting) {
-        FriendlyByteBuf data = createCommonHeader(recipe.getId(), crafting, INLINE_RECIPE_SHAPED);
+    public JEIRecipePacket(ShapedRecipe recipe) {
+        FriendlyByteBuf data = createCommonHeader(recipe.getId(), INLINE_RECIPE_SHAPED);
         RecipeSerializer.SHAPED_RECIPE.toNetwork(data, recipe);
         this.configureWrite(data);
     }
 
-    private FriendlyByteBuf createCommonHeader(ResourceLocation recipeId, boolean crafting, int inlineRecipeType) {
+    private FriendlyByteBuf createCommonHeader(ResourceLocation recipeId, int inlineRecipeType) {
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
-        data.writeBoolean(crafting);
         data.writeResourceLocation(recipeId);
         data.writeVarInt(inlineRecipeType);
 
@@ -165,12 +161,11 @@ public class JEIRecipePacket extends BasePacket {
 
         var energy = grid.getService(IEnergyService.class);
         var crafting = grid.getService(ICraftingService.class);
-        var craftMatrix = cct.getSubInventory(PatternTerminalPart.INV_CRAFTING);
+        var craftMatrix = cct.getCraftingMatrix();
 
-        final IMEMonitor<IAEItemStack> storage = inv
-                .getInventory(StorageChannels.items());
-        final IPartitionList<IAEItemStack> filter = ViewCellItem.createFilter(cct.getViewCells());
-        final NonNullList<Ingredient> ingredients = this.ensure3by3CraftingMatrix(recipe);
+        var storage = inv.getInventory(StorageChannels.items());
+        var filter = ViewCellItem.createFilter(cct.getViewCells());
+        var ingredients = this.ensure3by3CraftingMatrix(recipe);
 
         // Handle each slot
         for (int x = 0; x < craftMatrix.size(); x++) {
@@ -244,9 +239,7 @@ public class JEIRecipePacket extends BasePacket {
             craftMatrix.setItemDirect(x, currentItem);
         }
 
-        if (!this.crafting) {
-            this.handleProcessing(con, cct, recipe);
-        }
+        handleProcessing(con, recipe);
 
         con.slotsChanged(craftMatrix.toContainer());
     }
@@ -342,13 +335,10 @@ public class JEIRecipePacket extends BasePacket {
                 .orElse(null);
     }
 
-    private void handleProcessing(AbstractContainerMenu con, IMenuCraftingPacket cct, Recipe<?> recipe) {
+    private void handleProcessing(AbstractContainerMenu con, Recipe<?> recipe) {
         if (con instanceof PatternTermMenu patternTerm) {
             if (!patternTerm.craftingMode) {
-                var output = cct.getSubInventory(PatternTerminalPart.INV_OUTPUT);
-                output.setItemDirect(0, recipe.getResultItem());
-                output.setItemDirect(1, ItemStack.EMPTY);
-                output.setItemDirect(2, ItemStack.EMPTY);
+                patternTerm.setProcessingResult(recipe.getResultItem());
             }
         }
     }

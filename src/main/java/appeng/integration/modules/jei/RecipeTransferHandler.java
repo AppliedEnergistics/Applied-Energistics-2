@@ -91,7 +91,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
 
         if (doTransfer && this.canTransfer(error)) {
             if (canSendReference) {
-                NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId, isCrafting()));
+                NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId));
             } else {
                 // To avoid earlier problems of too large packets being sent that crashed the client, as a fallback when
                 // the recipe ID could not be resolved, we'll just send the displayed items.
@@ -123,7 +123,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
                 }
 
                 ShapedRecipe fallbackRecipe = new ShapedRecipe(recipeId, "", 3, 3, flatIngredients, output);
-                NetworkHandler.instance().sendToServer(new JEIRecipePacket(fallbackRecipe, isCrafting()));
+                NetworkHandler.instance().sendToServer(new JEIRecipePacket(fallbackRecipe));
             }
         }
 
@@ -137,8 +137,6 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
 
     protected abstract IRecipeTransferError doTransferRecipe(T menu, R recipe, IRecipeLayout recipeLayout,
             Player player, boolean maxTransfer);
-
-    protected abstract boolean isCrafting();
 
     private boolean canTransfer(IRecipeTransferError error) {
         return error == null || error.getType() == Type.COSMETIC;

@@ -20,7 +20,6 @@ package appeng.menu.me.items;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -110,8 +109,8 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
     }
 
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
-        return this.craftingInventoryHost.getSubInventory(id);
+    public InternalInventory getCraftingMatrix() {
+        return this.craftingInventoryHost.getSubInventory(CraftingTerminalPart.INV_CRAFTING);
     }
 
     @Override

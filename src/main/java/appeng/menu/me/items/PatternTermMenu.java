@@ -18,14 +18,9 @@
 
 package appeng.menu.me.items;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.inventory.ResultSlot;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -55,12 +50,7 @@ import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.slot.FakeCraftingMatrixSlot;
-import appeng.menu.slot.IOptionalSlotHost;
-import appeng.menu.slot.OptionalFakeSlot;
-import appeng.menu.slot.PatternOutputsSlot;
-import appeng.menu.slot.PatternTermSlot;
-import appeng.menu.slot.RestrictedInputSlot;
+import appeng.menu.slot.*;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
 import appeng.util.fluid.AEFluidStack;
@@ -435,8 +425,8 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     }
 
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
-        return this.getPatternTerminal().getSubInventory(id);
+    public InternalInventory getCraftingMatrix() {
+        return this.getPatternTerminal().getSubInventory(PatternTerminalPart.INV_CRAFTING);
     }
 
     @Override
@@ -521,4 +511,13 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         return !fluidStack.isEmpty();
     }
 
+    public void setProcessingResult(ItemStack resultItem) {
+        for (int i = 0; i < processingOutputSlots.length; i++) {
+            if (i == 0) {
+                processingOutputSlots[i].set(resultItem);
+            } else {
+                processingOutputSlots[i].set(ItemStack.EMPTY);
+            }
+        }
+    }
 }
