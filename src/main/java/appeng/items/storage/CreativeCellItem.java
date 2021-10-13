@@ -20,8 +20,15 @@ package appeng.items.storage;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -30,17 +37,24 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.api.storage.data.IAEStack;
+import appeng.helpers.FluidCellConfig;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
+import appeng.me.storage.CreativeCellInventory;
 
-public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenchItem {
+public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
-    public CreativeStorageCellItem(Item.Properties props) {
+    private final IStorageChannel<?> storageChannel;
+
+    public CreativeCellItem(Properties props, IStorageChannel<?> storageChannel) {
         super(props);
+        this.storageChannel = storageChannel;
     }
 
     @Override
@@ -50,7 +64,11 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
     @Override
     public InternalInventory getConfigInventory(final ItemStack is) {
-        return new CellConfig(is);
+        if (this.storageChannel == StorageChannels.fluids()) {
+            return new FluidCellConfig(is);
+        } else {
+            return new CellConfig(is);
+        }
     }
 
     @Override
@@ -60,23 +78,37 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
     @Override
     public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    }
 
+    @NotNull
+    @Override
+    public IStorageChannel<?> getChannel() {
+        return this.storageChannel;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
-        var inventory = StorageCells.getCellInventory(stack, null, StorageChannels.items());
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines, TooltipFlag advancedTooltips) {
+        var inventory = StorageCells.getCellInventory(stack, null, storageChannel);
 
-        if (inventory instanceof ICellInventoryHandler) {
-            final CellConfig cc = new CellConfig(stack);
+        if (inventory != null) {
+            var cc = getConfigInventory(stack);
 
-            for (final ItemStack is : cc) {
+            for (var is : cc) {
                 if (!is.isEmpty()) {
                     lines.add(is.getHoverName());
                 }
             }
         }
+    }
+
+    @Nullable
+    public <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(IStorageChannel<T> channel,
+            ItemStack stack) {
+        Preconditions.checkArgument(stack.getItem() == this);
+        if (this.storageChannel == channel) {
+            return CreativeCellInventory.getCell(channel, stack);
+        }
+        return null;
     }
 }

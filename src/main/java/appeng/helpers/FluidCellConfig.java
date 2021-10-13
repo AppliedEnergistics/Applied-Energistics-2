@@ -27,14 +27,12 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-import appeng.core.definitions.AEItems;
+import appeng.api.storage.StorageChannels;
 import appeng.items.contents.CellConfig;
-import appeng.items.misc.FluidDummyItem;
 
 /**
- * @author DrummerMC
- * @version rv6 - 2018-01-22
- * @since rv6 2018-01-22
+ * Implements a cell config inventory that uses the item-stack serialization provided by a storage channel to save a
+ * filter.
  */
 public class FluidCellConfig extends CellConfig {
     public FluidCellConfig(ItemStack is) {
@@ -44,56 +42,42 @@ public class FluidCellConfig extends CellConfig {
     @Override
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
-            super.insertItem(slot, stack, simulate);
-        }
-        Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent()) {
+        var configuredStack = StorageChannels.fluids().createStack(stack);
+        if (configuredStack == null) {
+            // Was unable to convert the given item stack to the target storage channel
             return stack;
         }
         FluidStack fluid = fluidOpt.orElse(null);
 
-        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
-        FluidDummyItem item = (FluidDummyItem) is.getItem();
-        item.setFluidStack(is, fluid);
-        return super.insertItem(slot, is, simulate);
+        return super.insertItem(slot, configuredStack.asItemStackRepresentation(), simulate);
     }
 
     @Override
     public void setItemDirect(int slot, @Nonnull ItemStack stack) {
-        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
-            super.setItemDirect(slot, stack);
-        }
-        Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent()) {
-            return;
+        if (!stack.isEmpty()) {
+            var configuredStack = StorageChannels.fluids().createStack(stack);
+            if (configuredStack == null) {
+                // Was unable to convert the given item stack to the target storage channel
+                return;
+            }
+            stack = configuredStack.asItemStackRepresentation();
         }
         FluidStack fluid = fluidOpt.orElse(null);
 
-        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
-        FluidDummyItem item = (FluidDummyItem) is.getItem();
-        item.setFluidStack(is, fluid);
-        super.setItemDirect(slot, is);
+        super.setItemDirect(slot, stack);
     }
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
-            super.isItemValid(slot, stack);
+        if (!stack.isEmpty()) {
+            var configuredStack = StorageChannels.fluids().createStack(stack);
+            if (configuredStack == null) {
+                // Was unable to convert the given item stack to the target storage channel
+                return false;
+            }
+            stack = configuredStack.asItemStackRepresentation();
         }
-        Optional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
-        if (!fluidOpt.isPresent()) {
-            return false;
-        }
-        FluidStack fluid = fluidOpt.orElse(null);
-
-        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
-        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
-        FluidDummyItem item = (FluidDummyItem) is.getItem();
-        item.setFluidStack(is, fluid);
-        return super.isItemValid(slot, is);
+        return super.isItemValid(slot, stack);
     }
 
 }
