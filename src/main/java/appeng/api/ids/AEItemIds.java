@@ -68,7 +68,8 @@ public final class AEItemIds {
     public static final ResourceLocation SPATIAL_CELL_2 = id("2_cubed_spatial_storage_cell");
     public static final ResourceLocation SPATIAL_CELL_16 = id("16_cubed_spatial_storage_cell");
     public static final ResourceLocation SPATIAL_CELL_128 = id("128_cubed_spatial_storage_cell");
-    public static final ResourceLocation ITEM_CELL_CREATIVE = id("creative_item_storage_cell");
+    public static final ResourceLocation ITEM_CELL_CREATIVE = id("creative_item_cell");
+    public static final ResourceLocation FLUID_CELL_CREATIVE = id("creative_fluid_cell");
     public static final ResourceLocation PORTABLE_ITEM_CELL1K = id("1k_portable_item_cell");
     public static final ResourceLocation PORTABLE_ITEM_CELL4K = id("4k_portable_item_cell");
     public static final ResourceLocation PORTABLE_ITEM_CELL16K = id("16k_portable_item_cell");

@@ -31,13 +31,11 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
@@ -171,13 +169,10 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         }
 
         var inv = getConfigInventory();
+        var is = getWorkbenchItem();
+        var channel = getHost().getCell().getChannel();
 
-        final ItemStack is = getWorkbenchItem();
-        final IStorageChannel<?> channel = is.getItem() instanceof IStorageCell
-                ? ((IStorageCell<?>) is.getItem()).getChannel()
-                : StorageChannels.items();
-
-        Iterator<? extends IAEStack> i = iterateCellItems(is, channel);
+        var i = iterateCellItems(is, channel);
 
         for (int x = 0; x < inv.size(); x++) {
             if (i.hasNext()) {

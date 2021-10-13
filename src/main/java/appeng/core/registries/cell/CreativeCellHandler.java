@@ -21,27 +21,25 @@ package appeng.core.registries.cell;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ISaveProvider;
-import appeng.items.storage.CreativeStorageCellItem;
-import appeng.me.storage.CreativeCellInventory;
+import appeng.api.storage.data.IAEStack;
+import appeng.items.storage.CreativeCellItem;
 
 public final class CreativeCellHandler implements ICellHandler {
-
     @Override
-    public boolean isCell(final ItemStack is) {
-        return !is.isEmpty() && is.getItem() instanceof CreativeStorageCellItem;
+    public boolean isCell(ItemStack is) {
+        return !is.isEmpty() && is.getItem() instanceof CreativeCellItem;
     }
 
     @Override
-    public ICellInventoryHandler getCellInventory(final ItemStack is, final ISaveProvider container,
-            final IStorageChannel channel) {
-        if (channel == StorageChannels.items() && !is.isEmpty()
-                && is.getItem() instanceof CreativeStorageCellItem) {
-            return CreativeCellInventory.getCell(is);
+    public <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is,
+            ISaveProvider container,
+            IStorageChannel<T> channel) {
+        if (!is.isEmpty() && is.getItem() instanceof CreativeCellItem creativeCellItem) {
+            return creativeCellItem.getCellInventory(channel, is);
         }
         return null;
     }
