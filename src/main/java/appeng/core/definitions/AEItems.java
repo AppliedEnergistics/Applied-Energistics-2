@@ -32,6 +32,7 @@ import net.minecraft.world.item.Rarity;
 
 import appeng.api.config.Upgrades;
 import appeng.api.ids.AEItemIds;
+import appeng.api.storage.StorageChannels;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
@@ -53,7 +54,7 @@ import appeng.items.misc.*;
 import appeng.items.parts.FacadeItem;
 import appeng.items.storage.BasicFluidStorageCell;
 import appeng.items.storage.BasicItemStorageCellItem;
-import appeng.items.storage.CreativeStorageCellItem;
+import appeng.items.storage.CreativeCellItem;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
@@ -214,7 +215,8 @@ public final class AEItems {
     /// CELLS
     ///
 
-    public static final ItemDefinition<CreativeStorageCellItem> CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeStorageCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
+    public static final ItemDefinition<CreativeCellItem> ITEM_CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC), StorageChannels.items()));
+    public static final ItemDefinition<CreativeCellItem> FLUID_CELL_CREATIVE = item(AEItemIds.FLUID_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC), StorageChannels.fluids()));
     public static final ItemDefinition<ViewCellItem> VIEW_CELL = item(AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1)));
 
     public static final ItemDefinition<BasicItemStorageCellItem> CELL1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8));

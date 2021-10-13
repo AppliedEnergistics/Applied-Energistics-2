@@ -20,12 +20,15 @@ package appeng.items.storage;
 
 import java.util.Collection;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEItemStack;
@@ -128,5 +131,11 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     @Override
     public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
+    }
+
+    @NotNull
+    @Override
+    public IStorageChannel<?> getChannel() {
+        return StorageChannels.items();
     }
 }
