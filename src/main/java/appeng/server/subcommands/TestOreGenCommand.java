@@ -50,9 +50,11 @@ import appeng.server.ISubCommand;
 public class TestOreGenCommand implements ISubCommand {
 
     private final BlockState quartzOre;
+    private final BlockState deepslateQuartzOre;
 
     public TestOreGenCommand() {
         quartzOre = AEBlocks.QUARTZ_ORE.block().defaultBlockState();
+        deepslateQuartzOre = AEBlocks.DEEPSLATE_QUARTZ_ORE.block().defaultBlockState();
     }
 
     @Override
@@ -83,16 +85,33 @@ public class TestOreGenCommand implements ISubCommand {
             }
         }
 
-        AggregatedStats oreCount = AggregatedStats.create(stats.chunks, cs -> (double) cs.quartzOreCount);
-        List<ChunkStats> chunksWithOre = stats.chunks.stream().filter(c -> c.quartzOreCount > 0)
-                .collect(Collectors.toList());
-        AggregatedStats minHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.minHeight);
-        AggregatedStats maxHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.maxHeight);
-
         sendLine(sender, "Checked %d chunks", stats.chunks.size());
-        sendLine(sender, "  Count: %s", oreCount);
+
+        /*
+         * Report on normal quartz ore.
+         */
+        var oreCount = AggregatedStats.create(stats.chunks, cs -> (double) cs.quartzOreCount);
+        var chunksWithOre = stats.chunks.stream().filter(c -> c.quartzOreCount > 0)
+                .collect(Collectors.toList());
+        var minHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.minHeight);
+        var maxHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.maxHeight);
+
+        sendLine(sender, "  Normal Quartz Ore: %s", oreCount);
         sendLine(sender, "  Min-Height: %s", minHeight);
         sendLine(sender, "  Max-Height: %s", maxHeight);
+
+        /*
+         * Report on deepslate quartz ore.
+         */
+        var deepslateOreCount = AggregatedStats.create(stats.chunks, cs -> (double) cs.deepslateQuartzOreCount);
+        var chunksWithDeeepslateOre = stats.chunks.stream().filter(c -> c.deepslateQuartzOreCount > 0)
+                .collect(Collectors.toList());
+        var deepslateMinHeight = AggregatedStats.create(chunksWithDeeepslateOre, cs -> (double) cs.deepslateMinHeight);
+        var deepslateMaxHeight = AggregatedStats.create(chunksWithDeeepslateOre, cs -> (double) cs.deepslateMaxHeight);
+
+        sendLine(sender, "  Deepslate Quartz Ore: %s", deepslateOreCount);
+        sendLine(sender, "  Min-Height: %s", deepslateMinHeight);
+        sendLine(sender, "  Max-Height: %s", deepslateMaxHeight);
     }
 
     private void checkChunk(CommandSourceStack sender, ServerLevel level, ChunkPos cp, Stats stats) {
@@ -117,6 +136,10 @@ public class TestOreGenCommand implements ISubCommand {
                         chunkStats.minHeight = Math.min(chunkStats.minHeight, y);
                         chunkStats.maxHeight = Math.max(chunkStats.maxHeight, y);
                         chunkStats.quartzOreCount++;
+                    } else if (state == deepslateQuartzOre) {
+                        chunkStats.deepslateMinHeight = Math.min(chunkStats.deepslateMinHeight, y);
+                        chunkStats.deepslateMaxHeight = Math.max(chunkStats.deepslateMaxHeight, y);
+                        chunkStats.deepslateQuartzOreCount++;
                     }
                 }
             }
@@ -136,6 +159,10 @@ public class TestOreGenCommand implements ISubCommand {
         public int quartzOreCount = 0;
         public int minHeight = Integer.MAX_VALUE;
         public int maxHeight = Integer.MIN_VALUE;
+
+        public int deepslateQuartzOreCount = 0;
+        public int deepslateMinHeight = Integer.MAX_VALUE;
+        public int deepslateMaxHeight = Integer.MIN_VALUE;
     }
 
     private static class AggregatedStats {

@@ -116,6 +116,7 @@ public final class AEBlocks {
 
     // spotless:off
     public static final BlockDefinition<QuartzOreBlock> QUARTZ_ORE = block(AEBlockIds.QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<QuartzOreBlock> DEEPSLATE_QUARTZ_ORE = block(AEBlockIds.DEEPSLATE_QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<MatrixFrameBlock> MATRIX_FRAME = block(AEBlockIds.MATRIX_FRAME, MatrixFrameBlock::new);
 
     public static final BlockDefinition<AEDecorativeBlock> QUARTZ_BLOCK = block(AEBlockIds.QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
