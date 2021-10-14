@@ -23,21 +23,30 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.AccessRestriction;
@@ -107,8 +116,13 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
     @Override
     public IAEFluidStack injectItems(IAEFluidStack input, Actionable type, IActionSource src) {
-        if (this.blocked || input == null || input.getStackSize() < FluidConstants.BUCKET) {
+        if (this.blocked || input == null || input.getStackSize() < FluidConstants.BLOCK) {
             // need a full bucket
+            return input;
+        }
+
+        // We do not support placing fluids with NBT for now
+        if (input.getFluid().hasNbt()) {
             return input;
         }
 
@@ -118,32 +132,79 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         final BlockPos pos = te.getBlockPos().relative(side);
         final BlockState state = level.getBlockState(pos);
 
-        if (this.canReplace(level, state, pos)) {
+        var fluid = input.getFluid().getFluid();
+
+        if (this.canPlace(level, state, pos, fluid)) {
             if (type == Actionable.MODULATE) {
-                // TODO FABRIC 117
-                throw new NotImplementedException("NYI");
-//                final FluidStack fs = input.getFluidStack();
-//                fs.setAmount(FluidConstants.BUCKET);
-//
-//                final FluidTank tank = new FluidTank(FluidConstants.BUCKET);
-//                tank.fill(fs, Storage<FluidVariant>.FluidAction.EXECUTE);
-//
-//                FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerLevel) level);
-//                if (!FluidUtil.tryPlaceFluid(fakePlayer, level, InteractionHand.MAIN_HAND, pos, tank, fs)) {
-//                    return input;
-//                }
+                // Placing water in nether voids the fluid, but plays effects
+                if (level.dimensionType().ultraWarm() && fluid.is(FluidTags.WATER)) {
+                    playEvaporationEffect(level, pos);
+                } else if (state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer
+                        && fluid == Fluids.WATER) {
+                    liquidBlockContainer.placeLiquid(level, pos, state, ((FlowingFluid) fluid).getSource(false));
+                    playEmptySound(level, pos, fluid);
+                } else {
+                    if (state.canBeReplaced(fluid) && !state.getMaterial().isLiquid()) {
+                        level.destroyBlock(pos, true);
+                    }
+
+                    if (!level.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE)
+                            && !state.getFluidState().isSource()) {
+                        return input;
+                    } else {
+                        playEmptySound(level, pos, fluid);
+                    }
+                }
             }
-            final IAEFluidStack ret = input.copy();
-            ret.setStackSize(input.getStackSize() - FluidConstants.BUCKET);
+
+            var ret = input.copy();
+            ret.decStackSize(FluidConstants.BLOCK);
             return ret.getStackSize() == 0 ? null : ret;
         }
         this.blocked = true;
         return input;
     }
 
-    private boolean canReplace(Level level, BlockState state, BlockPos pos) {
-        return state.getMaterial().isReplaceable() && level.getFluidState(pos).isEmpty()
-                && !state.getMaterial().isLiquid();
+    private void playEmptySound(Level level, BlockPos pos, Fluid fluid) {
+        SoundEvent soundEvent = fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
+        level.playSound(null, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.gameEvent(GameEvent.FLUID_PLACE, pos);
+    }
+
+    private void playEvaporationEffect(Level level, BlockPos pos) {
+        level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
+                2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
+
+        for (int l = 0; l < 8; ++l) {
+            level.addParticle(
+                    ParticleTypes.LARGE_SMOKE,
+                    (double) pos.getX() + Math.random(),
+                    (double) pos.getY() + Math.random(),
+                    (double) pos.getZ() + Math.random(),
+                    0.0D,
+                    0.0D,
+                    0.0D);
+        }
+    }
+
+    /**
+     * Checks from {@link net.minecraft.world.item.BucketItem#emptyContents}
+     */
+    private boolean canPlace(Level level, BlockState state, BlockPos pos, Fluid fluid) {
+        if (!(fluid instanceof FlowingFluid)) {
+            return false;
+        }
+
+        // This check is in addition to vanilla's checks. If the fluid is already in place,
+        // don't place it again. This is for water, since water is otherwise replaceable by water.
+        if (state == fluid.defaultFluidState().createLegacyBlock()) {
+            return false;
+        }
+
+        return state.isAir()
+                || state.canBeReplaced(fluid)
+                || state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer
+                        && liquidBlockContainer.canPlaceLiquid(level, pos, state, fluid);
     }
 
     @Override
