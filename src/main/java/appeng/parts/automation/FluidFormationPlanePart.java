@@ -79,6 +79,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
             "part/fluid_formation_plane_on");
 
+    private long lastEffect;
+
     @PartModels
     public static List<IPartModel> getModels() {
         return MODELS.getModels();
@@ -166,12 +168,20 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     private void playEmptySound(Level level, BlockPos pos, Fluid fluid) {
+        if (throttleEffect()) {
+            return;
+        }
+
         SoundEvent soundEvent = fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         level.playSound(null, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
         level.gameEvent(GameEvent.FLUID_PLACE, pos);
     }
 
     private void playEvaporationEffect(Level level, BlockPos pos) {
+        if (throttleEffect()) {
+            return;
+        }
+
         level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
                 2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
 
@@ -185,6 +195,18 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
                     0.0D,
                     0.0D);
         }
+    }
+
+    /**
+     * Only play the effect every 250ms.
+     */
+    private boolean throttleEffect() {
+        long now = System.currentTimeMillis();
+        if (now < lastEffect + 250) {
+            return true;
+        }
+        lastEffect = now;
+        return false;
     }
 
     /**
