@@ -122,6 +122,9 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 } else {
                     // Copy config inventory -> cell, when cell's config is empty
                     copy(this.config, configInventory);
+                    // Copy items back. The cell may change the items on insert, for example if a fluid tank gets turned
+                    // into a dummy fluid item.
+                    copy(configInventory, this.config);
                 }
             } else if (this.manager.getSetting(Settings.COPY_MODE) == CopyMode.CLEAR_ON_REMOVE) {
                 for (int x = 0; x < this.config.size(); x++) {
@@ -137,7 +140,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
             var c = this.getCellConfigInventory();
             if (c != null) {
                 copy(this.config, c);
-                // copy items back. The ConfigInventory may changed the items on insert
+                // Copy items back. The cell may change the items on insert, for example if a fluid tank gets turned
+                // into a dummy fluid item.
                 copy(c, this.config);
             }
             this.locked = false;
