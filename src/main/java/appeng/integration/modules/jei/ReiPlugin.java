@@ -30,6 +30,8 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
@@ -54,6 +56,8 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.modules.jei.crystalgrowth.CrystalGrowthCategory;
+import appeng.integration.modules.jei.crystalgrowth.CrystalGrowthDisplay;
 import appeng.recipes.handlers.InscriberRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
@@ -70,10 +74,12 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
+        registry.add(new CrystalGrowthCategory());
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
         registry.add(new FacadeRecipeCategory());
 
+        registry.removePlusButton(CrystalGrowthCategory.ID);
         registry.removePlusButton(InscriberRecipeCategory.ID);
         registry.removePlusButton(CondenserCategory.ID);
 
@@ -90,6 +96,32 @@ public class ReiPlugin implements REIClientPlugin {
         registerDescriptions(registry);
 
         registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
+
+        // Add displays for crystal growth
+        if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
+            registry.add(
+                    new CrystalGrowthDisplay(
+                            List.of(
+                                    Ingredient.of(AEItems.CERTUS_CRYSTAL_SEED)),
+                            AEItems.CERTUS_QUARTZ_CRYSTAL.stack(),
+                            true));
+            registry.add(
+                    new CrystalGrowthDisplay(
+                            List.of(
+                                    Ingredient.of(AEItems.FLUIX_CRYSTAL_SEED)),
+                            AEItems.FLUIX_CRYSTAL.stack(),
+                            true));
+        }
+        if (AEConfig.instance().isInWorldFluixEnabled()) {
+            registry.add(
+                    new CrystalGrowthDisplay(
+                            List.of(
+                                    Ingredient.of(Items.REDSTONE),
+                                    Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED),
+                                    Ingredient.of(Items.QUARTZ)),
+                            AEItems.FLUIX_DUST.stack(2),
+                            false));
+        }
     }
 
     @Override
@@ -167,14 +199,9 @@ public class ReiPlugin implements REIClientPlugin {
 
     private void registerDescriptions(DisplayRegistry registry) {
 
-        final String[] message;
         if (AEConfig.instance().isGenerateQuartzOre()) {
-            message = new String[] { GuiText.ChargedQuartz.getTranslationKey(), "",
-                    GuiText.ChargedQuartzFind.getTranslationKey() };
-        } else {
-            message = new String[] { GuiText.ChargedQuartzFind.getTranslationKey() };
+            addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.getTranslationKey());
         }
-        addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, message);
 
         if (AEConfig.instance().isGenerateMeteorites() && AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());
@@ -183,10 +210,6 @@ public class ReiPlugin implements REIClientPlugin {
             addDescription(registry, AEItems.ENGINEERING_PROCESSOR_PRESS,
                     GuiText.inWorldCraftingPresses.getTranslationKey());
             addDescription(registry, AEItems.SILICON_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());
-        }
-
-        if (AEConfig.instance().isInWorldFluixEnabled()) {
-            addDescription(registry, AEItems.FLUIX_CRYSTAL, GuiText.inWorldFluix.getTranslationKey());
         }
 
         if (AEConfig.instance().isInWorldSingularityEnabled()) {
