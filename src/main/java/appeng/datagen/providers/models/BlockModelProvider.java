@@ -23,6 +23,9 @@ public class BlockModelProvider extends BlockStateProvider implements IAE2DataPr
         generateOreBlock(AEBlocks.DEEPSLATE_QUARTZ_ORE);
     }
 
+    /**
+     * Generate an ore block with 4 variants (0 to 3, inclusive).
+     */
     private void generateOreBlock(BlockDefinition<QuartzOreBlock> block) {
         String name = block.id().getPath();
         BlockModelBuilder primaryModel = models().cubeAll(
