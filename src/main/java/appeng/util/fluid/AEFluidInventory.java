@@ -65,7 +65,7 @@ public class AEFluidInventory implements IAEFluidTank {
 
     @Override
     public long getTankCapacity(int tankIndex) {
-        return tankIndex <= 0 && tankIndex < this.fluids.length ? capacity : 0;
+        return tankIndex >= 0 && tankIndex < this.fluids.length ? capacity : 0;
     }
 
     @Override
@@ -117,12 +117,18 @@ public class AEFluidInventory implements IAEFluidTank {
         for (View view : storageViews) {
             if (!view.isResourceBlank()) {
                 totalInserted += view.insert(resource, maxAmount - totalInserted, transaction);
+                if (totalInserted >= maxAmount) {
+                    break;
+                }
             }
         }
 
         for (View view : storageViews) {
             if (view.isResourceBlank()) {
                 totalInserted += view.insert(resource, maxAmount - totalInserted, transaction);
+                if (totalInserted >= maxAmount) {
+                    break;
+                }
             }
         }
 
@@ -233,7 +239,7 @@ public class AEFluidInventory implements IAEFluidTank {
                 }
             }
 
-            return 0;
+            return actuallyExtracted;
         }
 
         public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
