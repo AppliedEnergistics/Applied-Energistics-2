@@ -61,32 +61,8 @@ import appeng.datagen.providers.IAE2DataProvider;
 public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
     private final Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
             .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
-            .put(AEBlocks.QUARTZ_ORE.block(),
-                    b -> createSilkTouchDispatchTable(AEBlocks.QUARTZ_ORE.block(),
-                            LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST)
-                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
-                                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
-                                    .apply(ApplyExplosionDecay.explosionDecay())).withPool(
-                                            /*
-                                             * Additional pool to add a chance for crystals when no silk touch is used.
-                                             */
-                                            LootPool.lootPool()
-                                                    .when(HAS_NO_SILK_TOUCH)
-                                                    .when(
-                                                            /*
-                                                             * 5% chance initially + 5% per level of fortune to drop
-                                                             * *any* crystals
-                                                             */
-                                                            BonusLevelTableCondition.bonusLevelFlatChance(
-                                                                    Enchantments.BLOCK_FORTUNE,
-                                                                    0.05F, 0.10F, 0.15F, 0.20F))
-                                                    .add(
-                                                            LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
-                                                                    .apply(SetItemCountFunction.setCount(
-                                                                            UniformGenerator.between(1.0F, 4.0F)))
-                                                                    .apply(ApplyBonusCount.addUniformBonusCount(
-                                                                            Enchantments.BLOCK_FORTUNE))
-                                                                    .apply(ApplyExplosionDecay.explosionDecay()))))
+            .put(AEBlocks.QUARTZ_ORE.block(), BlockDropProvider::createQuartzOreLootTable)
+            .put(AEBlocks.DEEPSLATE_QUARTZ_ORE.block(), BlockDropProvider::createQuartzOreLootTable)
             .build();
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -122,6 +98,33 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
                 .when(ExplosionCondition.survivesExplosion());
 
         return LootTable.lootTable().withPool(pool);
+    }
+
+    private static LootTable.Builder createQuartzOreLootTable(Block b) {
+        return createSilkTouchDispatchTable(b,
+                LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
+                        .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
+                        .apply(ApplyExplosionDecay.explosionDecay())).withPool(
+                                /*
+                                 * Additional pool to add a chance for crystals when no silk touch is used.
+                                 */
+                                LootPool.lootPool()
+                                        .when(HAS_NO_SILK_TOUCH)
+                                        .when(
+                                                /*
+                                                 * 5% chance initially + 5% per level of fortune to drop *any* crystals
+                                                 */
+                                                BonusLevelTableCondition.bonusLevelFlatChance(
+                                                        Enchantments.BLOCK_FORTUNE,
+                                                        0.05F, 0.10F, 0.15F, 0.20F))
+                                        .add(
+                                                LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
+                                                        .apply(SetItemCountFunction.setCount(
+                                                                UniformGenerator.between(1.0F, 4.0F)))
+                                                        .apply(ApplyBonusCount.addUniformBonusCount(
+                                                                Enchantments.BLOCK_FORTUNE))
+                                                        .apply(ApplyExplosionDecay.explosionDecay())));
     }
 
     private Path getPath(Path root, ResourceLocation id) {

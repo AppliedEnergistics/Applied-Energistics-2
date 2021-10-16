@@ -27,6 +27,7 @@ import appeng.core.AppEng;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.loot.BlockDropProvider;
 import appeng.datagen.providers.loot.ChestDropProvider;
+import appeng.datagen.providers.models.BlockModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.recipes.CraftingRecipes;
 import appeng.datagen.providers.recipes.DecorationBlockRecipes;
@@ -58,7 +59,8 @@ public class AE2DataGenerators {
 
             // Misc
             generator.addProvider(new DecorationModelProvider(generator, dataEvent.getExistingFileHelper()));
-            generator.addProvider(new AdvancementGenerator(generator));
+            generator.addProvider(new BlockModelProvider(generator, existingFileHelper));
+        generator.addProvider(new AdvancementGenerator(generator));
 
             // Recipes
             generator.addProvider(new DecorationRecipes(generator));

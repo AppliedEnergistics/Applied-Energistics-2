@@ -18,7 +18,9 @@
 
 package appeng.init.worldgen;
 
-import net.minecraft.world.level.block.state.BlockState;
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
@@ -33,7 +35,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.mixins.feature.ConfiguredFeaturesAccessor;
 
 public final class InitFeatures {
-
     private InitFeatures() {
     }
 
@@ -43,17 +44,21 @@ public final class InitFeatures {
     }
 
     private static void registerQuartzOreFeature() {
+
+        var targetList = ImmutableList.of(
+                OreConfiguration.target(Predicates.STONE_ORE_REPLACEABLES,
+                        AEBlocks.QUARTZ_ORE.block().defaultBlockState()),
+                OreConfiguration.target(Predicates.DEEPSLATE_ORE_REPLACEABLES,
+                        AEBlocks.DEEPSLATE_QUARTZ_ORE.block().defaultBlockState()));
+        var config = new OreConfiguration(targetList, AEConfig.instance().getQuartzOresPerCluster());
+
         // Tell Minecraft about our configured quartz ore feature
-        BlockState quartzOreState = AEBlocks.QUARTZ_ORE.block().defaultBlockState();
         ConfiguredFeaturesAccessor.register(WorldgenIds.QUARTZ_ORE.toString(), Feature.ORE
-                .configured(
-                        new OreConfiguration(Predicates.NATURAL_STONE, quartzOreState,
-                                AEConfig.instance().getQuartzOresPerCluster()))
+                .configured(config)
                 .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(
                         VerticalAnchor.aboveBottom(12),
                         VerticalAnchor.aboveBottom(72)))))
                 .squared()
                 .count(AEConfig.instance().getQuartzOresClusterAmount()));
     }
-
 }
