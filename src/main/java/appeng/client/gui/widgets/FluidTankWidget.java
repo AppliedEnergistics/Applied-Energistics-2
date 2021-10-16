@@ -89,11 +89,11 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip, IIngred
 
     @Override
     public List<Component> getTooltipMessage() {
-        final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
+        var fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
             return Arrays.asList(
                     Platform.getFluidDisplayName(fluid),
-                    new TextComponent(fluid.getStackSize() + "mB"));
+                    new TextComponent(Platform.formatFluidAmount(fluid.getStackSize())));
         }
         return Collections.emptyList();
     }

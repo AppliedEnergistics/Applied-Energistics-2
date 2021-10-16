@@ -113,6 +113,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
                         if (wasInserted > 0) {
                             toExtract.setStackSize(wasInserted);
                             inv.extractItems(toExtract, Actionable.MODULATE, this.source);
+                            tx.commit();
 
                             return TickRateModulation.FASTER;
                         }
