@@ -19,7 +19,9 @@
 package appeng.parts.automation;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -27,7 +29,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -38,10 +39,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlockContainer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -79,7 +80,15 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
             "part/fluid_formation_plane_on");
 
+    /**
+     * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
+     */
     private long lastEffect;
+
+    /**
+     * The fluids that we tried to place unsuccessfully.
+     */
+    private final Set<Fluid> blocked = new HashSet<>();
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -117,9 +126,21 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
+    protected void clearBlocked(BlockGetter level, BlockPos pos) {
+        blocked.clear();
+    }
+
+    @Override
     public IAEFluidStack injectItems(IAEFluidStack input, Actionable type, IActionSource src) {
-        if (this.blocked || input == null || input.getStackSize() < FluidConstants.BLOCK) {
+        if (input == null || input.getStackSize() < FluidConstants.BLOCK) {
             // need a full bucket
+            return input;
+        }
+
+        var fluid = input.getFluid().getFluid();
+
+        // We previously tried placing this fluid unsuccessfully, so don't check it again.
+        if (blocked.contains(fluid)) {
             return input;
         }
 
@@ -128,43 +149,43 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
             return input;
         }
 
-        final BlockEntity te = this.getHost().getBlockEntity();
-        final Level level = te.getLevel();
-        final Direction side = this.getSide();
-        final BlockPos pos = te.getBlockPos().relative(side);
-        final BlockState state = level.getBlockState(pos);
+        var te = this.getHost().getBlockEntity();
+        var level = te.getLevel();
+        var side = this.getSide();
+        var pos = te.getBlockPos().relative(side);
+        var state = level.getBlockState(pos);
 
-        var fluid = input.getFluid().getFluid();
+        if (!this.canPlace(level, state, pos, fluid)) {
+            // Remember that this fluid cannot be placed right now.
+            blocked.add(fluid);
+            return input;
+        }
 
-        if (this.canPlace(level, state, pos, fluid)) {
-            if (type == Actionable.MODULATE) {
-                // Placing water in nether voids the fluid, but plays effects
-                if (level.dimensionType().ultraWarm() && fluid.is(FluidTags.WATER)) {
-                    playEvaporationEffect(level, pos);
-                } else if (state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer
-                        && fluid == Fluids.WATER) {
-                    liquidBlockContainer.placeLiquid(level, pos, state, ((FlowingFluid) fluid).getSource(false));
-                    playEmptySound(level, pos, fluid);
+        if (type == Actionable.MODULATE) {
+            // Placing water in nether voids the fluid, but plays effects
+            if (level.dimensionType().ultraWarm() && fluid.is(FluidTags.WATER)) {
+                playEvaporationEffect(level, pos);
+            } else if (state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer
+                    && fluid == Fluids.WATER) {
+                liquidBlockContainer.placeLiquid(level, pos, state, ((FlowingFluid) fluid).getSource(false));
+                playEmptySound(level, pos, fluid);
+            } else {
+                if (state.canBeReplaced(fluid) && !state.getMaterial().isLiquid()) {
+                    level.destroyBlock(pos, true);
+                }
+
+                if (!level.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE)
+                        && !state.getFluidState().isSource()) {
+                    return input;
                 } else {
-                    if (state.canBeReplaced(fluid) && !state.getMaterial().isLiquid()) {
-                        level.destroyBlock(pos, true);
-                    }
-
-                    if (!level.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE)
-                            && !state.getFluidState().isSource()) {
-                        return input;
-                    } else {
-                        playEmptySound(level, pos, fluid);
-                    }
+                    playEmptySound(level, pos, fluid);
                 }
             }
-
-            var ret = input.copy();
-            ret.decStackSize(FluidConstants.BLOCK);
-            return ret.getStackSize() == 0 ? null : ret;
         }
-        this.blocked = true;
-        return input;
+
+        var ret = input.copy();
+        ret.decStackSize(FluidConstants.BLOCK);
+        return ret.getStackSize() == 0 ? null : ret;
     }
 
     private void playEmptySound(Level level, BlockPos pos, Fluid fluid) {

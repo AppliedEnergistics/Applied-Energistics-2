@@ -19,11 +19,9 @@
 package appeng.parts.automation;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Setting;
@@ -43,7 +41,6 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack> extends Upg
 
     private boolean wasActive = false;
     private int priority = 0;
-    protected boolean blocked = false;
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
 
     public AbstractFormationPlanePart(ItemStack is) {
@@ -95,16 +92,14 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack> extends Upg
     @Override
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide()).equals(neighbor)) {
-            final BlockEntity te = this.getHost().getBlockEntity();
-            final Direction side = this.getSide();
-
-            final BlockPos tePos = te.getBlockPos().relative(side);
-
-            this.blocked = !level.getBlockState(tePos).getMaterial().isReplaceable();
+            // The neighbor this plane is facing has changed
+            clearBlocked(level, neighbor);
         } else {
             connectionHelper.updateConnections();
         }
     }
+
+    protected abstract void clearBlocked(BlockGetter level, BlockPos pos);
 
     @Override
     public float getCableConnectionLength(AECableType cable) {
