@@ -54,7 +54,8 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 .addTag(ConventionTags.STAINED_GLASS_BLOCK);
 
         tag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK)
-                .add(AEBlocks.QUARTZ_ORE.block());
+                .add(AEBlocks.QUARTZ_ORE.block())
+                .add(AEBlocks.DEEPSLATE_QUARTZ_ORE.block());
 
         tag("c:ores")
                 .addTag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK);
