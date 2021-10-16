@@ -77,6 +77,11 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         return MODELS.getModels();
     }
 
+    /**
+     * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
+     */
+    private long lastEffect;
+
     private final IActionSource mySrc = new MachineSource(this);
 
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
@@ -151,9 +156,11 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                         this.storeFluid(grid, pickedUpStack, true);
                     }
 
-                    AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, level,
-                            new BlockTransitionEffectPacket(pos, blockstate, this.getSide().getOpposite(),
-                                    BlockTransitionEffectPacket.SoundMode.FLUID));
+                    if (!throttleEffect()) {
+                        AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, level,
+                                new BlockTransitionEffectPacket(pos, blockstate, this.getSide().getOpposite(),
+                                        BlockTransitionEffectPacket.SoundMode.FLUID));
+                    }
 
                     return TickRateModulation.URGENT;
                 }
@@ -209,6 +216,18 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     private boolean isFluidBlacklisted(Fluid fluid) {
         return TAG_BLACKLIST.contains(fluid);
+    }
+
+    /**
+     * Only play the effect every 250ms.
+     */
+    private boolean throttleEffect() {
+        long now = System.currentTimeMillis();
+        if (now < lastEffect + 250) {
+            return true;
+        }
+        lastEffect = now;
+        return false;
     }
 
 }
