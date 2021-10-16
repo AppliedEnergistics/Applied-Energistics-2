@@ -24,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -47,7 +46,7 @@ public final class MeteoritePlacer {
     private static final ResourceLocation METEORITE_CHEST_LOOTTABLE = AppEng.makeId("chests/meteorite");
     private final BlockDefinition<?> skyChestDefinition;
     private final BlockState skyStone;
-    private final Item skyStoneItem;
+    private final BlockState fluixBlock;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
     private final LevelAccessor level;
     private final Random random;
@@ -57,7 +56,6 @@ public final class MeteoritePlacer {
     private final int y;
     private final int z;
     private final double meteoriteSize;
-    private final double realCrater;
     private final double squaredMeteoriteSize;
     private final double crater;
     private final boolean placeCrater;
@@ -76,17 +74,18 @@ public final class MeteoritePlacer {
         this.y = settings.getPos().getY();
         this.z = settings.getPos().getZ();
         this.meteoriteSize = settings.getMeteoriteRadius();
-        this.realCrater = this.meteoriteSize * 2 + 5;
         this.placeCrater = settings.shouldPlaceCrater();
         this.craterType = settings.getCraterType();
         this.pureCrater = settings.isPureCrater();
         this.craterLake = settings.isCraterLake();
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
-        this.crater = this.realCrater * this.realCrater;
+
+        double realCrater = this.meteoriteSize * 2 + 5;
+        this.crater = realCrater * realCrater;
 
         this.skyChestDefinition = AEBlocks.SKY_STONE_CHEST;
+        this.fluixBlock = AEBlocks.FLUIX_BLOCK.block().defaultBlockState();
         this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
-        this.skyStoneItem = AEBlocks.SKY_STONE_BLOCK.asItem();
 
         this.type = getFallout(level, settings.getPos(), settings.getFallout());
     }
@@ -218,12 +217,16 @@ public final class MeteoritePlacer {
                 pos.setY(j);
                 for (int k = meteorZLength; k <= meteorZHeight; k++) {
                     pos.setZ(k);
-                    final double dx = i - x;
-                    final double dy = j - y;
-                    final double dz = k - z;
+                    var dx = i - x;
+                    var dy = j - y;
+                    var dz = k - z;
 
                     if (dx * dx * 0.7 + dy * dy * (j > y ? 1.4 : 0.8) + dz * dz * 0.7 < this.squaredMeteoriteSize) {
-                        this.putter.put(level, pos, skyStone);
+                        if ((dx * dx + dy * dy + dz * dz) <= 1) {
+                            this.putter.put(level, pos, fluixBlock);
+                        } else {
+                            this.putter.put(level, pos, skyStone);
+                        }
                     }
                 }
             }
