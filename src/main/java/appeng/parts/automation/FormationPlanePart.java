@@ -39,6 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
@@ -91,6 +92,8 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
             StorageChannels.items());
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
 
+    private boolean blocked = false;
+
     public FormationPlanePart(final ItemStack is) {
         super(is);
 
@@ -124,6 +127,10 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         }
 
         getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
+    }
+
+    protected void clearBlocked(BlockGetter level, BlockPos pos) {
+        this.blocked = !level.getBlockState(pos).getMaterial().isReplaceable();
     }
 
     @Override
