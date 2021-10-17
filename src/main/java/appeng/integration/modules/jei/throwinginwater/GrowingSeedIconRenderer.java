@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei.crystalgrowth;
+package appeng.integration.modules.jei.throwinginwater;
 
 import java.util.List;
 

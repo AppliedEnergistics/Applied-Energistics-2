@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei.crystalgrowth;
+package appeng.integration.modules.jei.throwinginwater;
 
 import java.util.List;
 
@@ -11,18 +11,18 @@ import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 
-public class CrystalGrowthDisplay extends BasicDisplay {
+public class ThrowingInWaterDisplay extends BasicDisplay {
     public static final String TAG_SUPPORTS_ACCELERATORS = "supportsAccelerators";
     private final boolean supportsAccelerators;
 
-    public CrystalGrowthDisplay(List<Ingredient> inputs, ItemStack result, boolean supportsAccelerators) {
+    public ThrowingInWaterDisplay(List<Ingredient> inputs, ItemStack result, boolean supportsAccelerators) {
         super(
                 EntryIngredients.ofIngredients(inputs),
                 List.of(EntryIngredients.of(result)));
         this.supportsAccelerators = supportsAccelerators;
     }
 
-    private CrystalGrowthDisplay(List<EntryIngredient> inputs,
+    private ThrowingInWaterDisplay(List<EntryIngredient> inputs,
             List<EntryIngredient> outputs,
             CompoundTag data) {
         super(inputs, outputs);
@@ -35,11 +35,11 @@ public class CrystalGrowthDisplay extends BasicDisplay {
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return CrystalGrowthCategory.ID;
+        return ThrowingInWaterCategory.ID;
     }
 
-    public static BasicDisplay.Serializer<CrystalGrowthDisplay> serializer() {
-        return BasicDisplay.Serializer.ofRecipeLess(CrystalGrowthDisplay::new, (display, tag) -> {
+    public static BasicDisplay.Serializer<ThrowingInWaterDisplay> serializer() {
+        return BasicDisplay.Serializer.ofRecipeLess(ThrowingInWaterDisplay::new, (display, tag) -> {
             tag.putBoolean(TAG_SUPPORTS_ACCELERATORS, display.isSupportsAccelerators());
         });
     }

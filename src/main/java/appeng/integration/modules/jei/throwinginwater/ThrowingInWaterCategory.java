@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei.crystalgrowth;
+package appeng.integration.modules.jei.throwinginwater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +23,13 @@ import appeng.core.definitions.AEItems;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.items.misc.CrystalSeedItem;
 
-public class CrystalGrowthCategory implements DisplayCategory<CrystalGrowthDisplay> {
-    public static final CategoryIdentifier<CrystalGrowthDisplay> ID = CategoryIdentifier
-            .of(AppEng.makeId("crystal_growing"));
+public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterDisplay> {
+    public static final CategoryIdentifier<ThrowingInWaterDisplay> ID = CategoryIdentifier
+            .of(AppEng.makeId("throwing_in_water"));
 
     private final Renderer icon;
 
-    public CrystalGrowthCategory() {
+    public ThrowingInWaterCategory() {
         var stage1 = AEItems.CERTUS_CRYSTAL_SEED.stack();
         CrystalSeedItem.setGrowthTicks(stage1, 0);
         var stage2 = AEItems.CERTUS_CRYSTAL_SEED.stack();
@@ -52,16 +52,16 @@ public class CrystalGrowthCategory implements DisplayCategory<CrystalGrowthDispl
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("rei.appliedenergistics2.crystal_growing_category");
+        return new TranslatableComponent("rei.appliedenergistics2.throwing_in_water_category");
     }
 
     @Override
-    public CategoryIdentifier<CrystalGrowthDisplay> getCategoryIdentifier() {
+    public CategoryIdentifier<ThrowingInWaterDisplay> getCategoryIdentifier() {
         return ID;
     }
 
     @Override
-    public List<Widget> setupDisplay(CrystalGrowthDisplay display, Rectangle bounds) {
+    public List<Widget> setupDisplay(ThrowingInWaterDisplay display, Rectangle bounds) {
 
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createRecipeBase(bounds));
@@ -125,6 +125,7 @@ public class CrystalGrowthCategory implements DisplayCategory<CrystalGrowthDispl
                     new Point(col3 + 7, durationY),
                     new TextComponent(DurationFormatUtils.formatDurationWords(
                             defaultDuration, true, true)))
+                    .noShadow().color(0xFF404040, 0xFFBBBBBB)
                     .centered().tooltipLines(tooltipLines.stream().map(Component::getString).toArray(String[]::new)));
         }
 

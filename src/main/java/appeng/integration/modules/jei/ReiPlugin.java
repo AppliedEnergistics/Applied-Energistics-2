@@ -56,8 +56,8 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
-import appeng.integration.modules.jei.crystalgrowth.CrystalGrowthCategory;
-import appeng.integration.modules.jei.crystalgrowth.CrystalGrowthDisplay;
+import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
+import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
 import appeng.recipes.handlers.InscriberRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
@@ -74,12 +74,12 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
-        registry.add(new CrystalGrowthCategory());
+        registry.add(new ThrowingInWaterCategory());
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
         registry.add(new FacadeRecipeCategory());
 
-        registry.removePlusButton(CrystalGrowthCategory.ID);
+        registry.removePlusButton(ThrowingInWaterCategory.ID);
         registry.removePlusButton(InscriberRecipeCategory.ID);
         registry.removePlusButton(CondenserCategory.ID);
 
@@ -100,13 +100,13 @@ public class ReiPlugin implements REIClientPlugin {
         // Add displays for crystal growth
         if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
             registry.add(
-                    new CrystalGrowthDisplay(
+                    new ThrowingInWaterDisplay(
                             List.of(
                                     Ingredient.of(AEItems.CERTUS_CRYSTAL_SEED)),
                             AEItems.CERTUS_QUARTZ_CRYSTAL.stack(),
                             true));
             registry.add(
-                    new CrystalGrowthDisplay(
+                    new ThrowingInWaterDisplay(
                             List.of(
                                     Ingredient.of(AEItems.FLUIX_CRYSTAL_SEED)),
                             AEItems.FLUIX_CRYSTAL.stack(),
@@ -114,7 +114,7 @@ public class ReiPlugin implements REIClientPlugin {
         }
         if (AEConfig.instance().isInWorldFluixEnabled()) {
             registry.add(
-                    new CrystalGrowthDisplay(
+                    new ThrowingInWaterDisplay(
                             List.of(
                                     Ingredient.of(Items.REDSTONE),
                                     Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED),
