@@ -64,9 +64,7 @@ public enum GuiText {
 
     StoredPower, MaxPower, RequiredPower, Efficiency, SCSSize, SCSInvalid, InWorldCrafting,
 
-    inWorldFluix, inWorldPurificationCertus, inWorldPurificationNether,
-
-    inWorldPurificationFluix, inWorldSingularity, ChargedQuartz, ChargedQuartzFind,
+    inWorldSingularity, ChargedQuartz,
 
     NoSecondOutput, OfSecondOutput, MultipleOutputs,
 
