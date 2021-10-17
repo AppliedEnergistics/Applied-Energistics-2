@@ -395,8 +395,8 @@ public final class AEConfig {
         return COMMON.inWorldFluix.get();
     }
 
-    public boolean isInWorldPurificationEnabled() {
-        return COMMON.inWorldPurification.get();
+    public boolean isInWorldCrystalGrowthEnabled() {
+        return COMMON.inWorldCrystalGrowth.get();
     }
 
     public boolean isDisassemblyCraftingEnabled() {
@@ -490,7 +490,7 @@ public final class AEConfig {
         // Crafting
         public final BooleanOption inWorldSingularity;
         public final BooleanOption inWorldFluix;
-        public final BooleanOption inWorldPurification;
+        public final BooleanOption inWorldCrystalGrowth;
         public final BooleanOption disassemblyCrafting;
 
         // Spatial IO/Dimension
@@ -545,7 +545,7 @@ public final class AEConfig {
         public final IntegerOption condenserMatterBallsPower;
         public final IntegerOption condenserSingularityPower;
 
-        // In-World Purification
+        // In-World Crystal Growth
         // Settings for improved speed depending on fluid the crystal is in
         public final StringOption improvedFluidTag;
         public final DoubleOption improvedFluidMultiplier;
@@ -578,8 +578,8 @@ public final class AEConfig {
             inWorldSingularity = crafting.addBoolean("inWorldSingularity", true,
                     "Enable the in-world crafting of singularities.");
             inWorldFluix = crafting.addBoolean("inWorldFluix", true, "Enable the in-world crafting of fluix crystals.");
-            inWorldPurification = crafting.addBoolean("inWorldPurification", true,
-                    "Enable the in-world crafting of pure crystals.");
+            inWorldCrystalGrowth = crafting.addBoolean("inWorldCrystalGrowth", true,
+                    "Enable the in-world crafting of crystals.");
             disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
                     "Enable shift-clicking with the crafting units in hand to disassemble them.");
 
@@ -646,12 +646,12 @@ public final class AEConfig {
                 tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
 
-            ConfigSection inWorldPurification = root.subsection("inWorldPurification",
-                    "Settings for in-world purification of crystals.");
+            ConfigSection inWorldCrystalGrowth = root.subsection("inWorldCrystalGrowth",
+                    "Settings for in-world growth of crystals.");
 
-            improvedFluidTag = inWorldPurification.addString("improvedFluidTag", "",
-                    "A fluid tag that identifies fluids that improve crystal purification speed. Does not affect purification with water/lava.");
-            improvedFluidMultiplier = inWorldPurification.addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0,
+            improvedFluidTag = inWorldCrystalGrowth.addString("improvedFluidTag", "",
+                    "A fluid tag that identifies fluids that improve crystal growth speed. Does not affect growth with water/lava.");
+            improvedFluidMultiplier = inWorldCrystalGrowth.addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0,
                     "The speed multiplier to use when the crystals are submerged in the improved fluid.");
         }
 
