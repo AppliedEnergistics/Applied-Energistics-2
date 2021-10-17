@@ -55,7 +55,7 @@ import appeng.hooks.AECustomEntityItem;
 import appeng.items.AEBaseItem;
 
 /**
- * This item reprents one of the seeds used to grow various forms of quartz by throwing them into water (for that
+ * This item represents one of the seeds used to grow various forms of quartz by throwing them into water (for that
  * behavior, see the linked entity)
  */
 public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AECustomEntityItem {
@@ -88,17 +88,17 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
         if (growthTicks >= GROWTH_TICKS_REQUIRED) {
             return new ItemStack(grownItem, is.getCount());
         } else {
-            this.setGrowthTicks(is, growthTicks);
+            setGrowthTicks(is, growthTicks);
             return is;
         }
     }
 
-    public static int getGrowthTicks(final ItemStack is) {
+    public static int getGrowthTicks(ItemStack is) {
         CompoundTag tag = is.getTag();
         return tag != null ? tag.getInt(TAG_GROWTH_TICKS) : 0;
     }
 
-    private void setGrowthTicks(final ItemStack is, int ticks) {
+    public static void setGrowthTicks(ItemStack is, int ticks) {
         ticks = Mth.clamp(ticks, 0, GROWTH_TICKS_REQUIRED);
         is.getOrCreateTag().putInt(TAG_GROWTH_TICKS, ticks);
     }
