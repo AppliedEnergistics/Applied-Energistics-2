@@ -18,6 +18,7 @@
 
 package appeng.entity;
 
+import java.time.Duration;
 import java.util.Random;
 
 import net.minecraft.core.BlockPos;
@@ -55,6 +56,14 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
             60 // 6 accelerators, 20 seconds
     };
 
+    public static Duration getGrowthDuration(int accelerators) {
+        int progressPerTick = GROWTH_TICK_PROGRESS[Math.min(GROWTH_TICK_PROGRESS.length - 1, accelerators)];
+        int ticks = CrystalSeedItem.GROWTH_TICKS_REQUIRED / progressPerTick;
+        return Duration.ofMillis(
+                // Assumes 20 ticks per second
+                ticks * 1000 / 20);
+    }
+
     public GrowingCrystalEntity(EntityType<? extends GrowingCrystalEntity> type, Level level) {
         super(type, level);
     }
@@ -83,7 +92,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     private void applyGrowthTick(IGrowableCrystal crystal, ItemStack is) {
-        if (!AEConfig.instance().isInWorldPurificationEnabled()) {
+        if (!AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
             return;
         }
 
