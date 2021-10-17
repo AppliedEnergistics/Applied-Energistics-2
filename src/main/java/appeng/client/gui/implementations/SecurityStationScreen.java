@@ -18,11 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import java.util.List;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -30,7 +25,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.client.gui.Icon;
 import appeng.client.gui.me.items.ItemTerminalScreen;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.menu.implementations.SecurityStationMenu;
@@ -43,13 +37,11 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationMen
     private final ToggleButton build;
     private final ToggleButton security;
 
-    private final Blitter encodingBg;
-
     public SecurityStationScreen(SecurityStationMenu menu,
             Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        encodingBg = style.getImage("encoding");
+        widgets.addBackgroundPanel("encodingPanel");
 
         this.inject = new ToggleButton(Icon.PERMISSION_INJECT, Icon.PERMISSION_INJECT_DISABLED,
                 SecurityPermissions.INJECT.getDisplayName(), SecurityPermissions.INJECT.getDisplayHint(),
@@ -86,26 +78,7 @@ public class SecurityStationScreen extends ItemTerminalScreen<SecurityStationMen
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
-        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
-
-        // Draw the encoding-box on the right
-        encodingBg.dest(offsetX + imageWidth + 3, offsetY).blit(poseStack, getBlitOffset());
-    }
-
-    @Override
     public SortOrder getSortBy() {
         return SortOrder.NAME;
-    }
-
-    @Override
-    public List<Rect2i> getExclusionZones() {
-        List<Rect2i> result = super.getExclusionZones();
-        result.add(new Rect2i(
-                leftPos + imageWidth + 3,
-                topPos,
-                encodingBg.getSrcWidth(),
-                encodingBg.getSrcHeight()));
-        return result;
     }
 }

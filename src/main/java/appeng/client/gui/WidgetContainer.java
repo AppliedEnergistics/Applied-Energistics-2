@@ -40,6 +40,7 @@ import net.minecraft.network.chat.Component;
 import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
+import appeng.client.gui.widgets.BackgroundPanel;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
@@ -126,6 +127,17 @@ public class WidgetContainer {
         Scrollbar scrollbar = new Scrollbar();
         add(id, scrollbar);
         return scrollbar;
+    }
+
+    /**
+     * Adds a panel to the screen, which takes its background from the style's "images" section, and it's position from
+     * the widget section.
+     * 
+     * @param id The id used to look up the background image and bounds in the style.
+     */
+    public void addBackgroundPanel(String id) {
+        var background = style.getImage(id).copy();
+        add(id, new BackgroundPanel(background));
     }
 
     void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {

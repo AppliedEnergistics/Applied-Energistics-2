@@ -59,7 +59,7 @@
     }
   },
   "images": {
-    "encoding": {
+    "encodingPanel": {
       "texture": "guis/security_station.png",
       "srcRect": [198, 0, 44, 98]
     }
@@ -84,6 +84,10 @@
     "permissionSecurity": {
       "left": 128,
       "bottom": 116
+    },
+    "encodingPanel": {
+      "right": -3,
+      "top": 0
     }
   }
 }
