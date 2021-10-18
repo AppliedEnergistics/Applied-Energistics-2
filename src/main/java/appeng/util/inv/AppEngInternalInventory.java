@@ -25,11 +25,15 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -80,7 +84,45 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     public void setItemDirect(int slot, @Nonnull ItemStack stack) {
         var previousStack = stacks.get(slot).copy();
         stacks.set(slot, stack);
-        onContentsChanged(slot, previousStack);
+        if (!ItemStack.isSameItemSameTags(previousStack, stack)) {
+            notifyContentsChanged(slot, previousStack);
+        }
+    }
+
+    private Int2ObjectOpenHashMap<ItemStack> pendingChangeNotifications;
+
+    private void notifyContentsChanged(int slot, ItemStack previousStack) {
+        // If we're in a transaction, defer notification to after the transaction has committed
+        if (Transaction.isOpen()) {
+            if (pendingChangeNotifications == null) {
+                TransactionContext current;
+                try {
+                    current = Transaction.getCurrentUnsafe();
+                } catch (IllegalStateException ignored) {
+                    // Transaction is currently closing, and we should NOT add further change callbacks
+                    return;
+                }
+
+                pendingChangeNotifications = new Int2ObjectOpenHashMap<>();
+                current.addCloseCallback((tx, result) -> {
+                    if (pendingChangeNotifications != null) {
+                        var changes = pendingChangeNotifications;
+                        pendingChangeNotifications = null;
+
+                        for (var entry : changes.int2ObjectEntrySet()) {
+                            onContentsChanged(entry.getIntKey(), entry.getValue());
+                        }
+                    }
+                });
+            }
+
+            // We only record the first change that happens to a slot
+            if (!pendingChangeNotifications.containsKey(slot)) {
+                pendingChangeNotifications.put(slot, previousStack);
+            }
+        } else {
+            onContentsChanged(slot, previousStack);
+        }
     }
 
     @Override
@@ -103,7 +145,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         if (stack.getCount() <= toExtract) {
             if (!simulate) {
                 setItemDirect(slot, ItemStack.EMPTY);
-                onContentsChanged(slot, stack);
+                notifyContentsChanged(slot, stack);
                 return stack;
             } else {
                 return stack.copy();
@@ -114,7 +156,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
             if (!simulate) {
                 var prev = stack.copy();
                 stack.shrink(toExtract);
-                onContentsChanged(slot, prev);
+                notifyContentsChanged(slot, prev);
             }
 
             result.setCount(toExtract);
