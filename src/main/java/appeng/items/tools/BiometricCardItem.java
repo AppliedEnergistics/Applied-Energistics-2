@@ -79,15 +79,14 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public Component getName(final ItemStack is) {
-        final GameProfile username = this.getProfile(is);
-        return username != null ? super.getName(is).copy().append(" - " + username.getName())
-                : super.getName(is);
+        var profile = this.getProfile(is);
+        return profile != null ? super.getName(is).copy().append(" - " + profile.getName()) : super.getName(is);
     }
 
     private void encode(final ItemStack is, final Player p) {
-        final GameProfile username = this.getProfile(is);
+        var profile = this.getProfile(is);
 
-        if (username != null && username.equals(p.getGameProfile())) {
+        if (profile != null && profile.equals(p.getGameProfile())) {
             this.setProfile(is, null);
         } else {
             this.setProfile(is, p.getGameProfile());
@@ -146,13 +145,19 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public void addPermission(final ItemStack itemStack, final SecurityPermissions permission) {
-        final CompoundTag tag = itemStack.getOrCreateTag();
+        var tag = itemStack.getOrCreateTag();
         tag.putBoolean(permission.name(), true);
     }
 
     @Override
     public void registerPermissions(final ISecurityRegistry register, final IPlayerRegistry pr, final ItemStack is) {
-        register.addPlayer(pr.getPlayerId(this.getProfile(is)), this.getPermissions(is));
+        GameProfile profile = this.getProfile(is);
+        if (profile != null) {
+            register.addPlayer(pr.getPlayerId(profile), this.getPermissions(is));
+        } else {
+            // Set fallback permissions
+            register.addPlayer(-1, this.getPermissions(is));
+        }
     }
 
     @Override
