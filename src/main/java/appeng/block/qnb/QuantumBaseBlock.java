@@ -83,7 +83,7 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
 
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null) {
-            bridge.breakCluster();
+            bridge.breakClusterOnRemove();
         }
 
         super.onRemove(state, level, pos, newState, isMoving);
