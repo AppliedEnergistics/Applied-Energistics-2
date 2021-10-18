@@ -18,6 +18,8 @@
 
 package appeng.crafting;
 
+import javax.annotation.Nullable;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.me.service.CraftingService;
@@ -28,7 +30,9 @@ public class CraftingLinkNexus {
     private boolean canceled = false;
     private boolean done = false;
     private int tickOfDeath = 0;
+    @Nullable
     private CraftingLink req;
+    @Nullable
     private CraftingLink cpu;
 
     public CraftingLinkNexus(final String craftID) {
@@ -116,7 +120,7 @@ public class CraftingLinkNexus {
     }
 
     public boolean isRequester(final ICraftingRequester requester) {
-        return this.getRequest().getRequester() == requester;
+        return req != null && req.getRequester() == requester;
     }
 
     public void removeNode() {
@@ -128,6 +132,7 @@ public class CraftingLinkNexus {
         this.tickOfDeath = 0;
     }
 
+    @Nullable
     public CraftingLink getRequest() {
         return this.req;
     }
