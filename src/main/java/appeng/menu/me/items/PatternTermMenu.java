@@ -20,7 +20,11 @@ package appeng.menu.me.items;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.ResultSlot;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -51,7 +55,12 @@ import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.slot.*;
+import appeng.menu.slot.FakeCraftingMatrixSlot;
+import appeng.menu.slot.IOptionalSlotHost;
+import appeng.menu.slot.OptionalFakeSlot;
+import appeng.menu.slot.PatternOutputsSlot;
+import appeng.menu.slot.PatternTermSlot;
+import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
 import appeng.util.inv.CarriedItemInventory;
@@ -519,5 +528,26 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
                 processingOutputSlots[i].set(ItemStack.EMPTY);
             }
         }
+    }
+
+    @Override
+    protected ItemStack transferStackToMenu(ItemStack input) {
+        // try refilling the blank pattern slot
+        if (blankPatternSlot.mayPlace(input)) {
+            input = blankPatternSlot.safeInsert(input);
+            if (input.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        // try refilling the encoded pattern slot
+        if (encodedPatternSlot.mayPlace(input)) {
+            input = encodedPatternSlot.safeInsert(input);
+            if (input.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        return super.transferStackToMenu(input);
     }
 }
