@@ -354,6 +354,9 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         return a.sameItem(b);
     }
 
+    /**
+     * @return The overflow
+     */
     @Nonnull
     default ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         Preconditions.checkArgument(slot >= 0 && slot < size(), "slot out of range");
