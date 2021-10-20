@@ -18,9 +18,12 @@
 
 package appeng.block.networking;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -79,16 +82,24 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
     }
 
     /**
-     * This will compute the AE_BLOCK_FORWARD, AE_BLOCK_UP and CONTROLLER_TYPE block states based on adjacent
-     * controllers and the network state of this controller (offline, online, conflicted). This is used to get a
-     * rudimentary connected texture feel for the controller based on how it is placed.
+     * This is called to determine which variant of the controller gets placed based on adjacent blocks.
+     */
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return getControllerType(defaultBlockState(), context.getLevel(), context.getClickedPos());
+    }
+
+    /**
+     * This is called when an adjacent block is changed.
      */
     @Override
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos pos, BlockPos facingPos) {
+        return getControllerType(state, level, pos);
+    }
 
-        // FIXME: this might work, or might _NOT_ work, but needs to be investigated
-
+    private BlockState getControllerType(BlockState baseState, LevelAccessor level, BlockPos pos) {
         // Only used for columns, really
         ControllerRenderType type = ControllerRenderType.block;
 
@@ -114,9 +125,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
             final int v = (Math.abs(x) + Math.abs(y) + Math.abs(z)) % 2;
 
             // While i'd like this to be based on the blockstate randomization feature, this
-            // generates
-            // an alternating pattern based on level position, so this is not 100% doable
-            // with blockstates.
+            // generates an alternating pattern based on level position, so this is not 100% doable with blockstates.
             if (v == 0) {
                 type = ControllerRenderType.inside_a;
             } else {
@@ -124,7 +133,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
             }
         }
 
-        return state.setValue(CONTROLLER_TYPE, type);
+        return baseState.setValue(CONTROLLER_TYPE, type);
     }
 
     @Override
