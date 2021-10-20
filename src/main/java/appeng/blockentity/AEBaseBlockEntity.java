@@ -201,7 +201,10 @@ public class AEBaseBlockEntity extends BlockEntity
      */
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
-        return this.writeUpdateData(tag);
+        this.writeUpdateData(tag);
+        // Fabric: return `tag` instead of the result of writeUpdateData, as we must always return the data that is
+        // passed to us even if no additional data is added by us (in which case writeUpdateData returns null).
+        return tag;
     }
 
     /**
