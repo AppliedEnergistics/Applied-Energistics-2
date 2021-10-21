@@ -24,8 +24,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.mojang.authlib.GameProfile;
-
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -152,8 +150,8 @@ class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
 
     private static int getHash(ItemStack stack) {
         String username = "";
-        if (stack.getItem() instanceof IBiometricCard) {
-            final GameProfile gp = ((IBiometricCard) stack.getItem()).getProfile(stack);
+        if (stack.getItem() instanceof IBiometricCard biometricCard) {
+            var gp = biometricCard.getProfile(stack);
             if (gp != null) {
                 if (gp.getId() != null) {
                     username = gp.getId().toString();

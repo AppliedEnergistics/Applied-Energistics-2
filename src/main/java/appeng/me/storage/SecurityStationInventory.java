@@ -104,7 +104,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
     @Override
     public boolean canAccept(final IAEItemStack input) {
         if (input.getItem() instanceof IBiometricCard tbc) {
-            final GameProfile newUser = tbc.getProfile(input.createItemStack());
+            var newUser = tbc.getProfile(input.createItemStack());
 
             var pr = IPlayerRegistry.getMapping(blockEntity.getLevel());
             if (pr == null) {
@@ -112,9 +112,13 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
                 return true;
             }
 
-            int playerId = pr.getPlayerId(newUser);
-            if (this.blockEntity.getOwner() == playerId) {
-                return false;
+            // The profile might be null in case the card is unbound, otherwise don't allow adding a card
+            // for the owner, since they always are fully authorized
+            if (newUser != null) {
+                int playerId = pr.getPlayerId(newUser);
+                if (this.blockEntity.getOwner() == playerId) {
+                    return false;
+                }
             }
 
             for (final IAEItemStack ais : this.getStoredItems()) {

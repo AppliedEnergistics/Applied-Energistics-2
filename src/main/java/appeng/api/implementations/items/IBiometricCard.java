@@ -25,6 +25,8 @@ package appeng.api.implementations.items;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nullable;
+
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.world.item.ItemStack;
@@ -41,8 +43,9 @@ public interface IBiometricCard {
     void setProfile(ItemStack itemStack, GameProfile username);
 
     /**
-     * @return {@link GameProfile} of the player encoded on this card, or a blank string.
+     * @return {@link GameProfile} of the player encoded on this card, or null.
      */
+    @Nullable
     GameProfile getProfile(ItemStack is);
 
     /**
