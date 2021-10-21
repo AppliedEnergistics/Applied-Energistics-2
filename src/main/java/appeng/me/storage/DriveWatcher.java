@@ -19,6 +19,7 @@
 package appeng.me.storage;
 
 
+import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.tile.storage.TileDrive;
@@ -73,7 +74,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 				this.drive.blinkCell( this.getSlot() );
 				this.oldStatus = newStatus;
 			}
-			if (this.drive.getProxy().isActive())
+			if (this.drive.getProxy().isActive() && !(handler instanceof CreativeCellHandler))
 			{
 				try
 				{
@@ -102,7 +103,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 				this.drive.blinkCell( this.getSlot() );
 				this.oldStatus = newStatus;
 			}
-			if (this.drive.getProxy().isActive())
+			if (this.drive.getProxy().isActive() && !(handler instanceof CreativeCellHandler ))
 			{
 				try
 				{
