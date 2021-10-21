@@ -235,7 +235,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
 
             this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
 
-            for (final QuantumBridgeBlockEntity r : this.getRing()) {
+            for (var r : this.getRing()) {
                 r.updateStatus(null, (byte) -1, this.isUpdateStatus());
             }
 
