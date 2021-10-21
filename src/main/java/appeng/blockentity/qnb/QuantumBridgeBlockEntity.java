@@ -265,8 +265,11 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         return (this.constructed & this.hasSingularity) == this.hasSingularity;
     }
 
-    public void breakCluster() {
+    public void breakClusterOnRemove() {
         if (this.cluster != null) {
+            // Prevents cluster.destroy() from changing the block state back to an unformed QNB,
+            // because that would undo the removal.
+            this.remove = true;
             this.cluster.destroy();
         }
     }
