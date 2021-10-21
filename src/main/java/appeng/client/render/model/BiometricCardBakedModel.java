@@ -164,9 +164,9 @@ class BiometricCardBakedModel implements BakedModel {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel level,
                     LivingEntity entity, int seed) {
-                String username = "";
-                if (stack.getItem() instanceof IBiometricCard) {
-                    final GameProfile gp = ((IBiometricCard) stack.getItem()).getProfile(stack);
+        String username = "";
+        if (stack.getItem() instanceof IBiometricCard biometricCard) {
+                    var gp = biometricCard.getProfile(stack);
                     if (gp != null) {
                         if (gp.getId() != null) {
                             username = gp.getId().toString();

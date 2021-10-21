@@ -266,7 +266,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
             }
         }
 
-        // make sure thea admin is Boss.
+        // make sure the admin is Boss.
         playerPerms.put(this.getMainNode().getNode().getOwningPlayerId(), EnumSet.allOf(SecurityPermissions.class));
     }
 
