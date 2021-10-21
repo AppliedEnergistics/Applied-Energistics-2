@@ -19,6 +19,8 @@
 package appeng.util.inv;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,8 +34,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -84,45 +84,43 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     public void setItemDirect(int slot, @Nonnull ItemStack stack) {
         var previousStack = stacks.get(slot).copy();
         stacks.set(slot, stack);
-        if (!ItemStack.isSameItemSameTags(previousStack, stack)) {
+        if (!ItemStack.matches(previousStack, stack)) {
             notifyContentsChanged(slot, previousStack);
         }
     }
 
-    private Int2ObjectOpenHashMap<ItemStack> pendingChangeNotifications;
+    // Fabric-specific logic to defer notification after a transaction is closed.
+    /**
+     * Stores the "original" stack, i.e. the stack before the first change.
+     */
+    private final Map<Integer, ItemStack> pendingChangeNotifications = new HashMap<>();
+    private boolean outerCallbackRegistered = false;
+    private final TransactionContext.OuterCloseCallback outerCallback = result -> {
+        outerCallbackRegistered = false;
+        for (var entry : pendingChangeNotifications.entrySet()) {
+            onContentsChanged(entry.getKey(), entry.getValue());
+        }
+        pendingChangeNotifications.clear();
+    };
 
     private void notifyContentsChanged(int slot, ItemStack previousStack) {
-        // If we're in a transaction, defer notification to after the transaction has committed
-        if (Transaction.isOpen()) {
-            if (pendingChangeNotifications == null) {
-                TransactionContext current;
-                try {
-                    current = Transaction.getCurrentUnsafe();
-                } catch (IllegalStateException ignored) {
-                    // Transaction is currently closing, and we should NOT add further change callbacks
+        if (outerCallbackRegistered) {
+            pendingChangeNotifications.putIfAbsent(slot, previousStack);
+            return;
+        } else {
+            try {
+                var tx = Transaction.getCurrentUnsafe();
+                if (tx != null) {
+                    tx.addOuterCloseCallback(outerCallback);
+                    outerCallbackRegistered = true;
+                    pendingChangeNotifications.putIfAbsent(slot, previousStack);
                     return;
                 }
-
-                pendingChangeNotifications = new Int2ObjectOpenHashMap<>();
-                current.addCloseCallback((tx, result) -> {
-                    if (pendingChangeNotifications != null) {
-                        var changes = pendingChangeNotifications;
-                        pendingChangeNotifications = null;
-
-                        for (var entry : changes.int2ObjectEntrySet()) {
-                            onContentsChanged(entry.getIntKey(), entry.getValue());
-                        }
-                    }
-                });
+            } catch (IllegalStateException ise) {
+                // Caught from the outer callback, just send the change notification.
             }
-
-            // We only record the first change that happens to a slot
-            if (!pendingChangeNotifications.containsKey(slot)) {
-                pendingChangeNotifications.put(slot, previousStack);
-            }
-        } else {
-            onContentsChanged(slot, previousStack);
         }
+        onContentsChanged(slot, previousStack);
     }
 
     @Override
