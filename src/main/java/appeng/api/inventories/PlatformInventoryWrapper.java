@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
+import appeng.util.Platform;
 
 /**
  * Wraps an inventory implementing the platforms standard inventory interface (i.e. IItemHandler on Forge) such that it
@@ -45,10 +46,6 @@ class PlatformInventoryWrapper implements ItemTransfer {
         this.storage = storage;
     }
 
-    private static Transaction openOrJoinTx() {
-        return Transaction.openOuter();
-    }
-
     @Override
     public boolean mayAllowTransfer() {
         return this.storage.supportsInsertion() || this.storage.supportsExtraction();
@@ -57,7 +54,7 @@ class PlatformInventoryWrapper implements ItemTransfer {
     @Override
     public ItemStack removeItems(int amount, ItemStack filter, Predicate<ItemStack> destination) {
         ItemStack result;
-        try (var tx = openOrJoinTx()) {
+        try (var tx = Platform.openOrJoinTx()) {
             result = innerRemoveItems(amount, filter, destination, tx);
             tx.commit();
         }
@@ -67,7 +64,7 @@ class PlatformInventoryWrapper implements ItemTransfer {
     @Override
     public ItemStack simulateRemove(int amount, ItemStack filter, Predicate<ItemStack> destination) {
         ItemStack result;
-        try (var tx = openOrJoinTx()) {
+        try (var tx = Platform.openOrJoinTx()) {
             result = innerRemoveItems(amount, filter, destination, tx);
         }
         return result;
@@ -130,7 +127,7 @@ class PlatformInventoryWrapper implements ItemTransfer {
     public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
             Predicate<ItemStack> destination) {
         ItemStack result;
-        try (var tx = openOrJoinTx()) {
+        try (var tx = Platform.openOrJoinTx()) {
             result = innerRemoveSimilarItems(amount, filter, fuzzyMode, destination, tx);
             tx.commit();
         }
@@ -141,7 +138,7 @@ class PlatformInventoryWrapper implements ItemTransfer {
     public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
             Predicate<ItemStack> destination) {
         ItemStack result;
-        try (var tx = openOrJoinTx()) {
+        try (var tx = Platform.openOrJoinTx()) {
             result = innerRemoveSimilarItems(amount, filter, fuzzyMode, destination, tx);
         }
         return result;
@@ -190,7 +187,7 @@ class PlatformInventoryWrapper implements ItemTransfer {
             return ItemStack.EMPTY;
         }
 
-        try (var tx = openOrJoinTx()) {
+        try (var tx = Platform.openOrJoinTx()) {
             ItemStack remainder = itemsToAdd.copy();
 
             var inserted = storage.insert(ItemVariant.of(itemsToAdd), itemsToAdd.getCount(), tx);
