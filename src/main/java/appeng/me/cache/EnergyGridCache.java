@@ -64,18 +64,21 @@ import appeng.me.energy.EnergyWatcher;
 public class EnergyGridCache implements IEnergyGrid
 {
 
-	private static final double MAX_BUFFER_STORAGE = 800.0;
+	private static final double MAX_BUFFER_STORAGE = 800;
 	private static final Comparator<IEnergyGridProvider> COMPARATOR_HIGHEST_AMOUNT_STORED_FIRST = ( o1, o2 ) -> Double.compare( o2.getProviderStoredEnergy(), o1.getProviderStoredEnergy() );
 
 	private static final Comparator<IEnergyGridProvider> COMPARATOR_LOWEST_PERCENTAGE_FIRST = ( o1, o2 ) -> {
-		final double percent1 = ( o1.getProviderStoredEnergy() + 1.0 ) / ( o1.getProviderMaxEnergy() + 1.0 );
-		final double percent2 = ( o2.getProviderStoredEnergy() + 1.0 ) / ( o2.getProviderMaxEnergy() + 1.0 );
+		final double percent1 = ( o1.getProviderStoredEnergy() + 1 ) / ( o1.getProviderMaxEnergy() + 1 );
+		final double percent2 = ( o2.getProviderStoredEnergy() + 1 ) / ( o2.getProviderMaxEnergy() + 1 );
 
 		return Double.compare( percent1, percent2 );
 	};
 
 	private final NavigableSet<EnergyThreshold> interests = Sets.newTreeSet();
 
+	// Should only be modified from the add/remove methods below to guard against
+	// concurrent modifications
+	private final double averageLength = 40.0;
 	private final Set<IAEPowerStorage> providers = new LinkedHashSet<>();
 	// Used to track whether an extraction is currently in progress, to fail fast
 	// when something externally
@@ -91,40 +94,40 @@ public class EnergyGridCache implements IEnergyGrid
 	private boolean ongoingInjectOperation = false;
 
 	private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
-	final IGrid myGrid;
+	private final IGrid myGrid;
 	private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<>();
 
 	/**
 	 * estimated power available.
 	 */
 	private int availableTicksSinceUpdate = 0;
-	private double globalAvailablePower = 0.0;
+	private double globalAvailablePower = 0;
 	private double globalMaxPower = MAX_BUFFER_STORAGE;
 
 	/**
 	 * idle draw.
 	 */
-	private double drainPerTick = 0.0;
-	private double avgDrainPerTick = 0.0;
-	private double avgInjectionPerTick = 0.0;
-	private double tickDrainPerTick = 0.0;
-	private double tickInjectionPerTick = 0.0;
+	private double drainPerTick = 0;
+	private double avgDrainPerTick = 0;
+	private double avgInjectionPerTick = 0;
+	private double tickDrainPerTick = 0;
+	private double tickInjectionPerTick = 0;
 
 	/**
 	 * power status
 	 */
 	private boolean publicHasPower = false;
 	private boolean hasPower = true;
-	long ticksSinceHasPowerChange = 900L;
+	private long ticksSinceHasPowerChange = 900;
 
 	private PathGridCache pgc;
-	private double lastStoredPower = -1.0;
+	private double lastStoredPower = -1;
 
 	private final GridPowerStorage localStorage = new GridPowerStorage();
-	private final Set<IAEPowerStorage> providersToRemove = new HashSet<>();
-	private final Set<IAEPowerStorage> requestersToRemove = new HashSet<>();
-	private final Set<IAEPowerStorage> providersToAdd = new HashSet<>();
-	private final Set<IAEPowerStorage> requestersToAdd = new HashSet<>();
+	private Set<IAEPowerStorage> providerToRemove = new HashSet<>();
+	private Set<IAEPowerStorage> requesterToRemove = new HashSet<>();
+	private Set<IAEPowerStorage> providersToAdd = new HashSet<>();
+	private Set<IAEPowerStorage> requesterToAdd = new HashSet<>();
 
 	public EnergyGridCache( final IGrid g )
 	{
@@ -182,7 +185,7 @@ public class EnergyGridCache implements IEnergyGrid
 					}
 					else
 					{
-						this.requestersToAdd.add( ev.storage );
+						this.requesterToAdd.add( ev.storage );
 					}
 				}
 			}
@@ -210,20 +213,17 @@ public class EnergyGridCache implements IEnergyGrid
 			}
 		}
 
-		// Should only be modified from the add/remove methods below to guard against
-		// concurrent modifications
-		double averageLength = 40.0;
-		this.avgDrainPerTick *= ( averageLength - 1.0 ) / averageLength;
-		this.avgInjectionPerTick *= ( averageLength - 1.0 ) / averageLength;
+		this.avgDrainPerTick *= ( this.averageLength - 1 ) / this.averageLength;
+		this.avgInjectionPerTick *= ( this.averageLength - 1 ) / this.averageLength;
 
-		this.avgDrainPerTick += this.tickDrainPerTick / averageLength;
-		this.avgInjectionPerTick += this.tickInjectionPerTick / averageLength;
+		this.avgDrainPerTick += this.tickDrainPerTick / this.averageLength;
+		this.avgInjectionPerTick += this.tickInjectionPerTick / this.averageLength;
 
-		this.tickDrainPerTick = 0.0;
-		this.tickInjectionPerTick = 0.0;
+		this.tickDrainPerTick = 0;
+		this.tickInjectionPerTick = 0;
 
 		// power information.
-		boolean currentlyHasPower;
+		boolean currentlyHasPower = false;
 
 		if( this.drainPerTick > 0.0001 )
 		{
@@ -232,7 +232,7 @@ public class EnergyGridCache implements IEnergyGrid
 		}
 		else
 		{
-			currentlyHasPower = this.extractAEPower( 0.1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0;
+			currentlyHasPower = this.extractAEPower( 0.1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0;
 		}
 
 		// ticks since change..
@@ -242,14 +242,14 @@ public class EnergyGridCache implements IEnergyGrid
 		}
 		else
 		{
-			this.ticksSinceHasPowerChange = 0L;
+			this.ticksSinceHasPowerChange = 0;
 		}
 
 		// update status..
 		this.hasPower = currentlyHasPower;
 
 		// update public status, this buffers power ups for 30 ticks.
-		if( this.hasPower && this.ticksSinceHasPowerChange > 30L )
+		if( this.hasPower && this.ticksSinceHasPowerChange > 30 )
 		{
 			this.publicPowerState( true, this.myGrid );
 		}
@@ -268,10 +268,10 @@ public class EnergyGridCache implements IEnergyGrid
 		final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>( COMPARATOR_HIGHEST_AMOUNT_STORED_FIRST );
 		final Set<IEnergyGridProvider> visited = new HashSet<>();
 
-		double extracted = 0.0;
+		double extracted = 0;
 		toVisit.add( this );
 
-		while ( !toVisit.isEmpty() && extracted < toExtract )
+		while( !toVisit.isEmpty() && extracted < toExtract )
 		{
 			final IEnergyGridProvider next = toVisit.poll();
 			visited.add( next );
@@ -296,7 +296,7 @@ public class EnergyGridCache implements IEnergyGrid
 		return this.drainPerTick + this.pgc.getChannelPowerUsage();
 	}
 
-	void publicPowerState( final boolean newState, final IGrid grid )
+	private void publicPowerState( final boolean newState, final IGrid grid )
 	{
 		if( this.publicHasPower == newState )
 		{
@@ -314,7 +314,7 @@ public class EnergyGridCache implements IEnergyGrid
 	private void refreshPower()
 	{
 		this.availableTicksSinceUpdate = 0;
-		this.globalAvailablePower = 0.0;
+		this.globalAvailablePower = 0;
 		for( final IAEPowerStorage p : this.providers )
 		{
 			this.globalAvailablePower += p.getAECurrentPower();
@@ -330,37 +330,59 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double extractProviderPower( final double amt, final Actionable mode )
 	{
-		double extractedPower = 0.0;
+		double extractedPower = 0;
 
-		if( !ongoingExtractOperation )
-		{
-			this.providers.addAll( providersToAdd );
-			providersToAdd.clear();
-
-			if( providers.remove( localStorage ) )
-			{
-				providers.add( localStorage );
-			}
-		}
+		this.providers.addAll( providersToAdd );
+		providersToAdd.clear();
+		providers.removeIf( providerToRemove::contains );
+		this.providerToRemove.clear();
 
 		final Iterator<IAEPowerStorage> it = this.providers.iterator();
 
 		ongoingExtractOperation = true;
+		boolean ls = false;
 		try
 		{
 			while ( extractedPower < amt && it.hasNext() )
 			{
 				final IAEPowerStorage node = it.next();
+				if( node != null )
+				{
+					if( node == localStorage && mode == Actionable.MODULATE )
+					{
+						ls = true;
+						continue;
+					}
 
-				final double req = amt - extractedPower;
-				final double newPower = node.extractAEPower( req, mode, PowerMultiplier.ONE );
-				extractedPower += newPower;
+					final double req = amt - extractedPower;
+					final double newPower = node.extractAEPower( req, mode, PowerMultiplier.ONE );
+					extractedPower += newPower;
+
+					if( newPower < req && mode == Actionable.MODULATE )
+					{
+						it.remove();
+					}
+				}
+				else
+				{
+					it.remove();
+				}
 			}
 		} finally
 		{
 			ongoingExtractOperation = false;
-			this.providers.removeIf( providersToRemove::contains );
-			this.providersToRemove.clear();
+			if( ls && extractedPower < amt )
+			{
+				final double req = amt - extractedPower;
+				final double newPower = localStorage.extractAEPower( req, mode, PowerMultiplier.ONE );
+
+				extractedPower += newPower;
+
+				if( newPower < req )
+				{
+					providers.remove( localStorage );
+				}
+			}
 		}
 
 		final double result = Math.min( extractedPower, amt );
@@ -384,28 +406,37 @@ public class EnergyGridCache implements IEnergyGrid
 	{
 		final double originalAmount = amt;
 
-		if( !ongoingInjectOperation )
-		{
-			this.requesters.addAll( requestersToAdd );
-			requestersToAdd.clear();
-		}
+		this.requesters.addAll( requesterToAdd );
+		requesterToAdd.clear();
+		requesters.removeIf( requesterToRemove::contains );
+		this.requesterToRemove.clear();
 
 		final Iterator<IAEPowerStorage> it = this.requesters.iterator();
 
 		ongoingInjectOperation = true;
 		try
 		{
-			while ( amt > 0.0 && it.hasNext() )
+			while ( amt > 0 && it.hasNext() )
 			{
 				final IAEPowerStorage node = it.next();
 
-				amt = node.injectAEPower( amt, mode );
+				if( node != null )
+				{
+					amt = node.injectAEPower( amt, mode );
+
+					if( amt > 0 && mode == Actionable.MODULATE )
+					{
+						it.remove();
+					}
+				}
+				else
+				{
+					it.remove();
+				}
 			}
 		} finally
 		{
 			ongoingInjectOperation = false;
-			this.requesters.removeIf( requestersToRemove::contains );
-			this.requestersToRemove.clear();
 		}
 
 		final double overflow = Math.max( 0.0, amt );
@@ -421,7 +452,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getProviderEnergyDemand( final double maxRequired )
 	{
-		double required = 0.0;
+		double required = 0;
 
 		final Iterator<IAEPowerStorage> it = this.requesters.iterator();
 		while ( required < maxRequired && it.hasNext() )
@@ -463,7 +494,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 		double leftover = amt;
 
-		while ( !toVisit.isEmpty() && leftover > 0.0 )
+		while( !toVisit.isEmpty() && leftover > 0 )
 		{
 			final IEnergyGridProvider next = toVisit.poll();
 			visited.add( next );
@@ -502,9 +533,9 @@ public class EnergyGridCache implements IEnergyGrid
 		final Set<IEnergyGridProvider> visited = new HashSet<>();
 		toVisit.add( this );
 
-		double required = 0.0;
+		double required = 0;
 
-		while ( !toVisit.isEmpty() && required < maxRequired )
+		while( !toVisit.isEmpty() && required < maxRequired )
 		{
 			final IEnergyGridProvider next = toVisit.poll();
 			visited.add( next );
@@ -532,7 +563,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getProviderMaxEnergy()
 	{
-		return this.globalMaxPower;
+		return this.getMaxStoredPower();
 	}
 
 	@Override
@@ -564,7 +595,7 @@ public class EnergyGridCache implements IEnergyGrid
 				}
 				else
 				{
-					this.providersToRemove.add( ps );
+					this.providerToRemove.add( ps );
 				}
 				if( !ongoingInjectOperation )
 				{
@@ -572,7 +603,7 @@ public class EnergyGridCache implements IEnergyGrid
 				}
 				else
 				{
-					this.requestersToRemove.add( ps );
+					this.requesterToRemove.add( ps );
 				}
 			}
 		}
@@ -642,7 +673,7 @@ public class EnergyGridCache implements IEnergyGrid
 					this.globalMaxPower += ps.getAEMaxPower();
 				}
 
-				if( current > 0.0 && ps.getPowerFlow() != AccessRestriction.WRITE )
+				if( current > 0 && ps.getPowerFlow() != AccessRestriction.WRITE )
 				{
 					this.globalAvailablePower += current;
 					if( !ongoingExtractOperation )
@@ -663,7 +694,7 @@ public class EnergyGridCache implements IEnergyGrid
 					}
 					else
 					{
-						this.requestersToAdd.add( ps );
+						this.requesterToAdd.add( ps );
 					}
 				}
 			}
@@ -684,7 +715,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public void onSplit( final IGridStorage storageB )
 	{
-		final double newBuffer = this.localStorage.getAECurrentPower() / 2.0;
+		final double newBuffer = this.localStorage.getAECurrentPower() / 2;
 		this.localStorage.removeCurrentAEPower( newBuffer );
 		storageB.dataObject().setDouble( "buffer", newBuffer );
 	}
@@ -713,11 +744,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 	private class GridPowerStorage implements IAEPowerStorage
 	{
-		private double stored = 0.0;
-
-		GridPowerStorage()
-		{
-		}
+		private double stored = 0;
 
 		@Override
 		public double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
@@ -769,7 +796,7 @@ public class EnergyGridCache implements IEnergyGrid
 			return this.stored;
 		}
 
-		void addCurrentAEPower( double amount )
+		private void addCurrentAEPower( double amount )
 		{
 			this.stored += amount;
 
@@ -779,7 +806,7 @@ public class EnergyGridCache implements IEnergyGrid
 			}
 		}
 
-		void removeCurrentAEPower( double amount )
+		private void removeCurrentAEPower( double amount )
 		{
 			this.stored -= amount;
 
@@ -790,7 +817,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 			if( this.stored < 0.01 )
 			{
-				EnergyGridCache.this.ticksSinceHasPowerChange = 0L;
+				EnergyGridCache.this.ticksSinceHasPowerChange = 0;
 				EnergyGridCache.this.publicPowerState( false, EnergyGridCache.this.myGrid );
 			}
 		}
