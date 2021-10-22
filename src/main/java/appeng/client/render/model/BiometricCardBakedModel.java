@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -164,8 +163,8 @@ class BiometricCardBakedModel implements BakedModel {
             @Override
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, ClientLevel level,
                     LivingEntity entity, int seed) {
-        String username = "";
-        if (stack.getItem() instanceof IBiometricCard biometricCard) {
+                String username = "";
+                if (stack.getItem() instanceof IBiometricCard biometricCard) {
                     var gp = biometricCard.getProfile(stack);
                     if (gp != null) {
                         if (gp.getId() != null) {

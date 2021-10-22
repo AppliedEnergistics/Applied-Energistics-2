@@ -20,14 +20,11 @@ package appeng.items.storage;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import org.jetbrains.annotations.NotNull;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -80,7 +77,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public IStorageChannel<?> getChannel() {
         return this.storageChannel;

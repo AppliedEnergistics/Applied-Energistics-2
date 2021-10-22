@@ -20,7 +20,7 @@ package appeng.items.storage;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -133,7 +133,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public IStorageChannel<?> getChannel() {
         return StorageChannels.items();

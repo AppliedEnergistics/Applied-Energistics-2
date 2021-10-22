@@ -60,9 +60,9 @@ public class AE2DataGenerators {
 
             // Misc
             generator.addProvider(new DecorationModelProvider(generator, dataEvent.getExistingFileHelper()));
-            generator.addProvider(new BlockModelProvider(generator, existingFileHelper));
-        generator.addProvider(new AdvancementGenerator(generator));
-        generator.addProvider(new ItemModelProvider(generator, existingFileHelper));
+            generator.addProvider(new BlockModelProvider(generator, dataEvent.getExistingFileHelper()));
+            generator.addProvider(new AdvancementGenerator(generator));
+            generator.addProvider(new ItemModelProvider(generator, dataEvent.getExistingFileHelper()));
 
             // Recipes
             generator.addProvider(new DecorationRecipes(generator));

@@ -18,14 +18,9 @@
 
 package appeng.helpers;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.storage.StorageChannels;
 import appeng.items.contents.CellConfig;
@@ -47,7 +42,6 @@ public class FluidCellConfig extends CellConfig {
             // Was unable to convert the given item stack to the target storage channel
             return stack;
         }
-        FluidStack fluid = fluidOpt.orElse(null);
 
         return super.insertItem(slot, configuredStack.asItemStackRepresentation(), simulate);
     }
@@ -62,7 +56,6 @@ public class FluidCellConfig extends CellConfig {
             }
             stack = configuredStack.asItemStackRepresentation();
         }
-        FluidStack fluid = fluidOpt.orElse(null);
 
         super.setItemDirect(slot, stack);
     }

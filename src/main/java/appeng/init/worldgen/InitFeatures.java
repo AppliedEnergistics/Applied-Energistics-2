@@ -20,7 +20,6 @@ package appeng.init.worldgen;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
