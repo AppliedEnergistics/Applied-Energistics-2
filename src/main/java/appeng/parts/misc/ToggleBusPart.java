@@ -68,6 +68,7 @@ public class ToggleBusPart extends BasicStatePart {
     private final IManagedGridNode outerNode = AEApi.grid()
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
+            .setInWorldNode(true)
             .setIdlePowerUsage(0.0)
             .setFlags();
 
