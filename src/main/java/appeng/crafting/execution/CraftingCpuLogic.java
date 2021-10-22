@@ -283,8 +283,6 @@ public class CraftingCpuLogic {
                 }
             }
         } else {
-            IAEStack.add(leftOver, input);
-
             if (type == Actionable.MODULATE) {
                 inventory.injectItems(input, Actionable.MODULATE);
             }
