@@ -742,16 +742,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			{
 				if( TileChest.this.getProxy().isActive() && this.getInternalHandler().getCellInv() != null )
 				{
-					try
-					{
-						TileChest.this.getProxy().getStorage().postAlterationOfStoredItems(
-								this.getChannel(),
-								Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( injected == null ? 0 : injected.getStackSize() ) ) ),
-								TileChest.this.mySrc );
-					} catch ( GridAccessException e )
-					{
-						e.printStackTrace();
-					}
+					TileChest.this.cellHandler.postChangesToListeners(Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( injected == null ? 0 : injected.getStackSize() ) ) ), TileChest.this.mySrc  );
 				}
 			}
 			return injected;
@@ -803,16 +794,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			{
 				if( TileChest.this.getProxy().isActive() && this.getInternalHandler().getCellInv() != null )
 				{
-					try
-					{
-						TileChest.this.getProxy().getStorage().postAlterationOfStoredItems(
-								this.getChannel(),
-								Collections.singletonList( request.copy().setStackSize( -extracted.getStackSize() ) ),
-								TileChest.this.mySrc );
-					} catch ( GridAccessException e )
-					{
-						e.printStackTrace();
-					}
+					TileChest.this.cellHandler.postChangesToListeners(Collections.singletonList( request.copy().setStackSize( -extracted.getStackSize() ) ), TileChest.this.mySrc  );
 				}
 			}
 			return extracted;

@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import com.google.common.collect.ImmutableList;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -93,7 +91,7 @@ public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T>
 		return this.internalHandler;
 	}
 
-	protected void postChangesToListeners( final Iterable<T> changes, final IActionSource src )
+	public void postChangesToListeners( final Iterable<T> changes, final IActionSource src )
 	{
 		this.notifyListenersOfChange( changes, src );
 	}

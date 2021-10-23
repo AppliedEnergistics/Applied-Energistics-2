@@ -23,7 +23,6 @@ import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.tile.storage.TileDrive;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -63,9 +62,9 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	{
 		final long size = input.getStackSize();
 
-		final T a = super.injectItems( input, type, src );
+		final T remainder = super.injectItems( input, type, src );
 
-		if( type == Actionable.MODULATE && ( a == null || a.getStackSize() != size ) )
+		if( type == Actionable.MODULATE && ( remainder == null || remainder.getStackSize() != size ) )
 		{
 			final int newStatus = this.getStatus();
 
@@ -78,7 +77,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 			{
 				try
 				{
-					this.drive.getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( a == null ? 0 : a.getStackSize() ) ) ), this.source );
+					this.drive.getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( remainder == null ? 0 : remainder.getStackSize() ) ) ), this.source );
 				} catch ( GridAccessException e )
 				{
 					e.printStackTrace();
@@ -86,15 +85,15 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 			}
 		}
 
-		return a;
+		return remainder;
 	}
 
 	@Override
 	public T extractItems( final T request, final Actionable type, final IActionSource src )
 	{
-		final T a = super.extractItems( request, type, src );
+		final T extractable = super.extractItems( request, type, src );
 
-		if( type == Actionable.MODULATE && a != null )
+		if( type == Actionable.MODULATE && extractable != null )
 		{
 			final int newStatus = this.getStatus();
 
@@ -107,7 +106,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 			{
 				try
 				{
-					this.drive.getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), Collections.singletonList( request.copy().setStackSize( -a.getStackSize() ) ), this.source );
+					this.drive.getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), Collections.singletonList( request.copy().setStackSize( -extractable.getStackSize() ) ), this.source );
 				} catch ( GridAccessException e )
 				{
 					e.printStackTrace();
@@ -115,6 +114,6 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 			}
 		}
 
-		return a;
+		return extractable;
 	}
 }
