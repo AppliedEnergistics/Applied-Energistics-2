@@ -47,8 +47,8 @@ import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -100,7 +100,9 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private final IActionSource mySrc;
     private YesNo lastRedstoneState;
     private ItemStack currentCell;
+    @Nullable
     private Map<IStorageChannel<?>, ICellInventoryHandler<?>> cachedInventories;
+    @Nullable
     private ICellHandler cachedHandler;
 
     public IOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -260,7 +262,6 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             return TickRateModulation.IDLE;
         }
 
-        var energy = grid.getEnergyService();
         for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
             final ItemStack is = this.inputCells.getStackInSlot(x);
             if (!is.isEmpty()) {
@@ -268,21 +269,13 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
                 for (var c : StorageChannels.getAll()) {
                     if (itemsToMove > 0) {
-                        final IMEMonitor<? extends IAEStack> network = grid.getStorageService()
-                                .getInventory(c);
-                        final ICellInventoryHandler<?> inv = this.getInv(is, c);
-
-                        if (inv == null) {
+                        var transferResult = transferContents(grid, is, c, itemsToMove);
+                        if (transferResult == null) {
                             continue;
                         }
 
-                        if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
-                            itemsToMove = this.transferContents(energy, inv, network, itemsToMove, c);
-                        } else {
-                            itemsToMove = this.transferContents(energy, network, inv, itemsToMove, c);
-                        }
-
-                        shouldMove &= this.shouldMove(is, inv);
+                        itemsToMove = transferResult.itemsToMove();
+                        shouldMove &= transferResult.finished();
 
                         if (itemsToMove > 0) {
                             ret = TickRateModulation.IDLE;
@@ -317,34 +310,52 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         }
     }
 
-    @Nullable
-    private ICellInventoryHandler<?> getInv(ItemStack is, IStorageChannel<?> chan) {
-        updateCurrentCellCache(is);
-        return this.cachedInventories.get(chan);
+    private record TransferResult(long itemsToMove, boolean finished) {
     }
 
-    private long transferContents(final IEnergySource energy, final IMEInventory src, final IMEInventory destination,
-            long itemsToMove, final IStorageChannel chan) {
-        final IAEStackList<? extends IAEStack> myList;
-        if (src instanceof IMEMonitor) {
-            myList = ((IMEMonitor) src).getStorageList();
-        } else {
-            myList = src.getAvailableItems();
+    @Nullable
+    private <T extends IAEStack> TransferResult transferContents(IGrid grid,
+            ItemStack cell,
+            IStorageChannel<T> channel,
+            long itemsToMove) {
+        var networkInv = grid.getStorageService().getInventory(channel);
+        var cellInv = getInv(cell, channel);
+
+        if (cellInv == null) {
+            // Cell doesn't support this particular storage channel
+            return null;
         }
 
-        itemsToMove *= chan.transferFactor();
+        IMEInventory<T> src, destination;
+        if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
+            src = cellInv;
+            destination = networkInv;
+        } else {
+            src = networkInv;
+            destination = cellInv;
+        }
 
+        final IAEStackList<T> srcList;
+        if (src instanceof IMEMonitor) {
+            srcList = ((IMEMonitor<T>) src).getStorageList();
+        } else {
+            srcList = src.getAvailableItems();
+        }
+
+        itemsToMove *= channel.transferFactor();
+
+        var energy = grid.getEnergyService();
         boolean didStuff;
 
         do {
             didStuff = false;
 
-            for (final IAEStack s : myList) {
+            for (var s : srcList) {
                 final long totalStackSize = s.getStackSize();
                 if (totalStackSize > 0) {
-                    final IAEStack stack = destination.injectItems(s, Actionable.SIMULATE, this.mySrc);
+                    var stack = destination.injectItems(s, Actionable.SIMULATE, this.mySrc);
 
-                    long possible = 0;
+                    long possible;
                     if (stack == null) {
                         possible = totalStackSize;
                     } else {
@@ -355,10 +366,10 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                         possible = Math.min(possible, itemsToMove);
                         s.setStackSize(possible);
 
-                        final IAEStack extracted = src.extractItems(s, Actionable.MODULATE, this.mySrc);
+                        var extracted = src.extractItems(s, Actionable.MODULATE, this.mySrc);
                         if (extracted != null) {
                             possible = extracted.getStackSize();
-                            final IAEStack failed = Platform.poweredInsert(energy, destination, extracted, this.mySrc);
+                            var failed = Platform.poweredInsert(energy, destination, extracted, this.mySrc);
 
                             if (failed != null) {
                                 possible -= failed.getStackSize();
@@ -377,7 +388,21 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             }
         } while (itemsToMove > 0 && didStuff);
 
-        return itemsToMove / chan.transferFactor();
+        // Did we reach the desired end-state for this particular storage channel?
+        boolean completed = shouldMove(cell, cellInv);
+
+        return new TransferResult(itemsToMove / channel.transferFactor(), completed);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    private <T extends IAEStack> ICellInventoryHandler<T> getInv(ItemStack is, IStorageChannel<T> chan) {
+        updateCurrentCellCache(is);
+        if (this.cachedInventories != null) {
+            return (ICellInventoryHandler<T>) this.cachedInventories.get(chan);
+        } else {
+            return null;
+        }
     }
 
     private boolean shouldMove(ItemStack is, ICellInventoryHandler<?> inv) {
@@ -399,13 +424,18 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     private boolean matches(FullnessMode fm, ItemStack is, ICellInventoryHandler<?> src) {
-        var status = this.cachedHandler.getStatusForCell(is, src);
+        updateCurrentCellCache(is);
+        if (this.cachedHandler != null) {
+            var status = this.cachedHandler.getStatusForCell(is, src);
 
-        return switch (fm) {
-            case EMPTY -> status == CellState.EMPTY;
-            case HALF -> true;
-            case FULL -> status == CellState.FULL;
-        };
+            return switch (fm) {
+                case EMPTY -> status == CellState.EMPTY;
+                case HALF -> true;
+                case FULL -> status == CellState.FULL;
+            };
+        } else {
+            return false;
+        }
     }
 
     /**
