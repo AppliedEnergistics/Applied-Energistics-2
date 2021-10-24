@@ -30,9 +30,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergyGridProvider;
@@ -60,7 +60,7 @@ public class QuartzFiberPart extends AEBasePart {
                 .setIdlePowerUsage(0)
                 .setFlags(GridFlags.CANNOT_CARRY)
                 .addService(IEnergyGridProvider.class, energyBridge);
-        this.outerNode = AEApi.grid().createManagedNode(this, NodeListener.INSTANCE)
+        this.outerNode = GridHelper.createManagedNode(this, NodeListener.INSTANCE)
                 .setTagName("outer")
                 .setIdlePowerUsage(0)
                 .setVisualRepresentation(is)

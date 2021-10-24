@@ -26,7 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.server.level.ServerLevel;
 
-import appeng.api.AEApi;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
@@ -39,7 +39,7 @@ import appeng.me.cluster.implementations.SpatialPylonCluster;
 public class SpatialPylonService implements ISpatialService, IGridServiceProvider {
 
     static {
-        AEApi.grid().addGridServiceEventHandler(GridBootingStatusChange.class, ISpatialService.class,
+        GridHelper.addGridServiceEventHandler(GridBootingStatusChange.class, ISpatialService.class,
                 (service, evt) -> {
                     ((SpatialPylonService) service).bootingRender(evt);
                 });

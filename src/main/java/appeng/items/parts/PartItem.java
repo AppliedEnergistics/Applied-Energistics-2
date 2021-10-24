@@ -26,9 +26,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
-import appeng.api.AEApi;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
+import appeng.api.parts.PartHelper;
 import appeng.items.AEBaseItem;
 
 public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T> {
@@ -48,7 +48,7 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
             return InteractionResult.PASS;
         }
 
-        return AEApi.partHelper().placeBus(held, context.getClickedPos(), context.getClickedFace(),
+        return PartHelper.placeBus(held, context.getClickedPos(), context.getClickedFace(),
                 player,
                 context.getHand(), context.getLevel());
     }

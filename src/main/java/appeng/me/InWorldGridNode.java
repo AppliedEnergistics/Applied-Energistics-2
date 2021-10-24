@@ -28,10 +28,10 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AEColor;
@@ -59,8 +59,6 @@ public class InWorldGridNode extends GridNode {
     protected void findInWorldConnections() {
         final EnumSet<Direction> newSecurityConnections = EnumSet.noneOf(Direction.class);
 
-        var gridApi = AEApi.grid();
-
         // Clean up any connections that we might have left over to nodes that we can no longer reach
         cleanupConnections();
 
@@ -68,7 +66,7 @@ public class InWorldGridNode extends GridNode {
         var pos = new MutableBlockPos();
         sides: for (var direction : exposedOnSides) {
             pos.setWithOffset(location, direction);
-            var adjacentNode = (GridNode) gridApi.getExposedNode(getLevel(), pos, direction.getOpposite());
+            var adjacentNode = (GridNode) GridHelper.getExposedNode(getLevel(), pos, direction.getOpposite());
             if (adjacentNode == null) {
                 continue;
             }
@@ -108,7 +106,7 @@ public class InWorldGridNode extends GridNode {
 
         for (var direction : newSecurityConnections) {
             pos.setWithOffset(location, direction);
-            var adjacentNode = (GridNode) gridApi.getExposedNode(getLevel(), pos, direction.getOpposite());
+            var adjacentNode = (GridNode) GridHelper.getExposedNode(getLevel(), pos, direction.getOpposite());
             if (adjacentNode == null) {
                 continue;
             }

@@ -26,7 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.AEApi;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
@@ -48,7 +48,7 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
     }
 
     protected IManagedGridNode createMainNode() {
-        return AEApi.grid().createManagedNode(this, BlockEntityNodeListener.INSTANCE);
+        return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE);
     }
 
     @Override

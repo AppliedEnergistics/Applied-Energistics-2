@@ -32,9 +32,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.features.Locatables;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
@@ -143,7 +143,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
                     }
 
                     sideA.connection = sideB.connection = new ConnectionWrapper(
-                            AEApi.grid().createGridConnection(sideA.getNode(), sideB.getNode()));
+                            GridHelper.createGridConnection(sideA.getNode(), sideB.getNode()));
                 } catch (final FailedConnectionException e) {
                     // :(
                     AELog.debug(e);

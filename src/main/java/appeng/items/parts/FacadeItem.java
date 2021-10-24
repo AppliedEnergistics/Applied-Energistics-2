@@ -40,9 +40,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.AEApi;
 import appeng.api.ids.AETags;
 import appeng.api.parts.IAlphaPassItem;
+import appeng.api.parts.PartHelper;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
@@ -60,7 +60,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        return AEApi.partHelper().placeBus(stack, context.getClickedPos(), context.getClickedFace(),
+        return PartHelper.placeBus(stack, context.getClickedPos(), context.getClickedFace(),
                 context.getPlayer(),
                 context.getHand(), context.getLevel());
     }

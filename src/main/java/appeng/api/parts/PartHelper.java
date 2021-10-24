@@ -31,24 +31,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public interface IPartHelper {
-    /**
-     * use in use item, to try and place a IBusItem
-     *
-     * @param is     ItemStack of an item which implements {@link IPartItem}
-     * @param pos    pos of part
-     * @param side   side which the part should be on
-     * @param player player placing part
-     * @param level  part in level
-     *
-     * @return true if placing was successful
-     */
-    // TODO, this should probably take ItemStack + ItemUseContext
-    InteractionResult placeBus(ItemStack is, BlockPos pos, Direction side, Player player, InteractionHand hand,
-            Level level);
+import appeng.core.AppEng;
+import appeng.parts.PartPlacement;
 
-    /**
-     * @return the render mode
-     */
-    CableRenderMode getCableRenderMode();
+public final class PartHelper {
+    private PartHelper() {
+    }
+
+    public static InteractionResult placeBus(ItemStack is, BlockPos pos, Direction side,
+            Player player, InteractionHand hand, Level level) {
+        return PartPlacement.place(is, pos, side, player, hand, level, PartPlacement.PlaceType.PLACE_ITEM, 0);
+    }
+
+    public static CableRenderMode getCableRenderMode() {
+        return AppEng.instance().getCableRenderMode();
+    }
 }

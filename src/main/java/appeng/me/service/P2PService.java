@@ -24,8 +24,8 @@ import java.util.Random;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 
-import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
@@ -40,11 +40,11 @@ import appeng.parts.p2p.P2PTunnelPart;
 
 public class P2PService implements IGridService, IGridServiceProvider {
     static {
-        AEApi.grid().addGridServiceEventHandler(GridBootingStatusChange.class, P2PService.class,
+        GridHelper.addGridServiceEventHandler(GridBootingStatusChange.class, P2PService.class,
                 (service, evt) -> {
                     service.wakeInputTunnels();
                 });
-        AEApi.grid().addGridServiceEventHandler(GridPowerStatusChange.class, P2PService.class,
+        GridHelper.addGridServiceEventHandler(GridPowerStatusChange.class, P2PService.class,
                 (service, evt) -> {
                     service.wakeInputTunnels();
                 });

@@ -21,8 +21,8 @@ package appeng.parts.networking;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.GridHelper;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
 
@@ -98,7 +98,7 @@ public abstract class DenseCablePart extends CablePart {
     }
 
     private boolean isDense(final Direction of) {
-        var adjacentHost = AEApi.grid().getNodeHost(getBlockEntity().getLevel(),
+        var adjacentHost = GridHelper.getNodeHost(getBlockEntity().getLevel(),
                 getBlockEntity().getBlockPos().relative(of));
 
         if (adjacentHost != null) {

@@ -25,9 +25,9 @@ import java.util.function.Consumer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.storage.data.IAEItemStack;
@@ -97,7 +97,7 @@ public class ExecutingCraftingJob {
         for (int i = 0; i < tasksTag.size(); ++i) {
             final CompoundTag item = tasksTag.getCompound(i);
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
-            var details = AEApi.patterns().decodePattern(pattern.createItemStack(),
+            var details = PatternDetailsHelper.decodePattern(pattern.createItemStack(),
                     cpu.cluster.getLevel());
             if (details != null) {
                 final TaskProgress tp = new TaskProgress();

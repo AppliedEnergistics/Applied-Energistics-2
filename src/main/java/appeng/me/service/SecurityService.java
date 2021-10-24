@@ -28,9 +28,9 @@ import com.google.common.base.Preconditions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -42,7 +42,7 @@ import appeng.me.GridNode;
 public class SecurityService implements ISecurityService, IGridServiceProvider {
 
     static {
-        AEApi.grid().addGridServiceEventHandler(GridSecurityChange.class, ISecurityService.class,
+        GridHelper.addGridServiceEventHandler(GridSecurityChange.class, ISecurityService.class,
                 (service, event) -> {
                     ((SecurityService) service).updatePermissions();
                 });

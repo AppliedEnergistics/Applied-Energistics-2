@@ -28,9 +28,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.StorageChannels;
@@ -122,8 +121,8 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
-            final ItemStack is = this.pattern.getStackInSlot(1);
-            final IPatternDetails details = AEApi.patterns().decodePattern(is,
+            var is = this.pattern.getStackInSlot(1);
+            var details = PatternDetailsHelper.decodePattern(is,
                     this.getHost().getBlockEntity().getLevel());
             if (details instanceof IAEPatternDetails aeDetails) {
                 this.setCraftingRecipe(aeDetails.isCraftable());
