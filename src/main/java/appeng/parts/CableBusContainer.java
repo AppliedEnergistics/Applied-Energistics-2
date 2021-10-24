@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -61,7 +60,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.LayerFlags;
 import appeng.api.parts.PartHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
@@ -83,7 +81,6 @@ import appeng.util.Platform;
 public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer {
 
     private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<>();
-    private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf(LayerFlags.class);
     private final CableBusStorage storage = new CableBusStorage();
     private YesNo hasRedstone = YesNo.UNDECIDED;
     private IPartHost tcb;
@@ -444,11 +441,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             }
         }
         return true;
-    }
-
-    @Override
-    public Set<LayerFlags> getLayerFlags() {
-        return this.myLayerFlags;
     }
 
     @Override

@@ -20,7 +20,6 @@ package appeng.blockentity.networking;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -39,7 +38,6 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
-import appeng.api.parts.LayerFlags;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -253,11 +251,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     @Override
     public boolean isEmpty() {
         return this.getCableBus().isEmpty();
-    }
-
-    @Override
-    public Set<LayerFlags> getLayerFlags() {
-        return this.getCableBus().getLayerFlags();
     }
 
     @Override
