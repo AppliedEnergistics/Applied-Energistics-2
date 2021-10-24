@@ -107,7 +107,7 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
             x++;
         }
 
-        final short oldStoredItems = this.storedItems;
+        short oldStoredItems = this.tagCompound.getShort(ITEM_TYPE_TAG);
 
         this.storedItems = (short) this.cellItems.size();
         if (this.cellItems.isEmpty()) {
