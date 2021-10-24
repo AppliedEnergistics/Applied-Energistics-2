@@ -19,14 +19,22 @@
 package appeng.blockentity.crafting;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.items.misc.FluidDummyItem;
+import appeng.util.fluid.AEFluidStack;
+import appeng.util.item.AEStack;
+import com.google.common.base.Preconditions;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -136,6 +144,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
             // Only accept our own crafting patterns!
             if (isEmpty && patternDetails instanceof AECraftingPattern pattern) {
+                // We only support fluid and item stacks
+
                 this.forcePlan = true;
                 this.myPlan = pattern;
                 this.pushDirection = where;
@@ -155,10 +165,25 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             int inputId = adapter.getCompressedIndexFromSparse(sparseIndex);
             if (inputId != -1) {
                 var list = table[inputId];
-                // Cast should be safe because our crafting patterns only provide IAEItemStacks
-                var stack = (IAEItemStack) list.iterator().next();
-                this.gridInv.setItemDirect(sparseIndex, stack.getDefinition().copy());
-                stack.decStackSize(1);
+
+                // Try substituting with a fluid, if allowed and available
+                var validFluid = myPlan.getValidFluid(sparseIndex);
+                if (validFluid != null) {
+                    var stack = list.findPrecise(validFluid);
+                    if (stack != null && stack.getStackSize() >= validFluid.getStackSize()) {
+                        var partialFluid = IAEStack.copy(stack, validFluid.getStackSize());
+                        this.gridInv.setItemDirect(sparseIndex, ((AEFluidStack) partialFluid).serializeAsItem());
+                        stack.decStackSize(validFluid.getStackSize());
+                        continue;
+                    }
+                }
+
+                // Try falling back to whatever is available
+                var stack = list.iterator().next();
+                if (stack instanceof IAEItemStack) {
+                    this.gridInv.setItemDirect(sparseIndex, stack.asItemStackRepresentation());
+                    stack.decStackSize(1);
+                }
             }
         }
 
@@ -193,11 +218,13 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return false;
         }
 
+        return !this.myPlan.getOutput(this.craftingInv, this.getLevel()).isEmpty();
+    }
+
+    private void fillCraftingInv() {
         for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
             this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
         }
-
-        return !this.myPlan.getOutput(this.craftingInv, this.getLevel()).isEmpty();
     }
 
     @Override

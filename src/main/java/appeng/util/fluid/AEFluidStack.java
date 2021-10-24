@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import appeng.util.item.AEItemStack;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -175,15 +176,16 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         return this.fluid;
     }
 
+    public ItemStack serializeAsItem() {
+        return FluidDummyItem.fromFluidStack(this.getFluidStack(), true);
+    }
+
     @Override
     public ItemStack asItemStackRepresentation() {
         ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
-        if (!is.isEmpty()) {
-            FluidDummyItem item = (FluidDummyItem) is.getItem();
-            item.setFluid(is, fluid);
-            return is;
-        }
-        return ItemStack.EMPTY;
+        FluidDummyItem item = (FluidDummyItem) is.getItem();
+        item.setFluid(is, fluid);
+        return is;
     }
 
     public static IAEFluidStack fromPacket(final FriendlyByteBuf buffer) {

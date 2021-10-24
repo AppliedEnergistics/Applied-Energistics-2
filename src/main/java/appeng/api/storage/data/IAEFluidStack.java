@@ -27,6 +27,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 
 import appeng.util.fluid.AEFluidStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * An alternate version of FluidStack for AE to keep tabs on things easier, and to support larger storage. stackSizes of
@@ -65,4 +66,5 @@ public interface IAEFluidStack extends IAEStack {
     default ResourceAmount<FluidVariant> getFluidStack() {
         return new ResourceAmount<>(getFluid(), getStackSize());
     }
+
 }
