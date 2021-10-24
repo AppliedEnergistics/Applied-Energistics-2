@@ -43,7 +43,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.helpers.FluidCellConfig;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
-import appeng.me.storage.CreativeCellInventory;
+import appeng.me.cells.CreativeCellHandler;
 
 public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
@@ -104,7 +104,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
             ItemStack stack) {
         Preconditions.checkArgument(stack.getItem() == this);
         if (this.storageChannel == channel) {
-            return CreativeCellInventory.getCell(channel, stack);
+            return CreativeCellHandler.getCell(channel, stack);
         }
         return null;
     }

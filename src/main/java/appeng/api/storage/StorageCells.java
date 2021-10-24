@@ -146,21 +146,21 @@ public final class StorageCells {
     /**
      * returns an ICellInventoryHandler for the provided item by querying all registered handlers.
      *
-     * @param is   item with inventory handler
-     * @param host can be null. If provided, the host is responsible for persisting the cell content.
-     * @param chan the storage channel to request the handler for.
+     * @param is      item with inventory handler
+     * @param host    can be null. If provided, the host is responsible for persisting the cell content.
+     * @param channel the storage channel to request the handler for.
      * @return new ICellInventoryHandler, or null if there isn't one.
      */
     @Nullable
     public static synchronized <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is,
             ISaveProvider host,
-            IStorageChannel<T> chan) {
+            IStorageChannel<T> channel) {
         if (is.isEmpty()) {
             return null;
         }
-        for (final ICellHandler ch : handlers) {
+        for (var ch : handlers) {
             if (ch.isCell(is)) {
-                return ch.getCellInventory(is, host, chan);
+                return ch.getCellInventory(is, host, channel);
             }
         }
         return null;

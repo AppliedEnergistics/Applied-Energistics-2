@@ -59,7 +59,6 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
@@ -342,8 +341,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        final ICellInventoryHandler<IAEItemStack> cdi = StorageCells.getCellInventory(stack, null,
-                StorageChannels.items());
+        var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
 
         AEApi.client().addCellInformation(cdi, lines);
     }

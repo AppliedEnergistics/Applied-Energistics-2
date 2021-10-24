@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.storage;
+package appeng.me.cells;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -24,12 +24,11 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.items.contents.CellConfig;
 
-public class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHandler<T> {
+class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHandler<T> {
     private final IAEStackList<T> cache;
     private final IStorageChannel<T> channel;
 
@@ -45,10 +44,6 @@ public class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHa
                 this.cache.add(i);
             }
         }
-    }
-
-    public static <T extends IAEStack> ICellInventoryHandler<T> getCell(IStorageChannel<T> channel, ItemStack o) {
-        return new BasicCellInventoryHandler<>(new CreativeCellInventory<>(channel, o), channel);
     }
 
     @Override

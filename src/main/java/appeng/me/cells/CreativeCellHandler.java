@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.registries.cell;
+package appeng.me.cells;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -28,7 +28,15 @@ import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.items.storage.CreativeCellItem;
 
-public final class CreativeCellHandler implements ICellHandler {
+/**
+ * Cell handler for creative storage cells (both fluid and item), which do not allow item insertion.
+ */
+public class CreativeCellHandler implements ICellHandler {
+    public static <T extends IAEStack> ICellInventoryHandler<T> getCell(IStorageChannel<T> channel, ItemStack o) {
+        CreativeCellInventory<T> inv = new CreativeCellInventory<>(channel, o);
+        return new CreativeCellInventoryHandler<>(inv, channel);
+    }
+
     @Override
     public boolean isCell(ItemStack is) {
         return !is.isEmpty() && is.getItem() instanceof CreativeCellItem;
@@ -45,13 +53,12 @@ public final class CreativeCellHandler implements ICellHandler {
     }
 
     @Override
-    public CellState getStatusForCell(final ItemStack is, final ICellInventoryHandler handler) {
+    public <T extends IAEStack> CellState getStatusForCell(ItemStack is, ICellInventoryHandler<T> handler) {
         return CellState.TYPES_FULL;
     }
 
     @Override
-    public double cellIdleDrain(final ItemStack is, final ICellInventoryHandler handler) {
+    public <T extends IAEStack> double cellIdleDrain(ItemStack is, ICellInventoryHandler<T> handler) {
         return 0;
     }
-
 }
