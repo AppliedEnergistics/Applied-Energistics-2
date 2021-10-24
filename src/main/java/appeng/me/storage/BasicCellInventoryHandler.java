@@ -19,7 +19,6 @@
 package appeng.me.storage;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
@@ -29,7 +28,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
@@ -40,12 +38,12 @@ import appeng.util.prioritylist.PrecisePriorityList;
  */
 public class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T>
         implements ICellInventoryHandler<T> {
-    public BasicCellInventoryHandler(final IMEInventory c, final IStorageChannel<T> channel) {
+    public BasicCellInventoryHandler(IMEInventory<T> c, final IStorageChannel<T> channel) {
         super(c, channel);
 
         var ci = this.getCellInv();
         if (ci != null) {
-            final IAEStackList<T> priorityList = channel.createList();
+            var priorityList = channel.createList();
 
             var upgrades = ci.getUpgradesInventory();
             var config = ci.getConfigInventory();
@@ -66,9 +64,12 @@ public class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHa
                 }
             }
 
-            for (ItemStack stack : config) {
+            for (var stack : config) {
                 T configItem = channel.createStack(stack);
                 if (configItem != null) {
+                    // The config inventories stack size is meaningless, but stacks of size 0
+                    // are ignored in the item list.
+                    configItem.setStackSize(1);
                     priorityList.add(configItem);
                 }
             }
