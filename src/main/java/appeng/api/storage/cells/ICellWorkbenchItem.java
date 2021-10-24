@@ -23,7 +23,6 @@
 
 package appeng.api.storage.cells;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
@@ -75,6 +74,5 @@ public interface ICellWorkbenchItem {
     /**
      * @return the type of channel used to retrieve and store the filter.
      */
-    @Nonnull
     IStorageChannel<?> getChannel();
 }

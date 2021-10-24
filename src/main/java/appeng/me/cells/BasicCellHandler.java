@@ -16,34 +16,35 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.registries.cell;
+package appeng.me.cells;
 
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
-import appeng.me.storage.BasicCellInventory;
-import appeng.me.storage.BasicCellInventoryHandler;
 
+/**
+ * Cell handler that manages all normal storage cells (items, fluids).
+ */
 public class BasicCellHandler implements ICellHandler {
+    public static final BasicCellHandler INSTANCE = new BasicCellHandler();
 
     @Override
-    public boolean isCell(final ItemStack is) {
+    public boolean isCell(ItemStack is) {
         return BasicCellInventory.isCell(is);
     }
 
     @Override
-    public <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(final ItemStack is,
-            final ISaveProvider container, final IStorageChannel<T> channel) {
-        final ICellInventory<T> inv = BasicCellInventory.createInventory(is, container);
+    public <T extends IAEStack> BasicCellInventoryHandler<T> getCellInventory(ItemStack is,
+            ISaveProvider container,
+            IStorageChannel<T> channel) {
+        var inv = BasicCellInventory.createInventory(is, container, channel);
         if (inv == null || inv.getChannel() != channel) {
             return null;
         }
+        // This cast is safe because we check the channel of the inventory
         return new BasicCellInventoryHandler<>(inv, channel);
     }
-
 }

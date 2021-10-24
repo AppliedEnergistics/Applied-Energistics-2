@@ -55,7 +55,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
         this.myPartitionList = new DefaultPriorityList<>();
     }
 
-    IncludeExclude getWhitelist() {
+    protected IncludeExclude getWhitelist() {
         return this.myWhitelist;
     }
 
@@ -74,7 +74,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
         this.hasWriteAccess = this.cachedAccessRestriction.hasPermission(AccessRestriction.WRITE);
     }
 
-    IPartitionList<T> getPartitionList() {
+    protected IPartitionList<T> getPartitionList() {
         return this.myPartitionList;
     }
 
