@@ -57,7 +57,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.cells.base.IBasicCellItem;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
@@ -339,7 +339,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
-        addTooltipCellInformation(stack, lines);
+        addCellInformationToTooltip(stack, lines);
     }
 
     @Override
@@ -367,11 +367,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public boolean storableInStorageCell() {
-        return true;
-    }
-
-    @Override
-    public boolean isStorageCell(final ItemStack i) {
         return true;
     }
 

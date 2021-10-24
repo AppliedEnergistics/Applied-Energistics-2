@@ -18,26 +18,25 @@
 
 package appeng.me.cells;
 
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.base.IBasicCellInfo;
-import appeng.api.storage.cells.base.IBasicCellInventoryHandler;
+import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 /**
- * Adapts a {@link BasicCellInventory} such that it's upgrades and filters are applied.
+ * Adapts a {@link BasicCellInventory} such that its upgrades and filters are applied.
  */
-class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T>
-        implements IBasicCellInventoryHandler<T> {
+public class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T>
+        implements ICellInventoryHandler<T> {
 
     private final BasicCellInventory<T> cellInventory;
 
-    public BasicCellInventoryHandler(BasicCellInventory<T> cellInventory, IStorageChannel<T> channel) {
+    BasicCellInventoryHandler(BasicCellInventory<T> cellInventory, IStorageChannel<T> channel) {
         super(cellInventory, channel);
         this.cellInventory = cellInventory;
 
@@ -45,7 +44,7 @@ class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T
 
         var upgrades = cellInventory.getUpgradesInventory();
         var config = cellInventory.getConfigInventory();
-        final FuzzyMode fzMode = cellInventory.getFuzzyMode();
+        var fzMode = cellInventory.getFuzzyMode();
 
         boolean hasInverter = false;
         boolean hasFuzzy = false;
@@ -83,28 +82,42 @@ class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T
         }
     }
 
-    @Override
-    public IBasicCellInfo getInfo() {
-        return this.cellInventory;
-    }
-
-    @Override
     public boolean isPreformatted() {
         return !this.getPartitionList().isEmpty();
     }
 
-    @Override
     public boolean isFuzzy() {
         return this.getPartitionList() instanceof FuzzyPriorityList;
     }
 
-    @Override
     public IncludeExclude getIncludeExcludeMode() {
         return this.getWhitelist();
     }
 
-    @Override
-    public void persist() {
-        this.cellInventory.persist();
+    /**
+     * @return The number of bytes currently in use on the underlying storage cell.
+     */
+    public long getUsedBytes() {
+        return cellInventory.getUsedBytes();
     }
+
+    /**
+     * @return The number of different types currently stored on the underlying storage cell.
+     */
+    public long getStoredItemTypes() {
+        return cellInventory.getStoredItemTypes();
+    }
+
+    public void persist() {
+        cellInventory.persist();
+    }
+
+    public CellState getStatus() {
+        return cellInventory.getStatusForCell();
+    }
+
+    public double getIdleDrain() {
+        return cellInventory.getIdleDrain();
+    }
+
 }

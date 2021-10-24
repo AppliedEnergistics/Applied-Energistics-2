@@ -21,22 +21,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage.cells.base;
+package appeng.api.storage.cells;
 
 import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.client.ClientHelper;
+import appeng.api.config.IncludeExclude;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.*;
 import appeng.api.storage.data.IAEStack;
+import appeng.core.localization.GuiText;
 import appeng.me.cells.BasicCellHandler;
 
 /**
@@ -47,12 +45,12 @@ import appeng.me.cells.BasicCellHandler;
  * The standard AE implementation also only provides 1-63 Types.
  */
 public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
-
     /**
+     * The number of bytes that can be stored on this type of storage cell.
+     * <p/>
      * It wont work if the return is not a multiple of 8. The limit is ({@link Integer#MAX_VALUE} + 1) / 8.
      *
      * @param cellItem item
-     *
      * @return number of bytes
      */
     int getBytes(ItemStack cellItem);
@@ -61,16 +59,14 @@ public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
      * Determines the number of bytes used for any type included on the cell.
      *
      * @param cellItem item
-     *
      * @return number of bytes
      */
     int getBytesPerType(ItemStack cellItem);
 
     /**
-     * Must be between 1 and 63, indicates how many types you want to store on the item.
+     * Must be between 1 and 63, indicates how many types can be stored on this type of storage cell.
      *
      * @param cellItem item
-     *
      * @return number of types
      */
     int getTotalTypes(ItemStack cellItem);
@@ -81,10 +77,11 @@ public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
      *
      * @param cellItem          item
      * @param requestedAddition requested addition
-     *
      * @return true to preventAdditionOfItem
      */
-    boolean isBlackListed(ItemStack cellItem, T requestedAddition);
+    default boolean isBlackListed(ItemStack cellItem, T requestedAddition) {
+        return false;
+    }
 
     /**
      * Allows you to specify if this storage cell can be stored inside other storage cells, only set this for special
@@ -93,16 +90,19 @@ public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
      * @return true if the storage cell can be stored inside other storage cells, this is generally false, except for
      *         certain situations such as the matter cannon.
      */
-    boolean storableInStorageCell();
+    default boolean storableInStorageCell() {
+        return false;
+    }
 
     /**
      * Allows an item to selectively enable or disable its status as a storage cell.
      *
      * @param i item
-     *
-     * @return if the ItemStack should behavior as a storage cell.
+     * @return if the ItemStack should currently be usable as a storage cell.
      */
-    boolean isStorageCell(ItemStack i);
+    default boolean isStorageCell(ItemStack i) {
+        return true;
+    }
 
     /**
      * @return drain in ae/t this storage cell will use.
@@ -115,24 +115,30 @@ public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
     IStorageChannel<T> getChannel();
 
     /**
-     * Return a handler for this cell. Only use if you need to access the {@link IBasicCellInfo}.
-     */
-    default IBasicCellInventoryHandler<T> getHandler(ItemStack is, @Nullable ISaveProvider host) {
-        Preconditions.checkArgument(is.getItem() == this);
-        Preconditions.checkArgument(isStorageCell(is));
-
-        var ret = (IBasicCellInventoryHandler<T>) BasicCellHandler.INSTANCE.getCellInventory(is, host, getChannel());
-        return Objects.requireNonNull(ret);
-    }
-
-    /**
      * Convenient helper to append useful tooltip information.
      */
-    default void addTooltipCellInformation(ItemStack is, List<Component> lines) {
-        if (isStorageCell(is)) {
-            var handler = getHandler(is, null);
-            ClientHelper.addCellInformation(handler.getInfo(), handler.isPreformatted(), handler.isFuzzy(),
-                    handler.getIncludeExcludeMode(), lines);
+    default void addCellInformationToTooltip(ItemStack is, List<Component> lines) {
+        Preconditions.checkArgument(is.getItem() == this);
+
+        var handler = BasicCellHandler.INSTANCE.getCellInventory(is, null, getChannel());
+
+        lines.add(new TextComponent(handler.getUsedBytes() + " ").append(GuiText.Of.text())
+                .append(" " + getBytes(is) + " ").append(GuiText.BytesUsed.text()));
+
+        lines.add(new TextComponent(handler.getStoredItemTypes() + " ").append(GuiText.Of.text())
+                .append(" " + getTotalTypes(is) + " ").append(GuiText.Types.text()));
+
+        if (handler.isPreformatted()) {
+            var list = (handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included
+                    : GuiText.Excluded)
+                            .text();
+
+            if (handler.isFuzzy()) {
+                lines.add(GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Fuzzy.text()));
+            } else {
+                lines.add(
+                        GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Precise.text()));
+            }
         }
     }
 }

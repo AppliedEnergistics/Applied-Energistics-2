@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
 
@@ -38,7 +37,7 @@ public class BasicCellHandler implements ICellHandler {
     }
 
     @Override
-    public <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is,
+    public <T extends IAEStack> BasicCellInventoryHandler<T> getCellInventory(ItemStack is,
             ISaveProvider container,
             IStorageChannel<T> channel) {
         var inv = BasicCellInventory.createInventory(is, container, channel);

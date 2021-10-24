@@ -34,11 +34,11 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ISaveProvider;
-import appeng.api.storage.cells.base.IBasicCellItem;
 import appeng.api.storage.data.IAEStack;
 
 /**

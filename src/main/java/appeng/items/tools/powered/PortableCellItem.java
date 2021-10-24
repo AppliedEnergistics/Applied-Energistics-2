@@ -39,7 +39,7 @@ import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.cells.base.IBasicCellItem;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.hooks.ICustomReequipAnimation;
@@ -74,7 +74,7 @@ public class PortableCellItem extends AEBasePoweredItem
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
-        addTooltipCellInformation(stack, lines);
+        addCellInformationToTooltip(stack, lines);
     }
 
     @Override
@@ -90,21 +90,6 @@ public class PortableCellItem extends AEBasePoweredItem
     @Override
     public int getTotalTypes(final ItemStack cellItem) {
         return this.tier.getTypes();
-    }
-
-    @Override
-    public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
-        return false;
-    }
-
-    @Override
-    public boolean storableInStorageCell() {
-        return false;
-    }
-
-    @Override
-    public boolean isStorageCell(final ItemStack i) {
-        return true;
     }
 
     @Override

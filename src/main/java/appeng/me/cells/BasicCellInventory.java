@@ -31,16 +31,15 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ISaveProvider;
-import appeng.api.storage.cells.base.IBasicCellInfo;
-import appeng.api.storage.cells.base.IBasicCellItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 
-class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo, IMEInventory<T> {
+class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
     private static final int MAX_ITEM_TYPES = 63;
     private static final String ITEM_TYPE_TAG = "it";
     private static final String ITEM_COUNT_TAG = "ic";
@@ -92,12 +91,11 @@ class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo, IMEInven
         Preconditions.checkNotNull(o, "Cannot create cell inventory for null itemstack");
 
         if (!(o.getItem() instanceof IBasicCellItem<?>cellType)) {
-            AELog.warn("ItemStack was used as a cell, but was not a cell!");
             return null;
         }
 
         if (!cellType.isStorageCell(o)) {
-            AELog.warn("ItemStack was used as a cell, but was not a cell!");
+            // This is not an error. Items may decide to not be a storage cell temporarily.
             return null;
         }
 
@@ -240,32 +238,26 @@ class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo, IMEInven
         return out;
     }
 
-    @Override
     public double getIdleDrain() {
         return this.cellType.getIdleDrain();
     }
 
-    @Override
     public FuzzyMode getFuzzyMode() {
         return this.cellType.getFuzzyMode(this.i);
     }
 
-    @Override
     public InternalInventory getConfigInventory() {
         return this.cellType.getConfigInventory(this.i);
     }
 
-    @Override
     public InternalInventory getUpgradesInventory() {
         return this.cellType.getUpgradesInventory(this.i);
     }
 
-    @Override
     public int getBytesPerType() {
         return this.cellType.getBytesPerType(this.i);
     }
 
-    @Override
     public boolean canHoldNewItem() {
         final long bytesFree = this.getFreeBytes();
         return (bytesFree > this.getBytesPerType()
@@ -273,51 +265,42 @@ class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo, IMEInven
                 && this.getRemainingItemTypes() > 0;
     }
 
-    @Override
     public long getTotalBytes() {
         return this.cellType.getBytes(this.i);
     }
 
-    @Override
     public long getFreeBytes() {
         return this.getTotalBytes() - this.getUsedBytes();
     }
 
-    @Override
     public long getTotalItemTypes() {
         return this.maxItemTypes;
     }
 
-    @Override
     public long getStoredItemCount() {
         return this.storedItemCount;
     }
 
-    @Override
     public long getStoredItemTypes() {
         return this.storedItems;
     }
 
-    @Override
     public long getRemainingItemTypes() {
         var basedOnStorage = this.getFreeBytes() / this.getBytesPerType();
         var baseOnTotal = this.getTotalItemTypes() - this.getStoredItemTypes();
         return Math.min(basedOnStorage, baseOnTotal);
     }
 
-    @Override
     public long getUsedBytes() {
         final long bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / this.itemsPerByte;
         return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
     }
 
-    @Override
     public long getRemainingItemCount() {
         final long remaining = this.getFreeBytes() * this.itemsPerByte + this.getUnusedItemCount();
         return remaining > 0 ? remaining : 0;
     }
 
-    @Override
     public int getUnusedItemCount() {
         final int div = (int) (this.getStoredItemCount() % 8);
 
@@ -328,7 +311,6 @@ class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo, IMEInven
         return this.itemsPerByte - div;
     }
 
-    @Override
     public CellState getStatusForCell() {
         if (this.getStoredItemTypes() == 0) {
             return CellState.EMPTY;
