@@ -151,7 +151,6 @@ class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo, IMEInven
         return this.cellItems;
     }
 
-    @Override
     public void persist() {
         if (this.isPersisted) {
             return;
@@ -205,7 +204,7 @@ class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo, IMEInven
 
         this.isPersisted = false;
         if (this.container != null) {
-            this.container.saveChanges(this);
+            this.container.saveChanges();
         } else {
             // if there is no ISaveProvider, store to NBT immediately
             this.persist();

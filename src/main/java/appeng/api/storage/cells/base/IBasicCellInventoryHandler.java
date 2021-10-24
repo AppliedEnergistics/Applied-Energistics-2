@@ -22,11 +22,6 @@ public interface IBasicCellInventoryHandler<T extends IAEStack> extends ICellInv
         return getInfo().getIdleDrain();
     }
 
-    @Override
-    default void persist() {
-        getInfo().persist();
-    }
-
     boolean isPreformatted();
 
     boolean isFuzzy();

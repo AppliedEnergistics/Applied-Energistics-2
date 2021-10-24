@@ -115,9 +115,4 @@ public interface IBasicCellInfo {
      * @return get the status of the cell based on its contents.
      */
     CellState getStatusForCell();
-
-    /**
-     * Tells the cell to persist to NBT
-     */
-    void persist();
 }

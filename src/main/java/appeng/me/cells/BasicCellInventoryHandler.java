@@ -102,4 +102,9 @@ class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T
     public IncludeExclude getIncludeExcludeMode() {
         return this.getWhitelist();
     }
+
+    @Override
+    public void persist() {
+        this.cellInventory.persist();
+    }
 }
