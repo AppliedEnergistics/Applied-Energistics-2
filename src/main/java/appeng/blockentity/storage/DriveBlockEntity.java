@@ -52,6 +52,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellProvider;
@@ -66,7 +67,6 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DriveWatcher;
 import appeng.menu.implementations.DriveMenu;
-import appeng.util.Platform;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestOrDrive, IPriorityHost, ICellProvider {
@@ -318,7 +318,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         getMainNode().ifPresent(grid -> {
             grid.postEvent(new GridCellArrayUpdate());
 
-            Platform.postWholeCellChanges(grid.getStorageService(), removed, added, this.mySrc);
+            StorageHelper.postWholeCellChanges(grid.getStorageService(), removed, added, this.mySrc);
         });
 
         this.markForUpdate();

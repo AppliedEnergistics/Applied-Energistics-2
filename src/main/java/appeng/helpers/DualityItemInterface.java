@@ -49,6 +49,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -336,7 +337,7 @@ public class DualityItemInterface
                 return true;
             }
 
-            var acquired = Platform.poweredExtraction(src, this.destination, itemStack,
+            var acquired = StorageHelper.poweredExtraction(src, this.destination, itemStack,
                     this.interfaceRequestSource);
             if (acquired != null) {
                 var overflow = storage.insertItem(slot, acquired.createItemStack(), false);
@@ -359,7 +360,7 @@ public class DualityItemInterface
                 return true;
             }
 
-            var remainder = Platform.poweredInsert(src, this.destination, toStore, this.interfaceRequestSource);
+            var remainder = StorageHelper.poweredInsert(src, this.destination, toStore, this.interfaceRequestSource);
 
             // Remove the items we just injected somewhere else into the network.
             int toExtract = (int) (diff - IAEStack.getStackSizeOrZero(remainder));

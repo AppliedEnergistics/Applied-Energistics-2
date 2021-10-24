@@ -20,7 +20,6 @@ package appeng.util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
 import net.fabricmc.api.EnvType;
@@ -82,23 +80,15 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
-import appeng.core.stats.AeStats;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.items.tools.quartz.QuartzToolType;
@@ -108,17 +98,9 @@ import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 
-/**
- * @author AlgorithmX2
- * @author thatsIch
- * @version rv2
- * @since rv0
- */
 public class Platform {
 
     private static final FabricLoader FABRIC = FabricLoader.getInstance();
-
-    public static final int DEF_OFFSET = 16;
 
     /*
      * random source, use it for item drop locations...
@@ -537,174 +519,6 @@ public class Platform {
                 break;
         }
         return forward;
-    }
-
-    public static <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
-            final T request, final IActionSource src) {
-        return poweredExtraction(energy, cell, request, src, Actionable.MODULATE);
-    }
-
-    public static <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
-            final T request, final IActionSource src, final Actionable mode) {
-        Preconditions.checkNotNull(energy);
-        Preconditions.checkNotNull(cell);
-        Preconditions.checkNotNull(request);
-        Preconditions.checkNotNull(src);
-        Preconditions.checkNotNull(mode);
-
-        final T possible = cell.extractItems(IAEStack.copy(request), Actionable.SIMULATE, src);
-
-        long retrieved = 0;
-        if (possible != null) {
-            retrieved = possible.getStackSize();
-        }
-
-        final double energyFactor = Math.max(1.0, cell.getChannel().transferFactor());
-        final double availablePower = energy.extractAEPower(retrieved / energyFactor, Actionable.SIMULATE,
-                PowerMultiplier.CONFIG);
-        final long itemToExtract = Math.min((long) (availablePower * energyFactor + 0.9), retrieved);
-
-        if (itemToExtract > 0) {
-            if (mode == Actionable.MODULATE) {
-                energy.extractAEPower(retrieved / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                possible.setStackSize(itemToExtract);
-                final T ret = cell.extractItems(possible, Actionable.MODULATE, src);
-
-                if (ret != null) {
-                    src.player()
-                            .ifPresent(player -> AeStats.ItemsExtracted.addToPlayer(player, (int) ret.getStackSize()));
-                }
-                return ret;
-            } else {
-                possible.setStackSize(itemToExtract);
-                return possible;
-            }
-        }
-
-        return null;
-    }
-
-    public static <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
-            final T input, final IActionSource src) {
-        return poweredInsert(energy, cell, input, src, Actionable.MODULATE);
-    }
-
-    public static <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
-            final T input, final IActionSource src, final Actionable mode) {
-        Preconditions.checkNotNull(energy);
-        Preconditions.checkNotNull(cell);
-        Preconditions.checkNotNull(input);
-        Preconditions.checkNotNull(src);
-        Preconditions.checkNotNull(mode);
-
-        final T overflow = cell.injectItems(IAEStack.copy(input), Actionable.SIMULATE, src);
-
-        long transferAmount = input.getStackSize();
-        if (overflow != null) {
-            transferAmount -= overflow.getStackSize();
-        }
-
-        final double energyFactor = Math.max(1.0, cell.getChannel().transferFactor());
-        final double availablePower = energy.extractAEPower(transferAmount / energyFactor, Actionable.SIMULATE,
-                PowerMultiplier.CONFIG);
-        final long itemToAdd = Math.min((long) (availablePower * energyFactor + 0.9), transferAmount);
-
-        if (itemToAdd > 0) {
-            if (mode == Actionable.MODULATE) {
-                energy.extractAEPower(transferAmount / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                if (itemToAdd < input.getStackSize()) {
-                    final long original = input.getStackSize();
-                    final T leftover = IAEStack.copy(input);
-                    final T split = IAEStack.copy(input);
-
-                    leftover.decStackSize(itemToAdd);
-                    split.setStackSize(itemToAdd);
-                    IAEStack.add(leftover, cell.injectItems(split, Actionable.MODULATE, src));
-
-                    src.player().ifPresent(player -> {
-                        final long diff = original - leftover.getStackSize();
-                        AeStats.ItemsInserted.addToPlayer(player, (int) diff);
-                    });
-
-                    return leftover;
-                }
-
-                final T ret = cell.injectItems(input, Actionable.MODULATE, src);
-
-                src.player().ifPresent(player -> {
-                    final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
-                    AeStats.ItemsInserted.addToPlayer(player, (int) diff);
-                });
-
-                return ret;
-            } else {
-                var ret = IAEStack.copy(input, input.getStackSize() - itemToAdd);
-                return ret != null && ret.getStackSize() > 0 ? ret : null;
-            }
-        }
-
-        return input;
-    }
-
-    /**
-     * Post inventory changes from a whole cell being added or removed from the grid.
-     */
-    public static void postWholeCellChanges(IStorageService service,
-            ItemStack removedCell,
-            ItemStack addedCell,
-            IActionSource src) {
-        for (var channel : StorageChannels.getAll()) {
-            postWholeCellChanges(service, channel, removedCell, addedCell, src);
-        }
-    }
-
-    private static <T extends IAEStack> void postWholeCellChanges(IStorageService service,
-            IStorageChannel<T> channel,
-            ItemStack removedCell,
-            ItemStack addedCell,
-            IActionSource src) {
-        var myChanges = channel.createList();
-
-        if (!removedCell.isEmpty()) {
-            var myInv = StorageCells.getCellInventory(removedCell, null, channel);
-            if (myInv != null) {
-                myInv.getAvailableItems(myChanges);
-                for (var is : myChanges) {
-                    is.setStackSize(-is.getStackSize());
-                }
-            }
-        }
-        if (!addedCell.isEmpty()) {
-            var myInv = StorageCells.getCellInventory(addedCell, null, channel);
-            if (myInv != null) {
-                myInv.getAvailableItems(myChanges);
-            }
-
-        }
-        service.postAlterationOfStoredItems(channel, myChanges, src);
-    }
-
-    public static <T extends IAEStack> void postListChanges(final IAEStackList<T> before, final IAEStackList<T> after,
-            final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source) {
-        final List<T> changes = new ArrayList<>();
-
-        for (final T is : before) {
-            is.setStackSize(-is.getStackSize());
-        }
-
-        for (final T is : after) {
-            before.add(is);
-        }
-
-        for (final T is : before) {
-            if (is.getStackSize() != 0) {
-                changes.add(is);
-            }
-        }
-
-        if (!changes.isEmpty()) {
-            meMonitorPassthrough.postChange(null, changes, source);
-        }
     }
 
     public static boolean securityCheck(final GridNode a, final GridNode b) {

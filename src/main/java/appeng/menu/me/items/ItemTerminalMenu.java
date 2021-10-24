@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AELog;
@@ -38,7 +39,6 @@ import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 /**
@@ -93,7 +93,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                 var ais = StorageChannels.items().createStack(isg);
                 if (ais != null) {
                     ais.setStackSize(1);
-                    ais = Platform.poweredInsert(powerSource, monitor, ais, this.getActionSource());
+                    ais = StorageHelper.poweredInsert(powerSource, monitor, ais, this.getActionSource());
                     if (ais == null) {
                         getCarried().shrink(1);
                     }
@@ -117,7 +117,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
 
                 if (liftQty > 0) {
                     IAEItemStack ais = IAEStack.copy(stack, 1);
-                    ais = Platform.poweredExtraction(powerSource, monitor, ais, this.getActionSource());
+                    ais = StorageHelper.poweredExtraction(powerSource, monitor, ais, this.getActionSource());
                     if (ais != null) {
                         if (item.isEmpty()) {
                             setCarried(ais.createItemStack());
@@ -134,7 +134,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                 } else {
                     IAEItemStack ais = stack.copy();
                     ais.setStackSize(ais.getDefinition().getMaxStackSize());
-                    ais = Platform.poweredExtraction(powerSource, monitor, ais,
+                    ais = StorageHelper.poweredExtraction(powerSource, monitor, ais,
                             this.getActionSource());
                     if (ais != null) {
                         setCarried(ais.createItemStack());
@@ -156,7 +156,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                     if (ais != null) {
                         final long stackSize = Math.min(maxSize, ais.getStackSize());
                         ais.setStackSize(stackSize + 1 >> 1);
-                        ais = Platform.poweredExtraction(powerSource, monitor, ais,
+                        ais = StorageHelper.poweredExtraction(powerSource, monitor, ais,
                                 this.getActionSource());
                     }
 
@@ -201,7 +201,8 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
             stackToInsert.setStackSize(1);
         }
 
-        IAEItemStack remainder = Platform.poweredInsert(powerSource, monitor, stackToInsert, this.getActionSource());
+        IAEItemStack remainder = StorageHelper.poweredInsert(powerSource, monitor, stackToInsert,
+                this.getActionSource());
         long inserted = stackToInsert.getStackSize() - (remainder == null ? 0 : remainder.getStackSize());
 
         if (inserted >= heldStack.getCount()) {
@@ -234,7 +235,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
         }
 
         var ais = IAEStack.copy(stack, toExtract);
-        ais = Platform.poweredExtraction(powerSource, monitor, ais, getActionSource());
+        ais = StorageHelper.poweredExtraction(powerSource, monitor, ais, getActionSource());
         if (ais == null) {
             return false; // No items available
         }
@@ -254,7 +255,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
             return super.transferStackToMenu(input);
         }
 
-        final IAEItemStack ais = Platform.poweredInsert(powerSource, monitor,
+        final IAEItemStack ais = StorageHelper.poweredInsert(powerSource, monitor,
                 StorageChannels.items().createStack(input),
                 this.getActionSource());
         return ais == null ? ItemStack.EMPTY : ais.createItemStack();

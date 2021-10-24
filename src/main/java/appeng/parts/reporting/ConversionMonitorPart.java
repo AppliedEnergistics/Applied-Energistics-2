@@ -28,6 +28,7 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
@@ -157,7 +158,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                             var canExtract = inv.extractItem(x, targetStack.getCount(), true);
                             if (!canExtract.isEmpty()) {
                                 input.setStackSize(canExtract.getCount());
-                                final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
+                                final IAEItemStack failedToInsert = StorageHelper.poweredInsert(energy, cell, input,
                                         new PlayerSource(player, this));
                                 inv.extractItem(x, failedToInsert == null ? canExtract.getCount()
                                         : canExtract.getCount() - (int) failedToInsert.getStackSize(), false);
@@ -167,7 +168,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                 }
             } else {
                 final IAEItemStack input = AEItemStack.fromItemStack(player.getItemInHand(hand));
-                final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
+                final IAEItemStack failedToInsert = StorageHelper.poweredInsert(energy, cell, input,
                         new PlayerSource(player, this));
                 player.setItemInHand(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
             }
@@ -191,7 +192,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
             input.setStackSize(count);
 
-            final IAEItemStack retrieved = Platform.poweredExtraction(energy, cell, input,
+            final IAEItemStack retrieved = StorageHelper.poweredExtraction(energy, cell, input,
                     new PlayerSource(player, this));
             if (retrieved != null) {
                 ItemStack newItems = retrieved.createItemStack();

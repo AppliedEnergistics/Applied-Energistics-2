@@ -32,12 +32,12 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEMonitorableMenu;
-import appeng.util.Platform;
 import appeng.util.fluid.FluidSoundHelper;
 
 /**
@@ -90,7 +90,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
             }
 
             // Check if we can pull out of the system
-            var canPull = Platform.poweredExtraction(this.powerSource, this.monitor, stack,
+            var canPull = StorageHelper.poweredExtraction(this.powerSource, this.monitor, stack,
                     this.getActionSource(), Actionable.SIMULATE);
             if (canPull == null || canPull.getStackSize() < 1) {
                 return;
@@ -105,7 +105,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
 
                 // Now actually pull out of the system
                 stack.setStackSize(canFill);
-                final IAEFluidStack pulled = Platform.poweredExtraction(this.powerSource, this.monitor, stack,
+                final IAEFluidStack pulled = StorageHelper.poweredExtraction(this.powerSource, this.monitor, stack,
                         this.getActionSource());
                 if (pulled == null || pulled.getStackSize() < 1) {
                     // Something went wrong
@@ -127,8 +127,8 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
             var extract = IAEFluidStack.of(content);
 
             // Check if we can push into the system
-            var notStorable = Platform.poweredInsert(this.powerSource, this.monitor,
-                    extract, this.getActionSource(), Actionable.SIMULATE);
+            var notStorable = StorageHelper.poweredInsert(this.powerSource, this.monitor, extract,
+                    this.getActionSource(), Actionable.SIMULATE);
 
             if (notStorable != null && notStorable.getStackSize() > 0) {
                 extract.decStackSize(notStorable.getStackSize());
@@ -144,7 +144,8 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
                     return;
                 }
 
-                if (Platform.poweredInsert(this.powerSource, this.monitor, extract, this.getActionSource()) != null) {
+                if (StorageHelper.poweredInsert(this.powerSource, this.monitor, extract,
+                        this.getActionSource()) != null) {
                     AELog.error("Failed to insert previously simulated %s into ME system", extract);
                     return;
                 }

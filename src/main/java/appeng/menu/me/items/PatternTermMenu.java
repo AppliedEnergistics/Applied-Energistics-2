@@ -39,6 +39,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -309,7 +310,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
                 return;
             }
 
-            final IAEItemStack extracted = Platform.poweredExtraction(this.powerSource, this.monitor,
+            final IAEItemStack extracted = StorageHelper.poweredExtraction(this.powerSource, this.monitor,
                     out, this.getActionSource());
             final Player p = this.getPlayerInventory().player;
 
