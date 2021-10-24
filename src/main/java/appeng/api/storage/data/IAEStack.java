@@ -60,10 +60,11 @@ public interface IAEStack {
     }
 
     /**
-     * Copies a stack and sets the stack size of the copy.
+     * Copies a stack and sets the stack size of the copy. Also clears craftable and requestable.
      */
     static <T extends IAEStack> T copy(@Nonnull T stack, long newStackSize) {
         var result = IAEStack.copy(stack);
+        result.reset();
         result.setStackSize(newStackSize);
         return result;
     }

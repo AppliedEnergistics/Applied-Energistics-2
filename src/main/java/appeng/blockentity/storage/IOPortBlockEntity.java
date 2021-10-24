@@ -53,7 +53,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
@@ -326,20 +325,16 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         var channel = cellInv.getChannel();
         var networkInv = grid.getStorageService().getInventory(channel);
 
+        IAEStackList<T> srcList;
         IMEInventory<T> src, destination;
         if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
             src = cellInv;
+            srcList = cellInv.getAvailableItems();
             destination = networkInv;
         } else {
             src = networkInv;
+            srcList = networkInv.getStorageList();
             destination = cellInv;
-        }
-
-        final IAEStackList<T> srcList;
-        if (src instanceof IMEMonitor) {
-            srcList = ((IMEMonitor<T>) src).getStorageList();
-        } else {
-            srcList = src.getAvailableItems();
         }
 
         itemsToMove *= channel.transferFactor();
@@ -351,16 +346,14 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             didStuff = false;
 
             for (var s : srcList) {
-                final long totalStackSize = s.getStackSize();
+                var totalStackSize = s.getStackSize();
                 if (totalStackSize > 0) {
+                    // This clears requestable & craftable when we copy stacks from the network into a cell
+                    s = IAEStack.copy(s, totalStackSize);
+
                     var stack = destination.injectItems(s, Actionable.SIMULATE, this.mySrc);
 
-                    long possible;
-                    if (stack == null) {
-                        possible = totalStackSize;
-                    } else {
-                        possible = totalStackSize - stack.getStackSize();
-                    }
+                    var possible = totalStackSize - IAEStack.getStackSizeOrZero(stack);
 
                     if (possible > 0) {
                         possible = Math.min(possible, itemsToMove);
