@@ -153,7 +153,7 @@ public final class StorageCells {
      */
     @Nullable
     public static synchronized <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is,
-            ISaveProvider host,
+            @Nullable ISaveProvider host,
             IStorageChannel<T> channel) {
         if (is.isEmpty()) {
             return null;

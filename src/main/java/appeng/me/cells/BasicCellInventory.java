@@ -40,7 +40,7 @@ import appeng.api.storage.data.IAEStackList;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 
-class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo<T>, IMEInventory<T> {
+class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo, IMEInventory<T> {
     private static final int MAX_ITEM_TYPES = 63;
     private static final String ITEM_TYPE_TAG = "it";
     private static final String ITEM_COUNT_TAG = "ic";

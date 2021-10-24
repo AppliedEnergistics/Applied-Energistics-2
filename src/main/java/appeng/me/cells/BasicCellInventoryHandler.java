@@ -84,7 +84,7 @@ class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T
     }
 
     @Override
-    public IBasicCellInfo<T> getInfo() {
+    public IBasicCellInfo getInfo() {
         return this.cellInventory;
     }
 

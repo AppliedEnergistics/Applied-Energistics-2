@@ -26,7 +26,6 @@ package appeng.api.storage.cells.base;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -41,12 +40,10 @@ import appeng.api.storage.data.IAEStack;
 import appeng.me.cells.BasicCellHandler;
 
 /**
- * Implement this on any item to register a "basic cell", that is a cell that works similarly to AE2's own item and
+ * Implement this on any item to register a "basic cell", which is a cell that works similarly to AE2's own item and
  * fluid cells. There is no need to register an {@link ICellHandler} for such an item. AE2 automatically handles the
  * internals and NBT data, which is both nice, and bad for you!
- *
- * Good cause it means you don't have to do anything, bad because you have little to no control over it.
- * 
+ * <p/>
  * The standard AE implementation also only provides 1-63 Types.
  */
 public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
@@ -87,7 +84,7 @@ public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
      *
      * @return true to preventAdditionOfItem
      */
-    boolean isBlackListed(ItemStack cellItem, @Nonnull T requestedAddition);
+    boolean isBlackListed(ItemStack cellItem, T requestedAddition);
 
     /**
      * Allows you to specify if this storage cell can be stored inside other storage cells, only set this for special

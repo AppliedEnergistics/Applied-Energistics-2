@@ -408,7 +408,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         this.recalculateDisplay();
     }
 
-    private void saveChanges(final IBasicCellInfo<?> cellInventory) {
+    private void saveChanges(final IBasicCellInfo cellInventory) {
         this.level.blockEntityChanged(this.worldPosition);
     }
 

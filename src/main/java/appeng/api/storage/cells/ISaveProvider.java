@@ -37,5 +37,5 @@ public interface ISaveProvider {
      *
      * @param cellInventory can be null for custom cells.
      */
-    void saveChanges(@Nullable IBasicCellInfo<?> cellInventory);
+    void saveChanges(@Nullable IBasicCellInfo cellInventory);
 }

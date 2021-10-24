@@ -548,7 +548,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         return true;
     }
 
-    private void saveChanges(final IBasicCellInfo<?> cellInventory) {
+    private void saveChanges(final IBasicCellInfo cellInventory) {
         if (cellInventory != null) {
             cellInventory.persist();
         }

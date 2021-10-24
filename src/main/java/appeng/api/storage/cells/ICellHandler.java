@@ -31,8 +31,8 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
 /**
- * Implementations of this interface provide AE2 with a way to interact with storage cells that may be
- * represented by arbitrary {@link ItemStack}
+ * Implementations of this interface provide AE2 with a way to interact with storage cells that may be represented by
+ * arbitrary {@link ItemStack}
  *
  * @see appeng.api.storage.StorageCells
  */

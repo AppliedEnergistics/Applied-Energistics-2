@@ -10,7 +10,7 @@ import appeng.api.storage.data.IAEStack;
  * {@link IBasicCellItem#getHandler}.
  */
 public interface IBasicCellInventoryHandler<T extends IAEStack> extends ICellInventoryHandler<T> {
-    IBasicCellInfo<T> getInfo();
+    IBasicCellInfo getInfo();
 
     @Override
     default CellState getStatus() {

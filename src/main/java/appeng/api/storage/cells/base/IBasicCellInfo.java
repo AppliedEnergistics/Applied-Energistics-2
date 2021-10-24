@@ -26,13 +26,15 @@ package appeng.api.storage.cells.base;
 import appeng.api.config.FuzzyMode;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.data.IAEStack;
 
 /**
  * Information about the current state of a basic cell. Obtain instances for your simple cell items through
  * {@link IBasicCellInventoryHandler#getInfo()}.
+ * <p/>
+ * You do not need to implement this interface. It is provided by AE2, based on your {@link IBasicCellItem}
+ * implementation.
  */
-public interface IBasicCellInfo<T extends IAEStack> {
+public interface IBasicCellInfo {
 
     /**
      * @return the ae/t to drain for this storage cell inside a chest/drive.

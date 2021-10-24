@@ -44,7 +44,7 @@ public class ClientHelper {
      *
      * @param lines List of lines to add to.
      */
-    public static <T extends IAEStack> void addCellInformation(@Nullable IBasicCellInfo<T> info, boolean isPreformatted,
+    public static <T extends IAEStack> void addCellInformation(@Nullable IBasicCellInfo info, boolean isPreformatted,
             boolean isFuzzy, IncludeExclude includeExcludeMode, List<Component> lines) {
         if (info != null) {
             lines.add(new TextComponent(info.getUsedBytes() + " ").append(GuiText.Of.text())
