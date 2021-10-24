@@ -39,7 +39,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.AEApi;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialService;
@@ -94,7 +94,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         int z = pos.getZ();
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            var gridHost = AEApi.grid().getNodeHost(level, pos);
+            var gridHost = GridHelper.getNodeHost(level, pos);
 
             if (gridHost != null) {
                 final CompoundTag tag = player.getItemInHand(hand).getOrCreateTag();
@@ -121,7 +121,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                         .getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
-                var gh = AEApi.grid().getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
+                var gh = GridHelper.getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));
 
                 if (gh != null) {
                     final Direction sideOff = Direction.values()[src_side];

@@ -21,7 +21,6 @@ package appeng.core;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 
-import appeng.api.AEApiInternal;
 import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitLootConditions;
 import appeng.init.InitStats;
@@ -45,7 +44,6 @@ public class AppEngBootstrap {
     public static void runEarlyStartup() {
         if (!bootstrapped) {
             bootstrapped = true;
-            AEApiInternal.init();
             InitGridServices.init();
             InitBlockEntityMoveStrategies.init();
 

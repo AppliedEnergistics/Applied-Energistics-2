@@ -30,7 +30,7 @@ import net.minecraft.world.level.Level;
 
 /**
  * Allows mod to decode their {@link IPatternDetails} from their item stacks. This is required for custom patterns,
- * otherwise the crafting CPU can't properly persist them. Register a single instance to {@link IPatternDetailsHelper}.
+ * otherwise the crafting CPU can't properly persist them. Register a single instance to {@link PatternDetailsHelper}.
  */
 public interface IPatternDetailsDecoder {
     boolean isEncodedPattern(ItemStack stack);

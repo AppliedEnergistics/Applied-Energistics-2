@@ -141,7 +141,7 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public boolean canSupportMoreChannels() {
-        return this.getLastUsedChannels() < 32; // max, PERIOD.
+        return this.getLastUsedChannels() < Channels.getMaxChannels();
     }
 
     @Override

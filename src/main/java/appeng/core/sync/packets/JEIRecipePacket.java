@@ -48,6 +48,7 @@ import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.sync.BasePacket;
@@ -56,7 +57,6 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.me.items.PatternTermMenu;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -181,7 +181,7 @@ public class JEIRecipePacket extends BasePacket {
                 if (newItem != currentItem && security.hasPermission(player, SecurityPermissions.INJECT)) {
                     final IAEItemStack in = AEItemStack.fromItemStack(currentItem);
                     final IAEItemStack out = cct.useRealItems()
-                            ? Platform.poweredInsert(energy, storage, in, cct.getActionSource())
+                            ? StorageHelper.poweredInsert(energy, storage, in, cct.getActionSource())
                             : null;
                     if (out != null) {
                         currentItem = out.createItemStack();
@@ -199,7 +199,7 @@ public class JEIRecipePacket extends BasePacket {
                     IAEItemStack request = findBestMatchingItemStack(ingredient, filter, storage, cct);
                     if (request != null) {
                         request.setStackSize(1);
-                        out = Platform.poweredExtraction(energy, storage, request, cct.getActionSource());
+                        out = StorageHelper.poweredExtraction(energy, storage, request, cct.getActionSource());
                     } else {
                         out = null;
                     }

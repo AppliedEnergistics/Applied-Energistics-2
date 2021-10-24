@@ -58,6 +58,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
@@ -72,7 +73,6 @@ import appeng.me.storage.MEInventoryHandler;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.parts.automation.UpgradeablePart;
-import appeng.util.Platform;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
@@ -280,7 +280,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
             if (out != null) {
                 after = out.getAvailableItems(after);
             }
-            Platform.postListChanges(before, after, this, this.source);
+            StorageHelper.postListChanges(before, after, this, this.source);
         }
     }
 

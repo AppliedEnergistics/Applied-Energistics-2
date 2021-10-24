@@ -50,6 +50,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
@@ -267,7 +268,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         if (canFit > 0) {
             ais = ais.copy();
             ais.setStackSize(canFit);
-            final IAEItemStack itemsToAdd = Platform.poweredExtraction(energy, inv, ais, this.mySrc);
+            final IAEItemStack itemsToAdd = StorageHelper.poweredExtraction(energy, inv, ais, this.mySrc);
 
             if (itemsToAdd != null) {
                 this.itemToSend -= itemsToAdd.getStackSize();

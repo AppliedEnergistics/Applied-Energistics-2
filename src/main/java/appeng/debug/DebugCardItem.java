@@ -36,7 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import appeng.api.AEApi;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyService;
@@ -89,7 +89,7 @@ public class DebugCardItem extends AEBaseItem {
             this.outputSecondaryMessage(player, "Grids", Integer.toString(grids));
             this.outputSecondaryMessage(player, "Total Nodes", Integer.toString(totalNodes));
         } else {
-            var gh = AEApi.grid().getNodeHost(level, pos);
+            var gh = GridHelper.getNodeHost(level, pos);
             if (gh != null) {
                 this.outputMessage(player, "---------------------------------------------", ChatFormatting.BOLD,
                         ChatFormatting.DARK_PURPLE);

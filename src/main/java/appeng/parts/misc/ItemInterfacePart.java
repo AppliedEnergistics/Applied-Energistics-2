@@ -32,8 +32,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-import appeng.api.AEApi;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -91,7 +91,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return AEApi.grid().createManagedNode(this, NODE_LISTENER);
+        return GridHelper.createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

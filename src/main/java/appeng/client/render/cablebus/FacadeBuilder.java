@@ -52,7 +52,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.AEApi;
+import appeng.api.parts.PartHelper;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.parts.misc.CableAnchorPart;
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;
@@ -137,7 +137,7 @@ public class FacadeBuilder {
             Function<ResourceLocation, BakedModel> modelLookup) {
         BakedPipeline pipeline = this.pipelines.get();
         Quad collectorQuad = this.collectors.get();
-        boolean transparent = AEApi.partHelper().getCableRenderMode().transparentFacades;
+        boolean transparent = PartHelper.getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AABB> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();

@@ -32,15 +32,15 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidUtil;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.crafting.IPatternDetailsHelper;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -90,7 +90,6 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     private final PatternTermSlot craftOutputSlot;
     private final RestrictedInputSlot blankPatternSlot;
     private final RestrictedInputSlot encodedPatternSlot;
-    private final IPatternDetailsHelper craftingHelper = AEApi.patterns();
 
     private CraftingRecipe currentRecipe;
     private boolean currentRecipeCraftingMode;
@@ -198,7 +197,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
 
         // first check the output slots, should either be null, or a pattern
-        if (!encodeOutput.isEmpty() && !craftingHelper.isEncodedPattern(encodeOutput)) {
+        if (!encodeOutput.isEmpty() && !PatternDetailsHelper.isEncodedPattern(encodeOutput)) {
             return;
         } // if nothing is there we should snag a new pattern.
         else if (encodeOutput.isEmpty()) {
@@ -216,9 +215,9 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
         ItemStack encodedPattern;
         if (this.isCraftingMode()) {
-            encodedPattern = craftingHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute());
+            encodedPattern = PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute());
         } else {
-            encodedPattern = craftingHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
+            encodedPattern = PatternDetailsHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
         }
         this.encodedPatternSlot.set(encodedPattern);
     }
@@ -310,7 +309,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
                 return;
             }
 
-            final IAEItemStack extracted = Platform.poweredExtraction(this.powerSource, this.monitor,
+            final IAEItemStack extracted = StorageHelper.poweredExtraction(this.powerSource, this.monitor,
                     out, this.getActionSource());
             final Player p = this.getPlayerInventory().player;
 

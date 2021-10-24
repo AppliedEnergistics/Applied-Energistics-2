@@ -18,8 +18,6 @@
 
 package appeng.items.parts;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -41,16 +39,15 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.AEApi;
 import appeng.api.ids.AETags;
-import appeng.api.parts.IAlphaPassItem;
+import appeng.api.parts.PartHelper;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
 
-public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem {
+public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
     private static final String NBT_ITEM_ID = "item";
 
@@ -60,7 +57,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        return AEApi.partHelper().placeBus(stack, context.getClickedPos(), context.getClickedFace(),
+        return PartHelper.placeBus(stack, context.getClickedPos(), context.getClickedFace(),
                 context.getPlayer(),
                 context.getHand(), context.getLevel());
     }
@@ -184,17 +181,5 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         facadeStack.setTag(facadeTag);
 
         return facadeStack;
-    }
-
-    @Override
-    public boolean useAlphaPass(final ItemStack is) {
-        BlockState blockState = this.getTextureBlockState(is);
-
-        if (blockState == null) {
-            return false;
-        }
-
-        return ItemBlockRenderTypes.canRenderInLayer(blockState, RenderType.translucent())
-                || ItemBlockRenderTypes.canRenderInLayer(blockState, RenderType.translucentNoCrumbling());
     }
 }

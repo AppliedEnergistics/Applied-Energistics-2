@@ -34,9 +34,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -68,7 +68,7 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return AEApi.grid().createManagedNode(this, NODE_LISTENER);
+        return GridHelper.createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

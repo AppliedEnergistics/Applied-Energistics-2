@@ -31,7 +31,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import appeng.api.AEApi;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -61,7 +61,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return AEApi.grid().createManagedNode(this, NODE_LISTENER);
+        return GridHelper.createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

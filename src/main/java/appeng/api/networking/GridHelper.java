@@ -29,12 +29,18 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
+import appeng.me.GridConnection;
+import appeng.me.GridEventBus;
+import appeng.me.ManagedGridNode;
 
 /**
  * A helper responsible for creating new {@link IGridNode}, and connecting existing nodes.
@@ -43,16 +49,21 @@ import appeng.api.networking.events.GridEvent;
  * @version rv5
  * @since rv5
  */
-public interface IGridHelper {
+public final class GridHelper {
+    private GridHelper() {
+    }
+
     /**
      * Listens to events that are emitted per {@link IGrid}.
      */
-    <T extends GridEvent> void addEventHandler(Class<T> eventClass, BiConsumer<IGrid, T> handler);
+    public static <T extends GridEvent> void addEventHandler(Class<T> eventClass, BiConsumer<IGrid, T> handler) {
+        GridEventBus.subscribe(eventClass, handler);
+    }
 
     /**
      * Forwards grid-wide events to the {@link IGridService} attached to that particular {@link IGrid}.
      */
-    default <T extends GridEvent, C extends IGridService> void addGridServiceEventHandler(Class<T> eventClass,
+    public static <T extends GridEvent, C extends IGridService> void addGridServiceEventHandler(Class<T> eventClass,
             Class<C> cacheClass,
             BiConsumer<C, T> eventHandler) {
         addEventHandler(eventClass, (grid, event) -> {
@@ -66,7 +77,7 @@ public interface IGridHelper {
      * @param nodeOwnerClass The class of node owner to forward the event to. Please note that subclasses are not
      *                       included.
      */
-    default <T extends GridEvent, C> void addNodeOwnerEventHandler(Class<T> eventClass,
+    public static <T extends GridEvent, C> void addNodeOwnerEventHandler(Class<T> eventClass,
             Class<C> nodeOwnerClass,
             BiConsumer<C, T> eventHandler) {
         addEventHandler(eventClass, (grid, event) -> {
@@ -80,7 +91,7 @@ public interface IGridHelper {
      * Convenience variant of {@link #addNodeOwnerEventHandler(Class, Class, BiConsumer)} where the event handler
      * doesn't care about the actual event object.
      */
-    default <T extends GridEvent, C> void addNodeOwnerEventHandler(Class<T> eventClass,
+    public static <T extends GridEvent, C> void addNodeOwnerEventHandler(Class<T> eventClass,
             Class<C> nodeOwnerClass,
             Consumer<C> eventHandler) {
         addEventHandler(eventClass, (grid, event) -> {
@@ -94,7 +105,15 @@ public interface IGridHelper {
      * Finds an {@link IInWorldGridNodeHost} at the given world location, or returns null if there isn't one.
      */
     @Nullable
-    IInWorldGridNodeHost getNodeHost(LevelAccessor level, BlockPos pos);
+    public static IInWorldGridNodeHost getNodeHost(LevelAccessor level, BlockPos pos) {
+        if (level.hasChunkAt(pos)) {
+            final BlockEntity te = level.getBlockEntity(pos);
+            if (te instanceof IInWorldGridNodeHost host) {
+                return host;
+            }
+        }
+        return null;
+    }
 
     /**
      * Given a known {@link IInWorldGridNodeHost}, find an adjacent grid node (i.e. for the purposes of making
@@ -105,7 +124,8 @@ public interface IGridHelper {
      * @see #getNodeHost(LevelAccessor, BlockPos)
      */
     @Nullable
-    default IGridNode getExposedNode(@Nonnull LevelAccessor level, @Nonnull BlockPos pos, @Nonnull Direction side) {
+    public static IGridNode getExposedNode(@Nonnull LevelAccessor level, @Nonnull BlockPos pos,
+            @Nonnull Direction side) {
         var host = getNodeHost(level, pos);
         if (host == null) {
             return null;
@@ -130,8 +150,9 @@ public interface IGridHelper {
      * @return The managed grid node.
      */
     @Nonnull
-    <T> IManagedGridNode createManagedNode(@Nonnull T owner,
-            @Nonnull IGridNodeListener<T> listener);
+    public static <T> IManagedGridNode createManagedNode(@Nonnull T owner, @Nonnull IGridNodeListener<T> listener) {
+        return new ManagedGridNode(owner, listener);
+    }
 
     /**
      * Create a direct connection between two {@link IGridNode}.
@@ -141,7 +162,11 @@ public interface IGridHelper {
      * @param a to be connected gridnode
      * @param b to be connected gridnode
      */
-    @Nonnull
-    IGridConnection createGridConnection(@Nonnull IGridNode a, @Nonnull IGridNode b) throws FailedConnectionException;
+    public static IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnectionException {
+        Preconditions.checkNotNull(a);
+        Preconditions.checkNotNull(b);
+
+        return GridConnection.create(a, b, null);
+    }
 
 }

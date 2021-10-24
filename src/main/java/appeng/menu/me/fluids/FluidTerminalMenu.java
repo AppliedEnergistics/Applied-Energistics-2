@@ -33,6 +33,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
@@ -96,7 +97,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
             stack.setStackSize(amountAllowed);
 
             // Check if we can pull out of the system
-            final IAEFluidStack canPull = Platform.poweredExtraction(this.powerSource, this.monitor, stack,
+            final IAEFluidStack canPull = StorageHelper.poweredExtraction(this.powerSource, this.monitor, stack,
                     this.getActionSource(), Actionable.SIMULATE);
             if (canPull == null || canPull.getStackSize() < 1) {
                 return;
@@ -110,7 +111,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
 
             // Now actually pull out of the system
             stack.setStackSize(canFill);
-            final IAEFluidStack pulled = Platform.poweredExtraction(this.powerSource, this.monitor, stack,
+            final IAEFluidStack pulled = StorageHelper.poweredExtraction(this.powerSource, this.monitor, stack,
                     this.getActionSource());
             if (pulled == null || pulled.getStackSize() < 1) {
                 // Something went wrong
@@ -136,8 +137,9 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
             }
 
             // Check if we can push into the system
-            final IAEFluidStack notStorable = Platform.poweredInsert(this.powerSource, this.monitor,
-                    AEFluidStack.fromFluidStack(extract), this.getActionSource(), Actionable.SIMULATE);
+            final IAEFluidStack notStorable = StorageHelper.poweredInsert(this.powerSource, this.monitor,
+                    AEFluidStack.fromFluidStack(extract),
+                    this.getActionSource(), Actionable.SIMULATE);
 
             if (notStorable != null && notStorable.getStackSize() > 0) {
                 final int toStore = (int) (extract.getAmount() - notStorable.getStackSize());

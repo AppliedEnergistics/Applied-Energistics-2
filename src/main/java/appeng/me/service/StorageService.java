@@ -28,7 +28,7 @@ import java.util.Map;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import appeng.api.AEApi;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -54,7 +54,7 @@ import appeng.me.storage.NetworkInventoryHandler;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
     static {
-        AEApi.grid().addGridServiceEventHandler(GridCellArrayUpdate.class, IStorageService.class,
+        GridHelper.addGridServiceEventHandler(GridCellArrayUpdate.class, IStorageService.class,
                 (service, evt) -> {
                     ((StorageService) service).cellUpdate();
                 });

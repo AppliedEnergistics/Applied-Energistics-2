@@ -48,10 +48,10 @@ import com.google.common.collect.TreeMultiset;
 
 import net.minecraft.world.level.Level;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -100,11 +100,11 @@ public class CraftingService
 
         CRAFTING_POOL = Executors.newCachedThreadPool(factory);
 
-        AEApi.grid().addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingService.class,
+        GridHelper.addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingService.class,
                 (service, event) -> {
                     ((CraftingService) service).updatePatterns();
                 });
-        AEApi.grid().addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingService.class,
+        GridHelper.addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingService.class,
                 (service, event) -> {
                     ((CraftingService) service).updateList = true;
                 });

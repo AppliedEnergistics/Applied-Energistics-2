@@ -30,9 +30,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -59,7 +59,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
     private final Connections connection = new Connections(this);
 
-    private final IManagedGridNode outerNode = AEApi.grid()
+    private final IManagedGridNode outerNode = GridHelper
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
             .setInWorldNode(true)
@@ -188,8 +188,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
             for (final MEP2PTunnelPart me : newSides) {
                 try {
-                    connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, AEApi
-                            .grid().createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
+                    connections.getConnections().put(me.getGridNode(), new TunnelConnection(me,
+                            GridHelper.createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
                 } catch (final FailedConnectionException e) {
                     final BlockEntity start = this.getBlockEntity();
                     final BlockEntity end = me.getBlockEntity();

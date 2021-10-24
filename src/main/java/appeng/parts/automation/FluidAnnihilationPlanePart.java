@@ -54,6 +54,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
@@ -62,7 +63,6 @@ import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
-import appeng.util.Platform;
 import appeng.util.fluid.AEFluidStack;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
@@ -191,7 +191,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
         if (modulate) {
             var energy = grid.getEnergyService();
-            return Platform.poweredInsert(energy, inv, stack, this.mySrc) == null;
+            return StorageHelper.poweredInsert(energy, inv, stack, this.mySrc) == null;
         } else {
             var requiredPower = stack.getStackSize() / Math.min(1.0f, stack.getChannel().transferFactor());
             final IEnergyService energy = grid.getEnergyService();

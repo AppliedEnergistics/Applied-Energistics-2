@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -50,10 +49,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.api.AEApi;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.ICablePart;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -61,7 +60,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.LayerFlags;
+import appeng.api.parts.PartHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
@@ -82,7 +81,6 @@ import appeng.util.Platform;
 public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer {
 
     private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<>();
-    private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf(LayerFlags.class);
     private final CableBusStorage storage = new CableBusStorage();
     private YesNo hasRedstone = YesNo.UNDECIDED;
     private IPartHost tcb;
@@ -356,7 +354,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             }
         }
 
-        if (AEApi.partHelper().getCableRenderMode().opaqueFacades) {
+        if (PartHelper.getCableRenderMode().opaqueFacades) {
             final IFacadeContainer fc = this.getFacadeContainer();
             for (final Direction side : Direction.values()) {
                 final IFacadePart p = fc.getFacade(side);
@@ -446,11 +444,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public Set<LayerFlags> getLayerFlags() {
-        return this.myLayerFlags;
-    }
-
-    @Override
     public void cleanup() {
         this.tcb.cleanup();
     }
@@ -525,7 +518,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                             final IGridNode cn = center.getGridNode();
                             if (cn != null) {
                                 try {
-                                    AEApi.grid().createGridConnection(cn, sn);
+                                    GridHelper.createGridConnection(cn, sn);
                                 } catch (final FailedConnectionException e) {
                                     // ekk
                                     AELog.debug(e);
@@ -928,7 +921,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 // Dense cables however also respect the adjacent cable-type since their outgoing connection
                 // point would look too big for other cable types
                 final BlockPos adjacentPos = this.getBlockEntity().getBlockPos().relative(side);
-                var adjacentHost = AEApi.grid().getNodeHost(getBlockEntity().getLevel(), adjacentPos);
+                var adjacentHost = GridHelper.getNodeHost(getBlockEntity().getLevel(), adjacentPos);
 
                 if (adjacentHost != null) {
                     var adjacentType = adjacentHost.getCableConnectionType(side.getOpposite());
@@ -1054,7 +1047,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 part.getBoxes(bch);
             }
 
-            if ((AEApi.partHelper().getCableRenderMode().opaqueFacades || forCollision)
+            if ((PartHelper.getCableRenderMode().opaqueFacades || forCollision)
                     && s != null) {
                 final IFacadePart fp = fc.getFacade(s);
                 if (fp != null) {

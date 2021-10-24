@@ -77,6 +77,7 @@ import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
@@ -427,7 +428,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
             ifGridPresent(g -> {
                 g.postEvent(new GridCellArrayUpdate());
-                Platform.postWholeCellChanges(g.getStorageService(), removed, added, this.mySrc);
+                StorageHelper.postWholeCellChanges(g.getStorageService(), removed, added, this.mySrc);
             });
 
             // update the neighbors
@@ -456,7 +457,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.updateHandler();
 
             if (this.cellHandler != null && this.cellHandler.getChannel() == StorageChannels.items()) {
-                var returns = Platform.poweredInsert(this, this.cellHandler.cast(StorageChannels.items()),
+                var returns = StorageHelper.poweredInsert(this, this.cellHandler.cast(StorageChannels.items()),
                         AEItemStack.fromItemStack(this.inputInventory.getStackInSlot(0)), this.mySrc);
 
                 if (returns == null) {

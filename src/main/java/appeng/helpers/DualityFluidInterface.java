@@ -39,6 +39,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -248,7 +249,7 @@ public class DualityFluidInterface
                 if (this.tanks.fill(slot, work.getFluidStack(), false) != work.getStackSize()) {
                     changed = true;
                 } else {
-                    final IAEFluidStack acquired = Platform.poweredExtraction(src, dest, work,
+                    final IAEFluidStack acquired = StorageHelper.poweredExtraction(src, dest, work,
                             this.interfaceRequestSource);
                     if (acquired != null) {
                         changed = true;
@@ -267,7 +268,8 @@ public class DualityFluidInterface
                 if (canExtract.isEmpty() || canExtract.getAmount() != toStore.getStackSize()) {
                     changed = true;
                 } else {
-                    IAEFluidStack notStored = Platform.poweredInsert(src, dest, toStore, this.interfaceRequestSource);
+                    IAEFluidStack notStored = StorageHelper.poweredInsert(src, dest, toStore,
+                            this.interfaceRequestSource);
                     toStore.setStackSize(toStore.getStackSize() - (notStored == null ? 0 : notStored.getStackSize()));
 
                     if (toStore.getStackSize() > 0) {

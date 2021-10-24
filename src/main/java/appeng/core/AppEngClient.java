@@ -48,8 +48,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
-import appeng.api.AEApi;
 import appeng.api.parts.CableRenderMode;
+import appeng.api.parts.PartHelper;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.client.gui.style.StyleManager;
@@ -276,7 +276,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void updateCableRenderMode() {
-        var currentMode = AEApi.partHelper().getCableRenderMode();
+        var currentMode = PartHelper.getCableRenderMode();
 
         // Handle changes to the cable-rendering mode
         if (currentMode == this.prevCableRenderMode) {
