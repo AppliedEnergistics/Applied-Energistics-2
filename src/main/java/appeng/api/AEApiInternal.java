@@ -18,7 +18,6 @@
 
 package appeng.api;
 
-import appeng.core.api.ApiClientHelper;
 import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiPatternDetails;
@@ -34,8 +33,7 @@ public final class AEApiInternal {
                 new ApiStorage(),
                 new ApiPatternDetails(),
                 new ApiGrid(),
-                new ApiPart(),
-                new ApiClientHelper());
+                new ApiPart());
     }
 
 }

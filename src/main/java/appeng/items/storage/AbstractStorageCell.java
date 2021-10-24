@@ -35,11 +35,10 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageCells;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
@@ -54,7 +53,7 @@ import appeng.util.InteractionUtil;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem implements IStorageCell<T> {
+public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem implements IBasicCellItem<T> {
     /**
      * This can be retrieved when disassembling the storage cell.
      */
@@ -71,8 +70,7 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
     @Override
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        AEApi.client().addCellInformation(
-                StorageCells.getCellInventory(stack, null, this.getChannel()), lines);
+        addCellInformationToTooltip(stack, lines);
     }
 
     @Override
@@ -83,21 +81,6 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
     @Override
     public int getTotalTypes(final ItemStack cellItem) {
         return 63;
-    }
-
-    @Override
-    public boolean isBlackListed(final ItemStack cellItem, final T requestedAddition) {
-        return false;
-    }
-
-    @Override
-    public boolean storableInStorageCell() {
-        return false;
-    }
-
-    @Override
-    public boolean isStorageCell(final ItemStack i) {
-        return true;
     }
 
     @Override

@@ -54,7 +54,6 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
@@ -353,7 +352,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             if (this.handlersBySlot[slot] != null) {
                 for (var channel : StorageChannels.getAll()) {
 
-                    var cell = this.handlersBySlot[slot].getCellInventory(is, this::saveChanges, channel);
+                    var cell = this.handlersBySlot[slot].getCellInventory(is, this::onCellContentChanged, channel);
 
                     if (cell != null) {
                         this.inv.setHandler(slot, cell);
@@ -364,7 +363,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
                         this.invBySlot[slot] = driveWatcher;
                         this.inventoryHandlers.get(channel).add(driveWatcher);
 
-                        return this.handlersBySlot[slot].cellIdleDrain(is, cell);
+                        return cell.getIdleDrain();
                     }
                 }
             }
@@ -408,7 +407,12 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         this.recalculateDisplay();
     }
 
-    private void saveChanges(final ICellInventory<?> cellInventory) {
+    /**
+     * When the content of a storage cell changes, we need to persist it. But instead of taking the performance hit of
+     * serializing it to NBT right away, we just queue up a save for the entire BE. As part of saving the BE, the cell
+     * will then be serialized to NBT.
+     */
+    private void onCellContentChanged() {
         this.level.blockEntityChanged(this.worldPosition);
     }
 

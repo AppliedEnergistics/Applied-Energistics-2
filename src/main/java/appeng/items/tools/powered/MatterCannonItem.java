@@ -56,15 +56,14 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
@@ -86,7 +85,7 @@ import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
-public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<IAEItemStack> {
+public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellItem<IAEItemStack> {
 
     /**
      * AE energy units consumer per shot fired.
@@ -102,10 +101,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
-
-        var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
-
-        AEApi.client().addCellInformation(cdi, lines);
+        addCellInformationToTooltip(stack, lines);
     }
 
     @Override
@@ -451,11 +447,6 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public boolean storableInStorageCell() {
-        return true;
-    }
-
-    @Override
-    public boolean isStorageCell(final ItemStack i) {
         return true;
     }
 

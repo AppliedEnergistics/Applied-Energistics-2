@@ -34,6 +34,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
@@ -42,8 +43,7 @@ import appeng.api.storage.data.IAEStack;
 
 /**
  * Storage Cell Registry, used for specially implemented cells, if you just want to make a item act like a cell, or new
- * cell with different bytes, you should probably consider implementing
- * {@link appeng.api.implementations.items.IStorageCell} on your item instead.
+ * cell with different bytes, you should probably consider implementing {@link IBasicCellItem} on your item instead.
  */
 @ThreadSafe
 public final class StorageCells {
@@ -146,21 +146,21 @@ public final class StorageCells {
     /**
      * returns an ICellInventoryHandler for the provided item by querying all registered handlers.
      *
-     * @param is   item with inventory handler
-     * @param host can be null. If provided, the host is responsible for persisting the cell content.
-     * @param chan the storage channel to request the handler for.
+     * @param is      item with inventory handler
+     * @param host    can be null. If provided, the host is responsible for persisting the cell content.
+     * @param channel the storage channel to request the handler for.
      * @return new ICellInventoryHandler, or null if there isn't one.
      */
     @Nullable
     public static synchronized <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is,
-            ISaveProvider host,
-            IStorageChannel<T> chan) {
+            @Nullable ISaveProvider host,
+            IStorageChannel<T> channel) {
         if (is.isEmpty()) {
             return null;
         }
-        for (final ICellHandler ch : handlers) {
+        for (var ch : handlers) {
             if (ch.isCell(is)) {
-                return ch.getCellInventory(is, host, chan);
+                return ch.getCellInventory(is, host, channel);
             }
         }
         return null;

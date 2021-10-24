@@ -23,12 +23,17 @@
 
 package appeng.api.storage.cells;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
 /**
+ * Implementations of this interface provide AE2 with a way to interact with storage cells that may be represented by
+ * arbitrary {@link ItemStack}
+ *
  * @see appeng.api.storage.StorageCells
  */
 public interface ICellHandler {
@@ -38,7 +43,6 @@ public interface ICellHandler {
      * request a handler )
      *
      * @param is to be checked item
-     *
      * @return return true, if getCellHandler will not return null.
      */
     boolean isCell(ItemStack is);
@@ -51,46 +55,8 @@ public interface ICellHandler {
      *                note, this value can be null. If provided, the host is responsible for persisting the cell
      *                content.
      * @param channel the storage channel requested.
-     *
      * @return a new IMEHandler for the provided item
      */
-    <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is, ISaveProvider host,
+    <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is, @Nullable ISaveProvider host,
             IStorageChannel<T> channel);
-
-    /**
-     * 0 - cell is missing.
-     *
-     * 1 - green, ( usually means available room for types or items. )
-     *
-     * 2 - orange, ( usually means available room for items, but not types. )
-     *
-     * 3 - red, ( usually means the cell is 100% full )
-     *
-     * @param is      the cell item. ( use the handler for any details you can )
-     * @param handler the handler for the cell is provides for reference, you can cast this to your handler.
-     *
-     * @return get the status of the cell based on its contents.
-     */
-    default <T extends IAEStack> CellState getStatusForCell(ItemStack is, ICellInventoryHandler<T> handler) {
-        if (handler.getCellInv() != null) {
-            CellState val = handler.getCellInv().getStatusForCell();
-
-            if (val == CellState.EMPTY && handler.isPreformatted()) {
-                val = CellState.TYPES_FULL;
-            }
-
-            return val;
-        }
-        return CellState.ABSENT;
-    }
-
-    /**
-     * @return the ae/t to drain for this storage cell inside a chest/drive.
-     */
-    default <T extends IAEStack> double cellIdleDrain(ItemStack is, ICellInventoryHandler<T> handler) {
-        if (handler.getCellInv() != null) {
-            return handler.getCellInv().getIdleDrain();
-        }
-        return 1.0;
-    }
 }

@@ -279,7 +279,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                 }
             }
 
-            if (itemsToMove > 0 && matchesFullnessMode(handler, cell, cellInvs) && this.moveSlot(x)) {
+            if (itemsToMove > 0 && matchesFullnessMode(cellInvs) && this.moveSlot(x)) {
                 ret = TickRateModulation.URGENT;
             }
         }
@@ -304,17 +304,15 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     /**
      * Work is complete when all supported inventories have reached the desired end-state.
      */
-    public boolean matchesFullnessMode(ICellHandler handler,
-            ItemStack cell,
-            List<ICellInventoryHandler<?>> inventories) {
+    public boolean matchesFullnessMode(List<ICellInventoryHandler<?>> inventories) {
         return switch (manager.getSetting(Settings.FULLNESS_MODE)) {
             // In this mode, work completes as soon as no more items are moved within one operation,
             // independent of the actual inventory state
             case HALF -> true;
             case EMPTY -> inventories.stream()
-                    .allMatch(inv -> handler.getStatusForCell(cell, inv) == CellState.EMPTY);
+                    .allMatch(inv -> inv.getStatus() == CellState.EMPTY);
             case FULL -> inventories.stream()
-                    .allMatch(inv -> handler.getStatusForCell(cell, inv) == CellState.FULL);
+                    .allMatch(inv -> inv.getStatus() == CellState.FULL);
         };
     }
 

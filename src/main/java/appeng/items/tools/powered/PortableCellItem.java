@@ -33,15 +33,13 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.items.contents.CellConfig;
@@ -53,7 +51,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.me.items.MEPortableCellMenu;
 import appeng.parts.automation.UpgradeInventory;
 
-public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem {
+public class PortableCellItem extends AEBasePoweredItem implements IBasicCellItem<IAEItemStack>, IGuiItem {
 
     private final StorageTier tier;
 
@@ -74,10 +72,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
-
-        var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
-
-        AEApi.client().addCellInformation(cdi, lines);
+        addCellInformationToTooltip(stack, lines);
     }
 
     @Override
@@ -93,21 +88,6 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     @Override
     public int getTotalTypes(final ItemStack cellItem) {
         return this.tier.getTypes();
-    }
-
-    @Override
-    public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
-        return false;
-    }
-
-    @Override
-    public boolean storableInStorageCell() {
-        return false;
-    }
-
-    @Override
-    public boolean isStorageCell(final ItemStack i) {
-        return true;
     }
 
     @Override
