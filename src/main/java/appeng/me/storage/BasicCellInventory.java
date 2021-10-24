@@ -223,7 +223,7 @@ public class BasicCellInventory<T extends IAEStack> extends AbstractCellInventor
     }
 
     @Override
-    protected boolean loadCellItem(CompoundTag compoundTag, long stackSize) {
+    protected boolean loadCellItem(CompoundTag compoundTag) {
         // Now load the item stack
         final T t;
         try {
@@ -242,9 +242,7 @@ public class BasicCellInventory<T extends IAEStack> extends AbstractCellInventor
             throw ex;
         }
 
-        t.setStackSize(stackSize);
-
-        if (stackSize > 0) {
+        if (t.getStackSize() > 0) {
             this.cellItems.add(t);
         }
 
