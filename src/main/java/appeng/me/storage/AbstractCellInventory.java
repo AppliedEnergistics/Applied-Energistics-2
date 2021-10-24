@@ -40,9 +40,7 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
     private static final String ITEM_TYPE_TAG = "it";
     private static final String ITEM_COUNT_TAG = "ic";
     private static final String ITEM_SLOT = "#";
-    private static final String ITEM_SLOT_COUNT = "@";
     private static final String[] ITEM_SLOT_KEYS = new String[MAX_ITEM_TYPES];
-    private static final String[] ITEM_SLOT_COUNT_KEYS = new String[MAX_ITEM_TYPES];
     private final CompoundTag tagCompound;
     protected final ISaveProvider container;
     private int maxItemTypes;
@@ -57,7 +55,6 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
     static {
         for (int x = 0; x < MAX_ITEM_TYPES; x++) {
             ITEM_SLOT_KEYS[x] = ITEM_SLOT + x;
-            ITEM_SLOT_COUNT_KEYS[x] = ITEM_SLOT_COUNT + x;
         }
     }
 
@@ -106,7 +103,6 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
             final CompoundTag g = new CompoundTag();
             v.writeToNBT(g);
             this.tagCompound.put(ITEM_SLOT_KEYS[x], g);
-            this.tagCompound.putLong(ITEM_SLOT_COUNT_KEYS[x], v.getStackSize());
 
             x++;
         }
@@ -130,7 +126,6 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
         // clean any old crusty stuff...
         for (; x < oldStoredItems && x < this.maxItemTypes; x++) {
             this.tagCompound.remove(ITEM_SLOT_KEYS[x]);
-            this.tagCompound.remove(ITEM_SLOT_COUNT_KEYS[x]);
         }
 
         this.isPersisted = true;
@@ -165,8 +160,7 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
 
         for (int slot = 0; slot < types; slot++) {
             CompoundTag compoundTag = this.tagCompound.getCompound(ITEM_SLOT_KEYS[slot]);
-            long stackSize = this.tagCompound.getLong(ITEM_SLOT_COUNT_KEYS[slot]);
-            needsUpdate |= !this.loadCellItem(compoundTag, stackSize);
+            needsUpdate |= !this.loadCellItem(compoundTag);
         }
 
         if (needsUpdate) {
@@ -179,7 +173,7 @@ public abstract class AbstractCellInventory<T extends IAEStack> implements ICell
      * 
      * @return true when successfully loaded
      */
-    protected abstract boolean loadCellItem(CompoundTag compoundTag, long stackSize);
+    protected abstract boolean loadCellItem(CompoundTag compoundTag);
 
     @Override
     public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
