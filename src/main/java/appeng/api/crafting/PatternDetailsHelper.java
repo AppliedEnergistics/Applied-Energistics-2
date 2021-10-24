@@ -75,10 +75,29 @@ public final class PatternDetailsHelper {
         return null;
     }
 
+    /**
+     * Encodes a processing pattern which represents the ability to convert the given inputs into the given outputs
+     * using some process external to the ME system.
+     *
+     * @param out The first element is considered the primary output and must be present
+     * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
+     * @return A new encoded pattern, or the given stack with the pattern encoded in it.
+     */
     public static ItemStack encodeProcessingPattern(IAEStack[] in, IAEStack[] out) {
         return AEItems.PROCESSING_PATTERN.asItem().encode(in, out);
     }
 
+    /**
+     * Encodes a crafting pattern which represents a Vanilla crafting recipe.
+     *
+     * @param recipe           The Vanilla crafting recipe to be encoded.
+     * @param in               The items in the crafting grid, which are used to determine what items are supplied from
+     *                         the ME system to craft using this pattern.
+     * @param out              What is to be expected as the result of this crafting operation by the ME system.
+     * @param allowSubstitutes Controls whether the ME system will allow the use of equivalent items to craft this
+     *                         recipe.
+     * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
+     */
     public static ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes) {
         return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes);

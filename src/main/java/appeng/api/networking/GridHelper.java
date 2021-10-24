@@ -53,6 +53,9 @@ public final class GridHelper {
     private GridHelper() {
     }
 
+    /**
+     * Listens to events that are emitted per {@link IGrid}.
+     */
     public static <T extends GridEvent> void addEventHandler(Class<T> eventClass, BiConsumer<IGrid, T> handler) {
         GridEventBus.subscribe(eventClass, handler);
     }
@@ -98,6 +101,9 @@ public final class GridHelper {
         });
     }
 
+    /**
+     * Finds an {@link IInWorldGridNodeHost} at the given world location, or returns null if there isn't one.
+     */
     @Nullable
     public static IInWorldGridNodeHost getNodeHost(LevelAccessor level, BlockPos pos) {
         if (level.hasChunkAt(pos)) {
@@ -133,11 +139,29 @@ public final class GridHelper {
         return node;
     }
 
+    /**
+     * Creates a managed grid node that makes managing the lifecycle of an {@link IGridNode} easier.
+     * <p/>
+     * This method can be called on both server and client.
+     *
+     * @param owner    The game object that owns the node, such as a block entity or {@link appeng.api.parts.IPart}.
+     * @param listener A listener that will adapt events sent by the grid node to the owner.
+     * @param <T>      The type of the owner.
+     * @return The managed grid node.
+     */
     @Nonnull
     public static <T> IManagedGridNode createManagedNode(@Nonnull T owner, @Nonnull IGridNodeListener<T> listener) {
         return new ManagedGridNode(owner, listener);
     }
 
+    /**
+     * Create a direct connection between two {@link IGridNode}.
+     * <p>
+     * This will be considered as having a distance of 1, regardless of the location of both nodes.
+     *
+     * @param a to be connected gridnode
+     * @param b to be connected gridnode
+     */
     public static IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnectionException {
         Preconditions.checkNotNull(a);
         Preconditions.checkNotNull(b);

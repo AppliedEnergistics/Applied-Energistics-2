@@ -38,11 +38,25 @@ public final class PartHelper {
     private PartHelper() {
     }
 
+    /**
+     * use in use item, to try and place a IBusItem
+     *
+     * @param is     ItemStack of an item which implements {@link IPartItem}
+     * @param pos    pos of part
+     * @param side   side which the part should be on
+     * @param player player placing part
+     * @param level  part in level
+     *
+     * @return true if placing was successful
+     */
     public static InteractionResult placeBus(ItemStack is, BlockPos pos, Direction side,
             Player player, InteractionHand hand, Level level) {
         return PartPlacement.place(is, pos, side, player, hand, level, PartPlacement.PlaceType.PLACE_ITEM, 0);
     }
 
+    /**
+     * @return the render mode
+     */
     public static CableRenderMode getCableRenderMode() {
         return AppEng.instance().getCableRenderMode();
     }

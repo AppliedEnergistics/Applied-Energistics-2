@@ -60,9 +60,18 @@ public final class StorageHelper {
         return new CraftingLink(data, req);
     }
 
-    public static <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> cell,
+    /**
+     * Extracts items from a {@link IMEInventory} respecting power requirements.
+     *
+     * @param energy  Energy source.
+     * @param inv     Inventory to extract from.
+     * @param request Requested item and count.
+     * @param src     Action source.
+     * @return extracted items or {@code null} of nothing was extracted.
+     */
+    public static <T extends IAEStack> T poweredExtraction(final IEnergySource energy, final IMEInventory<T> inv,
             final T request, final IActionSource src) {
-        return poweredExtraction(energy, cell, request, src, Actionable.MODULATE);
+        return poweredExtraction(energy, inv, request, src, Actionable.MODULATE);
     }
 
     /**
@@ -115,9 +124,18 @@ public final class StorageHelper {
         return null;
     }
 
-    public static <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
+    /**
+     * Inserts items into a {@link IMEInventory} respecting power requirements.
+     *
+     * @param energy Energy source.
+     * @param inv    Inventory to insert into.
+     * @param input  Items to insert.
+     * @param src    Action source.
+     * @return items not inserted or {@code null} if everything was inserted.
+     */
+    public static <T extends IAEStack> T poweredInsert(final IEnergySource energy, final IMEInventory<T> inv,
             final T input, final IActionSource src) {
-        return poweredInsert(energy, cell, input, src, Actionable.MODULATE);
+        return poweredInsert(energy, inv, input, src, Actionable.MODULATE);
     }
 
     /**
