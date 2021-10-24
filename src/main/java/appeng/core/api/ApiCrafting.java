@@ -104,8 +104,14 @@ public class ApiCrafting implements ICraftingHelper {
         // based on the stored inputs/outputs if that happens.
         ResourceLocation recipeId = patternItem.getCraftingRecipeId(is);
         if (recipeId != null) {
-            IRecipe<?> recipe = world.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
-            if (!(recipe instanceof ICraftingRecipe) && (!autoRecovery || !attemptRecovery(patternItem, is, world))) {
+            try {
+                IRecipe<?> recipe = world.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
+                if (!(recipe instanceof ICraftingRecipe)
+                        && (!autoRecovery || !attemptRecovery(patternItem, is, world))) {
+                    return null;
+                }
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                AELog.warn("Failed recovery of missing recipe %s for pattern %s: %s", recipeId, is, e);
                 return null;
             }
         }
@@ -115,7 +121,7 @@ public class ApiCrafting implements ICraftingHelper {
 
         try {
             return new CraftingPatternDetails(ais, world);
-        } catch (IllegalStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             AELog.warn("Could not decode an invalid pattern %s: %s", is, e);
             return null;
         }
