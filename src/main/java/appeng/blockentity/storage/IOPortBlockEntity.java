@@ -58,6 +58,9 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.ICellHandler;
+import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.AECableType;
@@ -97,7 +100,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private final IActionSource mySrc;
     private YesNo lastRedstoneState;
     private ItemStack currentCell;
-    private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
+    private Map<IStorageChannel<?>, ICellInventoryHandler<?>> cachedInventories;
+    private ICellHandler cachedHandler;
 
     public IOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -266,7 +270,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                     if (itemsToMove > 0) {
                         final IMEMonitor<? extends IAEStack> network = grid.getStorageService()
                                 .getInventory(c);
-                        final IMEInventory<?> inv = this.getInv(is, c);
+                        final ICellInventoryHandler<?> inv = this.getInv(is, c);
 
                         if (inv == null) {
                             continue;
@@ -278,7 +282,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                             itemsToMove = this.transferContents(energy, network, inv, itemsToMove, c);
                         }
 
-                        shouldMove &= this.shouldMove(inv);
+                        shouldMove &= this.shouldMove(is, inv);
 
                         if (itemsToMove > 0) {
                             ret = TickRateModulation.IDLE;
@@ -289,25 +293,33 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                 }
 
                 if (itemsToMove > 0 && shouldMove && this.moveSlot(x)) {
+                    ret = TickRateModulation.URGENT;
                 }
-                ret = TickRateModulation.URGENT;
-
             }
         }
 
         return ret;
     }
 
-    private IMEInventory<?> getInv(final ItemStack is, final IStorageChannel<?> chan) {
+    private void updateCurrentCellCache(ItemStack is) {
         if (this.currentCell != is) {
             this.currentCell = is;
             this.cachedInventories = new IdentityHashMap<>();
 
-            for (var c : StorageChannels.getAll()) {
-                this.cachedInventories.put(c, StorageCells.getCellInventory(is, null, c));
+            var handler = StorageCells.getHandler(is);
+            this.cachedHandler = handler;
+
+            if (handler != null) {
+                for (var c : StorageChannels.getAll()) {
+                    this.cachedInventories.put(c, handler.getCellInventory(is, null, c));
+                }
             }
         }
+    }
 
+    @Nullable
+    private ICellInventoryHandler<?> getInv(ItemStack is, IStorageChannel<?> chan) {
+        updateCurrentCellCache(is);
         return this.cachedInventories.get(chan);
     }
 
@@ -368,11 +380,11 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         return itemsToMove / chan.transferFactor();
     }
 
-    private boolean shouldMove(final IMEInventory<?> inv) {
-        final FullnessMode fm = this.manager.getSetting(Settings.FULLNESS_MODE);
+    private boolean shouldMove(ItemStack is, ICellInventoryHandler<?> inv) {
+        FullnessMode fm = this.manager.getSetting(Settings.FULLNESS_MODE);
 
         if (inv != null) {
-            return this.matches(fm, inv);
+            return this.matches(fm, is, inv);
         }
 
         return true;
@@ -386,29 +398,14 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         return false;
     }
 
-    private boolean matches(final FullnessMode fm, final IMEInventory src) {
-        if (fm == FullnessMode.HALF) {
-            return true;
-        }
+    private boolean matches(FullnessMode fm, ItemStack is, ICellInventoryHandler<?> src) {
+        var status = this.cachedHandler.getStatusForCell(is, src);
 
-        final IAEStackList<? extends IAEStack> myList;
-
-        if (src instanceof IMEMonitor) {
-            myList = ((IMEMonitor) src).getStorageList();
-        } else {
-            myList = src.getAvailableItems();
-        }
-
-        if (fm == FullnessMode.EMPTY) {
-            return myList.isEmpty();
-        }
-
-        final IAEStack test = myList.getFirstItem();
-        if (test != null) {
-            test.setStackSize(1);
-            return src.injectItems(test, Actionable.SIMULATE, this.mySrc) != null;
-        }
-        return false;
+        return switch (fm) {
+            case EMPTY -> status == CellState.EMPTY;
+            case HALF -> true;
+            case FULL -> status == CellState.FULL;
+        };
     }
 
     /**
