@@ -55,8 +55,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import appeng.api.AEApi;
 import appeng.api.parts.CableRenderMode;
+import appeng.api.parts.PartHelper;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.client.gui.style.StyleManager;
@@ -293,7 +293,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void updateCableRenderMode(Minecraft mc) {
-        var currentMode = AEApi.partHelper().getCableRenderMode();
+        var currentMode = PartHelper.getCableRenderMode();
 
         // Handle changes to the cable-rendering mode
         if (currentMode == this.prevCableRenderMode) {

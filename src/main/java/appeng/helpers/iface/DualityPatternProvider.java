@@ -44,11 +44,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
@@ -179,7 +179,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         patterns.clear();
 
         for (var stack : this.patternInventory) {
-            var details = AEApi.patterns().decodePattern(stack, this.host.getBlockEntity().getLevel());
+            var details = PatternDetailsHelper.decodePattern(stack, this.host.getBlockEntity().getLevel());
 
             if (details != null) {
                 patterns.add(details);

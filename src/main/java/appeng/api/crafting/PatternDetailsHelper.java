@@ -23,6 +23,10 @@
 
 package appeng.api.crafting;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
@@ -30,19 +34,46 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.storage.data.IAEStack;
+import appeng.core.definitions.AEItems;
+import appeng.crafting.pattern.AEPatternDecoder;
 
-public interface IPatternDetailsHelper {
-    void registerDecoder(IPatternDetailsDecoder decoder);
+public final class PatternDetailsHelper {
+    private static final List<IPatternDetailsDecoder> DECODERS = new CopyOnWriteArrayList<>();
 
-    boolean isEncodedPattern(ItemStack stack);
+    static {
+        // Register support for our own stacks.
+        registerDecoder(AEPatternDecoder.INSTANCE);
+    }
+
+    public static void registerDecoder(IPatternDetailsDecoder decoder) {
+        Objects.requireNonNull(decoder);
+        DECODERS.add(decoder);
+    }
+
+    public static boolean isEncodedPattern(ItemStack stack) {
+        for (var decoder : DECODERS) {
+            if (decoder.isEncodedPattern(stack)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Nullable
-    default IPatternDetails decodePattern(ItemStack stack, Level level) {
+    public static IPatternDetails decodePattern(ItemStack stack, Level level) {
         return decodePattern(stack, level, false);
     }
 
     @Nullable
-    IPatternDetails decodePattern(ItemStack stack, Level level, boolean autoRecovery);
+    public static IPatternDetails decodePattern(ItemStack stack, Level level, boolean autoRecovery) {
+        for (var decoder : DECODERS) {
+            var decoded = decoder.decodePattern(stack, level, autoRecovery);
+            if (decoded != null) {
+                return decoded;
+            }
+        }
+        return null;
+    }
 
     /**
      * Encodes a processing pattern which represents the ability to convert the given inputs into the given outputs
@@ -52,7 +83,9 @@ public interface IPatternDetailsHelper {
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      * @return A new encoded pattern, or the given stack with the pattern encoded in it.
      */
-    ItemStack encodeProcessingPattern(IAEStack[] in, IAEStack[] out);
+    public static ItemStack encodeProcessingPattern(IAEStack[] in, IAEStack[] out) {
+        return AEItems.PROCESSING_PATTERN.asItem().encode(in, out);
+    }
 
     /**
      * Encodes a crafting pattern which represents a Vanilla crafting recipe.
@@ -65,6 +98,8 @@ public interface IPatternDetailsHelper {
      *                         recipe.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      */
-    ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in, ItemStack out,
-            boolean allowSubstitutes);
+    public static ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in,
+            ItemStack out, boolean allowSubstitutes) {
+        return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes);
+    }
 }

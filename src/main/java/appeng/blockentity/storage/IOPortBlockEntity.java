@@ -55,6 +55,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
@@ -70,7 +71,6 @@ import appeng.me.helpers.MachineSource;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
-import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -360,7 +360,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                         var extracted = src.extractItems(s, Actionable.MODULATE, this.mySrc);
                         if (extracted != null) {
                             possible = extracted.getStackSize();
-                            var failed = Platform.poweredInsert(energy, destination, extracted, this.mySrc);
+                            var failed = StorageHelper.poweredInsert(energy, destination, extracted, this.mySrc);
 
                             if (failed != null) {
                                 possible -= failed.getStackSize();

@@ -28,9 +28,9 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
-import appeng.util.Platform;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
 public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
@@ -71,7 +71,7 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
             this.monitor.addListener(this, this.monitor);
         }
 
-        Platform.postListChanges(before, after, this, this.getChangeSource());
+        StorageHelper.postListChanges(before, after, this, this.getChangeSource());
     }
 
     @Override

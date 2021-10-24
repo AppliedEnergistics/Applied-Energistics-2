@@ -20,7 +20,6 @@ package appeng.me.service;
 
 import java.util.*;
 
-import appeng.api.AEApi;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.*;
 import appeng.api.networking.events.GridBootingStatusChange;
@@ -38,7 +37,7 @@ import appeng.me.pathfinding.*;
 public class PathServiceService implements IPathingService, IGridServiceProvider {
 
     static {
-        AEApi.grid().addGridServiceEventHandler(GridChannelRequirementChanged.class,
+        GridHelper.addGridServiceEventHandler(GridChannelRequirementChanged.class,
                 IPathingService.class,
                 (service, event) -> {
                     ((PathServiceService) service).updateNodReq(event);

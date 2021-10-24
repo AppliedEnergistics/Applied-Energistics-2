@@ -36,7 +36,7 @@ import appeng.api.storage.data.IAEStack;
 public interface IPatternDetails {
     /**
      * Return a copy of the actual stack of this pattern, containing all the data to retrieve the pattern later from
-     * {@link IPatternDetailsHelper#decodePattern}.
+     * {@link PatternDetailsHelper#decodePattern}.
      */
     ItemStack copyDefinition();
 

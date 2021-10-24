@@ -25,9 +25,9 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -51,7 +51,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return AEApi.grid().createManagedNode(this, NodeListener.INSTANCE);
+        return GridHelper.createManagedNode(this, NodeListener.INSTANCE);
     }
 
     @Override

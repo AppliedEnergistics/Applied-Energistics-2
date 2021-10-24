@@ -30,8 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -65,7 +65,7 @@ public class ToggleBusPart extends BasicStatePart {
 
     private static final int REDSTONE_FLAG = 4;
 
-    private final IManagedGridNode outerNode = AEApi.grid()
+    private final IManagedGridNode outerNode = GridHelper
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
             .setInWorldNode(true)
@@ -166,7 +166,7 @@ public class ToggleBusPart extends BasicStatePart {
                 && this.getMainNode().getNode() != null && this.getOuterNode().getNode() != null) {
             if (intention) {
                 try {
-                    this.connection = AEApi.grid().createGridConnection(this.getMainNode().getNode(),
+                    this.connection = GridHelper.createGridConnection(this.getMainNode().getNode(),
                             this.getOuterNode().getNode());
                 } catch (final FailedConnectionException e) {
                     // :(

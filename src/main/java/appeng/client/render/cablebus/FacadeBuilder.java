@@ -52,7 +52,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-import appeng.api.AEApi;
+import appeng.api.parts.PartHelper;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.parts.misc.CableAnchorPart;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
@@ -176,7 +176,7 @@ public class FacadeBuilder {
 
     public Mesh getFacadeMesh(CableBusRenderState renderState, Supplier<Random> rand,
             Function<ResourceLocation, BakedModel> modelLookup) {
-        boolean transparent = AEApi.partHelper().getCableRenderMode().transparentFacades;
+        boolean transparent = PartHelper.getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AABB> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();

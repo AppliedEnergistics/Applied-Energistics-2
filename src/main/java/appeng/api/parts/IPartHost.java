@@ -23,8 +23,6 @@
 
 package appeng.api.parts;
 
-import java.util.Set;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
@@ -162,11 +160,6 @@ public interface IPartHost extends ICustomCableConnection {
      * returns false if this block contains any parts or facades, true other wise.
      */
     boolean isEmpty();
-
-    /**
-     * @return a mutable list of flags you can adjust to track state.
-     */
-    Set<LayerFlags> getLayerFlags();
 
     /**
      * remove host from level...

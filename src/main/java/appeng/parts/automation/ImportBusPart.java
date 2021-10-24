@@ -41,6 +41,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
@@ -51,7 +52,6 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemIOBusMenu;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class ImportBusPart extends SharedItemBusPart {
@@ -191,7 +191,7 @@ public class ImportBusPart extends SharedItemBusPart {
         if (!newItems.isEmpty()) {
             final IAEItemStack aeStack = StorageChannels.items()
                     .createStack(newItems);
-            final IAEItemStack failed = Platform.poweredInsert(energy, inv, aeStack, this.source);
+            final IAEItemStack failed = StorageHelper.poweredInsert(energy, inv, aeStack, this.source);
 
             if (failed != null) {
                 // try unpowered insert, better be a bit lenient then void items

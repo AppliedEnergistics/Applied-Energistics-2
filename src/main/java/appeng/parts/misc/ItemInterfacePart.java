@@ -30,8 +30,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.AEApi;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -89,7 +89,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
 
     @Override
     protected IManagedGridNode createMainNode() {
-        return AEApi.grid().createManagedNode(this, NODE_LISTENER);
+        return GridHelper.createManagedNode(this, NODE_LISTENER);
     }
 
     @Override

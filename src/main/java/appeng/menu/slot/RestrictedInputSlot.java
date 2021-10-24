@@ -24,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
-import appeng.api.AEApi;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.ids.AETags;
@@ -99,14 +99,12 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        var patternHelper = AEApi.patterns();
-
         // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
             case ENCODED_AE_CRAFTING_PATTERN:
                 return AEItems.CRAFTING_PATTERN.isSameAs(stack);
             case ENCODED_PATTERN:
-                return patternHelper.isEncodedPattern(stack);
+                return PatternDetailsHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:
                 return AEItems.CRAFTING_PATTERN.isSameAs(stack)
                         || AEItems.PROCESSING_PATTERN.isSameAs(stack);

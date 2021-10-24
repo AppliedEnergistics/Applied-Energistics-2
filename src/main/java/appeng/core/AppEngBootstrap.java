@@ -18,7 +18,6 @@
 
 package appeng.core;
 
-import appeng.api.AEApiInternal;
 import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitLootConditions;
 import appeng.init.InitStats;
@@ -41,7 +40,6 @@ public final class AppEngBootstrap {
     public static void runEarlyStartup() {
         if (!bootstrapped) {
             bootstrapped = true;
-            AEApiInternal.init();
             InitGridServices.init();
             InitBlockEntityMoveStrategies.init();
 

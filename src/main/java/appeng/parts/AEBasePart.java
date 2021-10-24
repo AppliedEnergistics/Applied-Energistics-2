@@ -47,11 +47,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
@@ -96,7 +96,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     protected IManagedGridNode createMainNode() {
-        return AEApi.grid().createManagedNode(this, NodeListener.INSTANCE);
+        return GridHelper.createManagedNode(this, NodeListener.INSTANCE);
     }
 
     /**
