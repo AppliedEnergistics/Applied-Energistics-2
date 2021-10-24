@@ -76,6 +76,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     private static final String ACTION_ENCODE = "encode";
     private static final String ACTION_CLEAR = "clear";
     private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
+    private static final String ACTION_SET_FLUID_SUBSTITUTION = "setFluidSubstitution";
     private static final String ACTION_CONVERT_ITEMS_TO_FLUIDS = "convertItemsToFluids";
 
     public static MenuType<PatternTermMenu> TYPE = MenuTypeBuilder
@@ -98,6 +99,8 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     public boolean craftingMode = true;
     @GuiSync(96)
     public boolean substitute = false;
+    @GuiSync(95)
+    public boolean substituteFluids = true;
 
     public PatternTermMenu(int id, final Inventory ip, final ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
@@ -146,6 +149,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         registerClientAction(ACTION_CLEAR, this::clear);
         registerClientAction(ACTION_SET_CRAFT_MODE, Boolean.class, getPatternTerminal()::setCraftingRecipe);
         registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, getPatternTerminal()::setSubstitution);
+        registerClientAction(ACTION_SET_FLUID_SUBSTITUTION, Boolean.class, getPatternTerminal()::setFluidSubstitution);
         registerClientAction(ACTION_CONVERT_ITEMS_TO_FLUIDS, this::convertItemsToFluids);
     }
 
@@ -215,7 +219,8 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
         ItemStack encodedPattern;
         if (this.isCraftingMode()) {
-            encodedPattern = PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute());
+            encodedPattern = PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute(),
+                    isSubstituteFluids());
         } else {
             encodedPattern = PatternDetailsHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
         }
@@ -392,6 +397,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             }
 
             this.substitute = this.patternTerminal.isSubstitution();
+            this.substituteFluids = this.patternTerminal.isFluidSubstitution();
         }
     }
 
@@ -468,6 +474,18 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             sendClientAction(ACTION_SET_SUBSTITUTION, substitute);
         } else {
             this.substitute = substitute;
+        }
+    }
+
+    public boolean isSubstituteFluids() {
+        return this.substituteFluids;
+    }
+
+    public void setSubstituteFluids(boolean substituteFluids) {
+        if (isClient()) {
+            sendClientAction(ACTION_SET_FLUID_SUBSTITUTION, substituteFluids);
+        } else {
+            this.substituteFluids = substituteFluids;
         }
     }
 

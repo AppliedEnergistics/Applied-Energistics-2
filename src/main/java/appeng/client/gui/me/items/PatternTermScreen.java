@@ -46,6 +46,8 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
     private final TabButton tabProcessButton;
     private final ActionButton substitutionsEnabledBtn;
     private final ActionButton substitutionsDisabledBtn;
+    private final ActionButton fluidSubstitutionsEnabledBtn;
+    private final ActionButton fluidSubstitutionsDisabledBtn;
     private final ActionButton convertItemsToFluidsBtn;
 
     public PatternTermScreen(PatternTermMenu menu, Inventory playerInventory,
@@ -71,6 +73,16 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
                 ActionItems.DISABLE_SUBSTITUTION, act -> getMenu().setSubstitute(true));
         this.substitutionsDisabledBtn.setHalfSize(true);
         widgets.add("substitutionsDisabled", this.substitutionsDisabledBtn);
+
+        this.fluidSubstitutionsEnabledBtn = new ActionButton(
+                ActionItems.ENABLE_FLUID_SUBSTITUTION, act -> getMenu().setSubstituteFluids(false));
+        this.fluidSubstitutionsEnabledBtn.setHalfSize(true);
+        widgets.add("fluidSubstitutionsEnabled", this.fluidSubstitutionsEnabledBtn);
+
+        this.fluidSubstitutionsDisabledBtn = new ActionButton(
+                ActionItems.DISABLE_FLUID_SUBSTITUTION, act -> getMenu().setSubstituteFluids(true));
+        this.fluidSubstitutionsDisabledBtn.setHalfSize(true);
+        widgets.add("fluidSubstitutionsDisabled", this.fluidSubstitutionsDisabledBtn);
 
         ActionButton clearBtn = new ActionButton(ActionItems.CLOSE, act -> menu.clear());
         clearBtn.setHalfSize(true);
@@ -101,11 +113,21 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
                 this.substitutionsEnabledBtn.visible = false;
                 this.substitutionsDisabledBtn.visible = true;
             }
+
+            if (this.menu.substituteFluids) {
+                this.fluidSubstitutionsEnabledBtn.visible = true;
+                this.fluidSubstitutionsDisabledBtn.visible = false;
+            } else {
+                this.fluidSubstitutionsEnabledBtn.visible = false;
+                this.fluidSubstitutionsDisabledBtn.visible = true;
+            }
         } else {
             this.tabCraftButton.visible = false;
             this.tabProcessButton.visible = true;
             this.substitutionsEnabledBtn.visible = false;
             this.substitutionsDisabledBtn.visible = false;
+            this.fluidSubstitutionsEnabledBtn.visible = false;
+            this.fluidSubstitutionsDisabledBtn.visible = false;
         }
 
         setSlotsHidden(SlotSemantic.CRAFTING_RESULT, !this.menu.isCraftingMode());

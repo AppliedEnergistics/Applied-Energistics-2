@@ -56,7 +56,9 @@ public enum ButtonToolTips {
     TerminalStyle_Small,
 
     Stash, StashDesc, Encode, EncodeDescription, Substitutions, SubstitutionsOn, SubstitutionsOff,
-    SubstitutionsDescEnabled, SubstitutionsDescDisabled, CraftOnly, CraftEither,
+    SubstitutionsDescEnabled, SubstitutionsDescDisabled,
+    FluidSubstitutions, FluidSubstitutionsDescEnabled, FluidSubstitutionsDescDisabled,
+    CraftOnly, CraftEither,
     FindContainedFluids, FindContainedFluidsDesc,
 
     Craft, Mod, DoesntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafting, ReportInaccessibleItems,

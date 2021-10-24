@@ -29,18 +29,18 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
+import appeng.helpers.FluidContainerHelper;
 import appeng.menu.NullMenu;
 import appeng.util.CraftingRemainders;
 import appeng.util.item.AEItemStack;
@@ -50,6 +50,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     private final CompoundTag definition;
     public final boolean canSubstitute;
+    public final boolean canSubstituteFluids;
     private final CraftingRecipe recipe;
     private final CraftingContainer testFrame;
     private final IAEItemStack[] sparseInputs;
@@ -65,6 +66,7 @@ public class AECraftingPattern implements IAEPatternDetails {
     public AECraftingPattern(CompoundTag definition, Level level) {
         this.definition = definition;
         this.canSubstitute = AEPatternHelper.canSubstitute(definition);
+        this.canSubstituteFluids = AEPatternHelper.canSubstituteFluids(definition);
         this.sparseInputs = AEPatternHelper.getCraftingInputs(definition);
 
         // Find recipe
@@ -191,7 +193,25 @@ public class AECraftingPattern implements IAEPatternDetails {
         return Ingredient.EMPTY;
     }
 
-    public boolean isValid(int slot, IAEItemStack stack, Level level) {
+    /**
+     * Return the fluid stack for the passed slot, or null if no fluid stack is accepted in the given slot.
+     */
+    @Nullable
+    public IAEFluidStack getValidFluid(int slot) {
+        int compressed = sparseToCompressed[slot];
+
+        if (compressed != -1) {
+            var itemOrFluid = inputs[compressed].possibleInputs[0];
+
+            if (itemOrFluid.getChannel() == StorageChannels.fluids()) {
+                return itemOrFluid.cast(StorageChannels.fluids());
+            }
+        }
+
+        return null;
+    }
+
+    public boolean isItemValid(int slot, IAEItemStack stack, Level level) {
         if (!canSubstitute) {
             return Objects.equals(sparseInputs[slot], stack);
         }
@@ -255,7 +275,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     public ItemStack getOutput(CraftingContainer craftingContainer, Level level) {
         for (int x = 0; x < craftingContainer.getContainerSize(); x++) {
-            if (!isValid(x, AEItemStack.fromItemStack(craftingContainer.getItem(x)), level)) {
+            if (!isItemValid(x, AEItemStack.fromItemStack(craftingContainer.getItem(x)), level)) {
                 return ItemStack.EMPTY;
             }
         }
@@ -263,22 +283,39 @@ public class AECraftingPattern implements IAEPatternDetails {
         return outputs[0].createItemStack();
     }
 
+    private IAEStack getItemOrFluidInput(int slot, IAEItemStack item) {
+        var containedFluid = FluidContainerHelper.getContainedFluid(item.createItemStack());
+
+        if (canSubstituteFluids && containedFluid != null) {
+            // For the MVP, we only support buckets in regular shaped and shapeless recipes.
+            if (recipe.getClass() == ShapedRecipe.class || recipe.getClass() == ShapelessRecipe.class) {
+                if (item.getItem() instanceof BucketItem) {
+                    return containedFluid;
+                }
+            }
+        }
+
+        return item;
+    }
+
     private class Input implements IInput {
         private final int slot;
-        private final IAEItemStack[] possibleInputs;
+        private final IAEStack[] possibleInputs;
         private final long multiplier;
 
         private Input(int slot, IAEItemStack condensedInput) {
             this.slot = slot;
             this.multiplier = condensedInput.getStackSize();
 
+            var itemOrFluidInput = getItemOrFluidInput(slot, sparseInputs[slot]);
+
             if (!canSubstitute) {
-                this.possibleInputs = new IAEItemStack[] { sparseInputs[slot] };
+                this.possibleInputs = new IAEStack[] { itemOrFluidInput };
             } else {
                 ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
-                this.possibleInputs = new IAEItemStack[matchingStacks.length + 1];
+                this.possibleInputs = new IAEStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
-                this.possibleInputs[0] = sparseInputs[slot];
+                this.possibleInputs[0] = itemOrFluidInput;
                 for (int i = 0; i < matchingStacks.length; ++i) {
                     this.possibleInputs[i + 1] = AEItemStack.fromItemStack(matchingStacks[i]);
                 }
@@ -297,11 +334,11 @@ public class AECraftingPattern implements IAEPatternDetails {
 
         @Override
         public boolean isValid(IAEStack input, Level level) {
-            if (!canSubstitute) {
+            if (input.equals(possibleInputs[0])) {
                 // Exact match
                 return input.equals(possibleInputs[0]);
-            } else if (input.getChannel() == StorageChannels.items()) {
-                return AECraftingPattern.this.isValid(slot, input.cast(StorageChannels.items()), level);
+            } else if (canSubstitute() && input.getChannel() == StorageChannels.items()) {
+                return AECraftingPattern.this.isItemValid(slot, input.cast(StorageChannels.items()), level);
             } else {
                 return false;
             }

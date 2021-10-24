@@ -33,4 +33,8 @@ public interface IAEPatternDetails extends IPatternDetails {
     default boolean canSubstitute() {
         return isCraftable() && ((AECraftingPattern) this).canSubstitute;
     }
+
+    default boolean canSubstituteFluids() {
+        return isCraftable() && ((AECraftingPattern) this).canSubstituteFluids;
+    }
 }

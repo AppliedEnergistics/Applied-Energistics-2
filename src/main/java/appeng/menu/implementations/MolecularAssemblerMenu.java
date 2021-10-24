@@ -70,7 +70,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
             final Level level = this.getBlockEntity().getLevel();
             var details = patternItem.decode(is, level, false);
             if (details != null) {
-                return details.isValid(slotIndex, AEItemStack.fromItemStack(i), level);
+                return details.isItemValid(slotIndex, AEItemStack.fromItemStack(i), level);
             }
         }
 

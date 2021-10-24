@@ -429,7 +429,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             for (int x = 0; x < 9; x++) {
                 final ItemStack is = this.gridInv.getStackInSlot(x);
                 if (!is.isEmpty()
-                        && (this.myPlan == null || !this.myPlan.isValid(x, IAEItemStack.of(is), this.level))) {
+                        && (this.myPlan == null || !this.myPlan.isItemValid(x, IAEItemStack.of(is), this.level))) {
                     this.gridInv.setItemDirect(9, is);
                     this.gridInv.setItemDirect(x, ItemStack.EMPTY);
                     this.saveChanges();
@@ -555,7 +555,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             }
 
             if (this.hasPattern()) {
-                return MolecularAssemblerBlockEntity.this.myPlan.isValid(slot, IAEItemStack.of(stack),
+                return MolecularAssemblerBlockEntity.this.myPlan.isItemValid(slot, IAEItemStack.of(stack),
                         MolecularAssemblerBlockEntity.this.getLevel());
             }
             return false;

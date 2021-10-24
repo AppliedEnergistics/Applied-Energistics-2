@@ -90,16 +90,17 @@ public final class PatternDetailsHelper {
     /**
      * Encodes a crafting pattern which represents a Vanilla crafting recipe.
      *
-     * @param recipe           The Vanilla crafting recipe to be encoded.
-     * @param in               The items in the crafting grid, which are used to determine what items are supplied from
-     *                         the ME system to craft using this pattern.
-     * @param out              What is to be expected as the result of this crafting operation by the ME system.
-     * @param allowSubstitutes Controls whether the ME system will allow the use of equivalent items to craft this
-     *                         recipe.
+     * @param recipe                The Vanilla crafting recipe to be encoded.
+     * @param in                    The items in the crafting grid, which are used to determine what items are supplied
+     *                              from the ME system to craft using this pattern.
+     * @param out                   What is to be expected as the result of this crafting operation by the ME system.
+     * @param allowSubstitutes      Controls whether the ME system will allow the use of equivalent items to craft this
+     *                              recipe.
+     * @param allowFluidSubstitutes Controls whether the ME system will allow the use of equivalent fluids.
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks.
      */
     public static ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in,
-            ItemStack out, boolean allowSubstitutes) {
-        return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes);
+            ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
+        return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes, allowFluidSubstitutes);
     }
 }
