@@ -26,20 +26,21 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
+import appeng.api.storage.cells.base.IBasicCellInfo;
+import appeng.api.storage.cells.base.IBasicCellItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 
-class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
+class BasicCellInventory<T extends IAEStack> implements IBasicCellInfo<T>, IMEInventory<T> {
     private static final int MAX_ITEM_TYPES = 63;
     private static final String ITEM_TYPE_TAG = "it";
     private static final String ITEM_COUNT_TAG = "ic";
@@ -60,11 +61,11 @@ class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
     private long storedItemCount;
     private IAEStackList<T> cellItems;
     private final ItemStack i;
-    private final IStorageCell<T> cellType;
+    private final IBasicCellItem<T> cellType;
     private final int itemsPerByte;
     private boolean isPersisted = true;
 
-    private BasicCellInventory(IStorageCell<T> cellType, ItemStack o, ISaveProvider container) {
+    private BasicCellInventory(IBasicCellItem<T> cellType, ItemStack o, ISaveProvider container) {
         this.i = o;
         this.cellType = cellType;
         this.itemsPerByte = this.cellType.getChannel().getUnitsPerByte();
@@ -86,11 +87,11 @@ class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends IAEStack> ICellInventory<T> createInventory(ItemStack o, ISaveProvider container,
+    public static <T extends IAEStack> BasicCellInventory<T> createInventory(ItemStack o, ISaveProvider container,
             IStorageChannel<T> channel) {
         Preconditions.checkNotNull(o, "Cannot create cell inventory for null itemstack");
 
-        if (!(o.getItem() instanceof IStorageCell<?>cellType)) {
+        if (!(o.getItem() instanceof IBasicCellItem<?>cellType)) {
             AELog.warn("ItemStack was used as a cell, but was not a cell!");
             return null;
         }
@@ -102,7 +103,7 @@ class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
 
         // The cell type's channel matches, so this cast is safe
         if (cellType.getChannel() == channel) {
-            return new BasicCellInventory<>((IStorageCell<T>) cellType, o, container);
+            return new BasicCellInventory<>((IBasicCellItem<T>) cellType, o, container);
         } else {
             return null;
         }
@@ -114,7 +115,7 @@ class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
 
     private boolean isStorageCell(final T input) {
         if (input instanceof IAEItemStack stack) {
-            final IStorageCell<?> type = getStorageCell(stack.getDefinition());
+            final IBasicCellItem<?> type = getStorageCell(stack.getDefinition());
 
             return type != null && !type.storableInStorageCell();
         }
@@ -122,19 +123,19 @@ class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
         return false;
     }
 
-    private static IStorageCell<?> getStorageCell(final ItemStack input) {
+    private static IBasicCellItem<?> getStorageCell(final ItemStack input) {
         if (input != null) {
             final Item type = input.getItem();
 
-            if (type instanceof IStorageCell) {
-                return (IStorageCell<?>) type;
+            if (type instanceof IBasicCellItem) {
+                return (IBasicCellItem<?>) type;
             }
         }
 
         return null;
     }
 
-    private static boolean isCellEmpty(ICellInventory<?> inv) {
+    private static boolean isCellEmpty(BasicCellInventory<?> inv) {
         if (inv != null) {
             return inv.getAvailableItems().isEmpty();
         }
@@ -238,11 +239,6 @@ class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
         }
 
         return out;
-    }
-
-    @Override
-    public ItemStack getItemStack() {
-        return this.i;
     }
 
     @Override
@@ -356,7 +352,7 @@ class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
             return null;
         }
 
-        if (this.cellType.isBlackListed(this.getItemStack(), input)) {
+        if (this.cellType.isBlackListed(this.i, input)) {
             return input;
         }
         // This is slightly hacky as it expects a read-only access, but fine for now.
@@ -364,6 +360,7 @@ class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
         // ensure CellInventory does not write
         // any NBT data for empty cells instead of relying on an empty IAEStackContainer
         if (this.isStorageCell(input)) {
+            // TODO: make it work for any cell, and not just BasicCellInventory!
             var meInventory = createInventory(((IAEItemStack) input).createItemStack(), null, getChannel());
             if (!isCellEmpty(meInventory)) {
                 return input;

@@ -23,25 +23,25 @@
 
 package appeng.api.storage.cells;
 
-import javax.annotation.Nullable;
-
-import appeng.api.config.IncludeExclude;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 
+/**
+ * Represents the most general possible cell inventory. Register a {@link ICellHandler} to provide custom subclasses.
+ */
 public interface ICellInventoryHandler<T extends IAEStack> extends IMEInventoryHandler<T> {
+    /**
+     * Return the current status of the cell.
+     */
+    CellState getStatus();
 
     /**
-     * Get access to the ICellInventory. Can be null for custom cells.
-     *
-     * @return get access to the Cell Inventory.
+     * Return the idle drain of the cell: how many AE/t it uses passively.
      */
-    @Nullable
-    ICellInventory<T> getCellInv();
+    double getIdleDrain();
 
-    boolean isPreformatted();
-
-    boolean isFuzzy();
-
-    IncludeExclude getIncludeExcludeMode();
+    /**
+     * Tells the cell to persist to NBT.
+     */
+    void persist();
 }

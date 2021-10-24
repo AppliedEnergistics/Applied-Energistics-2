@@ -35,11 +35,10 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageCells;
+import appeng.api.storage.cells.base.IBasicCellItem;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
@@ -57,7 +56,7 @@ import appeng.util.InteractionUtil;
  * @since rv6 2018-01-17
  */
 public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
-        implements IStorageCell<T>, AEToolItem, IDisassemblyRemainder {
+        implements IBasicCellItem<T>, AEToolItem, IDisassemblyRemainder {
     /**
      * This can be retrieved when disassembling the storage cell.
      */
@@ -74,8 +73,7 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
     @Override
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
-        AEApi.client().addCellInformation(
-                StorageCells.getCellInventory(stack, null, this.getChannel()), lines);
+        addTooltipCellInformation(stack, lines);
     }
 
     @Override

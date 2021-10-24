@@ -23,6 +23,8 @@
 
 package appeng.api.storage.cells;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
@@ -52,36 +54,6 @@ public interface ICellHandler {
      * @param channel the storage channel requested.
      * @return a new IMEHandler for the provided item
      */
-    <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is, ISaveProvider host,
+    <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is, @Nullable ISaveProvider host,
             IStorageChannel<T> channel);
-
-    /**
-     * Get the storage cell's status.
-     *
-     * @param is      the cell item. ( use the handler for any details you can )
-     * @param handler the handler for the cell is provides for reference, you can cast this to your handler.
-     * @return get the status of the cell based on its contents.
-     */
-    default <T extends IAEStack> CellState getStatusForCell(ItemStack is, ICellInventoryHandler<T> handler) {
-        if (handler.getCellInv() != null) {
-            CellState val = handler.getCellInv().getStatusForCell();
-
-            if (val == CellState.EMPTY && handler.isPreformatted()) {
-                val = CellState.TYPES_FULL;
-            }
-
-            return val;
-        }
-        return CellState.ABSENT;
-    }
-
-    /**
-     * @return the ae/t to drain for this storage cell inside a chest/drive.
-     */
-    default <T extends IAEStack> double cellIdleDrain(ItemStack is, ICellInventoryHandler<T> handler) {
-        if (handler.getCellInv() != null) {
-            return handler.getCellInv().getIdleDrain();
-        }
-        return 1.0;
-    }
 }

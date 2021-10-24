@@ -21,7 +21,6 @@ package appeng.me.cells;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ISaveProvider;
@@ -52,13 +51,4 @@ public class CreativeCellHandler implements ICellHandler {
         return null;
     }
 
-    @Override
-    public <T extends IAEStack> CellState getStatusForCell(ItemStack is, ICellInventoryHandler<T> handler) {
-        return CellState.TYPES_FULL;
-    }
-
-    @Override
-    public <T extends IAEStack> double cellIdleDrain(ItemStack is, ICellInventoryHandler<T> handler) {
-        return 0;
-    }
 }

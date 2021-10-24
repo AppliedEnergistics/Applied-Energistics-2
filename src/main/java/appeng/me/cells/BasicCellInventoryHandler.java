@@ -22,8 +22,8 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.base.IBasicCellInfo;
+import appeng.api.storage.cells.base.IBasicCellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.util.prioritylist.FuzzyPriorityList;
@@ -33,11 +33,11 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * Adapts a {@link BasicCellInventory} such that it's upgrades and filters are applied.
  */
 class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T>
-        implements ICellInventoryHandler<T> {
+        implements IBasicCellInventoryHandler<T> {
 
-    private final ICellInventory<T> cellInventory;
+    private final BasicCellInventory<T> cellInventory;
 
-    public BasicCellInventoryHandler(ICellInventory<T> cellInventory, IStorageChannel<T> channel) {
+    public BasicCellInventoryHandler(BasicCellInventory<T> cellInventory, IStorageChannel<T> channel) {
         super(cellInventory, channel);
         this.cellInventory = cellInventory;
 
@@ -84,8 +84,8 @@ class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T
     }
 
     @Override
-    public ICellInventory<T> getCellInv() {
-        return cellInventory;
+    public IBasicCellInfo<T> getInfo() {
+        return this.cellInventory;
     }
 
     @Override

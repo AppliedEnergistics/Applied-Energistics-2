@@ -54,8 +54,8 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.cells.base.IBasicCellInfo;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.block.storage.DriveSlotsState;
@@ -364,7 +364,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
                         this.invBySlot[slot] = driveWatcher;
                         this.inventoryHandlers.get(channel).add(driveWatcher);
 
-                        return this.handlersBySlot[slot].cellIdleDrain(is, cell);
+                        return cell.getIdleDrain();
                     }
                 }
             }
@@ -408,7 +408,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         this.recalculateDisplay();
     }
 
-    private void saveChanges(final ICellInventory<?> cellInventory) {
+    private void saveChanges(final IBasicCellInfo<?> cellInventory) {
         this.level.blockEntityChanged(this.worldPosition);
     }
 

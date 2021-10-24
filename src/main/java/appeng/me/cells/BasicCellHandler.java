@@ -30,6 +30,8 @@ import appeng.api.storage.data.IAEStack;
  * Cell handler that manages all normal storage cells (items, fluids).
  */
 public class BasicCellHandler implements ICellHandler {
+    public static final BasicCellHandler INSTANCE = new BasicCellHandler();
+
     @Override
     public boolean isCell(ItemStack is) {
         return BasicCellInventory.isCell(is);

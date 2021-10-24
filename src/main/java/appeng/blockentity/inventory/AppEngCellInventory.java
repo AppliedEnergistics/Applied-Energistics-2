@@ -21,7 +21,6 @@ package appeng.blockentity.inventory;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.BaseInternalInventory;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
@@ -30,14 +29,20 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class AppEngCellInventory extends BaseInternalInventory {
     private final AppEngInternalInventory inv;
     private final ICellInventoryHandler[] handlerForSlot;
+    /**
+     * Remembers for which itemstack the handler in handlerForSlot[] was queried.
+     */
+    private final ItemStack[] handlerStackForSlot;
 
     public AppEngCellInventory(final InternalInventoryHost host, final int slots) {
         this.inv = new AppEngInternalInventory(host, slots, 1);
         this.handlerForSlot = new ICellInventoryHandler[slots];
+        this.handlerStackForSlot = new ItemStack[slots];
     }
 
-    public void setHandler(final int slot, final ICellInventoryHandler handler) {
+    public void setHandler(int slot, ICellInventoryHandler<?> handler) {
         this.handlerForSlot[slot] = handler;
+        this.handlerStackForSlot[slot] = inv.getStackInSlot(slot);
     }
 
     public void setFilter(IAEItemFilter filter) {
@@ -96,20 +101,13 @@ public class AppEngCellInventory extends BaseInternalInventory {
 
     private void persist(int slot) {
         if (this.handlerForSlot[slot] != null) {
-            final ICellInventory ci = this.handlerForSlot[slot].getCellInv();
-            if (ci != null) {
-                ci.persist();
-            }
+            this.handlerForSlot[slot].persist();
         }
     }
 
     private void cleanup(int slot) {
-        if (this.handlerForSlot[slot] != null) {
-            final ICellInventory ci = this.handlerForSlot[slot].getCellInv();
-
-            if (ci == null || ci.getItemStack() != this.inv.getStackInSlot(slot)) {
-                this.handlerForSlot[slot] = null;
-            }
+        if (this.handlerForSlot[slot] != null && this.handlerStackForSlot[slot] != this.inv.getStackInSlot(slot)) {
+            this.handlerForSlot[slot] = null;
         }
     }
 }

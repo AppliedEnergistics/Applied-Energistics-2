@@ -21,21 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage.cells;
-
-import net.minecraft.world.item.ItemStack;
+package appeng.api.storage.cells.base;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.cells.CellState;
 import appeng.api.storage.data.IAEStack;
 
-public interface ICellInventory<T extends IAEStack> extends IMEInventory<T> {
-
-    /**
-     * @return the item stack of this storage cell.
-     */
-    ItemStack getItemStack();
+/**
+ * Information about the current state of a basic cell. Obtain instances for your simple cell items through
+ * {@link IBasicCellInventoryHandler#getInfo()}.
+ */
+public interface IBasicCellInfo<T extends IAEStack> {
 
     /**
      * @return the ae/t to drain for this storage cell inside a chest/drive.

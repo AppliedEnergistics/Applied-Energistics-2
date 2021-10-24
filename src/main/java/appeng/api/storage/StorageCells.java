@@ -38,12 +38,12 @@ import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ISaveProvider;
+import appeng.api.storage.cells.base.IBasicCellItem;
 import appeng.api.storage.data.IAEStack;
 
 /**
  * Storage Cell Registry, used for specially implemented cells, if you just want to make a item act like a cell, or new
- * cell with different bytes, you should probably consider implementing
- * {@link appeng.api.implementations.items.IStorageCell} on your item instead.
+ * cell with different bytes, you should probably consider implementing {@link IBasicCellItem} on your item instead.
  */
 @ThreadSafe
 public final class StorageCells {

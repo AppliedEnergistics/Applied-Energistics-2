@@ -81,9 +81,9 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.cells.base.IBasicCellInfo;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
@@ -197,7 +197,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         return 1;
     }
 
-    @SuppressWarnings("unchecked")
     private void updateHandler() {
         if (!this.isCached) {
             this.cellHandler = null;
@@ -216,7 +215,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                                 this::saveChanges,
                                 channel);
                         if (newCell != null) {
-                            idlePowerUsage += cellHandler.cellIdleDrain(is, newCell);
+                            idlePowerUsage += newCell.getIdleDrain();
                             this.cellHandler = this.wrap(newCell);
                             break;
                         }
@@ -259,7 +258,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         final ICellHandler ch = StorageCells.getHandler(cell);
 
         if (this.cellHandler != null && ch != null) {
-            return ch.getStatusForCell(cell, this.cellHandler.getInternalHandler());
+            return this.cellHandler.getInternalHandler().getStatus();
         }
 
         return CellState.ABSENT;
@@ -549,7 +548,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         return true;
     }
 
-    private void saveChanges(final ICellInventory<?> cellInventory) {
+    private void saveChanges(final IBasicCellInfo<?> cellInventory) {
         if (cellInventory != null) {
             cellInventory.persist();
         }

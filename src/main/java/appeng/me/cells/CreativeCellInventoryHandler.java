@@ -1,8 +1,7 @@
 package appeng.me.cells;
 
-import appeng.api.config.IncludeExclude;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellInventory;
+import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.storage.MEInventoryHandler;
@@ -14,22 +13,16 @@ class CreativeCellInventoryHandler<T extends IAEStack> extends MEInventoryHandle
     }
 
     @Override
-    public ICellInventory<T> getCellInv() {
-        return null;
+    public CellState getStatus() {
+        return CellState.TYPES_FULL;
     }
 
     @Override
-    public boolean isPreformatted() {
-        return !this.getPartitionList().isEmpty();
+    public double getIdleDrain() {
+        return 0;
     }
 
     @Override
-    public boolean isFuzzy() {
-        return false;
-    }
-
-    @Override
-    public IncludeExclude getIncludeExcludeMode() {
-        return this.getWhitelist();
+    public void persist() {
     }
 }

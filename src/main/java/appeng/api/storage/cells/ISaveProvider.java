@@ -25,6 +25,8 @@ package appeng.api.storage.cells;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.cells.base.IBasicCellInfo;
+
 /**
  * Tells the cell provider that changes have been made an the cell must be persisted
  */
@@ -35,5 +37,5 @@ public interface ISaveProvider {
      *
      * @param cellInventory can be null for custom cells.
      */
-    void saveChanges(@Nullable ICellInventory<?> cellInventory);
+    void saveChanges(@Nullable IBasicCellInfo<?> cellInventory);
 }

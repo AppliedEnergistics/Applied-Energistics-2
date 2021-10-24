@@ -33,15 +33,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.cells.base.IBasicCellItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.hooks.ICustomReequipAnimation;
@@ -55,7 +53,7 @@ import appeng.menu.me.items.MEPortableCellMenu;
 import appeng.parts.automation.UpgradeInventory;
 
 public class PortableCellItem extends AEBasePoweredItem
-        implements IStorageCell<IAEItemStack>, IGuiItem, ICustomReequipAnimation {
+        implements IBasicCellItem<IAEItemStack>, IGuiItem, ICustomReequipAnimation {
 
     private final StorageTier tier;
 
@@ -76,10 +74,7 @@ public class PortableCellItem extends AEBasePoweredItem
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
-
-        var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
-
-        AEApi.client().addCellInformation(cdi, lines);
+        addTooltipCellInformation(stack, lines);
     }
 
     @Override

@@ -27,7 +27,6 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
-import appeng.api.client.IClientHelper;
 import appeng.api.crafting.IPatternDetailsHelper;
 import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
@@ -96,34 +95,22 @@ public final class AEApi {
         return partHelper;
     }
 
-    /**
-     * @return Utility methods primarily useful for client side stuff
-     */
-    @Nonnull
-    public static IClientHelper client() {
-        Preconditions.checkState(initialized, "AE2 API is not initialized yet.");
-        return client;
-    }
-
     private static boolean initialized;
     private static IStorageHelper storage;
     private static IPatternDetailsHelper patterns;
     private static IGridHelper grid;
     private static IPartHelper partHelper;
-    private static IClientHelper client;
 
     static void initialize(
             IStorageHelper storage,
             IPatternDetailsHelper patternDetails,
             IGridHelper grid,
-            IPartHelper partHelper,
-            IClientHelper client) {
+            IPartHelper partHelper) {
         Preconditions.checkState(!initialized, "AE2 API was already initialized");
         AEApi.storage = storage;
         AEApi.patterns = patternDetails;
         AEApi.grid = grid;
         AEApi.partHelper = partHelper;
-        AEApi.client = client;
         initialized = true;
     }
 }

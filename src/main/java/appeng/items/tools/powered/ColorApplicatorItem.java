@@ -49,16 +49,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
+import appeng.api.storage.cells.base.IBasicCellItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
@@ -81,7 +80,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class ColorApplicatorItem extends AEBasePoweredItem
-        implements IStorageCell<IAEItemStack>, IBlockTool, IMouseWheelItem {
+        implements IBasicCellItem<IAEItemStack>, IBlockTool, IMouseWheelItem {
 
     private static final Map<Tag.Named<Item>, AEColor> TAG_TO_COLOR = AEColor.VALID_COLORS.stream()
             .collect(Collectors.toMap(
@@ -340,10 +339,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
-
-        var cdi = StorageCells.getCellInventory(stack, null, StorageChannels.items());
-
-        AEApi.client().addCellInformation(cdi, lines);
+        addTooltipCellInformation(stack, lines);
     }
 
     @Override
