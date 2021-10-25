@@ -56,12 +56,14 @@ public class CraftingTreeNode {
      * is that of the template of the corresponding input.
      */
     private final IAEStack what;
-    // what are the crafting patterns for this?
-    private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<>();
+    /**
+     * The patterns that can make this node. Null if they haven't been computed yet.
+     */
+    private ArrayList<CraftingTreeProcess> nodes = null;
     private final boolean canEmit;
 
-    public CraftingTreeNode(final ICraftingService cc, final CraftingCalculation job, final IAEStack wat,
-            final CraftingTreeProcess par, final int slot) {
+    public CraftingTreeNode(ICraftingService cc, CraftingCalculation job, IAEStack wat,
+            CraftingTreeProcess par, int slot) {
         this.parent = par;
         this.parentInput = slot == -1 ? null : par.details.getInputs()[slot];
         this.level = job.getLevel();
@@ -69,15 +71,6 @@ public class CraftingTreeNode {
         this.what = findCraftedStack(cc, wat);
 
         this.canEmit = cc.canEmitFor(wat);
-        if (this.canEmit) {
-            return; // if you can emit for something, you can't make it with patterns.
-        }
-
-        for (var details : cc.getCraftingFor(this.what)) {
-            if (this.parent == null || this.parent.notRecursive(details)) {
-                this.nodes.add(new CraftingTreeProcess(cc, job, details, this));
-            }
-        }
     }
 
     private IAEStack findCraftedStack(ICraftingService cc, IAEStack wat) {
@@ -100,6 +93,30 @@ public class CraftingTreeNode {
         }
 
         return wat;
+    }
+
+    private void buildChildPatterns() {
+        // Sanity check: this should never be called if this is emitable
+        if (this.canEmit) {
+            throw new IllegalStateException("Internal AE2 error: this node is emitable, it shouldn't use patterns!");
+        }
+
+        if (this.nodes == null) {
+            this.nodes = new ArrayList<>();
+
+            var gridNode = this.job.simRequester.getGridNode();
+
+            // If the node is null, we just skip patterns and let the request (likely) fail.
+            if (gridNode != null) {
+                var craftingService = gridNode.getGrid().getCraftingService();
+
+                for (var details : craftingService.getCraftingFor(this.what)) {
+                    if (this.parent == null || this.parent.notRecursive(details)) {
+                        this.nodes.add(new CraftingTreeProcess(craftingService, job, details, this));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -176,6 +193,7 @@ public class CraftingTreeNode {
         /*
          * 3) USE PATTERNS
          */
+        buildChildPatterns();
         long totalRequestedItems = requestedAmount * this.what.getStackSize();
         if (this.nodes.size() == 1) {
             // Single branch: just query as much as we can and let it throw if that's not possible.
@@ -268,21 +286,20 @@ public class CraftingTreeNode {
         return CraftingCpuHelper.getValidItemTemplates(inv, this.parentInput, level);
     }
 
-    boolean isValid(IAEStack stack) {
-        return parentInput != null && parentInput.isValid(stack, level);
-    }
-
     long getNodeCount() {
         long tot = 1;
-
-        for (final CraftingTreeProcess pro : this.nodes) {
-            tot += pro.getNodeCount();
+        if (this.nodes != null) {
+            for (final CraftingTreeProcess pro : this.nodes) {
+                tot += pro.getNodeCount();
+            }
         }
-
         return tot;
     }
 
     boolean hasMultiplePaths() {
+        if (this.nodes == null) {
+            return false;
+        }
         if (this.nodes.size() > 1) {
             return true;
         }

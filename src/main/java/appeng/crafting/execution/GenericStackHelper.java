@@ -68,6 +68,7 @@ public class GenericStackHelper {
         return channel.readFromPacket(buf);
     }
 
+    @Nullable
     public static IAEStack injectMonitorable(IStorageMonitorable monitorable, IAEStack what, Actionable mode,
             IActionSource src) {
         if (what == null) {
@@ -82,6 +83,25 @@ public class GenericStackHelper {
         var inventory = monitorable.getInventory(channel);
         if (inventory != null) {
             return inventory.injectItems(castedWhat, type, src);
+        }
+        return null;
+    }
+
+    @Nullable
+    public static IAEStack extractMonitorable(IStorageMonitorable monitorable, IAEStack what, Actionable mode,
+            IActionSource src) {
+        if (what == null) {
+            return null;
+        }
+        return channelExtractItems(what.getChannel(), monitorable, what, mode, src);
+    }
+
+    private static <T extends IAEStack> T channelExtractItems(IStorageChannel<T> channel,
+            IStorageMonitorable monitorable, IAEStack what, Actionable type, IActionSource src) {
+        var castedWhat = what.cast(channel);
+        var inventory = monitorable.getInventory(channel);
+        if (inventory != null) {
+            return inventory.extractItems(castedWhat, type, src);
         }
         return null;
     }
