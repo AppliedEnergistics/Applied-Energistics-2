@@ -22,11 +22,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;

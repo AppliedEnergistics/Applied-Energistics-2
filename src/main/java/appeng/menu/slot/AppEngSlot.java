@@ -21,7 +21,6 @@ package appeng.menu.slot;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.items.misc.FluidDummyItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.Container;
@@ -33,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.client.gui.Icon;
 import appeng.core.AELog;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.menu.AEBaseMenu;
 
 public class AppEngSlot extends Slot {
@@ -161,8 +161,8 @@ public class AppEngSlot extends Slot {
         return this.inventory.extractItem(this.invSlot, amount, false);
     }
 
-    public boolean containsWrapperItem() {
-        return getItem().getItem() instanceof FluidDummyItem;
+    private boolean containsWrapperItem() {
+        return WrappedFluidStack.isWrapped(getItem());
     }
 
     public boolean isSameInventory(Slot other) {

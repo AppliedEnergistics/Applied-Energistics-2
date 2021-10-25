@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import appeng.util.item.AEItemStack;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -40,8 +39,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.core.definitions.AEItems;
-import appeng.items.misc.FluidDummyItem;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.util.Platform;
 import appeng.util.item.AEStack;
 
@@ -176,15 +174,16 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         return this.fluid;
     }
 
-    public ItemStack serializeAsItem() {
-        return FluidDummyItem.fromFluidStack(this.getFluidStack(), true);
+    @Override
+    public ItemStack wrap() {
+        return WrappedFluidStack.wrap(this);
     }
 
     @Override
     public ItemStack asItemStackRepresentation() {
-        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
-        FluidDummyItem item = (FluidDummyItem) is.getItem();
-        item.setFluid(is, fluid);
+        var is = wrap();
+        WrappedFluidStack item = (WrappedFluidStack) is.getItem();
+        item.setAmount(is, 0L);
         return is;
     }
 

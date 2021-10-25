@@ -29,21 +29,11 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.StorageHelper;
-import appeng.core.definitions.AEItems;
-import appeng.helpers.FluidContainerHelper;
-import appeng.items.misc.FluidDummyItem;
-import appeng.util.fluid.AEFluidStack;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -548,33 +538,8 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 default:
                     break;
             }
-        }
 
-        var itemInSlot = s.getItem();
-        if (AEItems.DUMMY_FLUID_ITEM.isSameAs(itemInSlot)) {
-            var fluidStack = StorageChannels.fluids().createStack(itemInSlot);
-            if (fluidStack == null) {
-                return;
-            }
-
-            // Allow picking up fluid dummy items with a fluid container
-            if (action == InventoryAction.PICKUP_OR_SET_DOWN) {
-                var heldContainer = FluidStorage.ITEM.find(getCarried(), ContainerItemContext.ofPlayerCursor(player, this));
-                if (heldContainer != null) {
-                    long inserted;
-                    try (var tx = Transaction.openOuter()) {
-                        inserted = heldContainer.insert(fluidStack.getFluid(), fluidStack.getStackSize(), tx);
-                        tx.commit();
-                    }
-                    if (inserted >= fluidStack.getStackSize()) {
-                        s.set(ItemStack.EMPTY);
-                    } else if (inserted > 0) {
-                        fluidStack.decStackSize(inserted);
-                        // TODO: Dont use AEFLuidStack directly
-                        s.set(((AEFluidStack) fluidStack).serializeAsItem());
-                    }
-                }
-            }
+            // No further interaction allowed with fake slots
             return;
         }
 

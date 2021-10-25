@@ -36,7 +36,6 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
-import appeng.items.misc.FluidDummyItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
@@ -153,7 +152,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         } else if (aeStack.getChannel() == StorageChannels.items()) {
             return aeStack.cast(StorageChannels.items()).createItemStack();
         } else if (aeStack.getChannel() == StorageChannels.fluids()) {
-            return FluidDummyItem.fromFluidStack(aeStack.cast(StorageChannels.fluids()).getFluidStack(), true);
+            return aeStack.cast(StorageChannels.fluids()).wrap();
         } else {
             throw new IllegalArgumentException("Only item and fluid stacks are supported");
         }

@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import appeng.items.misc.FluidDummyItem;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.NonNullList;
@@ -42,6 +41,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.FluidContainerHelper;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.menu.NullMenu;
 import appeng.util.CraftingRemainders;
 import appeng.util.item.AEItemStack;
@@ -277,15 +277,13 @@ public class AECraftingPattern implements IAEPatternDetails {
     public ItemStack getOutput(CraftingContainer craftingContainer, Level level) {
         for (int x = 0; x < craftingContainer.getContainerSize(); x++) {
             ItemStack item = craftingContainer.getItem(x);
-            if (AEItems.DUMMY_FLUID_ITEM.isSameAs(item)) {
-                var fluidStack = StorageChannels.fluids().createStack(item);
-                if (fluidStack != null) {
-                    // If we receive a pure fluid stack, we'll convert it to the appropriate container item
-                    // If it matches the allowable input
-                    var validFluid = getValidFluid(x);
-                    if (fluidStack.equals(validFluid) && validFluid.getStackSize() == fluidStack.getStackSize()) {
-                        continue;
-                    }
+            var fluidStack = WrappedFluidStack.unwrap(item);
+            if (fluidStack != null) {
+                // If we receive a pure fluid stack, we'll convert it to the appropriate container item
+                // If it matches the allowable input
+                var validFluid = getValidFluid(x);
+                if (fluidStack.equals(validFluid) && validFluid.getStackSize() == fluidStack.getStackSize()) {
+                    continue;
                 }
             }
 

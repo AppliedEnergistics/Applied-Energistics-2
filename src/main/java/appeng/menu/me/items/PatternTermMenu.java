@@ -40,7 +40,6 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -48,7 +47,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.IMenuCraftingPacket;
-import appeng.items.misc.FluidDummyItem;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.NullMenu;
@@ -229,10 +228,9 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
     private static IAEStack[] toAeStacks(ItemStack... stacks) {
         IAEStack[] out = new IAEStack[stacks.length];
-        var fluidDummy = AEItems.DUMMY_FLUID_ITEM.asItem();
         for (int i = 0; i < stacks.length; ++i) {
-            if (stacks[i].getItem() == fluidDummy) {
-                out[i] = IAEFluidStack.of(fluidDummy.getFluid(stacks[i]), fluidDummy.getAmount(stacks[i]));
+            if (WrappedFluidStack.isWrapped(stacks[i])) {
+                out[i] = WrappedFluidStack.unwrap(stacks[i]);
             } else {
                 out[i] = AEItemStack.fromItemStack(stacks[i]);
             }
@@ -529,7 +527,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     private static void convertItemToFluid(Slot slot) {
         var fluidStack = FluidContainerHelper.getContainedFluid(slot.getItem());
         if (fluidStack != null) {
-            slot.set(FluidDummyItem.fromFluidStack(fluidStack.getFluidStack(), true));
+            slot.set(fluidStack.wrap());
         }
     }
 
