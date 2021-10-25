@@ -18,36 +18,6 @@
 
 package appeng.blockentity.crafting;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.items.misc.FluidDummyItem;
-import appeng.util.fluid.AEFluidStack;
-import appeng.util.item.AEStack;
-import com.google.common.base.Preconditions;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
@@ -64,6 +34,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedStackList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -80,11 +51,32 @@ import appeng.menu.NullMenu;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.CraftingRemainders;
+import appeng.util.fluid.AEFluidStack;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         implements IUpgradeableObject, IGridTickable, ICraftingMachine, IPowerChannelState {
@@ -138,7 +130,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public boolean pushPattern(final IPatternDetails patternDetails, final MixedStackList[] table,
-            final Direction where) {
+                               final Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = this.gridInv.isEmpty() && this.patternInv.isEmpty();
 
@@ -218,13 +210,11 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return false;
         }
 
-        return !this.myPlan.getOutput(this.craftingInv, this.getLevel()).isEmpty();
-    }
-
-    private void fillCraftingInv() {
         for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
             this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
         }
+
+        return !this.myPlan.getOutput(this.craftingInv, this.getLevel()).isEmpty();
     }
 
     @Override
@@ -342,7 +332,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+                                  final ItemStack removed, final ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
         }
@@ -528,7 +518,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         if (grid != null) {
             newState = this.getMainNode().isActive()
                     && grid.getEnergyService().extractAEPower(1, Actionable.SIMULATE,
-                            PowerMultiplier.CONFIG) > 0.0001;
+                    PowerMultiplier.CONFIG) > 0.0001;
         }
 
         if (newState != this.isPowered) {
@@ -562,6 +552,11 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;
+    }
+
+    @Nullable
+    public AECraftingPattern getCurrentPattern() {
+        return myPlan;
     }
 
     private class CraftingGridFilter implements IAEItemFilter {

@@ -47,31 +47,21 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
             .build("molecular_assembler");
 
     private static final int MAX_CRAFT_PROGRESS = 100;
-    private final MolecularAssemblerBlockEntity tma;
+    private final MolecularAssemblerBlockEntity molecularAssembler;
     @GuiSync(4)
     public int craftProgress = 0;
 
     private Slot encodedPatternSlot;
 
-    public MolecularAssemblerMenu(int id, final Inventory ip, final MolecularAssemblerBlockEntity te) {
-        super(TYPE, id, ip, te);
-        this.tma = te;
+    public MolecularAssemblerMenu(int id, Inventory playerInv, MolecularAssemblerBlockEntity be) {
+        super(TYPE, id, playerInv, be);
+        this.molecularAssembler = be;
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        var mac = this.getHost().getSubInventory(MolecularAssemblerBlockEntity.INV_MAIN);
-
-        final ItemStack is = mac.getStackInSlot(10);
-        if (is.isEmpty()) {
-            return false;
-        }
-
-        if (is.getItem() instanceof CraftingPatternItem patternItem) {
-            final Level level = this.getBlockEntity().getLevel();
-            var details = patternItem.decode(is, level, false);
-            if (details != null) {
-                return details.isItemValid(slotIndex, AEItemStack.fromItemStack(i), level);
-            }
+        var details = molecularAssembler.getCurrentPattern();
+        if (details != null) {
+            return details.isItemValid(slotIndex, AEItemStack.fromItemStack(i), molecularAssembler.getLevel());
         }
 
         return false;
@@ -103,7 +93,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
     public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        this.craftProgress = this.tma.getCraftingProgress();
+        this.craftProgress = this.molecularAssembler.getCraftingProgress();
 
         this.standardDetectAndSendChanges();
     }

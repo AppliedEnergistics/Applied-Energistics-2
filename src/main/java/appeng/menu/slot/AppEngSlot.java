@@ -21,6 +21,7 @@ package appeng.menu.slot;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.items.misc.FluidDummyItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.Container;
@@ -74,6 +75,9 @@ public class AppEngSlot extends Slot {
 
     @Override
     public boolean mayPlace(@Nonnull final ItemStack stack) {
+        if (containsWrapperItem()) {
+            return false;
+        }
         if (this.isSlotEnabled()) {
             return this.inventory.isItemValid(this.invSlot, stack);
         }
@@ -138,6 +142,9 @@ public class AppEngSlot extends Slot {
 
     @Override
     public boolean mayPickup(final Player player) {
+        if (containsWrapperItem()) {
+            return false;
+        }
         if (this.isSlotEnabled()) {
             return !this.inventory.extractItem(this.invSlot, 1, true).isEmpty();
         }
@@ -147,7 +154,15 @@ public class AppEngSlot extends Slot {
     @Override
     @Nonnull
     public ItemStack remove(int amount) {
+        if (containsWrapperItem()) {
+            return ItemStack.EMPTY;
+        }
+
         return this.inventory.extractItem(this.invSlot, amount, false);
+    }
+
+    public boolean containsWrapperItem() {
+        return getItem().getItem() instanceof FluidDummyItem;
     }
 
     public boolean isSameInventory(Slot other) {

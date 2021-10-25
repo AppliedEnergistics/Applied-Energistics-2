@@ -74,7 +74,7 @@ public class InventoryActionPacket extends BasePacket {
         this.id = id;
         this.slotItem = null;
 
-        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+        var data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(action.ordinal());
