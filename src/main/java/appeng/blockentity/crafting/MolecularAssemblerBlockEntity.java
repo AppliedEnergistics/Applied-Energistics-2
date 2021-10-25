@@ -22,6 +22,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
@@ -556,7 +557,16 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Nullable
     public AECraftingPattern getCurrentPattern() {
-        return myPlan;
+        if (isRemote()) {
+            var patternItem = patternInv.getStackInSlot(0);
+            var pattern = PatternDetailsHelper.decodePattern(patternItem, level);
+            if (pattern instanceof AECraftingPattern craftingPattern) {
+                return craftingPattern;
+            }
+            return null;
+        } else {
+            return myPlan;
+        }
     }
 
     private class CraftingGridFilter implements IAEItemFilter {
