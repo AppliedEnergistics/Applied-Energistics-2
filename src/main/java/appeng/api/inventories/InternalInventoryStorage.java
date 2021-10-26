@@ -7,10 +7,13 @@ import java.util.NoSuchElementException;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.core.definitions.AEItems;
 
 class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> implements Storage<ItemVariant> {
     private final InternalInventory inventory;
@@ -21,6 +24,8 @@ class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> impl
 
     @Override
     public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+
         var stack = resource.toStack((int) Math.min(Integer.MAX_VALUE, maxAmount));
 
         updateSnapshots(transaction);
@@ -31,6 +36,13 @@ class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> impl
 
     @Override
     public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+
+        // Do not allow extraction of wrapped fluid stacks because they're an internal detail
+        if (resource.getItem() == AEItems.WRAPPED_FLUID_STACK.asItem()) {
+            return 0;
+        }
+
         updateSnapshots(transaction);
 
         var amt = (int) Math.min(Integer.MAX_VALUE, maxAmount);
@@ -63,6 +75,13 @@ class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> impl
             return new StorageView<>() {
                 @Override
                 public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+                    StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+
+                    // Do not allow extraction of wrapped fluid stacks because they're an internal detail
+                    if (resource.getItem() == AEItems.WRAPPED_FLUID_STACK.asItem()) {
+                        return 0;
+                    }
+
                     // TODO FABRIC 117: DISGUSTING. Must update snapshot only for this slot.
                     updateSnapshots(transaction);
 
