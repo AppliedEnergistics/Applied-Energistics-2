@@ -53,7 +53,6 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
     }
 
     private final IStorageChannel<T> channel;
-    private final CompoundTag tagCompound;
     private final ISaveProvider container;
     private int maxItemTypes;
     private short storedItems;
@@ -78,11 +77,17 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         }
 
         this.container = container;
-        this.tagCompound = o.getOrCreateTag();
-        this.storedItems = this.tagCompound.getShort(ITEM_TYPE_TAG);
-        this.storedItemCount = this.tagCompound.getLong(ITEM_COUNT_TAG);
+        this.storedItems = getTag().getShort(ITEM_TYPE_TAG);
+        this.storedItemCount = getTag().getLong(ITEM_COUNT_TAG);
         this.cellItems = null;
         this.channel = cellType.getChannel();
+    }
+
+    private CompoundTag getTag() {
+        // On Fabric, the tag itself may be copied and then replaced later in case a portable cell is being charged.
+        // In that case however, we can rely on the itemstack reference not changing due to the special logic in the
+        // transactional inventory wrappers. So we must always re-query the tag from the stack.
+        return this.i.getOrCreateTag();
     }
 
     @SuppressWarnings("unchecked")
@@ -163,30 +168,30 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
 
             final CompoundTag g = new CompoundTag();
             v.writeToNBT(g);
-            this.tagCompound.put(ITEM_SLOT_KEYS[x], g);
+            getTag().put(ITEM_SLOT_KEYS[x], g);
 
             x++;
         }
 
-        short oldStoredItems = this.tagCompound.getShort(ITEM_TYPE_TAG);
+        short oldStoredItems = getTag().getShort(ITEM_TYPE_TAG);
 
         this.storedItems = (short) this.cellItems.size();
         if (this.cellItems.isEmpty()) {
-            this.tagCompound.remove(ITEM_TYPE_TAG);
+            getTag().remove(ITEM_TYPE_TAG);
         } else {
-            this.tagCompound.putShort(ITEM_TYPE_TAG, this.storedItems);
+            getTag().putShort(ITEM_TYPE_TAG, this.storedItems);
         }
 
         this.storedItemCount = itemCount;
         if (itemCount == 0) {
-            this.tagCompound.remove(ITEM_COUNT_TAG);
+            getTag().remove(ITEM_COUNT_TAG);
         } else {
-            this.tagCompound.putLong(ITEM_COUNT_TAG, itemCount);
+            getTag().putLong(ITEM_COUNT_TAG, itemCount);
         }
 
         // clean any old crusty stuff...
         for (; x < oldStoredItems && x < this.maxItemTypes; x++) {
-            this.tagCompound.remove(ITEM_SLOT_KEYS[x]);
+            getTag().remove(ITEM_SLOT_KEYS[x]);
         }
 
         this.isPersisted = true;
@@ -220,7 +225,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         boolean needsUpdate = false;
 
         for (int slot = 0; slot < types; slot++) {
-            CompoundTag compoundTag = this.tagCompound.getCompound(ITEM_SLOT_KEYS[slot]);
+            CompoundTag compoundTag = getTag().getCompound(ITEM_SLOT_KEYS[slot]);
             needsUpdate |= !this.loadCellItem(compoundTag);
         }
 
