@@ -60,6 +60,7 @@ import appeng.api.storage.data.MixedStackList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;
@@ -222,8 +223,9 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Override
     public CompoundTag save(final CompoundTag data) {
         super.save(data);
-        if (this.forcePlan && this.myPlan != null) {
-            final ItemStack pattern = this.myPlan.copyDefinition();
+        if (this.forcePlan) {
+            // If the plan is null it means the pattern previously loaded from NBT hasn't been decoded yet
+            var pattern = myPlan != null ? myPlan.copyDefinition() : myPattern;
             if (!pattern.isEmpty()) {
                 final CompoundTag compound = new CompoundTag();
                 pattern.save(compound);
@@ -239,16 +241,18 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Override
     public void load(final CompoundTag data) {
         super.load(data);
-        if (data.contains("myPlan")) {
-            var myPat = ItemStack.of(data.getCompound("myPlan"));
 
-            if (!myPat.isEmpty() && myPat.getItem() instanceof CraftingPatternItem patternItem) {
-                var details = patternItem.decode(myPat, getLevel(), false);
-                if (details != null) {
-                    this.forcePlan = true;
-                    this.myPlan = details;
-                    this.pushDirection = Direction.values()[data.getInt("pushDirection")];
-                }
+        // Reset current state back to defaults
+        this.forcePlan = false;
+        this.myPattern = ItemStack.EMPTY;
+        this.myPlan = null;
+
+        if (data.contains("myPlan")) {
+            var pattern = ItemStack.of(data.getCompound("myPlan"));
+            if (!pattern.isEmpty()) {
+                this.forcePlan = true;
+                this.myPattern = pattern;
+                this.pushDirection = Direction.values()[data.getInt("pushDirection")];
             }
         }
 
@@ -260,6 +264,24 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         this.reboot = true;
 
         if (this.forcePlan) {
+            // If we're in forced mode, and myPattern is not empty, but the plan is null,
+            // this indicates that we received an encoded pattern from NBT data, but
+            // didn't have a chance to decode it yet
+            if (getLevel() != null && myPlan == null) {
+                if (!myPattern.isEmpty() && myPattern.getItem() instanceof CraftingPatternItem patternItem) {
+                    this.myPlan = patternItem.decode(myPattern, getLevel(), false);
+                }
+
+                // Reset myPattern, so it will accept another job once this one finishes
+                this.myPattern = ItemStack.EMPTY;
+
+                // If the plan is still null, reset back to non-forced mode
+                if (myPlan == null) {
+                    AELog.warn("Unable to restore auto-crafting pattern after load: %s", myPattern.getTag());
+                    this.forcePlan = false;
+                }
+            }
+
             return;
         }
 
