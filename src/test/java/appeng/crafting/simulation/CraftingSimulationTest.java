@@ -22,6 +22,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedStackList;
 import appeng.core.AELog;
 import appeng.crafting.CraftingPlan;
+import appeng.crafting.inv.CraftingSimulationState;
 import appeng.crafting.simulation.helpers.ProcessingPatternBuilder;
 import appeng.crafting.simulation.helpers.SimulationEnv;
 import appeng.util.BootstrapMinecraft;
@@ -195,6 +196,39 @@ public class CraftingSimulationTest {
                 .usedMatch(mult(stone, 100), mult(diamond, 3), mult(stick, 2))
                 .bytesMatch(branching ? 6 : 5, 300 + 3 + 2, 100);
         // note that the pickaxe is only crafted once, and then reused!
+    }
+
+    /**
+     * Ensure that the {@link CraftingSimulationState#ignore} call doesn't crash when the network has a fuzzy equivalent
+     * item, but not the exact output.
+     *
+     * See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5595.
+     */
+    @Test
+    public void testCraftWithFuzzyInNetwork() {
+        var env = new SimulationEnv();
+
+        var input = item(Items.COBBLESTONE);
+        var undamagedOutput = item(Items.DIAMOND_PICKAXE);
+        var damagedOutputStack = undamagedOutput.createItemStack();
+        damagedOutputStack.setDamageValue(10);
+        var damagedOutput = IAEItemStack.of(damagedOutputStack);
+
+        var pattern = env.addPattern(new ProcessingPatternBuilder(undamagedOutput)
+                .addPreciseInput(1, input)
+                .build());
+
+        env.addStoredItem(damagedOutput);
+
+        // Make sure this doesn't crash.
+        var plan = env.runSimulation(undamagedOutput);
+        assertThatPlan(plan)
+                .failed()
+                .patternsMatch(pattern, 1)
+                .emittedMatch()
+                .missingMatch(input)
+                .usedMatch()
+                .bytesMatch(2, 2, 0);
     }
 
     private static IAEItemStack item(Item item) {

@@ -89,7 +89,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
 
             if (!insertedAny) {
                 // make sure we don't requery the parent next time
-                var craftable = (IAEStack) IAEStack.copy(stack);
+                var craftable = IAEStack.copy(stack);
                 craftable.setCraftable(true);
                 unmodifiedCache.addCrafting(craftable);
             }
@@ -179,11 +179,14 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
 
     public void ignore(IAEStack stack) {
         cacheFuzzy(stack);
-        unmodifiedCache.findPrecise(stack).setStackSize(0);
+        ignore(stack, unmodifiedCache);
+        ignore(stack, modifiableCache);
+    }
 
-        IAEStack modifiablePrecise = modifiableCache.findPrecise(stack);
-        if (modifiablePrecise != null)
-            modifiablePrecise.setStackSize(0);
+    private static void ignore(IAEStack stack, MixedStackList list) {
+        var precise = list.findPrecise(stack);
+        if (precise != null)
+            precise.setStackSize(0);
     }
 
     public void applyDiff(CraftingSimulationState parent) {
