@@ -30,7 +30,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedStackList;
 
 /**
- * Result of a {@linkplain ICraftingService#beginCraftingJob crafting job calculation}. Do not edit any of the
+ * Result of a {@linkplain ICraftingService#beginCraftingCalculation crafting job calculation}. Do not edit any of the
  * map/lists, they are exposed directly!
  */
 public interface ICraftingPlan {

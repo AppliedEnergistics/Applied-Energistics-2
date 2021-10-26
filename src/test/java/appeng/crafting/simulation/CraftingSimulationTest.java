@@ -39,6 +39,39 @@ public class CraftingSimulationTest {
     }
 
     @Test
+    public void testLazyPatternExploration() {
+        var env = new SimulationEnv();
+
+        var a = item(Items.COBBLESTONE);
+        var b = item(Items.STONE);
+        var c = item(Items.IRON_INGOT);
+
+        var aToB = env.addPattern(new ProcessingPatternBuilder(b).addPreciseInput(1, a).build());
+        var bToC = env.addPattern(new ProcessingPatternBuilder(c).addPreciseInput(1, b).build());
+
+        // First plan should go through all the patterns because some items are missing.
+        var firstPlan = env.runSimulation(c);
+        assertThatPlan(firstPlan)
+                .failed()
+                .patternsMatch(aToB, 1, bToC, 1)
+                .emittedMatch()
+                .usedMatch()
+                .missingMatch(a)
+                .bytesMatch(3, 3, 0);
+
+        // Now, add some of b in the network. The plan should never explore a -> b, because it already has enough of b.
+        // Notice the smaller node count for the bytes.
+        env.addStoredItem(b);
+        var secondPlan = env.runSimulation(c);
+        assertThatPlan(secondPlan)
+                .succeeded()
+                .patternsMatch(bToC, 1)
+                .emittedMatch()
+                .usedMatch(b)
+                .bytesMatch(2, 2, 0);
+    }
+
+    @Test
     public void testWaterSubstitution() {
         var env = new SimulationEnv();
 

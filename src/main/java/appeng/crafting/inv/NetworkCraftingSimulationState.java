@@ -20,6 +20,8 @@ package appeng.crafting.inv;
 
 import java.util.Collection;
 
+import javax.annotation.Nullable;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.security.IActionSource;
@@ -29,10 +31,20 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedStackList;
 
+/**
+ * Currently, extracts the whole network contents when the job starts. Lazily extracting is unfortunately not possible
+ * as long as the crafting simulation operates from a separate thread: any world access from this thread will deadlock
+ * the server.
+ */
 public class NetworkCraftingSimulationState extends CraftingSimulationState {
     private final MixedStackList list = new MixedStackList();
 
-    public NetworkCraftingSimulationState(IStorageMonitorable monitorable, IActionSource src) {
+    public NetworkCraftingSimulationState(IStorageMonitorable monitorable, @Nullable IActionSource src) {
+        // Take care of the edge case where ICraftingSimulationRequester#getActionSource() returns null.
+        if (src == null) {
+            return;
+        }
+
         for (var channel : StorageChannels.getAll()) {
             collectChannelContents(channel, monitorable, src);
         }

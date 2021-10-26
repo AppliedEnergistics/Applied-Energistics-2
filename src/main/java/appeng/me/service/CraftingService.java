@@ -55,16 +55,7 @@ import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingMedium;
-import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.crafting.ICraftingWatcher;
-import appeng.api.networking.crafting.ICraftingWatcherNode;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.events.GridCraftingPatternChange;
@@ -347,12 +338,13 @@ public class CraftingService
     }
 
     @Override
-    public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack slotItem) {
-        if (level == null || actionSrc == null || slotItem == null) {
+    public Future<ICraftingPlan> beginCraftingCalculation(Level level, ICraftingSimulationRequester simRequester,
+            IAEStack slotItem) {
+        if (level == null || simRequester == null || slotItem == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }
 
-        final CraftingCalculation job = new CraftingCalculation(level, grid, actionSrc, slotItem);
+        final CraftingCalculation job = new CraftingCalculation(level, grid, simRequester, slotItem);
 
         return CRAFTING_POOL.submit(job::run);
     }

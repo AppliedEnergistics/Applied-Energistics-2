@@ -58,14 +58,15 @@ public interface ICraftingService extends IGridService {
     /**
      * Begin calculating a crafting job.
      *
-     * @param level     crafting level
-     * @param actionSrc source
-     * @param craftWhat result
+     * @param level        crafting level
+     * @param simRequester source
+     * @param craftWhat    result
      *
      * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan} do not wait
      *         on this, your be waiting forever.
      */
-    Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat);
+    Future<ICraftingPlan> beginCraftingCalculation(Level level, ICraftingSimulationRequester simRequester,
+            IAEStack craftWhat);
 
     /**
      * Submit the job to the Crafting system for processing.
