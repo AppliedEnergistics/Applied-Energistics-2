@@ -34,13 +34,13 @@ import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.me.pathfinding.*;
 
-public class PathServiceService implements IPathingService, IGridServiceProvider {
+public class PathingService implements IPathingService, IGridServiceProvider {
 
     static {
         GridHelper.addGridServiceEventHandler(GridChannelRequirementChanged.class,
                 IPathingService.class,
                 (service, event) -> {
-                    ((PathServiceService) service).updateNodReq(event);
+                    ((PathingService) service).updateNodReq(event);
                 });
     }
 
@@ -60,7 +60,7 @@ public class PathServiceService implements IPathingService, IGridServiceProvider
     private int lastChannels = 0;
     private HashSet<IPathItem> semiOpen = new HashSet<>();
 
-    public PathServiceService(final IGrid g) {
+    public PathingService(final IGrid g) {
         this.myGrid = g;
     }
 

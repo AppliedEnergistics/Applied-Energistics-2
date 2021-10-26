@@ -25,17 +25,17 @@ import java.util.Set;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
-import appeng.me.service.PathServiceService;
+import appeng.me.service.PathingService;
 
 public class PathSegment {
 
-    private final PathServiceService pgc;
+    private final PathingService pgc;
     private final Set<IPathItem> semiOpen;
     private final Set<IPathItem> closed;
     private boolean isDead;
     private List<IPathItem> open;
 
-    public PathSegment(final PathServiceService myPGC, final List<IPathItem> open, final Set<IPathItem> semiOpen,
+    public PathSegment(final PathingService myPGC, final List<IPathItem> open, final Set<IPathItem> semiOpen,
             final Set<IPathItem> closed) {
         this.open = open;
         this.semiOpen = semiOpen;
