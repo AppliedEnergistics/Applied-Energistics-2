@@ -81,7 +81,7 @@ public final class PatternDetailsHelper {
      *
      * @param out The first element is considered the primary output and must be present
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
-     * @return A new encoded pattern, or the given stack with the pattern encoded in it.
+     * @return A new encoded pattern.
      */
     public static ItemStack encodeProcessingPattern(IAEStack[] in, IAEStack[] out) {
         return AEItems.PROCESSING_PATTERN.asItem().encode(in, out);

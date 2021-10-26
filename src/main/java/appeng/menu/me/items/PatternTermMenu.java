@@ -18,6 +18,8 @@
 
 package appeng.menu.me.items;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -29,7 +31,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
+
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -45,6 +49,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
+import appeng.crafting.pattern.AECraftingPattern;
 import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.misc.WrappedFluidStack;
@@ -100,6 +105,11 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     public boolean substitute = false;
     @GuiSync(95)
     public boolean substituteFluids = true;
+    /**
+     * Whether fluids can be substituted or not depends on the recipe. This set contains the slots of the crafting
+     * matrix that support such substitution.
+     */
+    public IntSet slotsSupportingFluidSubstitution = new IntArraySet();
 
     public PatternTermMenu(int id, final Inventory ip, final ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
@@ -159,8 +169,8 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     }
 
     private ItemStack getAndUpdateOutput() {
-        final Level level = this.getPlayerInventory().player.level;
-        final CraftingContainer ic = new CraftingContainer(this, 3, 3);
+        var level = this.getPlayerInventory().player.level;
+        var ic = new CraftingContainer(this, 3, 3);
 
         for (int x = 0; x < ic.getContainerSize(); x++) {
             ic.setItem(x, this.craftingGridInv.getStackInSlot(x));
@@ -169,6 +179,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, level)) {
             this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
             this.currentRecipeCraftingMode = this.craftingMode;
+            checkFluidSubstitutionSupport();
         }
 
         final ItemStack is;
@@ -183,6 +194,27 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         return is;
     }
 
+    private void checkFluidSubstitutionSupport() {
+        this.slotsSupportingFluidSubstitution.clear();
+
+        if (this.currentRecipe == null) {
+            return; // No recipe -> no substitution
+        }
+
+        var encodedPattern = encodePattern();
+        if (encodedPattern != null) {
+            var decodedPattern = PatternDetailsHelper.decodePattern(encodedPattern,
+                    this.getPlayerInventory().player.level);
+            if (decodedPattern instanceof AECraftingPattern craftingPattern) {
+                for (int i = 0; i < craftingPattern.getSparseInputs().length; i++) {
+                    if (craftingPattern.getValidFluid(i) != null) {
+                        slotsSupportingFluidSubstitution.add(i);
+                    }
+                }
+            }
+        }
+    }
+
     public void encode() {
         if (isClient()) {
             sendClientAction(ACTION_ENCODE);
@@ -190,14 +222,6 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
 
         var encodeOutput = this.encodedPatternSlot.getItem();
-
-        var in = this.getValidatedInputs();
-        var out = this.getValidatedOutputs();
-
-        // if there is no input, this would be silly.
-        if (in == null || out == null || isCraftingMode() && currentRecipe == null) {
-            return;
-        }
 
         // first check the output slots, should either be null, or a pattern
         if (!encodeOutput.isEmpty() && !PatternDetailsHelper.isEncodedPattern(encodeOutput)) {
@@ -216,14 +240,28 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             }
         }
 
-        ItemStack encodedPattern;
+        ItemStack encodedPattern = encodePattern();
+        if (encodedPattern != null) {
+            this.encodedPatternSlot.set(encodedPattern);
+        }
+    }
+
+    @Nullable
+    private ItemStack encodePattern() {
+        var in = this.getValidatedInputs();
+        var out = this.getValidatedOutputs();
+
+        // if there is no input, this would be silly.
+        if (in == null || out == null || isCraftingMode() && currentRecipe == null) {
+            return null;
+        }
+
         if (this.isCraftingMode()) {
-            encodedPattern = PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute(),
+            return PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute(),
                     isSubstituteFluids());
         } else {
-            encodedPattern = PatternDetailsHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
+            return PatternDetailsHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
         }
-        this.encodedPatternSlot.set(encodedPattern);
     }
 
     private static IAEStack[] toAeStacks(ItemStack... stacks) {
@@ -564,5 +602,9 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
 
         return super.transferStackToMenu(input);
+    }
+
+    public FakeCraftingMatrixSlot[] getCraftingGridSlots() {
+        return craftingGridSlots;
     }
 }

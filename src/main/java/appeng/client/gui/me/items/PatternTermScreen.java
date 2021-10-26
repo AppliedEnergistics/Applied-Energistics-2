@@ -150,6 +150,16 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
 
         Blitter modeBg = this.menu.isCraftingMode() ? CRAFTING_MODE_BG : PROCESSING_MODE_BG;
         modeBg.dest(leftPos + 9, topPos + imageHeight - 164).blit(poseStack, getBlitOffset());
+
+        if (menu.isCraftingMode() && menu.substituteFluids
+                && fluidSubstitutionsEnabledBtn.isMouseOver(mouseX, mouseY)) {
+            for (var slotIndex : menu.slotsSupportingFluidSubstitution) {
+                var slot = menu.getCraftingGridSlots()[slotIndex];
+                int x = getGuiLeft() + slot.x;
+                int y = getGuiTop() + slot.y;
+                fill(poseStack, x, y, x + 16, y + 16, 0x7f00FF00);
+            }
+        }
     }
 
 }
