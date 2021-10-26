@@ -32,6 +32,9 @@ import appeng.api.storage.data.IAEStack;
 
 /**
  * Information about a pattern for use by the autocrafting system.
+ * <p/>
+ * <strong>Implementing classes need to properly implement equals/hashCode for crafting jobs to resume properly after
+ * world or chunk reloads.</strong>
  */
 public interface IPatternDetails {
     /**

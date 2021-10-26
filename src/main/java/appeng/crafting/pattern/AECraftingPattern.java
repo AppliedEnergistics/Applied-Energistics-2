@@ -48,7 +48,7 @@ import appeng.util.item.AEItemStack;
 public class AECraftingPattern implements IAEPatternDetails {
     private static final int CRAFTING_GRID_DIMENSION = 3;
 
-    private final CompoundTag definition;
+    private final IAEItemStack definition;
     public final boolean canSubstitute;
     private final CraftingRecipe recipe;
     private final CraftingContainer testFrame;
@@ -63,7 +63,11 @@ public class AECraftingPattern implements IAEPatternDetails {
     private final Map<Item, Boolean>[] isValidCache = new Map[9];
 
     public AECraftingPattern(CompoundTag definition, Level level) {
-        this.definition = definition;
+        // We use an IAEItemStack as the definition here to achieve interning so that equals/hashCode is fast
+        var definitionStack = AEItems.CRAFTING_PATTERN.stack();
+        definitionStack.setTag(definition);
+        this.definition = IAEItemStack.of(definitionStack);
+
         this.canSubstitute = AEPatternHelper.canSubstitute(definition);
         this.sparseInputs = AEPatternHelper.getCraftingInputs(definition);
 
@@ -105,10 +109,18 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     @Override
+    public int hashCode() {
+        return definition.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == getClass() && ((AECraftingPattern) obj).definition.equals(definition);
+    }
+
+    @Override
     public ItemStack copyDefinition() {
-        var result = new ItemStack(AEItems.CRAFTING_PATTERN);
-        result.setTag(definition.copy());
-        return result;
+        return definition.createItemStack();
     }
 
     @Override

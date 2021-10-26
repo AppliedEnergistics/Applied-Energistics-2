@@ -18,8 +18,6 @@
 
 package appeng.crafting.pattern;
 
-import java.util.Objects;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -28,17 +26,22 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.definitions.AEItems;
 
 public class AEProcessingPattern implements IAEPatternDetails {
-    private final CompoundTag definition;
+    private final IAEItemStack definition;
     private final IAEStack[] sparseInputs, sparseOutputs;
     private final Input[] inputs;
     private final IAEStack[] condensedOutputs;
 
     public AEProcessingPattern(CompoundTag definition) {
-        this.definition = definition;
+        // We use an IAEItemStack as the definition here to achieve interning so that equals/hashCode is fast
+        var definitionStack = AEItems.PROCESSING_PATTERN.stack();
+        definitionStack.setTag(definition);
+        this.definition = IAEItemStack.of(definitionStack);
+
         this.sparseInputs = AEPatternHelper.getProcessingInputs(definition);
         this.sparseOutputs = AEPatternHelper.getProcessingOutputs(definition);
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
@@ -66,10 +69,18 @@ public class AEProcessingPattern implements IAEPatternDetails {
     }
 
     @Override
+    public int hashCode() {
+        return definition.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == getClass() && ((AEProcessingPattern) obj).definition.equals(definition);
+    }
+
+    @Override
     public ItemStack copyDefinition() {
-        var result = new ItemStack(AEItems.PROCESSING_PATTERN);
-        result.setTag(definition.copy());
-        return result;
+        return this.definition.createItemStack();
     }
 
     @Override
@@ -80,21 +91,6 @@ public class AEProcessingPattern implements IAEPatternDetails {
     @Override
     public IAEStack[] getOutputs() {
         return condensedOutputs;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        AEProcessingPattern that = (AEProcessingPattern) o;
-        return Objects.equals(definition, that.definition);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(definition);
     }
 
     @Override
