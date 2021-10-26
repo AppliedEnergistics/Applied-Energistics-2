@@ -72,7 +72,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
         if (this.updateNetwork) {
             if (!this.booting) {
-                this.myGrid.postEvent(new GridBootingStatusChange());
+                this.postBootingStatusChange();
             }
 
             this.booting = true;
@@ -145,8 +145,15 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
                 this.booting = false;
                 this.setChannelPowerUsage(this.getChannelsByBlocks() / 128.0);
-                this.myGrid.postEvent(new GridBootingStatusChange());
+                this.postBootingStatusChange();
             }
+        }
+    }
+
+    private void postBootingStatusChange() {
+        this.myGrid.postEvent(new GridBootingStatusChange());
+        for (var node : this.myGrid.getNodes()) {
+            ((GridNode) node).notifyStatusChange(IGridNodeListener.State.GRID_BOOT);
         }
     }
 
