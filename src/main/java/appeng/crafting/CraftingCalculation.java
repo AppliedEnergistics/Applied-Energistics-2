@@ -22,15 +22,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedStackList;
 import appeng.core.AELog;
@@ -51,22 +46,22 @@ public class CraftingCalculation {
     private final CraftingTreeNode tree;
     private final IAEStack output;
     private boolean simulate = false;
-    final IActionSource actionSrc;
+    final ICraftingSimulationRequester simRequester;
     private boolean running = false;
     private boolean done = false;
     private int time = 5;
     private int incTime = Integer.MAX_VALUE;
 
-    public CraftingCalculation(Level level, IGrid grid, IActionSource actionSrc, IAEStack what) {
+    public CraftingCalculation(Level level, IGrid grid, ICraftingSimulationRequester simRequester, IAEStack what) {
         this.level = level;
         this.output = IAEStack.copy(what);
-        this.actionSrc = actionSrc;
+        this.simRequester = simRequester;
 
-        final ICraftingService cc = grid.getCraftingService();
-        final IStorageService sg = grid.getStorageService();
-        this.networkInv = new NetworkCraftingSimulationState(sg, actionSrc);
+        var storageService = grid.getStorageService();
+        var craftingService = grid.getCraftingService();
+        this.networkInv = new NetworkCraftingSimulationState(storageService, simRequester.getActionSource());
 
-        this.tree = new CraftingTreeNode(cc, this, IAEStack.copy(what, (long) 1), null, -1);
+        this.tree = new CraftingTreeNode(craftingService, this, IAEStack.copy(what, 1), null, -1);
     }
 
     void addMissing(IAEStack stack) {
@@ -204,24 +199,24 @@ public class CraftingCalculation {
 
     private void logCraftingJob(CraftingPlan plan, Stopwatch timer) {
         if (AELog.isCraftingLogEnabled()) {
-            final String itemToOutput = this.output.toString();
-            final long elapsedTime = timer.elapsed(TimeUnit.MILLISECONDS);
-            final String actionSource;
+            String itemToOutput = this.output.toString();
+            long elapsedTime = timer.elapsed(TimeUnit.MILLISECONDS);
+            var actionSource = this.simRequester.getActionSource();
+            String actionSourceName;
 
-            if (this.actionSrc.player().isPresent()) {
-                final Player player = this.actionSrc.player().get();
-
-                actionSource = player.toString();
-            } else if (this.actionSrc.machine().isPresent()) {
-                final IActionHost machineSource = this.actionSrc.machine().get();
-                final IGridNode actionableNode = machineSource.getActionableNode();
-                actionSource = actionableNode != null ? actionableNode.toString() : machineSource.toString();
+            if (actionSource != null && actionSource.player().isPresent()) {
+                var player = actionSource.player().get();
+                actionSourceName = player.toString();
+            } else if (actionSource != null && actionSource.machine().isPresent()) {
+                var machineSource = actionSource.machine().get();
+                var actionableNode = machineSource.getActionableNode();
+                actionSourceName = actionableNode != null ? actionableNode.toString() : machineSource.toString();
             } else {
-                actionSource = "[unknown source]";
+                actionSourceName = "[unknown source]";
             }
 
             String type = plan.simulation() ? "simulation" : "real";
-            AELog.crafting(LOG_CRAFTING_JOB, type, actionSource, itemToOutput, plan.bytes(), elapsedTime);
+            AELog.crafting(LOG_CRAFTING_JOB, type, actionSourceName, itemToOutput, plan.bytes(), elapsedTime);
         }
     }
 

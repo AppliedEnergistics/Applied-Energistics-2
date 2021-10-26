@@ -145,7 +145,8 @@ public class CraftAmountMenu extends AEBaseMenu {
             Future<ICraftingPlan> futureJob = null;
             try {
                 final ICraftingService cg = g.getService(ICraftingService.class);
-                futureJob = cg.beginCraftingJob(getLevel(), getActionSrc(), this.itemToCreate);
+                var actionSource = getActionSrc();
+                futureJob = cg.beginCraftingCalculation(getLevel(), () -> actionSource, this.itemToCreate);
 
                 final MenuLocator locator = getLocator();
                 if (locator != null) {

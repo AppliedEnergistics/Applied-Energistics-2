@@ -26,11 +26,8 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
@@ -82,7 +79,7 @@ public class SimulationEnv {
     }
 
     public CraftingPlan runSimulation(IAEStack what) {
-        var calculation = new CraftingCalculation(mock(Level.class), gridMock, new BaseActionSource(), what);
+        var calculation = new CraftingCalculation(mock(Level.class), gridMock, simulationRequester, what);
         try {
             var calculationFuture = Executors.newSingleThreadExecutor().submit(calculation::run);
             calculation.simulateFor(1000000000);
@@ -93,6 +90,18 @@ public class SimulationEnv {
     }
 
     private final IGrid gridMock = createGridMock();
+    private final IGridNode nodeMock = createNodeMock();
+    private final ICraftingSimulationRequester simulationRequester = new ICraftingSimulationRequester() {
+        @Override
+        public IActionSource getActionSource() {
+            return new BaseActionSource();
+        }
+
+        @Override
+        public IGridNode getGridNode() {
+            return nodeMock;
+        }
+    };
 
     private IGrid createGridMock() {
         IGrid mock = mock(IGrid.class);
@@ -126,7 +135,8 @@ public class SimulationEnv {
             }
 
             @Override
-            public Future<ICraftingPlan> beginCraftingJob(Level level, IActionSource actionSrc, IAEStack craftWhat) {
+            public Future<ICraftingPlan> beginCraftingCalculation(Level level,
+                    ICraftingSimulationRequester simRequester, IAEStack craftWhat) {
                 throw new UnsupportedOperationException();
             }
 
@@ -228,5 +238,11 @@ public class SimulationEnv {
                 return channel;
             }
         };
+    }
+
+    private IGridNode createNodeMock() {
+        IGridNode mock = mock(IGridNode.class);
+        when(mock.getGrid()).thenReturn(gridMock);
+        return mock;
     }
 }
