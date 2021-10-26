@@ -29,7 +29,7 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.me.service.CraftingService;
 import appeng.me.service.EnergyService;
 import appeng.me.service.P2PService;
-import appeng.me.service.PathServiceService;
+import appeng.me.service.PathingService;
 import appeng.me.service.SecurityService;
 import appeng.me.service.SpatialPylonService;
 import appeng.me.service.StatisticsService;
@@ -42,7 +42,7 @@ public final class InitGridServices {
 
     public static void init() {
         GridServices.register(ITickManager.class, TickManagerService.class);
-        GridServices.register(IPathingService.class, PathServiceService.class);
+        GridServices.register(IPathingService.class, PathingService.class);
         GridServices.register(IEnergyService.class, EnergyService.class);
         GridServices.register(IStorageService.class, StorageService.class);
         GridServices.register(P2PService.class, P2PService.class);

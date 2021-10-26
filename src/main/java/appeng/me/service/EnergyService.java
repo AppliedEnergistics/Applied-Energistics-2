@@ -141,14 +141,14 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     private boolean hasPower = true;
     private long ticksSinceHasPowerChange = 900;
 
-    private final PathServiceService pgc;
+    private final PathingService pgc;
     private double lastStoredPower = -1;
 
     private final GridPowerStorage localStorage = new GridPowerStorage();
 
     public EnergyService(final IGrid g, IPathingService pgc) {
         this.myGrid = g;
-        this.pgc = (PathServiceService) pgc;
+        this.pgc = (PathingService) pgc;
         this.requesters.add(this.localStorage);
         this.providers.add(this.localStorage);
     }
