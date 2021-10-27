@@ -28,6 +28,8 @@ import javax.annotation.Nonnull;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import appeng.core.definitions.AEItems;
+
 class InternalInventoryItemHandler implements IItemHandlerModifiable {
     private final InternalInventory inventory;
 
@@ -60,6 +62,11 @@ class InternalInventoryItemHandler implements IItemHandlerModifiable {
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        // Do not allow extraction of wrapped fluid stacks because they're an internal detail
+        if (AEItems.WRAPPED_FLUID_STACK.isSameAs(inventory.getStackInSlot(slot))) {
+            return ItemStack.EMPTY;
+        }
+
         return inventory.extractItem(slot, amount, simulate);
     }
 
