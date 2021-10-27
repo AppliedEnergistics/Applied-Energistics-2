@@ -34,8 +34,8 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
-        return this.mac.isValidItemForSlot(this.getSlotIndex(), stack);
+    public boolean mayPlace(ItemStack stack) {
+        return super.mayPlace(stack) && this.mac.isValidItemForSlot(this.getSlotIndex(), stack);
     }
 
     @Override

@@ -722,7 +722,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         public int fill(FluidStack resource, FluidAction action) {
             ChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
-                final IAEFluidStack results = Platform.poweredInsert(ChestBlockEntity.this,
+                final IAEFluidStack results = StorageHelper.poweredInsert(ChestBlockEntity.this,
                         ChestBlockEntity.this.cellHandler.cast(StorageChannels.fluids()),
                         AEFluidStack.fromFluidStack(resource),
                         ChestBlockEntity.this.mySrc,

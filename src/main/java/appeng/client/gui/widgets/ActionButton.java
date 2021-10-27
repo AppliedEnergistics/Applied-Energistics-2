@@ -68,6 +68,16 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.Substitutions;
                 displayValue = ButtonToolTips.SubstitutionsDescDisabled;
             }
+            case ENABLE_FLUID_SUBSTITUTION -> {
+                icon = Icon.FLUID_SUBSTITUTION_ENABLED;
+                displayName = ButtonToolTips.FluidSubstitutions;
+                displayValue = ButtonToolTips.FluidSubstitutionsDescEnabled;
+            }
+            case DISABLE_FLUID_SUBSTITUTION -> {
+                icon = Icon.FLUID_SUBSTITUTION_DISABLED;
+                displayName = ButtonToolTips.FluidSubstitutions;
+                displayValue = ButtonToolTips.FluidSubstitutionsDescDisabled;
+            }
             case FIND_CONTAINED_FLUID -> {
                 icon = Icon.FIND_CONTAINED_FLUID;
                 displayName = ButtonToolTips.FindContainedFluids;

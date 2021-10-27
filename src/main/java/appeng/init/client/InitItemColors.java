@@ -21,14 +21,12 @@ package appeng.init.client;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.util.AEColor;
 import appeng.client.render.StaticItemColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.items.misc.FluidDummyItem;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
@@ -44,8 +42,6 @@ public final class InitItemColors {
         itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.asItem());
 
         itemColors.register(InitItemColors::getColorApplicatorColor, AEItems.COLOR_APPLICATOR);
-
-        itemColors.register(InitItemColors::getDummyFluidItemColor, AEItems.DUMMY_FLUID_ITEM);
 
         // Automatically register colors for certain items we register
         for (ItemDefinition<?> definition : AEItems.getItems()) {
@@ -102,18 +98,6 @@ public final class InitItemColors {
             case 3 -> col.whiteVariant;
             default -> -1;
         };
-    }
-
-    private static int getDummyFluidItemColor(ItemStack stack, int tintIndex) {
-
-        Item item = stack.getItem();
-        if (!(item instanceof FluidDummyItem fluidItem)) {
-            return -1;
-        }
-
-        FluidStack fluidStack = fluidItem.getFluidStack(stack);
-
-        return fluidStack.getFluid().getAttributes().getColor(fluidStack);
     }
 
 }

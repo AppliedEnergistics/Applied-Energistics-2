@@ -36,7 +36,6 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
-import appeng.items.misc.FluidDummyItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
@@ -75,6 +74,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
 
     private boolean craftingMode = true;
     private boolean substitute = false;
+    private boolean substituteFluids = true;
 
     public PatternTerminalPart(final ItemStack is) {
         super(is);
@@ -94,6 +94,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         super.readFromNBT(data);
         this.setCraftingRecipe(data.getBoolean("craftingMode"));
         this.setSubstitution(data.getBoolean("substitute"));
+        this.setFluidSubstitution(data.getBoolean("substituteFluids"));
         this.pattern.readFromNBT(data, "pattern");
         this.output.readFromNBT(data, "outputList");
         this.crafting.readFromNBT(data, "craftingGrid");
@@ -104,6 +105,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         super.writeToNBT(data);
         data.putBoolean("craftingMode", this.craftingMode);
         data.putBoolean("substitute", this.substitute);
+        data.putBoolean("substituteFluids", this.substituteFluids);
         this.pattern.writeToNBT(data, "pattern");
         this.output.writeToNBT(data, "outputList");
         this.crafting.writeToNBT(data, "craftingGrid");
@@ -127,6 +129,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
             if (details instanceof IAEPatternDetails aeDetails) {
                 this.setCraftingRecipe(aeDetails.isCraftable());
                 this.setSubstitution(aeDetails.canSubstitute());
+                this.setFluidSubstitution(aeDetails.canSubstituteFluids());
 
                 for (int x = 0; x < this.crafting.size() && x < aeDetails.getSparseInputs().length; x++) {
                     this.crafting.setItemDirect(x, getDisplayStack(aeDetails.getSparseInputs()[x]));
@@ -149,7 +152,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         } else if (aeStack.getChannel() == StorageChannels.items()) {
             return aeStack.cast(StorageChannels.items()).createItemStack();
         } else if (aeStack.getChannel() == StorageChannels.fluids()) {
-            return FluidDummyItem.fromFluidStack(aeStack.cast(StorageChannels.fluids()).getFluidStack(), true);
+            return aeStack.cast(StorageChannels.fluids()).wrap();
         } else {
             throw new IllegalArgumentException("Only item and fluid stacks are supported");
         }
@@ -181,6 +184,14 @@ public class PatternTerminalPart extends AbstractTerminalPart {
 
     public void setSubstitution(final boolean canSubstitute) {
         this.substitute = canSubstitute;
+    }
+
+    public boolean isFluidSubstitution() {
+        return this.substituteFluids;
+    }
+
+    public void setFluidSubstitution(boolean canSubstitute) {
+        this.substituteFluids = canSubstitute;
     }
 
     @Nullable

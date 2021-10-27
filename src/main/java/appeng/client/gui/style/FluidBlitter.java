@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -34,6 +35,10 @@ public final class FluidBlitter {
     }
 
     public static Blitter create(FluidStack stack) {
+        if (stack.isEmpty() && stack.getRawFluid() != Fluids.EMPTY) {
+            stack = new FluidStack(stack.getRawFluid(), 1, stack.getTag());
+        }
+
         Fluid fluid = stack.getFluid();
         FluidAttributes attributes = fluid.getAttributes();
         TextureAtlasSprite sprite = Minecraft.getInstance()

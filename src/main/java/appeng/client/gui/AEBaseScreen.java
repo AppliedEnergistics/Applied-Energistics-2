@@ -492,14 +492,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         if (slot instanceof FakeSlot) {
-            final InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+            var action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                     : InventoryAction.PICKUP_OR_SET_DOWN;
 
             if (this.drag_click.size() > 1) {
                 return;
             }
 
-            final InventoryActionPacket p = new InventoryActionPacket(action, slotIdx, 0);
+            var p = new InventoryActionPacket(action, slotIdx, 0);
             NetworkHandler.instance().sendToServer(p);
 
             return;

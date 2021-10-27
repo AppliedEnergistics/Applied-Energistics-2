@@ -27,9 +27,11 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import appeng.items.misc.WrappedFluidStack;
 import appeng.util.fluid.AEFluidStack;
 
 /**
@@ -48,6 +50,16 @@ public interface IAEFluidStack extends IAEStack {
     static IAEFluidStack of(FluidStack stack) {
         Objects.requireNonNull(stack, "stack");
         return AEFluidStack.fromFluidStack(stack);
+    }
+
+    @Nullable
+    static IAEFluidStack of(FluidStack stack, long amount) {
+        Objects.requireNonNull(stack, "stack");
+        var fs = AEFluidStack.fromFluidStack(stack);
+        if (fs != null) {
+            fs.setStackSize(amount);
+        }
+        return fs;
     }
 
     /**
@@ -70,4 +82,19 @@ public interface IAEFluidStack extends IAEStack {
      * @return fluid definition
      */
     Fluid getFluid();
+
+    /**
+     * Wraps the FluidStack in an item. Equivalent to {@link #asItemStackRepresentation()}, but will maintain
+     * {@link #getStackSize()}.
+     */
+    ItemStack wrap();
+
+    /**
+     * Try unwrapping a fluid stack previously created by {@link #asItemStackRepresentation()} or {@link #wrap()}.
+     */
+    @Nullable
+    static IAEFluidStack unwrap(ItemStack stack) {
+        return WrappedFluidStack.unwrap(stack);
+    }
+
 }

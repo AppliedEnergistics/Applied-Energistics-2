@@ -39,7 +39,6 @@ import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEMonitorableMenu;
-import appeng.util.Platform;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.FluidSoundHelper;
 
@@ -156,7 +155,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<IAEFluidStack> {
             final FluidStack drained = fh.drain(extract, FluidAction.EXECUTE);
             extract.setAmount(drained.getAmount());
 
-            final IAEFluidStack notInserted = Platform.poweredInsert(this.powerSource, this.monitor,
+            final IAEFluidStack notInserted = StorageHelper.poweredInsert(this.powerSource, this.monitor,
                     AEFluidStack.fromFluidStack(extract), this.getActionSource());
 
             if (notInserted != null && notInserted.getStackSize() > 0) {

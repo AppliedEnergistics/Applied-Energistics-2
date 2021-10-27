@@ -53,9 +53,11 @@ public class CraftingPatternItem extends EncodedPatternItem {
         }
     }
 
-    public ItemStack encode(CraftingRecipe recipe, ItemStack[] in, ItemStack out, boolean allowSubstitutes) {
+    public ItemStack encode(CraftingRecipe recipe, ItemStack[] in, ItemStack out, boolean allowSubstitutes,
+            boolean allowFluidSubstitutes) {
         var stack = new ItemStack(this);
-        AEPatternHelper.encodeCraftingPattern(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes);
+        AEPatternHelper.encodeCraftingPattern(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes,
+                allowFluidSubstitutes);
         return stack;
     }
 
@@ -90,7 +92,7 @@ public class CraftingPatternItem extends EncodedPatternItem {
                     .toArray(ItemStack[]::new);
             ItemStack out = product.createItemStack();
             AEPatternHelper.encodeCraftingPattern(tag, potentialRecipe, in, out,
-                    AEPatternHelper.canSubstitute(tag));
+                    AEPatternHelper.canSubstitute(tag), AEPatternHelper.canSubstituteFluids(tag));
         }
 
         AELog.debug("Failed to recover encoded crafting pattern for recipe %s", currentRecipeId);

@@ -32,7 +32,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.AppEng;
-import appeng.items.misc.FluidDummyItem;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.FluidList;
 
@@ -70,8 +70,8 @@ public final class FluidStorageChannel implements IStorageChannel<IAEFluidStack>
     public IAEFluidStack createStack(ItemStack is) {
         Preconditions.checkNotNull(is, "is");
 
-        if (is.getItem() instanceof FluidDummyItem) {
-            return AEFluidStack.fromFluidStack(((FluidDummyItem) is.getItem()).getFluidStack(is));
+        if (WrappedFluidStack.isWrapped(is)) {
+            return WrappedFluidStack.unwrap(is);
         } else {
             FluidStack input = FluidUtil.getFluidContained(is).orElse(null);
             if (input == null) {

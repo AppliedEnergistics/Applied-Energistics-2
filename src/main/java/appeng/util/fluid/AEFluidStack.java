@@ -38,8 +38,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.core.definitions.AEItems;
-import appeng.items.misc.FluidDummyItem;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.util.Platform;
 import appeng.util.item.AEStack;
 
@@ -203,14 +202,16 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
+    public ItemStack wrap() {
+        return WrappedFluidStack.wrap(this);
+    }
+
+    @Override
     public ItemStack asItemStackRepresentation() {
-        ItemStack is = AEItems.DUMMY_FLUID_ITEM.stack();
-        if (!is.isEmpty()) {
-            FluidDummyItem item = (FluidDummyItem) is.getItem();
-            item.setFluidStack(is, this.getFluidStack());
-            return is;
-        }
-        return ItemStack.EMPTY;
+        var is = wrap();
+        WrappedFluidStack item = (WrappedFluidStack) is.getItem();
+        item.setAmount(is, 0L);
+        return is;
     }
 
     public static IAEFluidStack fromPacket(final FriendlyByteBuf buffer) {

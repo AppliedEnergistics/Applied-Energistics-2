@@ -243,7 +243,7 @@ public final class AEItems {
     public static final ItemDefinition<DebugCardItem> DEBUG_CARD = item(AppEng.makeId("debug_card"), DebugCardItem::new);
     public static final ItemDefinition<ReplicatorCardItem> DEBUG_REPLICATOR_CARD = item(AppEng.makeId("debug_replicator_card"), ReplicatorCardItem::new);
     public static final ItemDefinition<DebugPartPlacerItem> DEBUG_PART_PLACER = item(AppEng.makeId("debug_part_placer"), DebugPartPlacerItem::new);
-    public static final ItemDefinition<FluidDummyItem> DUMMY_FLUID_ITEM = item(AEItemIds.DUMMY_FLUID_ITEM, FluidDummyItem::new);
+    public static final ItemDefinition<WrappedFluidStack> WRAPPED_FLUID_STACK = item(AEItemIds.WRAPPED_FLUID_STACK, WrappedFluidStack::new);
 
     // spotless:on
 

@@ -49,6 +49,7 @@ class AEPatternHelper {
     public static final String NBT_RESULT = "result";
     public static final String NBT_OUTPUTS = "out";
     public static final String NBT_SUBSITUTE = "substitute";
+    public static final String NBT_SUBSITUTE_FLUIDS = "substituteFluids";
     public static final String NBT_RECIPE_ID = "recipe";
     private static final Comparator<IAEStack> COMPARE_BY_STACKSIZE = (left, right) -> Long
             .compare(right.getStackSize(), left.getStackSize());
@@ -117,6 +118,12 @@ class AEPatternHelper {
         return nbt.getBoolean(NBT_SUBSITUTE);
     }
 
+    public static boolean canSubstituteFluids(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have a tag.");
+
+        return nbt.getBoolean(NBT_SUBSITUTE_FLUIDS);
+    }
+
     public static ResourceLocation getRecipeId(CompoundTag nbt) {
         Objects.requireNonNull(nbt, "Pattern must have a tag.");
 
@@ -148,9 +155,10 @@ class AEPatternHelper {
     }
 
     public static void encodeCraftingPattern(CompoundTag tag, CraftingRecipe recipe, ItemStack[] sparseInputs,
-            ItemStack output, boolean allowSubstitution) {
+            ItemStack output, boolean allowSubstitution, boolean allowFluidSubstitution) {
         tag.put(NBT_INPUTS, encodeItemStackList(sparseInputs));
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
+        tag.putBoolean(NBT_SUBSITUTE_FLUIDS, allowFluidSubstitution);
         tag.put(NBT_OUTPUTS, output.save(new CompoundTag()));
         tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
     }

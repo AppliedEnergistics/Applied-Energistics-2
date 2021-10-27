@@ -51,6 +51,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -237,9 +238,7 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             if (output instanceof IAEItemStack itemStack) {
                 out = itemStack.createItemStack();
             } else if (output instanceof IAEFluidStack fluidStack) {
-                var dummyFluid = AEItems.DUMMY_FLUID_ITEM.asItem();
-                out = new ItemStack(dummyFluid);
-                dummyFluid.setFluidStack(out, fluidStack.getFluidStack());
+                out = WrappedFluidStack.wrap(fluidStack);
             }
         }
 
