@@ -477,7 +477,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         if (slot < 0 || slot >= this.slots.size()) {
             return;
         }
-        final Slot s = this.getSlot(slot);
+        var s = this.getSlot(slot);
 
         if (s instanceof CraftingTermSlot) {
             switch (action) {
@@ -490,7 +490,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         if (s instanceof FakeSlot) {
-            final ItemStack hand = getCarried();
+            var hand = getCarried();
 
             switch (action) {
                 case PICKUP_OR_SET_DOWN:
@@ -538,6 +538,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 default:
                     break;
             }
+
+            // No further interaction allowed with fake slots
+            return;
         }
 
         if (action == InventoryAction.MOVE_REGION) {

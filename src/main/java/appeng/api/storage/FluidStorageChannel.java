@@ -32,7 +32,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.AppEng;
 import appeng.helpers.FluidContainerHelper;
-import appeng.items.misc.FluidDummyItem;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.util.fluid.AEFluidStack;
 import appeng.util.fluid.FluidList;
 
@@ -71,8 +71,8 @@ public final class FluidStorageChannel implements IStorageChannel<IAEFluidStack>
     public IAEFluidStack createStack(ItemStack is) {
         Preconditions.checkNotNull(is, "is");
 
-        if (is.getItem() instanceof FluidDummyItem fluidDummyItem) {
-            return IAEFluidStack.of(fluidDummyItem.getFluid(is), fluidDummyItem.getAmount(is));
+        if (WrappedFluidStack.isWrapped(is)) {
+            return WrappedFluidStack.unwrap(is);
         } else {
             return FluidContainerHelper.getContainedFluid(is);
         }

@@ -44,6 +44,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
@@ -55,7 +56,9 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.MixedStackList;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -137,6 +140,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
             // Only accept our own crafting patterns!
             if (isEmpty && patternDetails instanceof AECraftingPattern pattern) {
+                // We only support fluid and item stacks
+
                 this.forcePlan = true;
                 this.myPlan = pattern;
                 this.pushDirection = where;
@@ -156,10 +161,25 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             int inputId = adapter.getCompressedIndexFromSparse(sparseIndex);
             if (inputId != -1) {
                 var list = table[inputId];
-                // Cast should be safe because our crafting patterns only provide IAEItemStacks
-                var stack = (IAEItemStack) list.iterator().next();
-                this.gridInv.setItemDirect(sparseIndex, stack.getDefinition().copy());
-                stack.decStackSize(1);
+
+                // Try substituting with a fluid, if allowed and available
+                var validFluid = myPlan.getValidFluid(sparseIndex);
+                if (validFluid != null) {
+                    var stack = (IAEFluidStack) list.findPrecise(validFluid);
+                    if (stack != null && stack.getStackSize() >= validFluid.getStackSize()) {
+                        var partialFluid = IAEStack.copy(stack, validFluid.getStackSize());
+                        this.gridInv.setItemDirect(sparseIndex, partialFluid.wrap());
+                        stack.decStackSize(validFluid.getStackSize());
+                        continue;
+                    }
+                }
+
+                // Try falling back to whatever is available
+                var stack = list.iterator().next();
+                if (stack instanceof IAEItemStack) {
+                    this.gridInv.setItemDirect(sparseIndex, stack.asItemStackRepresentation());
+                    stack.decStackSize(1);
+                }
             }
         }
 
@@ -451,7 +471,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             for (int x = 0; x < 9; x++) {
                 final ItemStack is = this.gridInv.getStackInSlot(x);
                 if (!is.isEmpty()
-                        && (this.myPlan == null || !this.myPlan.isValid(x, IAEItemStack.of(is), this.level))) {
+                        && (this.myPlan == null || !this.myPlan.isItemValid(x, IAEItemStack.of(is), this.level))) {
                     this.gridInv.setItemDirect(9, is);
                     this.gridInv.setItemDirect(x, ItemStack.EMPTY);
                     this.saveChanges();
@@ -559,6 +579,20 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return upgrades;
     }
 
+    @Nullable
+    public AECraftingPattern getCurrentPattern() {
+        if (isRemote()) {
+            var patternItem = patternInv.getStackInSlot(0);
+            var pattern = PatternDetailsHelper.decodePattern(patternItem, level);
+            if (pattern instanceof AECraftingPattern craftingPattern) {
+                return craftingPattern;
+            }
+            return null;
+        } else {
+            return myPlan;
+        }
+    }
+
     private class CraftingGridFilter implements IAEItemFilter {
         private boolean hasPattern() {
             return MolecularAssemblerBlockEntity.this.myPlan != null
@@ -577,7 +611,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             }
 
             if (this.hasPattern()) {
-                return MolecularAssemblerBlockEntity.this.myPlan.isValid(slot, IAEItemStack.of(stack),
+                return MolecularAssemblerBlockEntity.this.myPlan.isItemValid(slot, IAEItemStack.of(stack),
                         MolecularAssemblerBlockEntity.this.getLevel());
             }
             return false;

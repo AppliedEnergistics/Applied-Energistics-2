@@ -231,7 +231,7 @@ public class ReiPlugin implements REIClientPlugin {
         }
         ItemStack stack = entryStack.castValue();
 
-        if (AEItems.DUMMY_FLUID_ITEM.isSameAs(stack)
+        if (AEItems.WRAPPED_FLUID_STACK.isSameAs(stack)
                 || AEItems.FACADE.isSameAs(stack) // REI will add a broken facade with no NBT
                 || AEBlocks.MULTI_PART.isSameAs(stack)
                 || AEBlocks.MATRIX_FRAME.isSameAs(stack)

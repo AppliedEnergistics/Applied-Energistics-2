@@ -32,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.client.gui.Icon;
 import appeng.core.AELog;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.menu.AEBaseMenu;
 
 public class AppEngSlot extends Slot {
@@ -74,6 +75,9 @@ public class AppEngSlot extends Slot {
 
     @Override
     public boolean mayPlace(@Nonnull final ItemStack stack) {
+        if (containsWrapperItem()) {
+            return false;
+        }
         if (this.isSlotEnabled()) {
             return this.inventory.isItemValid(this.invSlot, stack);
         }
@@ -138,6 +142,9 @@ public class AppEngSlot extends Slot {
 
     @Override
     public boolean mayPickup(final Player player) {
+        if (containsWrapperItem()) {
+            return false;
+        }
         if (this.isSlotEnabled()) {
             return !this.inventory.extractItem(this.invSlot, 1, true).isEmpty();
         }
@@ -147,7 +154,15 @@ public class AppEngSlot extends Slot {
     @Override
     @Nonnull
     public ItemStack remove(int amount) {
+        if (containsWrapperItem()) {
+            return ItemStack.EMPTY;
+        }
+
         return this.inventory.extractItem(this.invSlot, amount, false);
+    }
+
+    private boolean containsWrapperItem() {
+        return WrappedFluidStack.isWrapped(getItem());
     }
 
     public boolean isSameInventory(Slot other) {

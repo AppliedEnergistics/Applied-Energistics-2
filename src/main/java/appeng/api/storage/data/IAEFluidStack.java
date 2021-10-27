@@ -23,9 +23,13 @@
 
 package appeng.api.storage.data;
 
+import javax.annotation.Nullable;
+
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
+import net.minecraft.world.item.ItemStack;
 
+import appeng.items.misc.WrappedFluidStack;
 import appeng.util.fluid.AEFluidStack;
 
 /**
@@ -65,4 +69,19 @@ public interface IAEFluidStack extends IAEStack {
     default ResourceAmount<FluidVariant> getFluidStack() {
         return new ResourceAmount<>(getFluid(), getStackSize());
     }
+
+    /**
+     * Wraps the FluidStack in an item. Equivalent to {@link #asItemStackRepresentation()}, but will maintain
+     * {@link #getStackSize()}.
+     */
+    ItemStack wrap();
+
+    /**
+     * Try unwrapping a fluid stack previously created by {@link #asItemStackRepresentation()} or {@link #wrap()}.
+     */
+    @Nullable
+    static IAEFluidStack unwrap(ItemStack stack) {
+        return WrappedFluidStack.unwrap(stack);
+    }
+
 }

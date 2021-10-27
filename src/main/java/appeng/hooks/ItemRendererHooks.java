@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.style.FluidBlitter;
 import appeng.crafting.pattern.EncodedPatternItem;
-import appeng.items.misc.FluidDummyItem;
+import appeng.items.misc.WrappedFluidStack;
 
 public final class ItemRendererHooks {
 
@@ -56,10 +56,10 @@ public final class ItemRendererHooks {
                     return true;
                 }
             }
-        } else if (stack.getItem() instanceof FluidDummyItem dummyItem) {
-            var fluid = dummyItem.getFluid(stack);
-            if (!fluid.isBlank()) {
-                FluidBlitter.create(fluid)
+        } else if (WrappedFluidStack.isWrapped(stack)) {
+            var fluidStack = WrappedFluidStack.unwrap(stack);
+            if (fluidStack != null) {
+                FluidBlitter.create(fluidStack.getFluid())
                         .dest(x, y, 16, 16)
                         .blit((int) (100.0 + renderer.blitOffset));
             }

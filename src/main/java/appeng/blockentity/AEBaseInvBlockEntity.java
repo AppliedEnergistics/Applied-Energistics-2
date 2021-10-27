@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.inventories.InternalInventory;
+import appeng.items.misc.WrappedFluidStack;
 import appeng.util.inv.InternalInventoryHost;
 
 public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {
@@ -75,8 +76,13 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         for (var stack : getInternalInventory()) {
+            // Wrapped fluid stacks are internal implementation details and should NEVER drop
+            if (WrappedFluidStack.isWrapped(stack)) {
+                continue;
+            }
+
             drops.add(stack);
         }
     }
