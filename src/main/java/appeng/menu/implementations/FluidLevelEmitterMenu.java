@@ -18,6 +18,7 @@
 
 package appeng.menu.implementations;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
@@ -35,7 +36,8 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu<FluidLevelEmitt
             .create(FluidLevelEmitterMenu::new, FluidLevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
-                buffer.writeVarLong(host.getReportingValue());
+                // Convert stack size to millibuckets
+                buffer.writeVarLong(host.getReportingValue() * 1000 / FluidConstants.BUCKET);
             }, (host, menu, buffer) -> {
                 menu.reportingValue = buffer.readVarLong();
             })
@@ -61,7 +63,7 @@ public class FluidLevelEmitterMenu extends FluidConfigurableMenu<FluidLevelEmitt
                 sendClientAction(ACTION_SET_REPORTING_VALUE, reportingValue);
             }
         } else {
-            getHost().setReportingValue(reportingValue);
+            getHost().setReportingValue(reportingValue * FluidConstants.BUCKET / 1000);
         }
     }
 
