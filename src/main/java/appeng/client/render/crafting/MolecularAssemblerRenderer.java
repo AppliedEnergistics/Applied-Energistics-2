@@ -84,9 +84,11 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
             int combinedOverlayIn) {
         Minecraft minecraft = Minecraft.getInstance();
         BakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
-        VertexConsumer buffer = bufferIn.getBuffer(RenderType.translucent());
+        // tripwire layer has the shader-property we're looking for:
+        // alpha testing
+        // translucency
+        VertexConsumer buffer = bufferIn.getBuffer(RenderType.tripwire());
 
-        // TODO 1.17: Verify that the custom render type is no longer needed. The shader used for the translucent layer
         // certainly doesn't use alpha testing, making it look like it will not work.
         minecraft.getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffer, null,
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
