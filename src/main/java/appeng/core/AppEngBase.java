@@ -58,6 +58,7 @@ import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.ServerNetworkHandler;
 import appeng.hooks.ToolItemHook;
+import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
 import appeng.init.InitApiLookup;
 import appeng.init.InitBlockEntities;
@@ -152,6 +153,7 @@ public abstract class AppEngBase implements AppEng {
         ServerLifecycleEvents.SERVER_STARTING.register(this::registerCommands);
 
         UseBlockCallback.EVENT.register(ToolItemHook::onPlayerUseBlock);
+        UseBlockCallback.EVENT.register(WrenchHook::onPlayerUseBlock);
         UseBlockCallback.EVENT.register(PartPlacement::onPlayerUseBlock);
         InitBiomeModifications.init();
     }

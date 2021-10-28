@@ -18,54 +18,14 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 
-import appeng.api.util.DimensionalBlockPos;
-import appeng.block.AEBaseBlock;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
-import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
-public class QuartzWrenchItem extends AEBaseItem implements AEToolItem {
+public class QuartzWrenchItem extends AEBaseItem {
 
     public QuartzWrenchItem(Item.Properties props) {
         super(props);
-    }
-
-    @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        Player p = context.getPlayer();
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-
-        if (!InteractionUtil.isInAlternateUseMode(p) && Platform
-                .hasPermissions(new DimensionalBlockPos(level, pos), p)) {
-
-            Block block = level.getBlockState(pos).getBlock();
-            if (block instanceof AEBaseBlock aeBlock) {
-                if (level.isClientSide()) {
-                    // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
-                    // Fix that in all Block#onItemUseFirst overrides.
-                    return !level.isClientSide() ? InteractionResult.sidedSuccess(level.isClientSide())
-                            : InteractionResult.PASS;
-                }
-
-                if (aeBlock.rotateAroundFaceAxis(level, pos, context.getClickedFace())) {
-                    p.swing(context.getHand());
-                    return !level.isClientSide() ? InteractionResult.sidedSuccess(level.isClientSide())
-                            : InteractionResult.FAIL;
-                }
-            }
-        }
-        return InteractionResult.PASS;
     }
 
 }

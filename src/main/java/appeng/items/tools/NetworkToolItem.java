@@ -87,6 +87,11 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem 
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        // Disassembly is handled by the generic wrench handler
+        if (context.isSecondaryUseActive()) {
+            return InteractionResult.PASS;
+        }
+
         Level level = context.getLevel();
         final BlockHitResult mop = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
                 context.getClickedPos(), context.isInside());

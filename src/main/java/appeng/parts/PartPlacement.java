@@ -18,9 +18,6 @@
 
 package appeng.parts;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -45,7 +42,6 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AppEng;
@@ -74,56 +70,6 @@ public class PartPlacement {
                 Fluid.NONE, player);
         final BlockHitResult mop = level.clip(rtc);
         BlockPlaceContext useContext = new BlockPlaceContext(new UseOnContext(player, hand, mop));
-
-        if (!held.isEmpty() && InteractionUtil.canWrenchDisassemble(held)
-                && InteractionUtil.isInAlternateUseMode(player)) {
-            if (!Platform.hasPermissions(new DimensionalBlockPos(level, pos), player)) {
-                return InteractionResult.FAIL;
-            }
-
-            final BlockEntity blockEntity = level.getBlockEntity(pos);
-            IPartHost host = null;
-
-            if (blockEntity instanceof IPartHost) {
-                host = (IPartHost) blockEntity;
-            }
-
-            if (host != null) {
-                if (!level.isClientSide) {
-                    if (mop.getType() == Type.BLOCK) {
-                        final List<ItemStack> is = new ArrayList<>();
-                        final SelectedPart sp = selectPart(player, host,
-                                mop.getLocation().add(-mop.getBlockPos().getX(), -mop.getBlockPos().getY(),
-                                        -mop.getBlockPos().getZ()));
-
-                        // SelectedPart contains either a facade or a part. Never both.
-                        if (sp.part != null) {
-                            is.add(sp.part.getItemStack(PartItemStack.WRENCH));
-                            sp.part.getDrops(is, true);
-                            host.removePart(sp.side);
-                        }
-
-                        // A facade cannot exist without a cable part, no host cleanup needed.
-                        if (sp.facade != null) {
-                            is.add(sp.facade.getItemStack());
-                            host.getFacadeContainer().removeFacade(host, sp.side);
-                            Platform.notifyBlocksOfNeighbors(level, pos);
-                        }
-
-                        if (!is.isEmpty()) {
-                            Platform.spawnDrops(level, pos, is);
-                        }
-                    }
-                } else {
-                    player.swing(hand);
-                    NetworkHandler.instance()
-                            .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                }
-                return InteractionResult.sidedSuccess(level.isClientSide());
-            }
-
-            return InteractionResult.FAIL;
-        }
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         IPartHost host = null;
