@@ -18,6 +18,10 @@
 
 package appeng.mixins.structure;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,6 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.StrongholdConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 
 import appeng.worldgen.meteorite.MeteoriteStructure;
@@ -41,16 +46,35 @@ import appeng.worldgen.meteorite.MeteoriteStructure;
  * If this is not done, Meteorites spawn every chunk, since that is the default for missing entries.
  */
 @Mixin(StructureSettings.class)
-public class DimensionStructuresSettingsMixin {
+public class StructureSettingsMixin {
 
     @Shadow
     @Mutable
     private static ImmutableMap<StructureFeature<?>, StructureFeatureConfiguration> DEFAULTS;
 
+    @Shadow
+    @Mutable
+    private Map<StructureFeature<?>, StructureFeatureConfiguration> structureConfig;
+
     @Inject(method = "<clinit>", at = @At("TAIL"))
-    private static void addMeteoriteSpreadConfig(CallbackInfo ci) {
+    private static void addDefaultMeteoriteSpreadConfig(CallbackInfo ci) {
         DEFAULTS = ImmutableMap.<StructureFeature<?>, StructureFeatureConfiguration>builder().putAll(DEFAULTS)
-                .put(MeteoriteStructure.INSTANCE, new StructureFeatureConfiguration(32, 8, 124895654)).build();
+                .put(MeteoriteStructure.INSTANCE, MeteoriteStructure.PLACEMENT_CONFIG)
+                .build();
+    }
+
+    /**
+     * This constructor is used if the structure config is deserialized from a datapack.
+     */
+    @Inject(method = "<init>(Ljava/util/Optional;Ljava/util/Map;)V", at = @At("TAIL"))
+    private void addMeteoriteSpreadConfig(Optional<StrongholdConfiguration> optional,
+            Map<StructureFeature<?>, StructureFeatureConfiguration> map,
+            CallbackInfo ci) {
+        // There's no guarantee the passed map is mutable
+        structureConfig = new HashMap<>(structureConfig);
+        if (!structureConfig.containsKey(MeteoriteStructure.INSTANCE)) {
+            structureConfig.put(MeteoriteStructure.INSTANCE, MeteoriteStructure.PLACEMENT_CONFIG);
+        }
     }
 
 }
