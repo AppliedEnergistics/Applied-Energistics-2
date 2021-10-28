@@ -36,7 +36,7 @@ public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
 
     public DriveWatcher(final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han,
             Runnable activityCallback) {
-        super(i, i.getChannel());
+        super(i);
         this.is = is;
         this.handler = han;
         this.activityCallback = activityCallback;

@@ -9,7 +9,7 @@ import appeng.me.storage.MEInventoryHandler;
 class CreativeCellInventoryHandler<T extends IAEStack> extends MEInventoryHandler<T>
         implements ICellInventoryHandler<T> {
     public CreativeCellInventoryHandler(CreativeCellInventory<T> c, IStorageChannel<T> channel) {
-        super(c, channel);
+        super(c);
     }
 
     @Override

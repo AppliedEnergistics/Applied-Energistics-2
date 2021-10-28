@@ -26,11 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
+import appeng.api.config.*;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.data.IAEItemStack;
@@ -61,6 +57,9 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
 
     @GuiSync(4)
     public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
+
+    @GuiSync(7)
+    public YesNo filterOnExtract = YesNo.YES;
 
     public ItemStorageBusMenu(int id, final Inventory ip, final ItemStorageBusPart te) {
         super(TYPE, id, ip, te);
@@ -100,6 +99,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         this.setReadWriteMode(cm.getSetting(Settings.ACCESS));
         this.setStorageFilter(cm.getSetting(Settings.STORAGE_FILTER));
+        this.setFilterOnExtract(cm.getSetting(Settings.FILTER_ON_EXTRACT));
     }
 
     @Override
@@ -160,5 +160,13 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
 
     private void setStorageFilter(final StorageFilter storageFilter) {
         this.storageFilter = storageFilter;
+    }
+
+    public YesNo getFilterOnExtract() {
+        return this.filterOnExtract;
+    }
+
+    public void setFilterOnExtract(YesNo filterOnExtract) {
+        this.filterOnExtract = filterOnExtract;
     }
 }

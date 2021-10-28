@@ -74,8 +74,9 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, S
 
     @Nullable
     @Override
-    protected IMEInventory<IAEFluidStack> getHandlerAdapter(Storage<FluidVariant> handler, Runnable alertDevice) {
-        return new StorageAdapter<>(IVariantConversion.FLUID, handler, false) {
+    protected IMEInventory<IAEFluidStack> getHandlerAdapter(Storage<FluidVariant> handler, boolean extractableOnly,
+            Runnable alertDevice) {
+        return new StorageAdapter<>(IVariantConversion.FLUID, handler, extractableOnly) {
             @Override
             protected void onInjectOrExtract() {
                 alertDevice.run();
@@ -97,7 +98,7 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, S
     @Override
     public void onFluidInventoryChanged(IAEFluidTank inv, int slot) {
         if (inv == this.config) {
-            this.scheduleCacheReset(true);
+            this.onConfigurationChanged();
         }
     }
 

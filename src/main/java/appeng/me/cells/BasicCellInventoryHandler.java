@@ -37,7 +37,7 @@ public class BasicCellInventoryHandler<T extends IAEStack> extends MEInventoryHa
     private final BasicCellInventory<T> cellInventory;
 
     BasicCellInventoryHandler(BasicCellInventory<T> cellInventory, IStorageChannel<T> channel) {
-        super(cellInventory, channel);
+        super(cellInventory);
         this.cellInventory = cellInventory;
 
         var priorityList = channel.createList();

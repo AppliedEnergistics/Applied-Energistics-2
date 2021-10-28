@@ -33,13 +33,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.IncludeExclude;
-import appeng.api.config.Setting;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
+import appeng.api.config.*;
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridCellArrayUpdate;
@@ -50,22 +45,20 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.StorageHelper;
+import appeng.api.storage.*;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.blockentity.misc.ItemInterfaceBlockEntity;
 import appeng.core.settings.TickRates;
+import appeng.core.stats.AdvancementTriggers;
+import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
+import appeng.me.storage.IHandlerAdapter;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.me.storage.NullInventory;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.parts.PartAdjacentApi;
@@ -82,10 +75,9 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     private final TickRates tickRates;
     private boolean wasActive = false;
     private int priority = 0;
-    private boolean cached = false;
+    private boolean shouldUpdateTarget = true;
     private ITickingMonitor monitor = null;
-    private MEInventoryHandler<T> handler = null;
-    private byte resetCacheLogic = 0;
+    private final MEInventoryHandler<T> handler = new MEInventoryHandler<>(new NullInventory<>(getStorageChannel()));
     private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
     private final PartAdjacentApi<A> adjacentExternalApi;
 
@@ -97,6 +89,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.getConfigManager().registerSetting(Settings.FILTER_ON_EXTRACT, YesNo.YES);
         this.source = new MachineSource(this);
         getMainNode()
                 .addService(ICellProvider.class, this)
@@ -105,8 +98,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
 
     protected abstract IStorageChannel<T> getStorageChannel();
 
-    @Nullable
-    protected abstract IMEInventory<T> getHandlerAdapter(A handler, Runnable alertDevice);
+    protected abstract IMEInventory<T> getHandlerAdapter(A handler, boolean extractableOnly, Runnable alertDevice);
 
     protected abstract int getStackConfigSize();
 
@@ -125,26 +117,22 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
 
     @Override
     public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
-        this.scheduleCacheReset(true);
+        this.onConfigurationChanged();
         this.getHost().markForSave();
     }
 
     @Override
     public final void upgradesChanged() {
         super.upgradesChanged();
-        this.scheduleCacheReset(true);
+        this.onConfigurationChanged();
     }
 
-    protected final void scheduleCacheReset(final boolean fullReset) {
+    private void scheduleUpdate() {
         if (isRemote()) {
             return;
         }
 
-        if (fullReset) {
-            this.resetCacheLogic = 2;
-        } else {
-            this.resetCacheLogic = 1;
-        }
+        this.shouldUpdateTarget = true;
 
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().alertDevice(node);
@@ -173,7 +161,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
 
     @Override
     public final boolean isValid(final Object verificationToken) {
-        return this.handler == verificationToken;
+        return this.handler.getInternal() == verificationToken;
     }
 
     @Override
@@ -212,25 +200,24 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         if (pos.relative(this.getSide()).equals(neighbor)) {
             var te = level.getBlockEntity(neighbor);
 
-            // In case the TE was destroyed, we have to do a full reset immediately.
             if (te == null) {
-                this.scheduleCacheReset(true);
-                this.doCacheReset();
+                // In case the TE was destroyed, we have to update the target handler immediately.
+                this.updateTarget(false);
             } else {
-                this.scheduleCacheReset(false);
+                this.scheduleUpdate();
             }
         }
     }
 
     @Override
     public final TickingRequest getTickingRequest(final IGridNode node) {
-        return new TickingRequest(tickRates.getMin(), tickRates.getMax(), this.monitor == null, true);
+        return new TickingRequest(tickRates.getMin(), tickRates.getMax(), false, true);
     }
 
     @Override
     public final TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        if (this.resetCacheLogic != 0) {
-            this.doCacheReset();
+        if (this.shouldUpdateTarget) {
+            this.updateTarget(false);
         }
 
         if (this.monitor != null) {
@@ -240,30 +227,25 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         return TickRateModulation.SLEEP;
     }
 
-    private void doCacheReset() {
-        var fullReset = this.resetCacheLogic == 2;
-        this.resetCacheLogic = 0;
-
-        final IMEInventory<T> in = this.getInternalHandler();
-        var before = getStorageChannel().createList();
-        if (in != null) {
-            before = in.getAvailableItems(before);
-        }
-
-        this.cached = false;
-
-        final IMEInventory<T> out = this.getInternalHandler();
-
-        if (in != out) {
-            var after = getStorageChannel().createList();
-            if (out != null) {
-                after = out.getAvailableItems(after);
-            }
-            StorageHelper.postListChanges(before, after, this, this.source);
-        }
+    /**
+     * Used by the menu to configure based on stored contents.
+     */
+    public IMEInventory<T> getInternalHandler() {
+        return this.handler.getInternal();
     }
 
-    private IMEInventory<T> getInventoryWrapper() {
+    private boolean hasRegisteredCellToNetwork() {
+        return this.isActive() && !(this.handler.getInternal() instanceof NullInventory);
+    }
+
+    protected void onConfigurationChanged() {
+        updateTarget(true);
+    }
+
+    private void updateTarget(boolean forceFullUpdate) {
+        boolean wasInventory = this.handler.getInternal() instanceof IHandlerAdapter;
+        IMEMonitor<T> foundMonitor = null;
+        A foundHandler = null;
 
         // Prioritize a handler to directly link to another ME network
         var accessor = adjacentStorageAccessor.find();
@@ -271,136 +253,132 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         if (accessor != null) {
             var inventory = accessor.getInventory(this.source);
             if (inventory != null) {
-                return inventory.getInventory(getStorageChannel());
+                foundMonitor = inventory.getInventory(getStorageChannel());
             }
 
-            // So this could / can be a design decision. If the block entity does support our custom
-            // capability,
-            // but it does not return an inventory for the action source, we do NOT fall
-            // back to using
-            // IItemHandler's, as that might circumvent the security setings, and might also
-            // cause
-            // performance issues.
-            return null;
-        }
-
-        // Check via cap adapter
-        var handler = adjacentExternalApi.find();
-
-        if (handler != null) {
-            return getHandlerAdapter(handler, () -> {
-                getMainNode().ifPresent((grid, node) -> {
-                    grid.getTickManager().alertDevice(node);
-                });
-            });
+            // So this could / can be a design decision. If the block entity does support our custom capability,
+            // but it does not return an inventory for the action source, we do NOT fall back to using
+            // IItemHandler's, as that might circumvent the security setings, and might also cause performance issues.
         } else {
-            return null;
-        }
-    }
-
-    public final MEInventoryHandler<T> getInternalHandler() {
-        if (this.cached) {
-            return this.handler;
+            foundHandler = adjacentExternalApi.find();
         }
 
-        var wasSleeping = this.monitor == null;
+        if (!forceFullUpdate && wasInventory && foundHandler != null) {
+            // Just update the inventory reference, the ticking monitor will take care of the rest.
+            ((IHandlerAdapter<A>) this.handler.getInternal()).setHandler(foundHandler);
+        } else if (!forceFullUpdate && foundMonitor == this.handler.getInternal()) {
+            // Monitor didn't change, nothing to do!
+        } else {
+            var wasSleeping = this.monitor == null;
+            var wasRegistered = this.hasRegisteredCellToNetwork();
+            var before = wasRegistered ? this.handler.getAvailableItems() : null;
 
-        this.cached = true;
-        var self = this.getHost().getBlockEntity();
-        var targetState = self.getLevel().getBlockState(self.getBlockPos().relative(this.getSide()));
+            // Update inventory
+            boolean extractableOnly = this.getConfigManager()
+                    .getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY;
+            IMEInventory<T> newInventory;
+            if (foundMonitor != null) {
+                newInventory = foundMonitor;
+                this.checkStorageBusOnInterface();
+            } else if (foundHandler != null) {
+                newInventory = getHandlerAdapter(foundHandler, extractableOnly, () -> {
+                    getMainNode().ifPresent((grid, node) -> {
+                        grid.getTickManager().alertDevice(node);
+                    });
+                });
+            } else {
+                newInventory = new NullInventory<>(getStorageChannel());
+            }
+            this.handler.setInternal(newInventory);
 
-        this.handler = null;
-        this.monitor = null;
-        if (!targetState.isAir()) {
-            var inv = this.getInventoryWrapper();
+            // Apply other settings.
+            this.handler.setBaseAccess(this.getConfigManager().getSetting(Settings.ACCESS));
+            this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
+                    : IncludeExclude.WHITELIST);
+            this.handler.setPriority(this.priority);
 
-            if (inv instanceof ITickingMonitor tickingMonitor) {
+            var priorityList = getStorageChannel().createList();
+
+            var slotsToUse = 18 + getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+            for (var x = 0; x < getStackConfigSize() && x < slotsToUse; x++) {
+                var is = getStackInConfigSlot(x);
+                if (is != null) {
+                    priorityList.add(is);
+                }
+            }
+
+            if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+                this.handler.setPartitionList(new FuzzyPriorityList<>(priorityList,
+                        this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
+            } else {
+                this.handler.setPartitionList(new PrecisePriorityList<>(priorityList));
+            }
+
+            // Ensure we apply the partition list to the available items.
+            boolean filterOnExtract = this.getConfigManager().getSetting(Settings.FILTER_ON_EXTRACT) == YesNo.YES;
+            this.handler.setExtractFiltering(filterOnExtract, extractableOnly && filterOnExtract);
+
+            // First, post the change.
+            if (wasRegistered) {
+                var after = this.handler.getAvailableItems();
+                StorageHelper.postListChanges(before, after, this, this.source);
+            }
+
+            // Let the new inventory react to us ticking.
+            if (newInventory instanceof ITickingMonitor tickingMonitor) {
                 this.monitor = tickingMonitor;
-                this.monitor.setActionSource(new MachineSource(this));
+                tickingMonitor.setActionSource(this.source);
+            } else {
+                this.monitor = null;
             }
 
-            if (inv != null) {
-                this.checkInterfaceVsStorageBus();
+            // Notify the network of any external change to the inventory.
+            if (newInventory instanceof IBaseMonitor) {
+                ((IBaseMonitor<T>) newInventory).addListener(this, newInventory);
+            }
 
-                this.handler = new MEInventoryHandler<>(inv, getStorageChannel());
-
-                this.handler.setBaseAccess(this.getConfigManager().getSetting(Settings.ACCESS));
-                this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
-                        : IncludeExclude.WHITELIST);
-                this.handler.setPriority(this.priority);
-
-                var priorityList = getStorageChannel().createList();
-
-                var slotsToUse = 18 + getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-                for (var x = 0; x < getStackConfigSize() && x < slotsToUse; x++) {
-                    var is = getStackInConfigSlot(x);
-                    if (is != null) {
-                        priorityList.add(is);
+            // Update sleeping state.
+            if (wasSleeping != (this.monitor == null)) {
+                getMainNode().ifPresent((grid, node) -> {
+                    var tm = grid.getTickManager();
+                    if (this.monitor == null) {
+                        tm.sleepDevice(node);
+                    } else {
+                        tm.wakeDevice(node);
                     }
-                }
+                });
+            }
 
-                if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-                    this.handler.setPartitionList(new FuzzyPriorityList<>(priorityList,
-                            this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
-                } else {
-                    this.handler.setPartitionList(new PrecisePriorityList<>(priorityList));
-                }
-
-                if (inv instanceof IBaseMonitor) {
-                    ((IBaseMonitor<T>) inv).addListener(this, this.handler);
-                }
+            if (wasRegistered != this.hasRegisteredCellToNetwork()) {
+                this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
             }
         }
-
-        // update sleep state...
-        if (wasSleeping != (this.monitor == null)) {
-            getMainNode().ifPresent((grid, node) -> {
-                var tm = grid.getTickManager();
-                if (this.monitor == null) {
-                    tm.sleepDevice(node);
-                } else {
-                    tm.wakeDevice(node);
-                }
-            });
-        }
-
-        // force grid to update handlers...
-        this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
-
-        return this.handler;
     }
 
-    private void checkInterfaceVsStorageBus() {
-        IGridNode targetNode = null;
-
+    private void checkStorageBusOnInterface() {
         var oppositeSide = getSide().getOpposite();
-        var targetPos = getBlockEntity().getBlockPos().relative(oppositeSide);
-        var target = getLevel().getBlockEntity(targetPos);
+        var targetPos = getBlockEntity().getBlockPos().relative(getSide());
+        var targetBe = getLevel().getBlockEntity(targetPos);
 
-        if (target instanceof ItemInterfaceBlockEntity interfaceBlockEntity) {
-            targetNode = interfaceBlockEntity.getMainNode().getNode();
-        } else if (target instanceof IPartHost) {
-            var part = ((IPartHost) target).getPart(oppositeSide);
-            if (part instanceof ItemInterfacePart interfacePart) {
-                targetNode = interfacePart.getMainNode().getNode();
-            }
+        Object targetHost = targetBe;
+        if (targetBe instanceof IPartHost partHost) {
+            targetHost = partHost.getPart(oppositeSide);
         }
 
-        if (targetNode != null) {
-            // Platform.addStat( achievement.getActionableNode().getPlayerID(),
-            // Achievements.Recursive.getAchievement()
-            // );
-            // Platform.addStat( getActionableNode().getPlayerID(),
-            // Achievements.Recursive.getAchievement() );
+        if (targetHost instanceof IInterfaceHost) {
+            var server = getLevel().getServer();
+            var player = IPlayerRegistry.getConnected(server, this.getActionableNode().getOwningPlayerId());
+            if (player != null) {
+                AdvancementTriggers.RECURSIVE.trigger(player);
+            }
         }
     }
 
     @Override
     public final <U extends IAEStack> List<IMEInventoryHandler<U>> getCellArray(final IStorageChannel<U> channel) {
         if (channel == getStorageChannel()) {
-            var out = this.getMainNode().isActive() ? this.getInternalHandler() : null;
-            if (out != null) {
-                return Collections.singletonList(out.cast(channel));
+            if (this.hasRegisteredCellToNetwork()) {
+                return Collections.singletonList(this.handler.cast(channel));
             }
         }
         return Collections.emptyList();
@@ -415,6 +393,6 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     public final void setPriority(final int newValue) {
         this.priority = newValue;
         this.getHost().markForSave();
-        this.scheduleCacheReset(true);
+        this.onConfigurationChanged();
     }
 }

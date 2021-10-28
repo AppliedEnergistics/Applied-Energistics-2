@@ -74,7 +74,9 @@ public enum ButtonToolTips {
 
     FilterMode, FilterModeKeep, FilterModeClear,
 
-    OverlayMode, OverlayModeYes, OverlayModeNo;
+    OverlayMode, OverlayModeYes, OverlayModeNo,
+
+    FilterOnExtract, FilterOnExtractEnabled, FilterOnExtractDisabled;
 
     private final TranslatableComponent text;
 

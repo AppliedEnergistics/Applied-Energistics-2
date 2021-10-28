@@ -21,10 +21,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.ActionItems;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
+import appeng.api.config.*;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.FluidSlotWidget;
@@ -35,15 +32,11 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.implementations.FluidStorageBusMenu;
 import appeng.util.fluid.IAEFluidTank;
 
-/**
- * @author BrockWS
- * @version rv6 - 22/05/2018
- * @since rv6 22/05/2018
- */
 public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu> {
 
     private final SettingToggleButton<AccessRestriction> rwMode;
     private final SettingToggleButton<StorageFilter> storageFilter;
+    private final SettingToggleButton<YesNo> filterOnExtract;
 
     public FluidStorageBusScreen(FluidStorageBusMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -66,11 +59,11 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu
 
         addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> menu.clear()));
         addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> menu.partition()));
-        this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS,
-                AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(
-                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS, AccessRestriction.READ_WRITE);
+        this.storageFilter = new ServerSettingToggleButton<>(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.filterOnExtract = new ServerSettingToggleButton<>(Settings.FILTER_ON_EXTRACT, YesNo.YES);
         addToLeftToolbar(this.storageFilter);
+        addToLeftToolbar(this.filterOnExtract);
         addToLeftToolbar(this.rwMode);
     }
 
@@ -80,6 +73,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusMenu
 
         this.storageFilter.set(this.menu.getStorageFilter());
         this.rwMode.set(this.menu.getReadWriteMode());
+        this.filterOnExtract.set(this.menu.getFilterOnExtract());
     }
 
 }

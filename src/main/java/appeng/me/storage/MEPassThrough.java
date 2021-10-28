@@ -18,7 +18,6 @@
 
 package appeng.me.storage;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
@@ -63,11 +62,6 @@ public class MEPassThrough<T extends IAEStack> implements IMEInventoryHandler<T>
     @Override
     public IStorageChannel<T> getChannel() {
         return this.internal.getChannel();
-    }
-
-    @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.READ_WRITE;
     }
 
     IStorageChannel<T> getWrappedChannel() {

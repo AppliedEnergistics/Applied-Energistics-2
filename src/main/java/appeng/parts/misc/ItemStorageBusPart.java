@@ -74,8 +74,9 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Sto
 
     @Nullable
     @Override
-    protected IMEInventory<IAEItemStack> getHandlerAdapter(Storage<ItemVariant> handler, Runnable alertDevice) {
-        return new StorageAdapter<>(IVariantConversion.ITEM, handler, false) {
+    protected IMEInventory<IAEItemStack> getHandlerAdapter(Storage<ItemVariant> handler, boolean extractableOnly,
+            Runnable alertDevice) {
+        return new StorageAdapter<>(IVariantConversion.ITEM, handler, extractableOnly) {
             @Override
             protected void onInjectOrExtract() {
                 alertDevice.run();
@@ -100,7 +101,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Sto
         super.onChangeInventory(inv, slot, removedStack, newStack);
 
         if (inv == this.config) {
-            this.scheduleCacheReset(true);
+            this.onConfigurationChanged();
         }
     }
 

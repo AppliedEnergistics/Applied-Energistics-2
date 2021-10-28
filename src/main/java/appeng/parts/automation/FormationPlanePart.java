@@ -88,8 +88,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return MODELS.getModels();
     }
 
-    private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>(this,
-            StorageChannels.items());
+    private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>(this);
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
 
     private boolean blocked = false;

@@ -95,8 +95,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         return MODELS.getModels();
     }
 
-    private final MEInventoryHandler<IAEFluidStack> myHandler = new MEInventoryHandler<>(this,
-            StorageChannels.fluids());
+    private final MEInventoryHandler<IAEFluidStack> myHandler = new MEInventoryHandler<>(this);
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
 
     public FluidFormationPlanePart(final ItemStack is) {

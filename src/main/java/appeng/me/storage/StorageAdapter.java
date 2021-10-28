@@ -19,7 +19,7 @@ import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 
 public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAEStack>
-        implements IMEInventory<T>, IBaseMonitor<T>, ITickingMonitor {
+        implements IMEInventory<T>, IBaseMonitor<T>, ITickingMonitor, IHandlerAdapter<Storage<V>> {
     /**
      * Clamp reported values to avoid overflows when amounts get too close to Long.MAX_VALUE.
      */
@@ -27,13 +27,18 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
     private final Map<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
     private IActionSource source;
     private final IVariantConversion<V, T> conversion;
-    private final Storage<V> storage;
+    private Storage<V> storage;
     private final InventoryCache cache;
 
-    public StorageAdapter(IVariantConversion<V, T> conversion, Storage<V> storage, boolean extractOnlyMode) {
+    public StorageAdapter(IVariantConversion<V, T> conversion, Storage<V> storage, boolean showExtractableOnly) {
         this.conversion = conversion;
         this.storage = storage;
-        this.cache = new InventoryCache(this.storage, extractOnlyMode);
+        this.cache = new InventoryCache(showExtractableOnly);
+    }
+
+    @Override
+    public void setHandler(Storage<V> newHandler) {
+        this.storage = newHandler;
     }
 
     /**
@@ -140,12 +145,9 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
     private class InventoryCache {
         private IAEStackList<T> frontBuffer = conversion.getChannel().createList();
         private IAEStackList<T> backBuffer = conversion.getChannel().createList();
-        private final Storage<V> fluidHandler;
         private final boolean extractableOnly;
 
-        public InventoryCache(Storage<V> fluidHandler,
-                boolean extractableOnly) {
-            this.fluidHandler = fluidHandler;
+        public InventoryCache(boolean extractableOnly) {
             this.extractableOnly = extractableOnly;
         }
 
@@ -158,7 +160,7 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
 
             // Rebuild the front buffer
             try (var tx = Transaction.openOuter()) {
-                for (var view : this.fluidHandler.iterable(tx)) {
+                for (var view : storage.iterable(tx)) {
                     if (view.isResourceBlank()) {
                         continue;
                     }

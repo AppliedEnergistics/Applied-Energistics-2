@@ -237,7 +237,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             return null;
         }
 
-        var ih = new MEInventoryHandler<>(cellInventory, cellInventory.getChannel());
+        var ih = new MEInventoryHandler<>(cellInventory);
         ih.setPriority(this.priority);
 
         var g = new ChestMonitorHandler<>(ih, cellInventory);
