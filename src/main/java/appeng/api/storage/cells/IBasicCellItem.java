@@ -28,13 +28,10 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.IncludeExclude;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.core.localization.GuiText;
 import appeng.me.cells.BasicCellHandler;
 
 /**
@@ -119,26 +116,6 @@ public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
      */
     default void addCellInformationToTooltip(ItemStack is, List<Component> lines) {
         Preconditions.checkArgument(is.getItem() == this);
-
-        var handler = BasicCellHandler.INSTANCE.getCellInventory(is, null, getChannel());
-
-        lines.add(new TextComponent(handler.getUsedBytes() + " ").append(GuiText.Of.text())
-                .append(" " + getBytes(is) + " ").append(GuiText.BytesUsed.text()));
-
-        lines.add(new TextComponent(handler.getStoredItemTypes() + " ").append(GuiText.Of.text())
-                .append(" " + getTotalTypes(is) + " ").append(GuiText.Types.text()));
-
-        if (handler.isPreformatted()) {
-            var list = (handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included
-                    : GuiText.Excluded)
-                            .text();
-
-            if (handler.isFuzzy()) {
-                lines.add(GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Fuzzy.text()));
-            } else {
-                lines.add(
-                        GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Precise.text()));
-            }
-        }
+        BasicCellHandler.INSTANCE.addCellInformationToTooltip(is, lines);
     }
 }

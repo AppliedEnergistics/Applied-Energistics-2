@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -46,11 +45,9 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.me.storage.NullInventory;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.ConfigManager;
 import appeng.util.IVariantConversion;
-import appeng.util.Platform;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
 import appeng.util.inv.IAEFluidInventory;
@@ -93,34 +90,6 @@ public class DualityFluidInterface
             return localInvHandler.cast(channel);
         }
         return null;
-    }
-
-    public void notifyNeighbors() {
-        if (this.mainNode.isActive()) {
-            this.mainNode.ifPresent((grid, node) -> {
-                grid.getTickManager().wakeDevice(node);
-            });
-        }
-
-        final BlockEntity te = this.host.getBlockEntity();
-        if (te != null && te.getLevel() != null) {
-            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
-        }
-    }
-
-    public void gridChanged() {
-        var grid = mainNode.getGrid();
-        if (grid != null) {
-            this.items.setInternal(grid.getStorageService()
-                    .getInventory(StorageChannels.items()));
-            this.fluids.setInternal(grid.getStorageService()
-                    .getInventory(StorageChannels.fluids()));
-        } else {
-            this.items.setInternal(new NullInventory<>(StorageChannels.items()));
-            this.fluids.setInternal(new NullInventory<>(StorageChannels.fluids()));
-        }
-
-        this.notifyNeighbors();
     }
 
     public AECableType getCableConnectionType(Direction dir) {
@@ -376,8 +345,8 @@ public class DualityFluidInterface
         }
 
         @Override
-        public IAEStackList<IAEFluidStack> getStorageList() {
-            return getAvailableItems();
+        public IAEStackList<IAEFluidStack> getCachedAvailableStacks() {
+            return getAvailableStacks();
         }
     }
 

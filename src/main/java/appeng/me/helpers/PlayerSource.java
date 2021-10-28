@@ -20,6 +20,8 @@ package appeng.me.helpers;
 
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.entity.player.Player;
@@ -30,9 +32,14 @@ import appeng.api.networking.security.IActionSource;
 public class PlayerSource implements IActionSource {
 
     private final Player player;
+    @Nullable
     private final IActionHost via;
 
-    public PlayerSource(final Player p, final IActionHost v) {
+    public PlayerSource(Player p) {
+        this(p, null);
+    }
+
+    public PlayerSource(Player p, @Nullable IActionHost v) {
         Preconditions.checkNotNull(p);
         this.player = p;
         this.via = v;

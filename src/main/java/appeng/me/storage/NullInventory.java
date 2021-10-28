@@ -18,20 +18,31 @@
 
 package appeng.me.storage;
 
-import appeng.api.config.AccessRestriction;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 
-public class NullInventory<T extends IAEStack> implements IMEInventoryHandler<T> {
+/**
+ * An immutable inventory that is empty.
+ */
+public class NullInventory<T extends IAEStack> implements IMEInventory<T> {
+    private static final Map<IStorageChannel<?>, NullInventory<?>> NULL_INVENTORIES = new ConcurrentHashMap<>();
 
     private final IStorageChannel<T> storageChannel;
 
-    public NullInventory(IStorageChannel<T> storageChannel) {
+    private NullInventory(IStorageChannel<T> storageChannel) {
         this.storageChannel = storageChannel;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends IAEStack> IMEInventory<T> of(IStorageChannel<T> channel) {
+        return (IMEInventory<T>) NULL_INVENTORIES.computeIfAbsent(channel, NullInventory::new);
     }
 
     @Override
@@ -45,27 +56,12 @@ public class NullInventory<T extends IAEStack> implements IMEInventoryHandler<T>
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
         return out;
     }
 
     @Override
     public IStorageChannel<T> getChannel() {
         return storageChannel;
-    }
-
-    @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.NO_ACCESS;
-    }
-
-    @Override
-    public boolean canAccept(final T input) {
-        return false;
-    }
-
-    @Override
-    public boolean validForPass(final int pass) {
-        return pass == 2;
     }
 }

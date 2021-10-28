@@ -107,8 +107,6 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         return blockEntityFactory.create(pos, state);
     }
 
-    // TODO-1.17 Ticker
-
     @SuppressWarnings("unchecked")
     @Nullable
     @Override

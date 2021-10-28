@@ -25,11 +25,14 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 
+/**
+ * An item list that will clear the crafting flag for any item that is added to it.
+ */
 public class ItemListIgnoreCrafting<T extends IAEStack> implements IAEStackList<T> {
 
     private final IAEStackList<T> target;
 
-    public ItemListIgnoreCrafting(final IAEStackList<T> cla) {
+    public ItemListIgnoreCrafting(IAEStackList<T> cla) {
         this.target = cla;
     }
 

@@ -133,7 +133,7 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
             final Inventory playerInventory = player.getInventory();
             var inv = StorageCells.getCellInventory(stack, null, this.getChannel());
             if (inv != null && playerInventory.getSelected() == stack) {
-                var list = inv.getAvailableItems();
+                var list = inv.getAvailableStacks();
                 if (list.isEmpty()) {
                     playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 

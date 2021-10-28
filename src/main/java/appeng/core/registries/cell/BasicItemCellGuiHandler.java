@@ -23,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellGuiHandler;
@@ -40,9 +39,7 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler {
     }
 
     @Override
-    public <T extends IAEStack> void openChestGui(final Player player, final IChestOrDrive chest,
-            final ICellHandler cellHandler,
-            final IMEInventoryHandler<T> inv, final ItemStack is) {
+    public void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler, ItemStack cell) {
         MenuOpener.open(ItemTerminalMenu.TYPE, player,
                 MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }

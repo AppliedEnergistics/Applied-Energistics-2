@@ -22,13 +22,14 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.items.contents.CellConfig;
 
-class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHandler<T> {
+class CreativeCellInventory<T extends IAEStack> implements ICellInventory<T> {
     private final IAEStackList<T> cache;
     private final IStorageChannel<T> channel;
 
@@ -67,7 +68,7 @@ class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHandler<T
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
         for (var ais : this.cache) {
             out.add(ais);
         }
@@ -80,13 +81,21 @@ class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHandler<T
     }
 
     @Override
-    public boolean isPrioritized(T input) {
+    public boolean isPreferredStorageFor(T input, IActionSource source) {
         return this.cache.findPrecise(input) != null;
     }
 
     @Override
-    public boolean canAccept(T input) {
-        return this.cache.findPrecise(input) != null;
+    public CellState getStatus() {
+        return CellState.TYPES_FULL;
     }
 
+    @Override
+    public double getIdleDrain() {
+        return 0;
+    }
+
+    @Override
+    public void persist() {
+    }
 }

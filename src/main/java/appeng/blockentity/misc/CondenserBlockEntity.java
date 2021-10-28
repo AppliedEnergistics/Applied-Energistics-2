@@ -114,8 +114,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         this.setStoredPower(this.getStoredPower() + rawPower);
         this.setStoredPower(Math.max(0.0, Math.min(this.getStorage(), this.getStoredPower())));
 
-        final double requiredPower = this.getRequiredPower();
-        final ItemStack output = this.getOutput();
+        var requiredPower = this.getRequiredPower();
+        var output = this.getOutput();
         while (requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0) {
             if (this.canAddOutput(output)) {
                 this.setStoredPower(this.getStoredPower() - requiredPower);
@@ -275,8 +275,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     /**
      * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
-     * enable the condenser to override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to
-     * make sure a condenser is only ever used if an item can't go anywhere else.
+     * enable the condenser to override the {@link IConfigurableMEInventory#validForPass(int)} method to make sure a
+     * condenser is only ever used if an item can't go anywhere else.
      */
     private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable {
         private final CondenserItemInventory itemInventory = new CondenserItemInventory(CondenserBlockEntity.this);

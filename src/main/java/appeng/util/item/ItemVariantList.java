@@ -59,6 +59,8 @@ abstract class ItemVariantList {
         }
 
         final IAEItemStack opt = option.copy();
+        opt.setCraftable(false);
+        opt.setCountRequestable(0);
 
         this.putItemRecord(opt);
     }

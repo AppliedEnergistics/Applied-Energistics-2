@@ -51,9 +51,8 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
@@ -79,7 +78,7 @@ import appeng.util.IConfigManagerListener;
  * @see MEMonitorableScreen
  */
 public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
-        implements IConfigManagerListener, IConfigurableObject, IMEMonitorHandlerReceiver<T>, IMEInteractionHandler {
+        implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener<T>, IMEInteractionHandler {
 
     private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;
@@ -208,7 +207,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
                     var builder = MEInventoryUpdatePacket
                             .builder(getStorageChannel(), containerId, updateHelper.isFullUpdate());
 
-                    var storageList = monitor.getStorageList();
+                    var storageList = monitor.getCachedAvailableStacks();
                     if (this.updateHelper.isFullUpdate()) {
                         builder.addFull(updateHelper, storageList);
                     } else {
@@ -315,7 +314,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
     }
 
     @Override
-    public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change,
+    public void postChange(IMEMonitor<T> monitor, final Iterable<T> change,
             final IActionSource source) {
         for (T is : change) {
             this.updateHelper.addChange(is);

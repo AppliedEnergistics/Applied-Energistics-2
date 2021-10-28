@@ -379,7 +379,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
             final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
                     .getInventory(StorageChannels.items());
-            final IAEStackList<IAEItemStack> all = storage.getStorageList();
+            final IAEStackList<IAEItemStack> all = storage.getCachedAvailableStacks();
 
             final ItemStack is = r.assemble(ic);
 

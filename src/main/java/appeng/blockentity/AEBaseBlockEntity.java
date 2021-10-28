@@ -59,8 +59,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.helpers.IConfigurableFluidInventory;
@@ -471,11 +469,6 @@ public class AEBaseBlockEntity extends BlockEntity
         var pos = hitResult.getBlockPos();
         final BlockState blockState = level.getBlockState(pos);
         final Block block = blockState.getBlock();
-
-        // TODO: FIX
-        if (this instanceof CableBusBlockEntity || this instanceof SkyChestBlockEntity) {
-            return InteractionResult.FAIL;
-        }
 
         var itemDropCandidates = Platform.getBlockDrops(level, pos);
         var op = new ItemStack(getBlockState().getBlock());

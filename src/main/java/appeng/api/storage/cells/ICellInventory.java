@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 TeamAppliedEnergistics
+ * Copyright (c) 2013 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,44 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage.data;
+package appeng.api.storage.cells;
 
-import java.util.Collection;
-
-import appeng.api.config.FuzzyMode;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.data.IAEStack;
 
 /**
- * Represents a list of items in AE.
- *
- * Don't Implement.
- *
+ * Represents the most general possible cell inventory. Register a {@link ICellHandler} to provide custom subclasses.
  */
-public interface IAEStackContainer<T extends IAEStack> {
+public interface ICellInventory<T extends IAEStack> extends IMEInventory<T> {
+    /**
+     * Return the current status of the cell.
+     */
+    CellState getStatus();
 
     /**
-     * add a stack to the list, this will merge the stack with an item already in the list if found.
-     *
-     * @param option added stack
+     * Return the idle drain of the cell: how many AE/t it uses passively.
      */
-    void add(T option); // adds stack as is
+    double getIdleDrain();
 
     /**
-     * @param i compared item
-     *
-     * @return a stack equivalent to the stack passed in, but with the correct stack size information, or null if its
-     *         not present
+     * Tells the cell to persist to NBT.
      */
-    T findPrecise(T i);
-
-    /**
-     * @param input compared item
-     *
-     * @return a list of relevant fuzzy matched stacks
-     */
-    Collection<T> findFuzzy(T input, FuzzyMode fuzzy);
-
-    /**
-     * @return true if there are no items in the list
-     */
-    boolean isEmpty();
+    void persist();
 }

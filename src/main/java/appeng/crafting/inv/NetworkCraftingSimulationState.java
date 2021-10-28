@@ -53,7 +53,7 @@ public class NetworkCraftingSimulationState extends CraftingSimulationState {
     private <T extends IAEStack> void collectChannelContents(IStorageChannel<T> channel,
             IStorageMonitorable monitorable, IActionSource src) {
         var monitor = monitorable.getInventory(channel);
-        for (var stack : monitor.getStorageList()) {
+        for (var stack : monitor.getCachedAvailableStacks()) {
             this.list.addStorage(monitor.extractItems(stack, Actionable.SIMULATE, src));
         }
     }

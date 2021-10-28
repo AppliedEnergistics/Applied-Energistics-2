@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,29 +49,20 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
-import appeng.api.networking.events.GridCellArrayUpdate;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
-import appeng.core.definitions.AEParts;
 import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
-import appeng.me.storage.MEInventoryHandler;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.FluidFormationPlaneMenu;
 import appeng.util.fluid.AEFluidInventory;
 import appeng.util.fluid.IAEFluidTank;
 import appeng.util.inv.IAEFluidInventory;
+import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack>
@@ -95,34 +85,24 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         return MODELS.getModels();
     }
 
-    private final MEInventoryHandler<IAEFluidStack> myHandler = new MEInventoryHandler<>(this,
-            StorageChannels.fluids());
     private final AEFluidInventory config = new AEFluidInventory(this, 63);
 
-    public FluidFormationPlanePart(final ItemStack is) {
-        super(is);
-        this.updateHandler();
+    public FluidFormationPlanePart(ItemStack is) {
+        super(is, StorageChannels.fluids());
     }
 
     @Override
-    protected void updateHandler() {
-        this.myHandler.setBaseAccess(AccessRestriction.WRITE);
-        this.myHandler.setWhitelist(
-                this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
-        this.myHandler.setPriority(this.getPriority());
+    protected IPartitionList<IAEFluidStack> createFilter() {
+        var priorityList = StorageChannels.fluids().createList();
 
-        final IAEStackList<IAEFluidStack> priorityList = StorageChannels.fluids().createList();
-
-        final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+        var slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
         for (int x = 0; x < this.config.getSlots() && x < slotsToUse; x++) {
             final IAEFluidStack is = this.config.getFluidInSlot(x);
             if (is != null) {
                 priorityList.add(is);
             }
         }
-        this.myHandler.setPartitionList(new PrecisePriorityList<>(priorityList));
-
-        getMainNode().ifPresent(g -> g.postEvent(new GridCellArrayUpdate()));
+        return new PrecisePriorityList<>(priorityList);
     }
 
     @Override
@@ -131,7 +111,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public IAEFluidStack injectItems(IAEFluidStack input, Actionable type, IActionSource src) {
+    protected final IAEFluidStack placeInWorld(IAEFluidStack input, Actionable type) {
         if (input == null || input.getStackSize() < FluidConstants.BLOCK) {
             // need a full bucket
             return input;
@@ -253,7 +233,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     @Override
     public void onFluidInventoryChanged(IAEFluidTank inv, int slot) {
         if (inv == this.config) {
-            this.updateHandler();
+            this.updateFilter();
         }
     }
 
@@ -261,7 +241,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");
-        this.updateHandler();
+        this.updateFilter();
     }
 
     @Override
@@ -288,20 +268,6 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public IStorageChannel<IAEFluidStack> getChannel() {
-        return StorageChannels.fluids();
-    }
-
-    @Override
-    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(final IStorageChannel<T> channel) {
-        if (this.getMainNode().isActive()
-                && channel == StorageChannels.fluids()) {
-            return List.of(this.myHandler.cast(channel));
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
@@ -314,11 +280,6 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
     public IAEFluidTank getConfig() {
         return this.config;
-    }
-
-    @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEParts.FLUID_FORMATION_PLANE.stack();
     }
 
     @Override

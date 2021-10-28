@@ -21,9 +21,6 @@ package appeng.items.storage;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -37,13 +34,10 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ICellWorkbenchItem;
-import appeng.api.storage.data.IAEStack;
 import appeng.helpers.FluidCellConfig;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
-import appeng.me.cells.CreativeCellHandler;
 
 public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
@@ -86,7 +80,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines, TooltipFlag advancedTooltips) {
-        var inventory = StorageCells.getCellInventory(stack, null, storageChannel);
+        var inventory = StorageCells.getCellInventory(stack, null);
 
         if (inventory != null) {
             var cc = getConfigInventory(stack);
@@ -97,15 +91,5 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 }
             }
         }
-    }
-
-    @Nullable
-    public <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(IStorageChannel<T> channel,
-            ItemStack stack) {
-        Preconditions.checkArgument(stack.getItem() == this);
-        if (this.storageChannel == channel) {
-            return CreativeCellHandler.getCell(channel, stack);
-        }
-        return null;
     }
 }

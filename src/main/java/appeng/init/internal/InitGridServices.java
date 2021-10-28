@@ -44,10 +44,10 @@ public final class InitGridServices {
         GridServices.register(ITickManager.class, TickManagerService.class);
         GridServices.register(IPathingService.class, PathingService.class);
         GridServices.register(IEnergyService.class, EnergyService.class);
+        GridServices.register(ISecurityService.class, SecurityService.class);
         GridServices.register(IStorageService.class, StorageService.class);
         GridServices.register(P2PService.class, P2PService.class);
         GridServices.register(ISpatialService.class, SpatialPylonService.class);
-        GridServices.register(ISecurityService.class, SecurityService.class);
         GridServices.register(ICraftingService.class, CraftingService.class);
         GridServices.register(StatisticsService.class, StatisticsService.class);
     }

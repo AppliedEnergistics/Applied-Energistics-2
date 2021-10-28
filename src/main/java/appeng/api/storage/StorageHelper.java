@@ -238,7 +238,7 @@ public final class StorageHelper {
         if (!removedCell.isEmpty()) {
             var myInv = StorageCells.getCellInventory(removedCell, null, channel);
             if (myInv != null) {
-                myInv.getAvailableItems(myChanges);
+                myInv.getAvailableStacks(myChanges);
                 for (var is : myChanges) {
                     is.setStackSize(-is.getStackSize());
                 }
@@ -247,7 +247,7 @@ public final class StorageHelper {
         if (!addedCell.isEmpty()) {
             var myInv = StorageCells.getCellInventory(addedCell, null, channel);
             if (myInv != null) {
-                myInv.getAvailableItems(myChanges);
+                myInv.getAvailableStacks(myChanges);
             }
 
         }
@@ -256,7 +256,7 @@ public final class StorageHelper {
 
     public static <T extends IAEStack> void postListChanges(final IAEStackList<T> before,
             final IAEStackList<T> after,
-            final IMEMonitorHandlerReceiver<T> monitor,
+            final IMEMonitorListener<T> monitor,
             final IActionSource source) {
         final List<T> changes = new ArrayList<>();
 
