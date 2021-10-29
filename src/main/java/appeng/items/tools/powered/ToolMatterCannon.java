@@ -403,7 +403,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 					}
 					else if( pos.entityHit.attackEntityFrom( dmgSrc, dmg ) )
 					{
-						hasDestroyed = true;
+						hasDestroyed = pos.entityHit.isEntityAlive();
 					}
 				}
 				else if( pos.typeOfHit == RayTraceResult.Type.BLOCK )
