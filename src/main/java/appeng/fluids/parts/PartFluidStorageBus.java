@@ -25,8 +25,10 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.fluids.helper.IConfigurableFluidInventory;
+import appeng.me.cache.GridStorageCache;
 import appeng.util.ConfigManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -415,7 +417,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		try
 		{
 			// force grid to update handlers...
-			this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			(( GridStorageCache ) this.getProxy().getGrid().getCache( IStorageGrid.class )).cellUpdate( null );
 		}
 		catch( final GridAccessException ignore )
 		{

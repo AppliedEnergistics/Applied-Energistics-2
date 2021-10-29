@@ -94,7 +94,7 @@ public class GridStorageCache implements IStorageGrid
 
 			this.removeCellProvider( cc, tracker );
 			this.inactiveCellProviders.remove( cc );
-			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			cellUpdate( null );
 
 			tracker.applyChanges();
 		}
@@ -119,7 +119,7 @@ public class GridStorageCache implements IStorageGrid
 			final ICellContainer cc = (ICellContainer) machine;
 			this.inactiveCellProviders.add( cc );
 
-			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			cellUpdate( null );
 
 			if( node.isActive() )
 			{
