@@ -170,7 +170,7 @@ public class GridStorageCache implements IStorageGrid
 
 	private CellChangeTracker addCellProvider( final ICellProvider cc, final CellChangeTracker tracker )
 	{
-		if( this.inactiveCellProviders.contains( cc ) )
+		if( this.inactiveCellProviders.contains( cc ) && !this.activeCellProviders.contains( cc ))
 		{
 			this.inactiveCellProviders.remove( cc );
 			this.activeCellProviders.add( cc );
