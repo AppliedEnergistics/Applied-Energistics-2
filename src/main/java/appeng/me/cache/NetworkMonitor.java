@@ -47,8 +47,8 @@ import java.util.Map.Entry;
 public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 {
 	@Nonnull
-	private static final Deque<NetworkMonitor<?>> GLOBAL_DEPTH = Queues.newArrayDeque();
-	private static final Set<NetworkMonitor<?>> MONITORS = new HashSet<>();
+	private static final Set<NetworkMonitor<?>> NESTED_MONITORS = new HashSet<>();
+	private static final HashMap<IActionSource, Set<NetworkMonitor<?>>> sourceSetHashMap = new HashMap<>();
 	protected static boolean nested = false;
 	protected boolean isNested = false;
 
@@ -137,17 +137,16 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		return 0;
 	}
 
-	public long incGridCurrentCount(long count)
+	public void incGridCurrentCount( long count )
 	{
 		if( myChannel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			return gridItemCount += count;
+			gridItemCount += count;
 		}
 		else if( myChannel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
-			return gridFluidCount += count;
+			gridFluidCount += count;
 		}
-		return 0;
 	}
 
 	@Nonnull
@@ -230,15 +229,16 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	protected void postChange( final boolean add, final Iterable<T> changes, final IActionSource src )
 	{
-		if( MONITORS.contains( this ) )
+
+		if( sourceSetHashMap.get( src ) != null && sourceSetHashMap.get( src ).contains( this ) )
 		{
+			NESTED_MONITORS.add( this );
 			nested = true;
 			return;
 		}
 
-		MONITORS.add( this );
-
-		GLOBAL_DEPTH.push( this );
+		sourceSetHashMap.putIfAbsent( src, new HashSet<>() );
+		sourceSetHashMap.get( src ).add( this );
 
 		this.sendEvent = true;
 
@@ -282,21 +282,20 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 		this.notifyListenersOfChange( changes, src );
 
-		final NetworkMonitor<?> last = GLOBAL_DEPTH.pop();
-
-		if( GLOBAL_DEPTH.isEmpty() )
+		sourceSetHashMap.get( src ).remove( this );
+		if( sourceSetHashMap.get( src ).isEmpty() )
 		{
-			for( NetworkMonitor<?> nm : MONITORS )
+			sourceSetHashMap.remove( src );
+		}
+
+		if( sourceSetHashMap.isEmpty() )
+		{
+			for( NetworkMonitor<?> nm : NESTED_MONITORS )
 			{
 				nm.setupForceUpdate();
 			}
 			nested = false;
-			MONITORS.clear();
-		}
-
-		if( last != this )
-		{
-			throw new IllegalStateException( "Invalid Access to Networked Storage API detected." );
+			NESTED_MONITORS.clear();
 		}
 	}
 

@@ -57,11 +57,11 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider
 
 			// The default state
 			int state = STATE_UNLINKED;
-			int outputCount = 0;
+			int outputCount = getOutputCount( tunnel );
+			int inputCount = getInputCount( tunnel );
 
 			if( !tunnel.isOutput() )
 			{
-				outputCount = getOutputCount( tunnel );
 				if( outputCount > 0 )
 				{
 					// Only set it to INPUT if we know there are any outputs
@@ -70,8 +70,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider
 			}
 			else
 			{
-				final PartP2PTunnel input = tunnel.getInput();
-				if( input != null )
+				if( inputCount > 0 )
 				{
 					state = STATE_OUTPUT;
 				}
@@ -83,7 +82,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider
 					probeInfo.text( TheOneProbeText.P2P_UNLINKED.getLocal() );
 					break;
 				case STATE_OUTPUT:
-					probeInfo.text( TheOneProbeText.P2P_OUTPUT.getLocal() );
+					probeInfo.text( getInputText( inputCount ) );
 					break;
 				case STATE_INPUT:
 					probeInfo.text( getOutputText( outputCount ) );
@@ -110,6 +109,19 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider
 		}
 	}
 
+	private static int getInputCount( PartP2PTunnel tunnel )
+	{
+		try
+		{
+			return Iterators.size( tunnel.getInputs().iterator() );
+		}
+		catch( GridAccessException e )
+		{
+			// Well... unknown size it is!
+			return 0;
+		}
+	}
+
 	private static String getOutputText( int outputs )
 	{
 		if( outputs <= 1 )
@@ -119,6 +131,18 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider
 		else
 		{
 			return String.format( TheOneProbeText.P2P_INPUT_MANY_OUTPUTS.getLocal(), outputs );
+		}
+	}
+
+	private static String getInputText( int inputs )
+	{
+		if( inputs <= 1 )
+		{
+			return TheOneProbeText.P2P_OUTPUT_ONE_INPUT.getLocal();
+		}
+		else
+		{
+			return String.format( TheOneProbeText.P2P_OUTPUT_MANY_INPUTS.getLocal(), inputs );
 		}
 	}
 

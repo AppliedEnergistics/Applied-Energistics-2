@@ -196,14 +196,23 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	{
 		if( this.isOutput() )
 		{
-			final PartP2PLight src = this.getInput();
-			if( src != null && src.getProxy().isActive() )
+			try
 			{
-				this.setLightLevel( src.lastValue );
+				for( PartP2PLight src : this.getInputs() )
+				{
+					if( src != null && src.getProxy().isActive() )
+					{
+						this.setLightLevel( src.lastValue );
+					}
+					else
+					{
+						this.getHost().markForUpdate();
+					}
+				}
 			}
-			else
+			catch( GridAccessException e )
 			{
-				this.getHost().markForUpdate();
+				e.printStackTrace();
 			}
 		}
 		else

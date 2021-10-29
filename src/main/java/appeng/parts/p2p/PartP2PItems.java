@@ -74,10 +74,19 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
 		this.cachedInv = null;
-		final PartP2PItems input = this.getInput();
-		if( input != null && this.isOutput() )
+		try
 		{
-			input.onTunnelNetworkChange();
+			for( PartP2PItems input : this.getInputs() )
+			{
+				if( input != null && this.isOutput() )
+				{
+					input.onTunnelNetworkChange();
+				}
+			}
+		}
+		catch( GridAccessException e )
+		{
+			e.printStackTrace();
 		}
 	}
 
@@ -222,10 +231,19 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 		}
 		else
 		{
-			final PartP2PItems input = this.getInput();
-			if( input != null )
+			try
 			{
-				input.getHost().notifyNeighbors();
+				for( PartP2PItems input : this.getInputs() )
+				{
+					if( input != null )
+					{
+						input.getHost().notifyNeighbors();
+					}
+				}
+			}
+			catch( GridAccessException e )
+			{
+				e.printStackTrace();
 			}
 		}
 	}
