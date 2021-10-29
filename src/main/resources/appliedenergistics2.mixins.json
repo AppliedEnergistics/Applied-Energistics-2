@@ -7,7 +7,7 @@
   "mixins": [
     "spatial.DimensionTypeMixin",
     "spatial.DimensionOptionMixin",
-    "structure.DimensionStructuresSettingsMixin",
+    "structure.StructureSettingsMixin",
     "structure.ConfiguredStructureFeaturesAccessor",
     "feature.ConfiguredFeaturesAccessor",
     "feature.LevelLightEngineMixin",

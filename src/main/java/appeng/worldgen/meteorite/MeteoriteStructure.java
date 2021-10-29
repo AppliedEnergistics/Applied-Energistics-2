@@ -32,10 +32,14 @@ import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 
 import appeng.core.AppEng;
 
 public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguration> {
+
+    public static final StructureFeatureConfiguration PLACEMENT_CONFIG = new StructureFeatureConfiguration(32, 8,
+            124895654);
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
 
