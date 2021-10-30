@@ -63,7 +63,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             MODEL_STATUS_HAS_CHANNEL);
 
     public ConversionMonitorPart(final ItemStack is) {
-        super(is);
+        super(is, true);
     }
 
     @Override

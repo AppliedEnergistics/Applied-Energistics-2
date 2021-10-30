@@ -52,8 +52,8 @@ public abstract class AbstractDisplayPart extends AbstractReportingPart {
     protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/display_status_has_channel");
 
-    public AbstractDisplayPart(final ItemStack is) {
-        super(is, true);
+    public AbstractDisplayPart(ItemStack is, boolean requireChannel) {
+        super(is, requireChannel);
     }
 
     @Override

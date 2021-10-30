@@ -121,7 +121,7 @@ public interface IManagedGridNode {
         return node.getGrid();
     }
 
-    IManagedGridNode setFlags(GridFlags... requireChannel);
+    IManagedGridNode setFlags(GridFlags... flags);
 
     /**
      * Changes the sides of the node's host this node is exposed on.

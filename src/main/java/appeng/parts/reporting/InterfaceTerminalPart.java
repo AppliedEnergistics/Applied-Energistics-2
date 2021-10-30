@@ -44,7 +44,7 @@ public class InterfaceTerminalPart extends AbstractDisplayPart {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
     public InterfaceTerminalPart(final ItemStack is) {
-        super(is);
+        super(is, true);
     }
 
     @Override
