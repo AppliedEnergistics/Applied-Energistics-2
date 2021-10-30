@@ -259,7 +259,7 @@ public class PartPlacement {
     private static SelectedPart selectPart(final Player player, final IPartHost host, final Vec3 pos) {
         AppEng.instance().setPartInteractionPlayer(player);
         try {
-            return host.selectPart(pos);
+            return host.selectPartLocal(pos);
         } finally {
             AppEng.instance().setPartInteractionPlayer(null);
         }

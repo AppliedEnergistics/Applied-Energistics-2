@@ -23,12 +23,14 @@
 
 package appeng.api.util;
 
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.item.context.UseOnContext;
 
 /**
- * Implement on block entity or part to customize if the info gui opens, or an action is preformed.
+ * Implement on block entity or part to suppress the default network tool behavior.
  */
-public interface INetworkToolAgent {
-
-    boolean showNetworkInfo(HitResult where);
+public interface INetworkToolAware {
+    /**
+     * Return false to suppress the default network tool behavior when it is used on this block entity or part.
+     */
+    boolean showNetworkInfo(UseOnContext context);
 }

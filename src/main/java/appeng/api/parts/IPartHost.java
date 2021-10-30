@@ -30,6 +30,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.util.AEColor;
@@ -132,13 +133,25 @@ public interface IPartHost extends ICustomCableConnection {
     boolean isBlocked(Direction side);
 
     /**
-     * finds the part located at the position ( pos must be relative, not global )
+     * Finds the part located at the position in block-local coordinates (0,0,0 is located at the block pos).
      *
      * @param pos part position
      *
      * @return a new SelectedPart, this is never null.
      */
-    SelectedPart selectPart(Vec3 pos);
+    SelectedPart selectPartLocal(Vec3 pos);
+
+    /**
+     * Same as {@link #selectPartLocal(Vec3)}, but with world instead of local coordinates. Provided for easier
+     * interoperability with {@link BlockHitResult#getLocation()}.
+     */
+    default SelectedPart selectPartWorld(Vec3 pos) {
+        var worldPos = getLocation();
+        return selectPartLocal(pos.subtract(
+                worldPos.getPos().getX(),
+                worldPos.getPos().getY(),
+                worldPos.getPos().getZ()));
+    }
 
     /**
      * can be used by parts to trigger the block entity or part to save.

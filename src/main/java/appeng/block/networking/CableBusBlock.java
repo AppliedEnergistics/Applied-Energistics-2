@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.block.BlockAttackInteractionAware;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -77,7 +78,7 @@ import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ClickPacket;
+import appeng.core.sync.packets.PartLeftClickPacket;
 import appeng.helpers.AEMaterials;
 import appeng.hooks.ICustomBlockDestroyEffect;
 import appeng.hooks.ICustomBlockHitEffect;
@@ -87,10 +88,12 @@ import appeng.hooks.INeighborChangeSensitive;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
+import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implements IAEFacade, SimpleWaterloggedBlock,
-        ICustomBlockHitEffect, ICustomBlockDestroyEffect, INeighborChangeSensitive, IDynamicLadder, ICustomPickBlock {
+        ICustomBlockHitEffect, ICustomBlockDestroyEffect, INeighborChangeSensitive, IDynamicLadder, ICustomPickBlock,
+        BlockAttackInteractionAware {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
@@ -188,7 +191,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter level, BlockPos pos,
             Player player) {
         final Vec3 v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
-        final SelectedPart sp = this.cb(level, pos).selectPart(v3);
+        final SelectedPart sp = this.cb(level, pos).selectPartLocal(v3);
 
         if (sp.part != null) {
             return sp.part.getItemStack(PartItemStack.PICK);
@@ -231,25 +234,40 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void attack(BlockState state, Level level, BlockPos pos, Player player) {
-        if (level.isClientSide()) {
-            final HitResult rtr = Minecraft.getInstance().hitResult;
-            if (rtr instanceof BlockHitResult brtr) {
-                if (brtr.getBlockPos().equals(pos)) {
-                    final Vec3 hitVec = rtr.getLocation().subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
+    public boolean onAttackInteraction(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+            Direction direction) {
+        if (!level.isClientSide()) {
+            return false;
+        }
 
-                    if (this.cb(level, pos).clicked(player, InteractionHand.MAIN_HAND, hitVec)) {
-                        NetworkHandler.instance()
-                                .sendToServer(new ClickPacket(pos, brtr.getDirection(), (float) hitVec.x,
-                                        (float) hitVec.y, (float) hitVec.z, InteractionHand.MAIN_HAND, true));
+        if (Minecraft.getInstance().hitResult instanceof BlockHitResult blockHitResult) {
+            if (blockHitResult.getBlockPos().equals(pos)) {
+                var localPos = blockHitResult.getLocation().subtract(
+                        blockHitResult.getBlockPos().getX(),
+                        blockHitResult.getBlockPos().getY(),
+                        blockHitResult.getBlockPos().getZ());
+
+                var p = cb(level, pos).selectPartLocal(localPos);
+                if (p.part != null) {
+                    boolean alternateUseMode = InteractionUtil.isInAlternateUseMode(player);
+                    boolean activated;
+                    if (alternateUseMode) {
+                        activated = p.part.onShiftClicked(player, localPos);
+                    } else {
+                        activated = p.part.onClicked(player, localPos);
+                    }
+
+                    if (activated) {
+                        NetworkHandler.instance().sendToServer(
+                                new PartLeftClickPacket(blockHitResult, alternateUseMode));
+                        // Do not perform the default action (of spawning break particles and breaking the block)
+                        return true;
                     }
                 }
             }
         }
-    }
 
-    public void onBlockClickPacket(Level level, BlockPos pos, Player playerIn, InteractionHand hand, Vec3 hitVec) {
-        this.cb(level, pos).clicked(playerIn, hand, hitVec);
+        return false;
     }
 
     @Override
@@ -440,5 +458,4 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
         return true;
     }
-
 }

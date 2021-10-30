@@ -19,7 +19,6 @@
 package appeng.items.tools;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -28,22 +27,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.HitResult.Type;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.networking.GridHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.api.util.INetworkToolAgent;
-import appeng.core.AppEng;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ClickPacket;
+import appeng.api.util.INetworkToolAware;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
@@ -52,7 +41,6 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
-import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem {
@@ -73,12 +61,8 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem 
 
     @Override
     public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
-        if (level.isClientSide()) {
-            final HitResult mop = AppEng.instance().getCurrentMouseOver();
-
-            if (mop == null || mop.getType() == Type.MISS) {
-                NetworkHandler.instance().sendToServer(new ClickPacket(hand));
-            }
+        if (!level.isClientSide()) {
+            MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocator.forHand(p, hand));
         }
 
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
@@ -93,37 +77,40 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem 
         }
 
         Level level = context.getLevel();
-        final BlockHitResult mop = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
-                context.getClickedPos(), context.isInside());
-        final BlockEntity te = level.getBlockEntity(context.getClickedPos());
 
-        if (te instanceof IPartHost) {
-            final SelectedPart part = ((IPartHost) te).selectPart(mop.getLocation());
+        // Suppress the network tool's own behavior in case the block wants to allow normal operations to work
+        // (i.e. putting a network tool into a conversion or storage monitor).
+        var te = level.getBlockEntity(context.getClickedPos());
+        if (te instanceof IPartHost partHost) {
+            var part = partHost.selectPartWorld(context.getClickLocation());
 
             if (part.part != null || part.facade != null) {
-                if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {
-                    return InteractionResult.FAIL;
-                } else if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
+                if (part.part instanceof INetworkToolAware toolAgent && !toolAgent.showNetworkInfo(context)) {
                     return InteractionResult.PASS;
                 }
             }
-        } else if (te instanceof INetworkToolAgent && !((INetworkToolAgent) te).showNetworkInfo(mop)) {
-            return InteractionResult.FAIL;
+        } else if (te instanceof INetworkToolAware toolAgent && !toolAgent.showNetworkInfo(context)) {
+            return InteractionResult.PASS;
         }
 
-        if (level.isClientSide()) {
-            NetworkHandler.instance().sendToServer(new ClickPacket(context));
+        if (!level.isClientSide()) {
+            if (!showNetworkToolGui(context)) {
+                return InteractionResult.FAIL;
+            }
         }
 
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    public boolean serverSideToolLogic(UseOnContext useContext) {
+    private boolean showNetworkToolGui(UseOnContext useContext) {
+        if (useContext.getPlayer() == null) {
+            return false;
+        }
+
         BlockPos pos = useContext.getClickedPos();
         Player p = useContext.getPlayer();
-        Level level = p.level;
+        Level level = useContext.getLevel();
         InteractionHand hand = useContext.getHand();
-        Direction side = useContext.getClickedFace();
 
         if (!Platform.hasPermissions(new DimensionalBlockPos(level, pos), p)) {
             return false;
@@ -132,34 +119,17 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem 
         // The network tool has special behavior for machines hosting world-accessible nodes
         var nodeHost = GridHelper.getNodeHost(level, pos);
 
-        var bs = level.getBlockState(pos);
-        if (!InteractionUtil.isInAlternateUseMode(p)) {
-            if (nodeHost == null && bs.rotate(Rotation.CLOCKWISE_90) != bs) {
-                bs.neighborChanged(level, pos, Blocks.AIR, pos, false);
-                p.swing(hand);
-                return !level.isClientSide;
-            }
-        }
-
-        if (!InteractionUtil.isInAlternateUseMode(p)) {
-            if (p.containerMenu instanceof AEBaseMenu) {
-                return true;
-            }
-
-            if (nodeHost != null) {
-                MenuOpener.open(NetworkStatusMenu.TYPE, p,
-                        MenuLocator.forItemUseContext(useContext));
-            } else {
-                MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocator.forHand(p, hand));
-            }
-
+        if (p.containerMenu instanceof AEBaseMenu) {
             return true;
-        } else {
-            BlockHitResult rtr = new BlockHitResult(useContext.getClickLocation(), side, pos, false);
-            bs.use(level, p, hand, rtr);
         }
 
-        return false;
+        if (nodeHost != null) {
+            MenuOpener.open(NetworkStatusMenu.TYPE, p, MenuLocator.forItemUseContext(useContext));
+        } else {
+            MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocator.forHand(p, hand));
+        }
+
+        return true;
     }
 
 }

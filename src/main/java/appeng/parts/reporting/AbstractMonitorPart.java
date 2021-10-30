@@ -32,7 +32,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.implementations.parts.IStorageMonitorPart;
@@ -117,13 +117,13 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         boolean needRedraw = super.readFromStream(data);
 
-        final boolean isLocked = data.readBoolean();
-        needRedraw = this.isLocked != isLocked;
+        var isLocked = data.readBoolean();
+        needRedraw |= this.isLocked != isLocked;
 
         this.isLocked = isLocked;
 
-        final boolean val = data.readBoolean();
-        if (val) {
+        // This item is rendered dynamically and doesn't need to trigger a chunk update
+        if (data.readBoolean()) {
             this.configuredItem = AEItemStack.fromPacket(data);
         } else {
             this.configuredItem = null;
@@ -147,7 +147,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         }
 
         if (!this.isLocked) {
-            final ItemStack eq = player.getItemInHand(hand);
+            var eq = player.getItemInHand(hand);
             this.configuredItem = AEItemStack.fromItemStack(eq);
             this.configureWatchers();
             this.getHost().markForSave();
@@ -205,6 +205,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private void updateReportingValue(final IMEMonitor<IAEItemStack> itemInventory) {
         if (this.configuredItem != null) {
             final IAEItemStack result = itemInventory.getStorageList().findPrecise(this.configuredItem);
+            this.lastHumanReadableText = null;
             if (result == null) {
                 this.configuredItem.setStackSize(0);
             } else {
@@ -223,7 +224,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return;
         }
 
-        final IAEItemStack ais = this.getDisplayed();
+        var ais = this.getDisplayed();
 
         if (ais == null) {
             return;
@@ -275,9 +276,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
                 this.configuredItem.setStackSize(fullStack.getStackSize());
             }
 
-            final long stackSize = this.configuredItem.getStackSize();
-            final String humanReadableText = NUMBER_CONVERTER.toWideReadableForm(stackSize);
+            var stackSize = this.configuredItem.getStackSize();
+            var humanReadableText = NUMBER_CONVERTER.toWideReadableForm(stackSize);
 
+            // Try throttling to only relevant updates
             if (!humanReadableText.equals(this.lastHumanReadableText)) {
                 this.lastHumanReadableText = humanReadableText;
                 this.getHost().markForUpdate();
@@ -286,7 +288,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean showNetworkInfo(final HitResult where) {
+    public boolean showNetworkInfo(UseOnContext context) {
         return false;
     }
 

@@ -234,8 +234,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public SelectedPart selectPart(final Vec3 pos) {
-        return this.getCableBus().selectPart(pos);
+    public SelectedPart selectPartLocal(final Vec3 pos) {
+        return this.getCableBus().selectPartLocal(pos);
     }
 
     @Override
@@ -310,11 +310,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
 
             AppEng.instance().setPartInteractionPlayer(player);
             try {
-                sp = cb.selectPart(
-                        hitResult.getLocation().add(
-                                -hitResult.getBlockPos().getX(),
-                                -hitResult.getBlockPos().getY(),
-                                -hitResult.getBlockPos().getZ()));
+                sp = cb.selectPartWorld(hitResult.getLocation());
             } finally {
                 AppEng.instance().setPartInteractionPlayer(null);
             }

@@ -12,8 +12,8 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 /**
- * This hooks listens for items that match a wrench tag being used on our blocks while shift is held to disassemble,
- * and to rotate if shift is not held.
+ * This hooks listens for items that match a wrench tag being used on our blocks while shift is held to disassemble, and
+ * to rotate if shift is not held.
  */
 public final class WrenchHook {
 

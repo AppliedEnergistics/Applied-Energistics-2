@@ -60,7 +60,7 @@ public class BasePacketHandler {
 
         GUI_DATA_SYNC(GuiDataSyncPacket.class, GuiDataSyncPacket::new),
 
-        CLICK(ClickPacket.class, ClickPacket::new),
+        CLICK(PartLeftClickPacket.class, PartLeftClickPacket::new),
 
         SWITCH_GUIS(SwitchGuisPacket.class, SwitchGuisPacket::new),
 
