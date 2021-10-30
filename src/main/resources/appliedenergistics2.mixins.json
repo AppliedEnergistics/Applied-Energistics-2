@@ -8,7 +8,6 @@
     "spatial.DimensionTypeMixin",
     "spatial.DimensionOptionMixin",
     "structure.StructureSettingsMixin",
-    "structure.ConfiguredStructureFeaturesAccessor",
     "feature.ConfiguredFeaturesAccessor",
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin"
