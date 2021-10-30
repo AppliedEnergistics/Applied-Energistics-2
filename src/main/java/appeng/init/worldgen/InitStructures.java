@@ -20,11 +20,12 @@ package appeng.init.worldgen;
 
 import java.util.Locale;
 
+import net.fabricmc.fabric.mixin.structure.FlatChunkGeneratorConfigAccessor;
 import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 
-import appeng.mixins.structure.ConfiguredStructureFeaturesAccessor;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
@@ -42,7 +43,12 @@ public final class InitStructures {
         registerStructure(registry, MeteoriteStructure.ID.toString(), MeteoriteStructure.INSTANCE,
                 Decoration.TOP_LAYER_MODIFICATION);
 
-        ConfiguredStructureFeaturesAccessor.register(MeteoriteStructure.ID.toString(),
+        StructureFeatures.register(MeteoriteStructure.ID.toString(),
+                MeteoriteStructure.CONFIGURED_INSTANCE);
+
+        // Since we now always add our structure, we need to consider the superflat generator
+        FlatChunkGeneratorConfigAccessor.getStructureToFeatures().put(
+                MeteoriteStructure.INSTANCE,
                 MeteoriteStructure.CONFIGURED_INSTANCE);
     }
 
