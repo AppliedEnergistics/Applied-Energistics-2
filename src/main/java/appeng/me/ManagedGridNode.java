@@ -236,10 +236,10 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public ManagedGridNode setFlags(final GridFlags... requireChannel) {
-        var flags = EnumSet.noneOf(GridFlags.class);
-        Collections.addAll(flags, requireChannel);
-        getInitData().flags = flags;
+    public ManagedGridNode setFlags(GridFlags... flags) {
+        var flagSet = EnumSet.noneOf(GridFlags.class);
+        Collections.addAll(flagSet, flags);
+        getInitData().flags = flagSet;
         return this;
     }
 
