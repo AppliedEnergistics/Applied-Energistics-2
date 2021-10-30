@@ -63,7 +63,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
     public AbstractTerminalPart(final ItemStack is) {
-        super(is);
+        super(is, true);
 
         this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.cm.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);

@@ -55,8 +55,8 @@ public class StorageMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
 
-    public StorageMonitorPart(final ItemStack is) {
-        super(is);
+    public StorageMonitorPart(ItemStack is) {
+        super(is, false);
     }
 
     @Override

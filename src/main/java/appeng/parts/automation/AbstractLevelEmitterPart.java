@@ -48,6 +48,9 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     public AbstractLevelEmitterPart(ItemStack is) {
         super(is);
 
+        // Level emitters do not require a channel to function
+        getMainNode().setFlags();
+
         this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
     }
 
