@@ -74,10 +74,24 @@ public class IncrementalUpdateHelper<T extends IAEStack> implements Iterable<T> 
         return mapping.inverse().get(serial);
     }
 
+    /**
+     * Clear pending changes and prepare for a full update.
+     * <p/>
+     * Mappings are kept because even in case of a full update, many items are usually still present and should keep
+     * their serial.
+     */
     public void clear() {
-        this.mapping.clear();
         this.changes.clear();
         fullUpdate = true;
+    }
+
+    /**
+     * Fully resets this helper into its initial state. This will also clear any serial mapping.
+     */
+    public void reset() {
+        clear();
+        this.serial = 0;
+        this.mapping.clear();
     }
 
     public void addChange(T entry) {
