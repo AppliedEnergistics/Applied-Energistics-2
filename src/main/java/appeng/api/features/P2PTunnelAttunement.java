@@ -120,7 +120,7 @@ public final class P2PTunnelAttunement {
 
     /**
      * Attunement based on the ability of getting an API via Fabric API Lookup from the item.
-     * 
+     *
      * @param tunnelPart The P2P-tunnel part item.
      */
     public synchronized static <T> void addItemByApi(ItemApiLookup<?, T> api,
@@ -133,7 +133,7 @@ public final class P2PTunnelAttunement {
 
     /**
      * Attunement based on the ability of getting a storage container API via Fabric API Lookup from the item.
-     * 
+     *
      * @param tunnelPart The P2P-tunnel part item.
      */
     public synchronized static void addItemByApi(ItemApiLookup<?, ContainerItemContext> api,
