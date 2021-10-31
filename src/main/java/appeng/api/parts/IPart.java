@@ -242,7 +242,7 @@ public interface IPart extends ICustomCableConnection {
      * Called when you left click the part, very similar to Block.onBlockClicked a
      * 
      * @param player left clicking player
-     * @param pos    position of block
+     * @param pos    clicked position, in block-local coordinates
      *
      * @return True if your part wants to suppress the default behavior of attacking the part host.
      */
@@ -254,7 +254,7 @@ public interface IPart extends ICustomCableConnection {
      * Called when you shift-left click the part, very similar to Block.onBlockClicked
      *
      * @param player shift-left clicking player
-     * @param pos    position of block
+     * @param pos    clicked position, in block-local coordinates
      *
      * @return True if your part wants to suppress the default behavior of attacking the part host.
      */

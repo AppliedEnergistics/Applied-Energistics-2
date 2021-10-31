@@ -19,6 +19,7 @@
 package appeng.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
@@ -88,10 +89,12 @@ public class TesrRenderHelper {
             poseStack.pushPose();
             // Push it out of the block face a bit to avoid z-fighting
             poseStack.translate(0, 0, 0.01f);
-            // The Z-scaling by 0.0002 causes the model to be visually "flattened"
-            // This cannot replace a proper projection, but it's cheap and gives the desired
-            // effect at least from head-on
-            poseStack.scale(scale, scale, 0.0002f);
+            // The Z-scaling by 0.001 causes the model to be visually "flattened"
+            // This cannot replace a proper projection, but it's cheap and gives the desired effect.
+            // We don't scale the normal matrix to avoid lighting issues.
+            poseStack.mulPoseMatrix(Matrix4f.createScaleMatrix(scale, scale, 0.001f));
+            // Rotate the normal matrix a little bit for nicer lighting.
+            poseStack.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
 
             Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, TransformType.GUI,
                     combinedLightIn, OverlayTexture.NO_OVERLAY, poseStack, buffers, 0);
