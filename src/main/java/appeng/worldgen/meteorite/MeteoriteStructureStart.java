@@ -82,11 +82,12 @@ public class MeteoriteStructureStart extends StructureStart<NoneFeatureConfigura
 
         // Offset caused by the meteorsize
         centerY -= yOffset;
-        // Limit to not spawn below y32
-        centerY = Math.max(32, centerY);
+
+        // If we seemingly don't have enough space to spawn (as can happen in flat chunks generators)
+        // we snugly generate it on bedrock.
+        centerY = Math.max(heightAccessor.getMinBuildHeight() + yOffset, centerY);
 
         BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
-
         boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius, heightAccessor);
         CraterType craterType = this.determineCraterType(spawnBiome);
         boolean pureCrater = this.random.nextFloat() > .9f;
