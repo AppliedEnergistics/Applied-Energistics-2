@@ -115,7 +115,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     private boolean ongoingInjectOperation = false;
 
     private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
-    private final IGrid myGrid;
+    private final Grid grid;
     private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<>();
 
     /**
@@ -147,7 +147,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     private final GridPowerStorage localStorage = new GridPowerStorage();
 
     public EnergyService(final IGrid g, IPathingService pgc) {
-        this.myGrid = g;
+        this.grid = (Grid) g;
         this.pgc = (PathingService) pgc;
         this.requesters.add(this.localStorage);
         this.providers.add(this.localStorage);
@@ -232,9 +232,9 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
         // update public status, this buffers power ups for 30 ticks.
         if (this.hasPower && this.ticksSinceHasPowerChange > 30) {
-            this.publicPowerState(true, this.myGrid);
+            this.publicPowerState(true, this.grid);
         } else if (!this.hasPower) {
-            this.publicPowerState(false, this.myGrid);
+            this.publicPowerState(false, this.grid);
         }
 
         this.availableTicksSinceUpdate++;
@@ -276,12 +276,10 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         }
 
         this.publicHasPower = newState;
-        ((Grid) this.myGrid).setImportantFlag(0, this.publicHasPower);
+        this.grid.setImportantFlag(0, this.publicHasPower);
         grid.postEvent(new GridPowerStatusChange());
 
-        for (IGridNode node : grid.getNodes()) {
-            ((GridNode) node).notifyStatusChange(IGridNodeListener.State.POWER);
-        }
+        this.grid.notifyAllNodes(IGridNodeListener.State.POWER);
     }
 
     /**
@@ -645,7 +643,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
             this.stored += amount;
 
             if (this.stored > 0.01) {
-                EnergyService.this.myGrid
+                EnergyService.this.grid
                         .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
             }
         }
@@ -654,7 +652,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
             this.stored -= amount;
 
             if (this.stored < MAX_BUFFER_STORAGE - 0.001) {
-                EnergyService.this.myGrid
+                EnergyService.this.grid
                         .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER));
             }
         }
