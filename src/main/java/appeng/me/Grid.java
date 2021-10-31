@@ -18,7 +18,9 @@
 
 package appeng.me;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -32,6 +34,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.networking.GridServicesInternal;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridStorage;
@@ -40,6 +43,10 @@ import appeng.core.worlddata.IGridStorageData;
 import appeng.hooks.ticking.TickHandler;
 
 public class Grid implements IGrid {
+    /**
+     * We use this to copy the list of grid nodes we'll notify. Avoids a potential ConcurrentModificationException.
+     */
+    private static final List<IGridNode> ITERATION_BUFFER = new ArrayList<>();
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Map<Class<?>, IGridServiceProvider> services;
     private GridNode pivot;
@@ -105,7 +112,6 @@ public class Grid implements IGrid {
     }
 
     void add(final GridNode gridNode) {
-
         // handle loading grid storages.
         if (gridNode.getGridStorage() != null) {
             final GridStorage gs = gridNode.getGridStorage();
@@ -206,7 +212,7 @@ public class Grid implements IGrid {
     }
 
     @Override
-    public Iterable<IGridNode> getNodes() {
+    public Collection<IGridNode> getNodes() {
         return this.machines.values();
     }
 
@@ -265,5 +271,24 @@ public class Grid implements IGrid {
     public void setImportantFlag(final int i, final boolean publicHasPower) {
         final int flag = 1 << i;
         this.priority = this.priority & ~flag | (publicHasPower ? flag : 0);
+    }
+
+    public void notifyAllNodes(IGridNodeListener.State state) {
+        if (!ITERATION_BUFFER.isEmpty()) {
+            throw new IllegalStateException("Recursively trying to notify all nodes is not allowed");
+        }
+
+        try {
+            // We're copying the nodes to a temporary buffer here because changing the power state of a node
+            // may actually cause adjacent nodes to suddenly boot (i.e. QNBs) and modify the grid while
+            // we're iterating over it.
+            ITERATION_BUFFER.addAll(getNodes());
+
+            for (IGridNode node : ITERATION_BUFFER) {
+                ((GridNode) node).notifyStatusChange(state);
+            }
+        } finally {
+            ITERATION_BUFFER.clear();
+        }
     }
 }
