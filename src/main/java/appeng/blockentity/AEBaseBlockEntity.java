@@ -28,6 +28,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
+import com.google.common.collect.Lists;
+
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.BlockPos;
@@ -39,13 +41,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
@@ -55,7 +61,10 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.util.IBlockEntityDrops;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
+import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.helpers.IConfigurableFluidInventory;
@@ -482,6 +491,57 @@ public class AEBaseBlockEntity extends BlockEntity
     @Override
     public AABB getRenderBoundingBox() {
         return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
+    }
+
+    /**
+     * Called when a player uses a wrench on this block entity to disassemble it.
+     */
+    public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult) {
+        var pos = hitResult.getBlockPos();
+        final BlockState blockState = level.getBlockState(pos);
+        final Block block = blockState.getBlock();
+
+        // TODO: FIX
+        if (this instanceof CableBusBlockEntity || this instanceof SkyChestBlockEntity) {
+            return InteractionResult.FAIL;
+        }
+
+        var itemDropCandidates = Platform.getBlockDrops(level, pos);
+        var op = new ItemStack(getBlockState().getBlock());
+
+        for (var ol : itemDropCandidates) {
+            if (Platform.itemComparisons().isEqualItemType(ol, op)) {
+                var tag = downloadSettings(SettingsFrom.DISMANTLE_ITEM);
+                if (tag != null) {
+                    ol.setTag(tag);
+                }
+            }
+        }
+
+        block.playerWillDestroy(level, pos, blockState, player);
+        level.removeBlock(pos, false);
+        block.destroy(level, pos, getBlockState());
+
+        var itemsToDrop = Lists.newArrayList(itemDropCandidates);
+        Platform.spawnDrops(level, pos, itemsToDrop);
+
+        return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    /**
+     * Called when a player uses a wrench on this block entity to rotate it.
+     */
+    public InteractionResult rotateWithWrench(Player player, Level level, BlockHitResult hitResult) {
+        BlockPos pos = hitResult.getBlockPos();
+
+        var block = getBlockState().getBlock();
+        if (block instanceof AEBaseBlock aeBlock) {
+            if (aeBlock.rotateAroundFaceAxis(level, pos, hitResult.getDirection())) {
+                return InteractionResult.sidedSuccess(level.isClientSide());
+            }
+        }
+
+        return InteractionResult.PASS;
     }
 
 }

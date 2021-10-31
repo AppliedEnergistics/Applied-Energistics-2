@@ -48,13 +48,11 @@ public interface ICableBusContainer {
 
     boolean activate(Player player, InteractionHand hand, Vec3 vecFromPool);
 
-    boolean clicked(Player player, InteractionHand hand, Vec3 hitVec);
-
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 
     boolean isEmpty();
 
-    SelectedPart selectPart(Vec3 v3);
+    SelectedPart selectPartLocal(Vec3 v3);
 
     boolean recolourBlock(Direction side, AEColor colour, Player who);
 

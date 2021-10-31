@@ -30,7 +30,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import mcp.mobius.waila.api.BlockAccessor;
@@ -204,10 +203,8 @@ public final class CableBusDataProvider {
      * @return maybe the looked at {@link IPart}
      */
     private static SelectedPart getPart(BlockEntity blockEntity, HitResult hitResult) {
-        if (blockEntity instanceof IPartHost host && hitResult instanceof BlockHitResult) {
-            var pos = ((BlockHitResult) hitResult).getBlockPos();
-            var position = hitResult.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ());
-            return host.selectPart(position);
+        if (blockEntity instanceof IPartHost host) {
+            return host.selectPartWorld(hitResult.getLocation());
         }
 
         return new SelectedPart();

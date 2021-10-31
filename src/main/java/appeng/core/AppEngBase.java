@@ -65,6 +65,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.hooks.SkyStoneBreakSpeed;
+import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
@@ -161,6 +162,7 @@ public abstract class AppEngBase implements AppEng {
         MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 
+        MinecraftForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         MinecraftForge.EVENT_BUS.register(new PartPlacement());
         MinecraftForge.EVENT_BUS.addListener(InitBiomeModifications::init);
         MinecraftForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);

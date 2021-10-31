@@ -78,8 +78,6 @@ import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ClickPacket;
 import appeng.helpers.AEMaterials;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
@@ -184,7 +182,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter level, BlockPos pos,
             Player player) {
         final Vec3 v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
-        final SelectedPart sp = this.cb(level, pos).selectPart(v3);
+        final SelectedPart sp = this.cb(level, pos).selectPartLocal(v3);
 
         if (sp.part != null) {
             return sp.part.getItemStack(PartItemStack.PICK);
@@ -224,28 +222,6 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         }
 
         return out;
-    }
-
-    @Override
-    public void attack(BlockState state, Level level, BlockPos pos, Player player) {
-        if (level.isClientSide()) {
-            final HitResult rtr = Minecraft.getInstance().hitResult;
-            if (rtr instanceof BlockHitResult brtr) {
-                if (brtr.getBlockPos().equals(pos)) {
-                    final Vec3 hitVec = rtr.getLocation().subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
-
-                    if (this.cb(level, pos).clicked(player, InteractionHand.MAIN_HAND, hitVec)) {
-                        NetworkHandler.instance()
-                                .sendToServer(new ClickPacket(pos, brtr.getDirection(), (float) hitVec.x,
-                                        (float) hitVec.y, (float) hitVec.z, InteractionHand.MAIN_HAND, true));
-                    }
-                }
-            }
-        }
-    }
-
-    public void onBlockClickPacket(Level level, BlockPos pos, Player playerIn, InteractionHand hand, Vec3 hitVec) {
-        this.cb(level, pos).clicked(playerIn, hand, hitVec);
     }
 
     @Override
@@ -440,5 +416,4 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             }
         });
     }
-
 }

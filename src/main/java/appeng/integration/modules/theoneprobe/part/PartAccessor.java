@@ -20,23 +20,18 @@ package appeng.integration.modules.theoneprobe.part;
 
 import java.util.Optional;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.SelectedPart;
 
 public final class PartAccessor {
 
     public Optional<IPart> getMaybePart(final BlockEntity te, final IProbeHitData data) {
         if (te instanceof IPartHost host) {
-            BlockPos pos = data.getPos();
-            final Vec3 position = data.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ());
-            final SelectedPart sp = host.selectPart(position);
+            var sp = host.selectPartWorld(data.getHitVec());
 
             if (sp.part != null) {
                 return Optional.of(sp.part);

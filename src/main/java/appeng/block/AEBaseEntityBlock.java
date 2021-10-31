@@ -19,12 +19,9 @@
 package appeng.block;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.google.common.collect.Lists;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +33,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -51,8 +47,6 @@ import appeng.api.util.IOrientable;
 import appeng.block.networking.CableBusBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.AEBaseInvBlockEntity;
-import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -193,41 +187,6 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         ItemStack heldItem;
         if (player != null && !player.getItemInHand(hand).isEmpty()) {
             heldItem = player.getItemInHand(hand);
-
-            if (InteractionUtil.canWrenchDisassemble(heldItem) && InteractionUtil.isInAlternateUseMode(player)) {
-                final BlockState blockState = level.getBlockState(pos);
-                final Block block = blockState.getBlock();
-
-                final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
-
-                if (blockEntity == null) {
-                    return InteractionResult.FAIL;
-                }
-
-                if (blockEntity instanceof CableBusBlockEntity || blockEntity instanceof SkyChestBlockEntity) {
-                    return InteractionResult.FAIL;
-                }
-
-                final ItemStack[] itemDropCandidates = Platform.getBlockDrops(level, pos);
-                final ItemStack op = new ItemStack(this);
-
-                for (final ItemStack ol : itemDropCandidates) {
-                    if (Platform.itemComparisons().isEqualItemType(ol, op)) {
-                        final CompoundTag tag = blockEntity.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
-                        if (tag != null) {
-                            ol.setTag(tag);
-                        }
-                    }
-                }
-
-                if (block.removedByPlayer(blockState, level, pos, player, false, level.getFluidState(pos))) {
-                    final List<ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
-                    Platform.spawnDrops(level, pos, itemsToDrop);
-                    level.removeBlock(pos, false);
-                }
-
-                return InteractionResult.FAIL;
-            }
 
             if (heldItem.getItem() instanceof IMemoryCard memoryCard && !(this instanceof CableBusBlock)) {
                 final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);

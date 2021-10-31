@@ -24,9 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.networking.energy.IEnergySource;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEItemStack;
@@ -101,7 +99,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onClicked(Player player, InteractionHand hand, Vec3 pos) {
+    public boolean onClicked(Player player, Vec3 pos) {
         if (isRemote()) {
             return true;
         }
@@ -122,7 +120,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onShiftClicked(Player player, InteractionHand hand, Vec3 pos) {
+    public boolean onShiftClicked(Player player, Vec3 pos) {
         if (isRemote()) {
             return true;
         }
@@ -167,8 +165,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                     }
                 }
             } else {
-                final IAEItemStack input = AEItemStack.fromItemStack(player.getItemInHand(hand));
-                final IAEItemStack failedToInsert = StorageHelper.poweredInsert(energy, cell, input,
+                var input = AEItemStack.fromItemStack(player.getItemInHand(hand));
+                var failedToInsert = StorageHelper.poweredInsert(energy, cell, input,
                         new PlayerSource(player, this));
                 player.setItemInHand(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
             }
@@ -176,8 +174,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     private void extractItem(final Player player, int count) {
-        final IAEItemStack input = this.getDisplayed();
-        if (input == null) {
+        if (this.getDisplayed() == null) {
             return;
         }
 
@@ -186,14 +183,13 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         }
 
         getMainNode().ifPresent(grid -> {
-            final IEnergySource energy = grid.getEnergyService();
-            final IMEMonitor<IAEItemStack> cell = grid.getStorageService()
-                    .getInventory(StorageChannels.items());
+            var energy = grid.getEnergyService();
+            var cell = grid.getStorageService().getInventory(StorageChannels.items());
 
-            input.setStackSize(count);
+            var toExtract = getDisplayed().copy();
+            toExtract.setStackSize(count);
 
-            final IAEItemStack retrieved = StorageHelper.poweredExtraction(energy, cell, input,
-                    new PlayerSource(player, this));
+            var retrieved = StorageHelper.poweredExtraction(energy, cell, toExtract, new PlayerSource(player, this));
             if (retrieved != null) {
                 ItemStack newItems = retrieved.createItemStack();
                 if (!player.getInventory().add(newItems)) {

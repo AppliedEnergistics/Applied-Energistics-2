@@ -337,7 +337,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public SelectedPart selectPart(final Vec3 pos) {
+    public SelectedPart selectPartLocal(final Vec3 pos) {
         for (final Direction side : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(side);
             if (p != null) {
@@ -622,7 +622,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     public boolean activate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        final SelectedPart p = this.selectPart(pos);
+        final SelectedPart p = this.selectPartLocal(pos);
         if (p != null && p.part != null) {
             // forge sends activate even when sneaking in some cases (eg emtpy hand)
             // if sneaking try shift activate first.
@@ -630,19 +630,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 return true;
             }
             return p.part.onActivate(player, hand, pos);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean clicked(Player player, InteractionHand hand, Vec3 hitVec) {
-        final SelectedPart p = this.selectPart(hitVec);
-        if (p != null && p.part != null) {
-            if (InteractionUtil.isInAlternateUseMode(player)) {
-                return p.part.onShiftClicked(player, hand, hitVec);
-            } else {
-                return p.part.onClicked(player, hand, hitVec);
-            }
         }
         return false;
     }

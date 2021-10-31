@@ -26,7 +26,6 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
-import appeng.core.sync.packets.ClickPacket;
 import appeng.core.sync.packets.CompassRequestPacket;
 import appeng.core.sync.packets.CompassResponsePacket;
 import appeng.core.sync.packets.ConfigButtonPacket;
@@ -48,6 +47,7 @@ import appeng.core.sync.packets.MatterCannonPacket;
 import appeng.core.sync.packets.MockExplosionPacket;
 import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.core.sync.packets.NetworkStatusPacket;
+import appeng.core.sync.packets.PartLeftClickPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
@@ -85,7 +85,7 @@ public class BasePacketHandler {
 
         GUI_DATA_SYNC(GuiDataSyncPacket.class, GuiDataSyncPacket::new),
 
-        CLICK(ClickPacket.class, ClickPacket::new),
+        CLICK(PartLeftClickPacket.class, PartLeftClickPacket::new),
 
         SWITCH_GUIS(SwitchGuisPacket.class, SwitchGuisPacket::new),
 

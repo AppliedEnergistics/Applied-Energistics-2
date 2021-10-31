@@ -61,6 +61,7 @@ import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.helpers.IMouseWheelItem;
+import appeng.hooks.BlockAttackHook;
 import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitAutoRotatingModel;
 import appeng.init.client.InitBlockColors;
@@ -105,6 +106,8 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::registerEntityRenderers);
         modEventBus.addListener(this::registerEntityLayerDefinitions);
+
+        BlockAttackHook.install();
 
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (TickEvent.ClientTickEvent e) -> {
             if (e.phase == TickEvent.Phase.START) {
