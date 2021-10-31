@@ -27,7 +27,6 @@ import net.minecraft.CrashReportCategory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPart;
 
 public class TickTracker implements Comparable<TickTracker> {
 
@@ -66,16 +65,13 @@ public class TickTracker implements Comparable<TickTracker> {
 
     }
 
-    public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
-        if (this.getGridTickable() instanceof IPart part) {
-            part.addEntityCrashInfo(crashreportcategory);
-        }
+    public void addEntityCrashInfo(CrashReportCategory category) {
+        node.fillCrashReportCategory(category);
 
-        crashreportcategory.setDetail("CurrentTickRate", this.getCurrentRate());
-        crashreportcategory.setDetail("MinTickRate", this.getRequest().minTickRate);
-        crashreportcategory.setDetail("MaxTickRate", this.getRequest().maxTickRate);
-        crashreportcategory.setDetail("Node", this.getNode());
-        crashreportcategory.setDetail("ConnectedSides", this.getNode().getConnectedSides());
+        category.setDetail("CurrentTickRate", this.getCurrentRate());
+        category.setDetail("MinTickRate", this.getRequest().minTickRate);
+        category.setDetail("MaxTickRate", this.getRequest().maxTickRate);
+        category.setDetail("ConnectedSides", this.getNode().getConnectedSides());
     }
 
     public int getCurrentRate() {

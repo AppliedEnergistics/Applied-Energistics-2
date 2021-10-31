@@ -159,6 +159,14 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     @Override
     public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
         crashreportcategory.setDetail("Part Side", this.getSide());
+        var beHost = getBlockEntity();
+        if (beHost != null) {
+            beHost.fillCrashReportCategory(crashreportcategory);
+            var level = beHost.getLevel();
+            if (level != null) {
+                crashreportcategory.setDetail("Level", level.dimension());
+            }
+        }
     }
 
     @Override
