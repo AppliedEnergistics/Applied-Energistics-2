@@ -69,6 +69,7 @@ import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.helpers.IMouseWheelItem;
+import appeng.hooks.BlockAttackHook;
 import appeng.hooks.ICustomPickBlock;
 import appeng.hooks.MouseWheelScrolled;
 import appeng.init.client.InitAdditionalModels;
@@ -113,6 +114,7 @@ public class AppEngClient extends AppEngBase {
         this.registerEntityRenderers();
         this.registerEntityLayerDefinitions();
 
+        BlockAttackHook.install();
         ClientPickBlockGatherCallback.EVENT.register(this::onPickBlock);
         ClientTickEvents.START_CLIENT_TICK.register(this::updateCableRenderMode);
 

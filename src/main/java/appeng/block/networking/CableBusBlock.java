@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.block.BlockAttackInteractionAware;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -77,8 +76,6 @@ import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PartLeftClickPacket;
 import appeng.helpers.AEMaterials;
 import appeng.hooks.ICustomBlockDestroyEffect;
 import appeng.hooks.ICustomBlockHitEffect;
@@ -88,12 +85,10 @@ import appeng.hooks.INeighborChangeSensitive;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
-import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implements IAEFacade, SimpleWaterloggedBlock,
-        ICustomBlockHitEffect, ICustomBlockDestroyEffect, INeighborChangeSensitive, IDynamicLadder, ICustomPickBlock,
-        BlockAttackInteractionAware {
+        ICustomBlockHitEffect, ICustomBlockDestroyEffect, INeighborChangeSensitive, IDynamicLadder, ICustomPickBlock {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
@@ -231,43 +226,6 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         }
 
         return out;
-    }
-
-    @Override
-    public boolean onAttackInteraction(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
-            Direction direction) {
-        if (!level.isClientSide()) {
-            return false;
-        }
-
-        if (Minecraft.getInstance().hitResult instanceof BlockHitResult blockHitResult) {
-            if (blockHitResult.getBlockPos().equals(pos)) {
-                var localPos = blockHitResult.getLocation().subtract(
-                        blockHitResult.getBlockPos().getX(),
-                        blockHitResult.getBlockPos().getY(),
-                        blockHitResult.getBlockPos().getZ());
-
-                var p = cb(level, pos).selectPartLocal(localPos);
-                if (p.part != null) {
-                    boolean alternateUseMode = InteractionUtil.isInAlternateUseMode(player);
-                    boolean activated;
-                    if (alternateUseMode) {
-                        activated = p.part.onShiftClicked(player, localPos);
-                    } else {
-                        activated = p.part.onClicked(player, localPos);
-                    }
-
-                    if (activated) {
-                        NetworkHandler.instance().sendToServer(
-                                new PartLeftClickPacket(blockHitResult, alternateUseMode));
-                        // Do not perform the default action (of spawning break particles and breaking the block)
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 
     @Override
