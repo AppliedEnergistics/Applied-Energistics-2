@@ -72,7 +72,8 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
             Supplier<Random> randomSupplier, RenderContext context) {
         CraftingCubeModelData modelData = getModelData(blockView, pos);
-        EnumSet<Direction> connections = modelData.getConnections();
+        EnumSet<Direction> connections = modelData != null ? modelData.getConnections()
+                : EnumSet.noneOf(Direction.class);
 
         CubeBuilder builder = new CubeBuilder(context.getEmitter());
 
