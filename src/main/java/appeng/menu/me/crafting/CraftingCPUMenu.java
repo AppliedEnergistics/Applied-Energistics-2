@@ -93,7 +93,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
             this.cpu.craftingLogic.removeListener(cpuChangeListener);
         }
 
-        this.incrementalUpdateHelper.clear();
+        this.incrementalUpdateHelper.reset();
 
         if (c instanceof CraftingCPUCluster) {
             this.cpu = (CraftingCPUCluster) c;
