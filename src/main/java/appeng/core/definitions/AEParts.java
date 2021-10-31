@@ -20,6 +20,8 @@ package appeng.core.definitions;
 
 import static appeng.core.definitions.AEItems.item;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.resources.ResourceLocation;
@@ -82,6 +84,8 @@ import appeng.parts.reporting.StorageMonitorPart;
  */
 @SuppressWarnings("unused")
 public final class AEParts {
+    public static final List<ColoredItemDefinition> COLORED_PARTS = new ArrayList<>();
+
     // spotless:off
     public static final ColoredItemDefinition SMART_CABLE = constructColoredDefinition("smart_cable", SmartCablePart.class, SmartCablePart::new);
     public static final ColoredItemDefinition COVERED_CABLE = constructColoredDefinition("covered_cable", CoveredCablePart.class, CoveredCablePart::new);
@@ -142,7 +146,7 @@ public final class AEParts {
 
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
-        final ColoredItemDefinition definition = new ColoredItemDefinition();
+        var definition = new ColoredItemDefinition();
         for (final AEColor color : AEColor.values()) {
             String id = color.registryPrefix + '_' + idSuffix;
 
@@ -150,6 +154,8 @@ public final class AEParts {
 
             definition.add(color, AppEng.makeId(id), itemDef);
         }
+
+        COLORED_PARTS.add(definition);
 
         return definition;
     }
