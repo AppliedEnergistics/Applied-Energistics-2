@@ -31,6 +31,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -173,4 +174,8 @@ public interface IGridNode {
     @Nonnull
     AEColor getGridColor();
 
+    /**
+     * Fills in details about this node in the given crash report category.
+     */
+    void fillCrashReportCategory(CrashReportCategory category);
 }

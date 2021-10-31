@@ -36,6 +36,8 @@ import com.google.common.collect.Multimap;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.minecraft.CrashReport;
+import net.minecraft.ReportedException;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -227,7 +229,14 @@ public class TickHandler {
         // tick networks
         this.grids.updateNetworks();
         for (var g : this.grids.getNetworks()) {
-            g.onLevelStartTick(level);
+            try {
+                g.onLevelStartTick(level);
+            } catch (Throwable t) {
+                CrashReport crashReport = CrashReport.forThrowable(t, "Ticking grid on start of level tick");
+                g.fillCrashReportCategory(crashReport.addCategory("Grid being ticked"));
+                level.fillReportDetails(crashReport);
+                throw new ReportedException(crashReport);
+            }
         }
     }
 
@@ -237,7 +246,14 @@ public class TickHandler {
 
         // tick networks
         for (var g : this.grids.getNetworks()) {
-            g.onLevelEndTick(level);
+            try {
+                g.onLevelEndTick(level);
+            } catch (Throwable t) {
+                CrashReport crashReport = CrashReport.forThrowable(t, "Ticking grid on end of level tick");
+                g.fillCrashReportCategory(crashReport.addCategory("Grid being ticked"));
+                level.fillReportDetails(crashReport);
+                throw new ReportedException(crashReport);
+            }
         }
     }
 
@@ -249,14 +265,26 @@ public class TickHandler {
 
         // tick networks
         for (var g : this.grids.getNetworks()) {
-            g.onServerStartTick();
+            try {
+                g.onServerStartTick();
+            } catch (Throwable t) {
+                CrashReport crashReport = CrashReport.forThrowable(t, "Ticking grid on start of server tick");
+                g.fillCrashReportCategory(crashReport.addCategory("Grid being ticked"));
+                throw new ReportedException(crashReport);
+            }
         }
     }
 
     private void onServerTickEnd() {
         // tick networks
         for (var g : this.grids.getNetworks()) {
-            g.onServerEndTick();
+            try {
+                g.onServerEndTick();
+            } catch (Throwable t) {
+                CrashReport crashReport = CrashReport.forThrowable(t, "Ticking grid on end of server tick");
+                g.fillCrashReportCategory(crashReport.addCategory("Grid being ticked"));
+                throw new ReportedException(crashReport);
+            }
         }
 
         // cross level queue.
@@ -329,8 +357,14 @@ public class TickHandler {
                 for (var bt : chunkQueue) {
                     // Only ready block entities which weren't destroyed in the meantime.
                     if (!bt.isRemoved()) {
-                        // This could load more chunks, but the the earliest time to be initialized is the next tick.
-                        bt.onReady();
+                        try {
+                            // This could load more chunks, but the earliest time to be initialized is the next tick.
+                            bt.onReady();
+                        } catch (Throwable t) {
+                            CrashReport crashReport = CrashReport.forThrowable(t, "Readying AE2 block entity");
+                            bt.fillCrashReportCategory(crashReport.addCategory("Block entity being readied"));
+                            throw new ReportedException(crashReport);
+                        }
                     }
                 }
             }
