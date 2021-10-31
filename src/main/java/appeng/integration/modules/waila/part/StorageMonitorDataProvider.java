@@ -25,7 +25,7 @@ import net.minecraft.network.chat.Component;
 
 import appeng.api.parts.IPart;
 import appeng.integration.modules.waila.WailaText;
-import appeng.parts.reporting.StorageMonitorPart;
+import appeng.parts.reporting.AbstractMonitorPart;
 import appeng.util.Platform;
 
 /**
@@ -35,12 +35,14 @@ public final class StorageMonitorDataProvider implements IPartDataProvider {
 
     @Override
     public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
-        if (part instanceof StorageMonitorPart monitor) {
+        if (part instanceof AbstractMonitorPart monitor) {
             var displayed = monitor.getDisplayed();
             var isLocked = monitor.isLocked();
 
-            tooltip.add(WailaText.Showing.textComponent().append(": ")
-                    .append(Platform.getItemDisplayName(displayed)));
+            if (displayed != null) {
+                tooltip.add(WailaText.Showing.textComponent().append(": ")
+                        .append(Platform.getItemDisplayName(displayed)));
+            }
 
             tooltip.add(isLocked ? WailaText.Locked.textComponent() : WailaText.Unlocked.textComponent());
         }

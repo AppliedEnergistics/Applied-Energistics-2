@@ -77,7 +77,7 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule, AEToo
             IUpgradeInventory upgrades = null;
 
             if (te instanceof IPartHost) {
-                final SelectedPart sp = ((IPartHost) te).selectPart(context.getClickLocation());
+                final SelectedPart sp = ((IPartHost) te).selectPartWorld(context.getClickLocation());
                 if (sp.part instanceof IUpgradeableObject) {
                     upgrades = ((IUpgradeableObject) sp.part).getUpgrades();
                 }

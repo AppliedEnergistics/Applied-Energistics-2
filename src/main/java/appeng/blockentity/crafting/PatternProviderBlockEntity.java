@@ -53,10 +53,6 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     public void setSide(final Direction facing) {
-        if (isRemote()) {
-            return;
-        }
-
         Direction newForward;
 
         if (!this.omniDirectional && this.getForward() == facing.getOpposite()) {
@@ -82,9 +78,11 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             this.setOrientation(newForward, newUp);
         }
 
-        this.configureNodeSides();
-        this.markForUpdate();
-        this.saveChanges();
+        if (!isRemote()) {
+            this.configureNodeSides();
+            this.markForUpdate();
+            this.saveChanges();
+        }
     }
 
     private void configureNodeSides() {

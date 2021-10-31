@@ -72,7 +72,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public SelectedPart selectPart(final Vec3 v3) {
+    public SelectedPart selectPartLocal(final Vec3 v3) {
         return new SelectedPart();
     }
 
@@ -99,11 +99,6 @@ public class NullCableBusContainer implements ICableBusContainer {
     @Override
     public CableBusRenderState getRenderState() {
         return new CableBusRenderState();
-    }
-
-    @Override
-    public boolean clicked(Player player, InteractionHand hand, Vec3 hitVec) {
-        return false;
     }
 
 }

@@ -27,6 +27,9 @@ accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
 # For Encoded Pattern Rendering
 accessible method net/minecraft/client/renderer/entity/ItemRenderer renderGuiItem (Lnet/minecraft/world/item/ItemStack;IILnet/minecraft/client/resources/model/BakedModel;)V
 
+# Fabric's Attack Block Hook doesn't set the interaction delay
+accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyDelay I
+
 #Tags
 accessible method net/minecraft/tags/ItemTags bind (Ljava/lang/String;)Lnet/minecraft/tags/Tag$Named;
 accessible method net/minecraft/tags/BlockTags bind (Ljava/lang/String;)Lnet/minecraft/tags/Tag$Named;

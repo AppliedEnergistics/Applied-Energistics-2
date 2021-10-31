@@ -239,15 +239,14 @@ public interface IPart extends ICustomCableConnection {
     boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos);
 
     /**
-     * Called when you left click the part, very similar to Block.onBlockClicked
-     *
+     * Called when you left click the part, very similar to Block.onBlockClicked a
+     * 
      * @param player left clicking player
-     * @param hand   hand used
-     * @param pos    position of block
+     * @param pos    clicked position, in block-local coordinates
      *
-     * @return if your activate method performed something, you should use false unless you really need it.
+     * @return True if your part wants to suppress the default behavior of attacking the part host.
      */
-    default boolean onClicked(Player player, InteractionHand hand, Vec3 pos) {
+    default boolean onClicked(Player player, Vec3 pos) {
         return false;
     }
 
@@ -255,12 +254,11 @@ public interface IPart extends ICustomCableConnection {
      * Called when you shift-left click the part, very similar to Block.onBlockClicked
      *
      * @param player shift-left clicking player
-     * @param hand   hand used
-     * @param pos    position of block
+     * @param pos    clicked position, in block-local coordinates
      *
-     * @return if your activate method performed something, you should use false unless you really need it.
+     * @return True if your part wants to suppress the default behavior of attacking the part host.
      */
-    default boolean onShiftClicked(Player player, InteractionHand hand, Vec3 pos) {
+    default boolean onShiftClicked(Player player, Vec3 pos) {
         return false;
     }
 
