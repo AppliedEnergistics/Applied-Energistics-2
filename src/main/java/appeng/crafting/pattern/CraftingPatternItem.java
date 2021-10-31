@@ -47,7 +47,7 @@ public class CraftingPatternItem extends EncodedPatternItem {
 
         try {
             return new AECraftingPattern(tag.copy(), level);
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             AELog.warn("Could not decode an invalid crafting pattern %s: %s", tag, e);
             return null;
         }

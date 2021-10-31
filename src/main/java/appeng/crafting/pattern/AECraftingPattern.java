@@ -76,11 +76,11 @@ public class AECraftingPattern implements IAEPatternDetails {
 
         // Find recipe
         var recipeId = AEPatternHelper.getRecipeId(definition);
-        var recipe = level.getRecipeManager().byKey(recipeId).orElse(null);
-        if (recipe == null || recipe.getType() != RecipeType.CRAFTING) {
-            throw new IllegalStateException("recipe id is not a crafting recipe");
+        var recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
+        if (!(recipe instanceof CraftingRecipe craftingRecipe)) {
+            throw new IllegalStateException("recipe id '" + recipeId + "' is not a valid crafting recipe");
         }
-        this.recipe = (CraftingRecipe) recipe;
+        this.recipe = craftingRecipe;
 
         // Build frame and find output
         this.testFrame = new CraftingContainer(new NullMenu(), 3, 3);
@@ -89,7 +89,13 @@ public class AECraftingPattern implements IAEPatternDetails {
                 testFrame.setItem(i, sparseInputs[i].createItemStack());
             }
         }
+        if (!this.recipe.matches(testFrame, level)) {
+            throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
+        }
         this.outputs = new IAEItemStack[] { AEItemStack.fromItemStack(this.recipe.assemble(testFrame)) };
+        if (this.outputs[0] == null) {
+            throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
+        }
 
         // Compress inputs
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
