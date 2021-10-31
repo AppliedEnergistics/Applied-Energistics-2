@@ -20,7 +20,6 @@ package appeng.crafting.pattern;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -97,7 +96,7 @@ class AEPatternHelper {
     }
 
     public static <T extends IAEStack> T[] condenseStacks(T[] collection) {
-        final List<T> merged = Arrays.stream(collection).filter(Objects::nonNull)
+        var merged = Arrays.stream(collection).filter(Objects::nonNull)
                 .collect(Collectors.toMap(Function.identity(), IAEStack::copy,
                         (left, right) -> {
                             left.setStackSize(left.getStackSize() + right.getStackSize());

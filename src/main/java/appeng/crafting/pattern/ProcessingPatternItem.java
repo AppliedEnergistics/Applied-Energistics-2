@@ -37,8 +37,8 @@ public class ProcessingPatternItem extends EncodedPatternItem {
     public AEProcessingPattern decode(CompoundTag tag, Level level, boolean tryRecovery) {
         try {
             return new AEProcessingPattern(tag.copy());
-        } catch (IllegalStateException e) {
-            AELog.warn("Could not decode an invalid crafting pattern %s: %s", tag, e);
+        } catch (Exception e) {
+            AELog.warn("Could not decode an invalid processing pattern %s: %s", tag, e);
             return null;
         }
     }
