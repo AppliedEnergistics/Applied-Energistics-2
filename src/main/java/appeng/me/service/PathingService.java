@@ -30,6 +30,7 @@ import appeng.api.networking.pathing.IPathingService;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
+import appeng.me.Grid;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.me.pathfinding.*;
@@ -48,7 +49,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     private final Set<ControllerBlockEntity> controllers = new HashSet<>();
     private final Set<IGridNode> requireChannels = new HashSet<>();
     private final Set<IGridNode> blockDense = new HashSet<>();
-    private final IGrid myGrid;
+    private final Grid grid;
     private int channelsInUse = 0;
     private int channelsByBlocks = 0;
     private double channelPowerUsage = 0.0;
@@ -61,7 +62,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     private HashSet<IPathItem> semiOpen = new HashSet<>();
 
     public PathingService(final IGrid g) {
-        this.myGrid = g;
+        this.grid = (Grid) g;
     }
 
     @Override
@@ -86,24 +87,24 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                     used = 0;
                 }
 
-                final int nodes = this.myGrid.size();
+                final int nodes = this.grid.size();
                 this.setChannelsInUse(used);
 
                 this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
                 this.setChannelsByBlocks(nodes * used);
                 this.setChannelPowerUsage(this.getChannelsByBlocks() / 128.0);
 
-                this.myGrid.getPivot().beginVisit(new AdHocChannelUpdater(used));
+                this.grid.getPivot().beginVisit(new AdHocChannelUpdater(used));
             } else if (this.controllerState == ControllerState.CONTROLLER_CONFLICT) {
                 this.ticksUntilReady = 20;
-                this.myGrid.getPivot().beginVisit(new AdHocChannelUpdater(0));
+                this.grid.getPivot().beginVisit(new AdHocChannelUpdater(0));
             } else {
-                var nodes = this.myGrid.size();
+                var nodes = this.grid.size();
                 this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
                 final HashSet<IPathItem> closedList = new HashSet<>();
                 this.semiOpen = new HashSet<>();
 
-                for (final IGridNode node : this.myGrid.getMachineNodes(ControllerBlockEntity.class)) {
+                for (final IGridNode node : this.grid.getMachineNodes(ControllerBlockEntity.class)) {
                     closedList.add((IPathItem) node);
                     for (final IGridConnection gcc : node.getConnections()) {
                         var gc = (GridConnection) gcc;
@@ -151,10 +152,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     }
 
     private void postBootingStatusChange() {
-        this.myGrid.postEvent(new GridBootingStatusChange());
-        for (var node : this.myGrid.getNodes()) {
-            ((GridNode) node).notifyStatusChange(IGridNodeListener.State.GRID_BOOT);
-        }
+        this.grid.postEvent(new GridBootingStatusChange());
+        this.grid.notifyAllNodes(IGridNodeListener.State.GRID_BOOT);
     }
 
     @Override
@@ -200,7 +199,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         this.controllerState = ControllerValidator.calculateState(controllers);
 
         if (old != this.controllerState) {
-            this.myGrid.postEvent(new GridControllerChange());
+            this.grid.postEvent(new GridControllerChange());
         }
     }
 
@@ -232,7 +231,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     }
 
     private void achievementPost() {
-        var server = myGrid.getPivot().getLevel().getServer();
+        var server = grid.getPivot().getLevel().getServer();
 
         if (this.lastChannels != this.getChannelsInUse()) {
             final IAdvancementTrigger currentBracket = this.getAchievementBracket(this.getChannelsInUse());
