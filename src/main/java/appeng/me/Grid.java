@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
+import net.minecraft.CrashReportCategory;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.GridServicesInternal;
@@ -289,6 +290,13 @@ public class Grid implements IGrid {
             }
         } finally {
             ITERATION_BUFFER.clear();
+        }
+    }
+
+    public void fillCrashReportCategory(CrashReportCategory category) {
+        category.setDetail("Nodes", this.machines.size());
+        if (this.pivot != null) {
+            this.pivot.fillCrashReportCategory(category);
         }
     }
 }
