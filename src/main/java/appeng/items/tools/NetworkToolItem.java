@@ -36,7 +36,6 @@ import appeng.api.util.INetworkToolAware;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
-import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.networktool.NetworkStatusMenu;
@@ -118,10 +117,6 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem 
 
         // The network tool has special behavior for machines hosting world-accessible nodes
         var nodeHost = GridHelper.getNodeHost(level, pos);
-
-        if (p.containerMenu instanceof AEBaseMenu) {
-            return true;
-        }
 
         if (nodeHost != null) {
             MenuOpener.open(NetworkStatusMenu.TYPE, p, MenuLocator.forItemUseContext(useContext));
