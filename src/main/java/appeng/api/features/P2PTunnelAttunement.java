@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 - 2015 AlgorithmX2
+ * Copyright (c) 2021 TeamAppliedEnergistics
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -47,9 +47,9 @@ import appeng.api.config.TunnelType;
 public final class P2PTunnelAttunement {
     private static final int INITIAL_CAPACITY = 40;
 
-    private static final Map<ItemStack, TunnelType> tunnels = new HashMap<>(INITIAL_CAPACITY);
-    private static final Map<String, TunnelType> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
-    private static final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>(INITIAL_CAPACITY);
+    static final Map<ItemStack, TunnelType> tunnels = new HashMap<>(INITIAL_CAPACITY);
+    static final Map<String, TunnelType> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
+    static final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>(INITIAL_CAPACITY);
 
     private P2PTunnelAttunement() {
     }

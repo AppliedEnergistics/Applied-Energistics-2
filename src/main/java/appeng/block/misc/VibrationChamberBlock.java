@@ -48,7 +48,7 @@ import appeng.util.InteractionUtil;
 public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationChamberBlockEntity> {
 
     // Indicates that the vibration chamber is currently working
-    private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public VibrationChamberBlock() {
         super(defaultProps(Material.METAL).strength(4.2F));

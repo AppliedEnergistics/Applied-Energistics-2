@@ -35,8 +35,8 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.config.TunnelType;
 import appeng.api.features.P2PTunnelAttunement;
+import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.parts.IPart;
@@ -170,7 +170,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
         final ItemStack is = player.getItemInHand(hand);
 
-        final TunnelType tt = P2PTunnelAttunement.getTunnelTypeByItem(is);
+        var tt = P2PTunnelAttunement.getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
             final CompoundTag data = mc.getData(is);
 
@@ -200,21 +200,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
         } else if (tt != null) // attunement
         {
-            final ItemStack newType = switch (tt) {
-                case LIGHT -> AEParts.LIGHT_P2P_TUNNEL.stack();
-                case FE_POWER -> AEParts.FE_P2P_TUNNEL.stack();
-                case FLUID -> AEParts.FLUID_P2P_TUNNEL.stack();
-                case ITEM -> AEParts.ITEM_P2P_TUNNEL.stack();
-                case ME -> AEParts.ME_P2P_TUNNEL.stack();
-                case REDSTONE -> AEParts.REDSTONE_P2P_TUNNEL.stack();
-
-                /*
-                 * case COMPUTER_MESSAGE: for( ItemStack stack : parts.p2PTunnelOpenComputers().maybeStack( 1 ).asSet()
-                 * ) { newType = stack; } break;
-                 */
-
-                default -> ItemStack.EMPTY;
-            };
+            var newType = P2PTunnelAttunementInternal.getTunnelPart(tt);
 
             if (!newType.isEmpty() && !ItemStack.isSame(newType, this.getItemStack())) {
                 final boolean oldOutput = this.isOutput();
