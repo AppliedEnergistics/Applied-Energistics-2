@@ -9,13 +9,12 @@ import org.spongepowered.tools.agent.MixinAgent;
 public class LauncherAccessor {
     private static boolean initialized;
 
-    public synchronized static void init() {
+    public synchronized static void init() throws Exception {
         if (initialized) {
             return;
         }
         initialized = true;
         var instrumentation = ByteBuddyAgent.install();
-        MixinAgent.init(instrumentation);
 
         new TestLauncher(instrumentation);
     }
