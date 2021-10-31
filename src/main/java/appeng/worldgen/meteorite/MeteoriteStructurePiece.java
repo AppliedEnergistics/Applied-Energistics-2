@@ -96,9 +96,9 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel level, StructureFeatureManager p_230383_2_,
+    public boolean postProcess(WorldGenLevel level, StructureFeatureManager featureManager,
             ChunkGenerator chunkGeneratorIn,
-            Random rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
+            Random rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos centerPos) {
         MeteoritePlacer placer = new MeteoritePlacer(level, settings, bounds, rand);
         placer.place();
 
