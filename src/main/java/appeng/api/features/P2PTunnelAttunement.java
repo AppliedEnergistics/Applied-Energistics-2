@@ -31,7 +31,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 import com.google.common.base.Preconditions;
@@ -40,10 +39,14 @@ import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.config.TunnelType;
+import appeng.core.definitions.AEParts;
+import appeng.items.parts.PartItem;
+import appeng.parts.p2p.P2PTunnelPart;
 
 /**
  * A Registry for how p2p Tunnels are attuned
@@ -52,9 +55,40 @@ import appeng.api.config.TunnelType;
 public final class P2PTunnelAttunement {
     private static final int INITIAL_CAPACITY = 40;
 
-    static final Map<ItemStack, TunnelType> tunnels = new HashMap<>(INITIAL_CAPACITY);
-    static final Map<String, TunnelType> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
+    static final Map<Item, Item> tunnels = new HashMap<>(INITIAL_CAPACITY);
+    static final Map<String, Item> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
     static final List<ApiAttunement<?>> apiAttunements = new ArrayList<>();
+
+    /**
+     * The default tunnel part for ME tunnels. Use this to register additional attunement options.
+     */
+    public static final ItemLike ME_TUNNEL = AEParts.ME_P2P_TUNNEL;
+
+    /**
+     * The default tunnel part for energy (i.e. Forge Energy) tunnels. Use this to register additional attunement
+     * options.
+     */
+    public static final ItemLike ENERGY_TUNNEL = AEParts.FE_P2P_TUNNEL;
+
+    /**
+     * The default tunnel part for redstone tunnels. Use this to register additional attunement options.
+     */
+    public static final ItemLike REDSTONE_TUNNEL = AEParts.REDSTONE_P2P_TUNNEL;
+
+    /**
+     * The default tunnel part for fluid tunnels. Use this to register additional attunement options.
+     */
+    public static final ItemLike FLUID_TUNNEL = AEParts.FLUID_P2P_TUNNEL;
+
+    /**
+     * The default tunnel part for item tunnels. Use this to register additional attunement options.
+     */
+    public static final ItemLike ITEM_TUNNEL = AEParts.ITEM_P2P_TUNNEL;
+
+    /**
+     * The default tunnel part for light tunnels. Use this to register additional attunement options.
+     */
+    public static final ItemLike LIGHT_TUNNEL = AEParts.LIGHT_P2P_TUNNEL;
 
     private P2PTunnelAttunement() {
     }
@@ -62,45 +96,45 @@ public final class P2PTunnelAttunement {
     /**
      * Allows third parties to register items from their mod as potential attunements for AE's P2P Tunnels
      *
-     * @param trigger - the item which triggers attunement
-     * @param type    - the type of tunnel
+     * @param trigger    - the item which triggers attunement
+     * @param tunnelPart The P2P-tunnel part item.
      */
-    public synchronized static void addNewAttunement(@Nonnull ItemStack trigger, @Nonnull TunnelType type) {
+    public synchronized static void addItem(@Nonnull ItemLike trigger, @Nonnull ItemLike tunnelPart) {
         Objects.requireNonNull(trigger, "trigger");
-        Objects.requireNonNull(type, "type");
-        Preconditions.checkArgument(!trigger.isEmpty(), "!trigger.isEmpty()");
-        tunnels.put(trigger, type);
+        Item triggerItem = trigger.asItem();
+        Objects.requireNonNull(triggerItem, "trigger.asItem()");
+        Preconditions.checkArgument(triggerItem != Items.AIR, "trigger shouldn't be air!");
+        tunnels.put(triggerItem, validateTunnelPartItem(tunnelPart));
     }
 
-    public synchronized static void addNewAttunement(@Nonnull ItemLike trigger, @Nonnull TunnelType type) {
-        Objects.requireNonNull(trigger, "trigger");
-        addNewAttunement(new ItemStack(trigger), type);
-    }
-
-    public synchronized static void addNewAttunement(@Nonnull String modId, @Nonnull TunnelType type) {
+    /**
+     * Adds all items from the given mod as attunement items for the given tunnel part.
+     *
+     * @param modId      The mod-id that triggers attunement into the given tunnel part.
+     * @param tunnelPart The P2P-tunnel part item.
+     */
+    public synchronized static void addItemByMod(@Nonnull String modId, @Nonnull ItemLike tunnelPart) {
         Objects.requireNonNull(modId, "modId");
-        Objects.requireNonNull(type, "type");
-        modIdTunnels.put(modId, type);
+        modIdTunnels.put(modId, validateTunnelPartItem(tunnelPart));
     }
 
     /**
      * Attunement based on the ability of getting an API via Fabric API Lookup from the item.
      */
-    public synchronized static <T> void addNewAttunement(ItemApiLookup<?, T> api,
+    public synchronized static <T> void addItemByApi(ItemApiLookup<?, T> api,
             Function<ItemStack, T> contextProvider,
-            TunnelType type) {
+            ItemLike tunnelPart) {
         Objects.requireNonNull(api, "api");
         Objects.requireNonNull(contextProvider, "contextProvider");
-        Objects.requireNonNull(type, "type");
-        apiAttunements.add(new ApiAttunement<>(api, contextProvider, type));
+        apiAttunements.add(new ApiAttunement<>(api, contextProvider, validateTunnelPartItem(tunnelPart)));
     }
 
     /**
      * Attunement based on the ability of getting a storage container API via Fabric API Lookup from the item.
      */
-    public synchronized static void addNewAttunement(@Nonnull ItemApiLookup<?, ContainerItemContext> api,
-            @Nonnull TunnelType type) {
-        addNewAttunement(api, stack -> ContainerItemContext.ofSingleSlot(new SingleStackStorage() {
+    public synchronized static void addItemByApi(@Nonnull ItemApiLookup<?, ContainerItemContext> api,
+            @Nonnull ItemLike tunnelPart) {
+        addItemByApi(api, stack -> ContainerItemContext.ofSingleSlot(new SingleStackStorage() {
             ItemStack buffer = stack;
 
             @Override
@@ -112,57 +146,68 @@ public final class P2PTunnelAttunement {
             protected void setStack(ItemStack stack) {
                 buffer = stack;
             }
-        }), type);
+        }), tunnelPart);
     }
 
     /**
-     * returns null if no attunement can be found.
-     *
      * @param trigger attunement trigger
-     * @return null if no attunement can be found or attunement
+     * @return The part item for a P2P-Tunnel that should handle the given attunement, or an empty item stack.
      */
-    @Nullable
-    public synchronized static TunnelType getTunnelTypeByItem(ItemStack trigger) {
-        if (!trigger.isEmpty()) {
-            // First match exact items
-            for (final Map.Entry<ItemStack, TunnelType> entry : tunnels.entrySet()) {
-                final ItemStack is = entry.getKey();
+    @Nonnull
+    public synchronized static ItemStack getTunnelPartByTriggerItem(ItemStack trigger) {
+        if (trigger.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
 
-                if (is.getItem() == trigger.getItem()) {
-                    return entry.getValue();
-                }
+        // First match exact items
+        var tunnelItem = tunnels.get(trigger.getItem());
+        if (tunnelItem != null) {
+            return new ItemStack(tunnelItem);
+        }
 
-                if (ItemStack.isSame(is, trigger)) {
-                    return entry.getValue();
-                }
-            }
-
-            // Check provided APIs
-            for (var apiAttunement : apiAttunements) {
-                if (apiAttunement.hasApi(trigger)) {
-                    return apiAttunement.type();
-                }
-            }
-
-            // Use the mod id as last option.
-            for (final Map.Entry<String, TunnelType> entry : modIdTunnels.entrySet()) {
-                var id = Registry.ITEM.getKey(trigger.getItem());
-                if (id.getNamespace().equals(entry.getKey())) {
-                    return entry.getValue();
-                }
+        // Check provided APIs
+        for (var apiAttunement : apiAttunements) {
+            if (apiAttunement.hasApi(trigger)) {
+                return new ItemStack(apiAttunement.tunnelType());
             }
         }
 
-        return null;
+        // Use the mod id as last option.
+        for (var entry : modIdTunnels.entrySet()) {
+            var id = Registry.ITEM.getKey(trigger.getItem());
+            if (id.getNamespace().equals(entry.getKey())) {
+                return new ItemStack(entry.getValue());
+            }
+        }
+
+        return ItemStack.EMPTY;
     }
 
     record ApiAttunement<T> (
             ItemApiLookup<?, T> api,
             Function<ItemStack, T> contextProvider,
-            TunnelType type) {
+            Item tunnelType) {
         public boolean hasApi(ItemStack stack) {
             return api.find(stack, contextProvider.apply(stack)) != null;
         }
+    }
+
+    private static Item validateTunnelPartItem(ItemLike itemLike) {
+        Objects.requireNonNull(itemLike, "item");
+        var item = itemLike.asItem();
+        Objects.requireNonNull(item, "item");
+        if (!(item instanceof PartItem<?>partItem)) {
+            throw new IllegalArgumentException("Given tunnel part item is not a part");
+        }
+
+        var is = new ItemStack(partItem);
+        var part = partItem.createPart(is);
+        if (!(part instanceof P2PTunnelPart)) {
+            throw new IllegalArgumentException("Given tunnel part item results in a part that is not a P2P tunnel: "
+                    + part.getClass());
+        }
+
+        return item;
     }
 
 }
