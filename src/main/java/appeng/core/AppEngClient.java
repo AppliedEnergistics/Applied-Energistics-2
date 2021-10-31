@@ -42,6 +42,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.Material;
@@ -85,6 +86,7 @@ import appeng.init.client.InitParticleFactories;
 import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
+import appeng.siteexport.SiteExporter;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -124,6 +126,12 @@ public class AppEngClient extends AppEngBase {
 
         INSTANCE = this;
         notifyAddons("client");
+
+        // Only activate the site exporter when we're not running a release version, since it'll
+        // replace blocks around spawn.
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            SiteExporter.initialize();
+        }
     }
 
     @Override
