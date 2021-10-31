@@ -38,11 +38,14 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
 
+import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -55,6 +58,7 @@ import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridPowerIdleChange;
 import appeng.api.networking.pathing.IPathingService;
+import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.core.worlddata.IGridStorageData;
 import appeng.me.pathfinding.IPathItem;
@@ -629,4 +633,17 @@ public class GridNode implements IGridNode, IPathItem {
         return "node hosted by " + getOwner().getClass().getName();
     }
 
+    @Override
+    public void fillCrashReportCategory(CrashReportCategory category) {
+        category.setDetail("Node", toString());
+        if (getOwner() instanceof IPart part) {
+            part.addEntityCrashInfo(category);
+        } else if (getOwner() instanceof BlockEntity blockEntity) {
+            blockEntity.fillCrashReportCategory(category);
+            Level level = blockEntity.getLevel();
+            if (level != null) {
+                category.setDetail("Level", level.dimension());
+            }
+        }
+    }
 }
