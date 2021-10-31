@@ -21,61 +21,48 @@ package appeng.api.features;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-
-import appeng.api.config.TunnelType;
-import appeng.core.definitions.AEParts;
+import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * Internal methods that complement {@link P2PTunnelAttunement} and which are not part of the public API.
  */
 public final class P2PTunnelAttunementInternal {
-    /**
-     * Gets the tunnel part to use for a given tunnel type.
-     */
-    public static ItemStack getTunnelPart(TunnelType type) {
-        return switch (type) {
-            case LIGHT -> AEParts.LIGHT_P2P_TUNNEL.stack();
-            case FE_POWER -> AEParts.FE_P2P_TUNNEL.stack();
-            case FLUID -> AEParts.FLUID_P2P_TUNNEL.stack();
-            case ITEM -> AEParts.ITEM_P2P_TUNNEL.stack();
-            case ME -> AEParts.ME_P2P_TUNNEL.stack();
-            case REDSTONE -> AEParts.REDSTONE_P2P_TUNNEL.stack();
-            default -> throw new IllegalArgumentException("Unsupported tunnel type: " + type);
-        };
+    private P2PTunnelAttunementInternal() {
     }
 
     /**
      * Gets a report which sources of attunement exist for a given tunnel type.
      */
-    public static AttunementInfo getAttunementInfo(TunnelType type) {
+    public static AttunementInfo getAttunementInfo(ItemLike tunnelType) {
+        var tunnelItem = tunnelType.asItem();
+
         Set<Item> items = new HashSet<>();
         Set<String> mods = new HashSet<>();
-        Set<ItemApiLookup<?, ?>> apis = new HashSet<>();
+        Set<Capability<?>> caps = new HashSet<>();
 
         for (var entry : P2PTunnelAttunement.tunnels.entrySet()) {
-            if (entry.getValue() == type) {
-                items.add(entry.getKey().getItem());
+            if (entry.getValue() == tunnelItem) {
+                items.add(entry.getKey());
             }
         }
 
         for (var entry : P2PTunnelAttunement.modIdTunnels.entrySet()) {
-            if (entry.getValue() == type) {
+            if (entry.getValue() == tunnelItem) {
                 mods.add(entry.getKey());
             }
         }
 
-        for (var apiAttunement : P2PTunnelAttunement.apiAttunements) {
-            if (apiAttunement.type() == type) {
-                apis.add(apiAttunement.api());
+        for (var entry : P2PTunnelAttunement.capTunnels.entrySet()) {
+            if (entry.getValue() == tunnelItem) {
+                caps.add(entry.getKey());
             }
         }
 
-        return new AttunementInfo(items, mods, apis);
+        return new AttunementInfo(items, mods, caps);
     }
 
-    public record AttunementInfo(Set<Item> items, Set<String> mods, Set<ItemApiLookup<?, ?>> apis) {
+    public record AttunementInfo(Set<Item> items, Set<String> mods, Set<Capability<?>> caps) {
     }
 }
