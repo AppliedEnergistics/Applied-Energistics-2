@@ -35,8 +35,9 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.ItemLike;
 
-import appeng.api.config.TunnelType;
+import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -158,14 +159,21 @@ public final class SiteExporter {
      */
     private static void dumpP2PTypes(Set<Item> usedVanillaItems, SiteExportWriter siteExport) {
 
-        for (TunnelType tunnelType : TunnelType.values()) {
-            var item = P2PTunnelAttunementInternal.getTunnelPart(tunnelType);
+        var tunnelTypes = new ItemLike[] {
+                P2PTunnelAttunement.ME_TUNNEL,
+                P2PTunnelAttunement.ENERGY_TUNNEL,
+                P2PTunnelAttunement.ITEM_TUNNEL,
+                P2PTunnelAttunement.FLUID_TUNNEL,
+                P2PTunnelAttunement.REDSTONE_TUNNEL,
+                P2PTunnelAttunement.LIGHT_TUNNEL
+        };
 
+        for (var tunnelItem : tunnelTypes) {
             var typeInfo = new P2PTypeInfo();
-            typeInfo.tunnelItemId = getItemId(item.getItem()).toString();
+            typeInfo.tunnelItemId = getItemId(tunnelItem.asItem()).toString();
 
             // Export attunement info
-            var attunementInfo = P2PTunnelAttunementInternal.getAttunementInfo(tunnelType);
+            var attunementInfo = P2PTunnelAttunementInternal.getAttunementInfo(tunnelItem);
             usedVanillaItems.addAll(attunementInfo.items());
             attunementInfo.apis().stream().map(lookup -> lookup.apiClass().getName())
                     .forEach(typeInfo.attunementApiClasses::add);
