@@ -29,7 +29,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
-import net.minecraft.CrashReportCategory;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.GridServicesInternal;
@@ -45,7 +44,7 @@ import appeng.hooks.ticking.TickHandler;
 
 public class Grid implements IGrid {
     /**
-     * We use this to temporarily
+     * We use this to copy the list of grid nodes we'll notify. Avoids a potential ConcurrentModificationException.
      */
     private static final List<IGridNode> ITERATION_BUFFER = new ArrayList<>();
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
