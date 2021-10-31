@@ -570,7 +570,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         });
     }
 
-    private static boolean canConvertItemToFluid(Slot slot) {
+    public boolean canConvertItemToFluid(Slot slot) {
         var fluidStack = FluidUtil.getFluidContained(slot.getItem());
         return !fluidStack.isEmpty();
     }
@@ -608,5 +608,9 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
     public FakeCraftingMatrixSlot[] getCraftingGridSlots() {
         return craftingGridSlots;
+    }
+
+    public OptionalFakeSlot[] getProcessingOutputSlots() {
+        return processingOutputSlots;
     }
 }

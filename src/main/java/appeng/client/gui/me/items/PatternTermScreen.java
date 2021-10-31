@@ -22,6 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -154,12 +155,25 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
         if (menu.isCraftingMode() && menu.substituteFluids
                 && fluidSubstitutionsEnabledBtn.isMouseOver(mouseX, mouseY)) {
             for (var slotIndex : menu.slotsSupportingFluidSubstitution) {
-                var slot = menu.getCraftingGridSlots()[slotIndex];
-                int x = getGuiLeft() + slot.x;
-                int y = getGuiTop() + slot.y;
-                fill(poseStack, x, y, x + 16, y + 16, 0x7f00FF00);
+                drawSlotGreenBG(poseStack, menu.getCraftingGridSlots()[slotIndex]);
+            }
+        } else if (!menu.isCraftingMode() && convertItemsToFluidsBtn.isMouseOver(mouseX, mouseY)) {
+            for (var slot : menu.getCraftingGridSlots()) {
+                if (menu.canConvertItemToFluid(slot)) {
+                    drawSlotGreenBG(poseStack, slot);
+                }
+            }
+            for (var slot : menu.getProcessingOutputSlots()) {
+                if (menu.canConvertItemToFluid(slot)) {
+                    drawSlotGreenBG(poseStack, slot);
+                }
             }
         }
     }
 
+    private void drawSlotGreenBG(PoseStack poseStack, Slot slot) {
+        int x = getGuiLeft() + slot.x;
+        int y = getGuiTop() + slot.y;
+        fill(poseStack, x, y, x + 16, y + 16, 0x7f00FF00);
+    }
 }
