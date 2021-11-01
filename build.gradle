@@ -67,13 +67,11 @@ dependencies {
 
     // compile against provided APIs
     compileOnly "mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api"
-// TODO-117    compileOnly "mcjty.theoneprobe:TheOneProbe-${top_minecraft_release}:${top_minecraft_release}-:api"
     compileOnly "curse.maven:the-one-probe-245211:3430022"
     compileOnly "curse.maven:jade-324717:3425042"
 
     // Runtime, Mods
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
-// TODO-117   runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${top_minecraft_release}:${top_minecraft_release}-${top_version}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:3425040")
 
     // Locally sourced extra mods for runtime (i.e. testing)
@@ -412,6 +410,9 @@ if (System.getenv("CURSEFORGE")) {
             releaseType = cfReleaseType
             addGameVersion project.minecraft_version
             addGameVersion "Forge"
+            mainArtifact(jar.archiveFile) {
+                displayName = "${project.version} [FORGE]"
+            }
         }
     }
 }
