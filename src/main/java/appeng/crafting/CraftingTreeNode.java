@@ -124,18 +124,43 @@ public class CraftingTreeNode
 		final List<IAEItemStack> thingsUsed = new ArrayList<>();
 
 		this.what.setStackSize( l );
-		if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )
+		IAEItemStack available = inv.extractItems( this.what, Actionable.MODULATE, src );
+
+		if( available != null )
+		{
+			if( !this.exhausted )
+			{
+				final IAEItemStack is = this.job.checkUse( available );
+
+				if( is != null )
+				{
+					thingsUsed.add( is.copy() );
+					this.used.add( is );
+				}
+			}
+
+			this.bytes += available.getStackSize();
+			l -= available.getStackSize();
+
+			if( l == 0 )
+			{
+				return available;
+			}
+		}
+
+		else if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )
 		{
 			final Collection<IAEItemStack> itemList;
 			final IItemList<IAEItemStack> inventoryList = inv.getItemList();
 
 			if( this.parent.details.canSubstitute() )
 			{
-				final List<IAEItemStack> substitutes = this.parent.details.getSubstituteInputs(this.slot);
-				itemList = new ArrayList<>(substitutes.size());
+				final List<IAEItemStack> substitutes = this.parent.details.getSubstituteInputs( this.slot );
+				itemList = new ArrayList<>( substitutes.size() );
 
-				for (IAEItemStack stack : substitutes) {
-					itemList.addAll(inventoryList.findFuzzy(stack, FuzzyMode.IGNORE_ALL));
+				for( IAEItemStack stack : substitutes )
+				{
+					itemList.addAll( inventoryList.findFuzzy( stack, FuzzyMode.IGNORE_ALL ) );
 				}
 			}
 			else
@@ -157,7 +182,7 @@ public class CraftingTreeNode
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( l );
 
-					final IAEItemStack available = inv.extractItems( fuzz, Actionable.MODULATE, src );
+					available = inv.extractItems( fuzz, Actionable.MODULATE, src );
 
 					if( available != null )
 					{
@@ -183,32 +208,6 @@ public class CraftingTreeNode
 				}
 			}
 		}
-		else
-		{
-			final IAEItemStack available = inv.extractItems( this.what, Actionable.MODULATE, src );
-
-			if( available != null )
-			{
-				if( !this.exhausted )
-				{
-					final IAEItemStack is = this.job.checkUse( available );
-
-					if( is != null )
-					{
-						thingsUsed.add( is.copy() );
-						this.used.add( is );
-					}
-				}
-
-				this.bytes += available.getStackSize();
-				l -= available.getStackSize();
-
-				if( l == 0 )
-				{
-					return available;
-				}
-			}
-		}
 
 		if( this.canEmit )
 		{
@@ -227,7 +226,7 @@ public class CraftingTreeNode
 		{
 			final CraftingTreeProcess pro = this.nodes.get( 0 );
 
-			while( pro.possible && l > 0 )
+			while ( pro.possible && l > 0 )
 			{
 				final IAEItemStack madeWhat = pro.getAmountCrafted( this.what );
 
@@ -235,7 +234,7 @@ public class CraftingTreeNode
 
 				madeWhat.setStackSize( l );
 
-				final IAEItemStack available = inv.extractItems( madeWhat, Actionable.MODULATE, src );
+				available = inv.extractItems( madeWhat, Actionable.MODULATE, src );
 
 				if( available != null )
 				{
@@ -259,13 +258,13 @@ public class CraftingTreeNode
 			{
 				try
 				{
-					while( pro.possible && l > 0 )
+					while ( pro.possible && l > 0 )
 					{
 						final MECraftingInventory subInv = new MECraftingInventory( inv, true, true, true );
 						pro.request( subInv, 1, src );
 
 						this.what.setStackSize( l );
-						final IAEItemStack available = subInv.extractItems( this.what, Actionable.MODULATE, src );
+						available = subInv.extractItems( this.what, Actionable.MODULATE, src );
 
 						if( available != null )
 						{
@@ -322,7 +321,7 @@ public class CraftingTreeNode
 		}
 		// missing = 0;
 
-		job.addBytes( 8 + this.bytes );
+		job.addBytes( this.bytes );
 
 		for( final CraftingTreeProcess pro : this.nodes )
 		{
