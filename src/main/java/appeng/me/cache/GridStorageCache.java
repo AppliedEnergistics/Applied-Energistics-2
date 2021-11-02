@@ -94,7 +94,7 @@ public class GridStorageCache implements IStorageGrid
 
 			this.removeCellProvider( cc, tracker );
 			this.inactiveCellProviders.remove( cc );
-			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			cellUpdate( null );
 
 			tracker.applyChanges();
 		}
@@ -109,9 +109,6 @@ public class GridStorageCache implements IStorageGrid
 				this.watchers.remove( node );
 			}
 		}
-
-		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
-
 	}
 
 	@Override
@@ -122,7 +119,7 @@ public class GridStorageCache implements IStorageGrid
 			final ICellContainer cc = (ICellContainer) machine;
 			this.inactiveCellProviders.add( cc );
 
-			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			cellUpdate( null );
 
 			if( node.isActive() )
 			{
@@ -140,9 +137,6 @@ public class GridStorageCache implements IStorageGrid
 			this.watchers.put( node, iw );
 			swh.updateWatcher( iw );
 		}
-
-		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
-
 	}
 
 	@Override
@@ -176,7 +170,7 @@ public class GridStorageCache implements IStorageGrid
 
 	private CellChangeTracker addCellProvider( final ICellProvider cc, final CellChangeTracker tracker )
 	{
-		if( this.inactiveCellProviders.contains( cc ) )
+		if( this.inactiveCellProviders.contains( cc ) && !this.activeCellProviders.contains( cc ))
 		{
 			this.inactiveCellProviders.remove( cc );
 			this.activeCellProviders.add( cc );
@@ -334,7 +328,10 @@ public class GridStorageCache implements IStorageGrid
 
 		public void applyChanges()
 		{
-			GridStorageCache.this.postChangesToNetwork( this.channel, this.up_or_down, this.list, this.src );
+			if( !this.list.isEmpty() )
+			{
+				GridStorageCache.this.postChangesToNetwork( this.channel, this.up_or_down, this.list, this.src );
+			}
 		}
 	}
 

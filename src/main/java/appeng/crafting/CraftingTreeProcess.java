@@ -241,7 +241,6 @@ public class CraftingTreeProcess
 			o.setStackSize( o.getStackSize() * i );
 			inv.injectItems( o, Actionable.MODULATE, src );
 		}
-
 		this.crafts += i;
 	}
 
@@ -253,7 +252,7 @@ public class CraftingTreeProcess
 			pro.dive( job );
 		}
 
-		job.addBytes( 8 + this.crafts + this.bytes );
+		job.addBytes( this.crafts * 8 + this.bytes );
 	}
 
 	IAEItemStack getAmountCrafted( IAEItemStack what2 )

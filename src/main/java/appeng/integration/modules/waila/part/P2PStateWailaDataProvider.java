@@ -21,6 +21,7 @@ package appeng.integration.modules.waila.part;
 
 import java.util.List;
 
+import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import com.google.common.collect.Iterators;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -117,11 +118,11 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 
 			// The default state
 			int state = STATE_UNLINKED;
-			int outputCount = 0;
+			int outputCount = getOutputCount( tunnel );
+			int inputCount = getInputCount( tunnel );
 
 			if( !tunnel.isOutput() )
 			{
-				outputCount = getOutputCount( tunnel );
 				if( outputCount > 0 )
 				{
 					// Only set it to INPUT if we know there are any outputs
@@ -130,8 +131,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 			}
 			else
 			{
-				PartP2PTunnel input = tunnel.getInput();
-				if( input != null )
+				if( inputCount > 0 )
 				{
 					state = STATE_OUTPUT;
 				}
@@ -160,15 +160,40 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 		}
 	}
 
+	private static int getInputCount( PartP2PTunnel tunnel )
+	{
+		try
+		{
+			return Iterators.size( tunnel.getInputs().iterator() );
+		}
+		catch( GridAccessException e )
+		{
+			// Well... unknown size it is!
+			return 0;
+		}
+	}
+
 	private static String getOutputText( int outputs )
 	{
 		if( outputs <= 1 )
 		{
-			return WailaText.P2PInputOneOutput.getLocal();
+			return WailaText.P2P_INPUT_ONE_OUTPUT.getLocal();
 		}
 		else
 		{
-			return String.format( WailaText.P2PInputManyOutputs.getLocal(), outputs );
+			return String.format( WailaText.P2P_INPUT_MANY_OUTPUTS.getLocal(), outputs );
+		}
+	}
+
+	private static String getInputText( int inputs )
+	{
+		if( inputs <= 1 )
+		{
+			return WailaText.P2P_OUTPUT_ONE_INPUT.getLocal();
+		}
+		else
+		{
+			return String.format( WailaText.P2P_OUTPUT_MANY_INPUTS.getLocal(), inputs );
 		}
 	}
 

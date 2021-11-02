@@ -53,6 +53,7 @@ import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.PartBasicState;
 import appeng.util.Platform;
+import org.lwjgl.input.Keyboard;
 
 
 public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
@@ -77,26 +78,13 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		return null;
 	}
 
-	public T getInput()
+	public TunnelCollection<T> getInputs() throws GridAccessException
 	{
-		if( this.getFrequency() == 0 )
+		if( this.getProxy().isActive() && this.getFrequency() != 0 )
 		{
-			return null;
+			return (TunnelCollection<T>) this.getProxy().getP2P().getInputs( this.getFrequency(), this.getClass() );
 		}
-
-		try
-		{
-			final PartP2PTunnel tunnel = this.getProxy().getP2P().getInput( this.getFrequency() );
-			if( this.getClass().isInstance( tunnel ) )
-			{
-				return (T) tunnel;
-			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-		return null;
+		return new TunnelCollection( new ArrayList(), this.getClass() );
 	}
 
 	public TunnelCollection<T> getOutputs() throws GridAccessException
@@ -211,14 +199,28 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					final IPart testPart = ( (IPartItem) newType.getItem() ).createPartFromItemStack( newType );
 					if( testPart instanceof PartP2PTunnel )
 					{
+
+						try
+						{
+							this.getProxy().getP2P().removeTunnel( this, this.getFrequency() );
+						}
+						catch( GridAccessException e )
+						{
+							e.printStackTrace();
+						}
+
 						this.getHost().removePart( this.getSide(), true );
+
 						final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player, hand );
 						final IPart newBus = this.getHost().getPart( dir );
 
 						if( newBus instanceof PartP2PTunnel )
 						{
 							final PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
-							newTunnel.setOutput( true );
+							if( !Keyboard.isKeyDown( Keyboard.KEY_LCONTROL ) && !Keyboard.isKeyDown( Keyboard.KEY_RCONTROL ) )
+							{
+								newTunnel.setOutput( true );
+							}
 
 							try
 							{
@@ -295,7 +297,17 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				final boolean oldOutput = this.isOutput();
 				final short myFreq = this.getFrequency();
 
+				try
+				{
+					this.getProxy().getP2P().removeTunnel( this, this.getFrequency() );
+				}
+				catch( GridAccessException e )
+				{
+					e.printStackTrace();
+				}
+
 				this.getHost().removePart( this.getSide(), false );
+
 				final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player, hand );
 				final IPart newBus = this.getHost().getPart( dir );
 
@@ -303,7 +315,6 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				{
 					final PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
 					newTunnel.setOutput( oldOutput );
-					newTunnel.onTunnelNetworkChange();
 
 					try
 					{
@@ -314,9 +325,10 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					{
 						// :P
 					}
+					newTunnel.onTunnelNetworkChange();
+
 				}
 
-				Platform.notifyBlocksOfNeighbors( this.getTile().getWorld(), this.getTile().getPos() );
 				return true;
 			}
 		}
@@ -353,7 +365,17 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 					final ItemStack newType = this.getHost().getPart( this.getSide() ).getItemStack( PartItemStack.WRENCH );
 
+					try
+					{
+						this.getProxy().getP2P().removeTunnel( this, this.getFrequency() );
+					}
+					catch( GridAccessException e )
+					{
+						e.printStackTrace();
+					}
+
 					this.getHost().removePart( this.getSide(), false );
+
 					final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player, hand );
 					final IPart newBus = this.getHost().getPart( dir );
 
@@ -361,14 +383,17 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					{
 						final PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
 						newTunnel.setOutput( false );
-						newTunnel.onTunnelNetworkChange();
 						newTunnel.getProxy().getP2P().updateFreq( newTunnel, newFreq );
+
+						newTunnel.onTunnelNetworkChange();
 					}
 				}
 				else
 				{
 					this.getProxy().getP2P().updateFreq( this, newFreq );
+					this.onTunnelNetworkChange();
 				}
+				Platform.notifyBlocksOfNeighbors( this.getTile().getWorld(), this.getTile().getPos() );
 			}
 			catch( final GridAccessException e )
 			{
@@ -418,7 +443,6 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	public void onTunnelNetworkChange()
 	{
-
 	}
 
 	protected void queueTunnelDrain( final PowerUnits unit, final double f )

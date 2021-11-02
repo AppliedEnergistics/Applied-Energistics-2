@@ -19,7 +19,7 @@
 package appeng.me.cache;
 
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Random;
 
 import com.google.common.collect.LinkedHashMultimap;
@@ -46,7 +46,7 @@ public class P2PCache implements IGridCache
 	private static final TunnelCollection<PartP2PTunnel> NULL_COLLECTION = new TunnelCollection<PartP2PTunnel>( null, null );
 
 	private final IGrid myGrid;
-	private final HashMap<Short, PartP2PTunnel> inputs = new HashMap<>();
+	private final Multimap<Short, PartP2PTunnel> inputs = LinkedHashMultimap.create();
 	private final Multimap<Short, PartP2PTunnel> outputs = LinkedHashMultimap.create();
 	private final Random frequencyGenerator;
 
@@ -110,10 +110,19 @@ public class P2PCache implements IGridCache
 			}
 			else
 			{
-				this.inputs.remove( t.getFrequency() );
+				this.inputs.remove( t.getFrequency(), t );
 			}
 
-			this.updateTunnel( t.getFrequency(), !t.isOutput(), false );
+			if( this.inputs.get( t.getFrequency() ).isEmpty() )
+			{
+				this.inputs.removeAll( t.getFrequency() );
+			}
+			if( this.outputs.get( t.getFrequency() ).isEmpty() )
+			{
+				this.outputs.removeAll( t.getFrequency() );
+			}
+
+			this.updateTunnel( t.getFrequency(), t.isOutput(), false );
 		}
 	}
 
@@ -142,7 +151,7 @@ public class P2PCache implements IGridCache
 				this.inputs.put( t.getFrequency(), t );
 			}
 
-			this.updateTunnel( t.getFrequency(), !t.isOutput(), false );
+			this.updateTunnel( t.getFrequency(), t.isOutput(), false );
 		}
 	}
 
@@ -164,6 +173,20 @@ public class P2PCache implements IGridCache
 
 	}
 
+	public void removeTunnel( final PartP2PTunnel t, short freq )
+	{
+		this.outputs.remove( freq, t );
+		this.inputs.remove( freq, t );
+		if( this.inputs.get( t.getFrequency() ).isEmpty() )
+		{
+			this.inputs.removeAll( t.getFrequency() );
+		}
+		if( this.outputs.get( t.getFrequency() ).isEmpty() )
+		{
+			this.outputs.removeAll( t.getFrequency() );
+		}
+	}
+
 	private void updateTunnel( final short freq, final boolean updateOutputs, final boolean configChange )
 	{
 		for( final PartP2PTunnel p : this.outputs.get( freq ) )
@@ -175,8 +198,7 @@ public class P2PCache implements IGridCache
 			p.onTunnelNetworkChange();
 		}
 
-		final PartP2PTunnel in = this.inputs.get( freq );
-		if( in != null )
+		for( final PartP2PTunnel in : this.inputs.get( freq ) )
 		{
 			if( configChange )
 			{
@@ -195,7 +217,7 @@ public class P2PCache implements IGridCache
 
 		if( this.inputs.containsValue( t ) )
 		{
-			this.inputs.remove( t.getFrequency() );
+			this.inputs.remove( t.getFrequency(), t );
 		}
 
 		t.setFrequency( newFrequency );
@@ -211,7 +233,6 @@ public class P2PCache implements IGridCache
 
 		// AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq );
 		this.updateTunnel( t.getFrequency(), t.isOutput(), true );
-		this.updateTunnel( t.getFrequency(), !t.isOutput(), true );
 	}
 
 	public short newFrequency()
@@ -236,25 +257,43 @@ public class P2PCache implements IGridCache
 
 	public TunnelCollection<PartP2PTunnel> getOutputs( final short freq, final Class<? extends PartP2PTunnel> c )
 	{
-		final PartP2PTunnel in = this.inputs.get( freq );
+		Collection<PartP2PTunnel> in = this.inputs.get( freq );
 
 		if( in == null )
 		{
 			return NULL_COLLECTION;
 		}
 
-		final TunnelCollection<PartP2PTunnel> out = this.inputs.get( freq ).getCollection( this.outputs.get( freq ), c );
+		TunnelCollection<PartP2PTunnel> out;
+		for( PartP2PTunnel part : this.inputs.get( freq ) )
+		{
+			out = part.getCollection( this.outputs.get( freq ), c );
+			if( out != null )
+			{
+				return out;
+			}
+		}
+		return NULL_COLLECTION;
+	}
+
+	public TunnelCollection<PartP2PTunnel> getInputs( final short freq, final Class<? extends PartP2PTunnel> c )
+	{
+		Collection<PartP2PTunnel> out = this.outputs.get( freq );
 
 		if( out == null )
 		{
 			return NULL_COLLECTION;
 		}
 
-		return out;
-	}
-
-	public PartP2PTunnel getInput( final short freq )
-	{
-		return this.inputs.get( freq );
+		TunnelCollection<PartP2PTunnel> in;
+		for( PartP2PTunnel part : this.outputs.get( freq ) )
+		{
+			in = part.getCollection( this.inputs.get( freq ), c );
+			if( in != null )
+			{
+				return in;
+			}
+		}
+		return NULL_COLLECTION;
 	}
 }

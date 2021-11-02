@@ -26,6 +26,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.me.storage.BasicCellInventoryHandler;
+import appeng.me.storage.CreativeCellInventory;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -735,7 +737,15 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			{
 				return input;
 			}
-			return super.injectItems( input, mode, src );
+			T injected = super.injectItems( input, mode, src );
+			if (mode == Actionable.MODULATE && ( injected == null || injected.getStackSize() != input.getStackSize() ))
+			{
+				if( TileChest.this.getProxy().isActive() && this.getInternalHandler().getCellInv() != null )
+				{
+					TileChest.this.cellHandler.postChangesToListeners(Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( injected == null ? 0 : injected.getStackSize() ) ) ), TileChest.this.mySrc  );
+				}
+			}
+			return injected;
 		}
 
 		private boolean securityCheck( final EntityPlayer player, final SecurityPermissions requiredPermission )
@@ -779,7 +789,15 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			{
 				return null;
 			}
-			return super.extractItems( request, mode, src );
+			T extracted = super.extractItems( request, mode, src );
+			if( mode == Actionable.MODULATE && extracted != null )
+			{
+				if( TileChest.this.getProxy().isActive() && this.getInternalHandler().getCellInv() != null )
+				{
+					TileChest.this.cellHandler.postChangesToListeners(Collections.singletonList( request.copy().setStackSize( -extracted.getStackSize() ) ), TileChest.this.mySrc  );
+				}
+			}
+			return extracted;
 		}
 	}
 

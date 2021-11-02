@@ -155,7 +155,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 			return 0;
 		}
 
-		if( this.internalCurrentPower < 0.01 && amt > 0.01 )
+		if( this.internalCurrentPower < 0.01 && amt > 0 )
 		{
 			this.getProxy().getNode().getGrid().postEvent( new MENetworkPowerStorage( this, PowerEventType.PROVIDE_POWER ) );
 		}
@@ -217,7 +217,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 
 		final boolean wasFull = this.internalCurrentPower >= this.getInternalMaxPower() - 0.001;
 
-		if( wasFull && amt > 0.001 )
+		if( wasFull && amt > 0 )
 		{
 			try
 			{

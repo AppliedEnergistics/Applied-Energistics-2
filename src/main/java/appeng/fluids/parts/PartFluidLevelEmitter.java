@@ -4,7 +4,6 @@ package appeng.fluids.parts;
 
 import java.util.Random;
 
-import appeng.api.networking.events.MENetworkChannelChanged;
 import appeng.api.storage.data.IItemList;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.me.cache.NetworkMonitor;
@@ -118,7 +117,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	{
 		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) && diffStack.equals( this.config.getFluidInSlot( 0 ) ) )
 		{
-			this.lastReportedValue += diffStack.getStackSize();
+			this.lastReportedValue = fullStack.getStackSize();
 			this.updateState();
 		}
 	}
@@ -129,8 +128,9 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 		this.configureWatchers();
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void powerStatusChange( final MENetworkPowerStatusChange powerEvent )
+	public void powerRender( final MENetworkPowerStatusChange powerEvent )
 	{
 		if (this.getProxy().isActive())
 		{
@@ -139,8 +139,9 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 		this.updateState();
 	}
 
+	@Override
 	@MENetworkEventSubscribe
-	public void channelChanged( final MENetworkChannelsChanged c )
+	public void chanRender( final MENetworkChannelsChanged c )
 	{
 		if (this.getProxy().isActive())
 		{

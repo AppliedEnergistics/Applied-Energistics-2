@@ -405,8 +405,10 @@ waila.appliedenergistics2.Showing=Showing
 waila.appliedenergistics2.Contains=Contains
 waila.appliedenergistics2.Channels=%1$d of %2$d Channels
 waila.appliedenergistics2.P2PUnlinked=Unlinked
-waila.appliedenergistics2.P2PInputOneOutput=Linked (Input Side)
-waila.appliedenergistics2.P2PInputManyOutputs=Linked (Input Side) - %d Outputs
+waila.appliedenergistics2.p2p_input_one_output=Linked (Input Side) - 1 Output
+waila.appliedenergistics2.p2p_input_many_outputs=Linked (Input Side) - %d Outputs
+waila.appliedenergistics2.p2p_output_one_input=Linked (Output Side) - 1 Input
+waila.appliedenergistics2.p2p_output_many_inputs=Linked (Output Side) - %d Inputs
 waila.appliedenergistics2.P2POutput=Linked (Output Side)
 
 // TheOneProbe
@@ -420,8 +422,10 @@ theoneprobe.appliedenergistics2.showing=Showing
 theoneprobe.appliedenergistics2.contains=Contains
 theoneprobe.appliedenergistics2.channels=%1$d of %2$d Channels
 theoneprobe.appliedenergistics2.p2p_unlinked=Unlinked
-theoneprobe.appliedenergistics2.p2p_input_one_output=Linked (Input Side)
+theoneprobe.appliedenergistics2.p2p_input_one_output=Linked (Input Side) - 1 Output
 theoneprobe.appliedenergistics2.p2p_input_many_outputs=Linked (Input Side) - %d Outputs
+theoneprobe.appliedenergistics2.p2p_output_one_input=Linked (Output Side) - 1 Input
+theoneprobe.appliedenergistics2.p2p_output_many_inputs=Linked (Output Side) - %d Inputs
 theoneprobe.appliedenergistics2.p2p_output=Linked (Output Side)
 theoneprobe.appliedenergistics2.p2p_frequency=Frequency: %1$s
 theoneprobe.appliedenergistics2.stored_energy=%1$d / %2$d

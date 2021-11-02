@@ -386,7 +386,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 				{
 					changed = true;
 				}
-				else
+				else if( this.gridProxy.getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ).getStorageList().findPrecise( work ) != null )
 				{
 					final IAEFluidStack acquired = Platform.poweredExtraction( src, dest, work, this.interfaceRequestSource );
 					if( acquired != null )

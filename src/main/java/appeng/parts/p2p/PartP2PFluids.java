@@ -83,10 +83,19 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 		if( this.isOutput() )
 		{
-			final PartP2PFluids in = this.getInput();
-			if( in != null )
+			try
 			{
-				in.onTunnelNetworkChange();
+				for( PartP2PFluids in : this.getInputs() )
+				{
+					if( in != null )
+					{
+						in.onTunnelNetworkChange();
+					}
+				}
+			}
+			catch( GridAccessException e )
+			{
+				e.printStackTrace();
 			}
 		}
 	}
@@ -124,13 +133,21 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 	{
 		if( !this.isOutput() )
 		{
-			final PartP2PFluids tun = this.getInput();
-			if( tun != null )
+			try
 			{
-				return ACTIVE_TANK;
+				for( PartP2PFluids tun : this.getInputs() )
+				{
+					if( tun != null )
+					{
+						return ACTIVE_TANK;
+					}
+				}
+			}
+			catch( GridAccessException e )
+			{
+				e.printStackTrace();
 			}
 		}
-
 		return INACTIVE_TANK;
 	}
 

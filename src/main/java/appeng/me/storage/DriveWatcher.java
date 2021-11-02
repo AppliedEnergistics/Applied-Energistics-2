@@ -19,18 +19,19 @@
 package appeng.me.storage;
 
 
+import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.tile.storage.TileDrive;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Actionable;
-import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
+
+import java.util.Collections;
 
 
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
@@ -39,16 +40,16 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	private int oldStatus = 0;
 	private final ItemStack is;
 	private final ICellHandler handler;
-	private final IChestOrDrive cord;
+	private final TileDrive drive;
 	private IActionSource source;
 
-	public DriveWatcher( final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han, final IChestOrDrive cod )
+	public DriveWatcher( final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han, final TileDrive drive )
 	{
 		super( i, i.getChannel() );
 		this.is = is;
 		this.handler = han;
-		this.cord = cod;
-		this.source = new MachineSource( cod );
+		this.drive = drive;
+		this.source = new MachineSource( drive );
 	}
 
 	public int getStatus()
@@ -61,55 +62,58 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	{
 		final long size = input.getStackSize();
 
-		final T a = super.injectItems( input, type, src );
+		final T remainder = super.injectItems( input, type, src );
 
-		if( type == Actionable.MODULATE && ( a == null || a.getStackSize() != size ) )
+		if( type == Actionable.MODULATE && ( remainder == null || remainder.getStackSize() != size ) )
 		{
 			final int newStatus = this.getStatus();
 
 			if( newStatus != this.oldStatus )
 			{
-				this.cord.blinkCell( this.getSlot() );
+				this.drive.blinkCell( this.getSlot() );
 				this.oldStatus = newStatus;
 			}
-			try
+			if (this.drive.getProxy().isActive() && !(handler instanceof CreativeCellHandler))
 			{
-				( (TileDrive) this.cord ).getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), ImmutableList.of( input.copy().setStackSize( input.getStackSize() - ( a == null ? 0 : a.getStackSize() ) ) ), this.source );
-			}
-			catch( GridAccessException e )
-			{
-				e.printStackTrace();
+				try
+				{
+					this.drive.getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( remainder == null ? 0 : remainder.getStackSize() ) ) ), this.source );
+				} catch ( GridAccessException e )
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 
-		return a;
+		return remainder;
 	}
 
 	@Override
 	public T extractItems( final T request, final Actionable type, final IActionSource src )
 	{
-		final T a = super.extractItems( request, type, src );
+		final T extractable = super.extractItems( request, type, src );
 
-		if( type == Actionable.MODULATE && a != null )
+		if( type == Actionable.MODULATE && extractable != null )
 		{
 			final int newStatus = this.getStatus();
 
 			if( newStatus != this.oldStatus )
 			{
-				this.cord.blinkCell( this.getSlot() );
+				this.drive.blinkCell( this.getSlot() );
 				this.oldStatus = newStatus;
 			}
-
-			try
+			if (this.drive.getProxy().isActive() && !(handler instanceof CreativeCellHandler ))
 			{
-				( (TileDrive) this.cord ).getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), ImmutableList.of( request.copy().setStackSize( -a.getStackSize() ) ), this.source );
-			}
-			catch( GridAccessException e )
-			{
-				e.printStackTrace();
+				try
+				{
+					this.drive.getProxy().getStorage().postAlterationOfStoredItems( this.getChannel(), Collections.singletonList( request.copy().setStackSize( -extractable.getStackSize() ) ), this.source );
+				} catch ( GridAccessException e )
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 
-		return a;
+		return extractable;
 	}
 }

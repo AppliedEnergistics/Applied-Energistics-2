@@ -19,6 +19,8 @@
 package appeng.me.storage;
 
 
+import appeng.me.helpers.MEMonitorHandler;
+import appeng.me.helpers.MachineSource;
 import com.mojang.authlib.GameProfile;
 
 import appeng.api.AEApi;
@@ -35,16 +37,20 @@ import appeng.api.storage.data.IItemList;
 import appeng.me.GridAccessException;
 import appeng.tile.misc.TileSecurityStation;
 
+import java.util.Collections;
+
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
 	private final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final TileSecurityStation securityTile;
+	private final MachineSource src;
 
 	public SecurityStationInventory( final TileSecurityStation ts )
 	{
 		this.securityTile = ts;
+		this.src = new MachineSource( securityTile );
 	}
 
 	@Override
@@ -59,6 +65,11 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 					if( type == Actionable.SIMULATE )
 					{
 						return null;
+					}
+
+					if( securityTile.getProxy().isActive() )
+					{
+						( ( MEMonitorHandler<IAEItemStack> ) securityTile.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) ).postChangesToListeners( Collections.singletonList( input.copy() ), this.src );
 					}
 
 					this.getStoredItems().add( input );
@@ -99,6 +110,11 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 				if( mode == Actionable.SIMULATE )
 				{
 					return output;
+				}
+
+				if( securityTile.getProxy().isActive() )
+				{
+					( ( MEMonitorHandler<IAEItemStack> ) securityTile.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) ).postChangesToListeners( Collections.singletonList( target.copy().setStackSize( -target.getStackSize() ) ), this.src );
 				}
 
 				target.setStackSize( 0 );

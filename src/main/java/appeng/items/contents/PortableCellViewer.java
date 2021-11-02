@@ -19,6 +19,7 @@
 package appeng.items.contents;
 
 
+import appeng.api.networking.security.IActionSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -41,6 +42,8 @@ import appeng.container.interfaces.IInventorySlotAware;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
+
+import java.util.Collections;
 
 
 public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware
@@ -81,6 +84,34 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 		}
 
 		return usePowerMultiplier.divide( this.ips.extractAEPower( this.target, amt, Actionable.MODULATE ) );
+	}
+
+	@Override
+	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, IActionSource src )
+	{
+		final long size = input.getStackSize();
+
+		final IAEItemStack injected = super.injectItems( input, mode, src );
+
+		if( mode == Actionable.MODULATE && ( injected == null || injected.getStackSize() != size ) )
+		{
+			this.notifyListenersOfChange( Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( injected == null ? 0 : injected.getStackSize() ) ) ), null);
+		}
+
+		return injected;
+	}
+
+	@Override
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, IActionSource src )
+	{
+		final IAEItemStack extractable = super.extractItems( request, mode, src );
+
+		if( mode == Actionable.MODULATE && extractable != null )
+		{
+			this.notifyListenersOfChange( Collections.singletonList( request.copy().setStackSize( -extractable.getStackSize() ) ), null );
+		}
+
+		return extractable;
 	}
 
 	@Override

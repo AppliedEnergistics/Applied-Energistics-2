@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import com.google.common.collect.ImmutableList;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -85,11 +83,7 @@ public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T>
 	@Override
 	public T injectItems( final T input, final Actionable mode, final IActionSource src )
 	{
-		if( mode == Actionable.SIMULATE )
-		{
-			return this.getHandler().injectItems( input, mode, src );
-		}
-		return this.monitorDifference( input.copy(), this.getHandler().injectItems( input, mode, src ), false, src );
+		return this.getHandler().injectItems( input, mode, src );
 	}
 
 	protected IMEInventoryHandler<T> getHandler()
@@ -97,28 +91,7 @@ public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T>
 		return this.internalHandler;
 	}
 
-	private T monitorDifference( final T original, final T leftOvers, final boolean extraction, final IActionSource src )
-	{
-		final T diff = original.copy();
-
-		if( extraction )
-		{
-			diff.setStackSize( leftOvers == null ? 0 : -leftOvers.getStackSize() );
-		}
-		else if( leftOvers != null )
-		{
-			diff.decStackSize( leftOvers.getStackSize() );
-		}
-
-		if( diff.getStackSize() != 0 )
-		{
-			this.postChangesToListeners( ImmutableList.of( diff ), src );
-		}
-
-		return leftOvers;
-	}
-
-	protected void postChangesToListeners( final Iterable<T> changes, final IActionSource src )
+	public void postChangesToListeners( final Iterable<T> changes, final IActionSource src )
 	{
 		this.notifyListenersOfChange( changes, src );
 	}
@@ -150,11 +123,7 @@ public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T>
 	@Override
 	public T extractItems( final T request, final Actionable mode, final IActionSource src )
 	{
-		if( mode == Actionable.SIMULATE )
-		{
-			return this.getHandler().extractItems( request, mode, src );
-		}
-		return this.monitorDifference( request.copy(), this.getHandler().extractItems( request, mode, src ), true, src );
+		return this.getHandler().extractItems( request, mode, src );
 	}
 
 	@Override

@@ -70,10 +70,19 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		if( this.isOutput() )
 		{
-			final PartP2PRedstone in = this.getInput();
-			if( in != null )
+			try
 			{
-				this.putInput( in.power );
+				for( PartP2PRedstone in : this.getInputs() )
+				{
+					if( in != null )
+					{
+						this.putInput( in.power );
+					}
+				}
+			}
+			catch( GridAccessException e )
+			{
+				e.printStackTrace();
 			}
 		}
 	}
