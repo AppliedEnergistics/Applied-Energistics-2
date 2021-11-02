@@ -49,8 +49,10 @@ public interface IMEMonitor<T extends IAEStack> extends IMEInventoryHandler<T> {
     IAEStackList<T> getAvailableStacks(IAEStackList<T> out);
 
     /**
-     * Returns the cached list of stacks available from this inventory, which will be the same as
+     * Returns the cached list of stacks available from this inventory, which will be equal to the result of
      * {@link #getAvailableStacks()} if the cache isn't stale.
+     *
+     * @return The cached contents of this monitor. Does not return a copy. <strong>Do not modify!</strong>
      */
     default IAEStackList<T> getCachedAvailableStacks() {
         return getAvailableStacks();
