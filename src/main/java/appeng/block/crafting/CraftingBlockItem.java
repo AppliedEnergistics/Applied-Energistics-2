@@ -18,6 +18,8 @@
 
 package appeng.block.crafting;
 
+import java.util.function.Supplier;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -31,8 +33,6 @@ import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.util.InteractionUtil;
-
-import java.util.function.Supplier;
 
 /**
  * Item that allows uncrafting CPU parts by disassembling them back into the crafting unit and the extra item.
