@@ -127,7 +127,7 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
 
         Iterator<IAEFluidStack> i = Collections.emptyIterator();
         if (cellInv != null) {
-            i = cellInv.getAvailableItems().iterator();
+            i = cellInv.getAvailableStacks().iterator();
         }
 
         for (int x = 0; x < h.getSlots(); x++) {

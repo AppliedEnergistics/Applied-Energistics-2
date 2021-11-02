@@ -294,7 +294,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             this.up_or_down = i;
             this.src = actionSrc;
 
-            this.list = h.getAvailableItems(channel.createList());
+            this.list = h.getAvailableStacks(channel.createList());
         }
 
         public void applyChanges() {

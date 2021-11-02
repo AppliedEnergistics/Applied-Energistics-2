@@ -95,7 +95,7 @@ public final class DisassembleRecipe extends CustomRecipe {
                     // make sure the storage cell stackInSlot empty...
                     var cellInv = StorageCells.getCellInventory(stackInSlot, null, StorageChannels.items());
                     if (cellInv != null) {
-                        final IAEStackList<IAEItemStack> list = cellInv.getAvailableItems();
+                        final IAEStackList<IAEItemStack> list = cellInv.getAvailableStacks();
                         if (!list.isEmpty()) {
                             return ItemStack.EMPTY;
                         }

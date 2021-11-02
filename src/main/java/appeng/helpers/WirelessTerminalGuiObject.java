@@ -34,7 +34,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
@@ -93,31 +93,31 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     }
 
     @Override
-    public void addListener(final IMEMonitorHandlerReceiver<IAEItemStack> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener<IAEItemStack> l, final Object verificationToken) {
         if (this.itemStorage != null) {
             this.itemStorage.addListener(l, verificationToken);
         }
     }
 
     @Override
-    public void removeListener(final IMEMonitorHandlerReceiver<IAEItemStack> l) {
+    public void removeListener(final IMEMonitorListener<IAEItemStack> l) {
         if (this.itemStorage != null) {
             this.itemStorage.removeListener(l);
         }
     }
 
     @Override
-    public IAEStackList<IAEItemStack> getAvailableItems(final IAEStackList<IAEItemStack> out) {
+    public IAEStackList<IAEItemStack> getAvailableStacks(final IAEStackList<IAEItemStack> out) {
         if (this.itemStorage != null) {
-            return this.itemStorage.getAvailableItems(out);
+            return this.itemStorage.getAvailableStacks(out);
         }
         return out;
     }
 
     @Override
-    public IAEStackList<IAEItemStack> getStorageList() {
+    public IAEStackList<IAEItemStack> getCachedAvailableStacks() {
         if (this.itemStorage != null) {
-            return this.itemStorage.getStorageList();
+            return this.itemStorage.getCachedAvailableStacks();
         }
         return null;
     }

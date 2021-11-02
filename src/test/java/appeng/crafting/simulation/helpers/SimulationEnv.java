@@ -31,7 +31,7 @@ import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
@@ -197,22 +197,22 @@ public class SimulationEnv {
     private <T extends IAEStack> IMEMonitor<T> createMonitorMock(IStorageChannel<T> channel) {
         return new IMEMonitor<>() {
             @Override
-            public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+            public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public IAEStackList<T> getStorageList() {
+            public IAEStackList<T> getCachedAvailableStacks() {
                 return networkStorage.getList(channel);
             }
 
             @Override
-            public void addListener(IMEMonitorHandlerReceiver<T> l, Object verificationToken) {
+            public void addListener(IMEMonitorListener<T> l, Object verificationToken) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void removeListener(IMEMonitorHandlerReceiver<T> l) {
+            public void removeListener(IMEMonitorListener<T> l) {
                 throw new UnsupportedOperationException();
             }
 

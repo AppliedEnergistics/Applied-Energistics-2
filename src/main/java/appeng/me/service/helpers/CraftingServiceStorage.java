@@ -88,7 +88,7 @@ public class CraftingServiceStorage implements ICellProvider {
             }
 
             @Override
-            public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+            public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
                 // Add craftable items so the terminals can see them.
                 return craftingService.addCrafting(channel, out);
             }

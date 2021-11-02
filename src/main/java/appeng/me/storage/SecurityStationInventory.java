@@ -88,7 +88,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
     }
 
     @Override
-    public IAEStackList<IAEItemStack> getAvailableItems(final IAEStackList out) {
+    public IAEStackList<IAEItemStack> getAvailableStacks(final IAEStackList out) {
         for (final IAEItemStack ais : this.getStoredItems()) {
             out.add(ais);
         }

@@ -23,28 +23,38 @@
 
 package appeng.api.storage;
 
-import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 
 /**
  * A {@link IMEInventoryHandler} that allows listening to storage changes.
  */
-public interface IMEMonitor<T extends IAEStack> extends IMEInventoryHandler<T>, IBaseMonitor<T> {
+public interface IMEMonitor<T extends IAEStack> extends IMEInventoryHandler<T> {
+
+    /**
+     * add a new Listener to the monitor, be sure to properly remove yourself when your done.
+     */
+    void addListener(IMEMonitorListener<T> l, Object verificationToken);
+
+    /**
+     * remove a Listener to the monitor.
+     */
+    void removeListener(IMEMonitorListener<T> l);
 
     /**
      * This method is discouraged when accessing data via a IMEMonitor
      */
     @Override
     @Deprecated
-    IAEStackList<T> getAvailableItems(IAEStackList<T> out);
+    IAEStackList<T> getAvailableStacks(IAEStackList<T> out);
 
     /**
-     * Get access to the full item list of the network, preferred over {@link IMEInventory} .getAvailableItems(...)
-     *
-     * @return full storage list.
+     * Returns the cached list of stacks available from this inventory, which will be the same as
+     * {@link #getAvailableStacks()} if the cache isn't stale.
      */
-    IAEStackList<T> getStorageList();
+    default IAEStackList<T> getCachedAvailableStacks() {
+        return getAvailableStacks();
+    }
 
     /**
      * Convenience method to cast monitors with wildcard generic types to the concrete type used by the given storage

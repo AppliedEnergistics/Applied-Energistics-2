@@ -521,8 +521,8 @@ public class DualityItemInterface
         }
 
         @Override
-        public IAEStackList<IAEItemStack> getStorageList() {
-            return getAvailableItems();
+        public IAEStackList<IAEItemStack> getCachedAvailableStacks() {
+            return getAvailableStacks();
         }
     }
 

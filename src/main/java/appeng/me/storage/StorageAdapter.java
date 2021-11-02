@@ -8,10 +8,9 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -19,12 +18,12 @@ import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 
 public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAEStack>
-        implements IMEInventory<T>, IBaseMonitor<T>, ITickingMonitor, IHandlerAdapter<Storage<V>> {
+        implements IMEMonitor<T>, ITickingMonitor, IHandlerAdapter<Storage<V>> {
     /**
      * Clamp reported values to avoid overflows when amounts get too close to Long.MAX_VALUE.
      */
     private static final long MAX_REPORTED_AMOUNT = 1L << 42;
-    private final Map<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
+    private final Map<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
     private IActionSource source;
     private final IVariantConversion<V, T> conversion;
     private Storage<V> storage;
@@ -104,7 +103,7 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
         return this.cache.getAvailableItems(out);
     }
 
@@ -119,21 +118,21 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
     }
 
     @Override
-    public void addListener(final IMEMonitorHandlerReceiver<T> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
+    public void removeListener(final IMEMonitorListener<T> l) {
         this.listeners.remove(l);
     }
 
     private void postDifference(Iterable<T> a) {
-        final Iterator<Map.Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet()
+        final Iterator<Map.Entry<IMEMonitorListener<T>, Object>> i = this.listeners.entrySet()
                 .iterator();
         while (i.hasNext()) {
-            final Map.Entry<IMEMonitorHandlerReceiver<T>, Object> l = i.next();
-            final IMEMonitorHandlerReceiver<T> key = l.getKey();
+            final Map.Entry<IMEMonitorListener<T>, Object> l = i.next();
+            final IMEMonitorListener<T> key = l.getKey();
             if (key.isValid(l.getValue())) {
                 key.postChange(this, a, this.source);
             } else {

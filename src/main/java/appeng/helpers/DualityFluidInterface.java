@@ -376,8 +376,8 @@ public class DualityFluidInterface
         }
 
         @Override
-        public IAEStackList<IAEFluidStack> getStorageList() {
-            return getAvailableItems();
+        public IAEStackList<IAEFluidStack> getCachedAvailableStacks() {
+            return getAvailableStacks();
         }
     }
 

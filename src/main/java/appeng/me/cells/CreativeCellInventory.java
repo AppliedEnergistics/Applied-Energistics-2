@@ -67,7 +67,7 @@ class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHandler<T
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
         for (var ais : this.cache) {
             out.add(ais);
         }

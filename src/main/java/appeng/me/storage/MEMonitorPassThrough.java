@@ -25,10 +25,9 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -43,9 +42,9 @@ import appeng.util.inv.ItemListIgnoreCrafting;
  * supported.
  */
 public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
-        implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T> {
+        implements IMEMonitor<T>, IMEMonitorListener<T> {
 
-    private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
+    private final HashMap<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
 
     @Nullable
     private IActionSource changeSource;
@@ -64,14 +63,14 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
             this.monitor = null;
         }
 
-        var before = getAvailableItems(getChannel().createList());
+        var before = this.getAvailableStacks(getChannel().createList());
 
         super.setInternal(i);
         if (i instanceof IMEMonitor) {
             this.monitor = (IMEMonitor<T>) i;
         }
 
-        var after = getAvailableItems(getChannel().createList());
+        var after = this.getAvailableStacks(getChannel().createList());
 
         if (this.monitor != null) {
             this.monitor.addListener(this, this.monitor);
@@ -81,29 +80,29 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
         // Note how ItemListIgnoreCrafting will clear the crafting flag.
         // This is used because crafting items from other networks is not possible.
-        super.getAvailableItems(new ItemListIgnoreCrafting<>(out));
+        super.getAvailableStacks(new ItemListIgnoreCrafting<>(out));
         return out;
     }
 
     @Override
-    public void addListener(final IMEMonitorHandlerReceiver<T> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
+    public void removeListener(final IMEMonitorListener<T> l) {
         this.listeners.remove(l);
     }
 
     @Override
-    public IAEStackList<T> getStorageList() {
+    public IAEStackList<T> getCachedAvailableStacks() {
         if (this.monitor == null) {
-            return getAvailableItems(getChannel().createList());
+            return this.getAvailableStacks(getChannel().createList());
         }
-        return this.monitor.getStorageList();
+        return this.monitor.getCachedAvailableStacks();
     }
 
     @Override
@@ -112,11 +111,11 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     }
 
     @Override
-    public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
-        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
+    public void postChange(IMEMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
+        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
-            final Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
-            final IMEMonitorHandlerReceiver<T> receiver = e.getKey();
+            final Entry<IMEMonitorListener<T>, Object> e = i.next();
+            final IMEMonitorListener<T> receiver = e.getKey();
             if (receiver.isValid(e.getValue())) {
                 receiver.postChange(this, change, source);
             } else {
@@ -127,10 +126,10 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
 
     @Override
     public void onListUpdate() {
-        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
+        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
-            final Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
-            final IMEMonitorHandlerReceiver<T> receiver = e.getKey();
+            final Entry<IMEMonitorListener<T>, Object> e = i.next();
+            final IMEMonitorListener<T> receiver = e.getKey();
             if (receiver.isValid(e.getValue())) {
                 receiver.onListUpdate();
             } else {

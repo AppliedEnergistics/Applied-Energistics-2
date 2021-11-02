@@ -22,7 +22,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -55,12 +55,12 @@ class CondenserVoidInventory<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
         return out;
     }
 
     @Override
-    public IAEStackList<T> getStorageList() {
+    public IAEStackList<T> getCachedAvailableStacks() {
         return this.channel.createList();
     }
 
@@ -80,13 +80,13 @@ class CondenserVoidInventory<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public void addListener(IMEMonitorHandlerReceiver<T> l, Object verificationToken) {
+    public void addListener(IMEMonitorListener<T> l, Object verificationToken) {
         // Not implemented since the Condenser automatically voids everything, and there
         // are no updates
     }
 
     @Override
-    public void removeListener(IMEMonitorHandlerReceiver<T> l) {
+    public void removeListener(IMEMonitorListener<T> l) {
         // Not implemented since we don't remember registered listeners anyway
     }
 }

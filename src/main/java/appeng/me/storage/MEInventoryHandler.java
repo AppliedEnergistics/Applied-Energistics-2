@@ -136,7 +136,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
         if (this.gettingAvailableContent) {
             // Prevent recursion in case the internal inventory somehow calls this when the available items are queried.
             // This is handled by the NetworkInventoryHandler when the initial query is coming from the network.
@@ -148,14 +148,14 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
         this.gettingAvailableContent = true;
         try {
             if (!this.filterAvailableContents) {
-                return this.inventory.getAvailableItems(out);
+                return this.inventory.getAvailableStacks(out);
             } else {
                 if (!this.allowsExtraction) {
                     return out;
                 }
                 // Don't try to check use the network storage list if this.delegate is an MEMonitor!
                 // The storage list doesn't properly handle recursion!
-                for (var stack : this.inventory.getAvailableItems()) {
+                for (var stack : this.inventory.getAvailableStacks()) {
                     if (canExtract(stack)) {
                         // We use addStorage because MEMonitorPassThrough#getStorageList() does not filter craftable
                         // items!

@@ -202,7 +202,7 @@ public class NetworkInventory<T extends IAEStack> {
 
         for (var i : this.priorityInventory.values()) {
             for (final IMEInventoryHandler<T> j : i) {
-                out = j.getAvailableItems(out);
+                out = j.getAvailableStacks(out);
             }
         }
 

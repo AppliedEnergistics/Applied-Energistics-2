@@ -327,11 +327,11 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         IMEInventory<T> src, destination;
         if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
             src = cellInv;
-            srcList = cellInv.getAvailableItems();
+            srcList = cellInv.getAvailableStacks();
             destination = networkInv;
         } else {
             src = networkInv;
-            srcList = networkInv.getStorageList();
+            srcList = networkInv.getCachedAvailableStacks();
             destination = cellInv;
         }
 

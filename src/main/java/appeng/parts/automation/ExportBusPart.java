@@ -153,7 +153,8 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
                     final long before = this.itemToSend;
 
                     if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-                        for (final IAEItemStack o : ImmutableList.copyOf(inv.getStorageList().findFuzzy(ais, fzMode))) {
+                        for (final IAEItemStack o : ImmutableList
+                                .copyOf(inv.getCachedAvailableStacks().findFuzzy(ais, fzMode))) {
                             this.pushItemIntoTarget(destination, energy, inv, o);
                             if (this.itemToSend <= 0) {
                                 break;

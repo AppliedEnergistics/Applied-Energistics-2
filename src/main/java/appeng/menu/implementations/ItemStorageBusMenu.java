@@ -130,7 +130,7 @@ public class ItemStorageBusMenu extends UpgradeableMenu<ItemStorageBusPart> {
 
         Iterator<IAEItemStack> i = Collections.emptyIterator();
         if (cellInv != null) {
-            i = cellInv.getAvailableItems().iterator();
+            i = cellInv.getAvailableStacks().iterator();
         }
 
         for (int x = 0; x < inv.size(); x++) {

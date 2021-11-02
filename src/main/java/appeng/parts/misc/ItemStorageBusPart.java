@@ -74,7 +74,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Sto
 
     @Nullable
     @Override
-    protected IMEInventory<IAEItemStack> getHandlerAdapter(Storage<ItemVariant> handler, boolean extractableOnly,
+    protected IMEInventory<IAEItemStack> adaptExternalApi(Storage<ItemVariant> handler, boolean extractableOnly,
             Runnable alertDevice) {
         return new StorageAdapter<>(IVariantConversion.ITEM, handler, extractableOnly) {
             @Override

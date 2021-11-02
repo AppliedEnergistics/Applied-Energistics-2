@@ -117,7 +117,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
             var inv = StorageCells.getCellInventory(p.getItemInHand(hand), null, StorageChannels.items());
             if (inv != null) {
-                var itemList = inv.getAvailableItems();
+                var itemList = inv.getAvailableStacks();
                 IAEItemStack req = itemList.getFirstItem();
                 if (req != null) {
                     shots = Math.min(shots, (int) req.getStackSize());

@@ -226,7 +226,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         final IMEInventory<IAEItemStack> inv = StorageCells.getCellInventory(is, null,
                 StorageChannels.items());
         if (inv != null) {
-            var itemList = inv.getAvailableItems();
+            var itemList = inv.getAvailableStacks();
             if (anchor.isEmpty()) {
                 final IAEItemStack firstItem = itemList.getFirstItem();
                 if (firstItem != null) {

@@ -195,7 +195,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
             IStorageChannel<T> channel) {
         final IMEInventory<T> cellInv = StorageCells.getCellInventory(is, null, channel);
         if (cellInv != null) {
-            return cellInv.getAvailableItems().iterator();
+            return cellInv.getAvailableStacks().iterator();
         } else {
             return Collections.emptyIterator();
         }

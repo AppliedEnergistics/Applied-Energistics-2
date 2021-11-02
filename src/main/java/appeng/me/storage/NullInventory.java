@@ -56,7 +56,7 @@ public class NullInventory<T extends IAEStack> implements IMEInventory<T> {
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
         return out;
     }
 

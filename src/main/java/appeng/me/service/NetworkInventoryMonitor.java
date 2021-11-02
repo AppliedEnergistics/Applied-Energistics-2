@@ -18,7 +18,6 @@
 
 package appeng.me.service;
 
-import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +34,7 @@ import com.google.common.collect.Queues;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -52,7 +51,7 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
     private final InterestManager<StackWatcher> interestManager;
     private final IStorageChannel<T> channel;
     private final IAEStackList<T> cachedList;
-    private final Map<IMEMonitorHandlerReceiver<T>, Object> listeners;
+    private final Map<IMEMonitorListener<T>, Object> listeners;
     private NetworkInventory<T> networkInventory;
 
     private boolean hasChangedLastTick = false;
@@ -76,7 +75,7 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
     }
 
     @Override
-    public void addListener(final IMEMonitorHandlerReceiver<T> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
@@ -98,7 +97,7 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
         return networkInventory.getAvailableItems(out);
     }
 
@@ -109,11 +108,11 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
 
     @Nonnull
     @Override
-    public IAEStackList<T> getStorageList() {
+    public IAEStackList<T> getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.resetStatus();
-            return this.getAvailableItems(this.cachedList);
+            return this.getAvailableStacks(this.cachedList);
         }
 
         return this.cachedList;
@@ -137,11 +136,11 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
     }
 
     @Override
-    public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
+    public void removeListener(final IMEMonitorListener<T> l) {
         this.listeners.remove(l);
     }
 
-    private Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> getListeners() {
+    private Iterator<Entry<IMEMonitorListener<T>, Object>> getListeners() {
         return this.listeners.entrySet().iterator();
     }
 
@@ -162,11 +161,11 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
 
     private void notifyListenersOfChange(final Iterable<T> diff, final IActionSource src) {
         this.hasChanged = true;
-        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
+        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.getListeners();
 
         while (i.hasNext()) {
-            final Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
-            final IMEMonitorHandlerReceiver<T> receiver = o.getKey();
+            final Entry<IMEMonitorListener<T>, Object> o = i.next();
+            final IMEMonitorListener<T> receiver = o.getKey();
             if (receiver.isValid(o.getValue())) {
                 receiver.postChange(this, diff, src);
             } else {
@@ -200,10 +199,10 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
             }
 
             if (interestManager.containsKey(changedItem)) {
-                final Collection<StackWatcher> list = interestManager.get(changedItem);
+                var list = interestManager.get(changedItem);
 
                 if (!list.isEmpty()) {
-                    IAEStack fullStack = this.getStorageList().findPrecise(changedItem);
+                    IAEStack fullStack = this.getCachedAvailableStacks().findPrecise(changedItem);
 
                     if (fullStack == null) {
                         fullStack = IAEStack.copy(changedItem);
@@ -212,8 +211,8 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
 
                     interestManager.enableTransactions();
 
-                    for (final StackWatcher iw : list) {
-                        iw.getHost().onStackChange(this.getStorageList(), fullStack, difference, src,
+                    for (var iw : list) {
+                        iw.getHost().onStackChange(this.getCachedAvailableStacks(), fullStack, difference, src,
                                 this.getChannel());
                     }
 

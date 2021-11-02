@@ -21,20 +21,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking.storage;
+package appeng.api.storage;
 
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEStack;
 
-public interface IBaseMonitor<T extends IAEStack> {
+public interface IMEMonitorListener<T extends IAEStack> {
 
     /**
-     * add a new Listener to the monitor, be sure to properly remove yourself when your done.
+     * return true if this object should remain as a listener.
+     *
+     * @param verificationToken to be checked object
+     *
+     * @return true if object should remain as a listener
      */
-    void addListener(IMEMonitorHandlerReceiver<T> l, Object verificationToken);
+    boolean isValid(Object verificationToken);
 
     /**
-     * remove a Listener to the monitor.
+     * called when changes are made to the Monitor, but only if listener is still valid.
+     *
+     * @param change done change
      */
-    void removeListener(IMEMonitorHandlerReceiver<T> l);
+    void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource actionSource);
+
+    /**
+     * called when the list updates its contents, this is mostly for handling power events.
+     */
+    void onListUpdate();
 }

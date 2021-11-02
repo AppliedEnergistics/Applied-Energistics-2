@@ -70,15 +70,15 @@ public interface IMEInventory<T extends IAEStack> {
      *
      * @return returns same list that was passed in, is passed out
      */
-    IAEStackList<T> getAvailableItems(IAEStackList<T> out);
+    IAEStackList<T> getAvailableStacks(IAEStackList<T> out);
 
     /**
      * request a full report of all available items, storage.
      *
      * @return a new list of this inventories content
      */
-    default IAEStackList<T> getAvailableItems() {
-        return getAvailableItems(getChannel().createList());
+    default IAEStackList<T> getAvailableStacks() {
+        return getAvailableStacks(getChannel().createList());
     }
 
     /**

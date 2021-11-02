@@ -140,7 +140,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
 
     private static boolean isCellEmpty(BasicCellInventory<?> inv) {
         if (inv != null) {
-            return inv.getAvailableItems().isEmpty();
+            return inv.getAvailableStacks().isEmpty();
         }
         return true;
     }
@@ -235,7 +235,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
         for (final T item : this.getCellItems()) {
             out.add(item);
         }

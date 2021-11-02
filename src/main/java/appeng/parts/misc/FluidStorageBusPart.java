@@ -74,7 +74,7 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, S
 
     @Nullable
     @Override
-    protected IMEInventory<IAEFluidStack> getHandlerAdapter(Storage<FluidVariant> handler, boolean extractableOnly,
+    protected IMEInventory<IAEFluidStack> adaptExternalApi(Storage<FluidVariant> handler, boolean extractableOnly,
             Runnable alertDevice) {
         return new StorageAdapter<>(IVariantConversion.FLUID, handler, extractableOnly) {
             @Override

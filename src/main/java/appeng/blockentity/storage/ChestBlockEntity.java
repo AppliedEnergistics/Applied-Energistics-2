@@ -68,10 +68,9 @@ import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
-import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
@@ -555,7 +554,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.level.blockEntityChanged(this.worldPosition);
     }
 
-    private class ChestNetNotifier<T extends IAEStack> implements IMEMonitorHandlerReceiver<T> {
+    private class ChestNetNotifier<T extends IAEStack> implements IMEMonitorListener<T> {
 
         private final IStorageChannel<T> chan;
 
@@ -574,7 +573,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
+        public void postChange(IMEMonitor<T> monitor, Iterable<T> change, final IActionSource source) {
             if (source == ChestBlockEntity.this.mySrc
                     || source.machine().map(machine -> machine == ChestBlockEntity.this).orElse(false)) {
                 if (getMainNode().isActive()) {

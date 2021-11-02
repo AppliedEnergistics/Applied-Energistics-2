@@ -112,7 +112,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack> extends Upg
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
         return out;
     }
 
