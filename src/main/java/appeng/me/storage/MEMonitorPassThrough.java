@@ -22,61 +22,69 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
+
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
+/**
+ * Wraps another inventory transparently but allows switching out the underlying inventory implementation. When the
+ * underlying inventory is switched, the resulting changes in the observable inventory are reported to listeners of this
+ * monitor.
+ * <p/>
+ * Additionally, the crafting flag is cleared for any exposed item, because crafting requests across networks are not
+ * supported.
+ */
 public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
         implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T> {
 
     private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
+
+    @Nullable
     private IActionSource changeSource;
+
+    @Nullable
     private IMEMonitor<T> monitor;
 
-    public MEMonitorPassThrough(final IMEInventory<T> i, final IStorageChannel channel) {
-        super(i, channel);
-        if (i instanceof IMEMonitor) {
-            this.monitor = (IMEMonitor<T>) i;
-        }
+    public MEMonitorPassThrough(IMEInventory<T> i) {
+        super(i);
     }
 
     @Override
-    public void setInternal(final IMEInventory<T> i) {
+    public void setInternal(IMEInventory<T> i) {
         if (this.monitor != null) {
             this.monitor.removeListener(this);
+            this.monitor = null;
         }
 
-        this.monitor = null;
-        final IAEStackList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList()
-                : this.getInternal()
-                        .getAvailableItems(new ItemListIgnoreCrafting(this.getWrappedChannel().createList()));
+        var before = getAvailableItems(getChannel().createList());
 
         super.setInternal(i);
         if (i instanceof IMEMonitor) {
             this.monitor = (IMEMonitor<T>) i;
         }
 
-        final IAEStackList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList()
-                : this.getInternal()
-                        .getAvailableItems(new ItemListIgnoreCrafting(this.getWrappedChannel().createList()));
+        var after = getAvailableItems(getChannel().createList());
 
         if (this.monitor != null) {
             this.monitor.addListener(this, this.monitor);
         }
 
-        StorageHelper.postListChanges(before, after, this, this.getChangeSource());
+        StorageHelper.postListChanges(before, after, this, changeSource);
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList out) {
-        super.getAvailableItems(new ItemListIgnoreCrafting(out));
+    public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+        // Note how ItemListIgnoreCrafting will clear the crafting flag.
+        // This is used because crafting items from other networks is not possible.
+        super.getAvailableItems(new ItemListIgnoreCrafting<>(out));
         return out;
     }
 
@@ -93,9 +101,7 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     @Override
     public IAEStackList<T> getStorageList() {
         if (this.monitor == null) {
-            final IAEStackList<T> out = this.getWrappedChannel().createList();
-            this.getInternal().getAvailableItems(new ItemListIgnoreCrafting(out));
-            return out;
+            return getAvailableItems(getChannel().createList());
         }
         return this.monitor.getStorageList();
     }
@@ -133,11 +139,7 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
         }
     }
 
-    private IActionSource getChangeSource() {
-        return this.changeSource;
-    }
-
-    public void setChangeSource(final IActionSource changeSource) {
+    public void setChangeSource(@Nullable IActionSource changeSource) {
         this.changeSource = changeSource;
     }
 }

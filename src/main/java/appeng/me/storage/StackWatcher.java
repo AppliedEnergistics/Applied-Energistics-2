@@ -30,13 +30,13 @@ import appeng.me.service.StorageService;
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
-public class ItemWatcher implements IStackWatcher {
+public class StackWatcher implements IStackWatcher {
 
     private final StorageService service;
     private final IStackWatcherNode myObject;
     private final Set<IAEStack> myInterests = new HashSet<>();
 
-    public ItemWatcher(final StorageService service, final IStackWatcherNode host) {
+    public StackWatcher(final StorageService service, final IStackWatcherNode host) {
         this.service = service;
         this.myObject = host;
     }

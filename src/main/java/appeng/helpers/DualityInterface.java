@@ -51,9 +51,9 @@ import appeng.util.Platform;
 public abstract class DualityInterface {
 
     protected final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(
-            new NullInventory<>(StorageChannels.items()), StorageChannels.items());
+            NullInventory.of(StorageChannels.items()));
     protected final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
-            new NullInventory<>(StorageChannels.fluids()), StorageChannels.fluids());
+            NullInventory.of(StorageChannels.fluids()));
 
     protected final IInterfaceHost host;
     protected final IManagedGridNode mainNode;

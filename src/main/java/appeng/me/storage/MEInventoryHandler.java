@@ -18,6 +18,8 @@
 
 package appeng.me.storage;
 
+import java.util.Objects;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
@@ -32,96 +34,87 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandler<T> {
 
-    private final IStorageChannel<T> channel;
-    private IMEInventory<T> internal;
-    private IMEInventoryHandler<T> delegate;
-    private int myPriority;
-    private IncludeExclude myWhitelist;
-    private AccessRestriction myAccess;
-    private IPartitionList<T> myPartitionList;
+    private IMEInventory<T> inventory;
+    private int priority;
+    private IPartitionList<T> partitionList = new DefaultPriorityList<>();
+    private IncludeExclude partitionListMode = IncludeExclude.WHITELIST;
     private boolean filterOnExtraction;
     private boolean filterAvailableContents;
 
-    private AccessRestriction cachedAccessRestriction;
-    private boolean hasReadAccess;
-    private boolean hasWriteAccess;
+    private AccessRestriction maxAccess = AccessRestriction.READ_WRITE;
+    private AccessRestriction effectiveAccess;
+    private boolean allowsExtraction;
+    private boolean allowsInsertion;
 
     private boolean gettingAvailableContent = false;
 
-    public MEInventoryHandler(final IMEInventory<T> i) {
-        this.channel = i.getChannel();
-        this.setInternal(i);
-        this.reset();
+    public MEInventoryHandler(IMEInventory<T> inventory) {
+        setInventory(Objects.requireNonNull(inventory));
     }
 
-    public void setInternal(IMEInventory<T> i) {
-        if (i instanceof IMEInventoryHandler) {
-            this.delegate = (IMEInventoryHandler<T>) i;
-        } else {
-            this.delegate = new MEPassThrough<>(i, channel);
-        }
-        this.internal = i;
+    /**
+     * Changes which inventory is wrapped by this handler.
+     */
+    public void setInventory(IMEInventory<T> inventory) {
+        this.inventory = inventory;
 
-        if (cachedAccessRestriction != null) {
-            // Update cached access restriction
-            setBaseAccess(this.myAccess);
-        }
+        // Update access restrictions, since the inventory could allow a different level of access
+        setMaxAccess(maxAccess);
     }
 
-    public IMEInventory<T> getInternal() {
-        return this.internal;
-    }
-
-    public void reset() {
-        this.myPriority = 0;
-        this.myWhitelist = IncludeExclude.WHITELIST;
-        this.setBaseAccess(AccessRestriction.READ_WRITE);
-        this.myPartitionList = new DefaultPriorityList<>();
+    /**
+     * @return The inventory this handler is wrapping.
+     */
+    public IMEInventory<T> getInventory() {
+        return this.inventory;
     }
 
     protected IncludeExclude getWhitelist() {
-        return this.myWhitelist;
+        return this.partitionListMode;
     }
 
     public void setWhitelist(final IncludeExclude myWhitelist) {
-        this.myWhitelist = myWhitelist;
+        this.partitionListMode = myWhitelist;
     }
 
-    public AccessRestriction getBaseAccess() {
-        return this.myAccess;
+    public AccessRestriction getMaxAccess() {
+        return maxAccess;
     }
 
-    public void setBaseAccess(final AccessRestriction myAccess) {
-        this.myAccess = myAccess;
-        this.cachedAccessRestriction = this.myAccess.restrictPermissions(this.delegate.getAccess());
-        this.hasReadAccess = this.cachedAccessRestriction.hasPermission(AccessRestriction.READ);
-        this.hasWriteAccess = this.cachedAccessRestriction.hasPermission(AccessRestriction.WRITE);
+    /**
+     * Sets the maximum access this handler will allow to the underlying inventory. It might allow even less if the
+     * delegated {@link #getInventory()} is an {@link IMEInventoryHandler} itself, and allows even less access.
+     */
+    public void setMaxAccess(AccessRestriction maxAccess) {
+        this.maxAccess = maxAccess;
+
+        AccessRestriction inventoryAccess;
+        if (inventory instanceof NullInventory) {
+            // This enables a fast-path of sorts that disables insert/extract for null inventories
+            inventoryAccess = AccessRestriction.NO_ACCESS;
+        } else if (inventory instanceof IMEInventoryHandler<T>handler) {
+            // If the delegate inventory is itself a handler, we will respect its reported access
+            inventoryAccess = handler.getAccess();
+        } else {
+            inventoryAccess = AccessRestriction.READ_WRITE;
+        }
+
+        this.effectiveAccess = maxAccess.restrictPermissions(inventoryAccess);
+        this.allowsExtraction = this.effectiveAccess.hasPermission(AccessRestriction.READ);
+        this.allowsInsertion = this.effectiveAccess.hasPermission(AccessRestriction.WRITE);
     }
 
     protected IPartitionList<T> getPartitionList() {
-        return this.myPartitionList;
+        return this.partitionList;
     }
 
     public void setPartitionList(final IPartitionList<T> myPartitionList) {
-        this.myPartitionList = myPartitionList;
+        this.partitionList = myPartitionList;
     }
 
     public void setExtractFiltering(boolean filterOnExtraction, boolean filterAvailableContents) {
         this.filterOnExtraction = filterOnExtraction;
         this.filterAvailableContents = filterAvailableContents;
-    }
-
-    protected boolean canExtract(T request) {
-        if (!this.hasReadAccess) {
-            return false;
-        }
-        if (this.myWhitelist == IncludeExclude.WHITELIST
-                && (this.myPartitionList.isEmpty() || this.myPartitionList.isListed(request))) {
-            return true;
-        } else if (this.myWhitelist == IncludeExclude.BLACKLIST && !this.myPartitionList.isListed(request)) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -130,7 +123,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
             return input;
         }
 
-        return this.delegate.injectItems(input, type, src);
+        return this.inventory.injectItems(input, type, src);
     }
 
     @Override
@@ -139,7 +132,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
             return null;
         }
 
-        return this.delegate.extractItems(request, type, src);
+        return this.inventory.extractItems(request, type, src);
     }
 
     @Override
@@ -155,14 +148,14 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
         this.gettingAvailableContent = true;
         try {
             if (!this.filterAvailableContents) {
-                return this.delegate.getAvailableItems(out);
+                return this.inventory.getAvailableItems(out);
             } else {
-                if (!this.hasReadAccess) {
+                if (!this.allowsExtraction) {
                     return out;
                 }
                 // Don't try to check use the network storage list if this.delegate is an MEMonitor!
                 // The storage list doesn't properly handle recursion!
-                for (var stack : this.delegate.getAvailableItems()) {
+                for (var stack : this.inventory.getAvailableItems()) {
                     if (canExtract(stack)) {
                         // We use addStorage because MEMonitorPassThrough#getStorageList() does not filter craftable
                         // items!
@@ -178,43 +171,71 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
 
     @Override
     public IStorageChannel<T> getChannel() {
-        return this.delegate.getChannel();
+        return this.inventory.getChannel();
     }
 
     @Override
     public AccessRestriction getAccess() {
-        return this.cachedAccessRestriction;
+        return this.effectiveAccess;
     }
 
     @Override
     public boolean isPrioritized(final T input) {
-        if (this.myWhitelist == IncludeExclude.WHITELIST) {
-            return this.myPartitionList.isListed(input) || this.delegate.isPrioritized(input);
+        if (this.partitionListMode == IncludeExclude.WHITELIST) {
+            if (this.partitionList.isListed(input)) {
+                return true;
+            }
+
+            // If the delegate inventory is itself a handler, it might also prioritize the input
+            if (this.inventory instanceof IMEInventoryHandler<T>handler) {
+                return handler.isPrioritized(input);
+            }
         }
         return false;
     }
 
+    protected boolean canExtract(T request) {
+        return allowsExtraction && passesBlackOrWhitelist(request);
+    }
+
     @Override
     public boolean canAccept(final T input) {
-        if (!this.hasWriteAccess) {
+        if (!this.allowsInsertion || !passesBlackOrWhitelist(input)) {
             return false;
         }
 
-        if (this.myWhitelist == IncludeExclude.BLACKLIST && this.myPartitionList.isListed(input)) {
-            return false;
+        // If the delegate inventory is a handler itself, allow it to reject the input
+        if (this.inventory instanceof IMEInventoryHandler<T>handler) {
+            return handler.canAccept(input);
         }
-        if (this.myPartitionList.isEmpty() || this.myWhitelist == IncludeExclude.BLACKLIST) {
-            return this.delegate.canAccept(input);
+        return true;
+    }
+
+    // Applies the black/whitelist, but only if any item is listed at all
+    private boolean passesBlackOrWhitelist(T input) {
+        if (!this.partitionList.isEmpty()) {
+            switch (this.partitionListMode) {
+                case WHITELIST -> {
+                    if (!this.partitionList.isListed(input)) {
+                        return false;
+                    }
+                }
+                case BLACKLIST -> {
+                    if (this.partitionList.isListed(input)) {
+                        return false;
+                    }
+                }
+            }
         }
-        return this.myPartitionList.isListed(input) && this.delegate.canAccept(input);
+        return true;
     }
 
     @Override
     public int getPriority() {
-        return this.myPriority;
+        return this.priority;
     }
 
-    public void setPriority(final int myPriority) {
-        this.myPriority = myPriority;
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

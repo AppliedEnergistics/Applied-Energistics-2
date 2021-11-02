@@ -27,6 +27,9 @@ import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 
+/**
+ * A {@link IMEInventoryHandler} that allows listening to storage changes.
+ */
 public interface IMEMonitor<T extends IAEStack> extends IMEInventoryHandler<T>, IBaseMonitor<T> {
 
     /**

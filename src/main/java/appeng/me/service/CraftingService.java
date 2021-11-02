@@ -74,7 +74,7 @@ import appeng.crafting.CraftingLinkNexus;
 import appeng.crafting.CraftingWatcher;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
-import appeng.me.helpers.GenericInterestManager;
+import appeng.me.helpers.InterestManager;
 import appeng.me.service.helpers.CraftingServiceStorage;
 
 public class CraftingService
@@ -111,8 +111,7 @@ public class CraftingService
     private final Set<IAEStack> emitableItems = new HashSet<>();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
-    private final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<>(
-            (Multimap) this.interests);
+    private final InterestManager<CraftingWatcher> interestManager = new InterestManager<>((Multimap) this.interests);
     private final IStorageService storageGrid;
     private final IEnergyService energyGrid;
     private boolean updateList = false;
@@ -444,7 +443,7 @@ public class CraftingService
         return this.craftingCPUClusters.contains(cpu);
     }
 
-    public GenericInterestManager<CraftingWatcher> getInterestManager() {
+    public InterestManager<CraftingWatcher> getInterestManager() {
         return this.interestManager;
     }
 

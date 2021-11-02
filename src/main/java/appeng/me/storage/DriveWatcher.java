@@ -43,7 +43,7 @@ public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
     }
 
     public CellState getStatus() {
-        return ((ICellInventoryHandler) this.getInternal()).getStatus();
+        return ((ICellInventoryHandler) this.getInventory()).getStatus();
     }
 
     @Override

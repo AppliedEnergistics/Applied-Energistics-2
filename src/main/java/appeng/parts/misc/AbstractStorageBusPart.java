@@ -70,16 +70,17 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
  */
 public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends UpgradeablePart
-        implements IGridTickable, ICellProvider, IMEMonitorHandlerReceiver<T>, IPriorityHost {
+        implements IGridTickable, ICellProvider, IPriorityHost {
     protected final IActionSource source;
     private final TickRates tickRates;
     private boolean wasActive = false;
     private int priority = 0;
     private boolean shouldUpdateTarget = true;
     private ITickingMonitor monitor = null;
-    private final MEInventoryHandler<T> handler = new MEInventoryHandler<>(new NullInventory<>(getStorageChannel()));
+    private final MEInventoryHandler<T> handler = new MEInventoryHandler<>(NullInventory.of(getStorageChannel()));
     private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
     private final PartAdjacentApi<A> adjacentExternalApi;
+    private final Listener listener = new Listener();
 
     public AbstractStorageBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup) {
         super(is);
@@ -159,23 +160,26 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         return true;
     }
 
-    @Override
-    public final boolean isValid(final Object verificationToken) {
-        return this.handler.getInternal() == verificationToken;
-    }
-
-    @Override
-    public final void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
-        if (this.getMainNode().isActive()) {
-            getMainNode().ifPresent((grid, node) -> {
-                grid.getStorageService().postAlterationOfStoredItems(getStorageChannel(), change, this.source);
-            });
+    class Listener implements IMEMonitorHandlerReceiver<T> {
+        @Override
+        public final boolean isValid(Object verificationToken) {
+            return handler.getInventory() == verificationToken;
         }
-    }
 
-    @Override
-    public final void onListUpdate() {
-        // not used here.
+        @Override
+        public final void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change,
+                final IActionSource source) {
+            if (getMainNode().isActive()) {
+                getMainNode().ifPresent((grid, node) -> {
+                    grid.getStorageService().postAlterationOfStoredItems(getStorageChannel(), change, source);
+                });
+            }
+        }
+
+        @Override
+        public final void onListUpdate() {
+            // not used here.
+        }
     }
 
     @Override
@@ -231,11 +235,11 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
      * Used by the menu to configure based on stored contents.
      */
     public IMEInventory<T> getInternalHandler() {
-        return this.handler.getInternal();
+        return this.handler.getInventory();
     }
 
     private boolean hasRegisteredCellToNetwork() {
-        return this.isActive() && !(this.handler.getInternal() instanceof NullInventory);
+        return this.isActive() && !(this.handler.getInventory() instanceof NullInventory);
     }
 
     protected void onConfigurationChanged() {
@@ -243,7 +247,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     }
 
     private void updateTarget(boolean forceFullUpdate) {
-        boolean wasInventory = this.handler.getInternal() instanceof IHandlerAdapter;
+        boolean wasInventory = this.handler.getInventory() instanceof IHandlerAdapter;
         IMEMonitor<T> foundMonitor = null;
         A foundHandler = null;
 
@@ -265,8 +269,8 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
 
         if (!forceFullUpdate && wasInventory && foundHandler != null) {
             // Just update the inventory reference, the ticking monitor will take care of the rest.
-            ((IHandlerAdapter<A>) this.handler.getInternal()).setHandler(foundHandler);
-        } else if (!forceFullUpdate && foundMonitor == this.handler.getInternal()) {
+            ((IHandlerAdapter<A>) this.handler.getInventory()).setHandler(foundHandler);
+        } else if (!forceFullUpdate && foundMonitor == this.handler.getInventory()) {
             // Monitor didn't change, nothing to do!
         } else {
             var wasSleeping = this.monitor == null;
@@ -287,12 +291,12 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
                     });
                 });
             } else {
-                newInventory = new NullInventory<>(getStorageChannel());
+                newInventory = NullInventory.of(getStorageChannel());
             }
-            this.handler.setInternal(newInventory);
+            this.handler.setInventory(newInventory);
 
             // Apply other settings.
-            this.handler.setBaseAccess(this.getConfigManager().getSetting(Settings.ACCESS));
+            this.handler.setMaxAccess(this.getConfigManager().getSetting(Settings.ACCESS));
             this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                     : IncludeExclude.WHITELIST);
             this.handler.setPriority(this.priority);
@@ -321,7 +325,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
             // First, post the change.
             if (wasRegistered) {
                 var after = this.handler.getAvailableItems();
-                StorageHelper.postListChanges(before, after, this, this.source);
+                StorageHelper.postListChanges(before, after, listener, this.source);
             }
 
             // Let the new inventory react to us ticking.
@@ -334,7 +338,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
 
             // Notify the network of any external change to the inventory.
             if (newInventory instanceof IBaseMonitor) {
-                ((IBaseMonitor<T>) newInventory).addListener(this, newInventory);
+                ((IBaseMonitor<T>) newInventory).addListener(listener, newInventory);
             }
 
             // Update sleeping state.

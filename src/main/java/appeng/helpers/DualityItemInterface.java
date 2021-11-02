@@ -269,8 +269,8 @@ public class DualityItemInterface
             this.fluids.setInternal(grid.getStorageService()
                     .getInventory(StorageChannels.fluids()));
         } else {
-            this.items.setInternal(new NullInventory<>(StorageChannels.items()));
-            this.fluids.setInternal(new NullInventory<>(StorageChannels.fluids()));
+            this.items.setInternal(NullInventory.of(StorageChannels.items()));
+            this.fluids.setInternal(NullInventory.of(StorageChannels.fluids()));
         }
 
         this.notifyNeighbors();

@@ -33,6 +33,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridCellArrayUpdate;
+import appeng.api.networking.events.GridStorageEvent;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
@@ -47,10 +48,10 @@ import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.me.helpers.BaseActionSource;
-import appeng.me.helpers.GenericInterestManager;
+import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.MachineSource;
-import appeng.me.storage.ItemWatcher;
-import appeng.me.storage.NetworkInventoryHandler;
+import appeng.me.storage.NetworkInventory;
+import appeng.me.storage.StackWatcher;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
     static {
@@ -60,45 +61,35 @@ public class StorageService implements IStorageService, IGridServiceProvider {
                 });
     }
 
-    private final IGrid myGrid;
+    private final IGrid grid;
     private final HashSet<ICellProvider> activeCellProviders = new HashSet<>();
     private final HashSet<ICellProvider> inactiveCellProviders = new HashSet<>();
-    private final SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-    private final GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<>(this.interests);
+    private final SetMultimap<IAEStack, StackWatcher> interests = HashMultimap.create();
+    private final InterestManager<StackWatcher> interestManager = new InterestManager<>(this.interests);
     private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<>();
-    private Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
-    private Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
+    private final Map<IStorageChannel<? extends IAEStack>, NetworkInventoryMonitor<?>> storageMonitors;
+    private final SecurityService security;
 
-    public StorageService(final IGrid g) {
-        this.myGrid = g;
-        this.storageNetworks = new IdentityHashMap<>();
-        this.storageMonitors = new IdentityHashMap<>();
+    public StorageService(IGrid g, ISecurityService security) {
+        this.grid = g;
+        this.security = (SecurityService) security;
+        this.storageMonitors = new IdentityHashMap<>(StorageChannels.getAll().size());
+        for (var channel : StorageChannels.getAll()) {
+            storageMonitors.put(channel, createInventory(channel));
+        }
+    }
 
-        StorageChannels.getAll()
-                .forEach(channel -> this.storageMonitors.put(channel, new NetworkMonitor<>(this, channel)));
+    private <T extends IAEStack> NetworkInventoryMonitor<T> createInventory(IStorageChannel<T> channel) {
+        return new NetworkInventoryMonitor<>(interestManager, buildNetworkStorage(channel), channel);
     }
 
     @Override
     public void onServerEndTick() {
-        this.storageMonitors.forEach((channel, monitor) -> monitor.onTick());
-    }
-
-    @Override
-    public void removeNode(final IGridNode node) {
-        var cellProvider = node.getService(ICellProvider.class);
-        if (cellProvider != null) {
-            final CellChangeTracker tracker = new CellChangeTracker();
-
-            this.removeCellProvider(cellProvider, tracker);
-            this.inactiveCellProviders.remove(cellProvider);
-            this.getGrid().postEvent(new GridCellArrayUpdate());
-
-            tracker.applyChanges();
-        }
-
-        var watcher = this.watchers.remove(node);
-        if (watcher != null) {
-            watcher.reset();
+        for (var monitor : this.storageMonitors.values()) {
+            if (monitor.hasChangedLastTick()) {
+                monitor.clearHasChangedLastTick();
+                grid.postEvent(new GridStorageEvent(monitor));
+            }
         }
     }
 
@@ -120,16 +111,32 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
         var watcher = node.getService(IStackWatcherNode.class);
         if (watcher != null) {
-            final ItemWatcher iw = new ItemWatcher(this, watcher);
+            final StackWatcher iw = new StackWatcher(this, watcher);
             this.watchers.put(node, iw);
             watcher.updateWatcher(iw);
         }
     }
 
-    public <T extends IAEStack> IMEInventoryHandler<T> getInventoryHandler(IStorageChannel<T> channel) {
-        return (IMEInventoryHandler<T>) this.storageNetworks.computeIfAbsent(channel, this::buildNetworkStorage);
+    @Override
+    public void removeNode(IGridNode node) {
+        var cellProvider = node.getService(ICellProvider.class);
+        if (cellProvider != null) {
+            var tracker = new CellChangeTracker();
+
+            this.removeCellProvider(cellProvider, tracker);
+            this.inactiveCellProviders.remove(cellProvider);
+            this.getGrid().postEvent(new GridCellArrayUpdate());
+
+            tracker.applyChanges();
+        }
+
+        var watcher = this.watchers.remove(node);
+        if (watcher != null) {
+            watcher.reset();
+        }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         return (IMEMonitor<T>) this.storageMonitors.get(channel);
@@ -145,7 +152,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
             this.storageMonitors.forEach((channel, monitor) -> {
                 for (var h : cc.getCellArray(channel)) {
-                    tracker.postChanges(channel, 1, h, actionSrc);
+                    tracker.postAddHandler(h, actionSrc);
                 }
             });
         }
@@ -153,17 +160,17 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         return tracker;
     }
 
-    private CellChangeTracker removeCellProvider(final ICellProvider cc, final CellChangeTracker tracker) {
+    private CellChangeTracker removeCellProvider(ICellProvider cc, CellChangeTracker tracker) {
         if (this.activeCellProviders.contains(cc)) {
             this.activeCellProviders.remove(cc);
             this.inactiveCellProviders.add(cc);
 
-            final IActionSource actionSrc = cc instanceof IActionHost ? new MachineSource((IActionHost) cc)
+            var actionSrc = cc instanceof IActionHost ? new MachineSource((IActionHost) cc)
                     : new BaseActionSource();
 
             this.storageMonitors.forEach((channel, monitor) -> {
                 for (var h : cc.getCellArray(channel)) {
-                    tracker.postChanges(channel, -1, h, actionSrc);
+                    tracker.postRemoveHandler(h, actionSrc);
                 }
             });
         }
@@ -172,22 +179,18 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     public void cellUpdate() {
-        this.storageNetworks.clear();
-
-        final List<ICellProvider> ll = new ArrayList<ICellProvider>();
+        var ll = new ArrayList<ICellProvider>();
         ll.addAll(this.inactiveCellProviders);
         ll.addAll(this.activeCellProviders);
 
-        final CellChangeTracker tracker = new CellChangeTracker();
+        var tracker = new CellChangeTracker();
 
-        for (final ICellProvider cc : ll) {
+        for (var cc : ll) {
             boolean active = true;
 
             if (cc instanceof IActionHost) {
-                final IGridNode node = ((IActionHost) cc).getActionableNode();
-                if (node != null && node.isActive()) {
-                    active = true;
-                } else {
+                var node = ((IActionHost) cc).getActionableNode();
+                if (node == null || !node.isActive()) {
                     active = false;
                 }
             }
@@ -199,24 +202,30 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             }
         }
 
-        this.storageMonitors.forEach((channel, monitor) -> monitor.forceUpdate());
+        for (var monitor : this.storageMonitors.values()) {
+            updateNetworkInventory(monitor);
+
+        }
 
         tracker.applyChanges();
     }
 
-    private <T extends IAEStack, C extends IStorageChannel<T>> void postChangesToNetwork(final C chan,
-            final int upOrDown, final IAEStackList<T> availableItems, final IActionSource src) {
+    private <T extends IAEStack> void updateNetworkInventory(NetworkInventoryMonitor<T> monitor) {
+        monitor.setNetworkInventory(buildNetworkStorage(monitor.getChannel()));
+    }
+
+    private <T extends IAEStack> void postChangesToNetwork(IStorageChannel<T> chan,
+            int upOrDown,
+            IAEStackList<T> availableItems,
+            IActionSource src) {
         this.storageMonitors.get(chan).postChange(upOrDown > 0, (Iterable) availableItems, src);
     }
 
-    private <T extends IAEStack, C extends IStorageChannel<T>> NetworkInventoryHandler<T> buildNetworkStorage(
-            final C chan) {
-        var security = (SecurityService) this.getGrid().getService(ISecurityService.class);
-
-        final NetworkInventoryHandler<T> storageNetwork = new NetworkInventoryHandler<T>(chan, security);
+    private <T extends IAEStack> NetworkInventory<T> buildNetworkStorage(IStorageChannel<T> channel) {
+        var storageNetwork = new NetworkInventory<T>(security);
 
         for (final ICellProvider cc : this.activeCellProviders) {
-            for (final IMEInventoryHandler<T> h : cc.getCellArray(chan)) {
+            for (final IMEInventoryHandler<T> h : cc.getCellArray(channel)) {
                 storageNetwork.addNewStorage(h);
             }
         }
@@ -243,22 +252,43 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         this.inactiveCellProviders.remove(provider);
     }
 
-    public GenericInterestManager<ItemWatcher> getInterestManager() {
+    public InterestManager<StackWatcher> getInterestManager() {
         return this.interestManager;
     }
 
     IGrid getGrid() {
-        return this.myGrid;
+        return this.grid;
+    }
+
+    private class CellChangeTracker {
+        final List<CellChangeTrackerRecord<?>> data = new ArrayList<>();
+
+        public <T extends IAEStack> void postAddHandler(IMEInventoryHandler<T> h,
+                IActionSource actionSrc) {
+            this.data.add(new CellChangeTrackerRecord<>(h.getChannel(), 1, h, actionSrc));
+        }
+
+        public <T extends IAEStack> void postRemoveHandler(IMEInventoryHandler<T> h,
+                IActionSource actionSrc) {
+            this.data.add(new CellChangeTrackerRecord<>(h.getChannel(), -1, h, actionSrc));
+        }
+
+        public void applyChanges() {
+            for (var rec : this.data) {
+                rec.applyChanges();
+            }
+        }
     }
 
     private class CellChangeTrackerRecord<T extends IAEStack> {
-
         final IStorageChannel<T> channel;
         final int up_or_down;
         final IAEStackList<T> list;
         final IActionSource src;
 
-        public CellChangeTrackerRecord(final IStorageChannel<T> channel, final int i, final IMEInventoryHandler<T> h,
+        public CellChangeTrackerRecord(final IStorageChannel<T> channel,
+                final int i,
+                final IMEInventoryHandler<T> h,
                 final IActionSource actionSrc) {
             this.channel = channel;
             this.up_or_down = i;
@@ -269,22 +299,6 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
         public void applyChanges() {
             StorageService.this.postChangesToNetwork(this.channel, this.up_or_down, this.list, this.src);
-        }
-    }
-
-    private class CellChangeTracker<T extends IAEStack> {
-
-        final List<CellChangeTrackerRecord<T>> data = new ArrayList<>();
-
-        public void postChanges(final IStorageChannel<T> channel, final int i, final IMEInventoryHandler<T> h,
-                final IActionSource actionSrc) {
-            this.data.add(new CellChangeTrackerRecord<T>(channel, i, h, actionSrc));
-        }
-
-        public void applyChanges() {
-            for (final CellChangeTrackerRecord<T> rec : this.data) {
-                rec.applyChanges();
-            }
         }
     }
 }
