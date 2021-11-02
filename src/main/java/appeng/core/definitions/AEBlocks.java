@@ -98,7 +98,6 @@ import appeng.decorative.solid.QuartzOreBlock;
 import appeng.decorative.solid.QuartzPillarBlock;
 import appeng.decorative.solid.SkyStoneBlock;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
-import appeng.util.Lazy;
 
 /**
  * Internal implementation for the API blocks
@@ -177,7 +176,7 @@ public final class AEBlocks {
     public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock(AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL)), () -> AEParts.STORAGE_MONITOR);
 
     private static <T extends Block> BlockDefinition<T> craftingBlock(ResourceLocation id, Supplier<T> blockSupplier, Supplier<ItemLike> disassemblyExtra) {
-        return block(id, blockSupplier, (block, props) -> new CraftingBlockItem(block, props, new Lazy<>(disassemblyExtra)));
+        return block(id, blockSupplier, (block, props) -> new CraftingBlockItem(block, props, disassemblyExtra));
     }
 
     public static final BlockDefinition<PatternProviderBlock> PATTERN_PROVIDER = block(AEBlockIds.PATTERN_PROVIDER, PatternProviderBlock::new);

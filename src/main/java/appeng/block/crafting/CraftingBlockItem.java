@@ -31,7 +31,8 @@ import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.util.InteractionUtil;
-import appeng.util.Lazy;
+
+import java.util.function.Supplier;
 
 /**
  * Item that allows uncrafting CPU parts by disassembling them back into the crafting unit and the extra item.
@@ -40,9 +41,9 @@ public class CraftingBlockItem extends AEBaseBlockItem {
     /**
      * This can be retrieved when disassembling the crafting unit.
      */
-    protected final Lazy<ItemLike> disassemblyExtra;
+    protected final Supplier<ItemLike> disassemblyExtra;
 
-    public CraftingBlockItem(Block id, Item.Properties props, Lazy<ItemLike> disassemblyExtra) {
+    public CraftingBlockItem(Block id, Item.Properties props, Supplier<ItemLike> disassemblyExtra) {
         super(id, props);
         this.disassemblyExtra = disassemblyExtra;
     }
@@ -50,17 +51,17 @@ public class CraftingBlockItem extends AEBaseBlockItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (AEConfig.instance().isDisassemblyCraftingEnabled() && InteractionUtil.isInAlternateUseMode(player)) {
-            this.disassemble(player.getItemInHand(hand), player);
-            return InteractionResultHolder.sidedSuccess(player.getMainHandItem(), level.isClientSide());
+            int itemCount = player.getItemInHand(hand).getCount();
+            player.setItemInHand(hand, ItemStack.EMPTY);
+
+            player.getInventory().placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
+            player.getInventory().placeItemBackInInventory(new ItemStack(disassemblyExtra.get(), itemCount));
+
+            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
         }
         return super.use(level, player, hand);
     }
 
     private void disassemble(ItemStack stack, Player player) {
-        int itemCount = stack.getCount();
-        stack.setCount(0);
-
-        player.getInventory().placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
-        player.getInventory().placeItemBackInInventory(new ItemStack(disassemblyExtra.get(), itemCount));
     }
 }
