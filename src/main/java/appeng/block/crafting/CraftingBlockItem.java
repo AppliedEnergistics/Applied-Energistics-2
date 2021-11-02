@@ -60,7 +60,7 @@ public class CraftingBlockItem extends AEBaseBlockItem {
         int itemCount = stack.getCount();
         stack.setCount(0);
 
-        player.getInventory().placeItemBackInInventory(new ItemStack(AEBlocks.CRAFTING_UNIT, itemCount));
+        player.getInventory().placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
         player.getInventory().placeItemBackInInventory(new ItemStack(disassemblyExtra.get(), itemCount));
     }
 }
