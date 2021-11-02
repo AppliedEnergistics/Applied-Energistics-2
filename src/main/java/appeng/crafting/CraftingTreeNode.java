@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -358,6 +359,10 @@ public class CraftingTreeNode
 
 			if( ex == null || ex.getStackSize() != i.getStackSize() )
 			{
+				if( src.player().isPresent() )
+				{
+					src.player().get().sendStatusMessage( new TextComponentString( "System reported " + i.getStackSize() + " " + i.getDefinition().getItem().getItemStackDisplayName( i.getDefinition() ) + " available but could not extract anything" ), false );
+				}
 				throw new CraftBranchFailure( i, i.getStackSize() );
 			}
 
