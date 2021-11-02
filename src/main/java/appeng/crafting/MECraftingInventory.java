@@ -312,9 +312,13 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 					if( src.player().isPresent() )
 					{
 						if( result == null )
-							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getDisplayName() + " available but could not extract anything" ), false );
+						{
+							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getItem().getItemStackDisplayName( extra.getDefinition() ) + " available but could not extract anything" ), false );
+						}
 						else
-							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getDisplayName() + " available but could only extract " + result.getStackSize() ), false );
+						{
+							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getItem().getItemStackDisplayName( extra.getDefinition() ) + " available but could only extract " + result.getStackSize() ), false );
+						}
 					}
 					failed = true;
 					if( !src.player().isPresent() ) break;
