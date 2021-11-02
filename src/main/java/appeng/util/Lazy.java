@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 public class Lazy<T> implements Supplier<T> {
     private final Supplier<T> supplier;
-    private T instance = null;
+    private volatile T instance = null;
 
     public Lazy(final Supplier<T> supplier) {
         this.supplier = supplier;
@@ -30,9 +30,14 @@ public class Lazy<T> implements Supplier<T> {
 
     @Override
     public T get() {
-        if (this.instance == null) {
-            this.instance = this.supplier.get();
+        T instance = this.instance;
+        if (instance == null) {
+            synchronized (supplier) {
+                if (this.instance == null) {
+                    this.instance = instance = supplier.get();
+                }
+            }
         }
-        return this.instance;
+        return instance;
     }
 }
