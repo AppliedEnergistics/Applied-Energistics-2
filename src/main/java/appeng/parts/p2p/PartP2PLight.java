@@ -41,6 +41,7 @@ import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import org.apache.logging.log4j.core.appender.rolling.action.IfAll;
 
 
 public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTickable
@@ -198,16 +199,23 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		{
 			try
 			{
+				boolean hasValidInput = false;
+				int light = 0;
 				for( PartP2PLight src : this.getInputs() )
 				{
 					if( src != null && src.getProxy().isActive() )
 					{
-						this.setLightLevel( src.lastValue );
+						hasValidInput = true;
+						light = Math.max( light, src.lastValue );
 					}
-					else
-					{
-						this.getHost().markForUpdate();
-					}
+				}
+				if( hasValidInput )
+				{
+					this.setLightLevel( light );
+				}
+				else
+				{
+					this.getHost().markForUpdate();
 				}
 			}
 			catch( GridAccessException e )

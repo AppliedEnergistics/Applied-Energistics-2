@@ -72,13 +72,15 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		{
 			try
 			{
+				int power = 0;
 				for( PartP2PRedstone in : this.getInputs() )
 				{
 					if( in != null )
 					{
-						this.putInput( in.power );
+						power = Math.max( power, in.power );
 					}
 				}
+				this.putInput( power );
 			}
 			catch( GridAccessException e )
 			{
@@ -176,7 +178,22 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 				this.power = b.getWeakPower( state, this.getTile().getWorld(), target, srcSide );
 				this.power = Math.max( this.power, b.getWeakPower( state, this.getTile().getWorld(), target, srcSide ) );
-				this.sendToOutput( this.power );
+				int powerOut = this.power;
+				try
+				{
+					for( PartP2PRedstone in : this.getInputs() )
+					{
+						if( in != null )
+						{
+							powerOut = Math.max( in.power, powerOut );
+						}
+					}
+				}
+				catch( GridAccessException e )
+				{
+					e.printStackTrace();
+				}
+				this.sendToOutput( powerOut );
 			}
 			else
 			{

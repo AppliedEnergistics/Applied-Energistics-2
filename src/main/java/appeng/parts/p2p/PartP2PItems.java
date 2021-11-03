@@ -76,11 +76,14 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 		this.cachedInv = null;
 		try
 		{
-			for( PartP2PItems input : this.getInputs() )
+			if( this.isOutput() )
 			{
-				if( input != null && this.isOutput() )
+				for( PartP2PItems input : this.getInputs() )
 				{
-					input.onTunnelNetworkChange();
+					if( input != null )
+					{
+						input.onTunnelNetworkChange();
+					}
 				}
 			}
 		}
