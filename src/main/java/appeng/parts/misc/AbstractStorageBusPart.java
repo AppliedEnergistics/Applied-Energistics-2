@@ -18,9 +18,6 @@
 
 package appeng.parts.misc;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
@@ -37,7 +34,6 @@ import appeng.api.config.*;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -45,7 +41,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.*;
-import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
@@ -69,7 +65,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
  */
 public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends UpgradeablePart
-        implements IGridTickable, ICellProvider, IPriorityHost {
+        implements IGridTickable, IStorageProvider, IPriorityHost {
     protected final IActionSource source;
     private final TickRates tickRates;
     /**
@@ -104,7 +100,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         this.getConfigManager().registerSetting(Settings.FILTER_ON_EXTRACT, YesNo.YES);
         this.source = new MachineSource(this);
         getMainNode()
-                .addService(ICellProvider.class, this)
+                .addService(IStorageProvider.class, this)
                 .addService(IGridTickable.class, this);
     }
 
@@ -123,8 +119,12 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
             this.getHost().markForUpdate();
-            this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
+            remountStorage();
         }
+    }
+
+    private void remountStorage() {
+        IStorageProvider.requestUpdate(getMainNode());
     }
 
     @Override
@@ -345,7 +345,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
             }
 
             if (wasRegistered != this.hasRegisteredCellToNetwork()) {
-                this.getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
+                remountStorage();
             }
         }
     }
@@ -370,13 +370,10 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     }
 
     @Override
-    public final <U extends IAEStack> List<IMEInventoryHandler<U>> getCellArray(final IStorageChannel<U> channel) {
-        if (channel == getStorageChannel()) {
-            if (this.hasRegisteredCellToNetwork()) {
-                return Collections.singletonList(this.handler.cast(channel));
-            }
+    public void mountInventories(IStorageMounts mounts) {
+        if (this.hasRegisteredCellToNetwork()) {
+            mounts.mount(this.handler, priority);
         }
-        return Collections.emptyList();
     }
 
     @Override
@@ -388,7 +385,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     public final void setPriority(final int newValue) {
         this.priority = newValue;
         this.getHost().markForSave();
-        this.onConfigurationChanged();
+        this.remountStorage();
     }
 
     class Listener implements IMEMonitorListener<T> {

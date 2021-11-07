@@ -24,15 +24,15 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.IConfigurableMEInventory;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 
-public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandler<T> {
+public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEInventory<T> {
 
     private IMEInventory<T> inventory;
     private int priority;
@@ -83,7 +83,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
 
     /**
      * Sets the maximum access this handler will allow to the underlying inventory. It might allow even less if the
-     * delegated {@link #getInventory()} is an {@link IMEInventoryHandler} itself, and allows even less access.
+     * delegated {@link #getInventory()} is an {@link IConfigurableMEInventory} itself, and allows even less access.
      */
     public void setMaxAccess(AccessRestriction maxAccess) {
         this.maxAccess = maxAccess;
@@ -92,7 +92,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
         if (inventory instanceof NullInventory) {
             // This enables a fast-path of sorts that disables insert/extract for null inventories
             inventoryAccess = AccessRestriction.NO_ACCESS;
-        } else if (inventory instanceof IMEInventoryHandler<T>handler) {
+        } else if (inventory instanceof IConfigurableMEInventory<T>handler) {
             // If the delegate inventory is itself a handler, we will respect its reported access
             inventoryAccess = handler.getAccess();
         } else {
@@ -180,17 +180,28 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
     }
 
     @Override
-    public boolean isPrioritized(final T input) {
+    public boolean isPreferredStorageFor(T input, IActionSource source) {
         if (this.partitionListMode == IncludeExclude.WHITELIST) {
             if (this.partitionList.isListed(input)) {
                 return true;
             }
 
             // If the delegate inventory is itself a handler, it might also prioritize the input
-            if (this.inventory instanceof IMEInventoryHandler<T>handler) {
-                return handler.isPrioritized(input);
+            if (this.inventory instanceof IConfigurableMEInventory<T>handler) {
+                return handler.isPreferredStorageFor(input, source);
             }
         }
+
+        // Inventories that already contain some equal stack are also preferred
+        // we use a copy of size 1 here to prevent inventories from attempting to query multiple sub-inventories
+        var extractTest = input;
+        if (extractTest.getStackSize() != 1) {
+            extractTest = IAEStack.copy(extractTest, 1);
+        }
+        if (this.inventory.extractItems(extractTest, Actionable.SIMULATE, source) != null) {
+            return true;
+        }
+
         return false;
     }
 
@@ -205,7 +216,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandl
         }
 
         // If the delegate inventory is a handler itself, allow it to reject the input
-        if (this.inventory instanceof IMEInventoryHandler<T>handler) {
+        if (this.inventory instanceof IConfigurableMEInventory<T>handler) {
             return handler.canAccept(input);
         }
         return true;

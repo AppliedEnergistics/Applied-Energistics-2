@@ -19,17 +19,15 @@
 package appeng.me.service.helpers;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.IStorageMounts;
+import appeng.api.storage.IStorageProvider;
+import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.me.service.CraftingService;
@@ -41,35 +39,15 @@ import appeng.me.service.CraftingService;
  * <li>Intercept crafted item injections and forward them to the CPUs.</li>
  * </ul>
  */
-public class CraftingServiceStorage implements ICellProvider {
+public class CraftingServiceStorage implements IStorageProvider {
     private final CraftingService craftingService;
-    private final Map<IStorageChannel<?>, IMEInventoryHandler<?>> inventories = new HashMap<>();
+    private final Map<IStorageChannel<?>, IMEInventory<?>> inventories = new HashMap<>();
 
-    private <T extends IAEStack> IMEInventoryHandler<T> getOrComputeInventory(IStorageChannel<T> channel) {
-        return inventories.computeIfAbsent(channel, ignored -> new IMEInventoryHandler<T>() {
+    private <T extends IAEStack> IMEInventory<T> getOrComputeInventory(IStorageChannel<T> channel) {
+        return inventories.computeIfAbsent(channel, ignored -> new IMEInventory<T>() {
             @Override
-            public AccessRestriction getAccess() {
-                return AccessRestriction.WRITE;
-            }
-
-            @Override
-            public boolean isPrioritized(IAEStack input) {
+            public boolean isPreferredStorageFor(IAEStack input, IActionSource source) {
                 return true;
-            }
-
-            @Override
-            public boolean canAccept(IAEStack input) {
-                return craftingService.isRequesting(input);
-            }
-
-            @Override
-            public int getPriority() {
-                return Integer.MAX_VALUE;
-            }
-
-            @Override
-            public boolean validForPass(int pass) {
-                return pass == 1;
             }
 
             @Override
@@ -79,11 +57,6 @@ public class CraftingServiceStorage implements ICellProvider {
                 if (result != null) {
                     return result.cast(channel);
                 }
-                return null;
-            }
-
-            @Override
-            public T extractItems(T request, Actionable mode, IActionSource src) {
                 return null;
             }
 
@@ -104,14 +77,15 @@ public class CraftingServiceStorage implements ICellProvider {
         this.craftingService = craftingService;
     }
 
-    @Nonnull
     @Override
-    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(IStorageChannel<T> channel) {
-        return List.of(getOrComputeInventory(channel));
+    public void mountInventories(IStorageMounts mounts) {
+        for (IStorageChannel<?> channel : StorageChannels.getAll()) {
+            mount(mounts, channel);
+        }
     }
 
-    @Override
-    public int getPriority() {
-        return Integer.MAX_VALUE;
+    private <T extends IAEStack> void mount(IStorageMounts mounts, IStorageChannel<T> channel) {
+        var inventory = getOrComputeInventory(channel);
+        mounts.mount(inventory, Integer.MAX_VALUE);
     }
 }

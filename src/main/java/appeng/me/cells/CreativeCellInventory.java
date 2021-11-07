@@ -22,13 +22,13 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IConfigurableMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.items.contents.CellConfig;
 
-class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHandler<T> {
+class CreativeCellInventory<T extends IAEStack> implements IConfigurableMEInventory<T> {
     private final IAEStackList<T> cache;
     private final IStorageChannel<T> channel;
 
@@ -80,7 +80,7 @@ class CreativeCellInventory<T extends IAEStack> implements IMEInventoryHandler<T
     }
 
     @Override
-    public boolean isPrioritized(T input) {
+    public boolean isPreferredStorageFor(T input, IActionSource source) {
         return this.cache.findPrecise(input) != null;
     }
 

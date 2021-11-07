@@ -33,7 +33,7 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.api.storage.data.MixedStackList;
@@ -178,18 +178,28 @@ public class SimulationEnv {
             }
 
             @Override
-            public void registerAdditionalCellProvider(ICellProvider cc) {
+            public void addGlobalStorageProvider(IStorageProvider cc) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void unregisterAdditionalCellProvider(ICellProvider cc) {
+            public void removeGlobalStorageProvider(IStorageProvider cc) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
             public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
                 return monitors.computeIfAbsent(channel, chan -> createMonitorMock(chan)).cast(channel);
+            }
+
+            @Override
+            public void refreshNodeStorageProvider(IGridNode node) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void refreshGlobalStorageProvider(IStorageProvider provider) {
+                throw new UnsupportedOperationException();
             }
         };
     }

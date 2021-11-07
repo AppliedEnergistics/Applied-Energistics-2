@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -46,38 +45,29 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.events.GridCellArrayUpdate;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
 import appeng.core.AEConfig;
-import appeng.core.definitions.AEParts;
 import appeng.hooks.AECustomEntityItem;
 import appeng.items.parts.PartModels;
-import appeng.me.storage.MEInventoryHandler;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ItemFormationPlaneMenu;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalAEInventory;
 import appeng.util.prioritylist.FuzzyPriorityList;
+import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
-public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack> {
+public class ItemFormationPlanePart extends AbstractFormationPlanePart<IAEItemStack> {
 
     private static final PlaneModels MODELS = new PlaneModels("part/item_formation_plane",
             "part/item_formation_plane_on");
@@ -88,44 +78,36 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return MODELS.getModels();
     }
 
-    private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>(this);
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
 
     private boolean blocked = false;
 
-    public FormationPlanePart(final ItemStack is) {
-        super(is);
+    public ItemFormationPlanePart(final ItemStack is) {
+        super(is, StorageChannels.items());
 
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.PLACE_BLOCK, YesNo.YES);
-        this.updateHandler();
     }
 
     @Override
-    protected void updateHandler() {
-        this.myHandler.setMaxAccess(AccessRestriction.WRITE);
-        this.myHandler.setWhitelist(
-                this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
-        this.myHandler.setPriority(this.getPriority());
+    protected IPartitionList<IAEItemStack> createFilter() {
+        var priorityList = StorageChannels.items().createList();
 
-        final IAEStackList<IAEItemStack> priorityList = StorageChannels.items().createList();
-
-        final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+        var slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
         for (int x = 0; x < this.config.size() && x < slotsToUse; x++) {
-            final IAEItemStack is = this.config.getAEStackInSlot(x);
+            var is = this.config.getAEStackInSlot(x);
             if (is != null) {
                 priorityList.add(is);
             }
         }
 
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            this.myHandler.setPartitionList(new FuzzyPriorityList<>(priorityList,
-                    this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
+            return new FuzzyPriorityList<>(
+                    priorityList,
+                    this.getConfigManager().getSetting(Settings.FUZZY_MODE));
         } else {
-            this.myHandler.setPartitionList(new PrecisePriorityList<>(priorityList));
+            return new PrecisePriorityList<>(priorityList);
         }
-
-        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
     }
 
     protected void clearBlocked(BlockGetter level, BlockPos pos) {
@@ -138,7 +120,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         super.onChangeInventory(inv, slot, removedStack, newStack);
 
         if (inv == this.config) {
-            this.updateHandler();
+            this.updateFilter();
         }
     }
 
@@ -146,7 +128,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.config.readFromNBT(data, "config");
-        this.updateHandler();
+        this.updateFilter();
     }
 
     @Override
@@ -173,16 +155,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(final IStorageChannel<T> channel) {
-        if (this.getMainNode().isActive()
-                && channel == StorageChannels.items()) {
-            return List.of(this.myHandler.cast(channel));
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
+    protected final IAEItemStack placeInWorld(IAEItemStack input, Actionable type) {
         if (this.blocked || input == null || input.getStackSize() <= 0) {
             return input;
         }
@@ -323,11 +296,6 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public IStorageChannel<IAEItemStack> getChannel() {
-        return StorageChannels.items();
-    }
-
-    @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
@@ -336,11 +304,6 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     @Override
     public Object getRenderAttachmentData() {
         return getConnections();
-    }
-
-    @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEParts.FORMATION_PLANE.stack();
     }
 
     @Override

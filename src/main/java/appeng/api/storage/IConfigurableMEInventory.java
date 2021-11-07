@@ -34,7 +34,7 @@ import appeng.api.storage.data.IAEStack;
  *
  * @param <T>
  */
-public interface IMEInventoryHandler<T extends IAEStack> extends IMEInventory<T> {
+public interface IConfigurableMEInventory<T extends IAEStack> extends IMEInventory<T> {
 
     /**
      * determine if items can be injected/extracted.
@@ -43,18 +43,6 @@ public interface IMEInventoryHandler<T extends IAEStack> extends IMEInventory<T>
      */
     default AccessRestriction getAccess() {
         return AccessRestriction.READ_WRITE;
-    }
-
-    /**
-     * determine if a particular item is prioritized for this inventory handler, if it is, then it will be added to this
-     * inventory prior to any non-prioritized inventories.
-     *
-     * @param input - item that might be added
-     *
-     * @return if its prioritized
-     */
-    default boolean isPrioritized(T input) {
-        return false;
     }
 
     /**
@@ -100,9 +88,9 @@ public interface IMEInventoryHandler<T extends IAEStack> extends IMEInventory<T>
      * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
      */
     @SuppressWarnings("unchecked")
-    default <SC extends IAEStack> IMEInventoryHandler<SC> cast(IStorageChannel<SC> channel) {
+    default <SC extends IAEStack> IConfigurableMEInventory<SC> cast(IStorageChannel<SC> channel) {
         if (getChannel() == channel) {
-            return (IMEInventoryHandler<SC>) this;
+            return (IConfigurableMEInventory<SC>) this;
         }
         throw new IllegalArgumentException("The inventories storage channel " + getChannel()
                 + " is not compatible with " + channel);

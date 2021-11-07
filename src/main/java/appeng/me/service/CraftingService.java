@@ -121,7 +121,7 @@ public class CraftingService
         this.storageGrid = storageGrid;
         this.energyGrid = energyGrid;
 
-        this.storageGrid.registerAdditionalCellProvider(new CraftingServiceStorage(this));
+        this.storageGrid.addGlobalStorageProvider(new CraftingServiceStorage(this));
     }
 
     @Override

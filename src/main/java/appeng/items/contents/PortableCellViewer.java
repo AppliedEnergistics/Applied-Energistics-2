@@ -39,14 +39,16 @@ import appeng.me.helpers.MEMonitorHandler;
 import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.util.ConfigManager;
 
-public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware {
+public class PortableCellViewer implements IPortableCell, IInventorySlotAware {
 
+    private final MEMonitorHandler<IAEItemStack> cellMonitor;
     private final ItemStack target;
     private final IAEItemPowerStorage ips;
     private final int inventorySlot;
 
-    public PortableCellViewer(final ItemStack is, final int slot) {
-        super(StorageCells.getCellInventory(is, null, StorageChannels.items()));
+    public PortableCellViewer(ItemStack is, int slot) {
+        var cellInventory = StorageCells.getCellInventory(is, null, StorageChannels.items());
+        this.cellMonitor = new MEMonitorHandler<>(cellInventory);
         this.ips = (IAEItemPowerStorage) is.getItem();
         this.target = is;
         this.inventorySlot = slot;
@@ -76,7 +78,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
     @Override
     public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         if (channel == StorageChannels.items()) {
-            return cast(channel);
+            return cellMonitor.cast(channel);
         }
         return null;
     }

@@ -27,9 +27,9 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 
 /**
- * A {@link IMEInventoryHandler} that allows listening to storage changes.
+ * A {@link IMEInventory} that allows listening for storage changes.
  */
-public interface IMEMonitor<T extends IAEStack> extends IMEInventoryHandler<T> {
+public interface IMEMonitor<T extends IAEStack> extends IMEInventory<T> {
 
     /**
      * add a new Listener to the monitor, be sure to properly remove yourself when your done.

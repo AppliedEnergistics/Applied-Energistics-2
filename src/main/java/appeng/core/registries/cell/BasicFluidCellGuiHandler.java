@@ -23,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellGuiHandler;
@@ -34,15 +33,13 @@ import appeng.menu.MenuOpener;
 import appeng.menu.me.fluids.FluidTerminalMenu;
 
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
-
     @Override
     public <T extends IAEStack> boolean isHandlerFor(final IStorageChannel<T> channel) {
         return channel == StorageChannels.fluids();
     }
 
     @Override
-    public void openChestGui(final Player player, final IChestOrDrive chest, final ICellHandler cellHandler,
-            final IMEInventoryHandler inv, final ItemStack is) {
+    public void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler, ItemStack cell) {
         MenuOpener.open(FluidTerminalMenu.TYPE, player,
                 MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }

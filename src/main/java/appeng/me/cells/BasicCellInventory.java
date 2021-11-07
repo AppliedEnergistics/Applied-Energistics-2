@@ -344,7 +344,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         // This is slightly hacky as it expects a read-only access, but fine for now.
         // TODO: Guarantee a read-only access. E.g. provide an isEmpty() method and
         // ensure CellInventory does not write
-        // any NBT data for empty cells instead of relying on an empty IAEStackContainer
+        // any NBT data for empty cells instead of relying on an empty IAEStackList
         if (this.isStorageCell(input)) {
             // TODO: make it work for any cell, and not just BasicCellInventory!
             var meInventory = createInventory(((IAEItemStack) input).createItemStack(), null, getChannel());

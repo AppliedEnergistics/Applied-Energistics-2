@@ -25,7 +25,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IConfigurableMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
@@ -33,7 +33,7 @@ import appeng.api.storage.data.IAEStackList;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.core.definitions.AEItems;
 
-public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
+public class SecurityStationInventory implements IConfigurableMEInventory<IAEItemStack> {
 
     private final IAEStackList<IAEItemStack> storedItems = StorageChannels.items().createList();
     private final SecurityStationBlockEntity blockEntity;

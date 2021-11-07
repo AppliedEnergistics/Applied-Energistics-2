@@ -44,6 +44,7 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.IConfigurableMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
@@ -275,8 +276,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     /**
      * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
-     * enable the condenser to override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to
-     * make sure a condenser is only ever used if an item can't go anywhere else.
+     * enable the condenser to override the {@link IConfigurableMEInventory#validForPass(int)} method to make sure a
+     * condenser is only ever used if an item can't go anywhere else.
      */
     private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable {
         private final CondenserItemInventory itemInventory = new CondenserItemInventory(CondenserBlockEntity.this);

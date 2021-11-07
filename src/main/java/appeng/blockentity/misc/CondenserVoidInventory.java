@@ -18,7 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
@@ -69,15 +68,15 @@ class CondenserVoidInventory<T extends IAEStack> implements IMEMonitor<T> {
         return this.channel;
     }
 
-    @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.WRITE;
-    }
-
-    @Override
-    public boolean validForPass(final int pass) {
-        return pass == 2;
-    }
+// TODO  @Override
+// TODO  public AccessRestriction getAccess() {
+// TODO      return AccessRestriction.WRITE;
+// TODO  }
+//
+// TODO  @Override
+// TODO  public boolean validForPass(final int pass) {
+// TODO      return pass == 2;
+// TODO  }
 
     @Override
     public void addListener(IMEMonitorListener<T> l, Object verificationToken) {

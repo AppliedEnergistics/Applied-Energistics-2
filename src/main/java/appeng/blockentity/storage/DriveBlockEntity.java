@@ -20,11 +20,8 @@ package appeng.blockentity.storage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -46,17 +43,12 @@ import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.events.GridCellArrayUpdate;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.IStorageMounts;
+import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellProvider;
-import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -64,12 +56,12 @@ import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.client.render.model.DriveModelData;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
-import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DriveWatcher;
 import appeng.menu.implementations.DriveMenu;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestOrDrive, IPriorityHost, ICellProvider {
+public class DriveBlockEntity extends AENetworkInvBlockEntity
+        implements IChestOrDrive, IPriorityHost, IStorageProvider {
 
     private static final int SLOT_COUNT = 10;
 
@@ -82,9 +74,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     private final AppEngCellInventory inv = new AppEngCellInventory(this, SLOT_COUNT);
     private final ICellHandler[] handlersBySlot = new ICellHandler[SLOT_COUNT];
     private final DriveWatcher<?>[] invBySlot = new DriveWatcher[SLOT_COUNT];
-    private final IActionSource mySrc;
     private boolean isCached = false;
-    private final Map<IStorageChannel<?>, List<IMEInventoryHandler<?>>> inventoryHandlers;
     private int priority = 0;
     private boolean wasActive = false;
     // This is only used on the client
@@ -107,12 +97,10 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     public DriveBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.mySrc = new MachineSource(this);
         this.getMainNode()
-                .addService(ICellProvider.class, this)
+                .addService(IStorageProvider.class, this)
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
         this.inv.setFilter(new CellValidInventoryFilter());
-        this.inventoryHandlers = new IdentityHashMap<>();
     }
 
     @Override
@@ -233,7 +221,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             return CellState.values()[cellState];
         }
 
-        final DriveWatcher handler = this.invBySlot[slot];
+        var handler = this.invBySlot[slot];
         if (handler == null) {
             return CellState.ABSENT;
         }
@@ -279,7 +267,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
+            IStorageProvider.requestUpdate(getMainNode());
         }
 
         for (int x = 0; x < this.getCellCount(); x++) {
@@ -315,21 +303,13 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             this.updateState();
         }
 
-        getMainNode().ifPresent(grid -> {
-            grid.postEvent(new GridCellArrayUpdate());
-
-            StorageHelper.postWholeCellChanges(grid.getStorageService(), removed, added, this.mySrc);
-        });
+        IStorageProvider.requestUpdate(getMainNode());
 
         this.markForUpdate();
     }
 
     private void updateState() {
         if (!this.isCached) {
-            for (var channel : StorageChannels.getAll()) {
-                this.inventoryHandlers.put(channel, new ArrayList<>(SLOT_COUNT));
-            }
-
             double power = 2.0;
             for (int slot = 0; slot < this.inv.size(); slot++) {
                 power += updateStateForSlot(slot);
@@ -342,7 +322,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     // Returns idle power draw of slot
     private double updateStateForSlot(int slot) {
-        final ItemStack is = this.inv.getStackInSlot(slot);
+        var is = this.inv.getStackInSlot(slot);
         this.invBySlot[slot] = null;
         this.handlersBySlot[slot] = null;
 
@@ -361,7 +341,6 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
                                 () -> blinkCell(slot));
                         driveWatcher.setPriority(this.priority);
                         this.invBySlot[slot] = driveWatcher;
-                        this.inventoryHandlers.get(channel).add(driveWatcher);
 
                         return cell.getIdleDrain();
                     }
@@ -377,14 +356,16 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         this.updateState();
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(final IStorageChannel<T> channel) {
+    public void mountInventories(IStorageMounts storageMounts) {
         if (this.getMainNode().isActive()) {
             this.updateState();
-            return (List) this.inventoryHandlers.get(channel);
+            for (var inventory : this.invBySlot) {
+                if (inventory != null) {
+                    storageMounts.mount(inventory, priority);
+                }
+            }
         }
-        return Collections.emptyList();
     }
 
     @Override
@@ -400,7 +381,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         this.isCached = false; // recalculate the storage cell.
         this.updateState();
 
-        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
+        IStorageProvider.requestUpdate(getMainNode());
     }
 
     private void blinkCell(int slot) {

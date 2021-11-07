@@ -23,8 +23,11 @@
 
 package appeng.api.storage.data;
 
-import java.util.Iterator;
+import java.util.Collection;
 
+import javax.annotation.Nullable;
+
+import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 
 /**
@@ -36,7 +39,43 @@ import appeng.api.storage.IStorageChannel;
  * - For fluids: IAppEngApi.instance().storage().getStorageChannel( FluidStorageChannel.class).createList() - Replace
  * with the corresponding {@link IStorageChannel} type for non native channels
  */
-public interface IAEStackList<T extends IAEStack> extends IAEStackContainer<T>, Iterable<T> {
+public interface IAEStackList<T extends IAEStack> extends Iterable<T> {
+    /**
+     * @return the first item in the list
+     */
+    @Nullable
+    T getFirstItem();
+
+    /**
+     * @param i compared item
+     * @return a stack equivalent to the stack passed in, but with the correct stack size information, or null if its
+     *         not present
+     */
+    @Nullable
+    T findPrecise(T i);
+
+    /**
+     * @param input compared item
+     * @return a list of relevant fuzzy matched stacks
+     */
+    Collection<T> findFuzzy(T input, FuzzyMode fuzzy);
+
+    /**
+     * @return true if there are no items in the list
+     */
+    boolean isEmpty();
+
+    /**
+     * @return the number of items in the list
+     */
+    int size();
+
+    /**
+     * add a stack to the list, this will merge the stack with an item already in the list if found.
+     *
+     * @param option added stack
+     */
+    void add(T option); // adds stack as is
 
     /**
      * add a stack to the list stackSize is used to add to stackSize, this will merge the stack with an item already in
@@ -60,22 +99,6 @@ public interface IAEStackList<T extends IAEStack> extends IAEStackContainer<T>, 
      * @param option stacktype option
      */
     void addRequestable(T option); // adds a stack as requestable
-
-    /**
-     * @return the first item in the list
-     */
-    T getFirstItem();
-
-    /**
-     * @return the number of items in the list
-     */
-    int size();
-
-    /**
-     * allows you to iterate the list.
-     */
-    @Override
-    Iterator<T> iterator();
 
     /**
      * resets stack sizes to 0.

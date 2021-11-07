@@ -23,13 +23,13 @@
 
 package appeng.api.storage.cells;
 
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IConfigurableMEInventory;
 import appeng.api.storage.data.IAEStack;
 
 /**
  * Represents the most general possible cell inventory. Register a {@link ICellHandler} to provide custom subclasses.
  */
-public interface ICellInventoryHandler<T extends IAEStack> extends IMEInventoryHandler<T> {
+public interface ICellInventoryHandler<T extends IAEStack> extends IConfigurableMEInventory<T> {
     /**
      * Return the current status of the cell.
      */

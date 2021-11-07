@@ -28,7 +28,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 
 public class AppEngCellInventory extends BaseInternalInventory {
     private final AppEngInternalInventory inv;
-    private final ICellInventoryHandler[] handlerForSlot;
+    private final ICellInventoryHandler<?>[] handlerForSlot;
     /**
      * Remembers for which itemstack the handler in handlerForSlot[] was queried.
      */

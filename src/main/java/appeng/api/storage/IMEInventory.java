@@ -41,6 +41,18 @@ import appeng.api.storage.data.IAEStackList;
  * extracting from this inventory.
  */
 public interface IMEInventory<T extends IAEStack> {
+    /**
+     * Returns whether this inventory is the preferred storage location for the given stack when being compared to other
+     * inventories of the same overall priority.
+     * <p/>
+     * If for example an inventory already contains some amount of an item, it should be preferred over other
+     * inventories that don't when trying to store more of the item.
+     *
+     * @param source The source trying to find storage for stacks.
+     */
+    default boolean isPreferredStorageFor(T input, IActionSource source) {
+        return false;
+    }
 
     /**
      * Store new items, or simulate the addition of new items into the ME Inventory.
@@ -51,7 +63,9 @@ public interface IMEInventory<T extends IAEStack> {
      *
      * @return returns the number of items not added.
      */
-    T injectItems(T input, Actionable type, IActionSource src);
+    default T injectItems(T input, Actionable type, IActionSource src) {
+        return input;
+    }
 
     /**
      * Extract the specified item from the ME Inventory
@@ -61,7 +75,9 @@ public interface IMEInventory<T extends IAEStack> {
      *
      * @return returns the number of items extracted, null
      */
-    T extractItems(T request, Actionable mode, IActionSource src);
+    default T extractItems(T request, Actionable mode, IActionSource src) {
+        return null;
+    }
 
     /**
      * request a full report of all available items, storage.
@@ -70,7 +86,9 @@ public interface IMEInventory<T extends IAEStack> {
      *
      * @return returns same list that was passed in, is passed out
      */
-    IAEStackList<T> getAvailableStacks(IAEStackList<T> out);
+    default IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
+        return out;
+    }
 
     /**
      * request a full report of all available items, storage.
@@ -100,5 +118,4 @@ public interface IMEInventory<T extends IAEStack> {
         throw new IllegalArgumentException("This inventories storage channel " + getChannel()
                 + " is not compatible with " + channel);
     }
-
 }

@@ -20,14 +20,16 @@ package appeng.me.storage;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
+import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -41,10 +43,11 @@ import appeng.util.inv.ItemListIgnoreCrafting;
  * Additionally, the crafting flag is cleared for any exposed item, because crafting requests across networks are not
  * supported.
  */
-public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
-        implements IMEMonitor<T>, IMEMonitorListener<T> {
+public class MEMonitorPassThrough<T extends IAEStack> implements IMEMonitor<T>, IMEMonitorListener<T> {
 
-    private final HashMap<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
+    private final Map<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
+
+    private final IStorageChannel<T> channel;
 
     @Nullable
     private IActionSource changeSource;
@@ -52,12 +55,11 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     @Nullable
     private IMEMonitor<T> monitor;
 
-    public MEMonitorPassThrough(IMEInventory<T> i) {
-        super(i);
+    public MEMonitorPassThrough(IStorageChannel<T> channel) {
+        this.channel = channel;
     }
 
-    @Override
-    public void setInternal(IMEInventory<T> i) {
+    public void setMonitor(@Nullable IMEMonitor<T> monitor) {
         if (this.monitor != null) {
             this.monitor.removeListener(this);
             this.monitor = null;
@@ -65,10 +67,7 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
 
         var before = this.getAvailableStacks(getChannel().createList());
 
-        super.setInternal(i);
-        if (i instanceof IMEMonitor) {
-            this.monitor = (IMEMonitor<T>) i;
-        }
+        this.monitor = monitor;
 
         var after = this.getAvailableStacks(getChannel().createList());
 
@@ -80,14 +79,6 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
-        // Note how ItemListIgnoreCrafting will clear the crafting flag.
-        // This is used because crafting items from other networks is not possible.
-        super.getAvailableStacks(new ItemListIgnoreCrafting<>(out));
-        return out;
-    }
-
-    @Override
     public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
@@ -95,14 +86,6 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     @Override
     public void removeListener(final IMEMonitorListener<T> l) {
         this.listeners.remove(l);
-    }
-
-    @Override
-    public IAEStackList<T> getCachedAvailableStacks() {
-        if (this.monitor == null) {
-            return this.getAvailableStacks(getChannel().createList());
-        }
-        return this.monitor.getCachedAvailableStacks();
     }
 
     @Override
@@ -126,7 +109,7 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
 
     @Override
     public void onListUpdate() {
-        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.listeners.entrySet().iterator();
+        var i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
             final Entry<IMEMonitorListener<T>, Object> e = i.next();
             final IMEMonitorListener<T> receiver = e.getKey();
@@ -140,5 +123,39 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
 
     public void setChangeSource(@Nullable IActionSource changeSource) {
         this.changeSource = changeSource;
+    }
+
+    @Override
+    public T injectItems(final T input, final Actionable type, final IActionSource src) {
+        return monitor != null ? monitor.injectItems(input, type, src) : input;
+    }
+
+    @Override
+    public T extractItems(final T request, final Actionable type, final IActionSource src) {
+        return monitor != null ? monitor.extractItems(request, type, src) : null;
+    }
+
+    @Override
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
+        if (monitor == null) {
+            return out;
+        }
+
+        // Note how ItemListIgnoreCrafting will clear the crafting flag.
+        // This is used because crafting items from other networks is not possible.
+        return monitor.getAvailableStacks(new ItemListIgnoreCrafting<>(out));
+    }
+
+    @Override
+    public IAEStackList<T> getCachedAvailableStacks() {
+        if (this.monitor == null) {
+            return getChannel().createList();
+        }
+        return this.monitor.getCachedAvailableStacks();
+    }
+
+    @Override
+    public IStorageChannel<T> getChannel() {
+        return channel;
     }
 }

@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -42,7 +43,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorPassThrough;
-import appeng.me.storage.NullInventory;
 import appeng.util.Platform;
 
 /**
@@ -50,10 +50,8 @@ import appeng.util.Platform;
  */
 public abstract class DualityInterface {
 
-    protected final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(
-            NullInventory.of(StorageChannels.items()));
-    protected final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(
-            NullInventory.of(StorageChannels.fluids()));
+    protected final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>(StorageChannels.items());
+    protected final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>(StorageChannels.fluids());
 
     protected final IInterfaceHost host;
     protected final IManagedGridNode mainNode;
@@ -125,6 +123,32 @@ public abstract class DualityInterface {
     }
 
     protected abstract boolean hasWorkToDo();
+
+    public void notifyNeighbors() {
+        if (this.mainNode.isActive()) {
+            this.mainNode.ifPresent((grid, node) -> {
+                grid.getTickManager().wakeDevice(node);
+            });
+        }
+
+        final BlockEntity te = this.host.getBlockEntity();
+        if (te != null && te.getLevel() != null) {
+            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
+        }
+    }
+
+    public void gridChanged() {
+        var grid = mainNode.getGrid();
+        if (grid != null) {
+            this.items.setMonitor(grid.getStorageService().getInventory(StorageChannels.items()));
+            this.fluids.setMonitor(grid.getStorageService().getInventory(StorageChannels.fluids()));
+        } else {
+            this.items.setMonitor(null);
+            this.fluids.setMonitor(null);
+        }
+
+        this.notifyNeighbors();
+    }
 
     protected abstract boolean updateStorage();
 

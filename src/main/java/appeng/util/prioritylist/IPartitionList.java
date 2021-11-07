@@ -18,6 +18,7 @@
 
 package appeng.util.prioritylist;
 
+import appeng.api.config.IncludeExclude;
 import appeng.api.storage.data.IAEStack;
 
 public interface IPartitionList<T extends IAEStack> {
@@ -26,4 +27,25 @@ public interface IPartitionList<T extends IAEStack> {
     boolean isEmpty();
 
     Iterable<T> getItems();
+
+    /**
+     * Checks if the given stack matches this partition list assuming a given WHITELIST/BLACKLIST mode.
+     */
+    default boolean matchesFilter(T input, IncludeExclude mode) {
+        if (!isEmpty()) {
+            switch (mode) {
+                case WHITELIST -> {
+                    if (!isListed(input)) {
+                        return false;
+                    }
+                }
+                case BLACKLIST -> {
+                    if (isListed(input)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }
