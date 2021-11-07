@@ -24,6 +24,8 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -33,8 +35,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEStack;
@@ -170,13 +170,12 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
         var inv = getConfigInventory();
         var is = getWorkbenchItem();
-        var channel = getHost().getCell().getChannel();
 
-        var i = iterateCellItems(is, channel);
+        var it = iterateCellStacks(is);
 
         for (int x = 0; x < inv.size(); x++) {
-            if (i.hasNext()) {
-                var g = i.next().asItemStackRepresentation();
+            if (it.hasNext()) {
+                var g = it.next().asItemStackRepresentation();
                 inv.setItemDirect(x, g);
             } else {
                 inv.setItemDirect(x, ItemStack.EMPTY);
@@ -191,14 +190,16 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         return Objects.requireNonNull(this.getHost().getSubInventory(ISegmentedInventory.CONFIG));
     }
 
-    private <T extends IAEStack> Iterator<? extends IAEStack> iterateCellItems(ItemStack is,
-            IStorageChannel<T> channel) {
-        final IMEInventory<T> cellInv = StorageCells.getCellInventory(is, null, channel);
+    @NotNull
+    private Iterator<? extends IAEStack> iterateCellStacks(ItemStack is) {
+        var cellInv = StorageCells.getCellInventory(is, null);
+        Iterator<? extends IAEStack> i;
         if (cellInv != null) {
-            return cellInv.getAvailableStacks().iterator();
+            i = cellInv.getAvailableStacks().iterator();
         } else {
-            return Collections.emptyIterator();
+            i = Collections.emptyIterator();
         }
+        return i;
     }
 
     public CopyMode getCopyMode() {

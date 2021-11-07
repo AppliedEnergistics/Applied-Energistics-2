@@ -18,55 +18,36 @@
 
 package appeng.me.storage;
 
-import java.util.Objects;
-
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IConfigurableMEInventory;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 
-public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEInventory<T> {
+public class MEInventoryHandler<T extends IAEStack> extends DelegatingMEInventory<T> {
 
-    private IMEInventory<T> inventory;
-    private int priority;
     private IPartitionList<T> partitionList = new DefaultPriorityList<>();
     private IncludeExclude partitionListMode = IncludeExclude.WHITELIST;
     private boolean filterOnExtraction;
     private boolean filterAvailableContents;
-
-    private AccessRestriction maxAccess = AccessRestriction.READ_WRITE;
-    private AccessRestriction effectiveAccess;
-    private boolean allowsExtraction;
-    private boolean allowsInsertion;
+    private boolean allowExtraction = true;
+    private boolean allowInsertion = true;
 
     private boolean gettingAvailableContent = false;
 
     public MEInventoryHandler(IMEInventory<T> inventory) {
-        setInventory(Objects.requireNonNull(inventory));
+        super(inventory);
     }
 
-    /**
-     * Changes which inventory is wrapped by this handler.
-     */
-    public void setInventory(IMEInventory<T> inventory) {
-        this.inventory = inventory;
-
-        // Update access restrictions, since the inventory could allow a different level of access
-        setMaxAccess(maxAccess);
+    public void setAllowExtraction(boolean allowExtraction) {
+        this.allowExtraction = allowExtraction;
     }
 
-    /**
-     * @return The inventory this handler is wrapping.
-     */
-    public IMEInventory<T> getInventory() {
-        return this.inventory;
+    public void setAllowInsertion(boolean allowInsertion) {
+        this.allowInsertion = allowInsertion;
     }
 
     protected IncludeExclude getWhitelist() {
@@ -75,33 +56,6 @@ public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEIn
 
     public void setWhitelist(final IncludeExclude myWhitelist) {
         this.partitionListMode = myWhitelist;
-    }
-
-    public AccessRestriction getMaxAccess() {
-        return maxAccess;
-    }
-
-    /**
-     * Sets the maximum access this handler will allow to the underlying inventory. It might allow even less if the
-     * delegated {@link #getInventory()} is an {@link IConfigurableMEInventory} itself, and allows even less access.
-     */
-    public void setMaxAccess(AccessRestriction maxAccess) {
-        this.maxAccess = maxAccess;
-
-        AccessRestriction inventoryAccess;
-        if (inventory instanceof NullInventory) {
-            // This enables a fast-path of sorts that disables insert/extract for null inventories
-            inventoryAccess = AccessRestriction.NO_ACCESS;
-        } else if (inventory instanceof IConfigurableMEInventory<T>handler) {
-            // If the delegate inventory is itself a handler, we will respect its reported access
-            inventoryAccess = handler.getAccess();
-        } else {
-            inventoryAccess = AccessRestriction.READ_WRITE;
-        }
-
-        this.effectiveAccess = maxAccess.restrictPermissions(inventoryAccess);
-        this.allowsExtraction = this.effectiveAccess.hasPermission(AccessRestriction.READ);
-        this.allowsInsertion = this.effectiveAccess.hasPermission(AccessRestriction.WRITE);
     }
 
     protected IPartitionList<T> getPartitionList() {
@@ -119,11 +73,11 @@ public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEIn
 
     @Override
     public T injectItems(final T input, final Actionable type, final IActionSource src) {
-        if (!this.canAccept(input)) {
+        if (!this.allowInsertion || !passesBlackOrWhitelist(input)) {
             return input;
         }
 
-        return this.inventory.injectItems(input, type, src);
+        return super.injectItems(input, type, src);
     }
 
     @Override
@@ -132,7 +86,7 @@ public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEIn
             return null;
         }
 
-        return this.inventory.extractItems(request, type, src);
+        return super.extractItems(request, type, src);
     }
 
     @Override
@@ -148,14 +102,14 @@ public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEIn
         this.gettingAvailableContent = true;
         try {
             if (!this.filterAvailableContents) {
-                return this.inventory.getAvailableStacks(out);
+                return super.getAvailableStacks(out);
             } else {
-                if (!this.allowsExtraction) {
+                if (!this.allowExtraction) {
                     return out;
                 }
                 // Don't try to check use the network storage list if this.delegate is an MEMonitor!
                 // The storage list doesn't properly handle recursion!
-                for (var stack : this.inventory.getAvailableStacks()) {
+                for (var stack : super.getAvailableStacks()) {
                     if (canExtract(stack)) {
                         // We use addStorage because MEMonitorPassThrough#getStorageList() does not filter craftable
                         // items!
@@ -170,25 +124,10 @@ public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEIn
     }
 
     @Override
-    public IStorageChannel<T> getChannel() {
-        return this.inventory.getChannel();
-    }
-
-    @Override
-    public AccessRestriction getAccess() {
-        return this.effectiveAccess;
-    }
-
-    @Override
     public boolean isPreferredStorageFor(T input, IActionSource source) {
         if (this.partitionListMode == IncludeExclude.WHITELIST) {
             if (this.partitionList.isListed(input)) {
                 return true;
-            }
-
-            // If the delegate inventory is itself a handler, it might also prioritize the input
-            if (this.inventory instanceof IConfigurableMEInventory<T>handler) {
-                return handler.isPreferredStorageFor(input, source);
             }
         }
 
@@ -198,28 +137,15 @@ public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEIn
         if (extractTest.getStackSize() != 1) {
             extractTest = IAEStack.copy(extractTest, 1);
         }
-        if (this.inventory.extractItems(extractTest, Actionable.SIMULATE, source) != null) {
+        if (super.extractItems(extractTest, Actionable.SIMULATE, source) != null) {
             return true;
         }
 
-        return false;
+        return super.isPreferredStorageFor(input, source);
     }
 
     protected boolean canExtract(T request) {
-        return allowsExtraction && passesBlackOrWhitelist(request);
-    }
-
-    @Override
-    public boolean canAccept(final T input) {
-        if (!this.allowsInsertion || !passesBlackOrWhitelist(input)) {
-            return false;
-        }
-
-        // If the delegate inventory is a handler itself, allow it to reject the input
-        if (this.inventory instanceof IConfigurableMEInventory<T>handler) {
-            return handler.canAccept(input);
-        }
-        return true;
+        return allowExtraction && passesBlackOrWhitelist(request);
     }
 
     // Applies the black/whitelist, but only if any item is listed at all
@@ -239,14 +165,5 @@ public class MEInventoryHandler<T extends IAEStack> implements IConfigurableMEIn
             }
         }
         return true;
-    }
-
-    @Override
-    public int getPriority() {
-        return this.priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
     }
 }

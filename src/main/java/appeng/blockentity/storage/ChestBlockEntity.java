@@ -81,7 +81,7 @@ import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
@@ -203,20 +203,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             var is = this.getCell();
             if (!is.isEmpty()) {
                 this.isCached = true;
-                ICellHandler cellHandler = StorageCells.getHandler(is);
-                if (cellHandler != null) {
-                    idlePowerUsage = 1.0;
-
-                    for (var channel : StorageChannels.getAll()) {
-                        var newCell = cellHandler.getCellInventory(is,
-                                this::onCellContentChanged,
-                                channel);
-                        if (newCell != null) {
-                            idlePowerUsage += newCell.getIdleDrain();
-                            this.cellHandler = this.wrap(newCell);
-                            break;
-                        }
-                    }
+                var newCell = StorageCells.getCellInventory(is, this::onCellContentChanged);
+                if (newCell != null) {
+                    idlePowerUsage = 1.0 + newCell.getIdleDrain();
+                    this.cellHandler = this.wrap(newCell);
 
                     this.getMainNode().setIdlePowerUsage(idlePowerUsage);
                     this.accessor = new Accessor();
@@ -229,7 +219,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private <T extends IAEStack> ChestMonitorHandler<T> wrap(ICellInventoryHandler<T> cellInventory) {
+    private <T extends IAEStack> ChestMonitorHandler<T> wrap(ICellInventory<T> cellInventory) {
         if (cellInventory == null) {
             return null;
         }
@@ -582,9 +572,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     private class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T> {
-        private final ICellInventoryHandler<T> cellInventory;
+        private final ICellInventory<T> cellInventory;
 
-        public ChestMonitorHandler(IMEInventory<T> inventory, ICellInventoryHandler<T> cellInventory) {
+        public ChestMonitorHandler(IMEInventory<T> inventory, ICellInventory<T> cellInventory) {
             super(inventory);
             this.cellInventory = cellInventory;
         }

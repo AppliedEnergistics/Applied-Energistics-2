@@ -46,9 +46,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellHandler;
 import appeng.api.util.AECableType;
 import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -72,7 +70,6 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     private static final int BIT_CELL_STATE_BITS = 3;
 
     private final AppEngCellInventory inv = new AppEngCellInventory(this, SLOT_COUNT);
-    private final ICellHandler[] handlersBySlot = new ICellHandler[SLOT_COUNT];
     private final DriveWatcher<?>[] invBySlot = new DriveWatcher[SLOT_COUNT];
     private boolean isCached = false;
     private int priority = 0;
@@ -322,31 +319,22 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     // Returns idle power draw of slot
     private double updateStateForSlot(int slot) {
-        var is = this.inv.getStackInSlot(slot);
         this.invBySlot[slot] = null;
-        this.handlersBySlot[slot] = null;
 
+        var is = this.inv.getStackInSlot(slot);
         if (!is.isEmpty()) {
-            this.handlersBySlot[slot] = StorageCells.getHandler(is);
+            var cell = StorageCells.getCellInventory(is, this::onCellContentChanged);
 
-            if (this.handlersBySlot[slot] != null) {
-                for (var channel : StorageChannels.getAll()) {
+            if (cell != null) {
+                this.inv.setHandler(slot, cell);
 
-                    var cell = this.handlersBySlot[slot].getCellInventory(is, this::onCellContentChanged, channel);
+                var driveWatcher = new DriveWatcher<>(cell, () -> blinkCell(slot));
+                this.invBySlot[slot] = driveWatcher;
 
-                    if (cell != null) {
-                        this.inv.setHandler(slot, cell);
-
-                        var driveWatcher = new DriveWatcher<>(cell, is, this.handlersBySlot[slot],
-                                () -> blinkCell(slot));
-                        driveWatcher.setPriority(this.priority);
-                        this.invBySlot[slot] = driveWatcher;
-
-                        return cell.getIdleDrain();
-                    }
-                }
+                return cell.getIdleDrain();
             }
         }
+
         return 0;
     }
 

@@ -137,7 +137,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                                     p.getItemInHand(hand));
                         }
 
-                        aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p, null));
+                        aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p));
                         if (aeAmmo == null) {
                             return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));

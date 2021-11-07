@@ -73,7 +73,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
      * cell-change notifications, we instead use a handler that will exist as long as this storage bus exists, while
      * changing the underlying inventory.
      */
-    private final MEInventoryHandler<T> handler = new MEInventoryHandler<>(NullInventory.of(getStorageChannel()));
+    private final StorageBusInventory<T> handler = new StorageBusInventory<>(NullInventory.of(getStorageChannel()));
     /**
      * Listener for listening to changes in an {@link IMEMonitor} if this storage bus is attached to an interface.
      */
@@ -226,11 +226,11 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
      * Used by the menu to configure based on stored contents.
      */
     public IMEInventory<T> getInternalHandler() {
-        return this.handler.getInventory();
+        return this.handler.getDelegate();
     }
 
     private boolean hasRegisteredCellToNetwork() {
-        return this.isActive() && !(this.handler.getInventory() instanceof NullInventory);
+        return this.isActive() && !(this.handler.getDelegate() instanceof NullInventory);
     }
 
     protected void onConfigurationChanged() {
@@ -238,7 +238,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     }
 
     private void updateTarget(boolean forceFullUpdate) {
-        boolean wasInventory = this.handler.getInventory() instanceof IHandlerAdapter;
+        boolean wasInventory = this.handler.getDelegate() instanceof IHandlerAdapter;
         IMEMonitor<T> foundMonitor = null;
         A foundExternalApi = null;
 
@@ -260,8 +260,8 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
 
         if (!forceFullUpdate && wasInventory && foundExternalApi != null) {
             // Just update the inventory reference, the ticking monitor will take care of the rest.
-            ((IHandlerAdapter<A>) this.handler.getInventory()).setHandler(foundExternalApi);
-        } else if (!forceFullUpdate && foundMonitor == this.handler.getInventory()) {
+            ((IHandlerAdapter<A>) this.handler.getDelegate()).setHandler(foundExternalApi);
+        } else if (!forceFullUpdate && foundMonitor == this.handler.getDelegate()) {
             // Monitor didn't change, nothing to do!
         } else {
             var wasSleeping = this.monitor == null;
@@ -284,13 +284,12 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
             } else {
                 newInventory = NullInventory.of(getStorageChannel());
             }
-            this.handler.setInventory(newInventory);
+            this.handler.setDelegate(newInventory);
 
             // Apply other settings.
-            this.handler.setMaxAccess(this.getConfigManager().getSetting(Settings.ACCESS));
+            this.handler.setAccessRestriction(this.getConfigManager().getSetting(Settings.ACCESS));
             this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                     : IncludeExclude.WHITELIST);
-            this.handler.setPriority(this.priority);
 
             var priorityList = getStorageChannel().createList();
 
@@ -388,10 +387,10 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         this.remountStorage();
     }
 
-    class Listener implements IMEMonitorListener<T> {
+    private class Listener implements IMEMonitorListener<T> {
         @Override
         public final boolean isValid(Object verificationToken) {
-            return handler.getInventory() == verificationToken;
+            return handler.getDelegate() == verificationToken;
         }
 
         @Override
@@ -407,6 +406,30 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         @Override
         public final void onListUpdate() {
             // not used here.
+        }
+    }
+
+    /**
+     * This inventory forwards to the actual external inventory and allows the inventory to be swapped out underneath.
+     */
+    private static class StorageBusInventory<T extends IAEStack> extends MEInventoryHandler<T> {
+        public StorageBusInventory(IMEInventory<T> inventory) {
+            super(inventory);
+        }
+
+        @Override
+        protected IMEInventory<T> getDelegate() {
+            return super.getDelegate();
+        }
+
+        @Override
+        protected void setDelegate(IMEInventory<T> delegate) {
+            super.setDelegate(delegate);
+        }
+
+        public void setAccessRestriction(AccessRestriction setting) {
+            setAllowExtraction(setting.isAllowExtraction());
+            setAllowInsertion(setting.isAllowInsertion());
         }
     }
 
