@@ -68,16 +68,6 @@ class CondenserVoidInventory<T extends IAEStack> implements IMEMonitor<T> {
         return this.channel;
     }
 
-// TODO  @Override
-// TODO  public AccessRestriction getAccess() {
-// TODO      return AccessRestriction.WRITE;
-// TODO  }
-//
-// TODO  @Override
-// TODO  public boolean validForPass(final int pass) {
-// TODO      return pass == 2;
-// TODO  }
-
     @Override
     public void addListener(IMEMonitorListener<T> l, Object verificationToken) {
         // Not implemented since the Condenser automatically voids everything, and there

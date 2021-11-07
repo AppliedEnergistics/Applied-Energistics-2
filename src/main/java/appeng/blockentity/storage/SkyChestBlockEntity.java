@@ -37,6 +37,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -49,6 +50,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.inventories.InternalInventory;
@@ -218,5 +220,10 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         unpackLootTable(null);
         super.getDrops(level, pos, drops);
+    }
+
+    @Override
+    public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult) {
+        return InteractionResult.FAIL;
     }
 }

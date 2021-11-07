@@ -91,11 +91,6 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
         return StorageChannels.items();
     }
 
-// TODO   @Override
-// TODO   public boolean validForPass(final int pass) {
-// TODO       return pass == 2;
-// TODO   }
-
     @Override
     public void addListener(IMEMonitorListener<IAEItemStack> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);

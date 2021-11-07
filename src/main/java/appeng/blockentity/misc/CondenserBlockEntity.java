@@ -114,8 +114,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         this.setStoredPower(this.getStoredPower() + rawPower);
         this.setStoredPower(Math.max(0.0, Math.min(this.getStorage(), this.getStoredPower())));
 
-        final double requiredPower = this.getRequiredPower();
-        final ItemStack output = this.getOutput();
+        var requiredPower = this.getRequiredPower();
+        var output = this.getOutput();
         while (requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0) {
             if (this.canAddOutput(output)) {
                 this.setStoredPower(this.getStoredPower() - requiredPower);

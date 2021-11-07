@@ -29,7 +29,6 @@ import appeng.api.storage.data.IAEStack;
  * Exposes the monitorable network inventories of a grid node that choses to export them. This interface can only be
  * obtained using Forge capabilities for {@link IStorageMonitorableAccessor}.
  */
-@FunctionalInterface
 public interface IStorageMonitorable {
 
     <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel);
