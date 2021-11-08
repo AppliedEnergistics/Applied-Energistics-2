@@ -46,7 +46,6 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
         if (pair != null && pair.getLeft() != null) {
             poseStack.pushPose();
             if (pair.getRight() != null) {
-                // TODO FABRIC 117 Verify this is correct
                 poseStack.mulPoseMatrix(pair.getRight().getMatrix());
             }
             Minecraft.getInstance().getItemRenderer().renderStatic(pair.getLeft(),
