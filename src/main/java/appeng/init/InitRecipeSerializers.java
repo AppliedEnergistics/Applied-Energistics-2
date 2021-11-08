@@ -27,7 +27,6 @@ import appeng.core.definitions.AEItems;
 import appeng.items.parts.FacadeItem;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
-import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
@@ -41,7 +40,6 @@ public final class InitRecipeSerializers {
 
     public static void init(Registry<RecipeSerializer<?>> registry) {
         FacadeItem facadeItem = AEItems.FACADE.asItem();
-        register(registry, AppEng.makeId("disassemble"), DisassembleRecipe.SERIALIZER);
         register(registry, InscriberRecipe.TYPE_ID, InscriberRecipeSerializer.INSTANCE);
         register(registry, AppEng.makeId("facade"), FacadeRecipe.getSerializer(facadeItem));
         register(registry, EntropyRecipe.TYPE_ID, EntropyRecipeSerializer.INSTANCE);

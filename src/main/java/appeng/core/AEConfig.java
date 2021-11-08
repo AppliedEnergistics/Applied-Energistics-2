@@ -581,7 +581,7 @@ public final class AEConfig {
             inWorldCrystalGrowth = crafting.addBoolean("inWorldCrystalGrowth", true,
                     "Enable the in-world crafting of crystals.");
             disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
-                    "Enable the recipes for disassembling storage cells and crafting units.");
+                    "Enable shift-clicking with the crafting units in hand to disassemble them.");
 
             ConfigSection spatialio = root.subsection("spatialio");
             this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);
