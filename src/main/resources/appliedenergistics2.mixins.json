@@ -25,7 +25,7 @@
     "BlockBreakParticleMixin",
     "ModelsReloadMixin",
     "MouseWheelMixin",
-    "RenderEncodedPatternMixin",
+    "ItemRendererMixin",
     "ItemToolModMixin"
   ],
   "server": [],

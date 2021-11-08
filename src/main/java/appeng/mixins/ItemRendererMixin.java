@@ -33,7 +33,7 @@ import appeng.hooks.ItemRendererHooks;
  * representation of an item, and none of the others (held items, in-world, etc.)
  */
 @Mixin(ItemRenderer.class)
-public abstract class RenderEncodedPatternMixin {
+public abstract class ItemRendererMixin {
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "renderGuiItem(Lnet/minecraft/world/item/ItemStack;IILnet/minecraft/client/resources/model/BakedModel;)V", at = @At("HEAD"), cancellable = true)
