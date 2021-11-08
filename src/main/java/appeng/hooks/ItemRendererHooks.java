@@ -40,11 +40,11 @@ public final class ItemRendererHooks {
      * is held.
      */
     public static boolean onRenderGuiItemModel(ItemRenderer renderer, ItemStack stack, int x, int y) {
-        if (OVERRIDING_FOR.get() == stack) {
-            return false; // Don't allow recursive model replacements
-        }
-
         if (stack.getItem() instanceof EncodedPatternItem) {
+            if (OVERRIDING_FOR.get() == stack) {
+                return false; // Don't allow recursive model replacements
+            }
+
             boolean shiftHeld = Screen.hasShiftDown();
             var level = Minecraft.getInstance().level;
             if (shiftHeld && level != null) {
@@ -52,7 +52,7 @@ public final class ItemRendererHooks {
                 var output = encodedPattern.getOutput(stack);
                 if (!output.isEmpty()) {
                     var realModel = renderer.getItemModelShaper().getItemModel(output);
-                    renderInstead(renderer, stack, x, y, realModel);
+                    renderInstead(renderer, output, x, y, realModel);
                     return true;
                 }
             }

@@ -19,7 +19,7 @@
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
     "unlitquad.BakedQuadAccessor",
-    "RenderEncodedPatternMixin",
+    "ItemRendererMixin",
     "ItemToolModMixin"
   ],
   "server": [],

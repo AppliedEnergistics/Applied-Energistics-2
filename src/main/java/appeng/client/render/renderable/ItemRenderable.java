@@ -44,10 +44,9 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
             MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
         Pair<ItemStack, Transformation> pair = this.f.apply(te);
         if (pair != null && pair.getLeft() != null) {
+            poseStack.pushPose();
             if (pair.getRight() != null) {
-                pair.getRight().push(poseStack);
-            } else {
-                poseStack.pushPose();
+                poseStack.mulPoseMatrix(pair.getRight().getMatrix());
             }
             Minecraft.getInstance().getItemRenderer().renderStatic(pair.getLeft(),
                     TransformType.GROUND, combinedLight, combinedOverlay, poseStack, buffers, 0);
