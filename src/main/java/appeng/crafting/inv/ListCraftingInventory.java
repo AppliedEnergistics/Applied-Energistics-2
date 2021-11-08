@@ -38,7 +38,7 @@ public class ListCraftingInventory implements ICraftingInventory {
 
     @Override
     public void injectItems(IAEStack input, Actionable mode) {
-        if (mode == Actionable.MODULATE) {
+        if (input != null && mode == Actionable.MODULATE) {
             list.addStorage(input);
             postChange(input, -input.getStackSize());
         }
