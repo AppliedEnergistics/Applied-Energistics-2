@@ -137,24 +137,15 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
                     playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
                     // drop core
-                    var core = new ItemStack(coreItem);
-                    if (!player.addItem(core)) {
-                        player.drop(core, false);
-                    }
+                    playerInventory.placeItemBackInInventory(new ItemStack(coreItem));
 
                     // drop upgrades
                     for (ItemStack upgrade : this.getUpgradesInventory(stack)) {
-                        if (!player.addItem(upgrade)) {
-                            player.drop(upgrade, false);
-                        }
+                        playerInventory.placeItemBackInInventory(upgrade);
                     }
 
                     // drop empty storage cell case
-                    this.dropEmptyStorageCellCase(player);
-
-                    if (player.inventoryMenu != null) {
-                        player.inventoryMenu.broadcastChanges();
-                    }
+                    playerInventory.placeItemBackInInventory(AEItems.EMPTY_STORAGE_CELL.stack());
 
                     return true;
                 }
@@ -163,28 +154,10 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
         return false;
     }
 
-    protected void dropEmptyStorageCellCase(final Player player) {
-        var storageCell = AEItems.EMPTY_STORAGE_CELL.stack();
-        if (!player.addItem(storageCell)) {
-            player.drop(storageCell, false);
-        }
-    }
-
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
                 ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
                 : InteractionResult.PASS;
     }
-
-    @Override
-    public ItemStack getContainerItem(final ItemStack itemStack) {
-        return AEItems.EMPTY_STORAGE_CELL.stack();
-    }
-
-    @Override
-    public boolean hasContainerItem(final ItemStack stack) {
-        return AEConfig.instance().isDisassemblyCraftingEnabled();
-    }
-
 }

@@ -592,7 +592,7 @@ public final class AEConfig {
             inWorldPurification = builder.comment("Enable the in-world crafting of pure crystals.")
                     .define("inWorldPurification", true);
             disassemblyCrafting = builder
-                    .comment("Enable the recipes for disassembling storage cells and crafting units.")
+                    .comment("Enable shift-clicking with the crafting units in hand to disassemble them.")
                     .define("disassemblyCrafting", true);
             builder.pop();
 

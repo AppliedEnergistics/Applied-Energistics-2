@@ -32,6 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -46,9 +47,9 @@ import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
+import appeng.block.crafting.CraftingBlockItem;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.block.crafting.CraftingStorageBlock;
-import appeng.block.crafting.CraftingStorageItem;
 import appeng.block.crafting.CraftingUnitBlock;
 import appeng.block.crafting.MolecularAssemblerBlock;
 import appeng.block.crafting.PatternProviderBlock;
@@ -167,13 +168,16 @@ public final class AEBlocks {
     public static final BlockDefinition<CreativeEnergyCellBlock> CREATIVE_ENERGY_CELL = block(AEBlockIds.CREATIVE_ENERGY_CELL, CreativeEnergyCellBlock::new);
 
     public static final BlockDefinition<CraftingUnitBlock> CRAFTING_UNIT = block(AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.UNIT));
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_ACCELERATOR = block(AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.ACCELERATOR));
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_ACCELERATOR = craftingBlock(AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.ACCELERATOR), () -> AEItems.ENGINEERING_PROCESSOR);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_1K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_1K), () -> AEItems.ITEM_1K_CELL_COMPONENT);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_4K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_4K), () -> AEItems.ITEM_4K_CELL_COMPONENT);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_16K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_16K), () -> AEItems.ITEM_16K_CELL_COMPONENT);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_64K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_64K), () -> AEItems.ITEM_64K_CELL_COMPONENT);
+    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock(AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL)), () -> AEParts.STORAGE_MONITOR);
 
-    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_1K = block(AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_1K), CraftingStorageItem::new);
-    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_4K = block(AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_4K), CraftingStorageItem::new);
-    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_16K = block(AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_16K), CraftingStorageItem::new);
-    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_64K = block(AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_64K), CraftingStorageItem::new);
-    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = block(AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL)));
+    private static <T extends Block> BlockDefinition<T> craftingBlock(ResourceLocation id, Supplier<T> blockSupplier, Supplier<ItemLike> disassemblyExtra) {
+        return block(id, blockSupplier, (block, props) -> new CraftingBlockItem(block, props, disassemblyExtra));
+    }
 
     public static final BlockDefinition<PatternProviderBlock> PATTERN_PROVIDER = block(AEBlockIds.PATTERN_PROVIDER, PatternProviderBlock::new);
     public static final BlockDefinition<MolecularAssemblerBlock> MOLECULAR_ASSEMBLER = block(AEBlockIds.MOLECULAR_ASSEMBLER, () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).noOcclusion()));

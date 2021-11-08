@@ -127,7 +127,6 @@ public abstract class AppEngBase implements AppEng {
         // Initialize items in order
         AEItems.init();
         AEBlocks.init();
-        AEItems.init();
         AEParts.init();
 
         // Now that item instances are available, we can initialize registries that need item instances
