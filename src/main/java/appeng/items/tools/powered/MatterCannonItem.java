@@ -117,7 +117,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
             var inv = StorageCells.getCellInventory(p.getItemInHand(hand), null, StorageChannels.items());
             if (inv != null) {
-                var itemList = inv.getAvailableItems();
+                var itemList = inv.getAvailableStacks();
                 IAEItemStack req = itemList.getFirstItem();
                 if (req != null) {
                     shots = Math.min(shots, (int) req.getStackSize());
@@ -137,7 +137,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                                     p.getItemInHand(hand));
                         }
 
-                        aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p, null));
+                        aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p));
                         if (aeAmmo == null) {
                             return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));

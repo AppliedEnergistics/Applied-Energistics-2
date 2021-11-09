@@ -32,11 +32,10 @@ import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -48,15 +47,15 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
     private IStackWatcher stackWatcher;
     private ICraftingWatcher craftingWatcher;
 
-    private final IMEMonitorHandlerReceiver<T> handlerReceiver = new IMEMonitorHandlerReceiver<T>() {
+    private final IMEMonitorListener<T> handlerReceiver = new IMEMonitorListener<T>() {
         @Override
         public boolean isValid(Object effectiveGrid) {
             return effectiveGrid != null && getMainNode().getGrid() == effectiveGrid;
         }
 
         @Override
-        public void postChange(IBaseMonitor<T> monitor, Iterable<T> change, IActionSource actionSource) {
-            updateReportingValue((IMEMonitor<T>) monitor);
+        public void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource actionSource) {
+            updateReportingValue(monitor);
         }
 
         @Override
@@ -194,18 +193,18 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
 
         if (myStack == null) {
             this.lastReportedValue = 0;
-            for (var st : monitor.getStorageList()) {
+            for (var st : monitor.getCachedAvailableStacks()) {
                 this.lastReportedValue += st.getStackSize();
             }
         } else if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             this.lastReportedValue = 0;
             final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
-            var fuzzyList = monitor.getStorageList().findFuzzy(myStack, fzMode);
+            var fuzzyList = monitor.getCachedAvailableStacks().findFuzzy(myStack, fzMode);
             for (var st : fuzzyList) {
                 this.lastReportedValue += st.getStackSize();
             }
         } else {
-            var r = monitor.getStorageList().findPrecise(myStack);
+            var r = monitor.getCachedAvailableStacks().findPrecise(myStack);
             if (r == null) {
                 this.lastReportedValue = 0;
             } else {

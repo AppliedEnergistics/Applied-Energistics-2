@@ -18,42 +18,34 @@
 
 package appeng.me.storage;
 
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.data.IAEStack;
 
 public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
 
     private CellState oldStatus = CellState.EMPTY;
-    private final ItemStack is;
-    private final ICellHandler handler;
     private final Runnable activityCallback;
 
-    public DriveWatcher(final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han,
-            Runnable activityCallback) {
-        super(i, i.getChannel());
-        this.is = is;
-        this.handler = han;
+    public DriveWatcher(ICellInventory<T> i, Runnable activityCallback) {
+        super(i);
         this.activityCallback = activityCallback;
     }
 
     public CellState getStatus() {
-        return ((ICellInventoryHandler) this.getInternal()).getStatus();
+        return ((ICellInventory<?>) getDelegate()).getStatus();
     }
 
     @Override
     public T injectItems(final T input, final Actionable type, final IActionSource src) {
-        final long size = input.getStackSize();
+        long size = input.getStackSize();
 
-        final T a = super.injectItems(input, type, src);
+        T a = super.injectItems(input, type, src);
 
         if (type == Actionable.MODULATE && (a == null || a.getStackSize() != size)) {
-            final CellState newStatus = this.getStatus();
+            var newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
                 this.activityCallback.run();
@@ -66,10 +58,10 @@ public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
 
     @Override
     public T extractItems(final T request, final Actionable type, final IActionSource src) {
-        final T a = super.extractItems(request, type, src);
+        T a = super.extractItems(request, type, src);
 
         if (type == Actionable.MODULATE && a != null) {
-            final CellState newStatus = this.getStatus();
+            var newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
                 this.activityCallback.run();

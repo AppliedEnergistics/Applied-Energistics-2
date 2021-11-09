@@ -20,35 +20,25 @@ package appeng.me.cells;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
-import appeng.api.storage.data.IAEStack;
 import appeng.items.storage.CreativeCellItem;
 
 /**
  * Cell handler for creative storage cells (both fluid and item), which do not allow item insertion.
  */
 public class CreativeCellHandler implements ICellHandler {
-    public static <T extends IAEStack> ICellInventoryHandler<T> getCell(IStorageChannel<T> channel, ItemStack o) {
-        CreativeCellInventory<T> inv = new CreativeCellInventory<>(channel, o);
-        return new CreativeCellInventoryHandler<>(inv, channel);
-    }
-
     @Override
     public boolean isCell(ItemStack is) {
         return !is.isEmpty() && is.getItem() instanceof CreativeCellItem;
     }
 
     @Override
-    public <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is,
-            ISaveProvider container,
-            IStorageChannel<T> channel) {
+    public ICellInventory<?> getCellInventory(ItemStack is, ISaveProvider container) {
         if (!is.isEmpty() && is.getItem() instanceof CreativeCellItem creativeCellItem) {
-            return creativeCellItem.getCellInventory(channel, is);
+            return new CreativeCellInventory<>(creativeCellItem.getChannel(), is);
         }
         return null;
     }
-
 }

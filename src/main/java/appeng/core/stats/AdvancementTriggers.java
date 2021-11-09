@@ -36,4 +36,8 @@ public class AdvancementTriggers {
      * Entered spatial dimension
      */
     public static final AppEngAdvancementTrigger SPATIAL_EXPLORER = new AppEngAdvancementTrigger("spatial_explorer");
+    /**
+     * Placed a storage bus on an interface.
+     */
+    public static final AppEngAdvancementTrigger RECURSIVE = new AppEngAdvancementTrigger("recursive_networking");
 }

@@ -31,7 +31,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Setting;
@@ -57,14 +56,12 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.me.storage.NullInventory;
 import appeng.me.storage.StorageAdapter;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
 import appeng.util.IVariantConversion;
-import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalAEInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
@@ -244,36 +241,8 @@ public class DualityItemInterface
         this.requireWork[slot] = null;
     }
 
-    public void notifyNeighbors() {
-        if (this.mainNode.isActive()) {
-            this.mainNode.ifPresent((grid, node) -> {
-                grid.getTickManager().wakeDevice(node);
-            });
-        }
-
-        final BlockEntity te = this.host.getBlockEntity();
-        if (te != null && te.getLevel() != null) {
-            Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
-        }
-    }
-
     public InternalInventory getConfig() {
         return this.config;
-    }
-
-    public void gridChanged() {
-        var grid = mainNode.getGrid();
-        if (grid != null) {
-            this.items.setInternal(grid.getStorageService()
-                    .getInventory(StorageChannels.items()));
-            this.fluids.setInternal(grid.getStorageService()
-                    .getInventory(StorageChannels.fluids()));
-        } else {
-            this.items.setInternal(new NullInventory<>(StorageChannels.items()));
-            this.fluids.setInternal(new NullInventory<>(StorageChannels.fluids()));
-        }
-
-        this.notifyNeighbors();
     }
 
     public AECableType getCableConnectionType(Direction dir) {
@@ -521,8 +490,8 @@ public class DualityItemInterface
         }
 
         @Override
-        public IAEStackList<IAEItemStack> getStorageList() {
-            return getAvailableItems();
+        public IAEStackList<IAEItemStack> getCachedAvailableStacks() {
+            return getAvailableStacks();
         }
     }
 

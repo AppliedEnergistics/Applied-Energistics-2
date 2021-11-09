@@ -27,9 +27,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-
 /**
  * Implementations of this interface provide AE2 with a way to interact with storage cells that may be represented by
  * arbitrary {@link ItemStack}
@@ -48,15 +45,15 @@ public interface ICellHandler {
     boolean isCell(ItemStack is);
 
     /**
-     * If you cannot handle the provided item, return null
+     * Returns the cell's inventory or null if the item stack is not handled by this handler, or it currently doesn't
+     * want to act as a storage cell.
      *
-     * @param is      a storage cell item.
-     * @param host    anytime the contents of your storage cell changes it should use this to request a save, please
-     *                note, this value can be null. If provided, the host is responsible for persisting the cell
-     *                content.
-     * @param channel the storage channel requested.
-     * @return a new IMEHandler for the provided item
+     * @param is   a storage cell item.
+     * @param host anytime the contents of your storage cell changes it should use this to request a save, please note,
+     *             this value can be null. If provided, the host is responsible for persisting the cell content.
+     * @return The cell inventory or null if the stack is not a cell supported by this handler.
      */
-    <T extends IAEStack> ICellInventoryHandler<T> getCellInventory(ItemStack is, @Nullable ISaveProvider host,
-            IStorageChannel<T> channel);
+    @Nullable
+    ICellInventory<?> getCellInventory(ItemStack is, @Nullable ISaveProvider host);
+
 }

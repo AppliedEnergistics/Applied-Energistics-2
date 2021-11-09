@@ -18,7 +18,6 @@
 
 package appeng.blockentity.storage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -54,11 +53,9 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.api.util.AECableType;
@@ -235,7 +232,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (!this.getMainNode().isActive()) {
             return TickRateModulation.IDLE;
         }
@@ -257,29 +254,25 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
             var cell = this.inputCells.getStackInSlot(x);
 
-            var handler = StorageCells.getHandler(cell);
-            if (handler == null) {
+            var cellInv = StorageCells.getCellInventory(cell, null);
+
+            if (cellInv == null) {
                 // This item is not a valid storage cell, try to move it to the output
                 moveSlot(x);
                 continue;
             }
 
-            // Get all supported storage inventories of the cell and work on each
-            var cellInvs = getCellInventories(handler, cell);
+            if (itemsToMove > 0) {
+                itemsToMove = transferContents(grid, cellInv, itemsToMove);
 
-            for (var cellInv : cellInvs) {
                 if (itemsToMove > 0) {
-                    itemsToMove = transferContents(grid, cellInv, itemsToMove);
-
-                    if (itemsToMove > 0) {
-                        ret = TickRateModulation.IDLE;
-                    } else {
-                        ret = TickRateModulation.URGENT;
-                    }
+                    ret = TickRateModulation.IDLE;
+                } else {
+                    ret = TickRateModulation.URGENT;
                 }
             }
 
-            if (itemsToMove > 0 && matchesFullnessMode(cellInvs) && this.moveSlot(x)) {
+            if (itemsToMove > 0 && matchesFullnessMode(cellInv) && this.moveSlot(x)) {
                 ret = TickRateModulation.URGENT;
             }
         }
@@ -288,36 +281,20 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     /**
-     * Gets all available storage inventories of the given cell.
+     * Work is complete when the inventory has reached the desired end-state.
      */
-    private List<ICellInventoryHandler<?>> getCellInventories(ICellHandler handler, ItemStack cell) {
-        var inventories = new ArrayList<ICellInventoryHandler<?>>(StorageChannels.getAll().size());
-        for (var c : StorageChannels.getAll()) {
-            var inventory = handler.getCellInventory(cell, null, c);
-            if (inventory != null) {
-                inventories.add(inventory);
-            }
-        }
-        return inventories;
-    }
-
-    /**
-     * Work is complete when all supported inventories have reached the desired end-state.
-     */
-    public boolean matchesFullnessMode(List<ICellInventoryHandler<?>> inventories) {
+    public boolean matchesFullnessMode(ICellInventory<?> inv) {
         return switch (manager.getSetting(Settings.FULLNESS_MODE)) {
             // In this mode, work completes as soon as no more items are moved within one operation,
             // independent of the actual inventory state
             case HALF -> true;
-            case EMPTY -> inventories.stream()
-                    .allMatch(inv -> inv.getStatus() == CellState.EMPTY);
-            case FULL -> inventories.stream()
-                    .allMatch(inv -> inv.getStatus() == CellState.FULL);
+            case EMPTY -> inv.getStatus() == CellState.EMPTY;
+            case FULL -> inv.getStatus() == CellState.FULL;
         };
     }
 
     private <T extends IAEStack> long transferContents(IGrid grid,
-            ICellInventoryHandler<T> cellInv,
+            ICellInventory<T> cellInv,
             long itemsToMove) {
 
         var channel = cellInv.getChannel();
@@ -327,11 +304,11 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         IMEInventory<T> src, destination;
         if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
             src = cellInv;
-            srcList = cellInv.getAvailableItems();
+            srcList = cellInv.getAvailableStacks();
             destination = networkInv;
         } else {
             src = networkInv;
-            srcList = networkInv.getStorageList();
+            srcList = networkInv.getCachedAvailableStacks();
             destination = cellInv;
         }
 

@@ -29,12 +29,11 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
@@ -47,29 +46,24 @@ import appeng.api.storage.data.IAEStackList;
  */
 public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
 
-    private final IMEInventoryHandler<T> internalHandler;
+    private final IMEInventory<T> internalHandler;
     private final IAEStackList<T> cachedList;
-    private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
+    private final HashMap<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
 
     protected boolean hasChanged = true;
 
-    public MEMonitorHandler(final IMEInventoryHandler<T> t) {
+    public MEMonitorHandler(IMEInventory<T> t) {
         this.internalHandler = t;
         this.cachedList = t.getChannel().createList();
     }
 
-    public MEMonitorHandler(final IMEInventoryHandler<T> t, final IStorageChannel<T> chan) {
-        this.internalHandler = t;
-        this.cachedList = chan.createList();
-    }
-
     @Override
-    public void addListener(final IMEMonitorHandlerReceiver<T> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
+    public void removeListener(final IMEMonitorListener<T> l) {
         this.listeners.remove(l);
     }
 
@@ -82,7 +76,7 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
                 src);
     }
 
-    protected IMEInventoryHandler<T> getHandler() {
+    protected IMEInventory<T> getHandler() {
         return this.internalHandler;
     }
 
@@ -109,10 +103,10 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
 
     protected void notifyListenersOfChange(final Iterable<T> diff, final IActionSource src) {
         this.hasChanged = true;// need to update the cache.
-        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
+        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.getListeners();
         while (i.hasNext()) {
-            final Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
-            final IMEMonitorHandlerReceiver<T> receiver = o.getKey();
+            final Entry<IMEMonitorListener<T>, Object> o = i.next();
+            final IMEMonitorListener<T> receiver = o.getKey();
             if (receiver.isValid(o.getValue())) {
                 receiver.postChange(this, diff, src);
             } else {
@@ -121,7 +115,7 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
         }
     }
 
-    protected Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> getListeners() {
+    protected Iterator<Entry<IMEMonitorListener<T>, Object>> getListeners() {
         return this.listeners.entrySet().iterator();
     }
 
@@ -140,44 +134,19 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public AccessRestriction getAccess() {
-        return this.getHandler().getAccess();
-    }
-
-    @Override
-    public IAEStackList<T> getStorageList() {
+    public IAEStackList<T> getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.resetStatus();
-            return this.getAvailableItems(this.cachedList);
+            return this.getAvailableStacks(this.cachedList);
         }
 
         return this.cachedList;
     }
 
     @Override
-    public boolean isPrioritized(final T input) {
-        return this.getHandler().isPrioritized(input);
-    }
-
-    @Override
-    public boolean canAccept(final T input) {
-        return this.getHandler().canAccept(input);
-    }
-
-    @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
-        return this.getHandler().getAvailableItems(out);
-    }
-
-    @Override
-    public int getPriority() {
-        return this.getHandler().getPriority();
-    }
-
-    @Override
-    public boolean validForPass(final int pass) {
-        return this.getHandler().validForPass(pass);
+    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
+        return this.getHandler().getAvailableStacks(out);
     }
 
 }

@@ -23,8 +23,6 @@
 
 package appeng.api.networking;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.level.Level;
 
 /**
@@ -73,7 +71,7 @@ public interface IGridServiceProvider {
      *
      * @param gridNode removed from that grid
      */
-    default void removeNode(@Nonnull IGridNode gridNode) {
+    default void removeNode(IGridNode gridNode) {
     }
 
     /**
@@ -84,7 +82,7 @@ public interface IGridServiceProvider {
      *
      * @param gridNode added to grid node
      */
-    default void addNode(@Nonnull IGridNode gridNode) {
+    default void addNode(IGridNode gridNode) {
     }
 
     /**
@@ -93,7 +91,7 @@ public interface IGridServiceProvider {
      *
      * @param destinationStorage storage which receives half of old grid
      */
-    default void onSplit(@Nonnull IGridStorage destinationStorage) {
+    default void onSplit(IGridStorage destinationStorage) {
     }
 
     /**
@@ -102,7 +100,7 @@ public interface IGridServiceProvider {
      *
      * @param sourceStorage old storage
      */
-    default void onJoin(@Nonnull IGridStorage sourceStorage) {
+    default void onJoin(IGridStorage sourceStorage) {
     }
 
     /**
@@ -110,6 +108,6 @@ public interface IGridServiceProvider {
      *
      * @param destinationStorage storage
      */
-    default void populateGridStorage(@Nonnull IGridStorage destinationStorage) {
+    default void populateGridStorage(IGridStorage destinationStorage) {
     }
 }
