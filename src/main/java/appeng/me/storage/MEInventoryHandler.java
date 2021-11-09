@@ -18,140 +18,150 @@
 
 package appeng.me.storage;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 
-public class MEInventoryHandler<T extends IAEStack> implements IMEInventoryHandler<T> {
+public class MEInventoryHandler<T extends IAEStack> extends DelegatingMEInventory<T> {
 
-    private final IMEInventoryHandler<T> internal;
-    private int myPriority;
-    private IncludeExclude myWhitelist;
-    private AccessRestriction myAccess;
-    private IPartitionList<T> myPartitionList;
+    private IPartitionList<T> partitionList = new DefaultPriorityList<>();
+    private IncludeExclude partitionListMode = IncludeExclude.WHITELIST;
+    private boolean filterOnExtraction;
+    private boolean filterAvailableContents;
+    private boolean allowExtraction = true;
+    private boolean allowInsertion = true;
 
-    private AccessRestriction cachedAccessRestriction;
-    private boolean hasReadAccess;
-    private boolean hasWriteAccess;
+    private boolean gettingAvailableContent = false;
 
-    public MEInventoryHandler(final IMEInventory<T> i, final IStorageChannel<T> channel) {
-        if (i instanceof IMEInventoryHandler) {
-            this.internal = (IMEInventoryHandler<T>) i;
-        } else {
-            this.internal = new MEPassThrough<>(i, channel);
-        }
+    public MEInventoryHandler(IMEInventory<T> inventory) {
+        super(inventory);
+    }
 
-        this.myPriority = 0;
-        this.myWhitelist = IncludeExclude.WHITELIST;
-        this.setBaseAccess(AccessRestriction.READ_WRITE);
-        this.myPartitionList = new DefaultPriorityList<>();
+    public void setAllowExtraction(boolean allowExtraction) {
+        this.allowExtraction = allowExtraction;
+    }
+
+    public void setAllowInsertion(boolean allowInsertion) {
+        this.allowInsertion = allowInsertion;
     }
 
     protected IncludeExclude getWhitelist() {
-        return this.myWhitelist;
+        return this.partitionListMode;
     }
 
     public void setWhitelist(final IncludeExclude myWhitelist) {
-        this.myWhitelist = myWhitelist;
-    }
-
-    public AccessRestriction getBaseAccess() {
-        return this.myAccess;
-    }
-
-    public void setBaseAccess(final AccessRestriction myAccess) {
-        this.myAccess = myAccess;
-        this.cachedAccessRestriction = this.myAccess.restrictPermissions(this.internal.getAccess());
-        this.hasReadAccess = this.cachedAccessRestriction.hasPermission(AccessRestriction.READ);
-        this.hasWriteAccess = this.cachedAccessRestriction.hasPermission(AccessRestriction.WRITE);
+        this.partitionListMode = myWhitelist;
     }
 
     protected IPartitionList<T> getPartitionList() {
-        return this.myPartitionList;
+        return this.partitionList;
     }
 
     public void setPartitionList(final IPartitionList<T> myPartitionList) {
-        this.myPartitionList = myPartitionList;
+        this.partitionList = myPartitionList;
+    }
+
+    public void setExtractFiltering(boolean filterOnExtraction, boolean filterAvailableContents) {
+        this.filterOnExtraction = filterOnExtraction;
+        this.filterAvailableContents = filterAvailableContents;
     }
 
     @Override
     public T injectItems(final T input, final Actionable type, final IActionSource src) {
-        if (!this.canAccept(input)) {
+        if (!this.allowInsertion || !passesBlackOrWhitelist(input)) {
             return input;
         }
 
-        return this.internal.injectItems(input, type, src);
+        return super.injectItems(input, type, src);
     }
 
     @Override
     public T extractItems(final T request, final Actionable type, final IActionSource src) {
-        if (!this.hasReadAccess) {
+        if (this.filterOnExtraction && !canExtract(request)) {
             return null;
         }
 
-        return this.internal.extractItems(request, type, src);
+        return super.extractItems(request, type, src);
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
-        if (!this.hasReadAccess) {
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
+        if (this.gettingAvailableContent) {
+            // Prevent recursion in case the internal inventory somehow calls this when the available items are queried.
+            // This is handled by the NetworkInventoryHandler when the initial query is coming from the network.
+            // However, this function might be called from the storage bus code directly,
+            // so we have to do this check manually.
             return out;
         }
 
-        return this.internal.getAvailableItems(out);
-    }
-
-    @Override
-    public IStorageChannel<T> getChannel() {
-        return this.internal.getChannel();
-    }
-
-    @Override
-    public AccessRestriction getAccess() {
-        return this.cachedAccessRestriction;
-    }
-
-    @Override
-    public boolean isPrioritized(final T input) {
-        if (this.myWhitelist == IncludeExclude.WHITELIST) {
-            return this.myPartitionList.isListed(input) || this.internal.isPrioritized(input);
+        this.gettingAvailableContent = true;
+        try {
+            if (!this.filterAvailableContents) {
+                return super.getAvailableStacks(out);
+            } else {
+                if (!this.allowExtraction) {
+                    return out;
+                }
+                // Don't try to check use the network storage list if this.delegate is an MEMonitor!
+                // The storage list doesn't properly handle recursion!
+                for (var stack : getDelegate().getAvailableStacks()) {
+                    if (canExtract(stack)) {
+                        out.addStorage(stack);
+                    }
+                }
+                return out;
+            }
+        } finally {
+            this.gettingAvailableContent = false;
         }
-        return false;
     }
 
     @Override
-    public boolean canAccept(final T input) {
-        if (!this.hasWriteAccess) {
-            return false;
+    public boolean isPreferredStorageFor(T input, IActionSource source) {
+        if (this.partitionListMode == IncludeExclude.WHITELIST) {
+            if (this.partitionList.isListed(input)) {
+                return true;
+            }
         }
 
-        if (this.myWhitelist == IncludeExclude.BLACKLIST && this.myPartitionList.isListed(input)) {
-            return false;
+        // Inventories that already contain some equal stack are also preferred
+        // we use a copy of size 1 here to prevent inventories from attempting to query multiple sub-inventories
+        var extractTest = input;
+        if (extractTest.getStackSize() != 1) {
+            extractTest = IAEStack.copy(extractTest, 1);
         }
-        if (this.myPartitionList.isEmpty() || this.myWhitelist == IncludeExclude.BLACKLIST) {
-            return this.internal.canAccept(input);
+        if (super.extractItems(extractTest, Actionable.SIMULATE, source) != null) {
+            return true;
         }
-        return this.myPartitionList.isListed(input) && this.internal.canAccept(input);
+
+        return super.isPreferredStorageFor(input, source);
     }
 
-    @Override
-    public int getPriority() {
-        return this.myPriority;
+    protected boolean canExtract(T request) {
+        return allowExtraction && passesBlackOrWhitelist(request);
     }
 
-    public void setPriority(final int myPriority) {
-        this.myPriority = myPriority;
-    }
-
-    public IMEInventory<T> getInternal() {
-        return this.internal;
+    // Applies the black/whitelist, but only if any item is listed at all
+    private boolean passesBlackOrWhitelist(T input) {
+        if (!this.partitionList.isEmpty()) {
+            switch (this.partitionListMode) {
+                case WHITELIST -> {
+                    if (!this.partitionList.isListed(input)) {
+                        return false;
+                    }
+                }
+                case BLACKLIST -> {
+                    if (this.partitionList.isListed(input)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

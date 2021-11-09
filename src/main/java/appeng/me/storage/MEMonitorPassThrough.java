@@ -20,84 +20,72 @@ package appeng.me.storage;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
+
+import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
-public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
-        implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T> {
+/**
+ * Wraps another inventory transparently but allows switching out the underlying inventory implementation. When the
+ * underlying inventory is switched, the resulting changes in the observable inventory are reported to listeners of this
+ * monitor.
+ * <p/>
+ * Additionally, the crafting flag is cleared for any exposed item, because crafting requests across networks are not
+ * supported.
+ */
+public class MEMonitorPassThrough<T extends IAEStack> implements IMEMonitor<T>, IMEMonitorListener<T> {
 
-    private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
+    private final Map<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
+
+    private final IStorageChannel<T> channel;
+
+    @Nullable
     private IActionSource changeSource;
+
+    @Nullable
     private IMEMonitor<T> monitor;
 
-    public MEMonitorPassThrough(final IMEInventory<T> i, final IStorageChannel channel) {
-        super(i, channel);
-        if (i instanceof IMEMonitor) {
-            this.monitor = (IMEMonitor<T>) i;
-        }
+    public MEMonitorPassThrough(IStorageChannel<T> channel) {
+        this.channel = channel;
     }
 
-    @Override
-    public void setInternal(final IMEInventory<T> i) {
+    public void setMonitor(@Nullable IMEMonitor<T> monitor) {
         if (this.monitor != null) {
             this.monitor.removeListener(this);
+            this.monitor = null;
         }
 
-        this.monitor = null;
-        final IAEStackList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList()
-                : this.getInternal()
-                        .getAvailableItems(new ItemListIgnoreCrafting(this.getWrappedChannel().createList()));
+        var before = this.getAvailableStacks(getChannel().createList());
 
-        super.setInternal(i);
-        if (i instanceof IMEMonitor) {
-            this.monitor = (IMEMonitor<T>) i;
-        }
+        this.monitor = monitor;
 
-        final IAEStackList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList()
-                : this.getInternal()
-                        .getAvailableItems(new ItemListIgnoreCrafting(this.getWrappedChannel().createList()));
+        var after = this.getAvailableStacks(getChannel().createList());
 
         if (this.monitor != null) {
             this.monitor.addListener(this, this.monitor);
         }
 
-        StorageHelper.postListChanges(before, after, this, this.getChangeSource());
+        StorageHelper.postListChanges(before, after, this, changeSource);
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList out) {
-        super.getAvailableItems(new ItemListIgnoreCrafting(out));
-        return out;
-    }
-
-    @Override
-    public void addListener(final IMEMonitorHandlerReceiver<T> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
+    public void removeListener(final IMEMonitorListener<T> l) {
         this.listeners.remove(l);
-    }
-
-    @Override
-    public IAEStackList<T> getStorageList() {
-        if (this.monitor == null) {
-            final IAEStackList<T> out = this.getWrappedChannel().createList();
-            this.getInternal().getAvailableItems(new ItemListIgnoreCrafting(out));
-            return out;
-        }
-        return this.monitor.getStorageList();
     }
 
     @Override
@@ -106,11 +94,11 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
     }
 
     @Override
-    public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
-        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
+    public void postChange(IMEMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
+        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
-            final Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
-            final IMEMonitorHandlerReceiver<T> receiver = e.getKey();
+            final Entry<IMEMonitorListener<T>, Object> e = i.next();
+            final IMEMonitorListener<T> receiver = e.getKey();
             if (receiver.isValid(e.getValue())) {
                 receiver.postChange(this, change, source);
             } else {
@@ -121,10 +109,10 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
 
     @Override
     public void onListUpdate() {
-        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
+        var i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
-            final Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
-            final IMEMonitorHandlerReceiver<T> receiver = e.getKey();
+            final Entry<IMEMonitorListener<T>, Object> e = i.next();
+            final IMEMonitorListener<T> receiver = e.getKey();
             if (receiver.isValid(e.getValue())) {
                 receiver.onListUpdate();
             } else {
@@ -133,11 +121,41 @@ public class MEMonitorPassThrough<T extends IAEStack> extends MEPassThrough<T>
         }
     }
 
-    private IActionSource getChangeSource() {
-        return this.changeSource;
+    public void setChangeSource(@Nullable IActionSource changeSource) {
+        this.changeSource = changeSource;
     }
 
-    public void setChangeSource(final IActionSource changeSource) {
-        this.changeSource = changeSource;
+    @Override
+    public T injectItems(final T input, final Actionable type, final IActionSource src) {
+        return monitor != null ? monitor.injectItems(input, type, src) : input;
+    }
+
+    @Override
+    public T extractItems(final T request, final Actionable type, final IActionSource src) {
+        return monitor != null ? monitor.extractItems(request, type, src) : null;
+    }
+
+    @Override
+    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
+        if (monitor == null) {
+            return out;
+        }
+
+        // Note how ItemListIgnoreCrafting will clear the crafting flag.
+        // This is used because crafting items from other networks is not possible.
+        return monitor.getAvailableStacks(new ItemListIgnoreCrafting<>(out));
+    }
+
+    @Override
+    public IAEStackList<T> getCachedAvailableStacks() {
+        if (this.monitor == null) {
+            return getChannel().createList();
+        }
+        return this.monitor.getCachedAvailableStacks();
+    }
+
+    @Override
+    public IStorageChannel<T> getChannel() {
+        return channel;
     }
 }

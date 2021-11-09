@@ -28,25 +28,30 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.me.helpers.MEMonitorHandler;
+import appeng.me.storage.NullInventory;
 import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.util.ConfigManager;
 
-public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware {
-
+public class PortableCellViewer implements IPortableCell, IInventorySlotAware {
+    private final MEMonitorHandler<?> cellMonitor;
     private final ItemStack target;
     private final IAEItemPowerStorage ips;
     private final int inventorySlot;
 
-    public PortableCellViewer(final ItemStack is, final int slot) {
-        super(StorageCells.getCellInventory(is, null, StorageChannels.items()));
+    public PortableCellViewer(ItemStack is, int slot) {
+        IMEInventory<?> inv = StorageCells.getCellInventory(is, null);
+        if (inv == null) {
+            inv = NullInventory.of(StorageChannels.items());
+        }
+        this.cellMonitor = new MEMonitorHandler<>(inv);
         this.ips = (IAEItemPowerStorage) is.getItem();
         this.target = is;
         this.inventorySlot = slot;
@@ -75,10 +80,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 
     @Override
     public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        if (channel == StorageChannels.items()) {
-            return cast(channel);
-        }
-        return null;
+        return cellMonitor.cast(channel);
     }
 
     @Override

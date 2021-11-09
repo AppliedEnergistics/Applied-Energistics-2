@@ -21,25 +21,30 @@ package appeng.me.cells;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.IncludeExclude;
+import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.util.prioritylist.DefaultPriorityList;
+import appeng.util.prioritylist.FuzzyPriorityList;
+import appeng.util.prioritylist.IPartitionList;
+import appeng.util.prioritylist.PrecisePriorityList;
 
-class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
+public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
     private static final int MAX_ITEM_TYPES = 63;
     private static final String ITEM_TYPE_TAG = "it";
     private static final String ITEM_COUNT_TAG = "ic";
@@ -54,6 +59,8 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
 
     private final IStorageChannel<T> channel;
     private final ISaveProvider container;
+    private IPartitionList<T> partitionList;
+    private IncludeExclude partitionListMode;
     private int maxItemTypes;
     private short storedItems;
     private long storedItemCount;
@@ -81,6 +88,68 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         this.storedItemCount = getTag().getLong(ITEM_COUNT_TAG);
         this.cellItems = null;
         this.channel = cellType.getChannel();
+
+        updateFilter();
+    }
+
+    /**
+     * Updates the partition list and mode based on installed upgrades and the configured filter.
+     */
+    private void updateFilter() {
+        var priorityList = channel.createList();
+
+        var upgrades = getUpgradesInventory();
+        var config = getConfigInventory();
+        var fzMode = getFuzzyMode();
+
+        boolean hasInverter = false;
+        boolean hasFuzzy = false;
+
+        for (var upgrade : upgrades) {
+            var u = IUpgradeModule.getTypeFromStack(upgrade);
+            if (u != null) {
+                switch (u) {
+                    case FUZZY -> hasFuzzy = true;
+                    case INVERTER -> hasInverter = true;
+                    default -> {
+                    }
+                }
+            }
+        }
+
+        for (var stack : config) {
+            T configItem = channel.createStack(stack);
+            if (configItem != null) {
+                // The config inventories stack size is meaningless, but stacks of size 0
+                // are ignored in the item list.
+                configItem.setStackSize(1);
+                priorityList.add(configItem);
+            }
+        }
+
+        partitionListMode = (hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
+
+        if (!priorityList.isEmpty()) {
+            if (hasFuzzy) {
+                partitionList = new FuzzyPriorityList<>(priorityList, fzMode);
+            } else {
+                partitionList = new PrecisePriorityList<>(priorityList);
+            }
+        } else {
+            partitionList = new DefaultPriorityList<>();
+        }
+    }
+
+    public IncludeExclude getPartitionListMode() {
+        return partitionListMode;
+    }
+
+    public boolean isPreformatted() {
+        return !partitionList.isEmpty();
+    }
+
+    public boolean isFuzzy() {
+        return partitionList instanceof FuzzyPriorityList;
     }
 
     private CompoundTag getTag() {
@@ -90,9 +159,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         return this.i.getOrCreateTag();
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends IAEStack> BasicCellInventory<T> createInventory(ItemStack o, ISaveProvider container,
-            IStorageChannel<T> channel) {
+    public static BasicCellInventory<?> createInventory(ItemStack o, ISaveProvider container) {
         Preconditions.checkNotNull(o, "Cannot create cell inventory for null itemstack");
 
         if (!(o.getItem() instanceof IBasicCellItem<?>cellType)) {
@@ -105,20 +172,16 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         }
 
         // The cell type's channel matches, so this cast is safe
-        if (cellType.getChannel() == channel) {
-            return new BasicCellInventory<>((IBasicCellItem<T>) cellType, o, container);
-        } else {
-            return null;
-        }
+        return new BasicCellInventory<>(cellType, o, container);
     }
 
-    public static boolean isCell(final ItemStack input) {
+    public static boolean isCell(ItemStack input) {
         return getStorageCell(input) != null;
     }
 
-    private boolean isStorageCell(final T input) {
+    private boolean isStorageCell(T input) {
         if (input instanceof IAEItemStack stack) {
-            final IBasicCellItem<?> type = getStorageCell(stack.getDefinition());
+            var type = getStorageCell(stack.getDefinition());
 
             return type != null && !type.storableInStorageCell();
         }
@@ -126,13 +189,9 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         return false;
     }
 
-    private static IBasicCellItem<?> getStorageCell(final ItemStack input) {
-        if (input != null) {
-            final Item type = input.getItem();
-
-            if (type instanceof IBasicCellItem) {
-                return (IBasicCellItem<?>) type;
-            }
+    private static IBasicCellItem<?> getStorageCell(ItemStack input) {
+        if (input != null && input.getItem() instanceof IBasicCellItem basicCellItem) {
+            return basicCellItem;
         }
 
         return null;
@@ -140,7 +199,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
 
     private static boolean isCellEmpty(BasicCellInventory<?> inv) {
         if (inv != null) {
-            return inv.getAvailableItems().isEmpty();
+            return inv.getAvailableStacks().isEmpty();
         }
         return true;
     }
@@ -154,6 +213,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         return this.cellItems;
     }
 
+    @Override
     public void persist() {
         if (this.isPersisted) {
             return;
@@ -235,7 +295,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
     }
 
     @Override
-    public IAEStackList<T> getAvailableItems(final IAEStackList<T> out) {
+    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
         for (final T item : this.getCellItems()) {
             out.add(item);
         }
@@ -243,6 +303,7 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         return out;
     }
 
+    @Override
     public double getIdleDrain() {
         return this.cellType.getIdleDrain();
     }
@@ -316,7 +377,8 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         return this.itemsPerByte - div;
     }
 
-    public CellState getStatusForCell() {
+    @Override
+    public CellState getStatus() {
         if (this.getStoredItemTypes() == 0) {
             return CellState.EMPTY;
         }
@@ -344,10 +406,10 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
         // This is slightly hacky as it expects a read-only access, but fine for now.
         // TODO: Guarantee a read-only access. E.g. provide an isEmpty() method and
         // ensure CellInventory does not write
-        // any NBT data for empty cells instead of relying on an empty IAEStackContainer
+        // any NBT data for empty cells instead of relying on an empty IAEStackList
         if (this.isStorageCell(input)) {
             // TODO: make it work for any cell, and not just BasicCellInventory!
-            var meInventory = createInventory(((IAEItemStack) input).createItemStack(), null, getChannel());
+            var meInventory = createInventory(((IAEItemStack) input).createItemStack(), null);
             if (!isCellEmpty(meInventory)) {
                 return input;
             }
@@ -474,4 +536,5 @@ class BasicCellInventory<T extends IAEStack> implements IMEInventory<T> {
 
         return true;
     }
+
 }

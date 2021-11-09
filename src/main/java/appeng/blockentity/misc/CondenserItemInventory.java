@@ -19,8 +19,6 @@
 package appeng.blockentity.misc;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -28,7 +26,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.IAEItemStack;
@@ -39,7 +37,7 @@ import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 
 class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonitor {
-    private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
+    private final HashMap<IMEMonitorListener<IAEItemStack>, Object> listeners = new HashMap<>();
     private final CondenserBlockEntity target;
     private boolean hasChanged = true;
     private final ItemList cachedList = new ItemList();
@@ -71,7 +69,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
     }
 
     @Override
-    public IAEStackList<IAEItemStack> getAvailableItems(final IAEStackList<IAEItemStack> out) {
+    public IAEStackList<IAEItemStack> getAvailableStacks(final IAEStackList<IAEItemStack> out) {
         if (!this.target.getOutputSlot().getStackInSlot(0).isEmpty()) {
             out.add(AEItemStack.fromItemStack(this.target.getOutputSlot().getStackInSlot(0)));
         }
@@ -79,11 +77,11 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
     }
 
     @Override
-    public IAEStackList<IAEItemStack> getStorageList() {
+    public IAEStackList<IAEItemStack> getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.resetStatus();
-            return this.getAvailableItems(this.cachedList);
+            return this.getAvailableStacks(this.cachedList);
         }
         return this.cachedList;
     }
@@ -94,17 +92,12 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
     }
 
     @Override
-    public boolean validForPass(final int pass) {
-        return pass == 2;
-    }
-
-    @Override
-    public void addListener(final IMEMonitorHandlerReceiver<IAEItemStack> l, final Object verificationToken) {
+    public void addListener(IMEMonitorListener<IAEItemStack> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorHandlerReceiver<IAEItemStack> l) {
+    public void removeListener(IMEMonitorListener<IAEItemStack> l) {
         this.listeners.remove(l);
     }
 
@@ -129,10 +122,10 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
         }
 
         this.changeSet = new ItemList();
-        final Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = this.listeners.entrySet().iterator();
+        var i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
-            final Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> l = i.next();
-            final IMEMonitorHandlerReceiver<IAEItemStack> key = l.getKey();
+            var l = i.next();
+            var key = l.getKey();
             if (key.isValid(l.getValue())) {
                 key.postChange(this, currentChanges, this.actionSource);
             } else {

@@ -21,12 +21,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.ActionItems;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
+import appeng.api.config.*;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
@@ -37,6 +32,7 @@ public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> 
 
     private final SettingToggleButton<AccessRestriction> rwMode;
     private final SettingToggleButton<StorageFilter> storageFilter;
+    private final SettingToggleButton<YesNo> filterOnExtract;
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
 
     public ItemStorageBusScreen(ItemStorageBusMenu menu, Inventory playerInventory, Component title,
@@ -47,14 +43,13 @@ public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> 
 
         addToLeftToolbar(new ActionButton(ActionItems.CLOSE, btn -> menu.clear()));
         addToLeftToolbar(new ActionButton(ActionItems.WRENCH, btn -> menu.partition()));
-        this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS,
-                AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(
-                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE,
-                FuzzyMode.IGNORE_ALL);
+        this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS, AccessRestriction.READ_WRITE);
+        this.storageFilter = new ServerSettingToggleButton<>(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.filterOnExtract = new ServerSettingToggleButton<>(Settings.FILTER_ON_EXTRACT, YesNo.YES);
+        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
 
         this.addToLeftToolbar(this.storageFilter);
+        this.addToLeftToolbar(this.filterOnExtract);
         this.addToLeftToolbar(this.fuzzyMode);
         this.addToLeftToolbar(this.rwMode);
     }
@@ -65,6 +60,7 @@ public class ItemStorageBusScreen extends UpgradeableScreen<ItemStorageBusMenu> 
 
         this.storageFilter.set(this.menu.getStorageFilter());
         this.rwMode.set(this.menu.getReadWriteMode());
+        this.filterOnExtract.set(this.menu.getFilterOnExtract());
         this.fuzzyMode.set(this.menu.getFuzzyMode());
         this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
     }

@@ -31,9 +31,9 @@ import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackList;
 import appeng.api.storage.data.MixedStackList;
@@ -178,12 +178,12 @@ public class SimulationEnv {
             }
 
             @Override
-            public void registerAdditionalCellProvider(ICellProvider cc) {
+            public void addGlobalStorageProvider(IStorageProvider cc) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void unregisterAdditionalCellProvider(ICellProvider cc) {
+            public void removeGlobalStorageProvider(IStorageProvider cc) {
                 throw new UnsupportedOperationException();
             }
 
@@ -191,28 +191,38 @@ public class SimulationEnv {
             public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
                 return monitors.computeIfAbsent(channel, chan -> createMonitorMock(chan)).cast(channel);
             }
+
+            @Override
+            public void refreshNodeStorageProvider(IGridNode node) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void refreshGlobalStorageProvider(IStorageProvider provider) {
+                throw new UnsupportedOperationException();
+            }
         };
     }
 
     private <T extends IAEStack> IMEMonitor<T> createMonitorMock(IStorageChannel<T> channel) {
         return new IMEMonitor<>() {
             @Override
-            public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
+            public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public IAEStackList<T> getStorageList() {
+            public IAEStackList<T> getCachedAvailableStacks() {
                 return networkStorage.getList(channel);
             }
 
             @Override
-            public void addListener(IMEMonitorHandlerReceiver<T> l, Object verificationToken) {
+            public void addListener(IMEMonitorListener<T> l, Object verificationToken) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void removeListener(IMEMonitorHandlerReceiver<T> l) {
+            public void removeListener(IMEMonitorListener<T> l) {
                 throw new UnsupportedOperationException();
             }
 

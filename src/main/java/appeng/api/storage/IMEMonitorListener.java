@@ -21,15 +21,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking.events;
+package appeng.api.storage;
 
-/**
- * Posted by storage devices to inform AE to refresh its storage structure.
- *
- * This is done in cases such as a storage cell being removed or added to a drive.
- *
- * you do not need to send this event when your node is added / removed from the grid.
- */
-public class GridCellArrayUpdate extends GridEvent {
+import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.data.IAEStack;
 
+public interface IMEMonitorListener<T extends IAEStack> {
+
+    /**
+     * return true if this object should remain as a listener.
+     *
+     * @param verificationToken to be checked object
+     *
+     * @return true if object should remain as a listener
+     */
+    boolean isValid(Object verificationToken);
+
+    /**
+     * called when changes are made to the Monitor, but only if listener is still valid.
+     *
+     * @param change done change
+     */
+    void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource actionSource);
+
+    /**
+     * called when the list updates its contents, this is mostly for handling power events.
+     */
+    void onListUpdate();
 }

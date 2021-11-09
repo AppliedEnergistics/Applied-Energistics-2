@@ -32,24 +32,24 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeTypeOnlySlot;
 import appeng.menu.slot.OptionalTypeOnlyFakeSlot;
-import appeng.parts.automation.FormationPlanePart;
+import appeng.parts.automation.ItemFormationPlanePart;
 
 /**
  * This is used by both annihilation and formation planes.
  *
  * @see ItemFormationPlaneScreen
  */
-public class ItemFormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
+public class ItemFormationPlaneMenu extends UpgradeableMenu<ItemFormationPlanePart> {
 
     public static final MenuType<ItemFormationPlaneMenu> TYPE = MenuTypeBuilder
-            .create(ItemFormationPlaneMenu::new, FormationPlanePart.class)
+            .create(ItemFormationPlaneMenu::new, ItemFormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("formationplane");
 
     @GuiSync(7)
     public YesNo placeMode;
 
-    public ItemFormationPlaneMenu(int id, final Inventory ip, final FormationPlanePart host) {
+    public ItemFormationPlaneMenu(int id, final Inventory ip, final ItemFormationPlanePart host) {
         super(TYPE, id, ip, host);
     }
 

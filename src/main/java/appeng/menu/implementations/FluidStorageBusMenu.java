@@ -24,10 +24,7 @@ import java.util.Iterator;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
+import appeng.api.config.*;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
@@ -54,6 +51,9 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
 
     @GuiSync(4)
     public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
+
+    @GuiSync(7)
+    public YesNo filterOnExtract = YesNo.YES;
 
     public FluidStorageBusMenu(int id, Inventory ip, FluidStorageBusPart host) {
         super(TYPE, id, ip, host);
@@ -92,6 +92,7 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         this.setReadWriteMode(cm.getSetting(Settings.ACCESS));
         this.setStorageFilter(cm.getSetting(Settings.STORAGE_FILTER));
+        this.setFilterOnExtract(cm.getSetting(Settings.FILTER_ON_EXTRACT));
     }
 
     @Override
@@ -126,7 +127,7 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
 
         Iterator<IAEFluidStack> i = Collections.emptyIterator();
         if (cellInv != null) {
-            i = cellInv.getAvailableItems().iterator();
+            i = cellInv.getAvailableStacks().iterator();
         }
 
         for (int x = 0; x < h.getSlots(); x++) {
@@ -158,5 +159,13 @@ public class FluidStorageBusMenu extends FluidConfigurableMenu<FluidStorageBusPa
     @Override
     public IAEFluidTank getFluidConfigInventory() {
         return getHost().getConfig();
+    }
+
+    public YesNo getFilterOnExtract() {
+        return this.filterOnExtract;
+    }
+
+    public void setFilterOnExtract(YesNo filterOnExtract) {
+        this.filterOnExtract = filterOnExtract;
     }
 }

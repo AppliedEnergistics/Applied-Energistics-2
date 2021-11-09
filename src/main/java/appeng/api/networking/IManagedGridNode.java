@@ -182,5 +182,4 @@ public interface IManagedGridNode {
      */
     @Nullable
     IGridNode getNode();
-
 }

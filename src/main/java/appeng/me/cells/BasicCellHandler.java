@@ -18,12 +18,16 @@
 
 package appeng.me.cells;
 
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.IStorageChannel;
+import appeng.api.config.IncludeExclude;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ISaveProvider;
-import appeng.api.storage.data.IAEStack;
+import appeng.core.localization.GuiText;
 
 /**
  * Cell handler that manages all normal storage cells (items, fluids).
@@ -37,14 +41,34 @@ public class BasicCellHandler implements ICellHandler {
     }
 
     @Override
-    public <T extends IAEStack> BasicCellInventoryHandler<T> getCellInventory(ItemStack is,
-            ISaveProvider container,
-            IStorageChannel<T> channel) {
-        var inv = BasicCellInventory.createInventory(is, container, channel);
-        if (inv == null || inv.getChannel() != channel) {
-            return null;
-        }
-        // This cast is safe because we check the channel of the inventory
-        return new BasicCellInventoryHandler<>(inv, channel);
+    public BasicCellInventory<?> getCellInventory(ItemStack is, ISaveProvider container) {
+        return BasicCellInventory.createInventory(is, container);
     }
+
+    public void addCellInformationToTooltip(ItemStack is, List<Component> lines) {
+        var handler = getCellInventory(is, null);
+        if (handler == null) {
+            return;
+        }
+
+        lines.add(new TextComponent(handler.getUsedBytes() + " ").append(GuiText.Of.text())
+                .append(" " + handler.getTotalBytes() + " ").append(GuiText.BytesUsed.text()));
+
+        lines.add(new TextComponent(handler.getStoredItemTypes() + " ").append(GuiText.Of.text())
+                .append(" " + handler.getTotalItemTypes() + " ").append(GuiText.Types.text()));
+
+        if (handler.isPreformatted()) {
+            var list = (handler.getPartitionListMode() == IncludeExclude.WHITELIST ? GuiText.Included
+                    : GuiText.Excluded)
+                            .text();
+
+            if (handler.isFuzzy()) {
+                lines.add(GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Fuzzy.text()));
+            } else {
+                lines.add(
+                        GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Precise.text()));
+            }
+        }
+    }
+
 }

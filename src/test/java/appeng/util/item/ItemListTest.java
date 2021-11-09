@@ -66,15 +66,10 @@ public class ItemListTest {
         assertPreciseStackProperties(diamondSwordFilter(100), 1, 1, true);
     }
 
-    /**
-     * addStorage only considers {@link IAEItemStack#getStackSize()} and ignores other properties when merging stacks,
-     * but inherits all properties when it's adding a new item.
-     */
     @Test
     public void testAddStorageForNewItem() {
-        // TODO: This might actually be incorrect, given how addrequestable et al behave
         itemList.addStorage(diamondSword(100, 1, 1, true));
-        assertPreciseStackProperties(diamondSwordFilter(100), 1, 1, true);
+        assertPreciseStackProperties(diamondSwordFilter(100), 1, 0, false);
     }
 
     @Test

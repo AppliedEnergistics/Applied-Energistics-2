@@ -29,6 +29,7 @@ public final class InitAdvancementTriggers {
         CriteriaTriggers.register(AdvancementTriggers.NETWORK_ENGINEER);
         CriteriaTriggers.register(AdvancementTriggers.NETWORK_ADMIN);
         CriteriaTriggers.register(AdvancementTriggers.SPATIAL_EXPLORER);
+        CriteriaTriggers.register(AdvancementTriggers.RECURSIVE);
     }
 
 }

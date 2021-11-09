@@ -358,21 +358,6 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.QUARTZ_GROWTH_ACCELERATOR))
                 .save(consumer, "appliedenergistics2:main/growth_accelerator");
 
-        var iface = Advancement.Builder.advancement()
-                .display(
-                        AEBlocks.ITEM_INTERFACE,
-                        new TranslatableComponent("achievement.ae2.Recursive"),
-                        new TranslatableComponent("achievement.ae2.Recursive.desc"),
-                        null /* background */,
-                        FrameType.TASK,
-                        true /* showToast */,
-                        true /* announceChat */,
-                        false /* hidden */
-                )
-                .parent(glassCable)
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.ITEM_INTERFACE))
-                .save(consumer, "appliedenergistics2:main/interface");
-
         var network1 = Advancement.Builder.advancement()
                 .display(
                         AEParts.COVERED_CABLE.item(AEColor.TRANSPARENT),
@@ -521,9 +506,24 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         true /* announceChat */,
                         false /* hidden */
                 )
-                .parent(iface)
+                .parent(glassCable)
                 .addCriterion("part", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.ITEM_STORAGE_BUS))
                 .save(consumer, "appliedenergistics2:main/storage_bus");
+
+        var storageBusOnInterface = Advancement.Builder.advancement()
+                .display(
+                        AEBlocks.ITEM_INTERFACE,
+                        new TranslatableComponent("achievement.ae2.Recursive"),
+                        new TranslatableComponent("achievement.ae2.Recursive.desc"),
+                        null /* background */,
+                        FrameType.TASK,
+                        true /* showToast */,
+                        true /* announceChat */,
+                        false /* hidden */
+                )
+                .parent(storageBus)
+                .addCriterion("recursive", AdvancementTriggers.RECURSIVE.instance())
+                .save(consumer, "appliedenergistics2:main/recursive");
 
     }
 

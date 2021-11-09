@@ -21,14 +21,14 @@ package appeng.blockentity.inventory;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.BaseInternalInventory;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class AppEngCellInventory extends BaseInternalInventory {
     private final AppEngInternalInventory inv;
-    private final ICellInventoryHandler[] handlerForSlot;
+    private final ICellInventory<?>[] handlerForSlot;
     /**
      * Remembers for which itemstack the handler in handlerForSlot[] was queried.
      */
@@ -36,11 +36,11 @@ public class AppEngCellInventory extends BaseInternalInventory {
 
     public AppEngCellInventory(final InternalInventoryHost host, final int slots) {
         this.inv = new AppEngInternalInventory(host, slots, 1);
-        this.handlerForSlot = new ICellInventoryHandler[slots];
+        this.handlerForSlot = new ICellInventory[slots];
         this.handlerStackForSlot = new ItemStack[slots];
     }
 
-    public void setHandler(int slot, ICellInventoryHandler<?> handler) {
+    public void setHandler(int slot, ICellInventory<?> handler) {
         this.handlerForSlot[slot] = handler;
         this.handlerStackForSlot[slot] = inv.getStackInSlot(slot);
     }
