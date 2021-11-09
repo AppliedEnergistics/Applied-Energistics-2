@@ -23,11 +23,12 @@
 
 package appeng.api.networking.storage;
 
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.data.IAEStack;
 
 /**
@@ -39,7 +40,7 @@ public interface IStorageService extends IGridService, IStorageMonitorable {
      * Used to inform the network of alterations to the storage system that fall outside of the standard Network
      * operations, Examples, ME Chest inputs from the world, or a Storage Bus detecting modifications made to the chest
      * by an outside force.
-     *
+     * <p>
      * Expects the input to have either a negative or a positive stack size to correspond to the injection, or
      * extraction operation.
      *
@@ -50,18 +51,33 @@ public interface IStorageService extends IGridService, IStorageMonitorable {
             IActionSource src);
 
     /**
-     * Used to add an additional cell provider to the storage system, i.e. for adding global providers from grid
-     * services.
+     * Adds a {@link IStorageProvider} that is not associated with a specific {@link appeng.api.networking.IGridNode }.
+     * This is for adding storage provided by {@link IGridService}s for examples.
      * <p/>
-     * THIS IT NOT FOR USE BY {@link appeng.api.networking.IGridNode NODES} THAT PROVIDE THE {@link ICellProvider}
+     * THIS IT NOT FOR USE BY {@link appeng.api.networking.IGridNode NODES} THAT PROVIDE THE {@link IStorageProvider}
      * SERVICE. Those are automatically handled by the storage system.
      *
      * @param cc to be added cell provider
      */
-    void registerAdditionalCellProvider(ICellProvider cc);
+    void addGlobalStorageProvider(IStorageProvider cc);
 
     /**
-     * remove a provider added with {@link #registerAdditionalCellProvider(ICellProvider)}.
+     * Remove a provider added with {@link #addGlobalStorageProvider(IStorageProvider)}.
      */
-    void unregisterAdditionalCellProvider(ICellProvider cc);
+    void removeGlobalStorageProvider(IStorageProvider cc);
+
+    /**
+     * Refreshes the storage mounts provided by a {@link IGridNode node} through its {@link IStorageProvider}.
+     *
+     * @throws IllegalArgumentException If the given node is not part of this grid, or did not provide
+     *                                  {@link IStorageProvider}.
+     */
+    void refreshNodeStorageProvider(IGridNode node);
+
+    /**
+     * Refreshes the storage mounts provided by a global storage provider.
+     *
+     * @throws IllegalArgumentException If the given provider has not been {@link #addGlobalStorageProvider registered}.
+     */
+    void refreshGlobalStorageProvider(IStorageProvider provider);
 }

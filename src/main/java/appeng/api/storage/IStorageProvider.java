@@ -21,40 +21,35 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage.cells;
-
-import java.util.List;
-
-import javax.annotation.Nonnull;
+package appeng.api.storage;
 
 import appeng.api.networking.IGridNodeService;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.networking.IManagedGridNode;
 
 /**
- * Allows you to provide cells to the grid's storage system. Implementations that are attached as grid node services
+ * Allows you to provide storage to the grid's storage system. Implementations that are attached as grid node services
  * will be automatically picked up by the {@link appeng.api.networking.storage.IStorageService} when the node joins or
  * leaves the grid.
  * <p/>
- * {@link appeng.api.networking.storage.IStorageService#registerAdditionalCellProvider(ICellProvider)} can be used to
- * add additional cell providers to a grid. This is useful for storage provided grid-wide by a grid service, rather than
- * an individual machine.
+ * {@link appeng.api.networking.storage.IStorageService#addGlobalStorageProvider(IStorageProvider)} can be used to add
+ * additional cell providers to a grid. This is useful for storage provided grid-wide by a grid service, rather than an
+ * individual machine.
  */
-public interface ICellProvider extends IGridNodeService {
+public interface IStorageProvider extends IGridNodeService {
+    /**
+     * Allow the cell provider to make inventories available to the network by mounting them.
+     */
+    void mountInventories(IStorageMounts storageMounts);
 
     /**
-     * List of inventories (i.e. one per cell) available for the given storage channel.
-     *
-     * @return a valid list of handlers
+     * This convenience method can be used to request an update of the mounted storage by the storage provider. This
+     * only works if the given managed grid node provides this service.
      */
-    @Nonnull
-    <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(IStorageChannel<T> channel);
-
-    /**
-     * the storage's priority.
-     *
-     * Positive and negative are supported
-     */
-    int getPriority();
+    static void requestUpdate(IManagedGridNode managedNode) {
+        var node = managedNode.getNode();
+        if (node != null) {
+            var grid = node.getGrid();
+            grid.getStorageService().refreshNodeStorageProvider(node);
+        }
+    }
 }

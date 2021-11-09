@@ -204,7 +204,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     private void updateReportingValue(final IMEMonitor<IAEItemStack> itemInventory) {
         if (this.configuredItem != null) {
-            final IAEItemStack result = itemInventory.getStorageList().findPrecise(this.configuredItem);
+            final IAEItemStack result = itemInventory.getCachedAvailableStacks().findPrecise(this.configuredItem);
             this.lastHumanReadableText = null;
             if (result == null) {
                 this.configuredItem.setStackSize(0);

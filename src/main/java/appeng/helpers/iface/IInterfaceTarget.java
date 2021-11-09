@@ -100,7 +100,7 @@ public interface IInterfaceTarget {
             IStorageMonitorable monitorable, IActionSource src) {
         var inventory = monitorable.getInventory(channel);
         if (inventory != null) {
-            for (var stack : inventory.getStorageList()) {
+            for (var stack : inventory.getCachedAvailableStacks()) {
                 if (inventory.extractItems(stack, Actionable.SIMULATE, src) != null) {
                     return true;
                 }

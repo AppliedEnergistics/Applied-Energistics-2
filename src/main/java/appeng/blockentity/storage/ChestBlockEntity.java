@@ -62,28 +62,26 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.events.GridCellArrayUpdate;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.IStorageMounts;
+import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventoryHandler;
-import appeng.api.storage.cells.ICellProvider;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
@@ -94,7 +92,6 @@ import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.helpers.MachineSource;
-import appeng.me.storage.MEInventoryHandler;
 import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
@@ -107,7 +104,7 @@ import appeng.util.item.AEItemStack;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IColorableBlockEntity,
-        ServerTickingBlockEntity, ICellProvider {
+        ServerTickingBlockEntity, IStorageProvider {
 
     private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
     private static final int BIT_STATE_MASK = 0b111;
@@ -141,7 +138,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         super(blockEntityType, pos, blockState);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
         this.getMainNode()
-                .addService(ICellProvider.class, this)
+                .addService(IStorageProvider.class, this)
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
         this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
@@ -169,7 +166,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     private void recalculateDisplay() {
-        final int oldState = this.state;
+        var oldState = this.state;
 
         for (int x = 0; x < this.getCellCount(); x++) {
             this.state |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
@@ -181,10 +178,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.state &= ~BIT_POWER_MASK;
         }
 
-        final boolean currentActive = this.getMainNode().isActive();
+        var currentActive = this.getMainNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
+            IStorageProvider.requestUpdate(getMainNode());
         }
 
         if (oldState != this.state) {
@@ -203,23 +200,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.accessor = null;
             this.fluidHandler = null;
 
-            final ItemStack is = this.getCell();
+            var is = this.getCell();
             if (!is.isEmpty()) {
                 this.isCached = true;
-                ICellHandler cellHandler = StorageCells.getHandler(is);
-                if (cellHandler != null) {
-                    idlePowerUsage = 1.0;
-
-                    for (var channel : StorageChannels.getAll()) {
-                        var newCell = cellHandler.getCellInventory(is,
-                                this::onCellContentChanged,
-                                channel);
-                        if (newCell != null) {
-                            idlePowerUsage += newCell.getIdleDrain();
-                            this.cellHandler = this.wrap(newCell);
-                            break;
-                        }
-                    }
+                var newCell = StorageCells.getCellInventory(is, this::onCellContentChanged);
+                if (newCell != null) {
+                    idlePowerUsage = 1.0 + newCell.getIdleDrain();
+                    this.cellHandler = this.wrap(newCell);
 
                     this.getMainNode().setIdlePowerUsage(idlePowerUsage);
                     this.accessor = new Accessor();
@@ -232,15 +219,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private <T extends IAEStack> ChestMonitorHandler<T> wrap(ICellInventoryHandler<T> cellInventory) {
+    private <T extends IAEStack> ChestMonitorHandler<T> wrap(ICellInventory<T> cellInventory) {
         if (cellInventory == null) {
             return null;
         }
 
-        var ih = new MEInventoryHandler<>(cellInventory, cellInventory.getChannel());
-        ih.setPriority(this.priority);
-
-        var g = new ChestMonitorHandler<>(ih, cellInventory);
+        var g = new ChestMonitorHandler<>(cellInventory, cellInventory);
         g.addListener(new ChestNetNotifier<>(cellInventory.getChannel()), g);
 
         return g;
@@ -426,10 +410,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.
 
-            ifGridPresent(g -> {
-                g.postEvent(new GridCellArrayUpdate());
-                StorageHelper.postWholeCellChanges(g.getStorageService(), removed, added, this.mySrc);
-            });
+            IStorageProvider.requestUpdate(getMainNode());
 
             // update the neighbors
             if (this.level != null) {
@@ -470,15 +451,14 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public <T extends IAEStack> List<IMEInventoryHandler<T>> getCellArray(final IStorageChannel<T> channel) {
+    public void mountInventories(IStorageMounts storageMounts) {
         if (this.getMainNode().isActive()) {
             this.updateHandler();
 
-            if (this.cellHandler != null && this.cellHandler.getChannel() == channel) {
-                return Collections.singletonList(this.cellHandler.cast(channel));
+            if (this.cellHandler != null) {
+                storageMounts.mount(this.cellHandler, priority);
             }
         }
-        return Collections.emptyList();
     }
 
     @Override
@@ -492,7 +472,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.cellHandler = null;
         this.isCached = false; // recalculate the storage cell.
 
-        getMainNode().ifPresent(grid -> grid.postEvent(new GridCellArrayUpdate()));
+        IStorageProvider.requestUpdate(getMainNode());
     }
 
     private void blinkCell(final int slot) {
@@ -515,17 +495,15 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public boolean openGui(final Player p) {
         this.updateHandler();
         if (this.cellHandler != null) {
-            final ICellHandler ch = StorageCells.getHandler(this.getCell());
+            var ch = StorageCells.getHandler(this.getCell());
 
             if (ch != null) {
-                final ICellGuiHandler chg = StorageCells
-                        .getGuiHandler(this.cellHandler.getChannel(), this.getCell());
+                var chg = StorageCells.getGuiHandler(this.cellHandler.getChannel(), this.getCell());
                 if (chg != null) {
-                    chg.openChestGui(p, this, ch, this.cellHandler, this.getCell());
+                    chg.openChestGui(p, this, ch, this.getCell());
                     return true;
                 }
             }
-
         }
 
         return false;
@@ -555,7 +533,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.level.blockEntityChanged(this.worldPosition);
     }
 
-    private class ChestNetNotifier<T extends IAEStack> implements IMEMonitorHandlerReceiver<T> {
+    private class ChestNetNotifier<T extends IAEStack> implements IMEMonitorListener<T> {
 
         private final IStorageChannel<T> chan;
 
@@ -574,7 +552,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
+        public void postChange(IMEMonitor<T> monitor, Iterable<T> change, final IActionSource source) {
             if (source == ChestBlockEntity.this.mySrc
                     || source.machine().map(machine -> machine == ChestBlockEntity.this).orElse(false)) {
                 if (getMainNode().isActive()) {
@@ -594,9 +572,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     private class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T> {
-        private final ICellInventoryHandler<T> cellInventory;
+        private final ICellInventory<T> cellInventory;
 
-        public ChestMonitorHandler(IMEInventoryHandler<T> inventory, ICellInventoryHandler<T> cellInventory) {
+        public ChestMonitorHandler(IMEInventory<T> inventory, ICellInventory<T> cellInventory) {
             super(inventory);
             this.cellInventory = cellInventory;
         }

@@ -49,7 +49,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
@@ -115,7 +115,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         }
     }
 
-    IMEInventoryHandler<IAEItemStack> getSecurityInventory() {
+    IMEInventory<IAEItemStack> getSecurityInventory() {
         return this.inventory;
     }
 

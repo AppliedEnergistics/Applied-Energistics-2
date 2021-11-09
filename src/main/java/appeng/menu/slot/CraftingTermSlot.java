@@ -116,7 +116,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             if (getMenu().getCarried().isEmpty()) {
                 var rs = getItem().copy();
                 if (!rs.isEmpty()) {
-                    getMenu().setCarried(this.craftItem(who, rs, inv, inv.getStorageList()));
+                    getMenu().setCarried(this.craftItem(who, rs, inv, inv.getCachedAvailableStacks()));
                 }
                 return;
             }
@@ -132,7 +132,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         for (int x = 0; x < maxTimesToCraft; x++) {
             if (target.simulateAdd(rs).isEmpty()) {
-                final IAEStackList<IAEItemStack> all = inv.getStorageList();
+                final IAEStackList<IAEItemStack> all = inv.getCachedAvailableStacks();
                 final ItemStack extra = target.addItems(this.craftItem(who, rs, inv, all));
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();

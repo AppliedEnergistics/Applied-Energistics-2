@@ -26,13 +26,13 @@ import com.google.common.collect.Multimap;
 
 import appeng.api.storage.data.IAEStack;
 
-public class GenericInterestManager<T> {
+public class InterestManager<T> {
 
     private final Multimap<IAEStack, T> container;
     private List<SavedTransactions> transactions = null;
     private int transDepth = 0;
 
-    public GenericInterestManager(final Multimap<IAEStack, T> interests) {
+    public InterestManager(final Multimap<IAEStack, T> interests) {
         this.container = interests;
     }
 

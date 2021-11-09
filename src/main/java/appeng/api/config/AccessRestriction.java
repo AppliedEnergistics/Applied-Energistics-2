@@ -24,37 +24,24 @@
 package appeng.api.config;
 
 public enum AccessRestriction {
-    NO_ACCESS(0), READ(1), WRITE(2), READ_WRITE(3);
+    NO_ACCESS(false, false),
+    READ(true, false),
+    WRITE(false, true),
+    READ_WRITE(true, true);
 
-    private final int permissionBit;
+    private final boolean allowExtraction;
+    private final boolean allowInsertion;
 
-    AccessRestriction(final int v) {
-        this.permissionBit = v;
+    AccessRestriction(boolean allowExtraction, boolean allowInsertion) {
+        this.allowExtraction = allowExtraction;
+        this.allowInsertion = allowInsertion;
     }
 
-    public boolean hasPermission(final AccessRestriction ar) {
-        return (this.permissionBit & ar.permissionBit) == ar.permissionBit;
+    public boolean isAllowExtraction() {
+        return allowExtraction;
     }
 
-    public AccessRestriction restrictPermissions(final AccessRestriction ar) {
-        return this.getPermByBit(this.permissionBit & ar.permissionBit);
-    }
-
-    private AccessRestriction getPermByBit(final int bit) {
-        return switch (bit) {
-            case 0 -> NO_ACCESS;
-            case 1 -> READ;
-            case 2 -> WRITE;
-            case 3 -> READ_WRITE;
-            default -> NO_ACCESS;
-        };
-    }
-
-    public AccessRestriction addPermissions(final AccessRestriction ar) {
-        return this.getPermByBit(this.permissionBit | ar.permissionBit);
-    }
-
-    public AccessRestriction removePermissions(final AccessRestriction ar) {
-        return this.getPermByBit(this.permissionBit & ~ar.permissionBit);
+    public boolean isAllowInsertion() {
+        return allowInsertion;
     }
 }

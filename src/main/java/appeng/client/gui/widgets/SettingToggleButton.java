@@ -258,6 +258,11 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.OverlayModeNo);
             registerApp(Icon.OVERLAY_ON, Settings.OVERLAY_MODE, YesNo.YES, ButtonToolTips.OverlayMode,
                     ButtonToolTips.OverlayModeYes);
+
+            registerApp(Icon.FILTER_ON_EXTRACT_ENABLED, Settings.FILTER_ON_EXTRACT, YesNo.YES,
+                    ButtonToolTips.FilterOnExtract, ButtonToolTips.FilterOnExtractEnabled);
+            registerApp(Icon.FILTER_ON_EXTRACT_DISABLED, Settings.FILTER_ON_EXTRACT, YesNo.NO,
+                    ButtonToolTips.FilterOnExtract, ButtonToolTips.FilterOnExtractDisabled);
         }
     }
 

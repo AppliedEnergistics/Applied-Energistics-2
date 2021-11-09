@@ -73,7 +73,7 @@ import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.me.helpers.BaseActionSource;
+import appeng.me.helpers.PlayerSource;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -108,10 +108,11 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         ItemStack paintBall = this.getColor(is);
 
-        final IMEInventory<IAEItemStack> inv = StorageCells.getCellInventory(is, null, StorageChannels.items());
+        var source = new PlayerSource(p);
+
+        IMEInventory<IAEItemStack> inv = StorageCells.getCellInventory(is, null, StorageChannels.items());
         if (inv != null) {
-            final IAEItemStack option = inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.SIMULATE,
-                    new BaseActionSource());
+            var option = inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.SIMULATE, source);
 
             if (option != null) {
                 paintBall = option.createItemStack();
@@ -132,7 +133,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                         && ((IColorableBlockEntity) te).getColor() != AEColor.TRANSPARENT) {
                     if (((IColorableBlockEntity) te).recolourBlock(side, AEColor.TRANSPARENT, p)) {
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
-                                new BaseActionSource());
+                                source);
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                         return InteractionResult.sidedSuccess(level.isClientSide());
                     }
@@ -143,7 +144,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 final BlockEntity painted = level.getBlockEntity(pos.relative(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
                         && painted instanceof PaintSplotchesBlockEntity) {
-                    inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
+                    inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, source);
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
                     return InteractionResult.sidedSuccess(level.isClientSide());
@@ -154,7 +155,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 if (color != null && this.getAECurrentPower(is) > powerPerUse
                         && color != AEColor.TRANSPARENT && this.recolourBlock(blk, side, level, pos, color, p)) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
-                            new BaseActionSource());
+                            source);
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     return InteractionResult.sidedSuccess(level.isClientSide());
                 }
@@ -223,10 +224,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     private ItemStack findNextColor(final ItemStack is, final ItemStack anchor, final int scrollOffset) {
         ItemStack newColor = ItemStack.EMPTY;
 
-        final IMEInventory<IAEItemStack> inv = StorageCells.getCellInventory(is, null,
-                StorageChannels.items());
+        var inv = StorageCells.getCellInventory(is, null, StorageChannels.items());
         if (inv != null) {
-            var itemList = inv.getAvailableItems();
+            var itemList = inv.getAvailableStacks();
             if (anchor.isEmpty()) {
                 final IAEItemStack firstItem = itemList.getFirstItem();
                 if (firstItem != null) {

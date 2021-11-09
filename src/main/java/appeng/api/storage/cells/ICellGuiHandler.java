@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
@@ -51,25 +50,22 @@ public interface ICellGuiHandler {
     /**
      * Return true to prioritize this handler for the provided {@link ItemStack}.
      *
-     * @param is Cell ItemStack
+     * @param cell Cell ItemStack
      * @return True, if specialized else false.
      */
-    default boolean isSpecializedFor(ItemStack is) {
+    default boolean isSpecializedFor(ItemStack cell) {
         return false;
     }
 
     /**
      * Called when the storage cell is placed in an ME Chest and the user tries to open the terminal side, if your item
-     * is not available via ME Chests simply tell the user they can't use it, or something, other wise you should open
+     * is not available via ME Chests simply tell the user they can't use it, or something, otherwise you should open
      * your gui and display the cell to the user.
      *
      * @param player      player opening chest gui
      * @param chest       to be opened chest
      * @param cellHandler cell handler
-     * @param inv         inventory handler
-     * @param is          item
+     * @param cell        the storage cell
      */
-    <T extends IAEStack> void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler,
-            IMEInventoryHandler<T> inv, ItemStack is);
-
+    void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler, ItemStack cell);
 }
