@@ -199,7 +199,7 @@ public class CraftConfirmMenu extends AEBaseMenu {
         }
 
         if (this.result != null && !this.result.simulation()) {
-            final ICraftingService cc = this.getGrid().getService(ICraftingService.class);
+            final ICraftingService cc = this.getGrid().getCraftingService();
             final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
             if (g != null && originalGui != null && this.getLocator() != null) {

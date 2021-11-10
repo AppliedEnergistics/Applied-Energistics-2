@@ -85,7 +85,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     @Override
     public void destroy() {
         // a connection was destroyed RE-PATH!!
-        final IPathingService p = this.sideA.getInternalGrid().getService(IPathingService.class);
+        final IPathingService p = this.sideA.getInternalGrid().getPathingService();
         p.repath();
 
         this.sideA.removeConnection(this);
@@ -232,7 +232,7 @@ public class GridConnection implements IGridConnection, IPathItem {
         }
 
         // a connection was destroyed RE-PATH!!
-        final IPathingService p = connection.sideA.getInternalGrid().getService(IPathingService.class);
+        final IPathingService p = connection.sideA.getInternalGrid().getPathingService();
         p.repath();
 
         connection.sideA.addConnection(connection);

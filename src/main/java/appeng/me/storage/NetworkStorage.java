@@ -141,7 +141,7 @@ public class NetworkStorage<T extends IAEStack> implements IMEInventory<T> {
             final IGrid gn = n.getGrid();
             if (gn != this.security.getGrid()) {
 
-                final ISecurityService sg = gn.getService(ISecurityService.class);
+                final ISecurityService sg = gn.getSecurityService();
                 final int playerID = sg.getOwner();
 
                 if (!this.security.hasPermission(playerID, permission)) {

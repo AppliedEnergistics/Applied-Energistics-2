@@ -55,9 +55,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IGridVisitor;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridPowerIdleChange;
-import appeng.api.networking.pathing.IPathingService;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.core.worlddata.IGridStorageData;
@@ -364,7 +362,7 @@ public class GridNode implements IGridNode, IPathItem {
         if (myGrid == null) {
             return false;
         }
-        return !myGrid.getService(IPathingService.class).isNetworkBooting();
+        return !myGrid.getPathingService().isNetworkBooting();
     }
 
     @Override
@@ -372,7 +370,7 @@ public class GridNode implements IGridNode, IPathItem {
         if (myGrid == null) {
             return false;
         }
-        return myGrid.getService(IEnergyService.class).isNetworkPowered();
+        return myGrid.getEnergyService().isNetworkPowered();
     }
 
     public void loadFromNBT(final String name, final CompoundTag nodeData) {
