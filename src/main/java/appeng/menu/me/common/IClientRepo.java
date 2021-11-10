@@ -21,13 +21,13 @@ package appeng.menu.me.common;
 import java.util.List;
 import java.util.Set;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Represents a client-side only repository of {@link GridInventoryEntry} entries that represent the network content
  * currently known to the client. This is actively synchronized by the server via {@link IncrementalUpdateHelper}.
  */
-public interface IClientRepo<T extends IAEStack> {
+public interface IClientRepo<T extends AEKey> {
 
     /**
      * Handle incoming updates from the server.

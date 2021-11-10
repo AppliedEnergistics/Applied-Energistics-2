@@ -61,14 +61,12 @@ import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
-import appeng.helpers.IConfigurableFluidInventory;
+import appeng.helpers.IConfigInvHost;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.hooks.ticking.TickHandler;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
-import appeng.util.fluid.AEFluidInventory;
-import appeng.util.inv.AppEngInternalAEInventory;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory,
@@ -306,12 +304,10 @@ public class AEBaseBlockEntity extends BlockEntity
     /**
      * null means nothing to store...
      *
-     * @param from source of settings
-     * @return compound of source
+     * @param mode source of settings
      */
-    public CompoundTag downloadSettings(final SettingsFrom from) {
-        final CompoundTag output = new CompoundTag();
-
+    @OverridingMethodsMustInvokeSuper
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
         if (this.hasCustomInventoryName()) {
             final CompoundTag dsp = new CompoundTag();
             dsp.putString("Name", this.customName);
@@ -326,53 +322,28 @@ public class AEBaseBlockEntity extends BlockEntity
             output.putInt("priority", pHost.getPriority());
         }
 
-        var inv = getSubInventory(ISegmentedInventory.CONFIG);
-        if (inv instanceof AppEngInternalAEInventory) {
-            ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
+        if (this instanceof IConfigInvHost configInvHost) {
+            configInvHost.getConfig().writeToChildTag(output, "config");
         }
-
-        if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
-            var tank = configurableFluidInventory.getFluidInventoryByName("config");
-            if (tank instanceof AEFluidInventory) {
-                ((AEFluidInventory) tank).writeToNBT(output, "config");
-            }
-        }
-        return output.isEmpty() ? null : output;
     }
 
     /**
-     * depending on the from, different settings will be accepted, don't call this with null
+     * Depending on the mode, different settings will be accepted.
      *
-     * @param from     source of settings
-     * @param compound compound of source
+     * @param input source of settings
      */
-    public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
+    @OverridingMethodsMustInvokeSuper
+    public void importSettings(SettingsFrom mode, CompoundTag input) {
         if (this instanceof IConfigurableObject configurableObject) {
-            configurableObject.getConfigManager().readFromNBT(compound);
+            configurableObject.getConfigManager().readFromNBT(input);
         }
 
         if (this instanceof IPriorityHost pHost) {
-            pHost.setPriority(compound.getInt("priority"));
+            pHost.setPriority(input.getInt("priority"));
         }
 
-        var inv = getSubInventory(ISegmentedInventory.CONFIG);
-        if (inv instanceof AppEngInternalAEInventory target) {
-            var tmp = new AppEngInternalAEInventory(null, target.size());
-            tmp.readFromNBT(compound, "config");
-            for (int x = 0; x < tmp.size(); x++) {
-                target.setItemDirect(x, tmp.getStackInSlot(x));
-            }
-        }
-
-        if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
-            var tank = configurableFluidInventory.getFluidInventoryByName("config");
-            if (tank instanceof AEFluidInventory target) {
-                final AEFluidInventory tmp = new AEFluidInventory(null, target.getSlots());
-                tmp.readFromNBT(compound, "config");
-                for (int x = 0; x < tmp.getSlots(); x++) {
-                    target.setFluidInSlot(x, tmp.getFluidInSlot(x));
-                }
-            }
+        if (this instanceof IConfigInvHost configInvHost) {
+            configInvHost.getConfig().readFromChildTag(input, "config");
         }
     }
 
@@ -475,8 +446,9 @@ public class AEBaseBlockEntity extends BlockEntity
 
         for (var ol : itemDropCandidates) {
             if (Platform.itemComparisons().isEqualItemType(ol, op)) {
-                var tag = downloadSettings(SettingsFrom.DISMANTLE_ITEM);
-                if (tag != null) {
+                var tag = new CompoundTag();
+                exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
+                if (!tag.isEmpty()) {
                     ol.setTag(tag);
                 }
             }

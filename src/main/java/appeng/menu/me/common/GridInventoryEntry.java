@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Contains information about something that is stored inside of the grid inventory. This is used to synchronize the
@@ -33,11 +33,11 @@ import appeng.api.storage.data.IAEStack;
  *
  * @param <T> The general type of what is being stored (items, fluids, etc.)
  */
-public class GridInventoryEntry<T extends IAEStack> {
+public class GridInventoryEntry<T extends AEKey> {
     private final long serial;
 
     @Nullable
-    private final T stack;
+    private final T what;
 
     private final long storedAmount;
 
@@ -45,10 +45,10 @@ public class GridInventoryEntry<T extends IAEStack> {
 
     private final boolean craftable;
 
-    public GridInventoryEntry(long serial, @Nullable T stack, long storedAmount, long requestableAmount,
+    public GridInventoryEntry(long serial, @Nullable T what, long storedAmount, long requestableAmount,
             boolean craftable) {
         this.serial = serial;
-        this.stack = stack;
+        this.what = what;
         this.storedAmount = storedAmount;
         this.requestableAmount = requestableAmount;
         this.craftable = craftable;
@@ -56,7 +56,7 @@ public class GridInventoryEntry<T extends IAEStack> {
 
     /**
      * Gets the serial number assigned to this inventory entry. Subsequent changes to properties other than
-     * {@link #stack} will use this serial to identify which entry needs to be updated.
+     * {@link #what} will use this serial to identify which entry needs to be updated.
      */
     public long getSerial() {
         return serial;
@@ -68,26 +68,27 @@ public class GridInventoryEntry<T extends IAEStack> {
      * this entry is an incremental update, this field is null, and {@link #serial} refers to a previous inventory entry
      * that should be updated.
      */
-    public T getStack() {
-        return stack;
+    @Nullable
+    public T getWhat() {
+        return what;
     }
 
     /**
-     * @see IAEStack#getStackSize()
+     * How much of {@link #what} is stored in the network.
      */
     public long getStoredAmount() {
         return storedAmount;
     }
 
     /**
-     * @see IAEStack#getCountRequestable()
+     * How much of {@link #what} can be requested from attached external networks (i.e. logistic pipes).
      */
     public long getRequestableAmount() {
         return requestableAmount;
     }
 
     /**
-     * @see IAEStack#isCraftable()
+     * Indicates that {@link #what} can be automatically crafted.
      */
     public boolean isCraftable() {
         return craftable;
@@ -98,9 +99,9 @@ public class GridInventoryEntry<T extends IAEStack> {
      */
     public void write(FriendlyByteBuf buffer) {
         buffer.writeVarLong(serial);
-        buffer.writeBoolean(stack != null);
-        if (stack != null) {
-            stack.writeToPacket(buffer);
+        buffer.writeBoolean(what != null);
+        if (what != null) {
+            what.writeToPacket(buffer);
         }
         buffer.writeVarLong(storedAmount);
         buffer.writeVarLong(requestableAmount);
@@ -109,9 +110,9 @@ public class GridInventoryEntry<T extends IAEStack> {
 
     /**
      * Reads an inventory entry from a packet for a given storage channel. The storage channel is used to read the
-     * {@link #stack} field.
+     * {@link #what} field.
      */
-    public static <T extends IAEStack> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel,
+    public static <T extends AEKey> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel,
             FriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
         T stack = null;

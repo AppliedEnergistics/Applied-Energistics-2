@@ -20,7 +20,7 @@ package appeng.blockentity.misc;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,14 +40,14 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IItemInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.BlockEntityNodeListener;
 
-public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
+public class ItemInterfaceBlockEntity extends AENetworkBlockEntity
         implements IItemInterfaceHost, IPriorityHost, IUpgradeableObject, IConfigurableObject {
 
     private static final IGridNodeListener<ItemInterfaceBlockEntity> NODE_LISTENER = new BlockEntityNodeListener<>() {
@@ -98,17 +98,6 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public InternalInventory getInternalInventory() {
-        return this.duality.getInternalInventory();
-    }
-
-    @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
-        this.duality.onChangeInventory(inv, slot, removed, added);
-    }
-
-    @Override
     public DualityItemInterface getInterfaceDuality() {
         return this.duality;
     }
@@ -126,7 +115,9 @@ public class ItemInterfaceBlockEntity extends AENetworkInvBlockEntity
     @Nullable
     @Override
     public InternalInventory getSubInventory(ResourceLocation id) {
-        var inv = getInterfaceDuality().getSubInventory(id);
-        return inv != null ? inv : super.getSubInventory(id);
+        if (id.equals(UPGRADES)) {
+            return duality.getUpgrades();
+        }
+        return super.getSubInventory(id);
     }
 }

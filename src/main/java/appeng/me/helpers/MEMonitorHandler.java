@@ -35,8 +35,8 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 /**
  * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of
@@ -44,17 +44,17 @@ import appeng.api.storage.data.IAEStackList;
  * <p>
  * TODO: Needs to be redesigned to solve performance issues.
  */
-public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
+public class MEMonitorHandler<T extends AEKey> implements IMEMonitor<T> {
 
     private final IMEInventory<T> internalHandler;
-    private final IAEStackList<T> cachedList;
+    private final KeyCounter<T> cachedList;
     private final HashMap<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
 
     protected boolean hasChanged = true;
 
     public MEMonitorHandler(IMEInventory<T> t) {
         this.internalHandler = t;
-        this.cachedList = t.getChannel().createList();
+        this.cachedList = new KeyCounter<>();
     }
 
     @Override
@@ -68,33 +68,31 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public T injectItems(final T input, final Actionable mode, final IActionSource src) {
-        if (mode == Actionable.SIMULATE) {
-            return this.getHandler().injectItems(input, mode, src);
+    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        var inserted = internalHandler.insert(what, amount, mode, source);
+        if (mode == Actionable.MODULATE) {
+            monitorDifference(what, inserted, source);
         }
-        return this.monitorDifference(IAEStack.copy(input), this.getHandler().injectItems(input, mode, src), false,
-                src);
+        return inserted;
+    }
+
+    @Override
+    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+        var extracted = internalHandler.extract(what, amount, mode, source);
+        if (mode == Actionable.MODULATE) {
+            monitorDifference(what, -extracted, source);
+        }
+        return extracted;
     }
 
     protected IMEInventory<T> getHandler() {
         return this.internalHandler;
     }
 
-    private T monitorDifference(final T original, final T leftOvers, final boolean extraction,
-            final IActionSource src) {
-        final T diff = IAEStack.copy(original);
-
-        if (extraction) {
-            diff.setStackSize(leftOvers == null ? 0 : -leftOvers.getStackSize());
-        } else if (leftOvers != null) {
-            diff.decStackSize(leftOvers.getStackSize());
+    private void monitorDifference(T what, long difference, IActionSource source) {
+        if (difference != 0) {
+            this.postChangesToListeners(ImmutableList.of(what), source);
         }
-
-        if (diff.getStackSize() != 0) {
-            this.postChangesToListeners(ImmutableList.of(diff), src);
-        }
-
-        return leftOvers;
     }
 
     protected void postChangesToListeners(final Iterable<T> changes, final IActionSource src) {
@@ -120,33 +118,25 @@ public class MEMonitorHandler<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public T extractItems(final T request, final Actionable mode, final IActionSource src) {
-        if (mode == Actionable.SIMULATE) {
-            return this.getHandler().extractItems(request, mode, src);
-        }
-        return this.monitorDifference(IAEStack.copy(request), this.getHandler().extractItems(request, mode, src), true,
-                src);
-    }
-
-    @Override
     public IStorageChannel<T> getChannel() {
         return this.getHandler().getChannel();
     }
 
     @Override
-    public IAEStackList<T> getCachedAvailableStacks() {
+    public KeyCounter<T> getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
-            this.cachedList.resetStatus();
-            return this.getAvailableStacks(this.cachedList);
+            this.cachedList.reset();
+            this.getAvailableStacks(this.cachedList);
+            this.cachedList.removeZeros();
         }
 
         return this.cachedList;
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
-        return this.getHandler().getAvailableStacks(out);
+    public void getAvailableStacks(final KeyCounter<T> out) {
+        this.getHandler().getAvailableStacks(out);
     }
 
 }

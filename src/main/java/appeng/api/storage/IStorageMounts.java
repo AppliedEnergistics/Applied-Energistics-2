@@ -1,6 +1,6 @@
 package appeng.api.storage;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Provides {@link IStorageProvider} with a convenient way to control the storage they provide to the network.
@@ -8,9 +8,9 @@ import appeng.api.storage.data.IAEStack;
 public interface IStorageMounts {
     int DEFAULT_PRIORITY = 0;
 
-    default <T extends IAEStack> void mount(IMEInventory<T> inventory) {
+    default <T extends AEKey> void mount(IMEInventory<T> inventory) {
         mount(inventory, DEFAULT_PRIORITY);
     }
 
-    <T extends IAEStack> void mount(IMEInventory<T> inventory, int priority);
+    <T extends AEKey> void mount(IMEInventory<T> inventory, int priority);
 }

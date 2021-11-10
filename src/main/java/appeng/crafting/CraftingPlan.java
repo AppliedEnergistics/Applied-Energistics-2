@@ -22,12 +22,16 @@ import java.util.Map;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
-public record CraftingPlan(IAEStack finalOutput, long bytes, boolean simulation, boolean multiplePaths,
-        MixedStackList usedItems,
-        MixedStackList emittedItems,
-        MixedStackList missingItems,
+public record CraftingPlan(GenericStack finalOutput,
+        long bytes,
+        boolean simulation,
+        boolean multiplePaths,
+        KeyCounter<AEKey> usedItems,
+        KeyCounter<AEKey> emittedItems,
+        KeyCounter<AEKey> missingItems,
         Map<IPatternDetails, Long> patternTimes) implements ICraftingPlan {
 }

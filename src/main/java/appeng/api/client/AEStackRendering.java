@@ -36,7 +36,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Registry for {@link IAEStackRenderHandler}. Also contains convenience functions to render a stack without having to
@@ -47,7 +47,7 @@ import appeng.api.storage.data.IAEStack;
 public class AEStackRendering {
     private static volatile Map<IStorageChannel<?>, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
 
-    public static synchronized <T extends IAEStack> void register(IStorageChannel<T> channel,
+    public static synchronized <T extends AEKey> void register(IStorageChannel<T> channel,
             IAEStackRenderHandler<T> handler) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(handler, "handler");
@@ -61,11 +61,11 @@ public class AEStackRendering {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public static <T extends IAEStack> IAEStackRenderHandler<T> get(IStorageChannel<T> channel) {
+    public static <T extends AEKey> IAEStackRenderHandler<T> get(IStorageChannel<T> channel) {
         return (IAEStackRenderHandler<T>) renderers.get(channel);
     }
 
-    public static <T extends IAEStack> IAEStackRenderHandler<T> getOrThrow(IStorageChannel<T> channel) {
+    public static <T extends AEKey> IAEStackRenderHandler<T> getOrThrow(IStorageChannel<T> channel) {
         var renderHandler = get(channel);
 
         if (renderHandler == null) {
@@ -76,36 +76,27 @@ public class AEStackRendering {
     }
 
     @SuppressWarnings("rawtypes")
-    private static IAEStackRenderHandler getUnchecked(IAEStack stack) {
+    private static IAEStackRenderHandler getUnchecked(AEKey stack) {
         return getOrThrow(stack.getChannel());
     }
 
     @SuppressWarnings("unchecked")
-    public static void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, IAEStack stack) {
-        getUnchecked(stack).drawRepresentation(minecraft, poseStack, x, y, stack);
+    public static void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int z, AEKey stack) {
+        getUnchecked(stack).drawRepresentation(minecraft, poseStack, x, y, z, stack);
     }
 
     @SuppressWarnings("unchecked")
-    public static Component getDisplayName(IAEStack stack) {
+    public static Component getDisplayName(AEKey stack) {
         return getUnchecked(stack).getDisplayName(stack);
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Component> getTooltip(IAEStack stack) {
+    public static List<Component> getTooltip(AEKey stack) {
         // The array list is used to ensure mutability of the returned tooltip.
         return new ArrayList<Component>(getUnchecked(stack).getTooltip(stack));
     }
 
-    public static String formatAmount(IAEStack stack, AmountFormat format) {
-        return formatAmount(stack, stack.getStackSize(), format);
-    }
-
-    public static String formatAmount(IAEStack stack, long amount, AmountFormat format) {
-        return getUnchecked(stack).formatAmount(amount, format);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static String getModid(IAEStack stack) {
-        return getUnchecked(stack).getModid(stack);
+    public static String formatAmount(AEKey what, long amount, AmountFormat format) {
+        return getUnchecked(what).formatAmount(amount, format);
     }
 }

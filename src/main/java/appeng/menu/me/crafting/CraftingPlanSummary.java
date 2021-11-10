@@ -28,10 +28,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.data.KeyMap;
 
 /**
  * A crafting plan intended to be sent to the client.
@@ -90,6 +87,11 @@ public class CraftingPlanSummary {
         return new CraftingPlanSummary(bytesUsed, simulation, entries.build());
     }
 
+    private static class KeyStats {
+        public long stored;
+        public long crafting;
+    }
+
     /**
      * Creates a plan summary from the given planning result.
      *
@@ -97,48 +99,43 @@ public class CraftingPlanSummary {
      * @param actionSource The action source used to determine the amount of items already stored.
      */
     public static CraftingPlanSummary fromJob(IGrid grid, IActionSource actionSource, ICraftingPlan job) {
-        final MixedStackList plan = new MixedStackList();
-        // TODO: clean this up, for now the point is to match the old behavior
+        var plan = new KeyMap<>(null, KeyStats::new);
+
         for (var used : job.usedItems()) {
-            plan.addStorage(used);
+            plan.mapping(used.getKey()).stored += used.getLongValue();
         }
         for (var missing : job.missingItems()) {
-            plan.addStorage(missing);
+            plan.mapping(missing.getKey()).stored += missing.getLongValue();
         }
         for (var emitted : job.emittedItems()) {
-            var requestable = (IAEStack) IAEStack.copy(emitted);
-            requestable.setCountRequestable(emitted.getStackSize());
-            plan.addRequestable(requestable);
+            var entry = plan.mapping(emitted.getKey());
+            entry.stored += emitted.getLongValue();
+            entry.crafting += emitted.getLongValue();
         }
         for (var entry : job.patternTimes().entrySet()) {
             for (var out : entry.getKey().getOutputs()) {
-                var requestable = (IAEStack) IAEStack.copy(out);
-                requestable.setCountRequestable(out.getStackSize() * entry.getValue());
-                plan.addRequestable(requestable);
+                plan.mapping(out.what()).crafting += out.amount() * entry.getValue();
             }
         }
 
-        ImmutableList.Builder<CraftingPlanSummaryEntry> entries = ImmutableList.builder();
+        var entries = ImmutableList.<CraftingPlanSummaryEntry>builder();
 
-        final IStorageService sg = grid.getStorageService();
+        var sg = grid.getStorageService();
 
         for (var out : plan) {
             long missingAmount;
             long storedAmount;
             if (job.simulation()) {
-                IMEMonitor networkInventory = sg.getInventory(out.getChannel());
-                var available = networkInventory.extractItems(IAEStack.copy(out), Actionable.SIMULATE, actionSource);
-
-                storedAmount = available == null ? 0 : available.getStackSize();
-                missingAmount = out.getStackSize() - storedAmount;
+                storedAmount = sg.extract(out.getKey(), out.getValue().stored, Actionable.SIMULATE, actionSource);
+                missingAmount = out.getValue().stored - storedAmount;
             } else {
-                storedAmount = out.getStackSize();
+                storedAmount = out.getValue().stored;
                 missingAmount = 0;
             }
-            long craftAmount = out.getCountRequestable();
+            long craftAmount = out.getValue().crafting;
 
             entries.add(new CraftingPlanSummaryEntry(
-                    out,
+                    out.getKey(),
                     missingAmount,
                     storedAmount,
                     craftAmount));

@@ -26,8 +26,9 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.core.AELog;
 import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
@@ -40,11 +41,11 @@ public class CraftingCalculation {
 
     private final NetworkCraftingSimulationState networkInv;
     private final Level level;
-    private final MixedStackList missing = new MixedStackList();
+    private final KeyCounter<AEKey> missing = new KeyCounter<>();
     private final Object monitor = new Object();
     private final Stopwatch watch = Stopwatch.createUnstarted();
     private final CraftingTreeNode tree;
-    private final IAEStack output;
+    private final GenericStack output;
     private boolean simulate = false;
     final ICraftingSimulationRequester simRequester;
     private boolean running = false;
@@ -52,20 +53,21 @@ public class CraftingCalculation {
     private int time = 5;
     private int incTime = Integer.MAX_VALUE;
 
-    public CraftingCalculation(Level level, IGrid grid, ICraftingSimulationRequester simRequester, IAEStack what) {
+    public CraftingCalculation(Level level, IGrid grid, ICraftingSimulationRequester simRequester,
+            GenericStack output) {
         this.level = level;
-        this.output = IAEStack.copy(what);
+        this.output = output;
         this.simRequester = simRequester;
 
         var storageService = grid.getStorageService();
         var craftingService = grid.getCraftingService();
         this.networkInv = new NetworkCraftingSimulationState(storageService, simRequester.getActionSource());
 
-        this.tree = new CraftingTreeNode(craftingService, this, IAEStack.copy(what, 1), null, -1);
+        this.tree = new CraftingTreeNode(craftingService, this, output.what(), 1, null, -1);
     }
 
-    void addMissing(IAEStack stack) {
-        missing.add(stack);
+    void addMissing(AEKey what, long amount) {
+        missing.add(what, amount);
     }
 
     public CraftingPlan run() {
@@ -91,10 +93,10 @@ public class CraftingCalculation {
         final Stopwatch timer = Stopwatch.createStarted();
 
         ChildCraftingSimulationState craftingInventory = new ChildCraftingSimulationState(networkInv);
-        craftingInventory.ignore(this.output);
+        craftingInventory.ignore(this.output.what());
 
         // Do the crafting. Throws in case of failure.
-        this.tree.request(craftingInventory, this.output.getStackSize(), null);
+        this.tree.request(craftingInventory, output.amount(), null);
         // Add bytes for the tree size.
         craftingInventory.addBytes(this.tree.getNodeCount() * 8);
 
@@ -150,11 +152,11 @@ public class CraftingCalculation {
         return this.simulate;
     }
 
-    public IAEStack getOutput() {
+    public GenericStack getOutput() {
         return this.output;
     }
 
-    public MixedStackList getMissingItems() {
+    public KeyCounter<AEKey> getMissingItems() {
         return missing;
     }
 

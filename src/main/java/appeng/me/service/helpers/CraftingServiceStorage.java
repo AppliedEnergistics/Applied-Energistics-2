@@ -28,8 +28,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
 import appeng.me.service.CraftingService;
 
 /**
@@ -43,27 +42,17 @@ public class CraftingServiceStorage implements IStorageProvider {
     private final CraftingService craftingService;
     private final Map<IStorageChannel<?>, IMEInventory<?>> inventories = new HashMap<>();
 
-    private <T extends IAEStack> IMEInventory<T> getOrComputeInventory(IStorageChannel<T> channel) {
+    private <T extends AEKey> IMEInventory<T> getOrComputeInventory(IStorageChannel<T> channel) {
         return inventories.computeIfAbsent(channel, ignored -> new IMEInventory<T>() {
             @Override
-            public boolean isPreferredStorageFor(IAEStack input, IActionSource source) {
+            public boolean isPreferredStorageFor(T key, IActionSource source) {
                 return true;
             }
 
             @Override
-            public T injectItems(T input, Actionable type, IActionSource src) {
+            public long insert(T what, long amount, Actionable mode, IActionSource source) {
                 // Item interception logic
-                var result = craftingService.injectItemsIntoCpus(input, type);
-                if (result != null) {
-                    return result.cast(channel);
-                }
-                return null;
-            }
-
-            @Override
-            public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
-                // Add craftable items so the terminals can see them.
-                return craftingService.addCrafting(channel, out);
+                return craftingService.insertIntoCpus(what, amount, mode);
             }
 
             @Override
@@ -84,7 +73,7 @@ public class CraftingServiceStorage implements IStorageProvider {
         }
     }
 
-    private <T extends IAEStack> void mount(IStorageMounts mounts, IStorageChannel<T> channel) {
+    private <T extends AEKey> void mount(IStorageMounts mounts, IStorageChannel<T> channel) {
         var inventory = getOrComputeInventory(channel);
         mounts.mount(inventory, Integer.MAX_VALUE);
     }

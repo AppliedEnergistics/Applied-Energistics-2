@@ -5,6 +5,7 @@ extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerSc
 extendable method net/minecraft/client/gui/components/EditBox renderHighlight (IIII)V
 accessible method net/minecraft/client/gui/components/EditBox getMaxLength ()I
 accessible field net/minecraft/client/gui/components/AbstractWidget height I
+extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen isHovering (Lnet/minecraft/world/inventory/Slot;DD)Z
 
 # We need to change yPos of existing slots to resize the container
 mutable field net/minecraft/world/inventory/Slot x I

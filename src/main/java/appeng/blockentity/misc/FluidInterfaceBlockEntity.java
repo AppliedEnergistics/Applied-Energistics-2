@@ -18,16 +18,18 @@
 
 package appeng.blockentity.misc;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -36,12 +38,10 @@ import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.DualityFluidInterface;
-import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.IFluidInterfaceHost;
 import appeng.me.helpers.BlockEntityNodeListener;
 
-public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
-        implements IFluidInterfaceHost, IConfigurableFluidInventory {
+public class FluidInterfaceBlockEntity extends AENetworkBlockEntity implements IFluidInterfaceHost {
 
     private static final IGridNodeListener<FluidInterfaceBlockEntity> NODE_LISTENER = new BlockEntityNodeListener<>() {
         @Override
@@ -50,7 +50,8 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
         }
     };
 
-    private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this);
+    private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this,
+            getItemFromBlockEntity());
 
     public FluidInterfaceBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -67,7 +68,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public DualityFluidInterface getDualityFluidInterface() {
+    public DualityFluidInterface getInterfaceDuality() {
         return this.duality;
     }
 
@@ -94,9 +95,13 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
         return this.duality.getCableConnectionType(dir);
     }
 
+    @Nullable
     @Override
-    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
-        return this.duality.getFluidInventoryByName(name);
+    public InternalInventory getSubInventory(ResourceLocation id) {
+        if (id.equals(UPGRADES)) {
+            return duality.getUpgrades();
+        }
+        return super.getSubInventory(id);
     }
 
     @Override

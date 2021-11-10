@@ -175,7 +175,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         }
 
         if (is.hasTag()) {
-            blockEntity.uploadSettings(SettingsFrom.DISMANTLE_ITEM, is.getTag());
+            blockEntity.importSettings(SettingsFrom.DISMANTLE_ITEM, is.getTag());
         }
     }
 
@@ -196,8 +196,9 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                 final String name = this.getDescriptionId();
 
                 if (InteractionUtil.isInAlternateUseMode(player)) {
-                    final CompoundTag data = blockEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
-                    if (data != null) {
+                    var data = new CompoundTag();
+                    blockEntity.exportSettings(SettingsFrom.MEMORY_CARD, data);
+                    if (!data.isEmpty()) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                     }
@@ -206,7 +207,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                     final CompoundTag data = memoryCard.getData(heldItem);
 
                     if (this.getDescriptionId().equals(savedName)) {
-                        blockEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
+                        blockEntity.importSettings(SettingsFrom.MEMORY_CARD, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                     } else {
                         memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);

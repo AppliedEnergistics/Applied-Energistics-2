@@ -33,7 +33,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.NullInventory;
@@ -79,7 +79,7 @@ public class PortableCellViewer implements IPortableCell, IInventorySlotAware {
     }
 
     @Override
-    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         return cellMonitor.cast(channel);
     }
 

@@ -22,22 +22,20 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.util.item.AEItemStack;
+import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.MergedPriorityList;
@@ -45,14 +43,18 @@ import appeng.util.prioritylist.PrecisePriorityList;
 
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
-    public ViewCellItem(Item.Properties properties) {
+    private final IStorageChannel<?> channel;
+
+    public ViewCellItem(Properties properties, IStorageChannel<?> channel) {
         super(properties);
+        this.channel = channel;
     }
 
-    public static IPartitionList<IAEItemStack> createFilter(Collection<ItemStack> list) {
-        IPartitionList<IAEItemStack> myPartitionList = null;
+    public static <T extends AEKey> IPartitionList<T> createFilter(IStorageChannel<T> channel,
+            Collection<ItemStack> list) {
+        IPartitionList<T> myPartitionList = null;
 
-        final MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<>();
+        final MergedPriorityList<T> myMergedList = new MergedPriorityList<>();
 
         for (final ItemStack currentViewCell : list) {
             if (currentViewCell == null) {
@@ -60,7 +62,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
             }
 
             if (currentViewCell.getItem() instanceof ViewCellItem) {
-                final IAEStackList<IAEItemStack> priorityList = StorageChannels.items().createList();
+                var priorityList = new KeyCounter<T>();
 
                 var vc = (ICellWorkbenchItem) currentViewCell.getItem();
                 var upgrades = vc.getUpgradesInventory(currentViewCell);
@@ -84,8 +86,11 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                     }
                 }
 
-                for (var stack : config) {
-                    priorityList.add(AEItemStack.fromItemStack(stack));
+                for (int i = 0; i < config.size(); i++) {
+                    var what = channel.tryCast(config.getKey(i));
+                    if (what != null) {
+                        priorityList.add(what, 1);
+                    }
                 }
 
                 if (!priorityList.isEmpty()) {
@@ -114,8 +119,8 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public InternalInventory getConfigInventory(final ItemStack is) {
-        return new CellConfig(is);
+    public ConfigInventory<?> getConfigInventory(final ItemStack is) {
+        return CellConfig.create(channel, is);
     }
 
     @Override

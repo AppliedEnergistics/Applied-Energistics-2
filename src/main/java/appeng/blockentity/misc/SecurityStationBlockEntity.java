@@ -26,10 +26,10 @@ import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -43,7 +43,6 @@ import appeng.api.config.ViewItems;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
-import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
@@ -54,19 +53,18 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.helpers.PlayerSecurityWrapper;
+import appeng.items.tools.BiometricCardItem;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.item.AEItemStack;
 
 public class SecurityStationBlockEntity extends AENetworkBlockEntity implements ITerminalHost, InternalInventoryHost,
         ISecurityProvider, IColorableBlockEntity {
@@ -75,7 +73,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);
     private final IConfigManager cm = new ConfigManager();
     private final SecurityStationInventory inventory = new SecurityStationInventory(this);
-    private final MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<>(this.inventory);
+    private final MEMonitorHandler<AEItemKey> securityMonitor = new MEMonitorHandler<>(this.inventory);
     private long securityKey;
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isActive = false;
@@ -110,12 +108,12 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
             drops.add(this.getConfigSlot().getStackInSlot(0));
         }
 
-        for (final IAEItemStack ais : this.inventory.getStoredItems()) {
-            drops.add(ais.createItemStack());
+        for (var key : this.inventory.getStoredItems()) {
+            drops.add(key.toStack());
         }
     }
 
-    IMEInventory<IAEItemStack> getSecurityInventory() {
+    IMEInventory<AEItemKey> getSecurityInventory() {
         return this.inventory;
     }
 
@@ -147,22 +145,18 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         data.putLong("securityKey", this.securityKey);
         this.getConfigSlot().writeToNBT(data, "config");
 
-        final CompoundTag storedItems = new CompoundTag();
+        var storedItems = new ListTag();
 
-        int offset = 0;
-        for (final IAEItemStack ais : this.inventory.getStoredItems()) {
-            final CompoundTag it = new CompoundTag();
-            ais.createItemStack().save(it);
-            storedItems.put(String.valueOf(offset), it);
-            offset++;
+        for (var key : this.inventory.getStoredItems()) {
+            storedItems.add(key.toTag());
         }
 
-        data.put("storedItems", storedItems);
+        data.put("cards", storedItems);
         return data;
     }
 
     @Override
-    public void load(final CompoundTag data) {
+    public void load(CompoundTag data) {
         super.load(data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
@@ -172,11 +166,11 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         this.securityKey = data.getLong("securityKey");
         this.getConfigSlot().readFromNBT(data, "config");
 
-        final CompoundTag storedItems = data.getCompound("storedItems");
-        for (final Object key : storedItems.getAllKeys()) {
-            final Tag obj = storedItems.get((String) key);
-            if (obj instanceof CompoundTag) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.of((CompoundTag) obj)));
+        var cards = data.getList("cards", Tag.TAG_COMPOUND);
+        for (var keyTag : cards) {
+            var key = AEItemKey.fromTag((CompoundTag) keyTag);
+            if (key != null) {
+                this.inventory.getStoredItems().add(key);
             }
         }
     }
@@ -228,12 +222,11 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         if (channel == StorageChannels.items()) {
-            return (IMEMonitor<T>) this.securityMonitor;
+            return this.securityMonitor.cast(channel);
         }
         return null;
-
     }
 
     public boolean isPowered() {
@@ -258,11 +251,16 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         }
 
         // read permissions
-        for (final IAEItemStack ais : this.inventory.getStoredItems()) {
-            final ItemStack is = ais.createItemStack();
-            final Item i = is.getItem();
-            if (i instanceof IBiometricCard bc) {
-                bc.registerPermissions(new PlayerSecurityWrapper(playerPerms), pr, is);
+        for (var key : this.inventory.getStoredItems()) {
+            if (key.getItem() instanceof BiometricCardItem bc) {
+                var playerId = -1;
+                var profile = bc.getProfile(key);
+                if (profile != null) {
+                    playerId = pr.getPlayerId(profile);
+                }
+                var permissions = bc.getPermissions(key.getTag());
+
+                playerPerms.put(playerId, permissions);
             }
         }
 

@@ -28,9 +28,10 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.crafting.execution.CraftingCpuHelper;
+import appeng.crafting.execution.InputTemplate;
 import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
 import appeng.crafting.inv.ICraftingInventory;
@@ -55,25 +56,27 @@ public class CraftingTreeNode {
      * "Template" of the item this node is making. For top-level node: the count is always 1. For child nodes: the count
      * is that of the template of the corresponding input.
      */
-    private final IAEStack what;
+    private final AEKey what;
+    private final long amount;
     /**
      * The patterns that can make this node. Null if they haven't been computed yet.
      */
     private ArrayList<CraftingTreeProcess> nodes = null;
     private final boolean canEmit;
 
-    public CraftingTreeNode(ICraftingService cc, CraftingCalculation job, IAEStack wat,
+    public CraftingTreeNode(ICraftingService cc, CraftingCalculation job, AEKey what, long amount,
             CraftingTreeProcess par, int slot) {
         this.parent = par;
         this.parentInput = slot == -1 ? null : par.details.getInputs()[slot];
         this.level = job.getLevel();
         this.job = job;
-        this.what = findCraftedStack(cc, wat);
+        this.what = findCraftedStack(cc, what);
+        this.amount = amount;
 
-        this.canEmit = cc.canEmitFor(wat);
+        this.canEmit = cc.canEmitFor(what);
     }
 
-    private IAEStack findCraftedStack(ICraftingService cc, IAEStack wat) {
+    private AEKey findCraftedStack(ICraftingService cc, AEKey wat) {
         if (cc.canEmitFor(wat)) {
             return wat; // if we can emit for something, use that.
         }
@@ -152,11 +155,11 @@ public class CraftingTreeNode {
      * @throws CraftBranchFailure If the request failed.
      */
     void request(final CraftingSimulationState inv, long requestedAmount,
-            @Nullable MixedStackList containerItems)
+            @Nullable KeyCounter<AEKey> containerItems)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
-        inv.addStackBytes(this.what, requestedAmount);
+        inv.addStackBytes(what, amount, requestedAmount);
 
         /*
          * 1) COLLECT ITEMS FROM THE INVENTORY
@@ -169,7 +172,7 @@ public class CraftingTreeNode {
                 // TODO: we should keep track of which items we extracted to make sure the CPU uses exactly those when
                 // TODO: it processes the job.
                 requestedAmount -= extracted;
-                addContainerItems(template, extracted, containerItems);
+                addContainerItems(template.key(), extracted, containerItems);
 
                 if (requestedAmount == 0) {
                     return;
@@ -178,15 +181,13 @@ public class CraftingTreeNode {
         }
 
         // Already add the container items: if we fail, the process above will fail and they will be discarded anyway.
-        addContainerItems(this.what, requestedAmount, containerItems);
+        addContainerItems(what, requestedAmount, containerItems);
 
         /*
          * 2) EMITABLE ITEMS
          */
         if (this.canEmit) {
-            var emitted = (IAEStack) IAEStack.copy(this.what);
-            emitted.multStackSize(requestedAmount);
-            inv.emitItems(emitted);
+            inv.emitItems(this.what, this.amount * requestedAmount);
             return;
         }
 
@@ -194,7 +195,7 @@ public class CraftingTreeNode {
          * 3) USE PATTERNS
          */
         buildChildPatterns();
-        long totalRequestedItems = requestedAmount * this.what.getStackSize();
+        long totalRequestedItems = requestedAmount * this.amount;
         if (this.nodes.size() == 1) {
             // Single branch: just query as much as we can and let it throw if that's not possible.
             final CraftingTreeProcess pro = this.nodes.get(0);
@@ -212,10 +213,9 @@ public class CraftingTreeNode {
 
                 // by now we have succeeded, as request throws an exception in case of failure
                 // check how much was actually produced
-                var available = inv.extractItems(IAEStack.copy(this.what, totalRequestedItems),
-                        Actionable.MODULATE);
-                if (available != null) {
-                    totalRequestedItems -= available.getStackSize();
+                var available = inv.extract(this.what, totalRequestedItems, Actionable.MODULATE);
+                if (available != 0) {
+                    totalRequestedItems -= available;
 
                     if (totalRequestedItems <= 0) {
                         return;
@@ -234,13 +234,12 @@ public class CraftingTreeNode {
                         pro.request(child, 1);
 
                         // by now we have succeeded, as request throws an exception in case of failure
-                        var available = child
-                                .extractItems(IAEStack.copy(this.what, totalRequestedItems), Actionable.MODULATE);
+                        var available = child.extract(this.what, totalRequestedItems, Actionable.MODULATE);
 
-                        if (available != null) {
+                        if (available != 0) {
                             child.applyDiff(inv);
 
-                            totalRequestedItems -= available.getStackSize();
+                            totalRequestedItems -= available;
 
                             if (totalRequestedItems <= 0) {
                                 return;
@@ -257,20 +256,19 @@ public class CraftingTreeNode {
         }
 
         if (this.job.isSimulation()) {
-            job.addMissing(IAEStack.copy(this.what, totalRequestedItems));
+            job.addMissing(this.what, totalRequestedItems);
         } else {
             throw new CraftBranchFailure(this.what, totalRequestedItems);
         }
     }
 
     // Only item stacks are supported.
-    private void addContainerItems(IAEStack template, long multiplier,
-            @Nullable MixedStackList outputList) {
+    private void addContainerItems(AEKey template, long multiplier,
+            @Nullable KeyCounter<AEKey> outputList) {
         if (outputList != null) {
             var containerItem = parentInput.getContainerItem(template);
             if (containerItem != null) {
-                containerItem.multStackSize(multiplier);
-                outputList.addStorage(containerItem);
+                outputList.add(containerItem, multiplier);
             }
         }
     }
@@ -280,9 +278,9 @@ public class CraftingTreeNode {
      * 
      * @param inv Crafting inventory, used for fuzzy matching.
      */
-    private Iterable<IAEStack> getValidItemTemplates(ICraftingInventory inv) {
+    private Iterable<InputTemplate> getValidItemTemplates(ICraftingInventory inv) {
         if (this.parentInput == null)
-            return List.of(IAEStack.copy(this.what, 1));
+            return List.of(new InputTemplate(what, 1));
         return CraftingCpuHelper.getValidItemTemplates(inv, this.parentInput, level);
     }
 

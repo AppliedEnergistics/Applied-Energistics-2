@@ -24,9 +24,9 @@
 package appeng.api.storage;
 
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
-public interface IMEMonitorListener<T extends IAEStack> {
+public interface IMEMonitorListener<T extends AEKey> {
 
     /**
      * return true if this object should remain as a listener.
@@ -40,7 +40,7 @@ public interface IMEMonitorListener<T extends IAEStack> {
     /**
      * called when changes are made to the Monitor, but only if listener is still valid.
      *
-     * @param change done change
+     * @param change The keys that have changed.
      */
     void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource actionSource);
 

@@ -20,37 +20,30 @@ package appeng.parts.automation;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionSource;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEKey;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
-import appeng.me.helpers.MachineSource;
-import appeng.menu.implementations.FluidIOBusMenu;
+import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
 
-/**
- * @author BrockWS
- * @version rv6 - 30/04/2018
- * @since rv6 30/04/2018
- */
-public class FluidExportBusPart extends SharedFluidBusPart {
+public class FluidExportBusPart extends ExportBusPart<AEFluidKey, Storage<FluidVariant>> {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
@@ -62,26 +55,18 @@ public class FluidExportBusPart extends SharedFluidBusPart {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_has_channel"));
 
-    private final IActionSource source;
-
     public FluidExportBusPart(ItemStack is) {
-        super(is);
-        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
-        this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
-        this.getConfigManager().registerSetting(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
-        this.source = new MachineSource(this);
+        super(TickRates.FluidExportBus, is, FluidStorage.SIDED);
+    }
+
+    @Override
+    protected IStorageChannel<AEFluidKey> getChannel() {
+        return StorageChannels.fluids();
     }
 
     @Override
     protected MenuType<?> getMenuType() {
-        return FluidIOBusMenu.EXPORT_TYPE;
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.FluidExportBus.getMin(), TickRates.FluidExportBus.getMax(),
-                this.isSleeping(), false);
+        return IOBusMenu.FLUID_EXPORT_TYPE;
     }
 
     @Override
@@ -90,7 +75,7 @@ public class FluidExportBusPart extends SharedFluidBusPart {
             return TickRateModulation.IDLE;
         }
 
-        var fh = this.getConnectedTE();
+        var fh = adjacentExternalApi.find();
         var grid = getMainNode().getGrid();
         if (fh == null || grid == null) {
             return TickRateModulation.SLEEP;
@@ -98,21 +83,18 @@ public class FluidExportBusPart extends SharedFluidBusPart {
 
         var inv = grid.getStorageService().getInventory(this.getChannel());
 
-        for (int i = 0; i < this.getConfig().getSlots(); i++) {
-            IAEFluidStack fluid = this.getConfig().getFluidInSlot(i);
-            if (fluid != null) {
-                final IAEFluidStack toExtract = fluid.copy();
+        for (int i = 0; i < this.getConfig().size(); i++) {
+            var what = this.getConfig().getKey(i);
+            if (what != null) {
+                var amount = this.calculateAmountPerTick();
 
-                toExtract.setStackSize(this.calculateAmountToSend());
-
-                var out = inv.extractItems(toExtract, Actionable.SIMULATE, this.source);
-                if (out != null) {
+                var extracted = inv.extract(what, amount, Actionable.SIMULATE, this.source);
+                if (extracted > 0) {
                     try (var tx = Transaction.openOuter()) {
-                        long wasInserted = fh.insert(out.getFluid(), out.getStackSize(), tx);
+                        long wasInserted = fh.insert(what.toVariant(), extracted, tx);
 
                         if (wasInserted > 0) {
-                            toExtract.setStackSize(wasInserted);
-                            inv.extractItems(toExtract, Actionable.MODULATE, this.source);
+                            inv.extract(what, wasInserted, Actionable.MODULATE, this.source);
                             tx.commit();
 
                             return TickRateModulation.FASTER;
@@ -127,16 +109,33 @@ public class FluidExportBusPart extends SharedFluidBusPart {
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
-        bch.addBox(4, 4, 12, 12, 12, 14);
-        bch.addBox(5, 5, 14, 11, 11, 15);
-        bch.addBox(6, 6, 15, 10, 10, 16);
-        bch.addBox(6, 6, 11, 10, 10, 12);
-    }
+    public long insertCraftedItems(final ICraftingLink link, final AEKey what, long amount, final Actionable mode) {
+        if (!(what instanceof AEFluidKey itemKey)) {
+            return 0;
+        }
 
-    @Override
-    public RedstoneMode getRSMode() {
-        return this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
+        var d = adjacentExternalApi.find();
+
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
+            if (d != null && this.getMainNode().isActive()) {
+                var toInsert = itemKey.toVariant();
+                var energy = grid.getEnergyService();
+
+                if (energy.extractAEPower(amount, mode, PowerMultiplier.CONFIG) > amount - 0.01) {
+                    long inserted;
+                    try (var tx = Transaction.openOuter()) {
+                        inserted = d.insert(toInsert, amount, tx);
+                        if (mode == Actionable.MODULATE) {
+                            tx.commit();
+                        }
+                    }
+                    return inserted;
+                }
+            }
+        }
+
+        return 0;
     }
 
     @Nonnull

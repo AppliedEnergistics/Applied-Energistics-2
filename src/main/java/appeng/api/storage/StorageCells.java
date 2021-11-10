@@ -25,6 +25,7 @@ package appeng.api.storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +40,7 @@ import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Storage Cell Registry, used for specially implemented cells, if you just want to make a item act like a cell, or new
@@ -63,7 +64,7 @@ public final class StorageCells {
      * @param handler cell handler
      */
     public static synchronized void addCellHandler(@Nonnull ICellHandler handler) {
-        Preconditions.checkNotNull(handler, "Called before FMLCommonSetupEvent.");
+        Objects.requireNonNull(handler, "Called before FMLCommonSetupEvent.");
         Preconditions.checkArgument(!handlers.contains(handler),
                 "Tried to register the same handler instance twice.");
 
@@ -125,7 +126,7 @@ public final class StorageCells {
      * @return the handler registered for this channel.
      */
     @Nullable
-    public static synchronized <T extends IAEStack> ICellGuiHandler getGuiHandler(IStorageChannel<T> channel,
+    public static synchronized <T extends AEKey> ICellGuiHandler getGuiHandler(IStorageChannel<T> channel,
             ItemStack is) {
         ICellGuiHandler fallBack = null;
 
@@ -175,7 +176,7 @@ public final class StorageCells {
      */
     @SuppressWarnings("unchecked")
     @Nullable
-    public static synchronized <T extends IAEStack> ICellInventory<T> getCellInventory(ItemStack is,
+    public static synchronized <T extends AEKey> ICellInventory<T> getCellInventory(ItemStack is,
             @Nullable ISaveProvider host,
             IStorageChannel<T> channel) {
         var inventory = getCellInventory(is, host);

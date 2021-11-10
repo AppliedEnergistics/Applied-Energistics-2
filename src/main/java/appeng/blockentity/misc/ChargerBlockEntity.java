@@ -41,7 +41,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
@@ -50,7 +50,6 @@ import appeng.core.settings.TickRates;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import appeng.util.item.AEItemStack;
 
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
     private static final int POWER_MAXIMUM_AMOUNT = 1600;
@@ -83,8 +82,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         try {
-            final IAEItemStack item = AEItemStack.fromPacket(data);
-            final ItemStack is = item.createItemStack();
+            var item = AEItemKey.fromPacket(data);
+            final ItemStack is = item.toStack();
             this.inv.setItemDirect(0, is);
         } catch (final Throwable t) {
             this.inv.setItemDirect(0, ItemStack.EMPTY);
@@ -95,7 +94,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     @Override
     protected void writeToStream(final FriendlyByteBuf data) throws IOException {
         super.writeToStream(data);
-        final AEItemStack is = AEItemStack.fromItemStack(this.inv.getStackInSlot(0));
+        var is = AEItemKey.of(this.inv.getStackInSlot(0));
         if (is != null) {
             is.writeToPacket(data);
         }
@@ -190,7 +189,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 }
             } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
                     && AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem) && Platform.getRandomFloat() > 0.8f) // simulate
-                                                                                                           // wait
+            // wait
             {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 

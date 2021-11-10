@@ -41,7 +41,7 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEKey;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -76,7 +76,8 @@ public class CraftConfirmMenu extends AEBaseMenu {
 
     private ICraftingCPU selectedCpu;
 
-    private IAEItemStack itemToCreate;
+    private AEKey whatToCraft;
+    private int amount;
     private Future<ICraftingPlan> job;
     private ICraftingPlan result;
 
@@ -265,8 +266,9 @@ public class CraftConfirmMenu extends AEBaseMenu {
         return this.noCPU;
     }
 
-    public void setItemToCreate(IAEItemStack itemToCreate) {
-        this.itemToCreate = itemToCreate;
+    public void setWhatToCraft(AEKey whatToCraft, int amount) {
+        this.whatToCraft = whatToCraft;
+        this.amount = amount;
     }
 
     public void setJob(final Future<ICraftingPlan> job) {
@@ -289,8 +291,8 @@ public class CraftConfirmMenu extends AEBaseMenu {
     public void goBack() {
         Player player = getPlayerInventory().player;
         if (player instanceof ServerPlayer serverPlayer) {
-            if (itemToCreate != null) {
-                CraftAmountMenu.open(serverPlayer, getLocator(), itemToCreate, (int) itemToCreate.getStackSize());
+            if (whatToCraft != null) {
+                CraftAmountMenu.open(serverPlayer, getLocator(), whatToCraft, amount);
             }
         } else {
             sendClientAction(ACTION_BACK);

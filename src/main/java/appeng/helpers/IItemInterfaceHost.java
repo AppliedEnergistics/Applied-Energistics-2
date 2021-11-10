@@ -20,36 +20,13 @@ package appeng.helpers;
 
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.util.IConfigManager;
-import appeng.menu.implementations.ItemInterfaceMenu;
+import appeng.menu.implementations.InterfaceMenu;
 
-public interface IItemInterfaceHost extends IInterfaceHost, ISegmentedInventory {
+public interface IItemInterfaceHost extends IInterfaceHost {
     DualityItemInterface getInterfaceDuality();
 
     @Override
-    default IConfigManager getConfigManager() {
-        return getInterfaceDuality().getConfigManager();
-    }
-
-    @Override
-    default IUpgradeInventory getUpgrades() {
-        return getInterfaceDuality().getUpgrades();
-    }
-
-    @Override
-    default int getPriority() {
-        return getInterfaceDuality().getPriority();
-    }
-
-    @Override
-    default void setPriority(final int newValue) {
-        getInterfaceDuality().setPriority(newValue);
-    }
-
-    @Override
     default MenuType<?> getMenuType() {
-        return ItemInterfaceMenu.TYPE;
+        return InterfaceMenu.ITEM_TYPE;
     }
 }

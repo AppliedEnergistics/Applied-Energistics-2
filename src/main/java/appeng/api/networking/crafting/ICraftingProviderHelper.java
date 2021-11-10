@@ -24,7 +24,7 @@
 package appeng.api.networking.crafting;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Passed to a ICraftingProvider as a interface to manipulate the available crafting jobs.
@@ -39,5 +39,5 @@ public interface ICraftingProviderHelper {
     /**
      * Set an item can Emitable
      */
-    void setEmitable(IAEStack what);
+    void setEmitable(AEKey what);
 }

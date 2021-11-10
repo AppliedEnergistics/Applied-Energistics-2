@@ -19,10 +19,9 @@
 package appeng.items.misc;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -78,7 +77,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
 
     public CrystalSeedItem(Item.Properties properties, ItemLike grownItem) {
         super(properties);
-        this.grownItem = Preconditions.checkNotNull(grownItem);
+        this.grownItem = Objects.requireNonNull(grownItem);
     }
 
     @Nullable

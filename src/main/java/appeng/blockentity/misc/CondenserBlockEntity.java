@@ -24,7 +24,6 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -49,7 +48,8 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -245,9 +245,9 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         @Override
         public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
             // We allow up to a bucket per insert
-            var amount = Math.min(FluidConstants.BUCKET, maxAmount);
+            var amount = Math.min(AEFluidKey.AMOUNT_BUCKET, maxAmount);
             updateSnapshots(transaction);
-            pendingEnergy += amount / (double) FluidConstants.BUCKET / StorageChannels.fluids().transferFactor();
+            pendingEnergy += amount / (double) AEFluidKey.AMOUNT_BUCKET / StorageChannels.fluids().transferFactor();
             return amount;
         }
 
@@ -292,7 +292,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         }
 
         @Override
-        public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+        public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
             if (channel == StorageChannels.items()) {
                 return (IMEMonitor<T>) this.itemInventory;
             } else {

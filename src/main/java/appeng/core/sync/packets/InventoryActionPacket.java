@@ -87,12 +87,11 @@ public class InventoryActionPacket extends BasePacket {
 
     @Override
     public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
-        final ServerPlayer sender = (ServerPlayer) player;
-        if (sender.containerMenu instanceof AEBaseMenu baseMenu) {
+        if (player.containerMenu instanceof AEBaseMenu baseMenu) {
             if (action == InventoryAction.SET_FILTER) {
                 baseMenu.setFilter(this.slot, this.slotItem);
             } else {
-                baseMenu.doAction(sender, this.action, this.slot, this.id);
+                baseMenu.doAction(player, this.action, this.slot, this.id);
             }
         }
     }

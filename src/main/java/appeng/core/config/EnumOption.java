@@ -1,9 +1,9 @@
 package appeng.core.config;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
@@ -23,7 +23,7 @@ public class EnumOption<T extends Enum<T>> extends BaseOption {
     }
 
     public void set(T value) {
-        Preconditions.checkNotNull(value);
+        Objects.requireNonNull(value);
         if (value == currentValue) {
             return;
         }

@@ -21,8 +21,6 @@ package appeng.blockentity.crafting;
 import java.util.EnumSet;
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.core.Direction;
 
 import appeng.api.util.AEColor;
@@ -33,7 +31,7 @@ public class CraftingMonitorModelData extends CraftingCubeModelData {
 
     public CraftingMonitorModelData(Direction up, Direction forward, EnumSet<Direction> connections, AEColor color) {
         super(up, forward, connections);
-        this.color = Preconditions.checkNotNull(color);
+        this.color = Objects.requireNonNull(color);
     }
 
     public AEColor getColor() {

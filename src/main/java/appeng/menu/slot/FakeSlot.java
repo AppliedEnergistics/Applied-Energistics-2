@@ -21,10 +21,12 @@ package appeng.menu.slot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
+import appeng.util.ConfigInventory;
+import appeng.util.ConfigMenuInventory;
 
 public class FakeSlot extends AppEngSlot {
-
     public FakeSlot(InternalInventory inv, final int invSlot) {
         super(inv, invSlot);
     }
@@ -55,5 +57,52 @@ public class FakeSlot extends AppEngSlot {
     @Override
     public boolean mayPickup(final Player player) {
         return false;
+    }
+
+    // Used by REI/JEI dragging ghost items to determine if this is a valid destination
+    public boolean canSetFilterTo(ItemStack stack) {
+        return slot < getInventory().size() && getInventory().isItemValid(slot, stack);
+    }
+
+    public void increase(ItemStack is) {
+        // Special support for increasing the configured stocking amount by simply clicking
+        if (getInventory() instanceof ConfigMenuInventory configInv) {
+            var realInv = configInv.getDelegate();
+            if (realInv.getMode() == ConfigInventory.Mode.CONFIG_STACKS) {
+                var newFilter = configInv.convertToSuitableStack(is);
+                if (newFilter != null) {
+                    realInv.insert(slot, newFilter.what(), newFilter.amount(), Actionable.MODULATE);
+                    return;
+                }
+            }
+        }
+
+        set(is);
+    }
+
+    public void decrease(ItemStack is) {
+        // Special support for modern config mode inventories
+        if (getInventory() instanceof ConfigMenuInventory configInv) {
+            var realInv = configInv.getDelegate();
+            if (realInv.getMode() == ConfigInventory.Mode.CONFIG_STACKS) {
+                var newFilter = configInv.convertToSuitableStack(is);
+
+                if (newFilter != null) {
+                    realInv.extract(slot, newFilter.what(), newFilter.amount(), Actionable.MODULATE);
+                    return;
+                }
+            }
+        }
+
+        is = is.copy();
+        if (is.isEmpty()) {
+            is.setCount(Math.max(1, is.getCount() - 1));
+        } else if (is.sameItem(is)) {
+            is.setCount(Math.min(is.getMaxStackSize(), is.getCount() + 1));
+        } else {
+            is.setCount(1);
+        }
+
+        set(is);
     }
 }

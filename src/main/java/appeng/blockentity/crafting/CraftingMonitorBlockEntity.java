@@ -19,8 +19,10 @@
 package appeng.blockentity.crafting;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,11 +36,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
 import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
-import appeng.util.item.AEItemStack;
 
 public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements IColorableBlockEntity {
 
@@ -48,7 +48,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     @Environment(EnvType.CLIENT)
     private boolean updateList;
 
-    private IAEItemStack dspPlay;
+    private GenericStack display;
     private AEColor paintedColor = AEColor.TRANSPARENT;
 
     public CraftingMonitorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -61,13 +61,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
 
-        final boolean hasItem = data.readBoolean();
-
-        if (hasItem) {
-            this.dspPlay = AEItemStack.fromPacket(data);
-        } else {
-            this.dspPlay = null;
-        }
+        this.display = GenericStack.readBuffer(data);
 
         this.setUpdateList(true);
         return oldPaintedColor != this.paintedColor || c; // tesr!
@@ -78,12 +72,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         super.writeToStream(data);
         data.writeByte(this.paintedColor.ordinal());
 
-        if (this.dspPlay == null) {
-            data.writeBoolean(false);
-        } else {
-            data.writeBoolean(true);
-            this.dspPlay.writeToPacket(data);
-        }
+        GenericStack.writeBuffer(display, data);
     }
 
     @Override
@@ -111,22 +100,16 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         return true;
     }
 
-    public void setJob(final IAEStack genericStack) {
-        // TODO: fix for generic stacks
-        if (genericStack == null || genericStack instanceof IAEItemStack) {
-            IAEItemStack is = (IAEItemStack) genericStack;
-            if (is == null != (this.dspPlay == null)) {
-                this.dspPlay = is == null ? null : is.copy();
-                this.markForUpdate();
-            } else if (is != null && this.dspPlay != null && is.getStackSize() != this.dspPlay.getStackSize()) {
-                this.dspPlay = is.copy();
-                this.markForUpdate();
-            }
+    public void setJob(@Nullable GenericStack stack) {
+        if (!Objects.equals(this.display, stack)) {
+            this.display = stack;
+            this.markForUpdate();
         }
     }
 
-    public IAEItemStack getJobProgress() {
-        return this.dspPlay;
+    @Nullable
+    public GenericStack getJobProgress() {
+        return this.display;
     }
 
     @Override

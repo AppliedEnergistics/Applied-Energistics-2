@@ -23,6 +23,7 @@
 
 package appeng.api.networking.crafting;
 
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 
@@ -36,7 +37,8 @@ import net.minecraft.world.level.Level;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.AEKey;
 
 public interface ICraftingService extends IGridService {
 
@@ -45,7 +47,14 @@ public interface ICraftingService extends IGridService {
      *
      * @return a collection of crafting patterns for the item in question.
      */
-    ImmutableCollection<IPatternDetails> getCraftingFor(IAEStack whatToCraft);
+    ImmutableCollection<IPatternDetails> getCraftingFor(AEKey whatToCraft);
+
+    /**
+     * @return true if the grid knows how to craft the given key
+     */
+    default boolean isCraftable(AEKey whatToCraft) {
+        return !getCraftingFor(whatToCraft).isEmpty();
+    }
 
     /**
      * Important: Never mutate the passed or returned stacks.
@@ -53,7 +62,7 @@ public interface ICraftingService extends IGridService {
      * @return another fuzzy equals stack that can be crafted and matches the filter, or null if none exists
      */
     @Nullable
-    IAEStack getFuzzyCraftable(IAEStack whatToCraft, Predicate<IAEStack> filter);
+    AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter);
 
     /**
      * Begin calculating a crafting job.
@@ -66,7 +75,7 @@ public interface ICraftingService extends IGridService {
      *         on this, your be waiting forever.
      */
     Future<ICraftingPlan> beginCraftingCalculation(Level level, ICraftingSimulationRequester simRequester,
-            IAEStack craftWhat);
+            AEKey craftWhat, long amount);
 
     /**
      * Submit the job to the Crafting system for processing.
@@ -97,7 +106,12 @@ public interface ICraftingService extends IGridService {
      *
      * @return true if the item can be requested via a crafting emitter.
      */
-    boolean canEmitFor(IAEStack what);
+    boolean canEmitFor(AEKey what);
+
+    /**
+     * Get the set of things that can be crafted for a given storage channel.
+     */
+    <T extends AEKey> Set<T> getCraftables(IStorageChannel<T> channel);
 
     /**
      * is this item being crafted?
@@ -106,7 +120,7 @@ public interface ICraftingService extends IGridService {
      *
      * @return true if it is being crafting
      */
-    boolean isRequesting(IAEStack what);
+    boolean isRequesting(AEKey what);
 
     /**
      * The total amount being requested across all crafting cpus of a grid.
@@ -115,5 +129,5 @@ public interface ICraftingService extends IGridService {
      *
      * @return The total amount being requested.
      */
-    long requesting(IAEStack what);
+    long requesting(AEKey what);
 }

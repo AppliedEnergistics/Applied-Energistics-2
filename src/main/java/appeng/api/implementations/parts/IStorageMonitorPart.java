@@ -24,7 +24,7 @@
 package appeng.api.implementations.parts;
 
 import appeng.api.parts.IPart;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.INetworkToolAware;
 
 /**
@@ -33,11 +33,14 @@ import appeng.api.util.INetworkToolAware;
 public interface IStorageMonitorPart extends IMonitorPart, IPart, INetworkToolAware {
 
     /**
-     * @return the item being displayed on the storage monitor, in AEStack Form, can be either a IAEItemStack or an
-     *         IAEFluidStack the quantity is important remember to use getStackSize() on the IAEStack, and not on the
-     *         FluidStack/ItemStack acquired from it.
+     * @return what is being shown on the storage monitor
      */
-    IAEStack getDisplayed();
+    AEKey getDisplayed();
+
+    /**
+     * @return The amount to show.
+     */
+    long getAmount();
 
     /**
      * @return the current locked state of the Storage Monitor

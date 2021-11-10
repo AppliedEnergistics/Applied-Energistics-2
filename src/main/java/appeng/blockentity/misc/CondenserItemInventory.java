@@ -19,109 +19,111 @@
 package appeng.blockentity.misc;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.storage.ITickingMonitor;
-import appeng.util.item.AEItemStack;
-import appeng.util.item.ItemList;
 
-class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonitor {
-    private final HashMap<IMEMonitorListener<IAEItemStack>, Object> listeners = new HashMap<>();
+class CondenserItemInventory implements IMEMonitor<AEItemKey>, ITickingMonitor {
+    private final HashMap<IMEMonitorListener<AEItemKey>, Object> listeners = new HashMap<>();
     private final CondenserBlockEntity target;
     private boolean hasChanged = true;
-    private final ItemList cachedList = new ItemList();
+    private final KeyCounter<AEItemKey> cachedList = new KeyCounter<>();
     private IActionSource actionSource = new BaseActionSource();
-    private ItemList changeSet = new ItemList();
+    private Set<AEItemKey> changeSet = new HashSet<>();
 
     CondenserItemInventory(final CondenserBlockEntity te) {
         this.target = te;
     }
 
     @Override
-    public IAEItemStack injectItems(final IAEItemStack input, final Actionable mode, final IActionSource src) {
-        if (mode == Actionable.MODULATE && input != null) {
-            this.target.addPower(input.getStackSize());
+    public long insert(AEItemKey what, long amount, Actionable mode, IActionSource source) {
+        IMEInventory.checkPreconditions(what, amount, mode, source);
+        if (mode == Actionable.MODULATE) {
+            this.target.addPower(amount);
         }
-        return null;
+        return amount;
     }
 
     @Override
-    public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final IActionSource src) {
-        AEItemStack ret = null;
-        ItemStack slotItem = this.target.getOutputSlot().getStackInSlot(0);
-        if (!slotItem.isEmpty() && request.isSameType(slotItem)) {
-            int count = (int) Math.min(request.getStackSize(), Integer.MAX_VALUE);
-            ret = AEItemStack
-                    .fromItemStack(this.target.getOutputSlot().extractItem(0, count, mode == Actionable.SIMULATE));
+    public long extract(AEItemKey what, long amount, Actionable mode, IActionSource source) {
+        IMEInventory.checkPreconditions(what, amount, mode, source);
+        var slotItem = this.target.getOutputSlot().getStackInSlot(0);
+
+        if (what.matches(slotItem)) {
+            int count = (int) Math.min(amount, Integer.MAX_VALUE);
+            return this.target.getOutputSlot().extractItem(0, count, mode == Actionable.SIMULATE)
+                    .getCount();
         }
-        return ret;
+
+        return 0;
     }
 
     @Override
-    public IAEStackList<IAEItemStack> getAvailableStacks(final IAEStackList<IAEItemStack> out) {
-        if (!this.target.getOutputSlot().getStackInSlot(0).isEmpty()) {
-            out.add(AEItemStack.fromItemStack(this.target.getOutputSlot().getStackInSlot(0)));
+    public void getAvailableStacks(KeyCounter<AEItemKey> out) {
+        var stack = this.target.getOutputSlot().getStackInSlot(0);
+        if (!stack.isEmpty()) {
+            out.add(AEItemKey.of(stack), stack.getCount());
         }
-        return out;
     }
 
     @Override
-    public IAEStackList<IAEItemStack> getCachedAvailableStacks() {
+    public KeyCounter<AEItemKey> getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
-            this.cachedList.resetStatus();
-            return this.getAvailableStacks(this.cachedList);
+            this.cachedList.clear();
+            this.getAvailableStacks(this.cachedList);
         }
         return this.cachedList;
     }
 
     @Override
-    public IStorageChannel<IAEItemStack> getChannel() {
+    public IStorageChannel<AEItemKey> getChannel() {
         return StorageChannels.items();
     }
 
     @Override
-    public void addListener(IMEMonitorListener<IAEItemStack> l, final Object verificationToken) {
+    public void addListener(IMEMonitorListener<AEItemKey> l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(IMEMonitorListener<IAEItemStack> l) {
+    public void removeListener(IMEMonitorListener<AEItemKey> l) {
         this.listeners.remove(l);
     }
 
     public void updateOutput(ItemStack added, ItemStack removed) {
         this.hasChanged = true;
         if (!added.isEmpty()) {
-            this.changeSet.add(AEItemStack.fromItemStack(added));
+            this.changeSet.add(AEItemKey.of(added));
         }
-        var change = AEItemStack.fromItemStack(removed);
-        if (change != null) {
-            change.setStackSize(-removed.getCount());
-            this.changeSet.add(change);
+        if (!removed.isEmpty()) {
+            this.changeSet.add(AEItemKey.of(removed));
         }
     }
 
     @Override
     public TickRateModulation onTick() {
-        final ItemList currentChanges = this.changeSet;
+        var currentChanges = this.changeSet;
 
         if (currentChanges.isEmpty()) {
             return TickRateModulation.IDLE;
         }
 
-        this.changeSet = new ItemList();
+        this.changeSet = new HashSet<>();
         var i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
             var l = i.next();

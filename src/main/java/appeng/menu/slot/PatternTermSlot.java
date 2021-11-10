@@ -25,30 +25,24 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.StorageChannels;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IMenuCraftingPacket;
 
+/**
+ * The crafting result slot in a pattern terminal.
+ */
 public class PatternTermSlot extends CraftingTermSlot {
 
     private final int groupNum;
     private final IOptionalSlotHost host;
 
-    public PatternTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
-            final IStorageMonitorable storage, final InternalInventory cMatrix, final InternalInventory secondMatrix,
-            final IOptionalSlotHost h, final int groupNumber,
-            final IMenuCraftingPacket c) {
+    public PatternTermSlot(Player player, IActionSource mySrc, IEnergySource energySrc,
+            IStorageMonitorable storage, InternalInventory cMatrix, InternalInventory secondMatrix,
+            IOptionalSlotHost h, int groupNumber,
+            IMenuCraftingPacket c) {
         super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, c);
 
         this.host = h;
         this.groupNum = groupNumber;
-    }
-
-    public BasePacket getRequest(final boolean shift) {
-        return new PatternSlotPacket(this.getPattern(),
-                StorageChannels.items().createStack(this.getItem()),
-                shift);
     }
 
     @Override

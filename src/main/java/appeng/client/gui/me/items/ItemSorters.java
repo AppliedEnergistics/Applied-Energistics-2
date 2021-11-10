@@ -22,8 +22,7 @@ import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.util.Platform;
 
 final class ItemSorters {
@@ -33,27 +32,23 @@ final class ItemSorters {
 
     // FIXME: Calling .getString() to compare two untranslated strings is a problem, we need to investigate how to do
     // this better
-    public static final Comparator<IAEItemStack> NAME_ASC = Comparator.comparing(
+    public static final Comparator<AEItemKey> NAME_ASC = Comparator.comparing(
             is -> Platform.getItemDisplayName(is).getString(),
             String::compareToIgnoreCase);
 
-    public static final Comparator<IAEItemStack> NAME_DESC = NAME_ASC.reversed();
+    public static final Comparator<AEItemKey> NAME_DESC = NAME_ASC.reversed();
 
-    public static final Comparator<IAEItemStack> MOD_ASC = Comparator.comparing(
-            (IAEItemStack fs) -> Platform.getModId(fs),
+    public static final Comparator<AEItemKey> MOD_ASC = Comparator.comparing(
+            AEItemKey::getModId,
             String::compareToIgnoreCase).thenComparing(NAME_ASC);
 
-    public static final Comparator<IAEItemStack> MOD_DESC = MOD_ASC.reversed();
+    public static final Comparator<AEItemKey> MOD_DESC = MOD_ASC.reversed();
 
-    public static final Comparator<IAEItemStack> SIZE_ASC = Comparator.comparingLong(IAEStack::getStackSize);
-
-    public static final Comparator<IAEItemStack> SIZE_DESC = SIZE_ASC.reversed();
-
-    public static Comparator<IAEItemStack> getComparator(SortOrder order, SortDir dir) {
+    public static Comparator<AEItemKey> getComparator(SortOrder order, SortDir dir) {
         return switch (order) {
             case NAME -> dir == SortDir.ASCENDING ? NAME_ASC : NAME_DESC;
-            case AMOUNT -> dir == SortDir.ASCENDING ? SIZE_ASC : SIZE_DESC;
             case MOD -> dir == SortDir.ASCENDING ? MOD_ASC : MOD_DESC;
+            case AMOUNT -> throw new UnsupportedOperationException();
         };
     }
 

@@ -27,35 +27,34 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.util.item.AEItemStack;
 
 public class AssemblerAnimationPacket extends BasePacket {
 
     private final BlockPos pos;
     public final byte rate;
-    public final IAEItemStack is;
+    public final AEKey what;
 
     public AssemblerAnimationPacket(final FriendlyByteBuf stream) {
         this.pos = stream.readBlockPos();
         this.rate = stream.readByte();
-        this.is = AEItemStack.fromPacket(stream);
+        this.what = AEKey.readKey(stream);
     }
 
     // api
-    public AssemblerAnimationPacket(final BlockPos pos, final byte rate, final IAEItemStack is) {
+    public AssemblerAnimationPacket(BlockPos pos, byte rate, AEKey what) {
 
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeBlockPos(this.pos = pos);
         data.writeByte(this.rate = rate);
-        is.writeToPacket(data);
-        this.is = is;
+        AEKey.writeKey(data, what);
+        this.what = what;
 
         this.configureWrite(data);
     }
@@ -65,7 +64,7 @@ public class AssemblerAnimationPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final Player player) {
         BlockEntity te = player.getCommandSenderWorld().getBlockEntity(pos);
         if (te instanceof MolecularAssemblerBlockEntity ma) {
-            ma.setAnimationStatus(new AssemblerAnimationStatus(rate, is.asItemStackRepresentation()));
+            ma.setAnimationStatus(new AssemblerAnimationStatus(rate, what.wrapForDisplayOrFilter()));
         }
     }
 }

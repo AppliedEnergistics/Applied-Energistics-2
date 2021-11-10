@@ -34,14 +34,14 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.me.service.SecurityService;
 
 /**
  * Manages all available {@link IConfigurableMEInventory} on the network.
  */
-public class NetworkStorage<T extends IAEStack> implements IMEInventory<T> {
+public class NetworkStorage<T extends AEKey> implements IMEInventory<T> {
 
     private static final ThreadLocal<Deque<NetworkStorage<?>>> DEPTH_MOD = new ThreadLocal<>();
     private static final ThreadLocal<Deque<NetworkStorage<?>>> DEPTH_SIM = new ThreadLocal<>();
@@ -78,25 +78,26 @@ public class NetworkStorage<T extends IAEStack> implements IMEInventory<T> {
         }
     }
 
-    public T injectItems(T input, final Actionable type, final IActionSource src) {
+    public long insert(T what, long amount, final Actionable type, final IActionSource src) {
         if (this.diveList(type)) {
-            return input;
+            return 0;
         }
 
         if (this.testPermission(src, SecurityPermissions.INJECT)) {
-            return input;
+            return 0;
         }
 
+        var remaining = amount;
         for (var invList : this.priorityInventory.values()) {
             secondPassInventories.clear();
 
             // First give every inventory a chance to accept the item if it's preferential storage for the given stack
             var ii = invList.iterator();
-            while (ii.hasNext() && input != null) {
+            while (ii.hasNext() && remaining > 0) {
                 var inv = ii.next();
 
-                if (inv.isPreferredStorageFor(input, src)) {
-                    input = inv.injectItems(input, type, src);
+                if (inv.isPreferredStorageFor(what, src)) {
+                    remaining -= inv.insert(what, remaining, type, src);
                 } else {
                     secondPassInventories.add(inv);
                 }
@@ -104,17 +105,17 @@ public class NetworkStorage<T extends IAEStack> implements IMEInventory<T> {
 
             // Then give every remaining inventory a chance
             for (var inv : secondPassInventories) {
-                if (input == null) {
+                if (remaining <= 0) {
                     break;
                 }
 
-                input = inv.injectItems(input, type, src);
+                remaining -= inv.insert(what, remaining, type, src);
             }
         }
 
         this.surface(type);
 
-        return input;
+        return amount - remaining;
     }
 
     private boolean diveList(Actionable type) {
@@ -171,42 +172,33 @@ public class NetworkStorage<T extends IAEStack> implements IMEInventory<T> {
         return s;
     }
 
-    public T extractItems(T request, final Actionable mode, final IActionSource src) {
+    public long extract(T what, long amount, final Actionable mode, final IActionSource source) {
         if (this.diveList(mode)) {
-            return null;
+            return 0;
         }
 
-        if (this.testPermission(src, SecurityPermissions.EXTRACT)) {
+        if (this.testPermission(source, SecurityPermissions.EXTRACT)) {
             this.surface(mode);
-            return null;
+            return 0;
         }
 
         var i = this.priorityInventory.descendingMap().values().iterator();
 
-        final T output = IAEStack.copy(request);
-        request = IAEStack.copy(request);
-        output.setStackSize(0);
-        final long req = request.getStackSize();
-
+        var extracted = 0L;
         while (i.hasNext()) {
             var invList = i.next();
 
             var ii = invList.iterator();
-            while (ii.hasNext() && output.getStackSize() < req) {
+            while (ii.hasNext() && extracted < amount) {
                 var inv = ii.next();
 
-                request.setStackSize(req - output.getStackSize());
-                IAEStack.add(output, inv.extractItems(request, mode, src));
+                extracted += inv.extract(what, amount - extracted, mode, source);
             }
         }
 
         this.surface(mode);
 
-        if (output.getStackSize() <= 0) {
-            return null;
-        }
-
-        return output;
+        return extracted;
     }
 
     @Override
@@ -215,20 +207,18 @@ public class NetworkStorage<T extends IAEStack> implements IMEInventory<T> {
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
+    public void getAvailableStacks(KeyCounter<T> out) {
         if (diveIteration(Actionable.SIMULATE)) {
-            return out;
+            return;
         }
 
         for (var i : this.priorityInventory.values()) {
             for (var j : i) {
-                out = j.getAvailableStacks(out);
+                j.getAvailableStacks(out);
             }
         }
 
         this.surface(Actionable.SIMULATE);
-
-        return out;
     }
 
     private boolean diveIteration(Actionable type) {

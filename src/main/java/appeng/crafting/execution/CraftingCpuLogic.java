@@ -15,11 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-
 package appeng.crafting.execution;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -32,20 +30,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
-import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.core.AELog;
 import appeng.crafting.CraftingLink;
-import appeng.crafting.CraftingWatcher;
 import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.service.CraftingService;
@@ -62,17 +57,13 @@ public class CraftingCpuLogic {
     /**
      * Inventory.
      */
-    private final ListCraftingInventory inventory = new ListCraftingInventory() {
-        @Override
-        public void postChange(IAEStack template, long delta) {
-            CraftingCpuLogic.this.postChange(template);
-        }
-    };
+    private final ListCraftingInventory inventory = new ListCraftingInventory(
+            (what, delta) -> CraftingCpuLogic.this.postChange(what));
     /**
      * Used crafting operations over the last 3 ticks.
      */
     private final int[] usedOps = new int[3];
-    private final Set<Consumer<IAEStack>> listeners = new HashSet<>();
+    private final Set<Consumer<AEKey>> listeners = new HashSet<>();
 
     public CraftingCpuLogic(CraftingCPUCluster cluster) {
         this.cluster = cluster;
@@ -99,7 +90,7 @@ public class CraftingCpuLogic {
             return null;
 
         // Set CPU link and job.
-        String craftId = this.generateCraftId(plan.finalOutput());
+        var craftId = this.generateCraftId(plan.finalOutput());
         var linkCpu = new CraftingLink(CraftingCpuHelper.generateLinkData(craftId, requester == null, false), cluster);
         this.job = new ExecutingCraftingJob(plan, this::postCraftingDifference, linkCpu);
         cluster.updateOutput(plan.finalOutput());
@@ -136,12 +127,12 @@ public class CraftingCpuLogic {
             return;
         }
 
-        int remainingOperations = cluster.getCoProcessors() + 1 - (this.usedOps[0] + this.usedOps[1] + this.usedOps[2]);
-        final int started = remainingOperations;
+        var remainingOperations = cluster.getCoProcessors() + 1 - (this.usedOps[0] + this.usedOps[1] + this.usedOps[2]);
+        final var started = remainingOperations;
 
         if (remainingOperations > 0) {
             do {
-                int pushedPatterns = executeCrafting(remainingOperations, cc, eg, cluster.getLevel());
+                var pushedPatterns = executeCrafting(remainingOperations, cc, eg, cluster.getLevel());
 
                 if (pushedPatterns > 0) {
                     remainingOperations -= pushedPatterns;
@@ -157,16 +148,16 @@ public class CraftingCpuLogic {
 
     /**
      * Try to push patterns into available interfaces, i.e. do the actual crafting execution.
-     * 
+     *
      * @return How many patterns were successfully pushed.
      */
     public int executeCrafting(int maxPatterns, CraftingService craftingService, IEnergyService energyService,
             Level level) {
-        ExecutingCraftingJob job = this.job;
+        var job = this.job;
         if (job == null)
             return 0;
 
-        int pushedPatterns = 0;
+        var pushedPatterns = 0;
 
         var it = job.tasks.entrySet().iterator();
         taskLoop: while (it.hasNext()) {
@@ -176,15 +167,15 @@ public class CraftingCpuLogic {
                 continue;
             }
 
-            IPatternDetails details = task.getKey();
-            var expectedOutputs = new MixedStackList();
+            var details = task.getKey();
+            var expectedOutputs = new KeyCounter<>();
             // Contains the inputs for the pattern.
             @Nullable
-            var craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService, level,
-                    expectedOutputs);
+            var craftingContainer = CraftingCpuHelper.extractPatternInputs(
+                    details, inventory, energyService, level, expectedOutputs);
 
             // Try to push to each medium.
-            for (ICraftingMedium medium : craftingService.getMediums(details)) {
+            for (var medium : craftingService.getMediums(details)) {
                 if (craftingContainer == null)
                     break;
                 if (medium.isBusy())
@@ -195,7 +186,8 @@ public class CraftingCpuLogic {
                     pushedPatterns++;
 
                     for (var expectedOutput : expectedOutputs) {
-                        job.waitingFor.injectItems(expectedOutput, Actionable.MODULATE);
+                        job.waitingFor.insert(expectedOutput.getKey(), expectedOutput.getLongValue(),
+                                Actionable.MODULATE);
                     }
 
                     cluster.markDirty();
@@ -211,7 +203,7 @@ public class CraftingCpuLogic {
                     }
 
                     // Prepare next inputs.
-                    expectedOutputs.resetStatus();
+                    expectedOutputs.reset();
                     craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService,
                             level, expectedOutputs);
                 }
@@ -228,37 +220,36 @@ public class CraftingCpuLogic {
 
     /**
      * Called by the CraftingService with an Integer.MAX_VALUE priority to inject items that are being waited for.
+     *
+     * @return Consumed amount.
      */
-    public IAEStack injectItems(IAEStack input, Actionable type) {
+    public long insert(AEKey what, long amount, Actionable type) {
         // also stop accepting items when the job is complete, i.e. to prevent re-insertion when pushing out
         // items during storeItems
-        if (input == null || job == null)
-            return input;
+        if (what == null || job == null)
+            return 0;
 
         // Only accept items we are waiting for.
-        IAEStack waitingFor = job.waitingFor.extractItems(input, Actionable.SIMULATE);
-        if (IAEStack.getStackSizeOrZero(waitingFor) <= 0)
-            return input;
-
-        IAEStack leftOver = IAEStack.copy(input, 0);
-        input = IAEStack.copy(input);
+        var waitingFor = job.waitingFor.extract(what, amount, Actionable.SIMULATE);
+        if (waitingFor <= 0) {
+            return 0;
+        }
 
         // Make sure we don't insert more than what we are waiting for.
-        if (input.getStackSize() > waitingFor.getStackSize()) {
-            long difference = input.getStackSize() - waitingFor.getStackSize();
-            leftOver.incStackSize(difference);
-            input.decStackSize(difference);
+        if (amount > waitingFor) {
+            amount = waitingFor;
         }
 
         if (type == Actionable.MODULATE) {
-            job.timeTracker.decrementItems(input.getStackSize());
-            job.waitingFor.extractItems(input, Actionable.MODULATE);
+            job.timeTracker.decrementItems(amount);
+            job.waitingFor.extract(what, amount, Actionable.MODULATE);
             cluster.markDirty();
         }
 
-        if (input.equals(job.finalOutput)) {
+        long inserted = amount;
+        if (what.matches(job.finalOutput)) {
             // Final output is special: it goes directly into the requester
-            IAEStack.add(leftOver, job.link.injectItems(input, type));
+            inserted = job.link.insert(what, amount, type);
 
             // Note: we ignore any remainder (could be the entire input if there is no requester),
             // we already marked the items as done, and we might even finish the job.
@@ -272,10 +263,10 @@ public class CraftingCpuLogic {
 
             if (type == Actionable.MODULATE) {
                 // Update count and displayed CPU stack, and finish the job if possible.
-                postChange(input);
-                job.finalOutput.decStackSize(input.getStackSize());
+                postChange(what);
+                job.finalOutput = new GenericStack(what, job.finalOutput.amount() - inserted);
 
-                if (job.finalOutput.getStackSize() <= 0) {
+                if (job.finalOutput.amount() <= 0) {
                     finishJob(true);
                     cluster.updateOutput(null);
                 } else {
@@ -284,16 +275,16 @@ public class CraftingCpuLogic {
             }
         } else {
             if (type == Actionable.MODULATE) {
-                inventory.injectItems(input, Actionable.MODULATE);
+                inventory.insert(what, amount, Actionable.MODULATE);
             }
         }
 
-        return leftOver.getStackSize() == 0 ? null : leftOver;
+        return inserted;
     }
 
     /**
      * Finish the current job.
-     * 
+     *
      * @param success True if the job is complete, false if it was cancelled.
      */
     private void finishJob(boolean success) {
@@ -310,7 +301,7 @@ public class CraftingCpuLogic {
         // Notify opened menus of cancelled scheduled tasks.
         for (var entry : job.tasks.entrySet()) {
             for (var output : entry.getKey().getOutputs()) {
-                postChange(output);
+                postChange(output.what());
             }
         }
         // Finish job.
@@ -343,55 +334,51 @@ public class CraftingCpuLogic {
         if (this.inventory.list.isEmpty())
             return;
 
-        final IGrid g = cluster.getGrid();
+        var g = cluster.getGrid();
         if (g == null)
             return;
 
-        final IStorageService sg = g.getStorageService();
+        var sg = g.getStorageService();
 
-        for (IAEStack is : this.inventory.list) {
-            this.postChange(is);
-            IAEStack remainder = GenericStackHelper.injectMonitorable(sg, IAEStack.copy(is), Actionable.MODULATE,
-                    cluster.getSrc());
+        for (var entry : this.inventory.list) {
+            this.postChange(entry.getKey());
+            var inserted = sg.insert(entry.getKey(), entry.getLongValue(),
+                    Actionable.MODULATE, cluster.getSrc());
 
             // The network was unable to receive all of the items, i.e. no or not enough storage space left
-            if (remainder != null) {
-                is.setStackSize(remainder.getStackSize());
-            } else {
-                is.reset();
-            }
+            entry.setValue(entry.getLongValue() - inserted);
         }
 
         cluster.markDirty();
     }
 
-    private String generateCraftId(IAEStack finalOutput) {
-        final long now = System.currentTimeMillis();
-        final int hash = System.identityHashCode(this);
-        final int hmm = Objects.hashCode(finalOutput);
+    private String generateCraftId(GenericStack finalOutput) {
+        final var now = System.currentTimeMillis();
+        final var hash = System.identityHashCode(this);
+        final var hmm = Objects.hashCode(finalOutput);
 
         return Long.toString(now, Character.MAX_RADIX) + '-' + Integer.toString(hash, Character.MAX_RADIX) + '-'
                 + Integer.toString(hmm, Character.MAX_RADIX);
     }
 
-    private void postChange(IAEStack stack) {
+    private void postChange(AEKey what) {
         for (var listener : listeners) {
-            listener.accept(stack);
+            listener.accept(what);
         }
     }
 
-    private void postCraftingDifference(IAEStack stack) {
-        IGrid grid = cluster.getGrid();
+    private void postCraftingDifference(AEKey what, long amount) {
+        var grid = cluster.getGrid();
         if (grid == null)
             return;
 
         var craftingService = (CraftingService) grid.getCraftingService();
-        for (CraftingWatcher watcher : craftingService.getInterestManager().get(stack)) {
-            watcher.getHost().onRequestChange(craftingService, stack);
+        for (var watcher : craftingService.getInterestManager().get(what)) {
+            watcher.getHost().onRequestChange(craftingService, what);
         }
 
         // Also notify opened menus
-        postChange(stack);
+        postChange(what);
     }
 
     public boolean hasJob() {
@@ -438,34 +425,32 @@ public class CraftingCpuLogic {
      * Register a listener that will receive stacks when either the stored items, await items or pending outputs change.
      * This is only used by the menu. Make sure to remove it by calling {@link #removeListener}.
      */
-    public void addListener(Consumer<IAEStack> listener) {
+    public void addListener(Consumer<AEKey> listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(Consumer<IAEStack> listener) {
+    public void removeListener(Consumer<AEKey> listener) {
         listeners.remove(listener);
     }
 
-    public long getStored(IAEStack template) {
-        var extracted = this.inventory.extractItems(IAEStack.copy(template, Long.MAX_VALUE), Actionable.SIMULATE);
-        return extracted == null ? 0 : extracted.getStackSize();
+    public long getStored(AEKey template) {
+        return this.inventory.extract(template, Long.MAX_VALUE, Actionable.SIMULATE);
     }
 
-    public long getWaitingFor(IAEStack template) {
-        IAEStack stack = null;
+    public long getWaitingFor(AEKey template) {
         if (this.job != null) {
-            stack = this.job.waitingFor.extractItems(IAEStack.copy(template, Long.MAX_VALUE), Actionable.SIMULATE);
+            return this.job.waitingFor.extract(template, Long.MAX_VALUE, Actionable.SIMULATE);
         }
-        return stack == null ? 0 : stack.getStackSize();
+        return 0;
     }
 
-    public long getPendingOutputs(IAEStack template) {
+    public long getPendingOutputs(AEKey template) {
         long count = 0;
         if (this.job != null) {
-            for (final Map.Entry<IPatternDetails, ExecutingCraftingJob.TaskProgress> t : job.tasks.entrySet()) {
+            for (var t : job.tasks.entrySet()) {
                 for (var output : t.getKey().getOutputs()) {
-                    if (output.equals(template)) {
-                        count += output.getStackSize() * t.getValue().value;
+                    if (template.matches(output)) {
+                        count += output.amount() * t.getValue().value;
                     }
                 }
             }
@@ -476,17 +461,13 @@ public class CraftingCpuLogic {
     /**
      * Used by the menu to gather all the kinds of stored items.
      */
-    public void getAllItems(MixedStackList out) {
-        for (var stack : this.inventory.list) {
-            out.add(stack);
-        }
+    public void getAllItems(KeyCounter<AEKey> out) {
+        out.addAll(this.inventory.list);
         if (this.job != null) {
-            for (var stack : job.waitingFor.list) {
-                out.add(stack);
-            }
-            for (final Map.Entry<IPatternDetails, ExecutingCraftingJob.TaskProgress> t : job.tasks.entrySet()) {
+            out.addAll(job.waitingFor.list);
+            for (final var t : job.tasks.entrySet()) {
                 for (var output : t.getKey().getOutputs()) {
-                    out.add(IAEStack.copy(output, output.getStackSize() * t.getValue().value));
+                    out.add(output.what(), output.amount() * t.getValue().value);
                 }
             }
         }

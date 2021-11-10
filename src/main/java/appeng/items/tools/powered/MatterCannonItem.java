@@ -59,12 +59,11 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.IBasicCellItem;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
@@ -81,11 +80,11 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
+import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
-import appeng.util.LookDirection;
 import appeng.util.Platform;
 
-public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellItem<IAEItemStack> {
+public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellItem<AEItemKey> {
 
     /**
      * AE energy units consumer per shot fired.
@@ -118,11 +117,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             var inv = StorageCells.getCellInventory(p.getItemInHand(hand), null, StorageChannels.items());
             if (inv != null) {
                 var itemList = inv.getAvailableStacks();
-                IAEItemStack req = itemList.getFirstItem();
+                var req = itemList.getFirstEntry();
                 if (req != null) {
-                    shots = Math.min(shots, (int) req.getStackSize());
+                    shots = Math.min(shots, (int) req.getLongValue());
                     for (int sh = 0; sh < shots; sh++) {
-                        var aeAmmo = req.copy();
                         this.extractAEPower(p.getItemInHand(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
                         if (level.isClientSide()) {
@@ -130,20 +128,13 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                                     p.getItemInHand(hand));
                         }
 
-                        aeAmmo.setStackSize(1);
-                        final ItemStack ammo = aeAmmo.createItemStack();
-                        if (ammo.isEmpty()) {
+                        var aeAmmo = inv.extract(req.getKey(), 1, Actionable.MODULATE, new PlayerSource(p));
+                        if (aeAmmo == 0) {
                             return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));
                         }
 
-                        aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p));
-                        if (aeAmmo == null) {
-                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                                    p.getItemInHand(hand));
-                        }
-
-                        final LookDirection dir = InteractionUtil.getPlayerRay(p, 32);
+                        var dir = InteractionUtil.getPlayerRay(p, 32);
 
                         final Vec3 rayFrom = dir.getA();
                         final Vec3 rayTo = dir.getB();
@@ -154,11 +145,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                         var y = rayFrom.y;
                         var z = rayFrom.z;
 
-                        var penetration = getPenetration(ammo); // 196.96655f;
+                        var stack = req.getKey().toStack();
+                        var penetration = getPenetration(stack); // 196.96655f;
                         if (penetration <= 0) {
-                            final ItemStack type = aeAmmo.asItemStackRepresentation();
-                            if (type.getItem() instanceof PaintBallItem) {
-                                this.shootPaintBalls(type, level, p, rayFrom, rayTo, direction, x, y, z);
+                            if (stack.getItem() instanceof PaintBallItem) {
+                                this.shootPaintBalls(stack, level, p, rayFrom, rayTo, direction, x, y, z);
                             }
                             return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                                     p.getItemInHand(hand));
@@ -380,8 +371,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public InternalInventory getConfigInventory(final ItemStack is) {
-        return new CellConfig(is);
+    public ConfigInventory<AEItemKey> getConfigInventory(final ItemStack is) {
+        return CellConfig.create(StorageChannels.items(), is);
     }
 
     @Override
@@ -415,9 +406,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition) {
+    public boolean isBlackListed(ItemStack cellItem, AEItemKey requestedAddition) {
 
-        final float pen = getPenetration(requestedAddition.createItemStack());
+        var pen = getPenetration(requestedAddition.toStack());
         if (pen > 0) {
             return false;
         }
@@ -456,7 +447,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public IStorageChannel<IAEItemStack> getChannel() {
+    public IStorageChannel<AEItemKey> getChannel() {
         return StorageChannels.items();
     }
 }

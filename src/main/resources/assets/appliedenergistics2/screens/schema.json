@@ -338,8 +338,7 @@
           "PROCESSING_PRIMARY_RESULT",
           "PROCESSING_FIRST_OPTIONAL_RESULT",
           "PROCESSING_SECOND_OPTIONAL_RESULT",
-          "BIOMETRIC_CARD",
-          "READONLY_STACKS"
+          "BIOMETRIC_CARD"
         ]
       }
     },

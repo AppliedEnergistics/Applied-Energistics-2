@@ -24,7 +24,7 @@
 package appeng.api.networking.crafting;
 
 import appeng.api.networking.IGridNodeService;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 public interface ICraftingWatcherNode extends IGridNodeService {
 
@@ -40,7 +40,7 @@ public interface ICraftingWatcherNode extends IGridNodeService {
      * Called when a crafting status changes.
      *
      * @param craftingGrid current crafting grid
-     * @param what         change; don't assume anything regarding the count; don't edit the stack
+     * @param what         changed key
      */
-    void onRequestChange(ICraftingService craftingGrid, IAEStack what);
+    void onRequestChange(ICraftingService craftingGrid, AEKey what);
 }

@@ -24,9 +24,9 @@ import net.minecraft.world.level.ItemLike;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 
-public final class BasicItemStorageCellItem extends AbstractStorageCell<IAEItemStack> {
+public final class BasicItemStorageCellItem extends AbstractStorageCell<AEItemKey> {
 
     private final int bytesPerType;
     private final double idleDrain;
@@ -49,7 +49,7 @@ public final class BasicItemStorageCellItem extends AbstractStorageCell<IAEItemS
     }
 
     @Override
-    public IStorageChannel<IAEItemStack> getChannel() {
+    public IStorageChannel<AEItemKey> getChannel() {
         return StorageChannels.items();
     }
 

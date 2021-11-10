@@ -18,7 +18,8 @@
 
 package appeng.integration.modules.jei;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
+
 import com.google.common.base.Strings;
 
 import me.shedaniel.rei.api.client.REIRuntime;
@@ -30,7 +31,7 @@ class ReiRuntimeAdapter implements IJEI {
     private final REIRuntime runtime;
 
     ReiRuntimeAdapter() {
-        this.runtime = Preconditions.checkNotNull(REIRuntime.getInstance(), "REI helper was null");
+        this.runtime = Objects.requireNonNull(REIRuntime.getInstance(), "REI helper was null");
     }
 
     @Override

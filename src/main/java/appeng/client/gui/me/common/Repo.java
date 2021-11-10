@@ -36,7 +36,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
@@ -50,7 +50,12 @@ import appeng.util.prioritylist.IPartitionList;
  * For showing the network content of a storage channel, this class will maintain a client-side copy of the current
  * server-side storage, which is continuously synchronized to the client while it is open.
  */
-public abstract class Repo<T extends IAEStack> implements IClientRepo<T> {
+public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
+
+    public static final Comparator<GridInventoryEntry<?>> AMOUNT_ASC = Comparator
+            .comparingLong(GridInventoryEntry::getStoredAmount);
+
+    public static final Comparator<GridInventoryEntry<?>> AMOUNT_DESC = AMOUNT_ASC.reversed();
 
     private int rowSize = 9;
 
@@ -96,7 +101,7 @@ public abstract class Repo<T extends IAEStack> implements IClientRepo<T> {
         GridInventoryEntry<T> localEntry = entries.get(serverEntry.getSerial());
         if (localEntry == null) {
             // First time we're seeing this serial -> create new entry
-            if (serverEntry.getStack() == null) {
+            if (serverEntry.getWhat() == null) {
                 AELog.warn("First time seeing serial %s, but incomplete info received", serverEntry.getSerial());
                 return;
             }
@@ -109,10 +114,10 @@ public abstract class Repo<T extends IAEStack> implements IClientRepo<T> {
         // Update the local entry
         if (!serverEntry.isMeaningful()) {
             entries.remove(serverEntry.getSerial());
-        } else if (serverEntry.getStack() == null) {
+        } else if (serverEntry.getWhat() == null) {
             entries.put(serverEntry.getSerial(), new GridInventoryEntry<>(
                     serverEntry.getSerial(),
-                    localEntry.getStack(),
+                    localEntry.getWhat(),
                     serverEntry.getStoredAmount(),
                     serverEntry.getRequestableAmount(),
                     serverEntry.isCraftable()));
@@ -151,7 +156,7 @@ public abstract class Repo<T extends IAEStack> implements IClientRepo<T> {
         ViewItems viewMode = this.sortSrc.getSortDisplay();
 
         for (GridInventoryEntry<T> entry : this.entries.values()) {
-            if (this.partitionList != null && !this.partitionList.isListed(entry.getStack())) {
+            if (this.partitionList != null && !this.partitionList.isListed(entry.getWhat())) {
                 continue;
             }
 
@@ -163,7 +168,7 @@ public abstract class Repo<T extends IAEStack> implements IClientRepo<T> {
                 continue;
             }
 
-            if (matchesSearch(searchMode, m, entry.getStack())) {
+            if (matchesSearch(searchMode, m, entry.getWhat())) {
                 this.view.add(entry);
             }
         }
@@ -171,11 +176,19 @@ public abstract class Repo<T extends IAEStack> implements IClientRepo<T> {
         SortOrder sortOrder = this.sortSrc.getSortBy();
         SortDir sortDir = this.sortSrc.getSortDir();
 
-        this.view.sort(Comparator.comparing(GridInventoryEntry::getStack, getComparator(sortOrder, sortDir)));
+        this.view.sort(getComparator(sortOrder, sortDir));
 
         if (this.updateViewListener != null) {
             this.updateViewListener.run();
         }
+    }
+
+    private Comparator<? super GridInventoryEntry<T>> getComparator(SortOrder sortOrder, SortDir sortDir) {
+        if (sortOrder == SortOrder.AMOUNT) {
+            return sortDir == SortDir.ASCENDING ? AMOUNT_ASC : AMOUNT_DESC;
+        }
+
+        return Comparator.comparing(GridInventoryEntry::getWhat, getKeyComparator(sortOrder, sortDir));
     }
 
     @Nullable
@@ -234,7 +247,7 @@ public abstract class Repo<T extends IAEStack> implements IClientRepo<T> {
 
     protected abstract boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, T stack);
 
-    protected abstract Comparator<? super T> getComparator(SortOrder sortBy, SortDir sortDir);
+    protected abstract Comparator<? super T> getKeyComparator(SortOrder sortBy, SortDir sortDir);
 
     @Override
     public Set<GridInventoryEntry<T>> getAllEntries() {

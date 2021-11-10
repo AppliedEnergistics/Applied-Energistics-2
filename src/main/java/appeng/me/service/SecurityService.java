@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
-
-import com.google.common.base.Preconditions;
+import java.util.Objects;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -126,8 +125,8 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
 
     @Override
     public boolean hasPermission(final Player player, final SecurityPermissions perm) {
-        Preconditions.checkNotNull(player);
-        Preconditions.checkNotNull(perm);
+        Objects.requireNonNull(player);
+        Objects.requireNonNull(perm);
 
         if (player instanceof ServerPlayer serverPlayer) {
             var playerID = IPlayerRegistry.getPlayerId(serverPlayer);

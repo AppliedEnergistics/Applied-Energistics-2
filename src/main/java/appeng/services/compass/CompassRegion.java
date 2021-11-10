@@ -21,8 +21,7 @@ package appeng.services.compass;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.common.base.Preconditions;
+import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -57,8 +56,8 @@ final class CompassRegion extends SavedData {
      * Retrieve the compass region that serves the given chunk position.
      */
     public static CompassRegion get(ServerLevel level, ChunkPos chunkPos) {
-        Preconditions.checkNotNull(level, "level");
-        Preconditions.checkNotNull(chunkPos, "chunkPos");
+        Objects.requireNonNull(level, "level");
+        Objects.requireNonNull(chunkPos, "chunkPos");
 
         var regionX = chunkPos.x / CHUNKS_PER_REGION;
         var regionZ = chunkPos.z / CHUNKS_PER_REGION;

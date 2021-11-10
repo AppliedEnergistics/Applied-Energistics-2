@@ -19,10 +19,12 @@
 package appeng.integration.modules.jei;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import javax.annotation.Nullable;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -32,17 +34,17 @@ import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStack;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStackVisitor;
 import me.shedaniel.rei.api.client.gui.drag.DraggingContext;
+import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.widgets.CustomSlotWidget;
-import appeng.client.gui.widgets.FluidSlotWidget;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
-import appeng.util.fluid.AEFluidStack;
 
 /**
  * JEI allows ingredients to be dragged from a JEI panel onto compatible slots to set filters and the like without
@@ -80,21 +82,35 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
         return false;
     }
 
-    private List<DropTarget> getTargets(DraggingContext<AEBaseScreen> context, DraggableStack stack) {
-        List<DropTarget> targets = new ArrayList<>();
+    @Nullable
+    private ItemStack wrapDraggedItem(EntryStack<?> entryStack) {
+        if (entryStack.getType() == VanillaEntryTypes.ITEM) {
+            return entryStack.castValue();
+        } else if (entryStack.getType() == VanillaEntryTypes.FLUID) {
+            FluidStack fluidStack = entryStack.castValue();
 
-        if (stack.getStack().getType() == VanillaEntryTypes.ITEM) {
-            addItemStackTargets(context.getScreen(), targets);
-        } else if (stack.getStack().getType() == VanillaEntryTypes.FLUID) {
-            addFluidStackTargets(context.getScreen(), targets);
+            // Wrap in a generic stack to set it anyway
+            return GenericStack.wrapInItemStack(
+                    new GenericStack(AEFluidKey.of(fluidStack.getFluid()), fluidStack.getAmount()));
         }
+        return null;
+    }
+
+    private List<DropTarget> getTargets(DraggingContext<AEBaseScreen> context, DraggableStack stack) {
+        var wrapped = wrapDraggedItem(stack.getStack());
+        if (wrapped == null) {
+            return Collections.emptyList();
+        }
+
+        List<DropTarget> targets = new ArrayList<>();
+        addItemStackTargets(context.getScreen(), targets, wrapped);
         return targets;
     }
 
     /**
      * Returns possible drop-targets for ghost items.
      */
-    private static void addItemStackTargets(AEBaseScreen<?> gui, List<DropTarget> targets) {
+    private static void addItemStackTargets(AEBaseScreen<?> gui, List<DropTarget> targets, ItemStack draggedStack) {
         for (Slot slot : gui.getMenu().slots) {
             if (!(slot instanceof AppEngSlot appEngSlot)) {
                 continue;
@@ -104,23 +120,13 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
                 continue;
             }
 
-            if (appEngSlot instanceof FakeSlot) {
+            if (appEngSlot instanceof FakeSlot fakeSlot) {
+                // Use the standard inventory function to test if the dragged stack would in theory be accepted
+                if (!fakeSlot.canSetFilterTo(draggedStack)) {
+                    continue;
+                }
+
                 targets.add(new ItemSlotTarget(gui, appEngSlot));
-            }
-        }
-    }
-
-    /**
-     * Returns possible drop-targets for ghost fluids.
-     */
-    private static void addFluidStackTargets(AEBaseScreen<?> gui, List<DropTarget> targets) {
-        for (CustomSlotWidget slot : gui.getGuiSlots()) {
-            if (!slot.isSlotEnabled()) {
-                continue;
-            }
-
-            if (slot instanceof FluidSlotWidget) {
-                targets.add(new FluidSlotTarget(gui, (FluidSlotWidget) slot));
             }
         }
     }
@@ -142,45 +148,19 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
         @Override
         public boolean accept(DraggableStack ingredient) {
             var entryStack = ingredient.getStack();
-            if (entryStack.getType() != VanillaEntryTypes.ITEM) {
-                return false;
+            if (entryStack.getType() == VanillaEntryTypes.ITEM) {
+                ItemStack itemStack = entryStack.castValue();
+                NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
+                        slot.index, itemStack));
+            } else if (entryStack.getType() == VanillaEntryTypes.FLUID) {
+                FluidStack fluidStack = entryStack.castValue();
+
+                // Wrap in a generic stack to set it anyway
+                var wrappedFluid = GenericStack.wrapInItemStack(
+                        new GenericStack(AEFluidKey.of(fluidStack.getFluid()), fluidStack.getAmount()));
+                NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
+                        slot.index, wrappedFluid));
             }
-            ItemStack itemStack = entryStack.castValue();
-
-            NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
-                    slot.index, itemStack));
-            return false;
-        }
-    }
-
-    private static class FluidSlotTarget implements DropTarget {
-        private final FluidSlotWidget slot;
-        private final Rectangle area;
-
-        public FluidSlotTarget(AEBaseScreen<?> screen, FluidSlotWidget slot) {
-            this.slot = slot;
-            this.area = new Rectangle(screen.getGuiLeft() + slot.getTooltipAreaX(),
-                    screen.getGuiTop() + slot.getTooltipAreaY(),
-                    slot.getTooltipAreaWidth(),
-                    slot.getTooltipAreaHeight());
-        }
-
-        @Override
-        public Rectangle getArea() {
-            return area;
-        }
-
-        @Override
-        public boolean accept(DraggableStack ingredient) {
-            var entryStack = ingredient.getStack();
-            if (entryStack.getType() != VanillaEntryTypes.FLUID) {
-                return false;
-            }
-            FluidStack fluidStack = entryStack.castValue();
-
-            slot.setFluidStack(AEFluidStack.of(
-                    FluidVariant.of(fluidStack.getFluid(), fluidStack.getTag()),
-                    fluidStack.getAmount()));
             return false;
         }
     }

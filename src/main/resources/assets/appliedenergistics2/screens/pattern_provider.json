@@ -11,7 +11,7 @@
       "top": 35,
       "grid": "HORIZONTAL"
     },
-    "READONLY_STACKS": {
+    "STORAGE": {
       "left": 8,
       "top": 69,
       "grid": "HORIZONTAL"
@@ -38,7 +38,7 @@
     },
     "interface_stored_items": {
       "text": {
-        "translate": "gui.appliedenergistics2.StoredItems"
+        "translate": "gui.appliedenergistics2.ReturnInventory"
       },
       "position": {
         "left": 8,

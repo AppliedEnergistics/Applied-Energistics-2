@@ -20,28 +20,27 @@ package appeng.menu.me.crafting;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.api.storage.data.IAEStack;
-import appeng.crafting.execution.GenericStackHelper;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Describes an entry in the crafting plan which describes how many items of one type are missing, already stored in the
  * network, or have to be crafted.
  */
 public class CraftingPlanSummaryEntry {
-    private final IAEStack stack;
+    private final AEKey what;
     private final long missingAmount;
     private final long storedAmount;
     private final long craftAmount;
 
-    public CraftingPlanSummaryEntry(IAEStack stack, long missingAmount, long storedAmount, long craftAmount) {
-        this.stack = stack;
+    public CraftingPlanSummaryEntry(AEKey what, long missingAmount, long storedAmount, long craftAmount) {
+        this.what = what;
         this.missingAmount = missingAmount;
         this.storedAmount = storedAmount;
         this.craftAmount = craftAmount;
     }
 
-    public IAEStack getStack() {
-        return stack;
+    public AEKey getWhat() {
+        return what;
     }
 
     public long getMissingAmount() {
@@ -57,18 +56,17 @@ public class CraftingPlanSummaryEntry {
     }
 
     public void write(FriendlyByteBuf buffer) {
-        GenericStackHelper.writeGenericStack(buffer, stack);
+        AEKey.writeKey(buffer, what);
         buffer.writeVarLong(missingAmount);
         buffer.writeVarLong(storedAmount);
         buffer.writeVarLong(craftAmount);
     }
 
     public static CraftingPlanSummaryEntry read(FriendlyByteBuf buffer) {
-        IAEStack stack = GenericStackHelper.readGenericStack(buffer);
+        var what = AEKey.readKey(buffer);
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();
         long craftAmount = buffer.readVarLong();
-        return new CraftingPlanSummaryEntry(stack, missingAmount, storedAmount, craftAmount);
+        return new CraftingPlanSummaryEntry(what, missingAmount, storedAmount, craftAmount);
     }
-
 }

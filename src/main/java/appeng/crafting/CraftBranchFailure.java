@@ -18,13 +18,10 @@
 
 package appeng.crafting;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 public class CraftBranchFailure extends Exception {
-
-    private static final long serialVersionUID = 654603652836724823L;
-
-    public CraftBranchFailure(final IAEStack what, final long howMany) {
+    public CraftBranchFailure(AEKey what, final long howMany) {
         super("Failed: " + what + " x " + howMany);
     }
 }

@@ -21,8 +21,6 @@ package appeng.blockentity.crafting;
 import java.util.EnumSet;
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.core.Direction;
 
 import appeng.client.render.model.AEModelData;
@@ -35,7 +33,7 @@ public class CraftingCubeModelData extends AEModelData {
 
     public CraftingCubeModelData(Direction up, Direction forward, EnumSet<Direction> connections) {
         super(up, forward);
-        this.connections = Preconditions.checkNotNull(connections);
+        this.connections = Objects.requireNonNull(connections);
     }
 
     @Override

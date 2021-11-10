@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import dev.architectury.event.CompoundEventResult;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
@@ -47,6 +48,8 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
 
 import appeng.api.config.CondenserOutput;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.core.AEConfig;
@@ -134,6 +137,21 @@ public class ReiPlugin implements REIClientPlugin {
     @Override
     public void registerScreens(ScreenRegistry registry) {
         registry.registerDraggableStackVisitor(new GhostIngredientHandler());
+        registry.registerFocusedStack((screen, mouse) -> {
+            if (screen instanceof AEBaseScreen<?>aeScreen) {
+                var stack = aeScreen.getStackUnderMouse(mouse.x, mouse.y);
+                if (stack != null) {
+                    if (stack.what() instanceof AEItemKey itemKey) {
+                        return CompoundEventResult.interruptTrue(EntryStacks.of(itemKey.toStack()));
+                    } else if (stack.what() instanceof AEFluidKey fluidKey) {
+                        return CompoundEventResult.interruptTrue(EntryStacks.of(fluidKey.getFluid()));
+                    }
+                    // we can't handle custom mod resources. addons need to register their own REI plugin
+                }
+            }
+
+            return CompoundEventResult.pass();
+        });
     }
 
     @Override
@@ -231,7 +249,7 @@ public class ReiPlugin implements REIClientPlugin {
         }
         ItemStack stack = entryStack.castValue();
 
-        if (AEItems.WRAPPED_FLUID_STACK.isSameAs(stack)
+        if (AEItems.WRAPPED_GENERIC_STACK.isSameAs(stack)
                 || AEItems.FACADE.isSameAs(stack) // REI will add a broken facade with no NBT
                 || AEBlocks.MULTI_PART.isSameAs(stack)
                 || AEBlocks.MATRIX_FRAME.isSameAs(stack)

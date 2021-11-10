@@ -23,8 +23,7 @@ import javax.annotation.Nullable;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.client.gui.me.common.ClientReadOnlySlot;
 import appeng.client.gui.me.common.Repo;
 import appeng.menu.me.common.GridInventoryEntry;
@@ -33,7 +32,7 @@ import appeng.menu.me.common.GridInventoryEntry;
  * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the
  * client-side {@link ItemRepo}.
  */
-public class RepoSlot<T extends IAEStack> extends ClientReadOnlySlot {
+public class RepoSlot<T extends AEKey> extends ClientReadOnlySlot {
 
     private final Repo<T> repo;
     private final int offset;
@@ -51,25 +50,16 @@ public class RepoSlot<T extends IAEStack> extends ClientReadOnlySlot {
         return null;
     }
 
-    /**
-     * @see IAEItemStack#getStackSize()
-     */
     public long getStoredAmount() {
         GridInventoryEntry<T> entry = getEntry();
         return entry != null ? entry.getStoredAmount() : 0;
     }
 
-    /**
-     * @see IAEItemStack#getCountRequestable()
-     */
     public long getRequestableAmount() {
         GridInventoryEntry<T> entry = getEntry();
         return entry != null ? entry.getRequestableAmount() : 0;
     }
 
-    /**
-     * @see IAEItemStack#isCraftable()
-     */
     public boolean isCraftable() {
         GridInventoryEntry<T> entry = getEntry();
         return entry != null && entry.isCraftable();
@@ -79,7 +69,7 @@ public class RepoSlot<T extends IAEStack> extends ClientReadOnlySlot {
     public ItemStack getItem() {
         GridInventoryEntry<T> entry = getEntry();
         if (entry != null) {
-            return entry.getStack().asItemStackRepresentation();
+            return entry.getWhat().wrapForDisplayOrFilter();
         }
         return ItemStack.EMPTY;
     }
@@ -95,7 +85,7 @@ public class RepoSlot<T extends IAEStack> extends ClientReadOnlySlot {
      */
     @SuppressWarnings("unchecked")
     @Nullable
-    public static <T extends IAEStack> RepoSlot<T> tryCast(Repo<T> repo, @Nullable Slot slot) {
+    public static <T extends AEKey> RepoSlot<T> tryCast(Repo<T> repo, @Nullable Slot slot) {
         if (slot instanceof RepoSlot<?>repoSlot) {
             if (repoSlot.repo == repo) {
                 return (RepoSlot<T>) repoSlot;

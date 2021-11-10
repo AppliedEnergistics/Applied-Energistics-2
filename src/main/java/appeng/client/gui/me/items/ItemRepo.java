@@ -26,14 +26,13 @@ import net.minecraft.network.chat.Component;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
-public class ItemRepo extends Repo<IAEItemStack> {
+public class ItemRepo extends Repo<AEItemKey> {
 
     public ItemRepo(IScrollSource src, ISortSource sortSrc) {
         super(src, sortSrc);
@@ -41,21 +40,18 @@ public class ItemRepo extends Repo<IAEItemStack> {
     }
 
     @Override
-    protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, IAEItemStack stack) {
+    protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, AEItemKey what) {
         if (searchMode == SearchMode.MOD) {
-            String modId = Platform.getModId(stack);
-            return searchPattern.matcher(modId).find();
+            return searchPattern.matcher(what.getModId()).find();
         }
 
-        AEItemStack aeStack = (AEItemStack) stack;
-
-        String displayName = aeStack.getDisplayName().getString();
+        String displayName = Platform.getItemDisplayName(what).getString();
         if (searchPattern.matcher(displayName).find()) {
             return true;
         }
 
         if (searchMode == SearchMode.NAME_OR_TOOLTIP) {
-            List<Component> tooltip = aeStack.getToolTip();
+            List<Component> tooltip = Platform.getTooltip(what);
 
             for (Component line : tooltip) {
                 if (searchPattern.matcher(line.getString()).find()) {
@@ -68,7 +64,7 @@ public class ItemRepo extends Repo<IAEItemStack> {
     }
 
     @Override
-    protected Comparator<? super IAEItemStack> getComparator(SortOrder sortBy, SortDir sortDir) {
+    protected Comparator<? super AEItemKey> getKeyComparator(SortOrder sortBy, SortDir sortDir) {
         return ItemSorters.getComparator(sortBy, sortDir);
     }
 

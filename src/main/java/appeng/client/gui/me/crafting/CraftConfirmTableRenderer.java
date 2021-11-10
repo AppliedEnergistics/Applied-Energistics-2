@@ -25,7 +25,7 @@ import net.minecraft.network.chat.Component;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.client.AmountFormat;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftingPlanSummaryEntry;
@@ -40,19 +40,19 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     protected List<Component> getEntryDescription(CraftingPlanSummaryEntry entry) {
         List<Component> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getStack(), entry.getStoredAmount(),
+            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getStoredAmount(),
                     AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.FromStorage.text(amount));
         }
 
         if (entry.getMissingAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getStack(), entry.getMissingAmount(),
+            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getMissingAmount(),
                     AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.Missing.text(amount));
         }
 
         if (entry.getCraftAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getStack(), entry.getCraftAmount(),
+            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getCraftAmount(),
                     AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.ToCraft.text(amount));
         }
@@ -60,26 +60,26 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     }
 
     @Override
-    protected IAEStack getEntryStack(CraftingPlanSummaryEntry entry) {
-        return entry.getStack();
+    protected AEKey getEntryStack(CraftingPlanSummaryEntry entry) {
+        return entry.getWhat();
     }
 
     @Override
     protected List<Component> getEntryTooltip(CraftingPlanSummaryEntry entry) {
-        List<Component> lines = AEStackRendering.getTooltip(entry.getStack());
+        List<Component> lines = AEStackRendering.getTooltip(entry.getWhat());
 
         // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {
             lines.add(GuiText.FromStorage
-                    .text(AEStackRendering.formatAmount(entry.getStack(), entry.getStoredAmount(), AmountFormat.FULL)));
+                    .text(AEStackRendering.formatAmount(entry.getWhat(), entry.getStoredAmount(), AmountFormat.FULL)));
         }
         if (entry.getMissingAmount() > 0) {
             lines.add(GuiText.Missing.text(
-                    AEStackRendering.formatAmount(entry.getStack(), entry.getMissingAmount(), AmountFormat.FULL)));
+                    AEStackRendering.formatAmount(entry.getWhat(), entry.getMissingAmount(), AmountFormat.FULL)));
         }
         if (entry.getCraftAmount() > 0) {
             lines.add(GuiText.ToCraft
-                    .text(AEStackRendering.formatAmount(entry.getStack(), entry.getCraftAmount(), AmountFormat.FULL)));
+                    .text(AEStackRendering.formatAmount(entry.getWhat(), entry.getCraftAmount(), AmountFormat.FULL)));
         }
 
         return lines;

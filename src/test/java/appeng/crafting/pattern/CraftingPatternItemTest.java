@@ -28,6 +28,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
@@ -102,7 +103,7 @@ class CraftingPatternItemTest {
         when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(recipeMap);
 
         return AEItems.CRAFTING_PATTERN.asItem().decode(
-                tag, level, false);
+                AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);
     }
 
     private static class TestRecipe implements CraftingRecipe {

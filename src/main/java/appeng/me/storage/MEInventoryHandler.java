@@ -22,12 +22,12 @@ import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 
-public class MEInventoryHandler<T extends IAEStack> extends DelegatingMEInventory<T> {
+public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T> {
 
     private IPartitionList<T> partitionList = new DefaultPriorityList<>();
     private IncludeExclude partitionListMode = IncludeExclude.WHITELIST;
@@ -72,49 +72,47 @@ public class MEInventoryHandler<T extends IAEStack> extends DelegatingMEInventor
     }
 
     @Override
-    public T injectItems(final T input, final Actionable type, final IActionSource src) {
-        if (!this.allowInsertion || !passesBlackOrWhitelist(input)) {
-            return input;
+    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        if (!this.allowInsertion || !passesBlackOrWhitelist(what)) {
+            return 0;
         }
 
-        return super.injectItems(input, type, src);
+        return super.insert(what, amount, mode, source);
     }
 
     @Override
-    public T extractItems(final T request, final Actionable type, final IActionSource src) {
-        if (this.filterOnExtraction && !canExtract(request)) {
-            return null;
+    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+        if (this.filterOnExtraction && !canExtract(what)) {
+            return 0;
         }
 
-        return super.extractItems(request, type, src);
+        return super.extract(what, amount, mode, source);
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
+    public void getAvailableStacks(KeyCounter<T> out) {
         if (this.gettingAvailableContent) {
             // Prevent recursion in case the internal inventory somehow calls this when the available items are queried.
             // This is handled by the NetworkInventoryHandler when the initial query is coming from the network.
             // However, this function might be called from the storage bus code directly,
             // so we have to do this check manually.
-            return out;
+            return;
         }
 
         this.gettingAvailableContent = true;
         try {
             if (!this.filterAvailableContents) {
-                return super.getAvailableStacks(out);
+                super.getAvailableStacks(out);
             } else {
                 if (!this.allowExtraction) {
-                    return out;
+                    return;
                 }
-                // Don't try to check use the network storage list if this.delegate is an MEMonitor!
-                // The storage list doesn't properly handle recursion!
-                for (var stack : getDelegate().getAvailableStacks()) {
-                    if (canExtract(stack)) {
-                        out.addStorage(stack);
+
+                for (var entry : getDelegate().getAvailableStacks()) {
+                    if (canExtract(entry.getKey())) {
+                        out.add(entry.getKey(), entry.getLongValue());
                     }
                 }
-                return out;
             }
         } finally {
             this.gettingAvailableContent = false;
@@ -131,11 +129,7 @@ public class MEInventoryHandler<T extends IAEStack> extends DelegatingMEInventor
 
         // Inventories that already contain some equal stack are also preferred
         // we use a copy of size 1 here to prevent inventories from attempting to query multiple sub-inventories
-        var extractTest = input;
-        if (extractTest.getStackSize() != 1) {
-            extractTest = IAEStack.copy(extractTest, 1);
-        }
-        if (super.extractItems(extractTest, Actionable.SIMULATE, source) != null) {
+        if (super.extract(input, 1, Actionable.SIMULATE, source) > 0) {
             return true;
         }
 

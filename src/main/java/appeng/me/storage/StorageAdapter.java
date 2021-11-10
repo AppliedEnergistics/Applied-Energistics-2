@@ -12,12 +12,12 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 
-public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAEStack>
+public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEKey>
         implements IMEMonitor<T>, ITickingMonitor, IHandlerAdapter<Storage<V>> {
     /**
      * Clamp reported values to avoid overflows when amounts get too close to Long.MAX_VALUE.
@@ -47,53 +47,36 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
     protected abstract void onInjectOrExtract();
 
     @Override
-    public T injectItems(T input, Actionable type, IActionSource src) {
-
+    public long insert(T what, long amount, Actionable type, IActionSource src) {
         try (var tx = Platform.openOrJoinTx()) {
-            var filled = this.storage.insert(conversion.getVariant(input), input.getStackSize(), tx);
+            var inserted = this.storage.insert(conversion.getVariant(what), amount, tx);
 
-            if (filled == 0) {
-                return IAEStack.copy(input);
-            }
-
-            if (type == Actionable.MODULATE) {
+            if (inserted > 0 && type == Actionable.MODULATE) {
                 tx.commit();
                 this.onInjectOrExtract();
             }
 
-            if (filled >= input.getStackSize()) {
-                return null;
-            }
-
-            return IAEStack.copy(input, input.getStackSize() - filled);
+            return inserted;
         }
-
     }
 
     @Override
-    public T extractItems(T request, Actionable mode, IActionSource src) {
-
+    public long extract(T what, long amount, Actionable mode, IActionSource source) {
         try (var tx = Platform.openOrJoinTx()) {
+            var extracted = this.storage.extract(conversion.getVariant(what), amount, tx);
 
-            var drained = this.storage.extract(conversion.getVariant(request), request.getStackSize(), tx);
-
-            if (drained <= 0) {
-                return null;
-            }
-
-            if (mode == Actionable.MODULATE) {
+            if (extracted > 0 && mode == Actionable.MODULATE) {
                 tx.commit();
                 this.onInjectOrExtract();
             }
 
-            return IAEStack.copy(request, drained);
+            return extracted;
         }
-
     }
 
     @Override
     public TickRateModulation onTick() {
-        List<T> changes = this.cache.update();
+        var changes = this.cache.update();
         if (!changes.isEmpty()) {
             this.postDifference(changes);
             return TickRateModulation.URGENT;
@@ -103,8 +86,8 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
-        return this.cache.getAvailableItems(out);
+    public void getAvailableStacks(KeyCounter<T> out) {
+        this.cache.getAvailableKeys(out);
     }
 
     @Override
@@ -127,12 +110,11 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
         this.listeners.remove(l);
     }
 
-    private void postDifference(Iterable<T> a) {
-        final Iterator<Map.Entry<IMEMonitorListener<T>, Object>> i = this.listeners.entrySet()
-                .iterator();
+    private void postDifference(Set<T> a) {
+        var i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
-            final Map.Entry<IMEMonitorListener<T>, Object> l = i.next();
-            final IMEMonitorListener<T> key = l.getKey();
+            var l = i.next();
+            var key = l.getKey();
             if (key.isValid(l.getValue())) {
                 key.postChange(this, a, this.source);
             } else {
@@ -142,20 +124,20 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
     }
 
     private class InventoryCache {
-        private IAEStackList<T> frontBuffer = conversion.getChannel().createList();
-        private IAEStackList<T> backBuffer = conversion.getChannel().createList();
+        private KeyCounter<T> frontBuffer = new KeyCounter<>();
+        private KeyCounter<T> backBuffer = new KeyCounter<>();
         private final boolean extractableOnly;
 
         public InventoryCache(boolean extractableOnly) {
             this.extractableOnly = extractableOnly;
         }
 
-        public List<T> update() {
+        public Set<T> update() {
             // Flip back & front buffer and start building a new list
             var tmp = backBuffer;
             backBuffer = frontBuffer;
             frontBuffer = tmp;
-            frontBuffer.resetStatus();
+            frontBuffer.reset();
 
             // Rebuild the front buffer
             try (var tx = Transaction.openOuter()) {
@@ -183,37 +165,30 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends IAE
                     }
 
                     long amount = Math.min(view.getAmount(), MAX_REPORTED_AMOUNT);
-                    frontBuffer.addStorage(conversion.createStack(view.getResource(), amount));
+                    frontBuffer.add(conversion.getKey(view.getResource()), amount);
                 }
             }
 
             // Diff the front-buffer against the backbuffer
-            var changes = new ArrayList<T>();
-            for (var stack : frontBuffer) {
-                var old = backBuffer.findPrecise(stack);
-                if (old == null) {
-                    changes.add(IAEStack.copy(stack)); // new entry
-                } else if (old.getStackSize() != stack.getStackSize()) {
-                    var change = IAEStack.copy(stack);
-                    change.decStackSize(old.getStackSize());
-                    changes.add(change); // changed amount
+            var changes = new KeyCounter<T>();
+            for (var entry : frontBuffer) {
+                var old = backBuffer.get(entry.getKey());
+                if (old == 0 || old != entry.getLongValue()) {
+                    changes.add(entry.getKey(), entry.getLongValue()); // new or changed entry
                 }
             }
             // Account for removals
-            for (var oldStack : backBuffer) {
-                if (frontBuffer.findPrecise(oldStack) == null) {
-                    changes.add(IAEStack.copy(oldStack, -oldStack.getStackSize()));
+            for (var oldEntry : backBuffer) {
+                if (frontBuffer.get(oldEntry.getKey()) == 0) {
+                    changes.add(oldEntry.getKey(), -oldEntry.getLongValue());
                 }
             }
 
-            return changes;
+            return changes.keySet();
         }
 
-        public IAEStackList<T> getAvailableItems(IAEStackList<T> out) {
-            for (var stack : frontBuffer) {
-                out.addStorage(stack);
-            }
-            return out;
+        public void getAvailableKeys(KeyCounter<T> out) {
+            out.addAll(frontBuffer);
         }
     }
 }

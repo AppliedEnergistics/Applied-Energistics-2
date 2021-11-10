@@ -21,12 +21,12 @@ package appeng.me.service;
 import java.util.HashMap;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterators;
 
@@ -155,7 +155,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         if (tickable != null) {
             var tr = tickable.getTickingRequest(gridNode);
 
-            Preconditions.checkNotNull(tr);
+            Objects.requireNonNull(tr);
 
             final TickTracker tt = new TickTracker(tr, gridNode, tickable, this.currentTick);
 
@@ -174,7 +174,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     @Override
     public boolean alertDevice(final IGridNode node) {
-        Preconditions.checkNotNull(node);
+        Objects.requireNonNull(node);
 
         final TickTracker tt = this.alertable.get(node);
         if (tt == null) {
@@ -197,7 +197,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     @Override
     public boolean sleepDevice(final IGridNode node) {
-        Preconditions.checkNotNull(node);
+        Objects.requireNonNull(node);
 
         if (this.awake.containsKey(node)) {
             final TickTracker gt = this.awake.get(node);
@@ -211,7 +211,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     @Override
     public boolean wakeDevice(final IGridNode node) {
-        Preconditions.checkNotNull(node);
+        Objects.requireNonNull(node);
 
         if (this.sleeping.containsKey(node)) {
             final TickTracker tt = this.sleeping.get(node);

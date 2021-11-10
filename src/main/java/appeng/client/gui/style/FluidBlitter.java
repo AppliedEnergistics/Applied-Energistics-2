@@ -21,12 +21,18 @@ package appeng.client.gui.style;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
+import appeng.api.storage.data.AEFluidKey;
+
 /**
  * Creates a {@link Blitter} to draw fluids into the user interface.
  */
 public final class FluidBlitter {
 
     private FluidBlitter() {
+    }
+
+    public static Blitter create(AEFluidKey fluidKey) {
+        return create(fluidKey.toVariant());
     }
 
     public static Blitter create(FluidVariant fluidVariant) {

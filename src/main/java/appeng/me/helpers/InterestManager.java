@@ -24,15 +24,15 @@ import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 public class InterestManager<T> {
 
-    private final Multimap<IAEStack, T> container;
+    private final Multimap<AEKey, T> container;
     private List<SavedTransactions> transactions = null;
     private int transDepth = 0;
 
-    public InterestManager(final Multimap<IAEStack, T> interests) {
+    public InterestManager(Multimap<AEKey, T> interests) {
         this.container = interests;
     }
 
@@ -61,7 +61,7 @@ public class InterestManager<T> {
         }
     }
 
-    public boolean put(final IAEStack stack, final T iw) {
+    public boolean put(final AEKey stack, final T iw) {
         if (this.transactions != null) {
             this.transactions.add(new SavedTransactions(true, stack, iw));
             return true;
@@ -70,7 +70,7 @@ public class InterestManager<T> {
         }
     }
 
-    public boolean remove(final IAEStack stack, final T iw) {
+    public boolean remove(final AEKey stack, final T iw) {
         if (this.transactions != null) {
             this.transactions.add(new SavedTransactions(false, stack, iw));
             return true;
@@ -79,21 +79,21 @@ public class InterestManager<T> {
         }
     }
 
-    public boolean containsKey(final IAEStack stack) {
+    public boolean containsKey(final AEKey stack) {
         return this.container.containsKey(stack);
     }
 
-    public Collection<T> get(final IAEStack stack) {
+    public Collection<T> get(final AEKey stack) {
         return this.container.get(stack);
     }
 
     private class SavedTransactions {
 
         private final boolean put;
-        private final IAEStack stack;
+        private final AEKey stack;
         private final T iw;
 
-        public SavedTransactions(final boolean putOperation, final IAEStack myStack, final T watcher) {
+        public SavedTransactions(final boolean putOperation, final AEKey myStack, final T watcher) {
             this.put = putOperation;
             this.stack = myStack;
             this.iw = watcher;

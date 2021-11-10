@@ -27,10 +27,9 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.concurrent.ThreadSafe;
-
-import com.google.common.base.Preconditions;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -59,7 +58,7 @@ public final class BlockEntityMoveStrategies {
      * @param strategy The strategy to add.
      */
     public synchronized static void add(IBlockEntityMoveStrategy strategy) {
-        Preconditions.checkNotNull(strategy, "handler");
+        Objects.requireNonNull(strategy, "handler");
         strategies.add(strategy);
     }
 
@@ -70,7 +69,7 @@ public final class BlockEntityMoveStrategies {
      *         {@link #getDefault() default strategy} will be returned.
      */
     public synchronized static IBlockEntityMoveStrategy get(BlockEntity blockEntity) {
-        Preconditions.checkNotNull(blockEntity, "blockEntity");
+        Objects.requireNonNull(blockEntity, "blockEntity");
 
         // Prefer a cached handler if possible
         var result = valid.get(blockEntity.getType());

@@ -22,8 +22,7 @@ import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.util.Platform;
 
 final class FluidSorters {
@@ -33,27 +32,23 @@ final class FluidSorters {
 
     // FIXME: Calling .getString() to compare two untranslated strings is a problem, we need to investigate how to do
     // this better
-    public static final Comparator<IAEFluidStack> NAME_ASC = Comparator.comparing(
+    public static final Comparator<AEFluidKey> NAME_ASC = Comparator.comparing(
             fs -> Platform.getFluidDisplayName(fs).getString(),
             String::compareToIgnoreCase);
 
-    public static final Comparator<IAEFluidStack> NAME_DESC = NAME_ASC.reversed();
+    public static final Comparator<AEFluidKey> NAME_DESC = NAME_ASC.reversed();
 
-    public static final Comparator<IAEFluidStack> MOD_ASC = Comparator.comparing(
-            (IAEFluidStack fs) -> Platform.getModId(fs),
+    public static final Comparator<AEFluidKey> MOD_ASC = Comparator.comparing(
+            AEFluidKey::getModId,
             String::compareToIgnoreCase).thenComparing(NAME_ASC);
 
-    public static final Comparator<IAEFluidStack> MOD_DESC = MOD_ASC.reversed();
+    public static final Comparator<AEFluidKey> MOD_DESC = MOD_ASC.reversed();
 
-    public static final Comparator<IAEFluidStack> SIZE_ASC = Comparator.comparingLong(IAEStack::getStackSize);
-
-    public static final Comparator<IAEFluidStack> SIZE_DESC = SIZE_ASC.reversed();
-
-    public static Comparator<IAEFluidStack> getComparator(SortOrder order, SortDir dir) {
+    public static Comparator<AEFluidKey> getComparator(SortOrder order, SortDir dir) {
         return switch (order) {
             case NAME -> dir == SortDir.ASCENDING ? NAME_ASC : NAME_DESC;
-            case AMOUNT -> dir == SortDir.ASCENDING ? SIZE_ASC : SIZE_DESC;
             case MOD -> dir == SortDir.ASCENDING ? MOD_ASC : MOD_DESC;
+            case AMOUNT -> throw new UnsupportedOperationException();
         };
     }
 

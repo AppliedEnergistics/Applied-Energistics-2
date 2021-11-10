@@ -26,9 +26,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.BlankVariantView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
@@ -82,8 +82,9 @@ import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.ServerTickingBlockEntity;
@@ -96,11 +97,9 @@ import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
-import appeng.util.fluid.AEFluidStack;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import appeng.util.item.AEItemStack;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IColorableBlockEntity,
@@ -219,7 +218,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private <T extends IAEStack> ChestMonitorHandler<T> wrap(ICellInventory<T> cellInventory) {
+    private <T extends AEKey> ChestMonitorHandler<T> wrap(ICellInventory<T> cellInventory) {
         if (cellInventory == null) {
             return null;
         }
@@ -389,7 +388,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         this.updateHandler();
 
         if (this.cellHandler != null && this.cellHandler.getChannel() == channel) {
@@ -438,13 +437,21 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.updateHandler();
 
             if (this.cellHandler != null && this.cellHandler.getChannel() == StorageChannels.items()) {
-                var returns = StorageHelper.poweredInsert(this, this.cellHandler.cast(StorageChannels.items()),
-                        AEItemStack.fromItemStack(this.inputInventory.getStackInSlot(0)), this.mySrc);
+                var storage = this.cellHandler.cast(StorageChannels.items());
 
-                if (returns == null) {
+                var stack = this.inputInventory.getStackInSlot(0);
+                if (stack.isEmpty()) {
+                    return;
+                }
+
+                var inserted = StorageHelper.poweredInsert(this, storage,
+                        AEItemKey.of(stack), stack.getCount(), this.mySrc);
+
+                if (inserted >= stack.getCount()) {
                     this.inputInventory.setItemDirect(0, ItemStack.EMPTY);
                 } else {
-                    this.inputInventory.setItemDirect(0, returns.createItemStack());
+                    stack.shrink((int) inserted);
+                    this.inputInventory.setItemDirect(0, stack);
                 }
             }
         }
@@ -475,7 +482,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         IStorageProvider.requestUpdate(getMainNode());
     }
 
-    private void blinkCell(final int slot) {
+    private void blinkCell(int slot) {
         final long now = this.level.getGameTime();
         if (now - this.lastStateChange > 8) {
             this.state = 0;
@@ -533,7 +540,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.level.blockEntityChanged(this.worldPosition);
     }
 
-    private class ChestNetNotifier<T extends IAEStack> implements IMEMonitorListener<T> {
+    private class ChestNetNotifier<T extends AEKey> implements IMEMonitorListener<T> {
 
         private final IStorageChannel<T> chan;
 
@@ -552,7 +559,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public void postChange(IMEMonitor<T> monitor, Iterable<T> change, final IActionSource source) {
+        public void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource source) {
             if (source == ChestBlockEntity.this.mySrc
                     || source.machine().map(machine -> machine == ChestBlockEntity.this).orElse(false)) {
                 if (getMainNode().isActive()) {
@@ -571,7 +578,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T> {
+    private class ChestMonitorHandler<T extends AEKey> extends MEMonitorHandler<T> {
         private final ICellInventory<T> cellInventory;
 
         public ChestMonitorHandler(IMEInventory<T> inventory, ICellInventory<T> cellInventory) {
@@ -580,11 +587,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public T injectItems(final T input, final Actionable mode, final IActionSource src) {
-            if (src.player().map(player -> !this.securityCheck(player, SecurityPermissions.INJECT)).orElse(false)) {
-                return input;
+        public long insert(T what, long amount, Actionable mode, IActionSource source) {
+            if (source.player().map(player -> !this.securityCheck(player, SecurityPermissions.INJECT)).orElse(false)) {
+                return 0;
             }
-            return super.injectItems(input, mode, src);
+            return super.insert(what, amount, mode, source);
         }
 
         private boolean securityCheck(final Player player, final SecurityPermissions requiredPermission) {
@@ -613,11 +620,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public T extractItems(final T request, final Actionable mode, final IActionSource src) {
-            if (src.player().map(player -> !this.securityCheck(player, SecurityPermissions.EXTRACT)).orElse(false)) {
-                return null;
+        public long extract(T what, long amount, Actionable mode, IActionSource source) {
+            if (source.player().map(player -> !this.securityCheck(player, SecurityPermissions.EXTRACT)).orElse(false)) {
+                return 0;
             }
-            return super.extractItems(request, mode, src);
+            return super.extract(what, amount, mode, source);
         }
     }
 
@@ -650,15 +657,18 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private class FluidHandler extends SnapshotParticipant<IAEFluidStack>
+    private class FluidHandler extends SnapshotParticipant<FluidHandler.QueuedInsert>
             implements InsertionOnlyStorage<FluidVariant> {
-        private IAEFluidStack queuedInsert;
+        private QueuedInsert queuedInsert;
+
+        private record QueuedInsert(AEFluidKey what, long amount) {
+        }
 
         /**
          * If we accept fluids, simulate that we have an empty tank with 1 bucket capacity at all times.
          */
         private final List<StorageView<FluidVariant>> fakeInputTanks = Collections.singletonList(
-                new BlankVariantView<>(FluidVariant.blank(), FluidConstants.BUCKET));
+                new BlankVariantView<>(FluidVariant.blank(), AEFluidKey.AMOUNT_BUCKET));
 
         private boolean canAcceptLiquids() {
             return ChestBlockEntity.this.cellHandler != null
@@ -667,21 +677,21 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
         @Override
         public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+
             if (queuedInsert != null) {
                 return 0; // Can only insert once per action
             }
 
             ChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
-                var stack = AEFluidStack.of(resource, maxAmount);
-                if (stack != null) {
-                    stack.setStackSize(pushToNetwork(stack, false));
-                    if (stack.getStackSize() > 0) {
-                        updateSnapshots(transaction);
-                        queuedInsert = stack;
-                    }
-                    return stack.getStackSize();
+                var what = AEFluidKey.of(resource);
+                var inserted = pushToNetwork(new QueuedInsert(what, maxAmount), false);
+                if (inserted > 0) {
+                    updateSnapshots(transaction);
+                    this.queuedInsert = new QueuedInsert(what, inserted);
                 }
+                return inserted;
             }
             return 0;
         }
@@ -696,12 +706,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        protected final IAEFluidStack createSnapshot() {
+        protected final QueuedInsert createSnapshot() {
             return queuedInsert;
         }
 
         @Override
-        protected final void readSnapshot(IAEFluidStack snapshot) {
+        protected final void readSnapshot(QueuedInsert snapshot) {
             this.queuedInsert = snapshot;
         }
 
@@ -711,18 +721,17 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             queuedInsert = null;
         }
 
-        private long pushToNetwork(IAEFluidStack what, boolean commit) {
+        private long pushToNetwork(QueuedInsert queuedInsert, boolean commit) {
             ChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
                 final Actionable mode = commit ? Actionable.MODULATE : Actionable.SIMULATE;
-                var overflow = StorageHelper.poweredInsert(ChestBlockEntity.this,
-                        ChestBlockEntity.this.cellHandler.cast(StorageChannels.fluids()), what,
-                        ChestBlockEntity.this.mySrc, mode);
-
-                if (overflow == null) {
-                    return what.getStackSize();
-                }
-                return what.getStackSize() - (int) overflow.getStackSize();
+                return StorageHelper.poweredInsert(
+                        ChestBlockEntity.this,
+                        ChestBlockEntity.this.cellHandler.cast(StorageChannels.fluids()),
+                        queuedInsert.what(),
+                        queuedInsert.amount(),
+                        ChestBlockEntity.this.mySrc,
+                        mode);
             }
             return 0;
         }

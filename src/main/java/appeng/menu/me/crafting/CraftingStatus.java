@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.crafting.execution.ElapsedTimeTracker;
 import appeng.menu.me.common.IncrementalUpdateHelper;
@@ -34,8 +34,8 @@ import appeng.menu.me.common.IncrementalUpdateHelper;
  * Describes a currently running crafting job. A crafting status can either be a full update which replaces any
  * previously kept state on the client ({@link #isFullStatus()}, or an incremental update, which uses previously sent
  * {@link CraftingStatusEntry#getSerial() serials} to update entries on the client that were previously sent. To reduce
- * the packet size for updates, the {@link CraftingStatusEntry#getStack() stack} for entries that were previously sent
- * to the client are set to {@code null}.
+ * the packet size for updates, the {@link CraftingStatusEntry#getWhat() stack} for entries that were previously sent to
+ * the client are set to {@code null}.
  */
 public class CraftingStatus {
 
@@ -119,25 +119,24 @@ public class CraftingStatus {
         return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build());
     }
 
-    public static CraftingStatus create(IncrementalUpdateHelper<IAEStack> changes,
-            CraftingCpuLogic logic) {
+    public static CraftingStatus create(IncrementalUpdateHelper<AEKey> changes, CraftingCpuLogic logic) {
 
         boolean full = changes.isFullUpdate();
 
         ImmutableList.Builder<CraftingStatusEntry> newEntries = ImmutableList.builder();
-        for (var stack : changes) {
-            long storedCount = logic.getStored(stack);
-            long activeCount = logic.getWaitingFor(stack);
-            long pendingCount = logic.getPendingOutputs(stack);
+        for (var what : changes) {
+            long storedCount = logic.getStored(what);
+            long activeCount = logic.getWaitingFor(what);
+            long pendingCount = logic.getPendingOutputs(what);
 
-            IAEStack sentStack = IAEStack.copy(stack);
-            if (!full && changes.getSerial(stack) != null) {
+            var sentStack = what;
+            if (!full && changes.getSerial(what) != null) {
                 // The item was already sent to the client, so we can skip the item stack
                 sentStack = null;
             }
 
             var entry = new CraftingStatusEntry(
-                    changes.getOrAssignSerial(stack),
+                    changes.getOrAssignSerial(what),
                     sentStack,
                     storedCount,
                     activeCount,
@@ -145,7 +144,7 @@ public class CraftingStatus {
             newEntries.add(entry);
 
             if (entry.isDeleted()) {
-                stack.reset(); // Ensure it is deleted on commit, since the client will also clear it.
+                changes.removeSerial(what);
             }
         }
 

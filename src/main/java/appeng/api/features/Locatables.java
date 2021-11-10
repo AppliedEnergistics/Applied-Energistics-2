@@ -25,10 +25,9 @@ package appeng.api.features;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
 
 import net.minecraft.world.level.Level;
 
@@ -59,7 +58,7 @@ public final class Locatables {
          */
         @Nullable
         public T get(Level level, long key) {
-            Preconditions.checkNotNull(level, "level");
+            Objects.requireNonNull(level, "level");
             if (level.isClientSide()) {
                 return null;
             } else {
@@ -77,8 +76,8 @@ public final class Locatables {
          * @param locatable The locatable object to register.
          */
         public void register(Level level, long key, T locatable) {
-            Preconditions.checkNotNull(level, "level");
-            Preconditions.checkNotNull(locatable, "locatable");
+            Objects.requireNonNull(level, "level");
+            Objects.requireNonNull(locatable, "locatable");
 
             if (!level.isClientSide()) {
                 objects.put(key, locatable);
@@ -93,7 +92,7 @@ public final class Locatables {
          *              ignored.
          */
         public void unregister(Level level, long key) {
-            Preconditions.checkNotNull(level, "level");
+            Objects.requireNonNull(level, "level");
 
             if (!level.isClientSide()) {
                 objects.remove(key);

@@ -22,9 +22,9 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
-public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
+public class DriveWatcher<T extends AEKey> extends MEInventoryHandler<T> {
 
     private CellState oldStatus = CellState.EMPTY;
     private final Runnable activityCallback;
@@ -39,12 +39,10 @@ public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
     }
 
     @Override
-    public T injectItems(final T input, final Actionable type, final IActionSource src) {
-        long size = input.getStackSize();
+    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        var inserted = super.insert(what, amount, mode, source);
 
-        T a = super.injectItems(input, type, src);
-
-        if (type == Actionable.MODULATE && (a == null || a.getStackSize() != size)) {
+        if (mode == Actionable.MODULATE && inserted > 0) {
             var newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
@@ -53,14 +51,14 @@ public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
             }
         }
 
-        return a;
+        return inserted;
     }
 
     @Override
-    public T extractItems(final T request, final Actionable type, final IActionSource src) {
-        T a = super.extractItems(request, type, src);
+    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+        var extracted = super.extract(what, amount, mode, source);
 
-        if (type == Actionable.MODULATE && a != null) {
+        if (mode == Actionable.MODULATE && extracted > 0) {
             var newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
@@ -69,6 +67,6 @@ public class DriveWatcher<T extends IAEStack> extends MEInventoryHandler<T> {
             }
         }
 
-        return a;
+        return extracted;
     }
 }

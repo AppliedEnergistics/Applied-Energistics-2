@@ -36,7 +36,6 @@ import com.google.common.collect.Iterables;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,7 +44,6 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -81,9 +79,9 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -95,7 +93,6 @@ import appeng.items.tools.quartz.QuartzToolType;
 import appeng.me.GridNode;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
-import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 
 public class Platform {
@@ -303,15 +300,18 @@ public class Platform {
     }
 
     @Environment(EnvType.CLIENT)
+    public static List<Component> getTooltip(AEItemKey item) {
+        return getTooltip(item.toStack());
+    }
+
+    @Environment(EnvType.CLIENT)
     public static List<Component> getTooltip(final Object o) {
         if (o == null) {
             return Collections.emptyList();
         }
 
         ItemStack itemStack = ItemStack.EMPTY;
-        if (o instanceof AEItemStack ais) {
-            return ais.getToolTip();
-        } else if (o instanceof ItemStack) {
+        if (o instanceof ItemStack) {
             itemStack = (ItemStack) o;
         } else {
             return Collections.emptyList();
@@ -327,27 +327,13 @@ public class Platform {
         }
     }
 
-    public static String getModId(final IAEItemStack is) {
-        if (is == null) {
-            return "** Null";
-        }
-
-        final String n = ((AEItemStack) is).getModID();
-        return n == null ? "** Null" : n;
-    }
-
-    public static String getModId(final IAEFluidStack fs) {
-        if (fs == null || fs.getFluid().isBlank()) {
-            return "** Null";
-        }
-
-        var n = Registry.FLUID.getKey(fs.getFluid().getFluid());
-        return n == Registry.FLUID.getDefaultKey() ? "** Null" : n.getNamespace();
-    }
-
     public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
                 + FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(null);
+    }
+
+    public static Component getItemDisplayName(AEItemKey what) {
+        return getItemDisplayName(what.toStack());
     }
 
     public static Component getItemDisplayName(final Object o) {
@@ -356,10 +342,7 @@ public class Platform {
         }
 
         ItemStack itemStack = ItemStack.EMPTY;
-        if (o instanceof AEItemStack) {
-            final Component n = ((AEItemStack) o).getDisplayName();
-            return n == null ? new TextComponent("** Null") : n;
-        } else if (o instanceof ItemStack) {
+        if (o instanceof ItemStack) {
             itemStack = (ItemStack) o;
         } else {
             return new TextComponent("**Invalid Object");
@@ -384,11 +367,8 @@ public class Platform {
         return getDescriptionId(fluid.getFluid());
     }
 
-    public static Component getFluidDisplayName(IAEFluidStack o) {
-        if (o == null) {
-            return new TextComponent("** Null");
-        }
-        return new TranslatableComponent(getDescriptionId(o.getFluid()));
+    public static Component getFluidDisplayName(AEFluidKey o) {
+        return new TranslatableComponent(getDescriptionId(o.toVariant()));
     }
 
     public static boolean isChargeable(final ItemStack i) {
@@ -630,51 +610,46 @@ public class Platform {
         }
     }
 
-    public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
-            final IMEMonitor<IAEItemStack> src, final Level level, final Recipe<CraftingContainer> r,
-            final ItemStack output, final CraftingContainer ci, final ItemStack providedTemplate, final int slot,
-            final IAEStackList<IAEItemStack> items, final Actionable realForFake,
-            final IPartitionList<IAEItemStack> filter) {
+    public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
+            IActionSource mySrc,
+            IMEMonitor<AEItemKey> src,
+            Level level,
+            Recipe<CraftingContainer> r,
+            ItemStack output,
+            CraftingContainer ci,
+            ItemStack providedTemplate,
+            int slot,
+            KeyCounter<AEItemKey> items,
+            Actionable realForFake,
+            IPartitionList<AEItemKey> filter) {
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {
                 return ItemStack.EMPTY;
             }
 
-            final AEItemStack ae_req = AEItemStack.fromItemStack(providedTemplate);
-            ae_req.setStackSize(1);
+            var ae_req = AEItemKey.of(providedTemplate);
 
             if (filter == null || filter.isListed(ae_req)) {
-                final IAEItemStack ae_ext = src.extractItems(ae_req, realForFake, mySrc);
-                if (ae_ext != null) {
-                    final ItemStack extracted = ae_ext.createItemStack();
-                    if (!extracted.isEmpty()) {
-                        energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
-                        return extracted;
-                    }
+                var extracted = src.extract(ae_req, 1, realForFake, mySrc);
+                if (extracted > 0) {
+                    energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
+                    return ae_req.toStack();
                 }
             }
 
-            final boolean checkFuzzy = /*
-                                        * FIXME ae_req.getOre().isPresent() || FIXME providedTemplate.getDamage() ==
-                                        * OreDictionary.WILDCARD_VALUE ||
-                                        */ providedTemplate.hasTag() || providedTemplate.isDamageableItem();
+            var checkFuzzy = providedTemplate.hasTag() || providedTemplate.isDamageableItem();
 
             if (items != null && checkFuzzy) {
-                for (final IAEItemStack x : items) {
-                    final ItemStack sh = x.getDefinition();
-                    if (Platform.itemComparisons().isEqualItemType(providedTemplate, sh)
-                            && !ItemStack.isSame(sh, output)) {
-                        final ItemStack cp = sh.copy();
-                        cp.setCount(1);
-                        ci.setItem(slot, cp);
+                for (var x : items) {
+                    var availableKey = x.getKey();
+                    if (providedTemplate.getItem() == availableKey.getItem() && !availableKey.matches(output)) {
+                        ci.setItem(slot, availableKey.toStack());
                         if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
-                            final IAEItemStack ax = x.copy();
-                            ax.setStackSize(1);
-                            if (filter == null || filter.isListed(ax)) {
-                                final IAEItemStack ex = src.extractItems(ax, realForFake, mySrc);
-                                if (ex != null) {
+                            if (filter == null || filter.isListed(availableKey)) {
+                                var ex = src.extract(availableKey, 1, realForFake, mySrc);
+                                if (ex > 0) {
                                     energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
-                                    return ex.createItemStack();
+                                    return availableKey.toStack();
                                 }
                             }
                         }
@@ -739,7 +714,7 @@ public class Platform {
     }
 
     public static String formatFluidAmount(long amount) {
-        return NumberFormat.getNumberInstance(Locale.US).format(amount / (double) FluidConstants.BUCKET) + " B";
+        return NumberFormat.getNumberInstance(Locale.US).format(amount / (double) AEFluidKey.AMOUNT_BUCKET) + " B";
     }
 
     /**

@@ -25,6 +25,7 @@ package appeng.api.features;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -76,8 +77,8 @@ public final class ChargerRegistry {
      */
     @Nonnegative
     public synchronized static double getChargeRate(@Nonnull ItemLike item) {
-        Preconditions.checkNotNull(item);
-        Preconditions.checkNotNull(item.asItem());
+        Objects.requireNonNull(item);
+        Objects.requireNonNull(item.asItem());
 
         return chargeRates.getOrDefault(item.asItem(), DEFAULT_CHARGE_RATE);
     }
@@ -93,8 +94,8 @@ public final class ChargerRegistry {
      * @param chargeRate the custom rate, must be &gt; 0, capped to 16000d
      */
     public synchronized static void setChargeRate(@Nonnull ItemLike item, @Nonnegative double chargeRate) {
-        Preconditions.checkNotNull(item);
-        Preconditions.checkNotNull(item.asItem());
+        Objects.requireNonNull(item);
+        Objects.requireNonNull(item.asItem());
         Preconditions.checkArgument(chargeRate > 0d);
 
         final double cappedValue = Math.min(chargeRate, CAPPED_CHARGE_RATE);
@@ -108,8 +109,8 @@ public final class ChargerRegistry {
      * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
      */
     public synchronized static void resetChargeRate(@Nonnull ItemLike item) {
-        Preconditions.checkNotNull(item);
-        Preconditions.checkNotNull(item.asItem());
+        Objects.requireNonNull(item);
+        Objects.requireNonNull(item.asItem());
 
         chargeRates.remove(item.asItem());
     }

@@ -13,7 +13,7 @@
     }
   },
   "text": {
-    "screen_title": {
+    "dialog_title": {
       "text": {
         "translate": "gui.appliedenergistics2.FluidFormationPlane"
       },

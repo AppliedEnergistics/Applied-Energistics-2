@@ -25,6 +25,7 @@ package appeng.api.features;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
@@ -53,9 +54,9 @@ public final class WirelessTerminals {
      * Registers a wireless terminal handler for a given item.
      */
     public synchronized static void register(ItemLike itemLike, IWirelessTerminalHandler handler) {
-        Preconditions.checkNotNull(itemLike, "itemLike");
-        Preconditions.checkNotNull(itemLike.asItem(), "itemLike.asItem()");
-        Preconditions.checkNotNull(handler, "handler");
+        Objects.requireNonNull(itemLike, "itemLike");
+        Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
+        Objects.requireNonNull(handler, "handler");
         var item = itemLike.asItem();
         Preconditions.checkState(!registry.containsKey(item), "Handler for item %s is already registered.", item);
         registry.put(item, handler);
@@ -66,8 +67,8 @@ public final class WirelessTerminals {
      */
     @Nullable
     public synchronized static IWirelessTerminalHandler get(ItemLike itemLike) {
-        Preconditions.checkNotNull(itemLike, "itemLike");
-        Preconditions.checkNotNull(itemLike.asItem(), "itemLike.asItem()");
+        Objects.requireNonNull(itemLike, "itemLike");
+        Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
         return registry.get(itemLike.asItem());
     }
 

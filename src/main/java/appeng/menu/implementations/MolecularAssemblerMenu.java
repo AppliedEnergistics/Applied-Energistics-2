@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.storage.data.AEItemKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
@@ -32,7 +33,6 @@ import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.MolecularAssemblerPatternSlot;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.util.item.AEItemStack;
 
 /**
  * @see appeng.client.gui.implementations.MolecularAssemblerScreen
@@ -59,7 +59,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
         var details = molecularAssembler.getCurrentPattern();
         if (details != null) {
-            return details.isItemValid(slotIndex, AEItemStack.fromItemStack(i), molecularAssembler.getLevel());
+            return details.isItemValid(slotIndex, AEItemKey.of(i), molecularAssembler.getLevel());
         }
 
         return false;

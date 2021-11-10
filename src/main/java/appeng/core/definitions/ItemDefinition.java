@@ -18,15 +18,17 @@
 
 package appeng.core.definitions;
 
-import javax.annotation.Nonnull;
+import java.util.Objects;
 
-import com.google.common.base.Preconditions;
+import javax.annotation.Nonnull;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.util.Platform;
 
 public class ItemDefinition<T extends Item> implements ItemLike {
@@ -34,7 +36,7 @@ public class ItemDefinition<T extends Item> implements ItemLike {
     private final T item;
 
     public ItemDefinition(ResourceLocation id, T item) {
-        Preconditions.checkNotNull(id, "id");
+        Objects.requireNonNull(id, "id");
         this.id = id;
         this.item = item;
     }
@@ -61,6 +63,16 @@ public class ItemDefinition<T extends Item> implements ItemLike {
      */
     public final boolean isSameAs(final ItemStack comparableStack) {
         return Platform.itemComparisons().isEqualItemType(comparableStack, this.stack());
+    }
+
+    /**
+     * @return True if this item is represented by the given key.
+     */
+    public final boolean isSameAs(AEKey key) {
+        if (key instanceof AEItemKey itemKey) {
+            return item == itemKey.getItem();
+        }
+        return false;
     }
 
     @Override

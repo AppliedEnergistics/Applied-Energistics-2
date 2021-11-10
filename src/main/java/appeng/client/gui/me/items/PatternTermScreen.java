@@ -22,18 +22,23 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.config.ActionItems;
+import appeng.api.storage.data.AEItemKey;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.menu.SlotSemantic;
 import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.slot.PatternTermSlot;
 
 public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
 
@@ -175,5 +180,20 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
         int x = getGuiLeft() + slot.x;
         int y = getGuiTop() + slot.y;
         fill(poseStack, x, y, x + 16, y + 16, 0x7f00FF00);
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+        if (slot instanceof PatternTermSlot) {
+            var what = AEItemKey.of(slot.getItem());
+            if (what != null) {
+                var amount = slot.getItem().getCount();
+                var packet = new PatternSlotPacket(menu.getCraftingMatrix(), what, amount, hasShiftDown());
+                NetworkHandler.instance().sendToServer(packet);
+            }
+            return;
+        }
+
+        super.slotClicked(slot, slotIdx, mouseButton, clickType);
     }
 }

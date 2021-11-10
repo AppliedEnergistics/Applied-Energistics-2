@@ -23,29 +23,25 @@ import javax.annotation.Nullable;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.ItemStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.storage.StorageAdapter;
-import appeng.menu.implementations.ItemStorageBusMenu;
+import appeng.menu.implementations.StorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.IVariantConversion;
-import appeng.util.inv.AppEngInternalAEInventory;
 
-public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Storage<ItemVariant>> {
+public class ItemStorageBusPart extends AbstractStorageBusPart<AEItemKey, Storage<ItemVariant>> {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
 
@@ -61,20 +57,18 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Sto
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_has_channel"));
 
-    private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
-
     public ItemStorageBusPart(final ItemStack is) {
         super(TickRates.ItemStorageBus, is, ItemStorage.SIDED);
     }
 
     @Override
-    protected IStorageChannel<IAEItemStack> getStorageChannel() {
+    public ItemStorageChannel getChannel() {
         return StorageChannels.items();
     }
 
     @Nullable
     @Override
-    protected IMEInventory<IAEItemStack> adaptExternalApi(Storage<ItemVariant> handler, boolean extractableOnly,
+    protected IMEInventory<AEItemKey> adaptExternalApi(Storage<ItemVariant> handler, boolean extractableOnly,
             Runnable alertDevice) {
         return new StorageAdapter<>(IVariantConversion.ITEM, handler, extractableOnly) {
             @Override
@@ -82,48 +76,6 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Sto
                 alertDevice.run();
             }
         };
-    }
-
-    @Override
-    protected int getStackConfigSize() {
-        return this.config.size();
-    }
-
-    @Nullable
-    @Override
-    protected IAEItemStack getStackInConfigSlot(int slot) {
-        return this.config.getAEStackInSlot(slot);
-    }
-
-    @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
-        super.onChangeInventory(inv, slot, removedStack, newStack);
-
-        if (inv == this.config) {
-            this.onConfigurationChanged();
-        }
-    }
-
-    @Override
-    public void readFromNBT(final CompoundTag data) {
-        super.readFromNBT(data);
-        this.config.readFromNBT(data, "config");
-    }
-
-    @Override
-    public void writeToNBT(final CompoundTag data) {
-        super.writeToNBT(data);
-        this.config.writeToNBT(data, "config");
-    }
-
-    @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
-        if (id.equals(ISegmentedInventory.CONFIG)) {
-            return this.config;
-        } else {
-            return super.getSubInventory(id);
-        }
     }
 
     @Override
@@ -144,6 +96,6 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<IAEItemStack, Sto
 
     @Override
     public MenuType<?> getMenuType() {
-        return ItemStorageBusMenu.TYPE;
+        return StorageBusMenu.ITEM_TYPE;
     }
 }
