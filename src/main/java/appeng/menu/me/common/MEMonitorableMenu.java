@@ -141,7 +141,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
                         this.networkNode = node;
                         final IGrid g = node.getGrid();
                         if (g != null) {
-                            powerSource = new ChannelPowerSrc(this.networkNode, g.getService(IEnergyService.class));
+                            powerSource = new ChannelPowerSrc(this.networkNode, g.getEnergyService());
                         }
                     }
                 }
@@ -291,7 +291,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
         }
 
         int activeJobs = 0;
-        ICraftingService craftingGrid = grid.getService(ICraftingService.class);
+        ICraftingService craftingGrid = grid.getCraftingService();
         for (ICraftingCPU cpus : craftingGrid.getCpus()) {
             if (cpus.isBusy()) {
                 activeJobs++;

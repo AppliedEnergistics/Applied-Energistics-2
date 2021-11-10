@@ -54,7 +54,7 @@ class CraftingCPUCycler {
     }
 
     public void detectAndSendChanges(IGrid network) {
-        final ICraftingService cc = network.getService(ICraftingService.class);
+        final ICraftingService cc = network.getCraftingService();
         final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
         int matches = 0;

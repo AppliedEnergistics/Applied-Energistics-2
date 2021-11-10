@@ -165,13 +165,13 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 final IGrid g = gn.getGrid();
                 if (g != null) {
                     if (requirePower) {
-                        final IEnergyService eg = g.getService(IEnergyService.class);
+                        final IEnergyService eg = g.getEnergyService();
                         if (!eg.isNetworkPowered()) {
                             return false;
                         }
                     }
 
-                    final ISecurityService sg = g.getService(ISecurityService.class);
+                    final ISecurityService sg = g.getSecurityService();
                     if (sg.hasPermission(this.getPlayerInventory().player, perm)) {
                         return true;
                     }

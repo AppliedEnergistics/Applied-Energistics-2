@@ -120,7 +120,7 @@ public class CraftingPlanSummary {
 
         ImmutableList.Builder<CraftingPlanSummaryEntry> entries = ImmutableList.builder();
 
-        final IStorageService sg = grid.getService(IStorageService.class);
+        final IStorageService sg = grid.getStorageService();
 
         for (var out : plan) {
             long missingAmount;

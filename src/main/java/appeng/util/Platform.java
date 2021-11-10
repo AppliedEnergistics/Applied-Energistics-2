@@ -220,14 +220,14 @@ public class Platform {
                 if (g != null) {
                     final boolean requirePower = false;
                     if (requirePower) {
-                        final IEnergyService eg = g.getService(IEnergyService.class);
+                        final IEnergyService eg = g.getEnergyService();
                         if (!eg.isNetworkPowered()) {
                             // FIXME trace logging?
                             return false;
                         }
                     }
 
-                    final ISecurityService sg = g.getService(ISecurityService.class);
+                    final ISecurityService sg = g.getSecurityService();
                     if (!sg.hasPermission(player, requiredPermission)) {
                         player.sendMessage(new TranslatableComponent("appliedenergistics2.permission_denied")
                                 .withStyle(ChatFormatting.RED), Util.NIL_UUID);
@@ -561,7 +561,7 @@ public class Platform {
             return true;
         }
 
-        final ISecurityService gs = grid.getService(ISecurityService.class);
+        final ISecurityService gs = grid.getSecurityService();
 
         if (gs == null) {
             return true;

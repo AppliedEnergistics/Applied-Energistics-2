@@ -595,13 +595,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                     final IGrid g = gn.getGrid();
                     final boolean requirePower = false;
                     if (requirePower) {
-                        final IEnergyService eg = g.getService(IEnergyService.class);
+                        final IEnergyService eg = g.getEnergyService();
                         if (!eg.isNetworkPowered()) {
                             return false;
                         }
                     }
 
-                    final ISecurityService sg = g.getService(ISecurityService.class);
+                    final ISecurityService sg = g.getSecurityService();
                     if (sg.hasPermission(player, requiredPermission)) {
                         return true;
                     }

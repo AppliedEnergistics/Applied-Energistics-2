@@ -32,7 +32,6 @@ import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridPowerStatusChange;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.core.AELog;
 import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.p2p.MEP2PTunnelPart;
@@ -68,7 +67,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
     }
 
     public void wakeInputTunnels() {
-        var tm = this.myGrid.getService(ITickManager.class);
+        var tm = this.myGrid.getTickManager();
         for (var tunnel : this.inputs.values()) {
             if (tunnel instanceof MEP2PTunnelPart) {
                 tm.wakeDevice(tunnel.getGridNode());
