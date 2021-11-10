@@ -347,7 +347,7 @@ public class CraftingCpuLogic {
         if (g == null)
             return;
 
-        final IStorageService sg = g.getService(IStorageService.class);
+        final IStorageService sg = g.getStorageService();
 
         for (IAEStack is : this.inventory.list) {
             this.postChange(is);

@@ -35,7 +35,6 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.GridSpatialEvent;
-import appeng.api.networking.spatial.ISpatialService;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.hooks.ticking.TickHandler;
@@ -120,7 +119,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
         final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 
         getMainNode().ifPresent((grid, node) -> {
-            var spc = grid.getService(ISpatialService.class);
+            var spc = grid.getSpatialService();
             if (!spc.hasRegion() || !spc.isValidRegion()) {
                 return;
             }

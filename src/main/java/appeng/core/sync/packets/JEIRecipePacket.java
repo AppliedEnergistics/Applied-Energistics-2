@@ -42,9 +42,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.security.ISecurityService;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
@@ -152,14 +149,10 @@ public class JEIRecipePacket extends BasePacket {
         var grid = node.getGrid();
         Preconditions.checkArgument(grid != null);
 
-        var inv = grid.getService(IStorageService.class);
-        Preconditions.checkArgument(inv != null);
-
-        var security = grid.getService(ISecurityService.class);
-        Preconditions.checkArgument(security != null);
-
-        var energy = grid.getService(IEnergyService.class);
-        var crafting = grid.getService(ICraftingService.class);
+        var inv = grid.getStorageService();
+        var security = grid.getSecurityService();
+        var energy = grid.getEnergyService();
+        var crafting = grid.getCraftingService();
         var craftMatrix = cct.getCraftingMatrix();
 
         var storage = inv.getInventory(StorageChannels.items());
