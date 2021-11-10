@@ -18,11 +18,10 @@
 
 package appeng.me.helpers;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
 
 import net.minecraft.world.entity.player.Player;
 
@@ -40,7 +39,7 @@ public class PlayerSource implements IActionSource {
     }
 
     public PlayerSource(Player p, @Nullable IActionHost v) {
-        Preconditions.checkNotNull(p);
+        Objects.requireNonNull(p);
         this.player = p;
         this.via = v;
     }

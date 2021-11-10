@@ -20,6 +20,8 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
@@ -36,22 +38,17 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.implementations.parts.IStorageMonitorPart;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.client.render.TesrRenderHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
-import appeng.util.item.AEItemStack;
 
 /**
  * A basic subclass for any item monitor like display with an item icon and an amount.
@@ -67,7 +64,9 @@ import appeng.util.item.AEItemStack;
 public abstract class AbstractMonitorPart extends AbstractDisplayPart
         implements IStorageMonitorPart, IStackWatcherNode {
     private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
-    private IAEItemStack configuredItem;
+    @Nullable
+    private AEKey configuredItem;
+    private long amount;
     private String lastHumanReadableText;
     private boolean isLocked;
     private IStackWatcher myWatcher;
@@ -84,8 +83,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         this.isLocked = data.getBoolean("isLocked");
 
-        final CompoundTag myItem = data.getCompound("configuredItem");
-        this.configuredItem = AEItemStack.fromNBT(myItem);
+        this.configuredItem = AEKey.fromTagGeneric(data.getCompound("configuredItem"));
     }
 
     @Override
@@ -94,12 +92,9 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         data.putBoolean("isLocked", this.isLocked);
 
-        final CompoundTag myItem = new CompoundTag();
         if (this.configuredItem != null) {
-            this.configuredItem.writeToNBT(myItem);
+            data.put("configuredItem", this.configuredItem.toTagGeneric());
         }
-
-        data.put("configuredItem", myItem);
     }
 
     @Override
@@ -124,7 +119,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         // This item is rendered dynamically and doesn't need to trigger a chunk update
         if (data.readBoolean()) {
-            this.configuredItem = AEItemStack.fromPacket(data);
+            this.configuredItem = AEItemKey.fromPacket(data);
         } else {
             this.configuredItem = null;
         }
@@ -148,7 +143,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         if (!this.isLocked) {
             var eq = player.getItemInHand(hand);
-            this.configuredItem = AEItemStack.fromItemStack(eq);
+            this.configuredItem = AEItemKey.of(eq);
             this.configureWatchers();
             this.getHost().markForSave();
             this.getHost().markForUpdate();
@@ -196,21 +191,17 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             }
 
             getMainNode().ifPresent(grid -> {
-                this.updateReportingValue(grid.getStorageService()
-                        .getInventory(StorageChannels.items()));
+                this.updateReportingValue(grid.getStorageService());
             });
         }
     }
 
-    private void updateReportingValue(final IMEMonitor<IAEItemStack> itemInventory) {
+    private void updateReportingValue(IStorageService storageService) {
+        this.lastHumanReadableText = null;
         if (this.configuredItem != null) {
-            final IAEItemStack result = itemInventory.getCachedAvailableStacks().findPrecise(this.configuredItem);
-            this.lastHumanReadableText = null;
-            if (result == null) {
-                this.configuredItem.setStackSize(0);
-            } else {
-                this.configuredItem.setStackSize(result.getStackSize());
-            }
+            this.amount = storageService.getStoredAmountCached(this.configuredItem);
+        } else {
+            this.amount = 0;
         }
     }
 
@@ -224,9 +215,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             return;
         }
 
-        var ais = this.getDisplayed();
-
-        if (ais == null) {
+        if (configuredItem == null) {
             return;
         }
 
@@ -239,7 +228,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         poseStack.translate(0, 0.05, 0.5);
 
-        TesrRenderHelper.renderItem2dWithAmount(poseStack, buffers, ais, 0.4f, -0.23f, 15728880, combinedOverlayIn);
+        TesrRenderHelper.renderItem2dWithAmount(poseStack, buffers, configuredItem.wrapForDisplayOrFilter(), amount,
+                0.4f, -0.23f, 15728880, combinedOverlayIn);
 
         poseStack.popPose();
 
@@ -251,8 +241,17 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public IAEItemStack getDisplayed() {
+    public AEKey getDisplayed() {
         return this.configuredItem;
+    }
+
+    @Override
+    public long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(long amount) {
+        this.amount = amount;
     }
 
     @Override
@@ -267,17 +266,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public <T extends IAEStack> void onStackChange(IAEStackList<T> o, IAEStack fullStack, IAEStack diffStack,
-            IActionSource src, IStorageChannel<T> chan) {
-        if (this.configuredItem != null) {
-            if (fullStack == null) {
-                this.configuredItem.setStackSize(0);
-            } else {
-                this.configuredItem.setStackSize(fullStack.getStackSize());
-            }
+    public <T extends AEKey> void onStackChange(T what, long amount) {
+        if (what.equals(this.configuredItem)) {
+            this.amount = amount;
 
-            var stackSize = this.configuredItem.getStackSize();
-            var humanReadableText = NUMBER_CONVERTER.toWideReadableForm(stackSize);
+            var humanReadableText = NUMBER_CONVERTER.toWideReadableForm(this.amount);
 
             // Try throttling to only relevant updates
             if (!humanReadableText.equals(this.lastHumanReadableText)) {

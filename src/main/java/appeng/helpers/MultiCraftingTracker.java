@@ -26,14 +26,13 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
-import appeng.api.inventories.ItemTransfer;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEKey;
 
 public class MultiCraftingTracker {
 
@@ -70,45 +69,40 @@ public class MultiCraftingTracker {
         }
     }
 
-    public boolean handleCrafting(final int x, final long itemToCraft, final IAEItemStack ais, ItemTransfer d,
-            final Level level, final ICraftingService cg, final IActionSource mySrc) {
-        if (ais != null && d.simulateAdd(ais.createItemStack()).isEmpty()) {
-            final Future<ICraftingPlan> craftingJob = this.getJob(x);
+    public boolean handleCrafting(int x, AEKey what, long amount,
+            Level level, ICraftingService cg, IActionSource mySrc) {
+        var craftingJob = this.getJob(x);
+        if (this.getLink(x) != null) {
+            return false;
+        }
 
-            if (this.getLink(x) != null) {
-                return false;
-            }
-
-            if (craftingJob != null) {
-
-                try {
-                    ICraftingPlan job = null;
-                    if (craftingJob.isDone()) {
-                        job = craftingJob.get();
-                    }
-
-                    if (job != null) {
-                        final ICraftingLink link = cg.submitJob(job, this.owner, null, false, mySrc);
-
-                        this.setJob(x, null);
-
-                        if (link != null) {
-                            this.setLink(x, link);
-
-                            return true;
-                        }
-                    }
-                } catch (final InterruptedException e) {
-                    // :P
-                } catch (final ExecutionException e) {
-                    // :P
+        // We're already running a crafting job
+        if (craftingJob != null) {
+            try {
+                ICraftingPlan job = null;
+                if (craftingJob.isDone()) {
+                    job = craftingJob.get();
                 }
-            } else if (this.getLink(x) == null) {
-                final IAEItemStack aisC = ais.copy();
-                aisC.setStackSize(itemToCraft);
 
-                this.setJob(x, cg.beginCraftingCalculation(level, () -> mySrc, aisC));
+                // Check if job is complete
+                if (job != null) {
+                    var link = cg.submitJob(job, this.owner, null, false, mySrc);
+
+                    this.setJob(x, null);
+
+                    if (link != null) {
+                        this.setLink(x, link);
+
+                        return true;
+                    }
+                }
+            } catch (final InterruptedException e) {
+                // :P
+            } catch (final ExecutionException e) {
+                // :P
             }
+        } else if (this.getLink(x) == null) {
+            this.setJob(x, cg.beginCraftingCalculation(level, () -> mySrc, what, amount));
         }
         return false;
     }

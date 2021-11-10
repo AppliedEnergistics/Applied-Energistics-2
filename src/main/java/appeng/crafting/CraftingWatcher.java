@@ -19,12 +19,11 @@
 package appeng.crafting;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.me.service.CraftingService;
 
 /**
@@ -34,7 +33,7 @@ public class CraftingWatcher implements ICraftingWatcher {
 
     private final CraftingService service;
     private final ICraftingWatcherNode host;
-    private final Set<IAEStack> myInterests = new HashSet<>();
+    private final Set<AEKey> myInterests = new HashSet<>();
 
     public CraftingWatcher(final CraftingService service, final ICraftingWatcherNode host) {
         this.service = service;
@@ -46,22 +45,22 @@ public class CraftingWatcher implements ICraftingWatcher {
     }
 
     @Override
-    public boolean add(final IAEStack e) {
-        if (this.myInterests.contains(e)) {
+    public boolean add(AEKey what) {
+        if (this.myInterests.contains(what)) {
             return false;
         }
 
-        return this.myInterests.add(IAEStack.<IAEStack>copy(e)) && this.service.getInterestManager().put(e, this);
+        return this.myInterests.add(what) && this.service.getInterestManager().put(what, this);
     }
 
     @Override
-    public boolean remove(final IAEStack o) {
-        return this.myInterests.remove(o) && this.service.getInterestManager().remove(o, this);
+    public boolean remove(AEKey what) {
+        return this.myInterests.remove(what) && this.service.getInterestManager().remove(what, this);
     }
 
     @Override
     public void reset() {
-        final Iterator<IAEStack> i = this.myInterests.iterator();
+        var i = this.myInterests.iterator();
 
         while (i.hasNext()) {
             this.service.getInterestManager().remove(i.next(), this);

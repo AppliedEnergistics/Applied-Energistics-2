@@ -76,10 +76,6 @@ public class BasePacketHandler {
 
         ME_INTERFACE_UPDATE(InterfaceTerminalPacket.class, InterfaceTerminalPacket::new),
 
-        FLUID_TANK(FluidSlotPacket.class, FluidSlotPacket::new),
-
-        GENERIC_SLOT(GenericSlotPacket.class, GenericSlotPacket::new),
-
         NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new),
 
         CRAFT_CONFIRM_PLAN(CraftConfirmPlanPacket.class, CraftConfirmPlanPacket::new),

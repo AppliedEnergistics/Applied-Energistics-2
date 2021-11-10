@@ -39,8 +39,9 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
-import appeng.crafting.execution.GenericStackHelper;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
 
@@ -77,10 +78,9 @@ public interface IInterfaceTarget {
             return null;
         } else {
             return new IInterfaceTarget() {
-                @Nullable
                 @Override
-                public IAEStack injectItems(IAEStack what, Actionable type) {
-                    return GenericStackHelper.injectMonitorable(monitorable, what, type, src);
+                public long insert(AEKey what, long amount, Actionable type) {
+                    return monitorable.insert(what, amount, type, src);
                 }
 
                 @Override
@@ -96,12 +96,12 @@ public interface IInterfaceTarget {
         }
     }
 
-    private static <T extends IAEStack> boolean isChannelBusy(IStorageChannel<T> channel,
+    private static <T extends AEKey> boolean isChannelBusy(IStorageChannel<T> channel,
             IStorageMonitorable monitorable, IActionSource src) {
         var inventory = monitorable.getInventory(channel);
         if (inventory != null) {
             for (var stack : inventory.getCachedAvailableStacks()) {
-                if (inventory.extractItems(stack, Actionable.SIMULATE, src) != null) {
+                if (inventory.extract(stack.getKey(), 1, Actionable.SIMULATE, src) > 0) {
                     return true;
                 }
             }
@@ -122,16 +122,15 @@ public interface IInterfaceTarget {
             }
         };
         return new IInterfaceTarget() {
-            @Nullable
             @Override
-            public IAEStack injectItems(IAEStack what, Actionable type) {
-                if (what != null && what.getChannel() == StorageChannels.items()) {
-                    return itemAdapter.injectItems(what.cast(StorageChannels.items()), type, src);
+            public long insert(AEKey what, long amount, Actionable type) {
+                if (what instanceof AEItemKey itemKey) {
+                    return itemAdapter.insert(itemKey, amount, type, src);
                 }
-                if (what != null && what.getChannel() == StorageChannels.fluids()) {
-                    return fluidAdapter.injectItems(what.cast(StorageChannels.fluids()), type, src);
+                if (what instanceof AEFluidKey fluidKey) {
+                    return fluidAdapter.insert(fluidKey, amount, type, src);
                 }
-                return null;
+                return 0;
             }
 
             @Override
@@ -152,8 +151,7 @@ public interface IInterfaceTarget {
         return false;
     }
 
-    @Nullable
-    IAEStack injectItems(IAEStack what, Actionable type);
+    long insert(AEKey what, long amount, Actionable type);
 
     boolean isBusy();
 }

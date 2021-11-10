@@ -20,32 +20,37 @@ package appeng.menu.implementations;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+
+import com.google.common.collect.Iterators;
 
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
-import appeng.helpers.Inventories;
+import appeng.helpers.iface.GenericStackInv;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.slot.FakeTypeOnlySlot;
+import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalRestrictedInputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
+import appeng.util.ConfigMenuInventory;
 import appeng.util.EnumCycler;
 import appeng.util.inv.SupplierInternalInventory;
 
@@ -66,8 +71,12 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     @GuiSync(2)
     public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
 
+    private ConfigMenuInventory configInv;
+
     public CellWorkbenchMenu(int id, Inventory ip, CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
+
+        updateAutomaticConversionChannel();
 
         registerClientAction(ACTION_NEXT_COPYMODE, this::nextWorkBenchCopyMode);
         registerClientAction(ACTION_PARTITION, this::partition);
@@ -100,15 +109,21 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     @Override
+    public void onSlotChange(Slot s) {
+        super.onSlotChange(s);
+        updateAutomaticConversionChannel();
+    }
+
+    @Override
     protected void setupConfig() {
         var cell = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
                 SlotSemantic.STORAGE_CELL);
 
-        var inv = getConfigInventory();
+        configInv = getConfigInventory().createMenuWrapper();
 
         for (int i = 0; i < 7 * 9; i++) {
-            this.addSlot(new FakeTypeOnlySlot(inv, i), SlotSemantic.CONFIG);
+            this.addSlot(new FakeSlot(configInv, i), SlotSemantic.CONFIG);
         }
 
         // We support up to 8 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
@@ -125,6 +140,21 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     public ItemStack getWorkbenchItem() {
         var cells = Objects.requireNonNull(getHost().getSubInventory(ISegmentedInventory.CELLS));
         return cells.getStackInSlot(0);
+    }
+
+    /**
+     * Updates the channel on the cell config inventory wrapper. This is necessary to make it auto-convert buckets into
+     * fluids when a fluid-cell is inserted.
+     */
+    private void updateAutomaticConversionChannel() {
+        if (configInv != null) {
+            var cell = getHost().getCell();
+            if (cell != null) {
+                configInv.setChannel(cell.getChannel());
+            } else {
+                configInv.setChannel(null);
+            }
+        }
     }
 
     @Override
@@ -149,7 +179,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         if (isClient()) {
             sendClientAction(ACTION_CLEAR);
         } else {
-            Inventories.clear(getConfigInventory());
+            getConfigInventory().clear();
             this.broadcastChanges();
         }
     }
@@ -175,10 +205,9 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
         for (int x = 0; x < inv.size(); x++) {
             if (it.hasNext()) {
-                var g = it.next().asItemStackRepresentation();
-                inv.setItemDirect(x, g);
+                inv.setStack(x, new GenericStack(it.next(), 0));
             } else {
-                inv.setItemDirect(x, ItemStack.EMPTY);
+                inv.setStack(x, null);
             }
         }
 
@@ -186,16 +215,16 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     @Nonnull
-    private InternalInventory getConfigInventory() {
-        return Objects.requireNonNull(this.getHost().getSubInventory(ISegmentedInventory.CONFIG));
+    private GenericStackInv getConfigInventory() {
+        return Objects.requireNonNull(this.getHost().getConfig());
     }
 
     @NotNull
-    private Iterator<? extends IAEStack> iterateCellStacks(ItemStack is) {
+    private Iterator<? extends AEKey> iterateCellStacks(ItemStack is) {
         var cellInv = StorageCells.getCellInventory(is, null);
-        Iterator<? extends IAEStack> i;
+        Iterator<? extends AEKey> i;
         if (cellInv != null) {
-            i = cellInv.getAvailableStacks().iterator();
+            i = Iterators.transform(cellInv.getAvailableStacks().iterator(), Map.Entry::getKey);
         } else {
             i = Collections.emptyIterator();
         }

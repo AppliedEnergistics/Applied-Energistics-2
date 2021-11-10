@@ -32,8 +32,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
 import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.items.parts.PartModels;
@@ -132,11 +131,11 @@ public class PatternTerminalPart extends AbstractTerminalPart {
                 this.setFluidSubstitution(aeDetails.canSubstituteFluids());
 
                 for (int x = 0; x < this.crafting.size() && x < aeDetails.getSparseInputs().length; x++) {
-                    this.crafting.setItemDirect(x, getDisplayStack(aeDetails.getSparseInputs()[x]));
+                    this.crafting.setItemDirect(x, GenericStack.wrapInItemStack(aeDetails.getSparseInputs()[x]));
                 }
 
                 for (int x = 0; x < this.output.size() && x < aeDetails.getSparseOutputs().length; x++) {
-                    this.output.setItemDirect(x, getDisplayStack(aeDetails.getSparseOutputs()[x]));
+                    this.output.setItemDirect(x, GenericStack.wrapInItemStack(aeDetails.getSparseOutputs()[x]));
                 }
             }
         } else if (inv == this.crafting) {
@@ -144,18 +143,6 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         }
 
         this.getHost().markForSave();
-    }
-
-    private ItemStack getDisplayStack(@Nullable IAEStack aeStack) {
-        if (aeStack == null) {
-            return ItemStack.EMPTY;
-        } else if (aeStack.getChannel() == StorageChannels.items()) {
-            return aeStack.cast(StorageChannels.items()).createItemStack();
-        } else if (aeStack.getChannel() == StorageChannels.fluids()) {
-            return aeStack.cast(StorageChannels.fluids()).wrap();
-        } else {
-            throw new IllegalArgumentException("Only item and fluid stacks are supported");
-        }
     }
 
     private void fixCraftingRecipes() {

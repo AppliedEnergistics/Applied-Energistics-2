@@ -29,13 +29,10 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
 
-public interface IStorageChannel<T extends IAEStack> {
-
+public interface IStorageChannel<T extends AEKey> {
     /**
      * @return The unique ID of this storage channel.
      */
@@ -62,34 +59,25 @@ public interface IStorageChannel<T extends IAEStack> {
         return 8;
     }
 
-    /**
-     * Create a new {@link IAEStackList} of the specific type.
-     */
-    @Nonnull
-    IAEStackList<T> createList();
-
-    /**
-     * Create a new {@link IAEStack} from an item stack.
-     * <p>
-     * While this is a clearly defined operation for {@link ItemStorageChannel}, other storage channels might not
-     * implement this method, and always return null. They may implement it for items that have a mapping into their
-     * storage channel domain (i.e. the display-only item returned by {@link IAEStack#asItemStackRepresentation()} might
-     * be able to be turned back into an AE stack using this method).
-     *
-     * @param input The item stack to turn into an {@link IAEStack}
-     * @return The converted stack or null
-     */
     @Nullable
-    T createStack(@Nonnull ItemStack input);
+    T readFromPacket(FriendlyByteBuf input);
 
     @Nullable
-    T readFromPacket(@Nonnull FriendlyByteBuf input);
+    T loadKeyFromTag(CompoundTag tag);
 
     /**
-     * create from nbt data
+     * Does this key belong to this storage channel.
      */
     @Nullable
-    T createFromNBT(@Nonnull CompoundTag nbt);
+    T tryCast(AEKey key);
 
-    T copy(T stack);
+    /**
+     * True to indicate that the {@link AEKey} class used by this storage channel supports range-based fuzzy search
+     * using {@link AEKey#getFuzzySearchValue()} and {@link AEKey#getFuzzySearchMaxValue()}.
+     * <p/>
+     * For items this is used for damage-based search and filtering.
+     */
+    default boolean supportsFuzzyRangeSearch() {
+        return false;
+    }
 }

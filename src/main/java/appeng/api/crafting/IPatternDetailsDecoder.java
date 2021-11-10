@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import appeng.api.storage.data.AEItemKey;
+
 /**
  * Allows mod to decode their {@link IPatternDetails} from their item stacks. This is required for custom patterns,
  * otherwise the crafting CPU can't properly persist them. Register a single instance to {@link PatternDetailsHelper}.
@@ -36,5 +38,12 @@ public interface IPatternDetailsDecoder {
     boolean isEncodedPattern(ItemStack stack);
 
     @Nullable
-    IPatternDetails decodePattern(ItemStack stack, Level level, boolean autoRecovery);
+    IPatternDetails decodePattern(AEItemKey what, Level level);
+
+    /**
+     * Decodes a pattern stored in a stack. Can attempt to recover a pattern hat has broken by recipe IDs being changed
+     * by other mods. Recovery will modify the given item stack.
+     */
+    @Nullable
+    IPatternDetails decodePattern(ItemStack what, Level level, boolean tryRecovery);
 }

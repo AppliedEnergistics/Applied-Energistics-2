@@ -35,14 +35,14 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
-import appeng.crafting.execution.GenericStackHelper;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.util.IVariantConversion;
 
 public class PatternProviderReturnInventory extends GenericStackInv {
-    public static int NUMBER_OF_SLOTS = 5;
+    public static int NUMBER_OF_SLOTS = 9;
 
     /**
      * Used to prevent injection through the handlers when we are pushing items out in the network. Otherwise, a storage
@@ -54,7 +54,7 @@ public class PatternProviderReturnInventory extends GenericStackInv {
     private final Storage<ItemVariant> itemStorage = new GenericStorage<>(IVariantConversion.ITEM);
     private final Storage<FluidVariant> fluidStorage = new GenericStorage<>(IVariantConversion.FLUID);
 
-    public PatternProviderReturnInventory(Listener listener) {
+    public PatternProviderReturnInventory(Runnable listener) {
         super(listener, NUMBER_OF_SLOTS);
     }
 
@@ -67,11 +67,17 @@ public class PatternProviderReturnInventory extends GenericStackInv {
 
         try {
             for (int i = 0; i < stacks.length; ++i) {
-                if (stacks[i] != null) {
-                    long sizeBefore = stacks[i].getStackSize();
-                    stacks[i] = GenericStackHelper.injectMonitorable(network, stacks[i], Actionable.MODULATE, src);
+                GenericStack stack = stacks[i];
+                if (stack != null) {
+                    long sizeBefore = stack.amount();
+                    var inserted = network.insert(stack.what(), stack.amount(), Actionable.MODULATE, src);
+                    if (inserted >= stack.amount()) {
+                        stacks[i] = null;
+                    } else {
+                        stacks[i] = new GenericStack(stack.what(), stack.amount() - inserted);
+                    }
 
-                    if (IAEStack.getStackSizeOrZero(stacks[i]) != sizeBefore) {
+                    if (GenericStack.getStackSizeOrZero(stacks[i]) != sizeBefore) {
                         didSomething = true;
                     }
                 }
@@ -85,8 +91,8 @@ public class PatternProviderReturnInventory extends GenericStackInv {
 
     public void addDrops(List<ItemStack> drops) {
         for (var stack : stacks) {
-            if (stack != null && stack.getChannel() == StorageChannels.items()) {
-                drops.add(stack.cast(StorageChannels.items()).createItemStack());
+            if (stack != null && stack.what() instanceof AEItemKey itemKey) {
+                drops.add(itemKey.toStack((int) Math.min(Integer.MAX_VALUE, stack.amount())));
             }
         }
     }
@@ -99,18 +105,16 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         return fluidStorage;
     }
 
-    private class Participant extends SnapshotParticipant<IAEStack[]> {
+    private class Participant extends SnapshotParticipant<GenericStack[]> {
         @Override
-        protected IAEStack[] createSnapshot() {
-            var snapshot = new IAEStack[stacks.length];
-            for (int i = 0; i < stacks.length; ++i) {
-                snapshot[i] = stacks[i] == null ? null : IAEStack.copy(stacks[i]);
-            }
+        protected GenericStack[] createSnapshot() {
+            var snapshot = new GenericStack[stacks.length];
+            System.arraycopy(stacks, 0, snapshot, 0, stacks.length);
             return snapshot;
         }
 
         @Override
-        protected void readSnapshot(IAEStack[] snapshot) {
+        protected void readSnapshot(GenericStack[] snapshot) {
             System.arraycopy(snapshot, 0, stacks, 0, stacks.length);
         }
 
@@ -120,7 +124,7 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         }
     }
 
-    private class GenericStorage<V extends TransferVariant<?>, T extends IAEStack>
+    private class GenericStorage<V extends TransferVariant<?>, T extends AEKey>
             implements InsertionOnlyStorage<V> {
         private final IVariantConversion<V, T> conversion;
 
@@ -143,19 +147,20 @@ public class PatternProviderReturnInventory extends GenericStackInv {
 
                     if (inserted > 0) {
                         participant.updateSnapshots(transaction);
-                        stacks[slot] = conversion.createStack(resource, inserted);
+                        stacks[slot] = new GenericStack(conversion.getKey(resource), inserted);
                         totalInserted += inserted;
                     }
-                } else if (stacks[slot].getChannel() == conversion.getChannel()) {
-                    var fs = stacks[slot].cast(conversion.getChannel());
+                } else if (stacks[slot].what().getChannel() == conversion.getChannel()) {
+                    var stack = stacks[slot];
+                    var key = stack.what().cast(conversion.getChannel());
 
-                    if (conversion.variantMatches(fs, resource)) {
+                    if (conversion.variantMatches(key, resource)) {
                         long inserted = Math.min(maxAmount - totalInserted,
-                                conversion.getBaseSlotSize(resource) - fs.getStackSize());
+                                conversion.getBaseSlotSize(resource) - stack.amount());
 
                         if (inserted > 0) {
                             participant.updateSnapshots(transaction);
-                            fs.incStackSize(inserted);
+                            stacks[slot] = new GenericStack(stack.what(), stack.amount() + inserted);
                             totalInserted += inserted;
                         }
                     }

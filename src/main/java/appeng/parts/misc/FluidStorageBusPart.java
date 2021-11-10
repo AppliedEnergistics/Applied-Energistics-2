@@ -24,31 +24,25 @@ import javax.annotation.Nullable;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
+import appeng.api.storage.FluidStorageChannel;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
-import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
 import appeng.me.storage.StorageAdapter;
-import appeng.menu.implementations.FluidStorageBusMenu;
+import appeng.menu.implementations.StorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.IVariantConversion;
-import appeng.util.fluid.AEFluidInventory;
-import appeng.util.fluid.IAEFluidTank;
-import appeng.util.inv.IAEFluidInventory;
 
-public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, Storage<FluidVariant>>
-        implements IAEFluidInventory, IConfigurableFluidInventory {
+public class FluidStorageBusPart extends AbstractStorageBusPart<AEFluidKey, Storage<FluidVariant>> {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/fluid_storage_bus_base");
     @PartModels
@@ -61,20 +55,18 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, S
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_storage_bus_has_channel"));
 
-    private final AEFluidInventory config = new AEFluidInventory(this, 63);
-
     public FluidStorageBusPart(ItemStack is) {
         super(TickRates.FluidStorageBus, is, FluidStorage.SIDED);
     }
 
     @Override
-    public IStorageChannel<IAEFluidStack> getStorageChannel() {
+    public FluidStorageChannel getChannel() {
         return StorageChannels.fluids();
     }
 
     @Nullable
     @Override
-    protected IMEInventory<IAEFluidStack> adaptExternalApi(Storage<FluidVariant> handler, boolean extractableOnly,
+    protected IMEInventory<AEFluidKey> adaptExternalApi(Storage<FluidVariant> handler, boolean extractableOnly,
             Runnable alertDevice) {
         return new StorageAdapter<>(IVariantConversion.FLUID, handler, extractableOnly) {
             @Override
@@ -82,48 +74,6 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, S
                 alertDevice.run();
             }
         };
-    }
-
-    @Override
-    protected int getStackConfigSize() {
-        return this.config.getSlots();
-    }
-
-    @Nullable
-    @Override
-    protected IAEFluidStack getStackInConfigSlot(int slot) {
-        return this.config.getFluidInSlot(slot);
-    }
-
-    @Override
-    public void onFluidInventoryChanged(IAEFluidTank inv, int slot) {
-        if (inv == this.config) {
-            this.onConfigurationChanged();
-        }
-    }
-
-    @Override
-    public void readFromNBT(final CompoundTag data) {
-        super.readFromNBT(data);
-        this.config.readFromNBT(data, "config");
-    }
-
-    @Override
-    public void writeToNBT(final CompoundTag data) {
-        super.writeToNBT(data);
-        this.config.writeToNBT(data, "config");
-    }
-
-    public IAEFluidTank getConfig() {
-        return this.config;
-    }
-
-    @Override
-    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
-        if (name.equals("config")) {
-            return this.config;
-        }
-        return null;
     }
 
     @Nonnull
@@ -145,6 +95,6 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<IAEFluidStack, S
 
     @Override
     public MenuType<?> getMenuType() {
-        return FluidStorageBusMenu.TYPE;
+        return StorageBusMenu.FLUID_TYPE;
     }
 }

@@ -18,31 +18,20 @@
 
 package appeng.parts.automation;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.ItemLevelEmitterMenu;
+import appeng.menu.implementations.LevelEmitterMenu;
 import appeng.parts.PartModel;
-import appeng.util.inv.AppEngInternalAEInventory;
 
-public class ItemLevelEmitterPart extends AbstractStorageLevelEmitterPart<IAEItemStack> {
-
+public class ItemLevelEmitterPart extends AbstractStorageLevelEmitterPart<AEItemKey> {
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_level_emitter_base_off");
@@ -66,60 +55,18 @@ public class ItemLevelEmitterPart extends AbstractStorageLevelEmitterPart<IAEIte
     public static final PartModel MODEL_ON_ON = new PartModel(MODEL_BASE_ON, MODEL_STATUS_ON);
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 1);
-
-    public ItemLevelEmitterPart(final ItemStack is) {
+    public ItemLevelEmitterPart(ItemStack is) {
         super(is, true);
     }
 
-    @Nullable
     @Override
-    protected IAEItemStack getConfiguredStack() {
-        return config.getAEStackInSlot(0);
-    }
-
-    @Override
-    protected IStorageChannel<IAEItemStack> getChannel() {
+    protected IStorageChannel<AEItemKey> getChannel() {
         return StorageChannels.items();
     }
 
     @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
-            MenuOpener.open(ItemLevelEmitterMenu.TYPE, player, MenuLocator.forPart(this));
-        }
-        return true;
-    }
-
-    @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
-        if (inv == this.config) {
-            this.configureWatchers();
-        }
-
-        super.onChangeInventory(inv, slot, removedStack, newStack);
-    }
-
-    @Override
-    public void readFromNBT(final CompoundTag data) {
-        super.readFromNBT(data);
-        this.config.readFromNBT(data, "config");
-    }
-
-    @Override
-    public void writeToNBT(final CompoundTag data) {
-        super.writeToNBT(data);
-        this.config.writeToNBT(data, "config");
-    }
-
-    @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
-        if (id.equals(ISegmentedInventory.CONFIG)) {
-            return config;
-        } else {
-            return super.getSubInventory(id);
-        }
+    protected MenuType<?> getMenuType() {
+        return LevelEmitterMenu.ITEM_TYPE;
     }
 
     @Override

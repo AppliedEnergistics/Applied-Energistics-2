@@ -23,31 +23,30 @@ import java.util.regex.Pattern;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.util.Platform;
 
-class FluidRepo extends Repo<IAEFluidStack> {
+class FluidRepo extends Repo<AEFluidKey> {
 
     public FluidRepo(IScrollSource src, ISortSource sortSrc) {
         super(src, sortSrc);
     }
 
     @Override
-    protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, IAEFluidStack stack) {
+    protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, AEFluidKey what) {
         if (searchMode == SearchMode.MOD) {
-            String modId = Platform.getModId(stack);
-            return searchPattern.matcher(modId).find();
+            return searchPattern.matcher(what.getModId()).find();
         }
 
-        String displayName = Platform.getFluidDisplayName(stack).getString();
+        String displayName = Platform.getFluidDisplayName(what).getString();
         return searchPattern.matcher(displayName).find();
     }
 
     @Override
-    protected Comparator<? super IAEFluidStack> getComparator(SortOrder sortBy, SortDir sortDir) {
+    protected Comparator<? super AEFluidKey> getKeyComparator(SortOrder sortBy, SortDir sortDir) {
         return FluidSorters.getComparator(sortBy, sortDir);
     }
 

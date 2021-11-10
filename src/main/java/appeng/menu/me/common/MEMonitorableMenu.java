@@ -21,10 +21,13 @@ package appeng.menu.me.common;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -55,7 +58,8 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -77,7 +81,7 @@ import appeng.util.IConfigManagerListener;
 /**
  * @see MEMonitorableScreen
  */
-public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
+public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener<T>, IMEInteractionHandler {
 
     private final List<RestrictedInputSlot> viewCellSlots;
@@ -111,6 +115,11 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
     @Nullable
     private IClientRepo<T> clientRepo;
 
+    /**
+     * The last set of craftables sent to the client.
+     */
+    private Set<T> previousCraftables = Collections.emptySet();
+
     public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip,
             final ITerminalHost host, final boolean bindInventory,
             IStorageChannel<T> storageChannel) {
@@ -139,7 +148,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
                     var node = actionHost.getActionableNode();
                     if (node != null) {
                         this.networkNode = node;
-                        final IGrid g = node.getGrid();
+                        var g = node.getGrid();
                         if (g != null) {
                             powerSource = new ChannelPowerSrc(this.networkNode, g.getEnergyService());
                         }
@@ -202,16 +211,20 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
                 }
             }
 
-            if (this.updateHelper.hasChanges()) {
+            var craftables = getCraftablesFromGrid();
+            // This is currently not supported/backed by any network service
+            var requestables = new KeyCounter<T>();
+
+            if (this.updateHelper.hasChanges() || !previousCraftables.equals(craftables)) {
                 try {
                     var builder = MEInventoryUpdatePacket
                             .builder(getStorageChannel(), containerId, updateHelper.isFullUpdate());
 
                     var storageList = monitor.getCachedAvailableStacks();
                     if (this.updateHelper.isFullUpdate()) {
-                        builder.addFull(updateHelper, storageList);
+                        builder.addFull(updateHelper, storageList, craftables, requestables);
                     } else {
-                        builder.addChanges(updateHelper, storageList);
+                        builder.addChanges(updateHelper, storageList, craftables, requestables);
                     }
 
                     builder.buildAndSend(this::sendPacketToClient);
@@ -221,6 +234,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
                 }
 
                 updateHelper.commitChanges();
+                previousCraftables = ImmutableSet.copyOf(craftables);
             }
 
             this.updatePowerStatus();
@@ -230,6 +244,13 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
             super.broadcastChanges();
         }
 
+    }
+
+    private Set<T> getCraftablesFromGrid() {
+        if (networkNode != null && networkNode.isActive()) {
+            return networkNode.getGrid().getCraftingService().getCraftables(storageChannel);
+        }
+        return Collections.emptySet();
     }
 
     /**
@@ -314,10 +335,9 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
     }
 
     @Override
-    public void postChange(IMEMonitor<T> monitor, final Iterable<T> change,
-            final IActionSource source) {
-        for (T is : change) {
-            this.updateHelper.addChange(is);
+    public void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource source) {
+        for (var key : change) {
+            this.updateHelper.addChange(key);
         }
     }
 
@@ -389,7 +409,7 @@ public abstract class MEMonitorableMenu<T extends IAEStack> extends AEBaseMenu
         handleNetworkInteraction(player, stack, action);
     }
 
-    protected abstract void handleNetworkInteraction(ServerPlayer player, @Nullable T stack,
+    protected abstract void handleNetworkInteraction(ServerPlayer player, @Nullable T clickedKey,
             InventoryAction action);
 
     @Nullable

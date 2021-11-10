@@ -1,7 +1,6 @@
 package appeng.crafting.pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
@@ -12,8 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
 
@@ -31,42 +30,40 @@ class ProcessingPatternItemTest {
     @Test
     void testDecodeWithRemovedIngredientItemIds() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new IAEStack[] {
-                        IAEItemStack.of(new ItemStack(Items.TORCH)),
-                        IAEItemStack.of(new ItemStack(Items.DIAMOND))
+                new GenericStack[] {
+                        GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
                 },
-                new IAEStack[] {
-                        IAEItemStack.of(new ItemStack(Items.STICK))
+                new GenericStack[] {
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
                 });
         var encodedTag = encoded.getTag();
 
-        var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0).getCompound("is");
+        var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0);
         assertEquals("minecraft:torch", inputTag.getString("id"));
         inputTag.putString("id", "minecraft:unknown_item_id");
 
         var reDecoded = decode(encodedTag);
-        assertNotNull(reDecoded);
-        // The missing input should be gone
-        assertEquals(1, reDecoded.getInputs().length);
+        assertNull(reDecoded);
     }
 
     /**
      * Sanity check that an encoded pattern that contains item-ids that are now invalid (i.e. mod removed, item removed
-     * from mod, etc.) do not crash when being decoded.
+     * from mod, etc.) does not crash when being decoded.
      */
     @Test
     void testDecodeWithRemovedResultItemIds() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new IAEStack[] {
-                        IAEItemStack.of(new ItemStack(Items.TORCH)),
-                        IAEItemStack.of(new ItemStack(Items.DIAMOND))
+                new GenericStack[] {
+                        GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
                 },
-                new IAEStack[] {
-                        IAEItemStack.of(new ItemStack(Items.STICK))
+                new GenericStack[] {
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
                 });
         var encodedTag = encoded.getTag();
 
-        var inputTag = encodedTag.getList("out", Tag.TAG_COMPOUND).getCompound(0).getCompound("is");
+        var inputTag = encodedTag.getList("out", Tag.TAG_COMPOUND).getCompound(0);
         assertEquals("minecraft:stick", inputTag.getString("id"));
         inputTag.putString("id", "minecraft:unknown_item_id");
 
@@ -79,24 +76,23 @@ class ProcessingPatternItemTest {
     @Test
     void testDecodeWithRemovedStorageChannels() {
         var encoded = PatternDetailsHelper.encodeProcessingPattern(
-                new IAEStack[] {
-                        IAEItemStack.of(new ItemStack(Items.TORCH)),
-                        IAEItemStack.of(new ItemStack(Items.DIAMOND))
+                new GenericStack[] {
+                        GenericStack.fromItemStack(new ItemStack(Items.TORCH)),
+                        GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
                 },
-                new IAEStack[] {
-                        IAEItemStack.of(new ItemStack(Items.STICK))
+                new GenericStack[] {
+                        GenericStack.fromItemStack(new ItemStack(Items.STICK))
                 });
         var encodedTag = encoded.getTag();
 
         var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0);
-        assertEquals("appliedenergistics2:item", inputTag.getString("chan"));
-        inputTag.putString("chan", "some_mod:missing_chan");
+        assertEquals("appliedenergistics2:item", inputTag.getString("#c"));
+        inputTag.putString("#c", "some_mod:missing_chan");
 
         assertNull(decode(encodedTag));
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        return AEItems.PROCESSING_PATTERN.asItem().decode(
-                tag, null, false);
+        return AEItems.PROCESSING_PATTERN.asItem().decode(AEItemKey.of(AEItems.PROCESSING_PATTERN, tag), null);
     }
 }

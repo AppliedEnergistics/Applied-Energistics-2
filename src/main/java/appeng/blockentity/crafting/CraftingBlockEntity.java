@@ -42,8 +42,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
@@ -261,21 +260,21 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                         this.cluster + " does not contain any kind of blocks, which were destroyed.");
             }
 
-            for (var stack : inv.list) {
+            for (var entry : inv.list) {
                 // Drop items, void other types of stacks (fluids...).
-                if (stack instanceof IAEItemStack ais) {
-                    ais = ais.copy();
-                    ais.setStackSize(ais.getDefinition().getMaxStackSize());
+                if (entry.getKey() instanceof AEItemKey itemKey) {
+                    var maxPerDrop = itemKey.getItem().getMaxStackSize();
                     while (true) {
-                        final IAEItemStack g = (IAEItemStack) inv.extractItems(ais.copy(), Actionable.MODULATE);
-                        if (IAEStack.getStackSizeOrZero(g) == 0) {
+                        var extracted = (int) inv.extract(itemKey, maxPerDrop, Actionable.MODULATE);
+                        if (extracted == 0) {
                             break;
                         }
 
-                        final BlockPos pos = places.poll();
+                        var pos = places.poll();
                         places.add(pos);
 
-                        Platform.spawnDrops(this.level, pos, Collections.singletonList(g.createItemStack()));
+                        var stack = itemKey.toStack(extracted);
+                        Platform.spawnDrops(this.level, pos, Collections.singletonList(stack));
                     }
                 }
             }

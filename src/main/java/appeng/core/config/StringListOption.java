@@ -2,8 +2,8 @@ package appeng.core.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -25,7 +25,7 @@ public class StringListOption extends BaseOption {
     }
 
     public void set(List<String> value) {
-        Preconditions.checkNotNull(value);
+        Objects.requireNonNull(value);
         if (value.equals(currentValue)) {
             return;
         }

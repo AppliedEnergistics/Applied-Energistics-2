@@ -20,69 +20,48 @@ package appeng.helpers;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
+import appeng.helpers.iface.GenericStackInvStorage;
 import appeng.me.storage.StorageAdapter;
-import appeng.util.ConfigManager;
 import appeng.util.IVariantConversion;
-import appeng.util.fluid.AEFluidInventory;
-import appeng.util.fluid.IAEFluidTank;
-import appeng.util.inv.IAEFluidInventory;
 
-public class DualityFluidInterface
-        extends DualityInterface
-        implements IAEFluidInventory, IConfigurableObject, IConfigurableFluidInventory {
+public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
     public static final int NUMBER_OF_TANKS = 6;
-    public static final long TANK_CAPACITY = FluidConstants.BUCKET * 4;
+    public static final long TANK_CAPACITY = 4 * AEFluidKey.AMOUNT_BUCKET;
 
-    private final ConfigManager cm = new ConfigManager((manager, setting) -> {
-        saveChanges();
-    });
-    private boolean hasConfig = false;
-    private final AEFluidInventory tanks = new AEFluidInventory(this, NUMBER_OF_TANKS, TANK_CAPACITY);
-    private final AEFluidInventory config = new AEFluidInventory(this, NUMBER_OF_TANKS);
-    private final IAEFluidStack[] requireWork;
     @Nullable
     private InterfaceInventory localInvHandler;
-    private int isWorking = -1;
 
-    public DualityFluidInterface(IManagedGridNode gridNode, IFluidInterfaceHost ih) {
-        super(gridNode, ih);
+    private final GenericStackInvStorage<FluidVariant, AEFluidKey> localStorage;
 
-        this.requireWork = new IAEFluidStack[NUMBER_OF_TANKS];
-        for (int i = 0; i < NUMBER_OF_TANKS; ++i) {
-            this.requireWork[i] = null;
-        }
+    public DualityFluidInterface(IManagedGridNode gridNode, IFluidInterfaceHost ih, ItemStack is) {
+        super(gridNode, ih, is);
+        getConfig().setCapacity(TANK_CAPACITY);
+        getStorage().setCapacity(TANK_CAPACITY);
+        this.localStorage = GenericStackInvStorage.fluids(getStorage());
     }
 
     /**
      * Returns an ME compatible monitor for the interfaces local storage.
      */
     @Override
-    protected <T extends IAEStack> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
+    protected <T extends AEKey> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
         if (channel == StorageChannels.fluids()) {
             if (localInvHandler == null) {
                 localInvHandler = new InterfaceInventory();
@@ -100,242 +79,47 @@ public class DualityFluidInterface
         return new DimensionalBlockPos(this.host.getBlockEntity());
     }
 
-    private void readConfig() {
-        this.hasConfig = false;
-
-        for (int i = 0; i < this.config.getSlots(); i++) {
-            if (this.config.getFluidInSlot(i) != null) {
-                this.hasConfig = true;
-                break;
-            }
-        }
-
-        final boolean had = this.hasWorkToDo();
-
-        for (int x = 0; x < NUMBER_OF_TANKS; x++) {
-            this.updatePlan(x);
-        }
-
-        final boolean has = this.hasWorkToDo();
-
-        if (had != has) {
-            mainNode.ifPresent((grid, node) -> {
-                if (has) {
-                    grid.getTickManager().alertDevice(node);
-                } else {
-                    grid.getTickManager().sleepDevice(node);
-                }
-            });
-        }
-
-        this.notifyNeighbors();
+    @Override
+    protected IStorageChannel<AEFluidKey> getChannel() {
+        return StorageChannels.fluids();
     }
 
     @Override
-    protected boolean updateStorage() {
-        boolean didSomething = false;
-        for (int x = 0; x < NUMBER_OF_TANKS; x++) {
-            if (this.requireWork[x] != null) {
-                didSomething = this.usePlan(x) || didSomething;
-            }
-        }
-        return didSomething;
+    protected int getStorageSlots() {
+        return NUMBER_OF_TANKS;
     }
 
-    @Override
-    protected boolean hasConfig() {
-        return this.hasConfig;
+    public GenericStackInvStorage<FluidVariant, AEFluidKey> getLocalStorage() {
+        return localStorage;
     }
 
-    @Override
-    protected boolean hasWorkToDo() {
-        for (var requiredWork : this.requireWork) {
-            if (requiredWork != null) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void updatePlan(final int slot) {
-        final IAEFluidStack req = this.config.getFluidInSlot(slot);
-        final IAEFluidStack stored = this.tanks.getFluidInSlot(slot);
-
-        if (req == null && stored != null && stored.getStackSize() > 0) {
-            var work = stored.copy();
-            work.setStackSize(-work.getStackSize());
-            this.requireWork[slot] = work;
-            return;
-        } else if (req != null) {
-            if (stored == null || stored.getStackSize() == 0) // need to add stuff!
-            {
-                this.requireWork[slot] = req.copy();
-                this.requireWork[slot].setStackSize(TANK_CAPACITY);
-                return;
-            } else if (req.equals(stored)) // same type ( qty different? )!
-            {
-                if (stored.getStackSize() < TANK_CAPACITY) {
-                    this.requireWork[slot] = req.copy();
-                    this.requireWork[slot].setStackSize(TANK_CAPACITY - stored.getStackSize());
-                    return;
-                }
-            } else
-            // Stored != null; dispose!
-            {
-                var work = stored.copy();
-                work.setStackSize(-work.getStackSize());
-                this.requireWork[slot] = work;
-                return;
-            }
-        }
-
-        this.requireWork[slot] = null;
-    }
-
-    private boolean usePlan(final int slot) {
-        IAEFluidStack work = this.requireWork[slot];
-        this.isWorking = slot;
-
-        boolean changed = false;
-        var grid = this.mainNode.getGrid();
-        if (grid != null) {
-            final IMEInventory<IAEFluidStack> dest = grid.getStorageService()
-                    .getInventory(StorageChannels.fluids());
-            final IEnergySource src = grid.getEnergyService();
-
-            if (work.getStackSize() > 0) {
-                // make sure strange things didn't happen...
-                if (this.tanks.fill(slot, work, false) != work.getStackSize()) {
-                    changed = true;
-                } else {
-                    final IAEFluidStack acquired = StorageHelper.poweredExtraction(src, dest, work,
-                            this.interfaceRequestSource);
-                    if (acquired != null) {
-                        changed = true;
-                        final long filled = this.tanks.fill(slot, acquired, true);
-                        if (filled != acquired.getStackSize()) {
-                            throw new IllegalStateException("bad attempt at managing tanks. ( fill )");
-                        }
-                    }
-                }
-            } else if (work.getStackSize() < 0) {
-                IAEFluidStack toStore = work.copy();
-                toStore.setStackSize(-toStore.getStackSize());
-
-                // make sure strange things didn't happen...
-                final long canExtract = this.tanks.drain(slot, toStore, false);
-                if (canExtract != toStore.getStackSize()) {
-                    changed = true;
-                } else {
-                    IAEFluidStack notStored = StorageHelper.poweredInsert(src, dest, toStore,
-                            this.interfaceRequestSource);
-                    toStore.setStackSize(toStore.getStackSize() - (notStored == null ? 0 : notStored.getStackSize()));
-
-                    if (toStore.getStackSize() > 0) {
-                        // extract items!
-                        changed = true;
-                        final long removed = this.tanks.drain(slot, toStore, true);
-                        if (toStore.getStackSize() != removed) {
-                            throw new IllegalStateException("bad attempt at managing tanks. ( drain )");
-                        }
-                    }
-                }
-            }
-        }
-
-        if (changed) {
-            this.updatePlan(slot);
-        }
-
-        this.isWorking = -1;
-        return changed;
-    }
-
-    @Override
-    public void onFluidInventoryChanged(final IAEFluidTank inventory, final int slot) {
-        if (this.isWorking == slot) {
-            return;
-        }
-
-        if (inventory == this.config) {
-            this.readConfig();
-        } else if (inventory == this.tanks) {
-            this.saveChanges();
-
-            final boolean had = this.hasWorkToDo();
-
-            this.updatePlan(slot);
-
-            final boolean now = this.hasWorkToDo();
-
-            if (had != now) {
-                mainNode.ifPresent((grid, node) -> {
-                    if (now) {
-                        grid.getTickManager().alertDevice(node);
-                    } else {
-                        grid.getTickManager().sleepDevice(node);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isRemote() {
-        Level level = this.host.getBlockEntity().getLevel();
-        return level == null || level.isClientSide();
-    }
-
-    @Override
-    public void writeToNBT(final CompoundTag data) {
-        super.writeToNBT(data);
-        this.tanks.writeToNBT(data, "storage");
-        this.config.writeToNBT(data, "config");
-    }
-
-    @Override
-    public void readFromNBT(final CompoundTag data) {
-        super.readFromNBT(data);
-        this.config.readFromNBT(data, "config");
-        this.tanks.readFromNBT(data, "storage");
-        this.readConfig();
-    }
-
-    public IAEFluidTank getConfig() {
-        return this.config;
-    }
-
-    public IAEFluidTank getTanks() {
-        return this.tanks;
-    }
-
-    private class InterfaceInventory extends StorageAdapter<FluidVariant, IAEFluidStack>
-            implements IMEMonitor<IAEFluidStack> {
+    private class InterfaceInventory extends StorageAdapter<FluidVariant, AEFluidKey>
+            implements IMEMonitor<AEFluidKey> {
 
         InterfaceInventory() {
-            super(IVariantConversion.FLUID, tanks,
-                    cm.getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY);
+            super(IVariantConversion.FLUID,
+                    localStorage,
+                    getConfigManager().getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY);
             this.setActionSource(actionSource);
         }
 
         @Override
-        public IAEFluidStack injectItems(final IAEFluidStack input, final Actionable type, final IActionSource src) {
-            if (getRequestInterfacePriority(src).isPresent()) {
-                return input;
+        public long insert(AEFluidKey what, long amount, Actionable mode, IActionSource source) {
+            if (getRequestInterfacePriority(source).isPresent()) {
+                return 0;
             }
 
-            return super.injectItems(input, type, src);
+            return super.insert(what, amount, mode, source);
         }
 
         @Override
-        public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable type, final IActionSource src) {
-            var requestPriority = getRequestInterfacePriority(src);
+        public long extract(AEFluidKey what, long amount, Actionable mode, IActionSource source) {
+            var requestPriority = getRequestInterfacePriority(source);
             if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority()) {
-                return null;
+                return 0;
             }
 
-            return super.extractItems(request, type, src);
+            return super.extract(what, amount, mode, source);
         }
 
         @Override
@@ -345,26 +129,9 @@ public class DualityFluidInterface
         }
 
         @Override
-        public IAEStackList<IAEFluidStack> getCachedAvailableStacks() {
+        public KeyCounter<AEFluidKey> getCachedAvailableStacks() {
             return getAvailableStacks();
         }
-    }
-
-    public void saveChanges() {
-        this.host.saveChanges();
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return this.cm;
-    }
-
-    @Override
-    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
-        if (name.equals("config")) {
-            return this.config;
-        }
-        return null;
     }
 
 }

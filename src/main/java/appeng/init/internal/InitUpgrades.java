@@ -32,7 +32,7 @@ public final class InitUpgrades {
     public static void init() {
         // Block and part interface have different translation keys, but support the
         // same upgrades
-        String interfaceGroup = AEParts.ITEM_INTERFACE.asItem().getDescriptionId();
+        String interfaceGroup = GuiText.Interface.getTranslationKey();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
@@ -40,6 +40,8 @@ public final class InitUpgrades {
         // Interface
         Upgrades.CRAFTING.registerItem(AEParts.ITEM_INTERFACE, 1, interfaceGroup);
         Upgrades.CRAFTING.registerItem(AEBlocks.ITEM_INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(AEParts.FLUID_INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(AEBlocks.FLUID_INTERFACE, 1, interfaceGroup);
 
         // IO Port!
         Upgrades.SPEED.registerItem(AEBlocks.IO_PORT, 3);
@@ -74,6 +76,7 @@ public final class InitUpgrades {
         Upgrades.CAPACITY.registerItem(AEParts.FLUID_EXPORT_BUS, 2, fluidIoBusGroup);
         Upgrades.REDSTONE.registerItem(AEParts.FLUID_EXPORT_BUS, 1, fluidIoBusGroup);
         Upgrades.SPEED.registerItem(AEParts.FLUID_EXPORT_BUS, 4, fluidIoBusGroup);
+        Upgrades.CRAFTING.registerItem(AEParts.FLUID_EXPORT_BUS, 1, fluidIoBusGroup);
 
         // Storage Cells
         Upgrades.FUZZY.registerItem(AEItems.CELL1K, 1, storageCellGroup);

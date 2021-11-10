@@ -18,32 +18,30 @@
 
 package appeng.crafting.pattern;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.core.definitions.AEItems;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 
 public class AEProcessingPattern implements IAEPatternDetails {
-    private final IAEItemStack definition;
-    private final IAEStack[] sparseInputs, sparseOutputs;
+    private final AEItemKey definition;
+    private final GenericStack[] sparseInputs, sparseOutputs;
     private final Input[] inputs;
-    private final IAEStack[] condensedOutputs;
+    private final GenericStack[] condensedOutputs;
 
-    public AEProcessingPattern(CompoundTag definition) {
-        // We use an IAEItemStack as the definition here to achieve interning so that equals/hashCode is fast
-        var definitionStack = AEItems.PROCESSING_PATTERN.stack();
-        definitionStack.setTag(definition);
-        this.definition = IAEItemStack.of(definitionStack);
+    public AEProcessingPattern(AEItemKey definition) {
+        this.definition = definition;
+        var tag = Objects.requireNonNull(definition.getTag());
 
-        this.sparseInputs = AEPatternHelper.getProcessingInputs(definition);
-        this.sparseOutputs = AEPatternHelper.getProcessingOutputs(definition);
+        this.sparseInputs = AEPatternHelper.getProcessingInputs(tag);
+        this.sparseOutputs = AEPatternHelper.getProcessingOutputs(tag);
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
         this.inputs = new Input[condensedInputs.length];
         for (int i = 0; i < inputs.length; ++i) {
@@ -79,8 +77,8 @@ public class AEProcessingPattern implements IAEPatternDetails {
     }
 
     @Override
-    public ItemStack copyDefinition() {
-        return this.definition.createItemStack();
+    public AEItemKey getDefinition() {
+        return definition;
     }
 
     @Override
@@ -89,31 +87,31 @@ public class AEProcessingPattern implements IAEPatternDetails {
     }
 
     @Override
-    public IAEStack[] getOutputs() {
+    public GenericStack[] getOutputs() {
         return condensedOutputs;
     }
 
     @Override
-    public IAEStack[] getSparseInputs() {
+    public GenericStack[] getSparseInputs() {
         return sparseInputs;
     }
 
     @Override
-    public IAEStack[] getSparseOutputs() {
+    public GenericStack[] getSparseOutputs() {
         return sparseOutputs;
     }
 
     private static class Input implements IInput {
-        private final IAEStack[] template;
+        private final GenericStack[] template;
         private final long multiplier;
 
-        private Input(IAEStack stack) {
-            this.template = new IAEStack[] { IAEStack.copy(stack, 1) };
-            this.multiplier = stack.getStackSize();
+        private Input(GenericStack stack) {
+            this.template = new GenericStack[] { new GenericStack(stack.what(), 1) };
+            this.multiplier = stack.amount();
         }
 
         @Override
-        public IAEStack[] getPossibleInputs() {
+        public GenericStack[] getPossibleInputs() {
             return template;
         }
 
@@ -123,13 +121,13 @@ public class AEProcessingPattern implements IAEPatternDetails {
         }
 
         @Override
-        public boolean isValid(IAEStack input, Level level) {
-            return input.equals(template[0]);
+        public boolean isValid(AEKey input, Level level) {
+            return input.matches(template[0]);
         }
 
         @Nullable
         @Override
-        public IAEStack getContainerItem(IAEStack template) {
+        public AEKey getContainerItem(AEKey template) {
             return null;
         }
     }

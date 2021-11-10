@@ -33,7 +33,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessBlockEntity;
@@ -80,7 +80,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     }
 
     @Override
-    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         return this.sg.getInventory(channel);
     }
 

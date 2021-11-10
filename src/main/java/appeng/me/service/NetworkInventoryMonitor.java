@@ -18,6 +18,7 @@
 
 package appeng.me.service;
 
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +30,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Queues;
 
 import appeng.api.config.Actionable;
@@ -38,8 +38,8 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.me.helpers.InterestManager;
 import appeng.me.storage.NetworkStorage;
 import appeng.me.storage.StackWatcher;
@@ -47,12 +47,12 @@ import appeng.me.storage.StackWatcher;
 /**
  * Wraps a {@link NetworkStorage} and adds change detection.
  */
-public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T> {
+public class NetworkInventoryMonitor<T extends AEKey> implements IMEMonitor<T> {
     private static final Deque<NetworkInventoryMonitor<?>> GLOBAL_DEPTH = Queues.newArrayDeque();
 
     private final InterestManager<StackWatcher> interestManager;
     private final IStorageChannel<T> channel;
-    private final IAEStackList<T> cachedList;
+    private final KeyCounter<T> cachedList;
     private final Map<IMEMonitorListener<T>, Object> listeners;
     @Nullable
     private IMEInventory<T> networkInventory;
@@ -65,7 +65,7 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
     public NetworkInventoryMonitor(InterestManager<StackWatcher> interestManager, IStorageChannel<T> channel) {
         this.interestManager = interestManager;
         this.channel = channel;
-        this.cachedList = channel.createList();
+        this.cachedList = new KeyCounter<>();
         this.listeners = new HashMap<>();
     }
 
@@ -80,32 +80,31 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
     }
 
     @Override
-    public T extractItems(T request, Actionable mode, IActionSource src) {
+    public long extract(T what, long amount, Actionable mode, IActionSource source) {
         if (networkInventory == null) {
-            return null;
+            return 0;
         }
 
         if (mode == Actionable.SIMULATE) {
-            return networkInventory.extractItems(request, mode, src);
+            return networkInventory.extract(what, amount, mode, source);
         }
 
         this.recursionDepth++;
-        final T leftover = networkInventory.extractItems(request, mode, src);
+        var extracted = networkInventory.extract(what, amount, mode, source);
         this.recursionDepth--;
 
         if (this.recursionDepth == 0) {
-            this.monitorDifference(IAEStack.copy(request), leftover, true, src);
+            this.monitorDifference(what, -extracted, source);
         }
 
-        return leftover;
+        return extracted;
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
-        if (networkInventory == null) {
-            return out;
+    public void getAvailableStacks(KeyCounter<T> out) {
+        if (networkInventory != null) {
+            networkInventory.getAvailableStacks(out);
         }
-        return networkInventory.getAvailableStacks(out);
     }
 
     @Override
@@ -115,35 +114,36 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
 
     @Nonnull
     @Override
-    public IAEStackList<T> getCachedAvailableStacks() {
+    public KeyCounter<T> getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
-            this.cachedList.resetStatus();
-            return this.getAvailableStacks(this.cachedList);
+            this.cachedList.reset();
+            this.getAvailableStacks(this.cachedList);
+            this.cachedList.removeZeros();
         }
 
         return this.cachedList;
     }
 
     @Override
-    public T injectItems(T input, Actionable mode, IActionSource src) {
+    public long insert(T what, long amount, Actionable mode, IActionSource source) {
         if (networkInventory == null) {
-            return null;
+            return 0;
         }
 
         if (mode == Actionable.SIMULATE) {
-            return networkInventory.injectItems(input, mode, src);
+            return networkInventory.insert(what, amount, mode, source);
         }
 
         this.recursionDepth++;
-        T leftover = networkInventory.injectItems(input, mode, src);
+        var inserted = networkInventory.insert(what, amount, mode, source);
         this.recursionDepth--;
 
         if (this.recursionDepth == 0) {
-            this.monitorDifference(IAEStack.copy(input), leftover, false, src);
+            monitorDifference(what, inserted, source);
         }
 
-        return leftover;
+        return inserted;
     }
 
     @Override
@@ -155,40 +155,17 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
         return this.listeners.entrySet().iterator();
     }
 
-    private void monitorDifference(T original, T leftOvers, boolean extraction, IActionSource src) {
-        final T diff = IAEStack.copy(original);
-
-        if (extraction) {
-            diff.setStackSize(leftOvers == null ? 0 : -leftOvers.getStackSize());
-        } else if (leftOvers != null) {
-            diff.decStackSize(leftOvers.getStackSize());
-        }
-
-        if (diff.getStackSize() != 0) {
-            this.postChangesToListeners(ImmutableList.of(diff), src);
+    private void monitorDifference(T what, long difference, IActionSource source) {
+        if (difference != 0) {
+            this.postChangesToListeners(Collections.singleton(what), source);
         }
     }
 
-    private void notifyListenersOfChange(Iterable<T> diff, IActionSource src) {
-        this.hasChanged = true;
-        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.getListeners();
-
-        while (i.hasNext()) {
-            final Entry<IMEMonitorListener<T>, Object> o = i.next();
-            final IMEMonitorListener<T> receiver = o.getKey();
-            if (receiver.isValid(o.getValue())) {
-                receiver.postChange(this, diff, src);
-            } else {
-                i.remove();
-            }
-        }
+    private void postChangesToListeners(Iterable<T> changes, final IActionSource src) {
+        this.postChange(changes, src);
     }
 
-    private void postChangesToListeners(final Iterable<T> changes, final IActionSource src) {
-        this.postChange(true, changes, src);
-    }
-
-    protected void postChange(final boolean add, final Iterable<T> changes, final IActionSource src) {
+    protected void postChange(Iterable<T> changes, IActionSource src) {
         if (this.recursionDepth > 0 || GLOBAL_DEPTH.contains(this)) {
             return;
         }
@@ -200,30 +177,17 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
 
         this.notifyListenersOfChange(changes, src);
 
-        for (final T changedItem : changes) {
-            T difference = changedItem;
-
-            if (!add && changedItem != null) {
-                difference = IAEStack.copy(changedItem);
-                difference.setStackSize(-changedItem.getStackSize());
-            }
-
+        for (var changedItem : changes) {
             if (interestManager.containsKey(changedItem)) {
                 var list = interestManager.get(changedItem);
 
                 if (!list.isEmpty()) {
-                    var fullStack = this.getCachedAvailableStacks().findPrecise(changedItem);
-
-                    if (fullStack == null) {
-                        fullStack = IAEStack.copy(changedItem);
-                        fullStack.setStackSize(0);
-                    }
+                    var amount = this.getCachedAvailableStacks().get(changedItem);
 
                     interestManager.enableTransactions();
 
                     for (var iw : list) {
-                        iw.getHost().onStackChange(this.getCachedAvailableStacks(), fullStack, difference, src,
-                                this.getChannel());
+                        iw.getHost().onStackChange(changedItem, amount);
                     }
 
                     interestManager.disableTransactions();
@@ -235,6 +199,21 @@ public class NetworkInventoryMonitor<T extends IAEStack> implements IMEMonitor<T
 
         if (GLOBAL_DEPTH.pop() != this) {
             throw new IllegalStateException("Invalid Access to Networked Storage API detected.");
+        }
+    }
+
+    private void notifyListenersOfChange(Iterable<T> diff, IActionSource src) {
+        this.hasChanged = true;
+        var i = this.getListeners();
+
+        while (i.hasNext()) {
+            final Entry<IMEMonitorListener<T>, Object> o = i.next();
+            final IMEMonitorListener<T> receiver = o.getKey();
+            if (receiver.isValid(o.getValue())) {
+                receiver.postChange(this, diff, src);
+            } else {
+                i.remove();
+            }
         }
     }
 

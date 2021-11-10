@@ -48,6 +48,7 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
@@ -61,7 +62,6 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import appeng.util.item.AEItemStack;
 
 /**
  * @author AlgorithmX2
@@ -145,7 +145,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
         for (int num = 0; num < this.inv.size(); num++) {
             if ((slot & 1 << num) > 0) {
-                this.inv.setItemDirect(num, AEItemStack.fromPacket(data).createItemStack());
+                this.inv.setItemDirect(num, AEItemKey.fromPacket(data).toStack());
             } else {
                 this.inv.setItemDirect(num, ItemStack.EMPTY);
             }
@@ -169,7 +169,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         data.writeByte(slot);
         for (int num = 0; num < this.inv.size(); num++) {
             if ((slot & 1 << num) > 0) {
-                final AEItemStack st = AEItemStack.fromItemStack(this.inv.getStackInSlot(num));
+                var st = AEItemKey.of(this.inv.getStackInSlot(num));
                 st.writeToPacket(data);
             }
         }

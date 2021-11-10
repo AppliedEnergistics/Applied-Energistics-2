@@ -26,14 +26,12 @@ import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.GenericSlotWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
-import appeng.menu.SlotSemantic;
 import appeng.menu.implementations.PatternProviderMenu;
 
 public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
@@ -55,11 +53,6 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
                 GuiText.InterfaceTerminal.text(), GuiText.InterfaceTerminalHint.text(),
                 btn -> selectNextInterfaceMode());
         this.addToLeftToolbar(this.showInInterfaceTerminalButton);
-
-        var inv = menu.getReturnInv();
-        for (int i = 0; i < inv.size(); ++i) {
-            addSlot(new GenericSlotWidget(this, inv, i), SlotSemantic.READONLY_STACKS);
-        }
     }
 
     @Override

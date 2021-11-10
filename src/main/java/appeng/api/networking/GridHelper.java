@@ -23,13 +23,12 @@
 
 package appeng.api.networking;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -163,8 +162,8 @@ public final class GridHelper {
      * @param b to be connected gridnode
      */
     public static IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnectionException {
-        Preconditions.checkNotNull(a);
-        Preconditions.checkNotNull(b);
+        Objects.requireNonNull(a);
+        Objects.requireNonNull(b);
 
         return GridConnection.create(a, b, null);
     }

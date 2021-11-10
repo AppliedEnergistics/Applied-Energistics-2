@@ -34,74 +34,72 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.crafting.execution.GenericStackHelper;
-import appeng.util.item.AEItemStack;
 
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
  */
 class AEPatternHelper {
     public static final String NBT_INPUTS = "in";
-    public static final String NBT_RESULT = "result";
     public static final String NBT_OUTPUTS = "out";
     public static final String NBT_SUBSITUTE = "substitute";
     public static final String NBT_SUBSITUTE_FLUIDS = "substituteFluids";
     public static final String NBT_RECIPE_ID = "recipe";
-    private static final Comparator<IAEStack> COMPARE_BY_STACKSIZE = (left, right) -> Long
-            .compare(right.getStackSize(), left.getStackSize());
+    private static final Comparator<GenericStack> COMPARE_BY_STACKSIZE = (left, right) -> Long
+            .compare(right.amount(), left.amount());
 
-    public static IAEStack[] getProcessingInputs(CompoundTag nbt) {
+    public static GenericStack[] getProcessingInputs(CompoundTag nbt) {
         return getMixedList(nbt, NBT_INPUTS, 9);
     }
 
-    public static IAEStack[] getProcessingOutputs(CompoundTag nbt) {
+    public static GenericStack[] getProcessingOutputs(CompoundTag nbt) {
         return getMixedList(nbt, NBT_OUTPUTS, 3);
     }
 
-    public static IAEStack[] getMixedList(CompoundTag nbt, String nbtKey, int maxSize) {
+    public static GenericStack[] getMixedList(CompoundTag nbt, String nbtKey, int maxSize) {
         Objects.requireNonNull(nbt, "Pattern must have a tag.");
 
         ListTag tag = nbt.getList(nbtKey, Tag.TAG_COMPOUND);
         Preconditions.checkArgument(tag.size() <= maxSize, "Cannot use more than " + maxSize + " ingredients");
 
-        var result = new IAEStack[tag.size()];
+        var result = new GenericStack[tag.size()];
         for (int x = 0; x < tag.size(); ++x) {
-            var stack = GenericStackHelper.readGenericStack(tag.getCompound(x));
-            if (stack != null) {
-                if (stack.getChannel() != StorageChannels.items() && stack.getChannel() != StorageChannels.fluids()) {
-                    throw new IllegalArgumentException("Only items and fluids are supported in AE2 patterns.");
-                }
+            var entry = tag.getCompound(x);
+            if (entry.isEmpty()) {
+                continue;
+            }
+            var stack = GenericStack.readTag(entry);
+            if (stack == null) {
+                throw new IllegalArgumentException("Pattern references missing stack: " + entry);
+            }
+            if (stack.what().getChannel() != StorageChannels.items()
+                    && stack.what().getChannel() != StorageChannels.fluids()) {
+                throw new IllegalArgumentException("Only items and fluids are supported in AE2 patterns.");
             }
             result[x] = stack;
         }
         return result;
     }
 
-    public static IAEItemStack[] getCraftingInputs(CompoundTag nbt) {
+    public static GenericStack[] getCraftingInputs(CompoundTag nbt) {
         Objects.requireNonNull(nbt, "Pattern must have a tag.");
 
         ListTag tag = nbt.getList(NBT_INPUTS, Tag.TAG_COMPOUND);
         Preconditions.checkArgument(tag.size() <= 9, "Cannot use more than 9 ingredients");
 
-        var result = new IAEItemStack[tag.size()];
+        var result = new GenericStack[tag.size()];
         for (int x = 0; x < tag.size(); ++x) {
-            var stack = AEItemStack.fromItemStack(ItemStack.of(tag.getCompound(x)));
+            var stack = GenericStack.fromItemStack(ItemStack.of(tag.getCompound(x)));
             result[x] = stack;
         }
         return result;
 
     }
 
-    public static <T extends IAEStack> T[] condenseStacks(T[] collection) {
+    public static GenericStack[] condenseStacks(GenericStack[] collection) {
         var merged = Arrays.stream(collection).filter(Objects::nonNull)
-                .collect(Collectors.toMap(Function.identity(), IAEStack::copy,
-                        (left, right) -> {
-                            left.setStackSize(left.getStackSize() + right.getStackSize());
-                            return left;
-                        }))
+                .collect(Collectors.toMap(GenericStack::what, Function.identity(), GenericStack::sum))
                 .values().stream().sorted(COMPARE_BY_STACKSIZE).collect(ImmutableList.toImmutableList());
 
         if (merged.isEmpty()) {
@@ -135,17 +133,18 @@ class AEPatternHelper {
         return ItemStack.of(nbt.getCompound(NBT_OUTPUTS));
     }
 
-    public static void encodeProcessingPattern(CompoundTag tag, IAEStack[] sparseInputs, IAEStack[] sparseOutputs) {
+    public static void encodeProcessingPattern(CompoundTag tag, GenericStack[] sparseInputs,
+            GenericStack[] sparseOutputs) {
         tag.put(NBT_INPUTS, encodeStackList(sparseInputs));
         tag.put(NBT_OUTPUTS, encodeStackList(sparseOutputs));
     }
 
-    private static ListTag encodeStackList(IAEStack[] stacks) {
+    private static ListTag encodeStackList(GenericStack[] stacks) {
         ListTag tag = new ListTag();
         boolean foundStack = false;
         for (var stack : stacks) {
-            tag.add(GenericStackHelper.writeGenericStack(stack));
-            if (stack != null && stack.getStackSize() > 0) {
+            tag.add(GenericStack.writeTag(stack));
+            if (stack != null && stack.amount() > 0) {
                 foundStack = true;
             }
         }

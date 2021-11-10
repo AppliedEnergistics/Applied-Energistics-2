@@ -23,16 +23,20 @@
 
 package appeng.api.storage;
 
+import java.util.Objects;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 /**
  * AE's Equivalent to IInventory, used to reading contents, and manipulating contents of ME Inventories.
- *
+ * <p>
  * Implementations should COMPLETELY ignore stack size limits from an external view point, Meaning that you can inject
  * Integer.MAX_VALUE items and it should work as defined, or be able to extract Integer.MAX_VALUE and have it work as
  * defined, Translations to MC's max stack size are external to the AE API.
@@ -40,7 +44,7 @@ import appeng.api.storage.data.IAEStackList;
  * If you want to request at most a stack of an item, you need to use {@link ItemStack#getMaxStackSize()} before
  * extracting from this inventory.
  */
-public interface IMEInventory<T extends IAEStack> {
+public interface IMEInventory<T extends AEKey> {
     /**
      * Returns whether this inventory is the preferred storage location for the given stack when being compared to other
      * inventories of the same overall priority.
@@ -50,44 +54,40 @@ public interface IMEInventory<T extends IAEStack> {
      *
      * @param source The source trying to find storage for stacks.
      */
-    default boolean isPreferredStorageFor(T input, IActionSource source) {
+    default boolean isPreferredStorageFor(T what, IActionSource source) {
         return false;
     }
 
     /**
      * Store new items, or simulate the addition of new items into the ME Inventory.
      *
-     * @param input item to add.
-     * @param type  action type
-     * @param src   action source
-     *
-     * @return returns the number of items not added.
+     * @param what   what to insert
+     * @param amount how much of it to insert. must not be negative
+     * @param mode   action type
+     * @return returns the number of items inserted.
      */
-    default T injectItems(T input, Actionable type, IActionSource src) {
-        return input;
+    default long insert(T what, long amount, Actionable mode, IActionSource source) {
+        return 0;
     }
 
     /**
      * Extract the specified item from the ME Inventory
      *
-     * @param request item to request ( with stack size. )
-     * @param mode    simulate, or perform action?
-     *
-     * @return returns the number of items extracted, null
+     * @param what   what to extract
+     * @param amount how much of it to extract (at most)
+     * @param mode   simulate, or perform action?
+     * @return returns the number of items extracted
      */
-    default T extractItems(T request, Actionable mode, IActionSource src) {
-        return null;
+    default long extract(T what, long amount, Actionable mode, IActionSource source) {
+        return 0;
     }
 
     /**
      * request a full report of all available items, storage.
      *
-     * @param out the IAEStackList the results will be written too
-     *
-     * @return returns same list that was passed in, is passed out
+     * @param out The amounts for all available keys will be added to this tally.
      */
-    default IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
-        return out;
+    default void getAvailableStacks(KeyCounter<T> out) {
     }
 
     /**
@@ -95,8 +95,10 @@ public interface IMEInventory<T extends IAEStack> {
      *
      * @return a new list of this inventories content
      */
-    default IAEStackList<T> getAvailableStacks() {
-        return getAvailableStacks(getChannel().createList());
+    default KeyCounter<T> getAvailableStacks() {
+        var result = new KeyCounter<T>();
+        getAvailableStacks(result);
+        return result;
     }
 
     /**
@@ -111,11 +113,19 @@ public interface IMEInventory<T extends IAEStack> {
      * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
      */
     @SuppressWarnings("unchecked")
-    default <SC extends IAEStack> IMEInventory<SC> cast(IStorageChannel<SC> channel) {
+    default <SC extends AEKey> IMEInventory<SC> cast(IStorageChannel<SC> channel) {
         if (getChannel() == channel) {
             return (IMEInventory<SC>) this;
         }
         throw new IllegalArgumentException("This inventories storage channel " + getChannel()
                 + " is not compatible with " + channel);
     }
+
+    static void checkPreconditions(AEKey what, long amount, Actionable mode, IActionSource source) {
+        Objects.requireNonNull(what, "Cannot pass a null key");
+        Objects.requireNonNull(mode, "Cannot pass a null mode");
+        Objects.requireNonNull(source, "Cannot pass a null source");
+        Preconditions.checkArgument(amount >= 0, "Cannot pass a negative amount");
+    }
+
 }

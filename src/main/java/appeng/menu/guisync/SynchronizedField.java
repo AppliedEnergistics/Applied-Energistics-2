@@ -179,13 +179,21 @@ public abstract class SynchronizedField<T> {
 
         @Override
         protected void writeValue(FriendlyByteBuf data, T value) {
-            data.writeVarInt(value.ordinal());
+            if (value == null) {
+                data.writeShort(-1);
+            } else {
+                data.writeShort((short) value.ordinal());
+            }
         }
 
         @Override
         protected T readValue(FriendlyByteBuf data) {
-            int ordinal = data.readVarInt();
-            return values[ordinal];
+            int ordinal = data.readShort();
+            if (ordinal == -1) {
+                return null;
+            } else {
+                return values[ordinal];
+            }
         }
     }
 

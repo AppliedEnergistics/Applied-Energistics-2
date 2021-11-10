@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetailsDecoder;
+import appeng.api.storage.data.AEItemKey;
 
 public class AEPatternDecoder implements IPatternDetailsDecoder {
     public static final AEPatternDecoder INSTANCE = new AEPatternDecoder();
@@ -35,11 +36,21 @@ public class AEPatternDecoder implements IPatternDetailsDecoder {
 
     @Nullable
     @Override
-    public IAEPatternDetails decodePattern(ItemStack stack, Level level, boolean autoRecovery) {
-        if (stack == null || level == null || !(stack.getItem() instanceof EncodedPatternItem encodedPatternItem)) {
+    public IAEPatternDetails decodePattern(AEItemKey what, Level level) {
+        if (level == null || !(what.getItem() instanceof EncodedPatternItem encodedPatternItem)) {
             return null;
         }
 
-        return encodedPatternItem.decode(stack, level, autoRecovery);
+        return encodedPatternItem.decode(what, level);
+    }
+
+    @Nullable
+    @Override
+    public IAEPatternDetails decodePattern(ItemStack what, Level level, boolean tryRecovery) {
+        if (level == null || !(what.getItem() instanceof EncodedPatternItem encodedPatternItem)) {
+            return null;
+        }
+
+        return encodedPatternItem.decode(what, level, tryRecovery);
     }
 }

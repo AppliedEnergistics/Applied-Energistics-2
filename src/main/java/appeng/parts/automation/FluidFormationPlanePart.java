@@ -24,18 +24,12 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -47,33 +41,17 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.Upgrades;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.helpers.IConfigurableFluidInventory;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.FluidFormationPlaneMenu;
-import appeng.util.fluid.AEFluidInventory;
-import appeng.util.fluid.IAEFluidTank;
-import appeng.util.inv.IAEFluidInventory;
-import appeng.util.prioritylist.IPartitionList;
-import appeng.util.prioritylist.PrecisePriorityList;
+import appeng.menu.implementations.FormationPlaneMenu;
 
-public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack>
-        implements IAEFluidInventory, IConfigurableFluidInventory {
+public class FluidFormationPlanePart extends AbstractFormationPlanePart<AEFluidKey> {
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
             "part/fluid_formation_plane_on");
-
-    /**
-     * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
-     */
-    private long lastEffect;
 
     /**
      * The fluids that we tried to place unsuccessfully.
@@ -85,24 +63,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         return MODELS.getModels();
     }
 
-    private final AEFluidInventory config = new AEFluidInventory(this, 63);
-
     public FluidFormationPlanePart(ItemStack is) {
         super(is, StorageChannels.fluids());
-    }
-
-    @Override
-    protected IPartitionList<IAEFluidStack> createFilter() {
-        var priorityList = StorageChannels.fluids().createList();
-
-        var slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-        for (int x = 0; x < this.config.getSlots() && x < slotsToUse; x++) {
-            final IAEFluidStack is = this.config.getFluidInSlot(x);
-            if (is != null) {
-                priorityList.add(is);
-            }
-        }
-        return new PrecisePriorityList<>(priorityList);
     }
 
     @Override
@@ -111,22 +73,22 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    protected final IAEFluidStack placeInWorld(IAEFluidStack input, Actionable type) {
-        if (input == null || input.getStackSize() < FluidConstants.BLOCK) {
+    protected final long placeInWorld(AEFluidKey what, long amount, Actionable type) {
+        if (amount < AEFluidKey.AMOUNT_BLOCK) {
             // need a full bucket
-            return input;
+            return 0;
         }
 
-        var fluid = input.getFluid().getFluid();
+        var fluid = what.getFluid();
 
         // We previously tried placing this fluid unsuccessfully, so don't check it again.
         if (blocked.contains(fluid)) {
-            return input;
+            return 0;
         }
 
         // We do not support placing fluids with NBT for now
-        if (input.getFluid().hasNbt()) {
-            return input;
+        if (what.hasTag()) {
+            return 0;
         }
 
         var te = this.getHost().getBlockEntity();
@@ -138,7 +100,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         if (!this.canPlace(level, state, pos, fluid)) {
             // Remember that this fluid cannot be placed right now.
             blocked.add(fluid);
-            return input;
+            return 0;
         }
 
         if (type == Actionable.MODULATE) {
@@ -156,16 +118,19 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
                 if (!level.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE)
                         && !state.getFluidState().isSource()) {
-                    return input;
+                    return 0;
                 } else {
                     playEmptySound(level, pos, fluid);
                 }
             }
         }
 
-        var ret = input.copy();
-        ret.decStackSize(FluidConstants.BLOCK);
-        return ret.getStackSize() == 0 ? null : ret;
+        return AEFluidKey.AMOUNT_BLOCK;
+    }
+
+    @Override
+    public boolean supportsEntityPlacement() {
+        return false;
     }
 
     private void playEmptySound(Level level, BlockPos pos, Fluid fluid) {
@@ -199,18 +164,6 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     /**
-     * Only play the effect every 250ms.
-     */
-    private boolean throttleEffect() {
-        long now = System.currentTimeMillis();
-        if (now < lastEffect + 250) {
-            return true;
-        }
-        lastEffect = now;
-        return false;
-    }
-
-    /**
      * Checks from {@link net.minecraft.world.item.BucketItem#emptyContents}
      */
     private boolean canPlace(Level level, BlockState state, BlockPos pos, Fluid fluid) {
@@ -231,43 +184,6 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
     }
 
     @Override
-    public void onFluidInventoryChanged(IAEFluidTank inv, int slot) {
-        if (inv == this.config) {
-            this.updateFilter();
-        }
-    }
-
-    @Override
-    public void readFromNBT(final CompoundTag data) {
-        super.readFromNBT(data);
-        this.config.readFromNBT(data, "config");
-        this.updateFilter();
-    }
-
-    @Override
-    public void writeToNBT(final CompoundTag data) {
-        super.writeToNBT(data);
-        this.config.writeToNBT(data, "config");
-    }
-
-    @Override
-    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
-        if (name.equals("config")) {
-            return this.config;
-        }
-        return null;
-    }
-
-    @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
-            MenuOpener.open(FluidFormationPlaneMenu.TYPE, player, MenuLocator.forPart(this));
-        }
-
-        return true;
-    }
-
-    @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
@@ -278,12 +194,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         return getConnections();
     }
 
-    public IAEFluidTank getConfig() {
-        return this.config;
-    }
-
     @Override
     public MenuType<?> getMenuType() {
-        return FluidFormationPlaneMenu.TYPE;
+        return FormationPlaneMenu.FLUID_TYPE;
     }
 }

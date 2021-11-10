@@ -23,7 +23,9 @@
 
 package appeng.api.storage;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Exposes the monitorable network inventories of a grid node that choses to export them. This interface can only be
@@ -31,6 +33,28 @@ import appeng.api.storage.data.IAEStack;
  */
 public interface IStorageMonitorable {
 
-    <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel);
+    <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel);
 
+    /**
+     * @see IMEInventory#insert
+     */
+    @SuppressWarnings("unchecked")
+    default <T extends AEKey> long insert(T what, long amount, Actionable mode, IActionSource source) {
+        IStorageChannel<T> channel = (IStorageChannel<T>) what.getChannel();
+        return getInventory(channel).insert(what, amount, mode, source);
+    }
+
+    /**
+     * @see IMEInventory#extract
+     */
+    @SuppressWarnings("unchecked")
+    default <T extends AEKey> long extract(T what, long amount, Actionable mode, IActionSource source) {
+        IStorageChannel<T> channel = (IStorageChannel<T>) what.getChannel();
+        return getInventory(channel).insert(what, amount, mode, source);
+    }
+
+    default long getStoredAmountCached(AEKey key) {
+        var inventory = getInventory(key.getChannel());
+        return inventory.getCachedAvailableStacks().get(key);
+    }
 }

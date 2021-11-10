@@ -40,21 +40,24 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseBlockEntity;
+import appeng.helpers.IConfigInvHost;
+import appeng.helpers.iface.GenericStackInv;
 import appeng.parts.automation.EmptyUpgradeInventory;
+import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
-import appeng.util.inv.AppEngInternalAEInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
 public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
-        implements IConfigurableObject, IUpgradeableObject, InternalInventoryHost {
+        implements IConfigurableObject, IUpgradeableObject, InternalInventoryHost, IConfigInvHost {
 
     private final AppEngInternalInventory cell = new AppEngInternalInventory(this, 1);
-    private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
+    private final GenericStackInv config = new GenericStackInv(this::configChanged, GenericStackInv.Mode.CONFIG_TYPES,
+            63);
     private final ConfigManager manager = new ConfigManager();
 
     private IUpgradeInventory cacheUpgrades = null;
-    private InternalInventory cacheConfig = null;
+    private ConfigInventory<?> cacheConfig = null;
     private boolean locked = false;
 
     public CellWorkbenchBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -79,7 +82,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     public CompoundTag save(final CompoundTag data) {
         super.save(data);
         this.cell.writeToNBT(data, "cell");
-        this.config.writeToNBT(data, "config");
+        this.config.writeToChildTag(data, "config");
         this.manager.writeToNBT(data);
         return data;
     }
@@ -88,15 +91,13 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     public void load(final CompoundTag data) {
         super.load(data);
         this.cell.readFromNBT(data, "cell");
-        this.config.readFromNBT(data, "config");
+        this.config.readFromChildTag(data, "config");
         this.manager.readFromNBT(data);
     }
 
     @Override
     public InternalInventory getSubInventory(ResourceLocation id) {
-        if (id.equals(ISegmentedInventory.CONFIG)) {
-            return this.config;
-        } else if (id.equals(ISegmentedInventory.CELLS)) {
+        if (id.equals(ISegmentedInventory.CELLS)) {
             return this.cell;
         }
 
@@ -104,39 +105,44 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, final int slot, final ItemStack removedStack,
+            final ItemStack newStack) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;
+            try {
+                this.cacheUpgrades = null;
+                this.cacheConfig = null;
 
-            this.cacheUpgrades = null;
-            this.cacheConfig = null;
-
-            var configInventory = this.getCellConfigInventory();
-            if (configInventory != null) {
-                if (!configInventory.isEmpty()) {
-                    // Copy cell -> config inventory
-                    for (int x = 0; x < this.config.size(); x++) {
-                        this.config.setItemDirect(x, configInventory.getStackInSlot(x));
+                var configInventory = this.getCellConfigInventory();
+                if (configInventory != null) {
+                    if (!configInventory.isEmpty()) {
+                        // Copy cell -> config inventory
+                        copy(configInventory, this.config);
+                    } else {
+                        // Copy config inventory -> cell, when cell's config is empty
+                        copy(this.config, configInventory);
+                        // Copy items back. The cell may change the items on insert, for example if a fluid tank gets
+                        // turned
+                        // into a dummy fluid item.
+                        copy(configInventory, this.config);
                     }
-                } else {
-                    // Copy config inventory -> cell, when cell's config is empty
-                    copy(this.config, configInventory);
-                    // Copy items back. The cell may change the items on insert, for example if a fluid tank gets turned
-                    // into a dummy fluid item.
-                    copy(configInventory, this.config);
+                } else if (this.manager.getSetting(Settings.COPY_MODE) == CopyMode.CLEAR_ON_REMOVE) {
+                    this.config.clear();
+                    this.saveChanges();
                 }
-            } else if (this.manager.getSetting(Settings.COPY_MODE) == CopyMode.CLEAR_ON_REMOVE) {
-                for (int x = 0; x < this.config.size(); x++) {
-                    this.config.setItemDirect(x, ItemStack.EMPTY);
-                }
-
-                this.saveChanges();
+            } finally {
+                this.locked = false;
             }
+        }
+    }
 
-            this.locked = false;
-        } else if (inv == this.config && !this.locked) {
-            this.locked = true;
+    private void configChanged() {
+        if (locked) {
+            return;
+        }
+
+        this.locked = true;
+        try {
             var c = this.getCellConfigInventory();
             if (c != null) {
                 copy(this.config, c);
@@ -144,17 +150,21 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 // into a dummy fluid item.
                 copy(c, this.config);
             }
+        } finally {
             this.locked = false;
         }
     }
 
-    public static void copy(InternalInventory from, InternalInventory to) {
+    public static void copy(GenericStackInv from, GenericStackInv to) {
         for (int i = 0; i < Math.min(from.size(), to.size()); ++i) {
-            to.setItemDirect(i, from.getStackInSlot(i));
+            to.setStack(i, from.getStack(i));
+        }
+        for (int i = from.size(); i < to.size(); i++) {
+            to.setStack(i, null);
         }
     }
 
-    private InternalInventory getCellConfigInventory() {
+    private ConfigInventory<?> getCellConfigInventory() {
         if (this.cacheConfig == null) {
             var cell = this.getCell();
             if (cell == null) {
@@ -188,6 +198,11 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     @Override
     public IConfigManager getConfigManager() {
         return this.manager;
+    }
+
+    @Override
+    public GenericStackInv getConfig() {
+        return config;
     }
 
     @Nonnull

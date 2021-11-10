@@ -217,7 +217,7 @@ public final class AEItems {
 
     public static final ItemDefinition<CreativeCellItem> ITEM_CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC), StorageChannels.items()));
     public static final ItemDefinition<CreativeCellItem> FLUID_CELL_CREATIVE = item(AEItemIds.FLUID_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC), StorageChannels.fluids()));
-    public static final ItemDefinition<ViewCellItem> VIEW_CELL = item(AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1)));
+    public static final ItemDefinition<ViewCellItem> VIEW_CELL = item(AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1), StorageChannels.items()));
 
     public static final ItemDefinition<BasicItemStorageCellItem> CELL1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8));
     public static final ItemDefinition<BasicItemStorageCellItem> CELL4K = item(AEItemIds.ITEM_CELL_4K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_4K_CELL_COMPONENT, 4, 1.0f, 32));
@@ -242,7 +242,7 @@ public final class AEItems {
     public static final ItemDefinition<DebugCardItem> DEBUG_CARD = item(AppEng.makeId("debug_card"), DebugCardItem::new);
     public static final ItemDefinition<ReplicatorCardItem> DEBUG_REPLICATOR_CARD = item(AppEng.makeId("debug_replicator_card"), ReplicatorCardItem::new);
     public static final ItemDefinition<DebugPartPlacerItem> DEBUG_PART_PLACER = item(AppEng.makeId("debug_part_placer"), DebugPartPlacerItem::new);
-    public static final ItemDefinition<WrappedFluidStack> WRAPPED_FLUID_STACK = item(AEItemIds.WRAPPED_FLUID_STACK, WrappedFluidStack::new);
+    public static final ItemDefinition<WrappedGenericStack> WRAPPED_GENERIC_STACK = item(AEItemIds.WRAPPED_GENERIC_STACK, WrappedGenericStack::new);
 
     // spotless:on
 

@@ -22,18 +22,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.FluidStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.helpers.FluidCellConfig;
+import appeng.api.storage.data.AEFluidKey;
 
-/**
- * @author DrummerMC
- * @version rv6 - 2018-01-17
- * @since rv6 2018-01-17
- */
-public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidStack> {
+public final class BasicFluidStorageCell extends AbstractStorageCell<AEFluidKey> {
 
     private final int bytesPerType;
     private final double idleDrain;
@@ -56,18 +49,13 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     }
 
     @Override
-    public IStorageChannel<IAEFluidStack> getChannel() {
+    public FluidStorageChannel getChannel() {
         return StorageChannels.fluids();
     }
 
     @Override
     public int getTotalTypes(final ItemStack cellItem) {
         return 5;
-    }
-
-    @Override
-    public InternalInventory getConfigInventory(final ItemStack is) {
-        return new FluidCellConfig(is);
     }
 
 }

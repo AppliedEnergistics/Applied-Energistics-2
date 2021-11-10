@@ -20,8 +20,6 @@ package appeng.client.render.model;
 
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.core.Direction;
 
 /**
@@ -34,8 +32,8 @@ public class AEModelData {
     private final Direction forward;
 
     public AEModelData(Direction up, Direction forward) {
-        this.up = Preconditions.checkNotNull(up);
-        this.forward = Preconditions.checkNotNull(forward);
+        this.up = Objects.requireNonNull(up);
+        this.forward = Objects.requireNonNull(forward);
     }
 
     public Direction getUp() {

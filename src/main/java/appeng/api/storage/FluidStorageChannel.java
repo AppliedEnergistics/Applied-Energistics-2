@@ -18,26 +18,21 @@
 
 package appeng.api.storage;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEKey;
 import appeng.core.AppEng;
-import appeng.helpers.FluidContainerHelper;
-import appeng.items.misc.WrappedFluidStack;
-import appeng.util.fluid.AEFluidStack;
-import appeng.util.fluid.FluidList;
 
-public final class FluidStorageChannel implements IStorageChannel<IAEFluidStack> {
-
+public final class FluidStorageChannel implements IStorageChannel<AEFluidKey> {
     private static final ResourceLocation ID = AppEng.makeId("fluid");
 
     static final FluidStorageChannel INSTANCE = new FluidStorageChannel();
@@ -54,45 +49,29 @@ public final class FluidStorageChannel implements IStorageChannel<IAEFluidStack>
     @Override
     public int transferFactor() {
         // On Forge this was 125mb (so 125/1000th of a bucket)
-        return (int) (FluidConstants.BUCKET * 1000 / 125);
+        return AEFluidKey.AMOUNT_BUCKET * 1000 / 125;
     }
 
     @Override
     public int getUnitsPerByte() {
-        return (int) (8 * FluidConstants.BUCKET);
+        return 8 * AEFluidKey.AMOUNT_BUCKET;
     }
 
     @Override
-    public IAEStackList<IAEFluidStack> createList() {
-        return new FluidList();
+    public AEFluidKey readFromPacket(FriendlyByteBuf input) {
+        Objects.requireNonNull(input);
+
+        return AEFluidKey.fromPacket(input);
     }
 
     @Override
-    public IAEFluidStack createStack(ItemStack is) {
-        Preconditions.checkNotNull(is, "is");
-
-        if (WrappedFluidStack.isWrapped(is)) {
-            return WrappedFluidStack.unwrap(is);
-        } else {
-            return FluidContainerHelper.getContainedFluid(is);
-        }
+    public AEFluidKey loadKeyFromTag(CompoundTag tag) {
+        return AEFluidKey.fromTag(tag);
     }
 
+    @Nullable
     @Override
-    public IAEFluidStack readFromPacket(FriendlyByteBuf input) {
-        Preconditions.checkNotNull(input);
-
-        return AEFluidStack.fromPacket(input);
-    }
-
-    @Override
-    public IAEFluidStack createFromNBT(CompoundTag nbt) {
-        Preconditions.checkNotNull(nbt);
-        return AEFluidStack.fromNBT(nbt);
-    }
-
-    @Override
-    public IAEFluidStack copy(IAEFluidStack stack) {
-        return stack.copy();
+    public AEFluidKey tryCast(AEKey key) {
+        return key instanceof AEFluidKey fluidKey ? fluidKey : null;
     }
 }

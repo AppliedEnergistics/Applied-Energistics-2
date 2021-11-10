@@ -20,8 +20,8 @@ package appeng.menu.me.items;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.ResultContainer;
@@ -29,7 +29,6 @@ import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -40,19 +39,16 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.definitions.AEItems;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.IMenuCraftingPacket;
-import appeng.items.misc.WrappedFluidStack;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.NullMenu;
@@ -69,7 +65,6 @@ import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
 import appeng.util.inv.CarriedItemInventory;
 import appeng.util.inv.PlayerInternalInventory;
-import appeng.util.item.AEItemStack;
 
 /**
  * @see appeng.client.gui.me.items.PatternTermScreen
@@ -264,13 +259,12 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
     }
 
-    private static IAEStack[] toAeStacks(ItemStack... stacks) {
-        IAEStack[] out = new IAEStack[stacks.length];
+    private static GenericStack[] toAeStacks(ItemStack... stacks) {
+        GenericStack[] out = new GenericStack[stacks.length];
         for (int i = 0; i < stacks.length; ++i) {
-            if (WrappedFluidStack.isWrapped(stacks[i])) {
-                out[i] = WrappedFluidStack.unwrap(stacks[i]);
-            } else {
-                out[i] = AEItemStack.fromItemStack(stacks[i]);
+            out[i] = GenericStack.unwrapItemStack(stacks[i]);
+            if (out[i] == null) {
+                out[i] = GenericStack.fromItemStack(stacks[i]);
             }
         }
         return out;
@@ -335,90 +329,102 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
     }
 
-    public void craftOrGetItem(final PatternSlotPacket packetPatternSlot) {
-        if (packetPatternSlot.slotItem != null && this.monitor != null /*
-                                                                        * TODO should this check powered / powerSource?
-                                                                        */) {
-            final IAEItemStack out = packetPatternSlot.slotItem.copy();
-            InternalInventory inv = new CarriedItemInventory(this);
-            var playerInv = new PlayerInternalInventory(getPlayerInventory());
+    /**
+     * Triggered by clicking on the pattern terminals crafting result slot. Will either grab the item from the network
+     * inventory or craft it.
+     */
+    public void craftOrGetItem(PatternSlotPacket packetPatternSlot) {
+        AEItemKey what = packetPatternSlot.what;
+        if (what == null || this.monitor == null || !isPowered()) {
+            return;
+        }
 
-            if (packetPatternSlot.shift) {
-                inv = playerInv;
+        InternalInventory inv = new CarriedItemInventory(this);
+        var playerInv = new PlayerInternalInventory(getPlayerInventory());
+
+        if (packetPatternSlot.intoPlayerInv) {
+            inv = playerInv;
+        }
+
+        // If the target inv hold at least 1 of the crafted/extracted item, don't bother
+        if (!inv.simulateAdd(what.toStack()).isEmpty()) {
+            return;
+        }
+
+        // Clamp the amount to a reasonable amount
+        var amount = Mth.clamp(packetPatternSlot.amount, 1, what.getItem().getMaxStackSize());
+
+        var extracted = StorageHelper.poweredExtraction(this.powerSource, this.monitor,
+                what, amount, this.getActionSource());
+        var p = this.getPlayerInventory().player;
+
+        if (extracted > 0) {
+            inv.addItems(what.toStack(amount));
+            this.broadcastChanges();
+            return;
+        }
+
+        ///
+        // Item was not available in network inventory, let's try to grab ingredients for crafting it ad-hoc
+        ///
+
+        var ic = new CraftingContainer(new NullMenu(), 3, 3);
+        var real = new CraftingContainer(new NullMenu(), 3, 3);
+
+        for (int x = 0; x < 9; x++) {
+            ic.setItem(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY
+                    : packetPatternSlot.pattern[x].toStack());
+        }
+
+        var r = p.level.getRecipeManager()
+                .getRecipeFor(RecipeType.CRAFTING, ic, p.level)
+                .orElse(null);
+
+        if (r == null) {
+            return;
+        }
+
+        var storage = this.getPatternTerminal().getInventory(StorageChannels.items());
+        var all = storage.getCachedAvailableStacks();
+
+        final ItemStack is = r.assemble(ic);
+
+        var partitionFilter = ViewCellItem.createFilter(StorageChannels.items(), this.getViewCells());
+        for (int x = 0; x < ic.getContainerSize(); x++) {
+            if (!ic.getItem(x).isEmpty()) {
+                var pulled = Platform.extractItemsByRecipe(this.powerSource,
+                        this.getActionSource(), storage, p.level, r, is, ic, ic.getItem(x), x, all,
+                        Actionable.MODULATE, partitionFilter);
+                real.setItem(x, pulled);
             }
+        }
 
-            if (!inv.simulateAdd(out.createItemStack()).isEmpty()) {
-                return;
-            }
+        var rr = p.level.getRecipeManager()
+                .getRecipeFor(RecipeType.CRAFTING, real, p.level).orElse(null);
 
-            final IAEItemStack extracted = StorageHelper.poweredExtraction(this.powerSource, this.monitor,
-                    out, this.getActionSource());
-            final Player p = this.getPlayerInventory().player;
+        if (rr == r && ItemStack.isSameItemSameTags(rr.assemble(real), is)) {
+            final ResultContainer craftingResult = new ResultContainer();
+            craftingResult.setRecipeUsed(rr);
 
-            if (extracted != null) {
-                inv.addItems(extracted.createItemStack());
-                this.broadcastChanges();
-                return;
-            }
+            final ResultSlot sc = new ResultSlot(p, real, craftingResult, 0, 0, 0);
+            sc.onTake(p, is);
 
-            final CraftingContainer ic = new CraftingContainer(new NullMenu(), 3, 3);
-            final CraftingContainer real = new CraftingContainer(new NullMenu(), 3, 3);
+            for (int x = 0; x < real.getContainerSize(); x++) {
+                final ItemStack failed = playerInv.addItems(real.getItem(x));
 
-            for (int x = 0; x < 9; x++) {
-                ic.setItem(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY
-                        : packetPatternSlot.pattern[x].createItemStack());
-            }
-
-            final Recipe<CraftingContainer> r = p.level.getRecipeManager()
-                    .getRecipeFor(RecipeType.CRAFTING, ic, p.level)
-                    .orElse(null);
-
-            if (r == null) {
-                return;
-            }
-
-            final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
-                    .getInventory(StorageChannels.items());
-            final IAEStackList<IAEItemStack> all = storage.getCachedAvailableStacks();
-
-            final ItemStack is = r.assemble(ic);
-
-            for (int x = 0; x < ic.getContainerSize(); x++) {
-                if (!ic.getItem(x).isEmpty()) {
-                    final ItemStack pulled = Platform.extractItemsByRecipe(this.powerSource,
-                            this.getActionSource(), storage, p.level, r, is, ic, ic.getItem(x), x, all,
-                            Actionable.MODULATE, ViewCellItem.createFilter(this.getViewCells()));
-                    real.setItem(x, pulled);
+                if (!failed.isEmpty()) {
+                    p.drop(failed, false);
                 }
             }
 
-            final Recipe<CraftingContainer> rr = p.level.getRecipeManager()
-                    .getRecipeFor(RecipeType.CRAFTING, real, p.level).orElse(null);
-
-            if (rr == r && ItemStack.isSameItemSameTags(rr.assemble(real), is)) {
-                final ResultContainer craftingResult = new ResultContainer();
-                craftingResult.setRecipeUsed(rr);
-
-                final ResultSlot sc = new ResultSlot(p, real, craftingResult, 0, 0, 0);
-                sc.onTake(p, is);
-
-                for (int x = 0; x < real.getContainerSize(); x++) {
-                    final ItemStack failed = playerInv.addItems(real.getItem(x));
-
-                    if (!failed.isEmpty()) {
-                        p.drop(failed, false);
-                    }
-                }
-
-                inv.addItems(is);
-                this.broadcastChanges();
-            } else {
-                for (int x = 0; x < real.getContainerSize(); x++) {
-                    final ItemStack failed = real.getItem(x);
-                    if (!failed.isEmpty()) {
-                        this.monitor.injectItems(AEItemStack.fromItemStack(failed), Actionable.MODULATE,
-                                new MachineSource(this.getPatternTerminal()));
-                    }
+            inv.addItems(is);
+            this.broadcastChanges();
+        } else {
+            for (int x = 0; x < real.getContainerSize(); x++) {
+                final ItemStack failed = real.getItem(x);
+                if (!failed.isEmpty()) {
+                    this.monitor.insert(AEItemKey.of(failed), failed.getCount(), Actionable.MODULATE,
+                            new MachineSource(this.getPatternTerminal()));
                 }
             }
         }
@@ -477,7 +483,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
     @Override
     public InternalInventory getCraftingMatrix() {
-        return this.getPatternTerminal().getSubInventory(PatternTerminalPart.INV_CRAFTING);
+        return craftingGridInv;
     }
 
     @Override
@@ -563,14 +569,14 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     }
 
     private static void convertItemToFluid(Slot slot) {
-        var fluidStack = FluidContainerHelper.getContainedFluid(slot.getItem());
+        var fluidStack = FluidContainerHelper.getContainedStack(slot.getItem());
         if (fluidStack != null) {
-            slot.set(fluidStack.wrap());
+            slot.set(GenericStack.wrapInItemStack(fluidStack));
         }
     }
 
     public boolean canConvertItemToFluid(Slot slot) {
-        return FluidContainerHelper.getContainedFluid(slot.getItem()) != null;
+        return FluidContainerHelper.getContainedStack(slot.getItem()) != null;
     }
 
     public void setProcessingResult(ItemStack resultItem) {

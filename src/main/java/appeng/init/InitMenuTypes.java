@@ -26,19 +26,13 @@ import appeng.menu.implementations.ChestMenu;
 import appeng.menu.implementations.CondenserMenu;
 import appeng.menu.implementations.DriveMenu;
 import appeng.menu.implementations.EnergyLevelEmitterMenu;
-import appeng.menu.implementations.FluidFormationPlaneMenu;
-import appeng.menu.implementations.FluidIOBusMenu;
-import appeng.menu.implementations.FluidInterfaceMenu;
-import appeng.menu.implementations.FluidLevelEmitterMenu;
-import appeng.menu.implementations.FluidStorageBusMenu;
+import appeng.menu.implementations.FormationPlaneMenu;
+import appeng.menu.implementations.IOBusMenu;
 import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
+import appeng.menu.implementations.InterfaceMenu;
 import appeng.menu.implementations.InterfaceTerminalMenu;
-import appeng.menu.implementations.ItemFormationPlaneMenu;
-import appeng.menu.implementations.ItemIOBusMenu;
-import appeng.menu.implementations.ItemInterfaceMenu;
-import appeng.menu.implementations.ItemLevelEmitterMenu;
-import appeng.menu.implementations.ItemStorageBusMenu;
+import appeng.menu.implementations.LevelEmitterMenu;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.PriorityMenu;
@@ -48,6 +42,7 @@ import appeng.menu.implementations.SecurityStationMenu;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.menu.implementations.SpatialAnchorMenu;
 import appeng.menu.implementations.SpatialIOPortMenu;
+import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.menu.implementations.WirelessMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
@@ -79,12 +74,15 @@ public final class InitMenuTypes {
                 CraftingStatusMenu.TYPE,
                 CraftingTermMenu.TYPE,
                 DriveMenu.TYPE,
-                ItemFormationPlaneMenu.TYPE,
+                FormationPlaneMenu.ITEM_TYPE,
+                FormationPlaneMenu.FLUID_TYPE,
                 InscriberMenu.TYPE,
-                ItemInterfaceMenu.TYPE,
+                InterfaceMenu.ITEM_TYPE,
+                InterfaceMenu.FLUID_TYPE,
                 InterfaceTerminalMenu.TYPE,
                 IOPortMenu.TYPE,
-                ItemLevelEmitterMenu.TYPE,
+                LevelEmitterMenu.ITEM_TYPE,
+                LevelEmitterMenu.FLUID_TYPE,
                 EnergyLevelEmitterMenu.TYPE,
                 PatternProviderMenu.TYPE,
                 MolecularAssemblerMenu.TYPE,
@@ -100,18 +98,15 @@ public final class InitMenuTypes {
                 SkyChestMenu.TYPE,
                 SpatialIOPortMenu.TYPE,
                 SpatialAnchorMenu.TYPE,
-                ItemStorageBusMenu.TYPE,
-                ItemIOBusMenu.EXPORT_TYPE,
-                ItemIOBusMenu.IMPORT_TYPE,
+                StorageBusMenu.ITEM_TYPE,
+                StorageBusMenu.FLUID_TYPE,
+                IOBusMenu.ITEM_EXPORT_TYPE,
+                IOBusMenu.ITEM_IMPORT_TYPE,
+                IOBusMenu.FLUID_EXPORT_TYPE,
+                IOBusMenu.FLUID_IMPORT_TYPE,
                 VibrationChamberMenu.TYPE,
                 WirelessMenu.TYPE,
                 WirelessTermMenu.TYPE,
-                FluidFormationPlaneMenu.TYPE,
-                FluidIOBusMenu.EXPORT_TYPE,
-                FluidIOBusMenu.IMPORT_TYPE,
-                FluidInterfaceMenu.TYPE,
-                FluidLevelEmitterMenu.TYPE,
-                FluidStorageBusMenu.TYPE,
                 FluidTerminalMenu.TYPE);
     }
 

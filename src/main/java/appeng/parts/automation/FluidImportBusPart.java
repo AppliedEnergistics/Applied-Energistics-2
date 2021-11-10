@@ -20,40 +20,28 @@ package appeng.parts.automation;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.StorageChannels;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
-import appeng.me.helpers.MachineSource;
-import appeng.menu.implementations.FluidIOBusMenu;
+import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
-import appeng.util.fluid.AEFluidStack;
 
-/**
- * @author BrockWS
- * @version rv6 - 30/04/2018
- * @since rv6 30/04/2018
- */
-public class FluidImportBusPart extends SharedFluidBusPart {
+public class FluidImportBusPart extends ImportBusPart<AEFluidKey, Storage<FluidVariant>> {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
@@ -65,26 +53,18 @@ public class FluidImportBusPart extends SharedFluidBusPart {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_has_channel"));
 
-    private final IActionSource source;
-
     public FluidImportBusPart(ItemStack is) {
-        super(is);
-        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
-        this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
-        this.getConfigManager().registerSetting(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
-        this.source = new MachineSource(this);
+        super(TickRates.FluidImportBus, is, FluidStorage.SIDED);
+    }
+
+    @Override
+    protected IStorageChannel<AEFluidKey> getChannel() {
+        return StorageChannels.fluids();
     }
 
     @Override
     protected MenuType<?> getMenuType() {
-        return FluidIOBusMenu.IMPORT_TYPE;
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.FluidImportBus.getMin(), TickRates.FluidImportBus.getMax(),
-                this.isSleeping(), false);
+        return IOBusMenu.FLUID_IMPORT_TYPE;
     }
 
     @Override
@@ -94,25 +74,26 @@ public class FluidImportBusPart extends SharedFluidBusPart {
         }
 
         var grid = getMainNode().getGrid();
-        var adjacentStorage = this.getConnectedTE();
+        var adjacentStorage = adjacentExternalApi.find();
         if (adjacentStorage == null || grid == null) {
             return TickRateModulation.SLEEP;
         }
 
-        long remainingTransferAmount = calculateAmountToSend();
+        long remainingTransferAmount = calculateAmountPerTick();
 
         var inv = grid.getStorageService().getInventory(this.getChannel());
         try (var tx = Transaction.openOuter()) {
 
             // Try to find an extractable resource that fits our filter, and if we've found at least one,
             // continue until we've filled the desired amount per transfer
-            IAEFluidStack extractable = null;
-            for (StorageView<FluidVariant> view : adjacentStorage.iterable(tx)) {
+            AEFluidKey extractable = null;
+            long extractableAmount = 0;
+            for (var view : adjacentStorage.iterable(tx)) {
                 var resource = view.getResource();
                 if (resource.isBlank()
                         // After the first extractable resource, we're just trying to get enough to fill our
                         // transfer quota.
-                        || extractable != null && !extractable.getFluid().equals(resource)
+                        || extractable != null && !extractable.matches(resource)
                         // Regard a filter that is set on the bus
                         || this.filterEnabled() && !this.isInFilter(resource)) {
                     continue;
@@ -120,20 +101,18 @@ public class FluidImportBusPart extends SharedFluidBusPart {
 
                 // Check how much of *this* resource we can actually insert into the network, it might be 0
                 // if the cells are partitioned or there's not enough types left, etc.
-                long amountForThisResource = remainingTransferAmount;
-                var overflow = inv.injectItems(AEFluidStack.of(resource, amountForThisResource), Actionable.SIMULATE,
+                var amountForThisResource = inv.insert(AEFluidKey.of(resource), remainingTransferAmount,
+                        Actionable.SIMULATE,
                         this.source);
-                if (overflow != null) {
-                    amountForThisResource -= overflow.getStackSize();
-                }
 
                 // Try to extract it
                 var amount = view.extract(resource, amountForThisResource, tx);
                 if (amount > 0) {
                     if (extractable != null) {
-                        extractable.incStackSize(amount);
+                        extractableAmount += amount;
                     } else {
-                        extractable = AEFluidStack.of(resource, amount);
+                        extractable = AEFluidKey.of(resource);
+                        extractableAmount += amount;
                     }
                     remainingTransferAmount -= amount;
                     if (remainingTransferAmount >= 0) {
@@ -148,12 +127,12 @@ public class FluidImportBusPart extends SharedFluidBusPart {
                 return TickRateModulation.SLOWER;
             }
 
-            var notInserted = inv.injectItems(extractable, Actionable.MODULATE, this.source);
+            var inserted = inv.insert(extractable, extractableAmount, Actionable.MODULATE, this.source);
 
-            if (notInserted != null && notInserted.getStackSize() > 0) {
+            if (inserted < extractableAmount) {
                 // Be nice and try to give the overflow back
-                AELog.warn("Extracted %s from adjacent tank and voided it because network refused insert",
-                        extractable);
+                AELog.warn("Extracted %dx%s from adjacent tank and voided it because network refused insert",
+                        extractableAmount - inserted, extractable);
             }
 
             tx.commit();
@@ -162,9 +141,9 @@ public class FluidImportBusPart extends SharedFluidBusPart {
     }
 
     private boolean isInFilter(FluidVariant fluid) {
-        for (int i = 0; i < this.getConfig().getSlots(); i++) {
-            final IAEFluidStack stack = this.getConfig().getFluidInSlot(i);
-            if (stack != null && stack.getFluid().equals(fluid)) {
+        for (var i = 0; i < this.getConfig().size(); i++) {
+            var what = this.getConfig().getKey(i);
+            if (what != null && what.matches(fluid)) {
                 return true;
             }
         }
@@ -172,18 +151,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
     }
 
     private boolean filterEnabled() {
-        for (int i = 0; i < this.getConfig().getSlots(); i++) {
-            final IAEFluidStack stack = this.getConfig().getFluidInSlot(i);
-            if (stack != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public RedstoneMode getRSMode() {
-        return this.getConfigManager().getSetting(Settings.REDSTONE_CONTROLLED);
+        return !getConfig().isEmpty();
     }
 
     @Nonnull

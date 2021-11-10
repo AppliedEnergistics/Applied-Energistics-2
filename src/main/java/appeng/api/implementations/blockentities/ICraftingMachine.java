@@ -35,7 +35,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.ids.AEConstants;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 /**
  * Provides crafting services to adjacent pattern providers for automatic crafting. Can be provided via capability on
@@ -68,7 +69,7 @@ public interface ICraftingMachine {
      *
      * @return if it was accepted, all or nothing.
      */
-    boolean pushPattern(IPatternDetails patternDetails, MixedStackList[] inputs, Direction ejectionDirection);
+    boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputs, Direction ejectionDirection);
 
     /**
      * check if the crafting machine is accepting pushes via pushPattern, if this is false, all calls to push will fail,

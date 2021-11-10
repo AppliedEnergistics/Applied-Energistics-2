@@ -18,10 +18,8 @@
 
 package appeng.crafting.inv;
 
-import java.util.Collection;
-
 import appeng.api.config.Actionable;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 public class ChildCraftingSimulationState extends CraftingSimulationState {
     private final ICraftingInventory parent;
@@ -31,12 +29,12 @@ public class ChildCraftingSimulationState extends CraftingSimulationState {
     }
 
     @Override
-    protected IAEStack simulateExtractParent(IAEStack input) {
-        return parent.extractItems(input, Actionable.SIMULATE);
+    protected long simulateExtractParent(AEKey what, long amount) {
+        return parent.extract(what, amount, Actionable.SIMULATE);
     }
 
     @Override
-    protected Collection<IAEStack> findFuzzyParent(IAEStack input) {
+    protected Iterable<AEKey> findFuzzyParent(AEKey input) {
         return parent.findFuzzyTemplates(input);
     }
 }

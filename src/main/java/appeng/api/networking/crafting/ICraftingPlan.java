@@ -26,8 +26,9 @@ package appeng.api.networking.crafting;
 import java.util.Map;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 /**
  * Result of a {@linkplain ICraftingService#beginCraftingCalculation crafting job calculation}. Do not edit any of the
@@ -37,7 +38,7 @@ public interface ICraftingPlan {
     /**
      * Final output of the job.
      */
-    IAEStack finalOutput();
+    GenericStack finalOutput();
 
     /**
      * Total bytes used by the job.
@@ -58,17 +59,17 @@ public interface ICraftingPlan {
     /**
      * List of items that were used. (They would need to be extracted to start the job).
      */
-    MixedStackList usedItems();
+    KeyCounter<AEKey> usedItems();
 
     /**
      * List of items that need to be emitted for this job.
      */
-    MixedStackList emittedItems();
+    KeyCounter<AEKey> emittedItems();
 
     /**
      * List of missing items if this is a simulation.
      */
-    MixedStackList missingItems();
+    KeyCounter<AEKey> missingItems();
 
     /**
      * Map of each pattern to the number of times it needs to be crafted. Can be used to retrieve the crafted items:

@@ -72,10 +72,10 @@ public final class InitApiLookup {
 
     private static void initItemInterface() {
         PartApiLookup.register(ItemStorage.SIDED,
-                (part, context) -> part.getInterfaceDuality().getStorage().toStorage(),
+                (part, context) -> part.getInterfaceDuality().getLocalStorage(),
                 ItemInterfacePart.class);
         ItemStorage.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getInterfaceDuality().getStorage().toStorage();
+            return blockEntity.getInterfaceDuality().getLocalStorage();
         }, AEBlockEntities.INTERFACE);
         PartApiLookup.register(IStorageMonitorableAccessor.SIDED,
                 (part, context) -> part.getInterfaceDuality().getGridStorageAccessor(), ItemInterfacePart.class);
@@ -85,15 +85,15 @@ public final class InitApiLookup {
     }
 
     private static void initFluidInterface() {
-        PartApiLookup.register(FluidStorage.SIDED, (part, context) -> part.getDualityFluidInterface().getTanks(),
+        PartApiLookup.register(FluidStorage.SIDED, (part, context) -> part.getInterfaceDuality().getLocalStorage(),
                 FluidInterfacePart.class);
         FluidStorage.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getDualityFluidInterface().getTanks();
+            return blockEntity.getInterfaceDuality().getLocalStorage();
         }, AEBlockEntities.FLUID_INTERFACE);
         PartApiLookup.register(IStorageMonitorableAccessor.SIDED,
-                (part, context) -> part.getDualityFluidInterface().getGridStorageAccessor(), FluidInterfacePart.class);
+                (part, context) -> part.getInterfaceDuality().getGridStorageAccessor(), FluidInterfacePart.class);
         IStorageMonitorableAccessor.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getDualityFluidInterface().getGridStorageAccessor();
+            return blockEntity.getInterfaceDuality().getGridStorageAccessor();
         }, AEBlockEntities.FLUID_INTERFACE);
     }
 

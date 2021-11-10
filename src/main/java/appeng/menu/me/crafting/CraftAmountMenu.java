@@ -18,6 +18,7 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.Objects;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
@@ -37,7 +38,7 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEKey;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
@@ -69,7 +70,7 @@ public class CraftAmountMenu extends AEBaseMenu {
     /**
      * This item (server-only) indicates what should actually be crafted.
      */
-    private IAEItemStack itemToCreate;
+    private AEKey whatToCraft;
 
     @GuiSync(1)
     private int initialAmount = -1;
@@ -84,12 +85,11 @@ public class CraftAmountMenu extends AEBaseMenu {
     /**
      * Opens the craft amount screen for the given player.
      */
-    public static void open(ServerPlayer player, MenuLocator locator, IAEItemStack itemToCraft,
-            int initialAmount) {
+    public static void open(ServerPlayer player, MenuLocator locator, AEKey whatToCraft, int initialAmount) {
         MenuOpener.open(CraftAmountMenu.TYPE, player, locator);
 
         if (player.containerMenu instanceof CraftAmountMenu cca) {
-            cca.setItemToCraft(itemToCraft, initialAmount);
+            cca.setWhatToCraft(whatToCraft, initialAmount);
             cca.broadcastChanges();
         }
     }
@@ -108,11 +108,10 @@ public class CraftAmountMenu extends AEBaseMenu {
         return new PlayerSource(this.getPlayerInventory().player, (IActionHost) this.getTarget());
     }
 
-    private void setItemToCraft(@Nonnull final IAEItemStack itemToCreate, int initialAmount) {
-        // Make a copy because this stack will be modified with the requested amount
-        this.itemToCreate = itemToCreate.copy();
+    private void setWhatToCraft(@Nonnull AEKey whatToCraft, int initialAmount) {
+        this.whatToCraft = Objects.requireNonNull(whatToCraft, "whatToCraft");
         this.initialAmount = initialAmount;
-        this.craftingItem.set(itemToCreate.asItemStackRepresentation());
+        this.craftingItem.set(whatToCraft.wrapForDisplayOrFilter());
     }
 
     /**
@@ -136,26 +135,24 @@ public class CraftAmountMenu extends AEBaseMenu {
             }
 
             final IGrid g = gn.getGrid();
-            if (g == null || this.itemToCreate == null) {
+            if (g == null || this.whatToCraft == null) {
                 return;
             }
-
-            this.itemToCreate.setStackSize(amount);
 
             Future<ICraftingPlan> futureJob = null;
             try {
                 final ICraftingService cg = g.getCraftingService();
                 var actionSource = getActionSrc();
-                futureJob = cg.beginCraftingCalculation(getLevel(), () -> actionSource, this.itemToCreate);
+                futureJob = cg.beginCraftingCalculation(getLevel(), () -> actionSource, whatToCraft, amount);
 
-                final MenuLocator locator = getLocator();
+                var locator = getLocator();
                 if (locator != null) {
                     Player player = this.getPlayerInventory().player;
                     MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
 
                     if (player.containerMenu instanceof CraftConfirmMenu ccc) {
                         ccc.setAutoStart(autoStart);
-                        ccc.setItemToCreate(this.itemToCreate.copy());
+                        ccc.setWhatToCraft(this.whatToCraft, amount);
                         ccc.setJob(futureJob);
                         broadcastChanges();
                     }

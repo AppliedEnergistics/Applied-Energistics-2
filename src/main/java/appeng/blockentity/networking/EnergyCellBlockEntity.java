@@ -109,21 +109,23 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
-        if (from == SettingsFrom.DISMANTLE_ITEM) {
-            this.internalCurrentPower = compound.getDouble("internalCurrentPower");
+    public void importSettings(SettingsFrom mode, CompoundTag input) {
+        super.importSettings(mode, input);
+
+        if (mode == SettingsFrom.DISMANTLE_ITEM) {
+            this.internalCurrentPower = input.getDouble("internalCurrentPower");
         }
     }
 
     @Override
-    public CompoundTag downloadSettings(final SettingsFrom from) {
+    public void exportSettings(SettingsFrom from, CompoundTag data) {
+        super.exportSettings(from, data);
+
         if (from == SettingsFrom.DISMANTLE_ITEM) {
             final CompoundTag tag = new CompoundTag();
             tag.putDouble("internalCurrentPower", this.internalCurrentPower);
             tag.putDouble("internalMaxPower", this.getInternalMaxPower()); // used for tool tip.
-            return tag;
         }
-        return null;
     }
 
     @Override

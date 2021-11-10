@@ -29,8 +29,8 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
+import appeng.util.ConfigInventory;
 
 public interface ICellWorkbenchItem {
     /**
@@ -59,7 +59,7 @@ public interface ICellWorkbenchItem {
      * <p>
      * onInventoryChange will be called when saving is needed.
      */
-    InternalInventory getConfigInventory(ItemStack is);
+    ConfigInventory<?> getConfigInventory(ItemStack is);
 
     /**
      * @return the current fuzzy status.

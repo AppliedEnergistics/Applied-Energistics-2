@@ -1,9 +1,12 @@
 package appeng.util;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 
 // TODO FABRIC 117: No concept of itemstack-sensitive container items.
 public final class CraftingRemainders {
@@ -38,7 +41,26 @@ public final class CraftingRemainders {
         return ci;
     }
 
-    public static IAEItemStack getRemainder(IAEItemStack stackInSlot) {
-        return IAEItemStack.of(getRemainder(stackInSlot.createItemStack()));
+    /**
+     * Gets the container item for the given item or EMPTY. A container item is what remains when the item is used for
+     * crafting, i.E. the empty bucket for a bucket of water.
+     */
+    @Nullable
+    public static AEKey getRemainder(AEKey stackInSlot) {
+        if (!(stackInSlot instanceof AEItemKey itemKey)) {
+            return null;
+        }
+
+        var i = itemKey.getItem();
+        if (!i.hasCraftingRemainingItem()) {
+            return null;
+        }
+
+        ItemStack ci = new ItemStack(i.getCraftingRemainingItem());
+        if (!ci.isEmpty() && ci.isDamageableItem() && ci.getDamageValue() == ci.getMaxDamage()) {
+            ci = ItemStack.EMPTY;
+        }
+
+        return AEItemKey.of(ci);
     }
 }

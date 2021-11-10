@@ -29,22 +29,18 @@ import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
 import appeng.menu.MenuLocator;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.me.common.GridInventoryEntry;
-import appeng.menu.me.common.IClientRepo;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.util.item.AEItemStack;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
  */
-public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
+public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
 
     public static final MenuType<ItemTerminalMenu> TYPE = MenuTypeBuilder
             .create(ItemTerminalMenu::new, ITerminalHost.class)
@@ -61,11 +57,11 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
     }
 
     @Override
-    protected void handleNetworkInteraction(ServerPlayer player, @Nullable IAEItemStack stack,
+    protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEItemKey clickedKey,
             InventoryAction action) {
 
         // Handle interactions where the player wants to put something into the network
-        if (stack == null) {
+        if (clickedKey == null) {
             if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE || action == InventoryAction.ROLL_DOWN) {
                 putCarriedItemIntoNetwork(true);
             } else if (action == InventoryAction.PICKUP_OR_SET_DOWN) {
@@ -78,90 +74,90 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
             case AUTO_CRAFT:
                 final MenuLocator locator = getLocator();
                 if (locator != null) {
-                    CraftAmountMenu.open(player, locator, stack, 1);
+                    CraftAmountMenu.open(player, locator, clickedKey, 1);
                 }
                 break;
 
             case SHIFT_CLICK:
-                moveOneStackToPlayer(stack);
+                moveOneStackToPlayer(clickedKey);
                 break;
 
             case ROLL_DOWN: {
                 // Insert 1 of the carried stack into the network (or at least try to), regardless of what we're
                 // hovering in the network inventory.
-                var isg = getCarried();
-                var ais = StorageChannels.items().createStack(isg);
-                if (ais != null) {
-                    ais.setStackSize(1);
-                    ais = StorageHelper.poweredInsert(powerSource, monitor, ais, this.getActionSource());
-                    if (ais == null) {
+                var carried = getCarried();
+                if (!carried.isEmpty()) {
+                    var what = AEItemKey.of(carried);
+                    var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, 1, this.getActionSource());
+                    if (inserted > 0) {
                         getCarried().shrink(1);
                     }
                 }
             }
                 break;
             case ROLL_UP:
-            case PICKUP_SINGLE:
+            case PICKUP_SINGLE: {
                 // Extract 1 of the hovered stack from the network (or at least try to), and add it to the carried item
-                int liftQty = 1;
                 var item = getCarried();
 
                 if (!item.isEmpty()) {
                     if (item.getCount() >= item.getMaxStackSize()) {
-                        liftQty = 0;
+                        return; // Max stack size reached
                     }
-                    if (!ItemStack.isSameItemSameTags(stack.getDefinition(), item)) {
-                        liftQty = 0;
+                    if (!clickedKey.matches(item)) {
+                        return; // Not stackable
                     }
                 }
 
-                if (liftQty > 0) {
-                    IAEItemStack ais = IAEStack.copy(stack, 1);
-                    ais = StorageHelper.poweredExtraction(powerSource, monitor, ais, this.getActionSource());
-                    if (ais != null) {
-                        if (item.isEmpty()) {
-                            setCarried(ais.createItemStack());
-                        } else {
-                            // we checked beforehand that max stack size was not reached
-                            item.grow((int) ais.getStackSize());
-                        }
+                var extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedKey, 1,
+                        this.getActionSource());
+                if (extracted > 0) {
+                    if (item.isEmpty()) {
+                        setCarried(clickedKey.toStack());
+                    } else {
+                        // we checked beforehand that max stack size was not reached
+                        item.grow(1);
                     }
                 }
+            }
                 break;
-            case PICKUP_OR_SET_DOWN:
+            case PICKUP_OR_SET_DOWN: {
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(false);
                 } else {
-                    IAEItemStack ais = stack.copy();
-                    ais.setStackSize(ais.getDefinition().getMaxStackSize());
-                    ais = StorageHelper.poweredExtraction(powerSource, monitor, ais,
+                    var extracted = StorageHelper.poweredExtraction(
+                            powerSource,
+                            monitor,
+                            clickedKey,
+                            clickedKey.getItem().getMaxStackSize(),
                             this.getActionSource());
-                    if (ais != null) {
-                        setCarried(ais.createItemStack());
+                    if (extracted > 0) {
+                        setCarried(clickedKey.toStack((int) extracted));
                     } else {
                         setCarried(ItemStack.EMPTY);
                     }
                 }
-
+            }
                 break;
             case SPLIT_OR_PLACE_SINGLE:
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(true);
                 } else {
-                    IAEItemStack ais = stack.copy();
-                    final long maxSize = ais.getDefinition().getMaxStackSize();
-                    ais.setStackSize(maxSize);
-                    ais = monitor.extractItems(ais, Actionable.SIMULATE, this.getActionSource());
+                    var extracted = monitor.extract(
+                            clickedKey,
+                            clickedKey.getItem().getMaxStackSize(),
+                            Actionable.SIMULATE,
+                            this.getActionSource());
 
-                    if (ais != null) {
-                        final long stackSize = Math.min(maxSize, ais.getStackSize());
-                        ais.setStackSize(stackSize + 1 >> 1);
-                        ais = StorageHelper.poweredExtraction(powerSource, monitor, ais,
+                    if (extracted > 0) {
+                        // Half
+                        extracted = extracted + 1 >> 1;
+                        extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedKey, extracted,
                                 this.getActionSource());
                     }
 
-                    if (ais != null) {
-                        setCarried(ais.createItemStack());
+                    if (extracted > 0) {
+                        setCarried(clickedKey.toStack((int) extracted));
                     } else {
                         setCarried(ItemStack.EMPTY);
                     }
@@ -170,7 +166,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
                 break;
             case CREATIVE_DUPLICATE:
                 if (player.getAbilities().instabuild) {
-                    final ItemStack is = stack.createItemStack();
+                    var is = clickedKey.toStack();
                     is.setCount(is.getMaxStackSize());
                     setCarried(is);
                 }
@@ -178,7 +174,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
             case MOVE_REGION:
                 final int playerInv = player.getInventory().items.size();
                 for (int slotNum = 0; slotNum < playerInv; slotNum++) {
-                    if (!moveOneStackToPlayer(stack)) {
+                    if (!moveOneStackToPlayer(clickedKey)) {
                         break;
                     }
                 }
@@ -192,18 +188,18 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
     protected void putCarriedItemIntoNetwork(boolean singleItem) {
         var heldStack = getCarried();
 
-        IAEItemStack stackToInsert = AEItemStack.fromItemStack(heldStack);
-        if (stackToInsert == null) {
+        var what = AEItemKey.of(heldStack);
+        if (what == null) {
             return;
         }
 
+        var amount = heldStack.getCount();
         if (singleItem) {
-            stackToInsert.setStackSize(1);
+            amount = 1;
         }
 
-        IAEItemStack remainder = StorageHelper.poweredInsert(powerSource, monitor, stackToInsert,
+        var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, amount,
                 this.getActionSource());
-        long inserted = stackToInsert.getStackSize() - (remainder == null ? 0 : remainder.getStackSize());
 
         if (inserted >= heldStack.getCount()) {
             setCarried(ItemStack.EMPTY);
@@ -214,8 +210,8 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
         }
     }
 
-    private boolean moveOneStackToPlayer(IAEItemStack stack) {
-        ItemStack myItem = stack.createItemStack();
+    private boolean moveOneStackToPlayer(AEItemKey stack) {
+        ItemStack myItem = stack.toStack();
 
         var playerInv = getPlayerInventory();
         var slot = playerInv.getSlotWithRemainingSpace(myItem);
@@ -234,17 +230,16 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
             return false;
         }
 
-        var ais = IAEStack.copy(stack, toExtract);
-        ais = StorageHelper.poweredExtraction(powerSource, monitor, ais, getActionSource());
-        if (ais == null) {
+        var extracted = StorageHelper.poweredExtraction(powerSource, monitor, stack, toExtract, getActionSource());
+        if (extracted == 0) {
             return false; // No items available
         }
 
         var itemInSlot = playerInv.getItem(slot);
         if (itemInSlot.isEmpty()) {
-            playerInv.setItem(slot, ais.createItemStack());
+            playerInv.setItem(slot, stack.toStack((int) extracted));
         } else {
-            itemInSlot.grow((int) ais.getStackSize());
+            itemInSlot.grow((int) extracted);
         }
         return true;
     }
@@ -255,18 +250,23 @@ public class ItemTerminalMenu extends MEMonitorableMenu<IAEItemStack> {
             return super.transferStackToMenu(input);
         }
 
-        final IAEItemStack ais = StorageHelper.poweredInsert(powerSource, monitor,
-                StorageChannels.items().createStack(input),
+        var key = AEItemKey.of(input);
+        if (key == null) {
+            return input;
+        }
+
+        var inserted = StorageHelper.poweredInsert(powerSource, monitor,
+                key, input.getCount(),
                 this.getActionSource());
-        return ais == null ? ItemStack.EMPTY : ais.createItemStack();
+        return inserted > 0 ? key.toStack((int) inserted) : ItemStack.EMPTY;
     }
 
     public boolean hasItemType(ItemStack itemStack, int amount) {
-        IClientRepo<IAEItemStack> clientRepo = getClientRepo();
+        var clientRepo = getClientRepo();
 
         if (clientRepo != null) {
-            for (GridInventoryEntry<IAEItemStack> stack : clientRepo.getAllEntries()) {
-                if (stack.getStack().equals(itemStack)) {
+            for (var stack : clientRepo.getAllEntries()) {
+                if (stack.getWhat().matches(itemStack)) {
                     if (stack.getStoredAmount() >= amount) {
                         return true;
                     }

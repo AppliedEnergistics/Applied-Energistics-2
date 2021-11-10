@@ -20,37 +20,13 @@ package appeng.helpers;
 
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.util.IConfigManager;
-import appeng.menu.implementations.FluidInterfaceMenu;
-import appeng.parts.automation.EmptyUpgradeInventory;
+import appeng.menu.implementations.InterfaceMenu;
 
 public interface IFluidInterfaceHost extends IInterfaceHost {
-    DualityFluidInterface getDualityFluidInterface();
-
-    @Override
-    default IConfigManager getConfigManager() {
-        return getDualityFluidInterface().getConfigManager();
-    }
-
-    @Override
-    default IUpgradeInventory getUpgrades() {
-        return EmptyUpgradeInventory.INSTANCE;
-    }
-
-    @Override
-    default int getPriority() {
-        return getDualityFluidInterface().getPriority();
-    }
-
-    @Override
-    default void setPriority(final int newValue) {
-        getDualityFluidInterface().setPriority(newValue);
-    }
+    DualityFluidInterface getInterfaceDuality();
 
     @Override
     default MenuType<?> getMenuType() {
-        return FluidInterfaceMenu.TYPE;
+        return InterfaceMenu.FLUID_TYPE;
     }
-
 }

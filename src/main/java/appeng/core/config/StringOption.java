@@ -1,6 +1,7 @@
 package appeng.core.config;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
@@ -20,7 +21,7 @@ public class StringOption extends BaseOption {
     }
 
     public void set(String value) {
-        Preconditions.checkNotNull(value);
+        Objects.requireNonNull(value);
         if (value.equals(currentValue)) {
             return;
         }

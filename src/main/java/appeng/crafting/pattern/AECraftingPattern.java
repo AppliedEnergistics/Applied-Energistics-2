@@ -24,10 +24,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -35,47 +32,42 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.core.definitions.AEItems;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.helpers.FluidContainerHelper;
-import appeng.items.misc.WrappedFluidStack;
 import appeng.menu.NullMenu;
 import appeng.util.CraftingRemainders;
-import appeng.util.item.AEItemStack;
 
 public class AECraftingPattern implements IAEPatternDetails {
     private static final int CRAFTING_GRID_DIMENSION = 3;
 
-    private final IAEItemStack definition;
+    private final AEItemKey definition;
     public final boolean canSubstitute;
     public final boolean canSubstituteFluids;
     private final CraftingRecipe recipe;
     private final CraftingContainer testFrame;
-    private final IAEItemStack[] sparseInputs;
+    private final GenericStack[] sparseInputs;
     private final int[] sparseToCompressed = new int[9];
     private final Input[] inputs;
-    private final IAEItemStack[] outputs;
+    private final GenericStack[] outputs;
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
      */
     @SuppressWarnings("unchecked")
     private final Map<Item, Boolean>[] isValidCache = new Map[9];
 
-    public AECraftingPattern(CompoundTag definition, Level level) {
-        // We use an IAEItemStack as the definition here to achieve interning so that equals/hashCode is fast
-        var definitionStack = AEItems.CRAFTING_PATTERN.stack();
-        definitionStack.setTag(definition);
-        this.definition = IAEItemStack.of(definitionStack);
+    public AECraftingPattern(AEItemKey definition, Level level) {
+        this.definition = definition;
+        var tag = Objects.requireNonNull(definition.getTag());
 
-        this.canSubstitute = AEPatternHelper.canSubstitute(definition);
-        this.canSubstituteFluids = AEPatternHelper.canSubstituteFluids(definition);
-        this.sparseInputs = AEPatternHelper.getCraftingInputs(definition);
+        this.canSubstitute = AEPatternHelper.canSubstitute(tag);
+        this.canSubstituteFluids = AEPatternHelper.canSubstituteFluids(tag);
+        this.sparseInputs = AEPatternHelper.getCraftingInputs(tag);
 
         // Find recipe
-        var recipeId = AEPatternHelper.getRecipeId(definition);
+        var recipeId = AEPatternHelper.getRecipeId(tag);
         var recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
         if (!(recipe instanceof CraftingRecipe craftingRecipe)) {
             throw new IllegalStateException("recipe id '" + recipeId + "' is not a valid crafting recipe");
@@ -85,14 +77,14 @@ public class AECraftingPattern implements IAEPatternDetails {
         // Build frame and find output
         this.testFrame = new CraftingContainer(new NullMenu(), 3, 3);
         for (int i = 0; i < 9; ++i) {
-            if (sparseInputs[i] != null) {
-                testFrame.setItem(i, sparseInputs[i].createItemStack());
+            if (sparseInputs[i].what() instanceof AEItemKey itemKey) {
+                testFrame.setItem(i, itemKey.toStack());
             }
         }
         if (!this.recipe.matches(testFrame, level)) {
             throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
         }
-        this.outputs = new IAEItemStack[] { AEItemStack.fromItemStack(this.recipe.assemble(testFrame)) };
+        this.outputs = new GenericStack[] { GenericStack.fromItemStack(this.recipe.assemble(testFrame)) };
         if (this.outputs[0] == null) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
@@ -128,8 +120,8 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     @Override
-    public ItemStack copyDefinition() {
-        return definition.createItemStack();
+    public AEItemKey getDefinition() {
+        return definition;
     }
 
     @Override
@@ -138,7 +130,7 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     @Override
-    public IAEStack[] getOutputs() {
+    public GenericStack[] getOutputs() {
         return outputs;
     }
 
@@ -216,38 +208,37 @@ public class AECraftingPattern implements IAEPatternDetails {
      * Return the fluid stack for the passed slot, or null if no fluid stack is accepted in the given slot.
      */
     @Nullable
-    public IAEFluidStack getValidFluid(int slot) {
+    public GenericStack getValidFluid(int slot) {
         int compressed = sparseToCompressed[slot];
 
         if (compressed != -1) {
             var itemOrFluid = inputs[compressed].possibleInputs[0];
 
-            if (itemOrFluid.getChannel() == StorageChannels.fluids()) {
-                return itemOrFluid.cast(StorageChannels.fluids());
+            if (itemOrFluid.what() instanceof AEFluidKey) {
+                return itemOrFluid;
             }
         }
 
         return null;
     }
 
-    public boolean isItemValid(int slot, IAEItemStack stack, Level level) {
+    public boolean isItemValid(int slot, AEItemKey key, Level level) {
         if (!canSubstitute) {
-            return Objects.equals(sparseInputs[slot], stack);
+            return sparseInputs[slot] != null && sparseInputs[slot].what().equals(key);
         }
 
-        var result = getTestResult(slot, stack);
+        var result = getTestResult(slot, key);
         if (result != null) {
             return result;
         }
 
         // Fill frame and check result
         var previousStack = testFrame.removeItemNoUpdate(slot);
-        var newStack = stack == null ? ItemStack.EMPTY : stack.createItemStack();
-        testFrame.setItem(slot, newStack);
+        testFrame.setItem(slot, key.toStack());
 
         var newResult = recipe.matches(testFrame, level) && outputs[0].equals(recipe.assemble(testFrame));
 
-        setTestResult(slot, stack, newResult);
+        setTestResult(slot, key, newResult);
 
         // Restore old stack in the frame
         testFrame.setItem(slot, previousStack);
@@ -256,35 +247,35 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     @Nullable
-    private Boolean getTestResult(int slot, IAEItemStack stack) {
-        if (stack == null || stack.hasTagCompound()) {
+    private Boolean getTestResult(int slot, AEItemKey what) {
+        if (what == null || what.hasTag()) {
             return null;
         }
         var cache = isValidCache[slot];
         if (cache == null) {
             return null;
         } else {
-            return cache.get(stack.getItem());
+            return cache.get(what.getItem());
         }
     }
 
-    private void setTestResult(int slot, IAEItemStack stack, boolean result) {
-        if (stack != null && !stack.hasTagCompound()) {
+    private void setTestResult(int slot, AEItemKey what, boolean result) {
+        if (what != null && !what.hasTag()) {
             var cache = isValidCache[slot];
             if (cache == null) {
                 cache = isValidCache[slot] = new IdentityHashMap<>();
             }
-            cache.put(stack.getItem(), result);
+            cache.put(what.getItem(), result);
         }
     }
 
     @Override
-    public IAEStack[] getSparseInputs() {
+    public GenericStack[] getSparseInputs() {
         return sparseInputs;
     }
 
     @Override
-    public IAEStack[] getSparseOutputs() {
+    public GenericStack[] getSparseOutputs() {
         return outputs;
     }
 
@@ -295,32 +286,39 @@ public class AECraftingPattern implements IAEPatternDetails {
     public ItemStack getOutput(CraftingContainer craftingContainer, Level level) {
         for (int x = 0; x < craftingContainer.getContainerSize(); x++) {
             ItemStack item = craftingContainer.getItem(x);
-            var fluidStack = WrappedFluidStack.unwrap(item);
-            if (fluidStack != null) {
+            var stack = GenericStack.unwrapItemStack(item);
+            if (stack != null) {
                 // If we receive a pure fluid stack, we'll convert it to the appropriate container item
                 // If it matches the allowable input
                 var validFluid = getValidFluid(x);
-                if (fluidStack.equals(validFluid) && validFluid.getStackSize() == fluidStack.getStackSize()) {
+                if (validFluid != null && validFluid.equals(stack)) {
                     continue;
                 }
             }
 
-            if (!isItemValid(x, AEItemStack.fromItemStack(item), level)) {
+            if (!isItemValid(x, AEItemKey.of(item), level)) {
                 return ItemStack.EMPTY;
             }
         }
 
-        return outputs[0].createItemStack();
+        if (!(outputs[0].what() instanceof AEItemKey itemKey)) {
+            throw new IllegalStateException("Output of crafting pattern must be an item: " + outputs[0].what());
+        }
+        return itemKey.toStack((int) outputs[0].amount());
     }
 
-    private IAEStack getItemOrFluidInput(int slot, IAEItemStack item) {
-        var containedFluid = FluidContainerHelper.getContainedFluid(item.createItemStack());
+    private GenericStack getItemOrFluidInput(int slot, GenericStack item) {
+        if (!(item.what() instanceof AEItemKey itemKey)) {
+            return item;
+        }
+
+        var containedFluid = FluidContainerHelper.getContainedStack(itemKey.toStack());
 
         if (canSubstituteFluids && containedFluid != null) {
             // For the MVP, we only support buckets in regular shaped and shapeless recipes.
             if (recipe.getClass() == ShapedRecipe.class || recipe.getClass() == ShapelessRecipe.class) {
-                if (item.getItem() instanceof BucketItem) {
-                    return containedFluid;
+                if (itemKey.getItem() instanceof BucketItem) {
+                    return new GenericStack(containedFluid.what(), containedFluid.amount());
                 }
             }
         }
@@ -330,30 +328,30 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     private class Input implements IInput {
         private final int slot;
-        private final IAEStack[] possibleInputs;
+        private final GenericStack[] possibleInputs;
         private final long multiplier;
 
-        private Input(int slot, IAEItemStack condensedInput) {
+        private Input(int slot, GenericStack condensedInput) {
             this.slot = slot;
-            this.multiplier = condensedInput.getStackSize();
+            this.multiplier = condensedInput.amount();
 
             var itemOrFluidInput = getItemOrFluidInput(slot, sparseInputs[slot]);
 
             if (!canSubstitute) {
-                this.possibleInputs = new IAEStack[] { itemOrFluidInput };
+                this.possibleInputs = new GenericStack[] { itemOrFluidInput };
             } else {
                 ItemStack[] matchingStacks = getRecipeIngredient(slot).getItems();
-                this.possibleInputs = new IAEStack[matchingStacks.length + 1];
+                this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
                 this.possibleInputs[0] = itemOrFluidInput;
                 for (int i = 0; i < matchingStacks.length; ++i) {
-                    this.possibleInputs[i + 1] = AEItemStack.fromItemStack(matchingStacks[i]);
+                    this.possibleInputs[i + 1] = GenericStack.fromItemStack(matchingStacks[i]);
                 }
             }
         }
 
         @Override
-        public IAEStack[] getPossibleInputs() {
+        public GenericStack[] getPossibleInputs() {
             return possibleInputs;
         }
 
@@ -363,12 +361,11 @@ public class AECraftingPattern implements IAEPatternDetails {
         }
 
         @Override
-        public boolean isValid(IAEStack input, Level level) {
-            if (input.equals(possibleInputs[0])) {
-                // Exact match
-                return input.equals(possibleInputs[0]);
-            } else if (canSubstitute() && input.getChannel() == StorageChannels.items()) {
-                return AECraftingPattern.this.isItemValid(slot, input.cast(StorageChannels.items()), level);
+        public boolean isValid(AEKey input, Level level) {
+            if (input.matches(possibleInputs[0])) {
+                return true; // Exact match
+            } else if (canSubstitute() && input instanceof AEItemKey itemKey) {
+                return AECraftingPattern.this.isItemValid(slot, itemKey, level);
             } else {
                 return false;
             }
@@ -376,12 +373,8 @@ public class AECraftingPattern implements IAEPatternDetails {
 
         @Nullable
         @Override
-        public IAEStack getContainerItem(IAEStack template) {
-            if (template.getChannel() == StorageChannels.items()) {
-                Preconditions.checkArgument(template.getStackSize() == 1);
-                return CraftingRemainders.getRemainder(template.cast(StorageChannels.items()));
-            }
-            return null;
+        public AEKey getContainerItem(AEKey template) {
+            return CraftingRemainders.getRemainder(template);
         }
     }
 }

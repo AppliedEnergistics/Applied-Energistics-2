@@ -20,14 +20,44 @@ package appeng.helpers;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.helpers.iface.GenericStackInv;
 
-public interface IInterfaceHost extends IConfigurableObject, IUpgradeableObject, IPriorityHost {
+public interface IInterfaceHost extends IConfigurableObject, IUpgradeableObject, IPriorityHost, IConfigInvHost {
     /**
      * @return The block entity that is in-world and hosts the interface.
      */
     BlockEntity getBlockEntity();
 
     void saveChanges();
+
+    DualityInterface<?> getInterfaceDuality();
+
+    @Override
+    default IConfigManager getConfigManager() {
+        return getInterfaceDuality().getConfigManager();
+    }
+
+    @Override
+    default IUpgradeInventory getUpgrades() {
+        return getInterfaceDuality().getUpgrades();
+    }
+
+    @Override
+    default int getPriority() {
+        return getInterfaceDuality().getPriority();
+    }
+
+    @Override
+    default void setPriority(final int newValue) {
+        getInterfaceDuality().setPriority(newValue);
+    }
+
+    @Override
+    default GenericStackInv getConfig() {
+        return getInterfaceDuality().getConfig();
+    }
 }

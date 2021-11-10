@@ -45,15 +45,13 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.me.items.PatternTermMenu;
-import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 
 public class JEIRecipePacket extends BasePacket {
@@ -79,7 +77,7 @@ public class JEIRecipePacket extends BasePacket {
     public JEIRecipePacket(final FriendlyByteBuf stream) {
         this.recipeId = new ResourceLocation(stream.readUtf());
 
-        int inlineRecipeType = stream.readVarInt();
+        var inlineRecipeType = stream.readVarInt();
         switch (inlineRecipeType) {
             case INLINE_RECIPE_NONE:
                 break;
@@ -95,7 +93,7 @@ public class JEIRecipePacket extends BasePacket {
      * Sends a recipe identified by the given recipe ID to the server for either filling a crafting grid or a pattern.
      */
     public JEIRecipePacket(ResourceLocation recipeId) {
-        FriendlyByteBuf data = createCommonHeader(recipeId, INLINE_RECIPE_NONE);
+        var data = createCommonHeader(recipeId, INLINE_RECIPE_NONE);
         this.configureWrite(data);
     }
 
@@ -105,13 +103,13 @@ public class JEIRecipePacket extends BasePacket {
      * Prefer the id-based constructor above whereever possible.
      */
     public JEIRecipePacket(ShapedRecipe recipe) {
-        FriendlyByteBuf data = createCommonHeader(recipe.getId(), INLINE_RECIPE_SHAPED);
+        var data = createCommonHeader(recipe.getId(), INLINE_RECIPE_SHAPED);
         RecipeSerializer.SHAPED_RECIPE.toNetwork(data, recipe);
         this.configureWrite(data);
     }
 
     private FriendlyByteBuf createCommonHeader(ResourceLocation recipeId, int inlineRecipeType) {
-        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+        final var data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeResourceLocation(recipeId);
@@ -129,10 +127,10 @@ public class JEIRecipePacket extends BasePacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
         // Setup and verification
-        final AbstractContainerMenu con = player.containerMenu;
+        final var con = player.containerMenu;
         Preconditions.checkArgument(con instanceof IMenuCraftingPacket);
 
-        Recipe<?> recipe = player.getCommandSenderWorld().getRecipeManager().byKey(this.recipeId).orElse(null);
+        var recipe = player.getCommandSenderWorld().getRecipeManager().byKey(this.recipeId).orElse(null);
         if (recipe == null && this.recipe != null) {
             // Certain recipes (i.e. AE2 facades) are represented in JEI as ShapedRecipe's,
             // while in reality they
@@ -156,27 +154,29 @@ public class JEIRecipePacket extends BasePacket {
         var craftMatrix = cct.getCraftingMatrix();
 
         var storage = inv.getInventory(StorageChannels.items());
-        var filter = ViewCellItem.createFilter(cct.getViewCells());
+        var filter = ViewCellItem.createFilter(StorageChannels.items(), cct.getViewCells());
         var ingredients = this.ensure3by3CraftingMatrix(recipe);
 
         // Handle each slot
-        for (int x = 0; x < craftMatrix.size(); x++) {
-            ItemStack currentItem = craftMatrix.getStackInSlot(x);
-            Ingredient ingredient = ingredients.get(x);
+        for (var x = 0; x < craftMatrix.size(); x++) {
+            var currentItem = craftMatrix.getStackInSlot(x);
+            var ingredient = ingredients.get(x);
 
             // prepare slots
             if (!currentItem.isEmpty()) {
                 // already the correct item? True, skip everything else
-                ItemStack newItem = this.canUseInSlot(ingredient, currentItem);
+                var newItem = this.canUseInSlot(ingredient, currentItem);
 
                 // put away old item, if not correct
                 if (newItem != currentItem && security.hasPermission(player, SecurityPermissions.INJECT)) {
-                    final IAEItemStack in = AEItemStack.fromItemStack(currentItem);
-                    final IAEItemStack out = cct.useRealItems()
-                            ? StorageHelper.poweredInsert(energy, storage, in, cct.getActionSource())
-                            : null;
-                    if (out != null) {
-                        currentItem = out.createItemStack();
+                    var in = AEItemKey.of(currentItem);
+                    var inserted = cct.useRealItems()
+                            ? StorageHelper.poweredInsert(energy, storage, in, currentItem.getCount(),
+                                    cct.getActionSource())
+                            : currentItem.getCount();
+                    if (inserted < currentItem.getCount()) {
+                        currentItem = currentItem.copy();
+                        currentItem.shrink((int) inserted);
                     } else {
                         currentItem = ItemStack.EMPTY;
                     }
@@ -185,15 +185,14 @@ public class JEIRecipePacket extends BasePacket {
 
             // Find item or pattern from the network
             if (currentItem.isEmpty() && security.hasPermission(player, SecurityPermissions.EXTRACT)) {
-                IAEItemStack out;
+                AEItemKey out = null;
 
                 if (cct.useRealItems()) {
-                    IAEItemStack request = findBestMatchingItemStack(ingredient, filter, storage, cct);
+                    var request = findBestMatchingItemStack(ingredient, filter, storage, cct);
                     if (request != null) {
-                        request.setStackSize(1);
-                        out = StorageHelper.poweredExtraction(energy, storage, request, cct.getActionSource());
-                    } else {
-                        out = null;
+                        if (StorageHelper.poweredExtraction(energy, storage, request, 1, cct.getActionSource()) > 0) {
+                            out = request;
+                        }
                     }
                 } else {
                     out = findBestMatchingPattern(ingredient, filter, crafting, storage, cct);
@@ -201,19 +200,19 @@ public class JEIRecipePacket extends BasePacket {
                         out = findBestMatchingItemStack(ingredient, filter, storage, cct);
                     }
                     if (out == null && ingredient.getItems().length > 0) {
-                        out = AEItemStack.fromItemStack(ingredient.getItems()[0]);
+                        out = AEItemKey.of(ingredient.getItems()[0]);
                     }
                 }
 
                 if (out != null) {
-                    currentItem = out.createItemStack();
+                    currentItem = out.toStack();
                 }
             }
 
             // If still nothing, search the player inventory.
             if (currentItem.isEmpty()) {
-                ItemStack[] matchingStacks = ingredient.getItems();
-                for (ItemStack matchingStack : matchingStacks) {
+                var matchingStacks = ingredient.getItems();
+                for (var matchingStack : matchingStacks) {
                     if (currentItem.isEmpty()) {
                         var playerInv = player.getInventory();
                         var slotMatchingItem = playerInv.findSlotMatchingItem(matchingStack);
@@ -243,30 +242,30 @@ public class JEIRecipePacket extends BasePacket {
      * higher than 3. ingredients.
      */
     private NonNullList<Ingredient> ensure3by3CraftingMatrix(Recipe<?> recipe) {
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
-        NonNullList<Ingredient> expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        var ingredients = recipe.getIngredients();
+        var expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
 
         Preconditions.checkArgument(ingredients.size() <= 9);
 
         // shaped recipes can be smaller than 3x3, expand to 3x3 to match the crafting
         // matrix
         if (recipe instanceof ShapedRecipe shapedRecipe) {
-            int width = shapedRecipe.getWidth();
-            int height = shapedRecipe.getHeight();
+            var width = shapedRecipe.getWidth();
+            var height = shapedRecipe.getHeight();
             Preconditions.checkArgument(width <= 3 && height <= 3);
 
-            for (int h = 0; h < height; h++) {
-                for (int w = 0; w < width; w++) {
-                    int source = w + h * width;
-                    int target = w + h * 3;
-                    Ingredient i = ingredients.get(source);
+            for (var h = 0; h < height; h++) {
+                for (var w = 0; w < width; w++) {
+                    var source = w + h * width;
+                    var target = w + h * 3;
+                    var i = ingredients.get(source);
                     expandedIngredients.set(target, i);
                 }
             }
         }
         // Anything else should be a flat list
         else {
-            for (int i = 0; i < ingredients.size(); i++) {
+            for (var i = 0; i < ingredients.size(); i++) {
                 expandedIngredients.set(i, ingredients.get(i));
             }
         }
@@ -286,10 +285,10 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * Finds the first matching itemstack with the highest stored amount.
      */
-    private IAEItemStack findBestMatchingItemStack(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
-            IMEMonitor<IAEItemStack> storage, IMenuCraftingPacket cct) {
-        Stream<AEItemStack> stacks = Arrays.stream(ingredients.getItems())//
-                .map(AEItemStack::fromItemStack) //
+    private AEItemKey findBestMatchingItemStack(Ingredient ingredients, IPartitionList<AEItemKey> filter,
+            IMEMonitor<AEItemKey> storage, IMenuCraftingPacket cct) {
+        var stacks = Arrays.stream(ingredients.getItems())//
+                .map(AEItemKey::of) //
                 .filter(r -> r != null && (filter == null || filter.isListed(r)));
         return getMostStored(stacks, storage, cct);
     }
@@ -299,13 +298,12 @@ public class JEIRecipePacket extends BasePacket {
      * <p>
      * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
-    private IAEItemStack findBestMatchingPattern(Ingredient ingredients, IPartitionList<IAEItemStack> filter,
-            ICraftingService crafting, IMEMonitor<IAEItemStack> storage, IMenuCraftingPacket cct) {
+    private AEItemKey findBestMatchingPattern(Ingredient ingredients, IPartitionList<AEItemKey> filter,
+            ICraftingService crafting, IMEMonitor<AEItemKey> storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
-                .map(AEItemStack::fromItemStack)//
+                .map(AEItemKey::of)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
-                .peek(s -> s.setCraftable(!crafting.getCraftingFor(s).isEmpty()))//
-                .filter(IAEItemStack::isCraftable);
+                .filter(crafting::isCraftable);
         return getMostStored(stacks, storage, cct);
     }
 
@@ -313,14 +311,14 @@ public class JEIRecipePacket extends BasePacket {
      * From a stream of AE item stacks, pick the one with the highest available amount in the network. Returns null if
      * the stream is empty.
      */
-    private static IAEItemStack getMostStored(Stream<? extends IAEItemStack> stacks, IMEMonitor<IAEItemStack> storage,
+    @Nullable
+    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, IMEMonitor<AEItemKey> storage,
             IMenuCraftingPacket cct) {
         return stacks//
                 .map(s -> {
                     // Determine the stored count
-                    var r = IAEStack.copy(s, Long.MAX_VALUE);
-                    IAEItemStack stored = storage.extractItems(r, Actionable.SIMULATE, cct.getActionSource());
-                    return Pair.of(s, stored != null ? stored.getStackSize() : 0);
+                    var stored = storage.extract(s, Long.MAX_VALUE, Actionable.SIMULATE, cct.getActionSource());
+                    return Pair.of(s, stored);
                 })//
                 .min((left, right) -> Long.compare(right.getSecond(), left.getSecond()))//
                 .map(Pair::getFirst)//

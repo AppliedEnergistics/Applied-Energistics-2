@@ -18,7 +18,7 @@
 
 package appeng.integration.abstraction;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
 
 public final class JEIFacade {
 
@@ -32,7 +32,7 @@ public final class JEIFacade {
     }
 
     public static void setInstance(IJEI jei) {
-        instance = Preconditions.checkNotNull(jei);
+        instance = Objects.requireNonNull(jei);
     }
 
 }

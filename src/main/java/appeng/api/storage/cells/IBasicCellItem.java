@@ -31,8 +31,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.me.cells.BasicCellHandler;
+import appeng.util.ConfigInventory;
 
 /**
  * Implement this on any item to register a "basic cell", which is a cell that works similarly to AE2's own item and
@@ -41,7 +42,7 @@ import appeng.me.cells.BasicCellHandler;
  * <p/>
  * The standard AE implementation also only provides 1-63 Types.
  */
-public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
+public interface IBasicCellItem<T extends AEKey> extends ICellWorkbenchItem {
     /**
      * The number of bytes that can be stored on this type of storage cell.
      * <p/>
@@ -110,6 +111,8 @@ public interface IBasicCellItem<T extends IAEStack> extends ICellWorkbenchItem {
      * @return the type of channel your cell should be part of
      */
     IStorageChannel<T> getChannel();
+
+    ConfigInventory<T> getConfigInventory(ItemStack is);
 
     /**
      * Convenient helper to append useful tooltip information.

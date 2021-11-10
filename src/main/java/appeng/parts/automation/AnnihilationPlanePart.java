@@ -36,7 +36,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
@@ -47,7 +46,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -55,7 +53,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -66,7 +64,6 @@ import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
@@ -141,23 +138,23 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 return;
             }
 
-            final BlockPos pos = this.getBlockEntity().getBlockPos();
-            final int planePosX = pos.getX();
-            final int planePosY = pos.getY();
-            final int planePosZ = pos.getZ();
+            var pos = this.getBlockEntity().getBlockPos();
+            var planePosX = pos.getX();
+            var planePosY = pos.getY();
+            var planePosZ = pos.getZ();
 
             // This is the middle point of the entities BB, which is better suited for comparisons
             // that don't rely on it "touching" the plane
-            final double posYMiddle = (entity.getBoundingBox().minY + entity.getBoundingBox().maxY) / 2.0D;
-            final double entityPosX = entity.getX();
-            final double entityPosY = entity.getY();
-            final double entityPosZ = entity.getZ();
+            var posYMiddle = (entity.getBoundingBox().minY + entity.getBoundingBox().maxY) / 2.0D;
+            var entityPosX = entity.getX();
+            var entityPosY = entity.getY();
+            var entityPosZ = entity.getZ();
 
-            final boolean captureX = entityPosX > planePosX && entityPosX < planePosX + 1;
-            final boolean captureY = posYMiddle > planePosY && posYMiddle < planePosY + 1;
-            final boolean captureZ = entityPosZ > planePosZ && entityPosZ < planePosZ + 1;
+            var captureX = entityPosX > planePosX && entityPosX < planePosX + 1;
+            var captureY = posYMiddle > planePosY && posYMiddle < planePosY + 1;
+            var captureZ = entityPosZ > planePosZ && entityPosZ < planePosZ + 1;
 
-            boolean capture = false;
+            var capture = false;
 
             switch (this.getSide()) {
                 case DOWN:
@@ -184,7 +181,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             }
 
             if (capture) {
-                final boolean changed = this.storeEntityItem(itemEntity);
+                var changed = this.storeEntityItem(itemEntity);
 
                 if (changed) {
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
@@ -207,9 +204,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      */
     private boolean storeEntityItem(final ItemEntity entityItem) {
         if (entityItem.isAlive()) {
-            final IAEItemStack overflow = this.storeItemStack(entityItem.getItem());
+            var inserted = this.storeItemStack(entityItem.getItem());
 
-            return this.handleOverflow(entityItem, overflow);
+            return this.handleOverflow(entityItem, inserted);
         }
 
         return false;
@@ -219,24 +216,25 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * Stores an {@link ItemStack} inside the network.
      *
      * @param item {@link ItemStack} to store
-     * @return the leftover items, which could not be stored inside the network
+     * @return count inserted
      */
-    private IAEItemStack storeItemStack(final ItemStack item) {
+    private int storeItemStack(ItemStack item) {
         var grid = getMainNode().getGrid();
-        if (grid == null) {
-            return null;
+        if (grid == null || item.isEmpty()) {
+            return 0;
         }
 
-        final IAEItemStack itemToStore = AEItemStack.fromItemStack(item);
+        var what = AEItemKey.of(item);
+        var amount = item.getCount();
         var storage = grid.getStorageService();
         var energy = grid.getEnergyService();
-        final IAEItemStack overflow = StorageHelper.poweredInsert(energy,
+        var inserted = (int) StorageHelper.poweredInsert(energy,
                 storage.getInventory(StorageChannels.items()),
-                itemToStore, this.mySrc);
+                what, amount, this.mySrc);
 
-        this.isAccepting = overflow == null;
+        this.isAccepting = inserted >= amount;
 
-        return overflow;
+        return inserted;
     }
 
     /**
@@ -244,18 +242,18 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * mark it as dead without any leftover amount.
      *
      * @param entityItem the entity to update or destroy
-     * @param overflow   the leftover {@link IAEItemStack}
+     * @param inserted   amount inserted
      * @return true, if the entity was changed otherwise false.
      */
-    private boolean handleOverflow(final ItemEntity entityItem, final IAEItemStack overflow) {
-        if (overflow == null || overflow.getStackSize() == 0) {
+    private boolean handleOverflow(final ItemEntity entityItem, int inserted) {
+        int entityItemCount = entityItem.getItem().getCount();
+        if (inserted >= entityItemCount) {
             entityItem.discard();
             return true;
         }
 
-        final int oldStackSize = entityItem.getItem().getCount();
-        final int newStackSize = (int) overflow.getStackSize();
-        final boolean changed = oldStackSize != newStackSize;
+        var newStackSize = entityItemCount - inserted;
+        var changed = entityItemCount != newStackSize;
 
         entityItem.getItem().setCount(newStackSize);
 
@@ -272,21 +270,21 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         if (this.isAccepting && this.getMainNode().isActive()) {
             var grid = getMainNode().getGrid();
             if (grid != null) {
-                final BlockEntity te = this.getBlockEntity();
-                final ServerLevel level = (ServerLevel) te.getLevel();
+                var te = this.getBlockEntity();
+                var level = (ServerLevel) te.getLevel();
 
-                final BlockPos pos = te.getBlockPos().relative(this.getSide());
-                final IEnergyService energy = grid.getEnergyService();
+                var pos = te.getBlockPos().relative(this.getSide());
+                var energy = grid.getEnergyService();
 
-                final BlockState blockState = level.getBlockState(pos);
+                var blockState = level.getBlockState(pos);
                 if (this.canHandleBlock(level, pos, blockState)) {
                     // Query the loot-table and get a potential outcome of the loot-table evaluation
-                    final List<ItemStack> items = this.obtainBlockDrops(level, pos);
-                    final float requiredPower = this.calculateEnergyUsage(level, pos, items);
+                    var items = this.obtainBlockDrops(level, pos);
+                    var requiredPower = this.calculateEnergyUsage(level, pos, items);
 
-                    final boolean hasPower = energy.extractAEPower(requiredPower, Actionable.SIMULATE,
+                    var hasPower = energy.extractAEPower(requiredPower, Actionable.SIMULATE,
                             PowerMultiplier.CONFIG) > requiredPower - 0.1;
-                    final boolean canStore = this.canStoreItemStacks(items);
+                    var canStore = this.canStoreItemStacks(items);
 
                     if (hasPower && canStore) {
                         if (modulate) {
@@ -314,12 +312,13 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             return;
         }
 
-        for (ItemStack item : items) {
-            IAEItemStack overflow = storeItemStack(item);
+        for (var item : items) {
+            var inserted = storeItemStack(item);
             // If inserting the item fully was not possible, drop it as an item entity instead if the storage clears up,
             // we'll pick it up that way
-            if (overflow != null) {
-                Platform.spawnDrops(level, pos, Collections.singletonList(overflow.createItemStack()));
+            if (inserted < item.getCount()) {
+                item.shrink(inserted);
+                Platform.spawnDrops(level, pos, Collections.singletonList(item));
             }
         }
 
@@ -358,10 +357,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             return false;
         }
 
-        final Material material = state.getMaterial();
+        var material = state.getMaterial();
         // Note: bedrock, portals, and other unbreakable blocks have a hardness < 0, hence the >= 0 check below.
-        final float hardness = state.getDestroySpeed(level, pos);
-        final boolean ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
+        var hardness = state.getDestroySpeed(level, pos);
+        var ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
 
         return !ignoreAirAndFluids && hardness >= 0f && level.hasChunkAt(pos)
                 && level.mayInteract(Platform.getPlayer(level), pos);
@@ -387,11 +386,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * Checks if this plane can handle the block at the specific coordinates.
      */
     protected float calculateEnergyUsage(final ServerLevel level, final BlockPos pos, final List<ItemStack> items) {
-        final BlockState state = level.getBlockState(pos);
-        final float hardness = state.getDestroySpeed(level, pos);
+        var state = level.getBlockState(pos);
+        var hardness = state.getDestroySpeed(level, pos);
 
-        float requiredEnergy = 1 + hardness;
-        for (final ItemStack is : items) {
+        var requiredEnergy = 1 + hardness;
+        for (var is : items) {
             requiredEnergy += is.getCount();
         }
 
@@ -407,18 +406,17 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      * @return true, if the network can store at least a single item of all drops or no drops are reported
      */
     private boolean canStoreItemStacks(final List<ItemStack> itemStacks) {
-        boolean canStore = itemStacks.isEmpty();
+        var canStore = itemStacks.isEmpty();
 
         var grid = getMainNode().getGrid();
         if (grid != null) {
-            final IStorageService storage = grid.getStorageService();
+            var storage = grid.getStorageService();
 
-            for (final ItemStack itemStack : itemStacks) {
-                final IAEItemStack itemToTest = AEItemStack.fromItemStack(itemStack);
-                final IAEItemStack overflow = storage
-                        .getInventory(StorageChannels.items())
-                        .injectItems(itemToTest, Actionable.SIMULATE, this.mySrc);
-                if (overflow == null || itemToTest.getStackSize() > overflow.getStackSize()) {
+            for (var itemStack : itemStacks) {
+                var itemToTest = AEItemKey.of(itemStack);
+                var inserted = storage
+                        .insert(itemToTest, itemStack.getCount(), Actionable.SIMULATE, this.mySrc);
+                if (inserted > 0) {
                     canStore = true;
                 }
             }
@@ -437,7 +435,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         // This handles items that do not spawn via loot-tables but rather normal block breaking i.e. our cable-buses do
         // this (bad practice, really)
-        final AABB box = new AABB(pos).inflate(0.2);
+        var box = new AABB(pos).inflate(0.2);
         for (final Object ei : level.getEntitiesOfClass(ItemEntity.class, box)) {
             if (ei instanceof ItemEntity entityItem) {
                 this.storeEntityItem(entityItem);

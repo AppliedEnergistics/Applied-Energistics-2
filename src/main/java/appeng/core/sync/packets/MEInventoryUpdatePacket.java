@@ -19,7 +19,9 @@
 package appeng.core.sync.packets;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
@@ -33,8 +35,8 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
@@ -66,7 +68,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     /**
      * @param <T> Type of stack stored in list.
      */
-    private record StorageList<T extends IAEStack> (
+    private record StorageList<T extends AEKey> (
             IStorageChannel<T> storageChannel,
             List<GridInventoryEntry<T>> list) {
         public static StorageList<?> read(FriendlyByteBuf data) {
@@ -74,7 +76,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
             return read(storageChannel, data);
         }
 
-        private static <T extends IAEStack> StorageList<T> read(IStorageChannel<T> storageChannel,
+        private static <T extends AEKey> StorageList<T> read(IStorageChannel<T> storageChannel,
                 FriendlyByteBuf data) {
             var count = data.readShort();
             var list = new ArrayList<GridInventoryEntry<T>>(count);
@@ -119,7 +121,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
         this.storageList = null;
     }
 
-    public static class Builder<T extends IAEStack> {
+    public static class Builder<T extends AEKey> {
         private final List<MEInventoryUpdatePacket> packets = new ArrayList<>();
 
         private final int containerId;
@@ -149,15 +151,29 @@ public class MEInventoryUpdatePacket extends BasePacket {
         }
 
         public void addFull(IncrementalUpdateHelper<T> updateHelper,
-                IAEStackList<T> stacks) {
-            for (T item : stacks) {
-                long serial = updateHelper.getOrAssignSerial(item);
-                add(new GridInventoryEntry<>(serial, item, item.getStackSize(), item.getCountRequestable(),
-                        item.isCraftable()));
+                KeyCounter<T> networkStorage,
+                Set<T> craftables,
+                KeyCounter<T> requestables) {
+            var keys = new HashSet<T>();
+            keys.addAll(networkStorage.keySet());
+            keys.addAll(craftables);
+            keys.addAll(requestables.keySet());
+
+            for (var key : keys) {
+                long serial = updateHelper.getOrAssignSerial(key);
+                add(new GridInventoryEntry<>(
+                        serial,
+                        key,
+                        networkStorage.get(key),
+                        requestables.get(key),
+                        craftables.contains(key)));
             }
         }
 
-        public void addChanges(IncrementalUpdateHelper<T> updateHelper, IAEStackList<T> stacks) {
+        public void addChanges(IncrementalUpdateHelper<T> updateHelper,
+                KeyCounter<T> networkStorage,
+                Set<T> craftables,
+                KeyCounter<T> requestables) {
             for (T key : updateHelper) {
                 T sendKey;
                 Long serial = updateHelper.getSerial(key);
@@ -174,14 +190,15 @@ public class MEInventoryUpdatePacket extends BasePacket {
 
                 // The queued changes are actual differences, but we need to send the real stored properties
                 // to the client.
-                T stored = stacks.findPrecise(key);
-                if (stored == null || !stored.isMeaningful()) {
+                var storedAmount = networkStorage.get(key);
+                var craftable = craftables.contains(key);
+                var requestable = requestables.get(key);
+                if (storedAmount <= 0 && requestable <= 0 && !craftable) {
                     // This happens when an update is queued but the item is no longer stored
                     add(new GridInventoryEntry<>(serial, sendKey, 0, 0, false));
-                    key.reset(); // Ensure it is deleted on commit, since the client will also clear it
+                    updateHelper.removeSerial(key);
                 } else {
-                    add(new GridInventoryEntry<>(serial, sendKey, stored.getStackSize(), stored.getCountRequestable(),
-                            stored.isCraftable()));
+                    add(new GridInventoryEntry<>(serial, sendKey, storedAmount, requestable, craftable));
                 }
             }
 
@@ -257,7 +274,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
         }
     }
 
-    public static <T extends IAEStack> Builder<T> builder(IStorageChannel<T> storageChannel,
+    public static <T extends AEKey> Builder<T> builder(IStorageChannel<T> storageChannel,
             int containerId,
             boolean fullUpdate) {
         return new Builder<>(storageChannel, containerId, fullUpdate);

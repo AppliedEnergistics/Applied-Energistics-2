@@ -56,8 +56,8 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -293,14 +293,14 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         };
     }
 
-    private <T extends IAEStack> long transferContents(IGrid grid,
+    private <T extends AEKey> long transferContents(IGrid grid,
             ICellInventory<T> cellInv,
             long itemsToMove) {
 
         var channel = cellInv.getChannel();
         var networkInv = grid.getStorageService().getInventory(channel);
 
-        IAEStackList<T> srcList;
+        KeyCounter<T> srcList;
         IMEInventory<T> src, destination;
         if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
             src = cellInv;
@@ -320,32 +320,25 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         do {
             didStuff = false;
 
-            for (var s : srcList) {
-                var totalStackSize = s.getStackSize();
+            for (var srcEntry : srcList) {
+                var totalStackSize = srcEntry.getLongValue();
                 if (totalStackSize > 0) {
-                    // This clears requestable & craftable when we copy stacks from the network into a cell
-                    s = IAEStack.copy(s, totalStackSize);
-
-                    var stack = destination.injectItems(s, Actionable.SIMULATE, this.mySrc);
-
-                    var possible = totalStackSize - IAEStack.getStackSizeOrZero(stack);
+                    var what = srcEntry.getKey();
+                    var possible = destination.insert(what, totalStackSize, Actionable.SIMULATE, this.mySrc);
 
                     if (possible > 0) {
                         possible = Math.min(possible, itemsToMove);
-                        s.setStackSize(possible);
 
-                        var extracted = src.extractItems(s, Actionable.MODULATE, this.mySrc);
-                        if (extracted != null) {
-                            possible = extracted.getStackSize();
-                            var failed = StorageHelper.poweredInsert(energy, destination, extracted, this.mySrc);
+                        possible = src.extract(what, possible, Actionable.MODULATE, this.mySrc);
+                        if (possible > 0) {
+                            var inserted = StorageHelper.poweredInsert(energy, destination, what, possible, this.mySrc);
 
-                            if (failed != null) {
-                                possible -= failed.getStackSize();
-                                src.injectItems(failed, Actionable.MODULATE, this.mySrc);
+                            if (inserted < possible) {
+                                src.insert(what, possible - inserted, Actionable.MODULATE, this.mySrc);
                             }
 
-                            if (possible > 0) {
-                                itemsToMove -= possible;
+                            if (inserted > 0) {
+                                itemsToMove -= inserted;
                                 didStuff = true;
                             }
 

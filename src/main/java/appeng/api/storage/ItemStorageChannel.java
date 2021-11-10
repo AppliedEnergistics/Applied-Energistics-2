@@ -18,23 +18,21 @@
 
 package appeng.api.storage;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.core.AppEng;
-import appeng.util.item.AEItemStack;
-import appeng.util.item.ItemList;
 
-public final class ItemStorageChannel implements IStorageChannel<IAEItemStack> {
-
+public final class ItemStorageChannel implements IStorageChannel<AEItemKey> {
     private static final ResourceLocation ID = AppEng.makeId("item");
 
     static final ItemStorageChannel INSTANCE = new ItemStorageChannel();
@@ -49,30 +47,25 @@ public final class ItemStorageChannel implements IStorageChannel<IAEItemStack> {
     }
 
     @Override
-    public IAEStackList<IAEItemStack> createList() {
-        return new ItemList();
+    public AEItemKey readFromPacket(FriendlyByteBuf input) {
+        Objects.requireNonNull(input);
+
+        return AEItemKey.fromPacket(input);
     }
 
     @Override
-    public IAEItemStack createStack(ItemStack is) {
-        return IAEItemStack.of(is);
+    public AEItemKey loadKeyFromTag(CompoundTag tag) {
+        return AEItemKey.fromTag(tag);
+    }
+
+    @Nullable
+    @Override
+    public AEItemKey tryCast(AEKey key) {
+        return key instanceof AEItemKey itemKey ? itemKey : null;
     }
 
     @Override
-    public IAEItemStack createFromNBT(CompoundTag nbt) {
-        Preconditions.checkNotNull(nbt);
-        return AEItemStack.fromNBT(nbt);
-    }
-
-    @Override
-    public IAEItemStack readFromPacket(FriendlyByteBuf input) {
-        Preconditions.checkNotNull(input);
-
-        return AEItemStack.fromPacket(input);
-    }
-
-    @Override
-    public IAEItemStack copy(IAEItemStack stack) {
-        return stack.copy();
+    public boolean supportsFuzzyRangeSearch() {
+        return true;
     }
 }

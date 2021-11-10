@@ -19,12 +19,12 @@
 package appeng.client.gui.layout;
 
 import appeng.client.Point;
-import appeng.menu.implementations.ItemIOBusMenu;
+import appeng.menu.implementations.IOBusMenu;
 
 public enum SlotGridLayout {
 
     /**
-     * This layout is used for the peculiar grid of slots used in {@link ItemIOBusMenu}.
+     * This layout is used for the peculiar grid of slots used in {@link IOBusMenu}.
      */
     IO_BUS_CONFIG {
 

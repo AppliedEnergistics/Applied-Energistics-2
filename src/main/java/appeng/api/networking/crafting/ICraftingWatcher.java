@@ -23,31 +23,32 @@
 
 package appeng.api.networking.crafting;
 
-import appeng.api.storage.data.IAEStack;
+import org.jetbrains.annotations.ApiStatus;
+
+import appeng.api.storage.data.AEKey;
 
 /**
  * DO NOT IMPLEMENT.
  *
  * Will be injected when adding an {@link ICraftingWatcherNode} to a grid.
  */
+@ApiStatus.NonExtendable
 public interface ICraftingWatcher {
     /**
-     * Add a specific {@link IAEStack} to watch.
+     * Add a specific {@link AEKey} to watch.
      *
      * Supports multiple values, duplicate ones will not be added.
      *
-     * @param stack
      * @return true, if successfully added.
      */
-    boolean add(IAEStack stack);
+    boolean add(AEKey what);
 
     /**
-     * Remove a specific {@link IAEStack} from the watcher.
+     * Remove a specific {@link AEKey} from the watcher.
      *
-     * @param stack
      * @return true, if successfully removed.
      */
-    boolean remove(IAEStack stack);
+    boolean remove(AEKey what);
 
     /**
      * Removes all watched stacks and resets the watcher to a clean state.

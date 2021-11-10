@@ -29,12 +29,16 @@ import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.features.IPlayerRegistry;
-import appeng.api.networking.security.ISecurityRegistry;
 
+/**
+ * Implemented by the biometric card item.
+ */
+@ApiStatus.NonExtendable
 public interface IBiometricCard {
 
     /**
@@ -79,13 +83,4 @@ public interface IBiometricCard {
      * @param permission to be added permission
      */
     void addPermission(ItemStack itemStack, SecurityPermissions permission);
-
-    /**
-     * lets you handle submission of security values on the card for custom behavior.
-     *
-     * @param registry security registry
-     * @param pr       player registry
-     * @param is       card
-     */
-    void registerPermissions(ISecurityRegistry registry, IPlayerRegistry pr, ItemStack is);
 }

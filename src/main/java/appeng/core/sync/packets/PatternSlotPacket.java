@@ -24,77 +24,72 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.items.PatternTermMenu;
-import appeng.util.item.AEItemStack;
 
+/**
+ * Grabs or crafts an item from network content and puts it into the players hand. Used for crafting in the pattern
+ * terminal, since the ingredients are not _really_ stored locally in the terminal due to the crafting matrix being
+ * composed of fake slots.
+ */
 public class PatternSlotPacket extends BasePacket {
+    public final AEItemKey what;
 
-    public final IAEItemStack slotItem;
+    public final int amount;
 
-    public final IAEItemStack[] pattern = new IAEItemStack[9];
+    public final AEItemKey[] pattern = new AEItemKey[9];
 
-    public final boolean shift;
+    /**
+     * Move/Craft into player inventory rather than cursor.
+     */
+    public final boolean intoPlayerInv;
 
-    public PatternSlotPacket(final FriendlyByteBuf stream) {
+    public PatternSlotPacket(FriendlyByteBuf stream) {
 
-        this.shift = stream.readBoolean();
+        this.intoPlayerInv = stream.readBoolean();
 
-        this.slotItem = this.readItem(stream);
+        this.what = AEItemKey.fromPacket(stream);
+        this.amount = stream.readInt();
 
         for (int x = 0; x < 9; x++) {
-            this.pattern[x] = this.readItem(stream);
+            if (stream.readBoolean()) {
+                this.pattern[x] = AEItemKey.fromPacket(stream);
+            }
         }
-    }
-
-    private IAEItemStack readItem(final FriendlyByteBuf stream) {
-        final boolean hasItem = stream.readBoolean();
-
-        if (hasItem) {
-            return AEItemStack.fromPacket(stream);
-        }
-
-        return null;
     }
 
     // api
-    public PatternSlotPacket(final InternalInventory pat, final IAEItemStack slotItem, final boolean shift) {
+    public PatternSlotPacket(InternalInventory pat, AEItemKey what, int amount, boolean intoPlayerInv) {
 
-        this.slotItem = slotItem;
-        this.shift = shift;
+        this.what = what;
+        this.amount = amount;
+        this.intoPlayerInv = intoPlayerInv;
 
-        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+        var data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
 
-        data.writeBoolean(shift);
+        data.writeBoolean(intoPlayerInv);
 
-        this.writeItem(slotItem, data);
+        what.writeToPacket(data);
+        data.writeVarInt(amount);
+
         for (int x = 0; x < 9; x++) {
-            this.pattern[x] = StorageChannels.items()
-                    .createStack(pat.getStackInSlot(x));
-            this.writeItem(this.pattern[x], data);
+            var key = AEItemKey.of(pat.getStackInSlot(x));
+            data.writeBoolean(key != null);
+            if (key != null) {
+                key.writeToPacket(data);
+            }
         }
 
         this.configureWrite(data);
     }
 
-    private void writeItem(final IAEItemStack slotItem, final FriendlyByteBuf data) {
-        if (slotItem == null) {
-            data.writeBoolean(false);
-        } else {
-            data.writeBoolean(true);
-            slotItem.writeToPacket(data);
-        }
-    }
-
     @Override
     public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
-        final ServerPlayer sender = (ServerPlayer) player;
-        if (sender.containerMenu instanceof PatternTermMenu patternTerminal) {
+        if (player.containerMenu instanceof PatternTermMenu patternTerminal) {
             patternTerminal.craftOrGetItem(this);
         }
     }
