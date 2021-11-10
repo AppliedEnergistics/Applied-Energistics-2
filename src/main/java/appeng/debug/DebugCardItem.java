@@ -41,8 +41,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.pathing.ControllerState;
-import appeng.api.networking.pathing.IPathingService;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.blockentity.networking.ControllerBlockEntity;
@@ -107,13 +105,13 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                     final Grid g = node.getInternalGrid();
                     final IGridNode center = g.getPivot();
                     this.outputPrimaryMessage(player, "Grid Powered",
-                            String.valueOf(g.getService(IEnergyService.class).isNetworkPowered()));
+                            String.valueOf(g.getEnergyService().isNetworkPowered()));
                     this.outputPrimaryMessage(player, "Grid Booted",
-                            String.valueOf(!g.getService(IPathingService.class).isNetworkBooting()));
+                            String.valueOf(!g.getPathingService().isNetworkBooting()));
                     this.outputPrimaryMessage(player, "Nodes in grid", String.valueOf(Iterables.size(g.getNodes())));
                     this.outputSecondaryMessage(player, "Grid Pivot Node", String.valueOf(center));
 
-                    var tmc = (TickManagerService) g.getService(ITickManager.class);
+                    var tmc = (TickManagerService) g.getTickManager();
                     for (var c : g.getMachineClasses()) {
                         int o = 0;
                         long totalAverageTime = 0;
@@ -143,7 +141,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                     this.outputPrimaryMessage(player, "This Node Active", String.valueOf(node.isActive()));
                     this.outputSecondaryMessage(player, "Node exposed on side", side.getName());
 
-                    var pg = g.getService(IPathingService.class);
+                    var pg = g.getPathingService();
                     if (pg.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
 
                         Set<IGridNode> next = new HashSet<>();
@@ -208,7 +206,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                 if (gh != null) {
                     final IGridNode node = gh.getGridNode(side);
                     if (node != null && node.getGrid() != null) {
-                        final IEnergyService eg = node.getGrid().getService(IEnergyService.class);
+                        final IEnergyService eg = node.getGrid().getEnergyService();
                         this.outputSecondaryMessage(player,
                                 "GridEnergy", +eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
                     }

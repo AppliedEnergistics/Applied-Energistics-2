@@ -49,7 +49,7 @@ public class NetworkStatus {
     private List<MachineGroup> groupedMachines = Collections.emptyList();
 
     public static NetworkStatus fromGrid(IGrid grid) {
-        IEnergyService eg = grid.getService(IEnergyService.class);
+        IEnergyService eg = grid.getEnergyService();
 
         NetworkStatus status = new NetworkStatus();
 

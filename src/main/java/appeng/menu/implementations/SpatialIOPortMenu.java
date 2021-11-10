@@ -22,8 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.spatial.ISpatialService;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
@@ -82,8 +80,8 @@ public class SpatialIOPortMenu extends AEBaseMenu {
             if (this.delay > 15 && grid != null) {
                 this.delay = 0;
 
-                var eg = grid.getService(IEnergyService.class);
-                var sc = grid.getService(ISpatialService.class);
+                var eg = grid.getEnergyService();
+                var sc = grid.getSpatialService();
                 this.setCurrentPower((long) (100.0 * eg.getStoredPower()));
                 this.setMaxPower((long) (100.0 * eg.getMaxStoredPower()));
                 this.setRequiredPower((long) (100.0 * sc.requiredPower()));

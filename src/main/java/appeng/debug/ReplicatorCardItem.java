@@ -133,7 +133,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                         final IGrid g = n.getGrid();
 
                         if (g != null) {
-                            final ISpatialService sc = g.getService(ISpatialService.class);
+                            final ISpatialService sc = g.getSpatialService();
 
                             if (sc.isValidRegion()) {
                                 var min = sc.getMin();
