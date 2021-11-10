@@ -46,7 +46,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.MachineSource;
@@ -64,7 +64,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * Tracks state for storage providers that are provided by other grid services (i.e. crafting).
      */
     private final List<ProviderState> globalProviders = new ArrayList<>();
-    private final SetMultimap<IAEStack, StackWatcher> interests = HashMultimap.create();
+    private final SetMultimap<AEKey, StackWatcher> interests = HashMultimap.create();
     private final InterestManager<StackWatcher> interestManager = new InterestManager<>(this.interests);
     private final Map<IStorageChannel<?>, NetworkStorage<?>> storage;
     private final Map<IStorageChannel<?>, NetworkInventoryMonitor<?>> storageMonitors;
@@ -147,12 +147,12 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @Override
-    public <T extends IAEStack> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         return getNetworkMonitor(channel);
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends IAEStack> NetworkInventoryMonitor<T> getNetworkMonitor(IStorageChannel<T> channel) {
+    private <T extends AEKey> NetworkInventoryMonitor<T> getNetworkMonitor(IStorageChannel<T> channel) {
         return (NetworkInventoryMonitor<T>) storageMonitors.computeIfAbsent(channel, c -> {
             var monitor = new NetworkInventoryMonitor<>(interestManager, channel);
             var existingStorage = storage.get(channel);
@@ -164,7 +164,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends IAEStack> NetworkStorage<T> getOrCreateNetworkStorage(IStorageChannel<T> channel) {
+    private <T extends AEKey> NetworkStorage<T> getOrCreateNetworkStorage(IStorageChannel<T> channel) {
         return (NetworkStorage<T>) storage.computeIfAbsent(channel, c -> {
             var storage = new NetworkStorage<>(channel, security);
             var monitor = storageMonitors.get(c);
@@ -175,48 +175,21 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         });
     }
 
-//    public void cellUpdate() {
-//        var allProviders = new ArrayList<IStorageProvider>();
-//        allProviders.addAll(this.unmountedProviders);
-//        allProviders.addAll(this.mountedProviders);
-//
-//        try (var tracker = new MountBatchChange()) {
-//            for (var provider : allProviders) {
-//                boolean active = true;
-//
-//                if (provider instanceof IActionHost) {
-//                    var node = ((IActionHost) provider).getActionableNode();
-//                    if (node == null || !node.isActive()) {
-//                        active = false;
-//                    }
-//                }
-//
-//                if (active) {
-//                    tracker.addCellProvider(provider);
-//                } else {
-//                    tracker.removeCellProvider(provider);
-//                }
-//            }
-//        }
-//    }
-
-    private <T extends IAEStack> void postChangesToNetwork(IStorageChannel<T> channel,
-            boolean added,
-            Iterable<T> availableItems,
+    private <T extends AEKey> void postChangesToNetwork(IStorageChannel<T> channel,
+            Iterable<T> changedItems,
             IActionSource src) {
         if (currentBatch != null) {
-            currentBatch.pending.add(new PendingChangeNotification<>(
-                    channel, added, availableItems, src));
+            currentBatch.pending.add(new PendingChangeNotification<>(channel, changedItems, src));
         } else {
-            getNetworkMonitor(channel).postChange(added, availableItems, src);
+            getNetworkMonitor(channel).postChange(changedItems, src);
         }
     }
 
     @Override
-    public <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> channel,
+    public <T extends AEKey> void postAlterationOfStoredItems(IStorageChannel<T> channel,
             Iterable<T> input,
             IActionSource src) {
-        postChangesToNetwork(channel, true, input, src);
+        postChangesToNetwork(channel, input, src);
     }
 
     @Override
@@ -292,15 +265,13 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             }
         }
 
-        private <T extends IAEStack> void apply(PendingChangeNotification<T> rec) {
-            postChangesToNetwork(rec.channel(), rec.mounted(), rec.list(), rec.src);
+        private <T extends AEKey> void apply(PendingChangeNotification<T> rec) {
+            postChangesToNetwork(rec.channel(), rec.list(), rec.src);
         }
     }
 
-    private record PendingChangeNotification<T extends IAEStack> (
+    private record PendingChangeNotification<T extends AEKey> (
             IStorageChannel<T> channel,
-            // True if the inventory is being mounted, false if unmounted
-            boolean mounted,
             // The list of stacks in the added or removed inventory
             Iterable<T> list,
             // The action source used to notify about the changes caused by this operation.
@@ -338,7 +309,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         }
 
         @Override
-        public <T extends IAEStack> void mount(IMEInventory<T> inventory, int priority) {
+        public <T extends AEKey> void mount(IMEInventory<T> inventory, int priority) {
             Preconditions.checkState(mounted, "Cannot use StorageMounts after the storage has been unmounted.");
 
             if (!inventories.add(inventory)) {
@@ -347,11 +318,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
             // Mount this inventory into the network storage
             var networkStorage = getOrCreateNetworkStorage(inventory.getChannel());
-            networkStorage.mount(
-                    priority,
-                    inventory);
+            networkStorage.mount(priority, inventory);
 
-            postChangesToNetwork(inventory.getChannel(), true, inventory.getAvailableStacks(), actionSource);
+            postChangesToNetwork(inventory.getChannel(), inventory.getAvailableStacks().keySet(), actionSource);
         }
 
         public void update() {
@@ -371,9 +340,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             inventories.clear();
         }
 
-        private <T extends IAEStack> void unmount(IMEInventory<T> inventory) {
+        private <T extends AEKey> void unmount(IMEInventory<T> inventory) {
             getOrCreateNetworkStorage(inventory.getChannel()).unmount(inventory);
-            postChangesToNetwork(inventory.getChannel(), false, inventory.getAvailableStacks(), actionSource);
+            postChangesToNetwork(inventory.getChannel(), inventory.getAvailableStacks().keySet(), actionSource);
         }
     }
 }

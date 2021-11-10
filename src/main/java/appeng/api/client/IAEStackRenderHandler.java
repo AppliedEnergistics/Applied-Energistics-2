@@ -31,18 +31,20 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
+import appeng.util.Platform;
 
 /**
  * Client-side rendering of AE stacks. Must be registered in {@link AEStackRendering} for each storage channel!
  */
 @Environment(EnvType.CLIENT)
-public interface IAEStackRenderHandler<T extends IAEStack> {
+public interface IAEStackRenderHandler<T extends AEKey> {
     /**
      * Draw the stack, for example the item or the fluid sprite, but not the amount.
      */
-    void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, T stack);
+    void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex, T stack);
 
     /**
      * Name of the stack, ignoring the amount.
@@ -53,7 +55,10 @@ public interface IAEStackRenderHandler<T extends IAEStack> {
      * Return the full tooltip, with the name of the stack and any additional lines.
      */
     default List<Component> getTooltip(T stack) {
-        return List.of(getDisplayName(stack));
+        return List.of(
+                getDisplayName(stack),
+                // Append the name of the mod by default as mods such as REI would also add that
+                new TextComponent(Platform.formatModName(stack.getModId())));
     }
 
     /**
@@ -61,9 +66,4 @@ public interface IAEStackRenderHandler<T extends IAEStack> {
      * formats.
      */
     String formatAmount(long amount, AmountFormat format);
-
-    /**
-     * Return the modid of the stack.
-     */
-    String getModid(T stack);
 }

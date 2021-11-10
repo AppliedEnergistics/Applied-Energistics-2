@@ -46,7 +46,7 @@ import appeng.helpers.IItemInterfaceHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.ItemInterfaceMenu;
+import appeng.menu.implementations.InterfaceMenu;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -134,7 +134,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            MenuOpener.open(ItemInterfaceMenu.TYPE, p, MenuLocator.forPart(this));
+            MenuOpener.open(InterfaceMenu.ITEM_TYPE, p, MenuLocator.forPart(this));
         }
         return true;
     }
@@ -168,8 +168,10 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     @Nullable
     @Override
     public InternalInventory getSubInventory(ResourceLocation id) {
-        var inv = duality.getSubInventory(id);
-        return inv != null ? inv : super.getSubInventory(id);
+        if (id.equals(UPGRADES)) {
+            return duality.getUpgrades();
+        }
+        return super.getSubInventory(id);
     }
 
     @Override
@@ -179,6 +181,6 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
 
     @Override
     public MenuType<?> getMenuType() {
-        return ItemInterfaceMenu.TYPE;
+        return InterfaceMenu.ITEM_TYPE;
     }
 }

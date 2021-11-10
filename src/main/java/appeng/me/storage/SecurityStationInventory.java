@@ -18,24 +18,30 @@
 
 package appeng.me.storage;
 
-import com.mojang.authlib.GameProfile;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
-import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.core.definitions.AEItems;
+import appeng.items.tools.BiometricCardItem;
 
-public class SecurityStationInventory implements IMEInventory<IAEItemStack> {
+/**
+ * Inventory for biometric cards. It does not allow duplicates/stacking, as such it simply stores the item keys for the
+ * cards in a set.
+ */
+public class SecurityStationInventory implements IMEInventory<AEItemKey> {
 
-    private final IAEStackList<IAEItemStack> storedItems = StorageChannels.items().createList();
+    private final Set<AEItemKey> storedItems = new HashSet<>();
     private final SecurityStationBlockEntity blockEntity;
 
     public SecurityStationInventory(final SecurityStationBlockEntity ts) {
@@ -43,19 +49,18 @@ public class SecurityStationInventory implements IMEInventory<IAEItemStack> {
     }
 
     @Override
-    public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
-        if (this.hasPermission(src)
-                && AEItems.BIOMETRIC_CARD.isSameAs(input.createItemStack())
-                && canAccept(input)) {
-            if (type == Actionable.SIMULATE) {
-                return null;
+    public long insert(AEItemKey what, long amount, Actionable mode, IActionSource source) {
+        if (this.hasPermission(source)
+                && AEItems.BIOMETRIC_CARD.isSameAs(what)
+                && canAccept(what)
+                && amount > 0) {
+            if (mode == Actionable.MODULATE) {
+                storedItems.add(what);
+                blockEntity.inventoryChanged();
             }
-
-            this.getStoredItems().add(input);
-            this.blockEntity.inventoryChanged();
-            return null;
+            return 1;
         }
-        return input;
+        return 0;
     }
 
     private boolean hasPermission(final IActionSource src) {
@@ -69,41 +74,39 @@ public class SecurityStationInventory implements IMEInventory<IAEItemStack> {
     }
 
     @Override
-    public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final IActionSource src) {
-        if (this.hasPermission(src)) {
-            final IAEItemStack target = this.getStoredItems().findPrecise(request);
-            if (target != null) {
-                final IAEItemStack output = target.copy();
-
-                if (mode == Actionable.SIMULATE) {
-                    return output;
-                }
-
-                target.setStackSize(0);
+    public long extract(AEItemKey what, long amount, Actionable mode, IActionSource source) {
+        if (this.hasPermission(source) && amount > 0) {
+            if (mode == Actionable.SIMULATE && storedItems.contains(what)) {
+                return 1;
+            } else if (storedItems.remove(what)) {
                 this.blockEntity.inventoryChanged();
-                return output;
+                return 1;
             }
         }
-        return null;
+        return 0;
     }
 
     @Override
-    public IAEStackList<IAEItemStack> getAvailableStacks(final IAEStackList out) {
-        for (final IAEItemStack ais : this.getStoredItems()) {
-            out.add(ais);
+    public void getAvailableStacks(KeyCounter<AEItemKey> out) {
+        for (var storedItem : storedItems) {
+            out.add(storedItem, 1);
         }
-
-        return out;
     }
 
     @Override
-    public IStorageChannel getChannel() {
+    public IStorageChannel<AEItemKey> getChannel() {
         return StorageChannels.items();
     }
 
-    public boolean canAccept(final IAEItemStack input) {
-        if (input.getItem() instanceof IBiometricCard tbc) {
-            var newUser = tbc.getProfile(input.createItemStack());
+    public boolean canAccept(AEItemKey what) {
+        // This is a very simple check to prevent the same stack from being
+        // entered twice (and being voided in the process)
+        if (storedItems.contains(what)) {
+            return false;
+        }
+
+        if (what.getItem() instanceof BiometricCardItem biometricCard) {
+            var newUser = biometricCard.getProfile(what);
 
             var pr = IPlayerRegistry.getMapping(blockEntity.getLevel());
             if (pr == null) {
@@ -120,16 +123,17 @@ public class SecurityStationInventory implements IMEInventory<IAEItemStack> {
                 }
             }
 
-            for (final IAEItemStack ais : this.getStoredItems()) {
-                if (ais.isMeaningful()) {
-                    final GameProfile thisUser = tbc.getProfile(ais.createItemStack());
-                    if (thisUser == newUser) {
-                        return false;
-                    }
+            // This in-depth check is needed because in theory the biometric card can have additional NBT
+            // preventing the simple storedItems.contains check to fail.
+            for (var entry : storedItems) {
+                var existingUser = biometricCard.getProfile(entry);
+                if (existingUser == newUser) {
+                    // This also catches both being null (for the fallback card)
+                    return false;
+                }
 
-                    if (thisUser != null && thisUser.equals(newUser)) {
-                        return false;
-                    }
+                if (existingUser != null && existingUser.equals(newUser)) {
+                    return false;
                 }
             }
 
@@ -138,7 +142,7 @@ public class SecurityStationInventory implements IMEInventory<IAEItemStack> {
         return false;
     }
 
-    public IAEStackList<IAEItemStack> getStoredItems() {
+    public Collection<AEItemKey> getStoredItems() {
         return this.storedItems;
     }
 }

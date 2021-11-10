@@ -30,7 +30,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
 
@@ -107,20 +106,14 @@ public class TesrRenderHelper {
     /**
      * Render an item in 2D and the given text below it.
      *
-     * @param poseStack
-     * @param buffers
-     * @param spacing           Specifies how far apart the item and the item stack amount are rendered.
-     * @param combinedLightIn
-     * @param combinedOverlayIn
+     * @param spacing Specifies how far apart the item and the item stack amount are rendered.
      */
     public static void renderItem2dWithAmount(PoseStack poseStack, MultiBufferSource buffers,
-            IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
-        final ItemStack renderStack = itemStack.asItemStackRepresentation();
-
+            ItemStack renderStack, long amount, float itemScale, float spacing, int combinedLightIn,
+            int combinedOverlayIn) {
         TesrRenderHelper.renderItem2d(poseStack, buffers, renderStack, itemScale, combinedLightIn, combinedOverlayIn);
 
-        final long stackSize = itemStack.getStackSize();
-        final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm(stackSize);
+        final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm(amount);
 
         // Render the item count
         final Font fr = Minecraft.getInstance().font;

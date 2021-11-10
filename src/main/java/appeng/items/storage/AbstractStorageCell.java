@@ -36,16 +36,16 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.core.definitions.AEItems;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.parts.automation.UpgradeInventory;
+import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 
 /**
@@ -53,7 +53,7 @@ import appeng.util.InteractionUtil;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
+public abstract class AbstractStorageCell<T extends AEKey> extends AEBaseItem
         implements IBasicCellItem<T>, AEToolItem {
     /**
      * This can be retrieved when disassembling the storage cell.
@@ -95,8 +95,8 @@ public abstract class AbstractStorageCell<T extends IAEStack> extends AEBaseItem
     }
 
     @Override
-    public InternalInventory getConfigInventory(final ItemStack is) {
-        return new CellConfig(is);
+    public ConfigInventory<T> getConfigInventory(final ItemStack is) {
+        return CellConfig.create(getChannel(), is);
     }
 
     @Override

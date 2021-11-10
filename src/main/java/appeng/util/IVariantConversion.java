@@ -1,70 +1,74 @@
 package appeng.util;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import javax.annotation.Nullable;
+
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 
+import appeng.api.storage.FluidStorageChannel;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.ItemStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.util.item.AEItemStack;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 
 // Consider moving to API?
-public interface IVariantConversion<V extends TransferVariant<?>, T extends IAEStack> {
-    IVariantConversion<ItemVariant, IAEItemStack> ITEM = new Item();
-    IVariantConversion<FluidVariant, IAEFluidStack> FLUID = new Fluid();
+public interface IVariantConversion<V extends TransferVariant<?>, T extends AEKey> {
+    IVariantConversion<ItemVariant, AEItemKey> ITEM = new Item();
+    IVariantConversion<FluidVariant, AEFluidKey> FLUID = new Fluid();
 
     IStorageChannel<T> getChannel();
 
-    V getVariant(T stack);
+    V getVariant(@Nullable T key);
 
-    default boolean variantMatches(T stack, V variant) {
-        return getVariant(stack).equals(variant);
+    @Nullable
+    T getKey(V variant);
+
+    default boolean variantMatches(T key, V variant) {
+        return getVariant(key).equals(variant);
     }
-
-    T createStack(V variant, long amount);
 
     long getBaseSlotSize(V variant);
 
-    class Fluid implements IVariantConversion<FluidVariant, IAEFluidStack> {
+    class Fluid implements IVariantConversion<FluidVariant, AEFluidKey> {
         @Override
-        public IStorageChannel<IAEFluidStack> getChannel() {
+        public FluidStorageChannel getChannel() {
             return StorageChannels.fluids();
         }
 
         @Override
-        public FluidVariant getVariant(IAEFluidStack stack) {
-            return stack.getFluid();
+        public FluidVariant getVariant(AEFluidKey key) {
+            return key == null ? FluidVariant.blank() : key.toVariant();
         }
 
         @Override
-        public IAEFluidStack createStack(FluidVariant variant, long amount) {
-            return IAEFluidStack.of(variant, amount);
+        public AEFluidKey getKey(FluidVariant variant) {
+            return AEFluidKey.of(variant);
         }
 
         @Override
         public long getBaseSlotSize(FluidVariant variant) {
-            return 4 * FluidConstants.BUCKET;
+            return 4 * AEFluidKey.AMOUNT_BUCKET;
         }
     }
 
-    class Item implements IVariantConversion<ItemVariant, IAEItemStack> {
+    class Item implements IVariantConversion<ItemVariant, AEItemKey> {
         @Override
-        public IStorageChannel<IAEItemStack> getChannel() {
+        public ItemStorageChannel getChannel() {
             return StorageChannels.items();
         }
 
         @Override
-        public ItemVariant getVariant(IAEItemStack stack) {
-            return stack.getVariant();
+        public ItemVariant getVariant(AEItemKey key) {
+            return key == null ? ItemVariant.blank() : key.toVariant();
         }
 
+        @org.jetbrains.annotations.Nullable
         @Override
-        public IAEItemStack createStack(ItemVariant variant, long amount) {
-            return AEItemStack.of(variant, amount);
+        public AEItemKey getKey(ItemVariant variant) {
+            return AEItemKey.of(variant);
         }
 
         @Override

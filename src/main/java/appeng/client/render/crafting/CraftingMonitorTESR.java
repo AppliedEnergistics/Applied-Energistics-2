@@ -27,7 +27,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 
-import appeng.api.storage.data.IAEItemStack;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.client.render.TesrRenderHelper;
 
@@ -46,7 +45,7 @@ public class CraftingMonitorTESR implements BlockEntityRenderer<CraftingMonitorB
 
         Direction facing = te.getForward();
 
-        IAEItemStack jobProgress = te.getJobProgress();
+        var jobProgress = te.getJobProgress();
 
         if (jobProgress != null) {
             poseStack.pushPose();
@@ -54,7 +53,11 @@ public class CraftingMonitorTESR implements BlockEntityRenderer<CraftingMonitorB
 
             TesrRenderHelper.rotateToFace(poseStack, facing, (byte) 0);
             poseStack.translate(0, 0.08, 0.5);
-            TesrRenderHelper.renderItem2dWithAmount(poseStack, buffers, jobProgress, 0.3f, -0.18f, 15728880,
+            var what = jobProgress.what();
+            var itemToShow = what.wrapForDisplayOrFilter();
+
+            TesrRenderHelper.renderItem2dWithAmount(poseStack, buffers, itemToShow, jobProgress.amount(), 0.3f, -0.18f,
+                    15728880,
                     combinedOverlay);
 
             poseStack.popPose();

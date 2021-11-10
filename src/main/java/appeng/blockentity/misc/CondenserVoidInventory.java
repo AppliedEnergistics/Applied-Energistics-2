@@ -23,10 +23,10 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
-class CondenserVoidInventory<T extends IAEStack> implements IMEMonitor<T> {
+class CondenserVoidInventory<T extends AEKey> implements IMEMonitor<T> {
 
     private final CondenserBlockEntity target;
     private final IStorageChannel<T> channel;
@@ -37,30 +37,15 @@ class CondenserVoidInventory<T extends IAEStack> implements IMEMonitor<T> {
     }
 
     @Override
-    public T injectItems(final T input, final Actionable mode, final IActionSource src) {
-        if (mode == Actionable.SIMULATE) {
-            return null;
+    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        if (mode == Actionable.MODULATE) {
+            this.target.addPower(amount / (double) this.channel.transferFactor());
         }
-
-        if (input != null) {
-            this.target.addPower(input.getStackSize() / (double) this.channel.transferFactor());
-        }
-        return null;
+        return amount;
     }
 
     @Override
-    public T extractItems(final T request, final Actionable mode, final IActionSource src) {
-        return null;
-    }
-
-    @Override
-    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
-        return out;
-    }
-
-    @Override
-    public IAEStackList<T> getCachedAvailableStacks() {
-        return this.channel.createList();
+    public void getAvailableStacks(KeyCounter<T> out) {
     }
 
     @Override

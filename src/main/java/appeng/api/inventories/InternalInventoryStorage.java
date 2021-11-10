@@ -39,7 +39,7 @@ class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> impl
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
         // Do not allow extraction of wrapped fluid stacks because they're an internal detail
-        if (resource.getItem() == AEItems.WRAPPED_FLUID_STACK.asItem()) {
+        if (resource.getItem() == AEItems.WRAPPED_GENERIC_STACK.asItem()) {
             return 0;
         }
 
@@ -78,7 +78,7 @@ class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> impl
                     StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
                     // Do not allow extraction of wrapped fluid stacks because they're an internal detail
-                    if (resource.getItem() == AEItems.WRAPPED_FLUID_STACK.asItem()) {
+                    if (resource.getItem() == AEItems.WRAPPED_GENERIC_STACK.asItem()) {
                         return 0;
                     }
 

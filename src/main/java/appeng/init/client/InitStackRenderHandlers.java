@@ -25,6 +25,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -33,8 +34,8 @@ import appeng.api.client.AEStackRendering;
 import appeng.api.client.AmountFormat;
 import appeng.api.client.IAEStackRenderHandler;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
 import appeng.client.gui.style.FluidBlitter;
@@ -48,27 +49,31 @@ public class InitStackRenderHandlers {
         var itemSSRenderer = new StackSizeRenderer();
         AEStackRendering.register(StorageChannels.items(), new IAEStackRenderHandler<>() {
             @Override
-            public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y,
-                    IAEItemStack stack) {
-                ItemStack displayStack = stack.asItemStackRepresentation();
+            public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
+                    AEItemKey stack) {
+                ItemStack displayStack = stack.toStack();
                 // The item renderer uses this global stack, so we have to apply the current transform to it.
                 var globalStack = RenderSystem.getModelViewStack();
                 globalStack.pushPose();
                 globalStack.mulPoseMatrix(poseStack.last().pose());
-                minecraft.getItemRenderer().renderGuiItem(displayStack, x, y);
+                ItemRenderer itemRenderer = minecraft.getItemRenderer();
+                var oldBlitOffset = itemRenderer.blitOffset;
+                itemRenderer.blitOffset = zIndex;
+                itemRenderer.renderGuiItem(displayStack, x, y);
+                itemRenderer.blitOffset = oldBlitOffset;
                 globalStack.popPose();
                 // Ensure the global state is correctly reset.
                 RenderSystem.applyModelViewMatrix();
             }
 
             @Override
-            public Component getDisplayName(IAEItemStack stack) {
-                return stack.getDefinition().getHoverName();
+            public Component getDisplayName(AEItemKey stack) {
+                return stack.toStack().getHoverName();
             }
 
             @Override
-            public List<Component> getTooltip(IAEItemStack stack) {
-                return stack.getDefinition().copy().getTooltipLines(null,
+            public List<Component> getTooltip(AEItemKey stack) {
+                return stack.toStack().getTooltipLines(null,
                         Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
                                 : TooltipFlag.Default.NORMAL);
             }
@@ -81,25 +86,20 @@ public class InitStackRenderHandlers {
                     case PREVIEW_LARGE_FONT -> itemSSRenderer.getToBeRenderedStackSize(amount, true);
                 };
             }
-
-            @Override
-            public String getModid(IAEItemStack stack) {
-                return Platform.getModId(stack);
-            }
         });
         var fluidSSRenderer = new FluidStackSizeRenderer();
         AEStackRendering.register(StorageChannels.fluids(), new IAEStackRenderHandler<>() {
             @Override
-            public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y,
-                    IAEFluidStack stack) {
-                FluidBlitter.create(stack.getFluid())
+            public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
+                    AEFluidKey stack) {
+                FluidBlitter.create(stack.toVariant())
                         .dest(x, y, 16, 16)
-                        .blit(poseStack, 0);
+                        .blit(poseStack, 100 + zIndex);
             }
 
             @Override
-            public Component getDisplayName(IAEFluidStack stack) {
-                return FluidVariantRendering.getName(stack.getFluid());
+            public Component getDisplayName(AEFluidKey stack) {
+                return FluidVariantRendering.getName(stack.toVariant());
             }
 
             @Override
@@ -109,11 +109,6 @@ public class InitStackRenderHandlers {
                     case PREVIEW_REGULAR -> fluidSSRenderer.getToBeRenderedStackSize(amount, false);
                     case PREVIEW_LARGE_FONT -> fluidSSRenderer.getToBeRenderedStackSize(amount, true);
                 };
-            }
-
-            @Override
-            public String getModid(IAEFluidStack stack) {
-                return Platform.getModId(stack);
             }
         });
     }

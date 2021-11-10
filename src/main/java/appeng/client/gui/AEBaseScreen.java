@@ -26,13 +26,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ArrayListMultimap;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -58,8 +58,13 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.client.AEStackRendering;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.FluidBlitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
@@ -80,8 +85,9 @@ import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
+import appeng.menu.slot.FluidTankSlot;
 import appeng.menu.slot.IOptionalSlot;
-import appeng.menu.slot.PatternTermSlot;
+import appeng.menu.slot.ResizableSlot;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
 
@@ -147,10 +153,21 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             for (int i = 0; i < slots.size(); i++) {
                 Slot slot = slots.get(i);
 
-                Point pos = getSlotPosition(entry.getValue(), i);
+                // Special case for slots with overridable width/height, which use widget styles instead of
+                // semantic based slot positioning
+                if (slot instanceof ResizableSlot resizableSlot) {
+                    var widgetStyle = style.getWidget(resizableSlot.getStyleId());
+                    var pos = widgetStyle.resolve(getBounds(false));
+                    slot.x = pos.getX();
+                    slot.y = pos.getY();
+                    resizableSlot.setWidth(widgetStyle.getWidth());
+                    resizableSlot.setHeight(widgetStyle.getHeight());
+                } else {
+                    Point pos = getSlotPosition(entry.getValue(), i);
 
-                slot.x = pos.getX();
-                slot.y = pos.getY();
+                    slot.x = pos.getX();
+                    slot.y = pos.getY();
+                }
             }
 
             // Do the same for GUI-only slots, which are used in Fluid-related UIs that do not deal with normal slots
@@ -246,6 +263,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * Renders a potential tooltip (from one of the possible tooltip sources)
      */
     private void renderTooltips(PoseStack poseStack, int mouseX, int mouseY) {
+        // For fluid tanks, we want custom tooltips that show amount/capacity
+        if (this.hoveredSlot instanceof AppEngSlot appEngSlot) {
+            var customTooltip = appEngSlot.getCustomTooltip(this::getTooltipFromItem, menu.getCarried());
+            if (customTooltip != null) {
+                this.renderTooltip(poseStack, customTooltip, Optional.empty(), mouseX, mouseY);
+            }
+        }
+
         this.renderTooltip(poseStack, mouseX, mouseY);
 
         // The line above should have render a tooltip if this condition is true, and no
@@ -467,7 +492,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             this.drag_click.add(slot);
             if (this.drag_click.size() > 1) {
                 for (final Slot dr : this.drag_click) {
-                    final InventoryActionPacket p = new InventoryActionPacket(
+                    var p = new InventoryActionPacket(
                             mouseButton == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
                             dr.index, 0);
                     NetworkHandler.instance().sendToServer(p);
@@ -503,17 +528,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        if (slot instanceof PatternTermSlot) {
-            if (mouseButton == 6) {
-                return; // prevent weird double clicks..
-            }
-
-            NetworkHandler.instance().sendToServer(((PatternTermSlot) slot).getRequest(hasShiftDown()));
-        } else if (slot instanceof CraftingTermSlot) {
-            if (mouseButton == 6) {
-                return; // prevent weird double clicks..
-            }
-
+        if (slot instanceof CraftingTermSlot) {
             InventoryAction action;
             if (hasShiftDown()) {
                 action = InventoryAction.CRAFT_SHIFT;
@@ -584,7 +599,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     protected LocalPlayer getPlayer() {
         // Our UIs are usually not opened when not in-game, so this should not be a
         // problem
-        return Preconditions.checkNotNull(getMinecraft().player);
+        return Objects.requireNonNull(getMinecraft().player);
     }
 
     protected boolean checkHotbarKeys(final Key input) {
@@ -621,10 +636,20 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return false;
     }
 
+    @Override
+    protected boolean isHovering(Slot slot, double x, double y) {
+        if (slot instanceof ResizableSlot resizableSlot) {
+            var width = resizableSlot.getWidth();
+            var height = resizableSlot.getHeight();
+            return this.isHovering(slot.x, slot.y, width, height, x, y);
+        }
+        return super.isHovering(slot, x, y);
+    }
+
     protected Slot getSlot(final int mouseX, final int mouseY) {
-        final List<Slot> slots = this.getInventorySlots();
-        for (final Slot slot : slots) {
-            if (this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
+        var slots = this.getInventorySlots();
+        for (var slot : slots) {
+            if (this.isHovering(slot, mouseX, mouseY)) {
                 return slot;
             }
         }
@@ -654,9 +679,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      */
     @Override
     public void renderSlot(PoseStack poseStack, Slot s) {
-        if (s instanceof AppEngSlot) {
+        if (s instanceof FluidTankSlot fluidTankSlot) {
+            renderFluidTank(poseStack, fluidTankSlot);
+        } else if (s instanceof AppEngSlot appEngSlot) {
             try {
-                renderAppEngSlot(poseStack, (AppEngSlot) s);
+                renderAppEngSlot(poseStack, appEngSlot);
             } catch (final Exception err) {
                 AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
             }
@@ -665,8 +692,49 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
     }
 
+    private void renderFluidTank(PoseStack poseStack, FluidTankSlot slot) {
+        var current = GenericStack.unwrapItemStack(slot.getItem());
+        if (!AEFluidKey.is(current)) {
+            return;
+        }
+
+        var what = (AEFluidKey) current.what();
+        var amount = current.amount();
+
+        Blitter blitter = FluidBlitter.create(what);
+
+        var filledHeight = (int) (slot.getHeight() * ((float) amount / slot.getCapacity()));
+
+        // We assume the sprite has equal width/height, and to maintain that 1:1 aspect ratio,
+        // We draw rectangles of size width by width to fill our entire height
+        var stepHeight = slot.getWidth();
+
+        // We have to draw in multiples of the step height, but it's possible we need
+        // to draw a "partial". This draws "bottom up"
+        int iconHeightRemainder = filledHeight % stepHeight;
+        for (int i = 0; i < filledHeight / stepHeight; i++) {
+            blitter.dest(slot.x,
+                    slot.y + slot.getHeight() - iconHeightRemainder - (i + 1) * stepHeight,
+                    stepHeight,
+                    stepHeight)
+                    .blit(poseStack, getBlitOffset());
+        }
+        // Draw the remainder last because it modifies the blitter
+        if (iconHeightRemainder > 0) {
+            // Compute how much of the src sprite's height will be visible for this last piece
+            int srcHeightRemainder = (int) (blitter.getSrcHeight()
+                    * (iconHeightRemainder / (float) stepHeight));
+            blitter.src(blitter.getSrcX(), blitter.getSrcY(), blitter.getSrcWidth(), srcHeightRemainder)
+                    .dest(slot.x,
+                            slot.y + slot.getHeight() - iconHeightRemainder,
+                            slot.getWidth(),
+                            iconHeightRemainder)
+                    .blit(poseStack, getBlitOffset());
+        }
+    }
+
     private void renderAppEngSlot(PoseStack poseStack, AppEngSlot s) {
-        final ItemStack is = s.getItem();
+        var is = s.getItem();
 
         // If the slot has a background icon, render it, but only if the slot is empty
         // or it requests the icon to be always drawn
@@ -804,40 +872,21 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     /**
-     * Return a Vanilla ItemStack or FluidStack if there is one at the given window coordinates. This is used by JEI to
-     * allow the U and R hotkeys to work for ingredients (such as fluids) that are not stored in normal slots.
+     * Return the key of the resource if there is one at the given window coordinates. This is used by JEI/REI to allow
+     * the U and R hotkeys to work for ingredients (such as fluids) that are not stored in normal slots, and for
+     * ingredients wrapped in {@link appeng.items.misc.WrappedGenericStack}.
      * <p/>
      * The given coordinates are in window space.
      */
     @Nullable
-    public Object getIngredientUnderMouse(double mouseX, double mouseY) {
-        IIngredientSupplier ingredientSupplier = null;
-
-        // First search for custom widgets
-        CustomSlotWidget guiSlot = getGuiSlotAt(mouseX, mouseY);
-        if (guiSlot instanceof IIngredientSupplier) {
-            ingredientSupplier = (IIngredientSupplier) guiSlot;
+    public GenericStack getStackUnderMouse(double mouseX, double mouseY) {
+        // First check the vanilla slots
+        if (hoveredSlot != null) {
+            var item = hoveredSlot.getItem();
+            return GenericStack.unwrapItemStack(item);
         }
 
-        // Then any of the children
-        if (ingredientSupplier == null) {
-            for (GuiEventListener child : super.children()) {
-                if (child instanceof IIngredientSupplier && child.isMouseOver(mouseX, mouseY)) {
-                    ingredientSupplier = (IIngredientSupplier) child;
-                    break;
-                }
-            }
-        }
-
-        Object ingredient = null;
-        if (ingredientSupplier != null) {
-            ingredient = ingredientSupplier.getFluidIngredient();
-            if (ingredient == null) {
-                ingredient = ingredientSupplier.getItemIngredient();
-            }
-        }
-
-        return ingredient;
+        return null;
     }
 
     public final int getGuiLeft() {
@@ -861,6 +910,36 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return appEngSlotA.container == appEngSlotB.container;
         }
         return a.container == b.container;
+    }
+
+    @Override
+    public List<Component> getTooltipFromItem(ItemStack stack) {
+        var unwrapped = GenericStack.unwrapItemStack(stack);
+        if (unwrapped != null) {
+            return AEStackRendering.getTooltip(unwrapped.what());
+        }
+        return super.getTooltipFromItem(stack);
+    }
+
+    /**
+     * Used by mixin to render the slot highlight.
+     */
+    public void renderCustomSlotHighlight(PoseStack poseStack, int x, int y, int z) {
+        int w, h;
+        if (this.hoveredSlot instanceof ResizableSlot resizableSlot) {
+            w = resizableSlot.getWidth();
+            h = resizableSlot.getHeight();
+        } else {
+            w = 16;
+            h = 16;
+        }
+
+        // Same as the Vanilla method, just with dynamic width and height
+        RenderSystem.disableDepthTest();
+        RenderSystem.colorMask(true, true, true, false);
+        fillGradient(poseStack, x, y, x + w, y + h, 0x80ffffff, 0x80ffffff, z);
+        RenderSystem.colorMask(true, true, true, true);
+        RenderSystem.enableDepthTest();
     }
 
 }

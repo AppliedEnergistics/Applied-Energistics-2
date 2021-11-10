@@ -28,7 +28,9 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Information about a pattern for use by the autocrafting system.
@@ -38,10 +40,10 @@ import appeng.api.storage.data.IAEStack;
  */
 public interface IPatternDetails {
     /**
-     * Return a copy of the actual stack of this pattern, containing all the data to retrieve the pattern later from
+     * Return the type of the encoded item of this pattern, containing all the data to retrieve the pattern later from
      * {@link PatternDetailsHelper#decodePattern}.
      */
-    ItemStack copyDefinition();
+    AEItemKey getDefinition();
 
     /**
      * The inputs of this pattern. <b>The return array must never be edited</b>.
@@ -52,14 +54,14 @@ public interface IPatternDetails {
      * The primary output of this pattern. The pattern will only be used to craft the primary output; the others are
      * just byproducts.
      */
-    default IAEStack getPrimaryOutput() {
+    default GenericStack getPrimaryOutput() {
         return getOutputs()[0];
     }
 
     /**
      * The outputs of this pattern. <b>The return array or any of its stacks must never be edited</b>.
      */
-    IAEStack[] getOutputs();
+    GenericStack[] getOutputs();
 
     interface IInput {
         /**
@@ -69,7 +71,7 @@ public interface IPatternDetails {
          * <p>
          * <b>The return array or any of its stacks must never be edited</b>.
          */
-        IAEStack[] getPossibleInputs();
+        GenericStack[] getPossibleInputs();
 
         /**
          * Multiplier for the inputs: how many possible inputs are necessary to craft this pattern.
@@ -79,13 +81,13 @@ public interface IPatternDetails {
         /**
          * Check if the passed stack is a valid input.
          */
-        boolean isValid(IAEStack input, Level level);
+        boolean isValid(AEKey input, Level level);
 
         /**
          * Optionally return a container item. This will generally be null for processing patterns, and return
          * {@link ItemStack#getContainerItem()} for crafting patterns.
          */
         @Nullable
-        IAEStack getContainerItem(IAEStack template);
+        AEKey getContainerItem(AEKey template);
     }
 }

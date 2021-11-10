@@ -23,6 +23,8 @@ import java.util.List;
 
 import com.mojang.authlib.GameProfile;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
@@ -40,9 +42,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.networking.security.ISecurityRegistry;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
@@ -107,25 +108,36 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public GameProfile getProfile(final ItemStack is) {
-        final CompoundTag tag = is.getOrCreateTag();
-        if (tag.contains("profile")) {
+    public GameProfile getProfile(ItemStack is) {
+        return getProfile(is.getTag());
+    }
+
+    @Nullable
+    public GameProfile getProfile(AEItemKey key) {
+        return getProfile(key.getTag());
+    }
+
+    private GameProfile getProfile(@Nullable CompoundTag tag) {
+        if (tag != null && tag.contains("profile")) {
             return NbtUtils.readGameProfile(tag.getCompound("profile"));
         }
         return null;
     }
 
     @Override
-    public EnumSet<SecurityPermissions> getPermissions(final ItemStack is) {
-        final CompoundTag tag = is.getOrCreateTag();
-        final EnumSet<SecurityPermissions> result = EnumSet.noneOf(SecurityPermissions.class);
+    public EnumSet<SecurityPermissions> getPermissions(ItemStack is) {
+        return getPermissions(is.getTag());
+    }
 
-        for (final SecurityPermissions sp : SecurityPermissions.values()) {
-            if (tag.getBoolean(sp.name())) {
-                result.add(sp);
+    public EnumSet<SecurityPermissions> getPermissions(@Nullable CompoundTag tag) {
+        var result = EnumSet.noneOf(SecurityPermissions.class);
+        if (tag != null) {
+            for (var sp : SecurityPermissions.values()) {
+                if (tag.getBoolean(sp.name())) {
+                    result.add(sp);
+                }
             }
         }
-
         return result;
     }
 
@@ -147,17 +159,6 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     public void addPermission(final ItemStack itemStack, final SecurityPermissions permission) {
         var tag = itemStack.getOrCreateTag();
         tag.putBoolean(permission.name(), true);
-    }
-
-    @Override
-    public void registerPermissions(final ISecurityRegistry register, final IPlayerRegistry pr, final ItemStack is) {
-        GameProfile profile = this.getProfile(is);
-        if (profile != null) {
-            register.addPlayer(pr.getPlayerId(profile), this.getPermissions(is));
-        } else {
-            // Set fallback permissions
-            register.addPlayer(-1, this.getPermissions(is));
-        }
     }
 
     @Override

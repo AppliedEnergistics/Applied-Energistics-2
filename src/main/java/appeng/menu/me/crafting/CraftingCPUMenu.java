@@ -29,8 +29,8 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -58,10 +58,10 @@ public class CraftingCPUMenu extends AEBaseMenu {
             })
             .build("craftingcpu");
 
-    private final IncrementalUpdateHelper<IAEStack> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
+    private final IncrementalUpdateHelper<AEKey> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
-    private final Consumer<IAEStack> cpuChangeListener = incrementalUpdateHelper::addChange;
+    private final Consumer<AEKey> cpuChangeListener = incrementalUpdateHelper::addChange;
 
     public CraftingCPUMenu(MenuType<?> menuType, int id, final Inventory ip, final Object te) {
         super(menuType, id, ip, te);
@@ -99,10 +99,10 @@ public class CraftingCPUMenu extends AEBaseMenu {
             this.cpu = (CraftingCPUCluster) c;
 
             // Initially send all items as a full-update to the client when the CPU changes
-            MixedStackList allItems = new MixedStackList();
+            var allItems = new KeyCounter<>();
             cpu.craftingLogic.getAllItems(allItems);
-            for (var stack : allItems) {
-                incrementalUpdateHelper.addChange(stack);
+            for (var entry : allItems) {
+                incrementalUpdateHelper.addChange(entry.getKey());
             }
 
             this.cpu.craftingLogic.addListener(cpuChangeListener);

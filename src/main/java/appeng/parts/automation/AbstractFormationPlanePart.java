@@ -20,13 +20,17 @@ package appeng.parts.automation;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Setting;
+import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
@@ -35,27 +39,40 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.util.ConfigInventory;
+import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
+import appeng.util.prioritylist.PrecisePriorityList;
 
-public abstract class AbstractFormationPlanePart<T extends IAEStack> extends UpgradeablePart
-        implements IStorageProvider, IPriorityHost {
+public abstract class AbstractFormationPlanePart<T extends AEKey> extends UpgradeablePart
+        implements IStorageProvider, IPriorityHost, IConfigInvHost {
 
     private boolean wasActive = false;
     private int priority = 0;
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
     private final IMEInventory<T> inventory = new InWorldStorage();
     private final IStorageChannel<T> channel;
+    private final ConfigInventory<T> config;
     private IncludeExclude filterMode = IncludeExclude.WHITELIST;
     private IPartitionList<T> filter;
+    /**
+     * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
+     */
+    private long lastEffect;
 
     public AbstractFormationPlanePart(ItemStack is, IStorageChannel<T> channel) {
         super(is);
         this.channel = channel;
         getMainNode().addService(IStorageProvider.class, this);
+        this.config = ConfigInventory.configTypes(channel, 63, this::updateFilter);
     }
 
     protected final void updateFilter() {
@@ -119,6 +136,19 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack> extends Upg
 
     protected abstract void clearBlocked(BlockGetter level, BlockPos pos);
 
+    /**
+     * Places the given stacks in-world and returns what couldn't be placed.
+     *
+     * @see IMEInventory#insert
+     * @return The amount that was placed.
+     */
+    protected abstract long placeInWorld(T input, long amount, Actionable type);
+
+    /**
+     * Indicates whether this formation plane supports placement of injected stacks as entities into the world.
+     */
+    public abstract boolean supportsEntityPlacement();
+
     @Override
     public float getCableConnectionLength(AECableType cable) {
         return 1;
@@ -128,6 +158,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack> extends Upg
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.priority = data.getInt("priority");
+        this.config.readFromChildTag(data, "config");
         remountStorage();
     }
 
@@ -135,6 +166,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack> extends Upg
     public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putInt("priority", this.getPriority());
+        this.config.writeToChildTag(data, "config");
     }
 
     @Override
@@ -169,35 +201,76 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack> extends Upg
     }
 
     /**
-     * Places the given stacks in-world and returns what couldn't be placed.
-     * 
-     * @see IMEInventory#injectItems
-     */
-    protected abstract T placeInWorld(T input, Actionable type);
-
-    /**
      * Creates a partition list to filter stacks being injected into the plane against. If an inverter card is present,
-     * it's a blacklist.
+     * it's a blacklist. If a fuzzy card is present and the storage channel supports fuzzy search, it'll be a list with
+     * fuzzy support.
      */
-    protected abstract IPartitionList<T> createFilter();
+    private IPartitionList<T> createFilter() {
+        var priorityList = new KeyCounter<T>();
+
+        var slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+        for (var x = 0; x < this.config.size() && x < slotsToUse; x++) {
+            var what = this.config.getKey(x);
+            if (what != null) {
+                priorityList.add(what, 1);
+            }
+        }
+
+        if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 && channel.supportsFuzzyRangeSearch()) {
+            return new FuzzyPriorityList<>(
+                    priorityList,
+                    this.getConfigManager().getSetting(Settings.FUZZY_MODE));
+        } else {
+            return new PrecisePriorityList<>(priorityList);
+        }
+    }
+
+    public IStorageChannel<T> getChannel() {
+        return channel;
+    }
 
     /**
      * Models the block adjacent to this formation plane as storage.
      */
     class InWorldStorage implements IMEInventory<T> {
         @Override
-        public T injectItems(T input, Actionable type, IActionSource src) {
-            if (filter != null && !filter.matchesFilter(input, filterMode)) {
-                return input;
+        public long insert(T what, long amount, Actionable mode, IActionSource source) {
+            if (filter != null && !filter.matchesFilter(what, filterMode)) {
+                return 0;
             }
 
-            return placeInWorld(input, type);
+            return placeInWorld(what, amount, mode);
         }
 
         @Override
         public IStorageChannel<T> getChannel() {
             return channel;
         }
+    }
+
+    /**
+     * Only play the effect every 250ms.
+     */
+    protected final boolean throttleEffect() {
+        long now = System.currentTimeMillis();
+        if (now < lastEffect + 250) {
+            return true;
+        }
+        lastEffect = now;
+        return false;
+    }
+
+    @Override
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+        if (!isRemote()) {
+            MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+        }
+        return true;
+    }
+
+    @Override
+    public ConfigInventory<T> getConfig() {
+        return config;
     }
 
 }

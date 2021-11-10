@@ -489,58 +489,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
         }
 
-        if (s instanceof FakeSlot) {
-            var hand = getCarried();
-
-            switch (action) {
-                case PICKUP_OR_SET_DOWN:
-
-                    if (hand.isEmpty()) {
-                        s.set(ItemStack.EMPTY);
-                    } else {
-                        s.set(hand.copy());
-                    }
-
-                    break;
-                case PLACE_SINGLE:
-
-                    if (!hand.isEmpty()) {
-                        final ItemStack is = hand.copy();
-                        is.setCount(1);
-                        s.set(is);
-                    }
-
-                    break;
-                case SPLIT_OR_PLACE_SINGLE:
-
-                    ItemStack is = s.getItem();
-                    if (!is.isEmpty()) {
-                        if (hand.isEmpty()) {
-                            is.setCount(Math.max(1, is.getCount() - 1));
-                        } else if (hand.sameItem(is)) {
-                            is.setCount(Math.min(is.getMaxStackSize(), is.getCount() + 1));
-                        } else {
-                            is = hand.copy();
-                            is.setCount(1);
-                        }
-
-                        s.set(is);
-                    } else if (!hand.isEmpty()) {
-                        is = hand.copy();
-                        is.setCount(1);
-                        s.set(is);
-                    }
-
-                    break;
-                case CREATIVE_DUPLICATE:
-                case MOVE_REGION:
-                case SHIFT_CLICK:
-                default:
-                    break;
-            }
-
-            // No further interaction allowed with fake slots
-            return;
+        if (s instanceof FakeSlot fakeSlot) {
+            handleFakeSlotAction(fakeSlot, action);
+            return; // No further interaction allowed with fake slots
         }
 
         if (action == InventoryAction.MOVE_REGION) {
@@ -557,6 +508,37 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
         }
 
+    }
+
+    private void handleFakeSlotAction(FakeSlot fakeSlot, InventoryAction action) {
+        var hand = getCarried();
+
+        switch (action) {
+            case PICKUP_OR_SET_DOWN:
+                fakeSlot.increase(hand);
+                break;
+            case PLACE_SINGLE:
+                if (!hand.isEmpty()) {
+                    var is = hand.copy();
+                    is.setCount(1);
+                    fakeSlot.increase(is);
+                }
+
+                break;
+            case SPLIT_OR_PLACE_SINGLE:
+                var is = fakeSlot.getItem();
+                if (!is.isEmpty()) {
+                    fakeSlot.decrease(hand);
+                } else if (!hand.isEmpty()) {
+                    is = hand.copy();
+                    is.setCount(1);
+                    fakeSlot.set(is);
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 
     protected ItemStack transferStackToMenu(final ItemStack input) {

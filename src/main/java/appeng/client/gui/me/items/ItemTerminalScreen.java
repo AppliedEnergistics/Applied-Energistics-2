@@ -35,7 +35,8 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.StorageChannels;
+import appeng.api.storage.data.AEItemKey;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.style.ScreenStyle;
@@ -46,34 +47,34 @@ import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.util.prioritylist.IPartitionList;
 
-public class ItemTerminalScreen<C extends MEMonitorableMenu<IAEItemStack>>
-        extends MEMonitorableScreen<IAEItemStack, C> {
+public class ItemTerminalScreen<C extends MEMonitorableMenu<AEItemKey>>
+        extends MEMonitorableScreen<AEItemKey, C> {
     public ItemTerminalScreen(C menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
     }
 
     @Override
-    protected Repo<IAEItemStack> createRepo(IScrollSource scrollSource) {
+    protected Repo<AEItemKey> createRepo(IScrollSource scrollSource) {
         return new ItemRepo(scrollSource, this);
     }
 
     @Override
-    protected IPartitionList<IAEItemStack> createPartitionList(List<ItemStack> viewCells) {
-        return ViewCellItem.createFilter(viewCells);
+    protected IPartitionList<AEItemKey> createPartitionList(List<ItemStack> viewCells) {
+        return ViewCellItem.createFilter(StorageChannels.items(), viewCells);
     }
 
     @Override
     protected void renderGridInventoryEntry(PoseStack poseStack, int x, int y,
-            GridInventoryEntry<IAEItemStack> entry) {
+            GridInventoryEntry<AEItemKey> entry) {
         // Annoying but easier than trying to splice into render item
-        ItemStack displayStack = entry.getStack().asItemStackRepresentation();
+        ItemStack displayStack = entry.getWhat().toStack();
         SimpleContainer displayInv = new SimpleContainer(displayStack);
         super.renderSlot(poseStack, new Slot(displayInv, 0, x, y));
     }
 
     @Override
-    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEItemStack> entry, int mouseButton,
+    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<AEItemKey> entry, int mouseButton,
             ClickType clickType) {
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
@@ -129,7 +130,7 @@ public class ItemTerminalScreen<C extends MEMonitorableMenu<IAEItemStack>>
         }
     }
 
-    private boolean shouldCraftOnClick(GridInventoryEntry<IAEItemStack> entry) {
+    private boolean shouldCraftOnClick(GridInventoryEntry<AEItemKey> entry) {
         // Always auto-craft when viewing only craftable items
         if (isViewOnlyCraftable()) {
             return true;

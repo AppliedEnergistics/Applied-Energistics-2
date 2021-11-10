@@ -24,7 +24,7 @@ import java.util.Set;
 
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.me.service.StorageService;
 
 /**
@@ -34,7 +34,7 @@ public class StackWatcher implements IStackWatcher {
 
     private final StorageService service;
     private final IStackWatcherNode myObject;
-    private final Set<IAEStack> myInterests = new HashSet<>();
+    private final Set<AEKey> myInterests = new HashSet<>();
 
     public StackWatcher(final StorageService service, final IStackWatcherNode host) {
         this.service = service;
@@ -46,22 +46,22 @@ public class StackWatcher implements IStackWatcher {
     }
 
     @Override
-    public boolean add(final IAEStack e) {
+    public boolean add(AEKey e) {
         if (this.myInterests.contains(e)) {
             return false;
         }
 
-        return this.myInterests.add(IAEStack.<IAEStack>copy(e)) && this.service.getInterestManager().put(e, this);
+        return this.myInterests.add(e) && this.service.getInterestManager().put(e, this);
     }
 
     @Override
-    public boolean remove(final IAEStack o) {
+    public boolean remove(final AEKey o) {
         return this.myInterests.remove(o) && this.service.getInterestManager().remove(o, this);
     }
 
     @Override
     public void reset() {
-        final Iterator<IAEStack> i = this.myInterests.iterator();
+        final Iterator<AEKey> i = this.myInterests.iterator();
 
         while (i.hasNext()) {
             this.service.getInterestManager().remove(i.next(), this);

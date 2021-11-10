@@ -29,15 +29,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import appeng.api.client.AEStackRendering;
 import appeng.api.config.FuzzyMode;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellWorkbenchItem;
-import appeng.helpers.FluidCellConfig;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
+import appeng.util.ConfigInventory;
 
 public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
@@ -54,12 +53,8 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public InternalInventory getConfigInventory(final ItemStack is) {
-        if (this.storageChannel == StorageChannels.fluids()) {
-            return new FluidCellConfig(is);
-        } else {
-            return new CellConfig(is);
-        }
+    public ConfigInventory<?> getConfigInventory(final ItemStack is) {
+        return CellConfig.create(this.storageChannel, is);
     }
 
     @Override
@@ -84,11 +79,8 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
         if (inventory != null) {
             var cc = getConfigInventory(stack);
-
-            for (var is : cc) {
-                if (!is.isEmpty()) {
-                    lines.add(is.getHoverName());
-                }
+            for (var key : cc.keySet()) {
+                lines.add(AEStackRendering.getDisplayName(key));
             }
         }
     }

@@ -20,13 +20,12 @@ package appeng.crafting;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.crafting.inv.CraftingSimulationState;
 
 /**
@@ -59,7 +58,8 @@ public class CraftingTreeProcess {
         final IPatternDetails.IInput[] inputs = this.details.getInputs();
         for (int x = 0; x < inputs.length; ++x) {
             var input = inputs[x];
-            this.nodes.put(new CraftingTreeNode(cc, job, IAEStack.copy(input.getPossibleInputs()[0]), this, x),
+            var firstInput = input.getPossibleInputs()[0];
+            this.nodes.put(new CraftingTreeNode(cc, job, firstInput.what(), firstInput.amount(), this, x),
                     input.getMultiplier());
         }
     }
@@ -92,7 +92,7 @@ public class CraftingTreeProcess {
                 this.limitQty = true;
             }
 
-            if (input.getContainerItem(primaryInput) != null) {
+            if (input.getContainerItem(primaryInput.what()) != null) {
                 this.limitQty = this.containerItems = true;
             }
         }
@@ -106,10 +106,10 @@ public class CraftingTreeProcess {
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
-        var containerItems = this.containerItems ? new MixedStackList() : null;
+        var containerItems = this.containerItems ? new KeyCounter<>() : null;
 
         // request and remove inputs...
-        for (final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet()) {
+        for (var entry : this.nodes.entrySet()) {
             entry.getKey().request(inv, entry.getValue() * times, containerItems);
         }
 
@@ -118,16 +118,14 @@ public class CraftingTreeProcess {
         // add container items
         if (containerItems != null) {
             for (var stack : containerItems) {
-                inv.injectItems(stack, Actionable.MODULATE);
-                inv.addStackBytes(stack, 1);
+                inv.insert(stack.getKey(), stack.getLongValue(), Actionable.MODULATE);
+                inv.addStackBytes(stack.getKey(), stack.getLongValue(), 1);
             }
         }
 
         // add crafting results..
         for (var out : this.details.getOutputs()) {
-            var o = (IAEStack) IAEStack.copy(out);
-            o.setStackSize(o.getStackSize() * times);
-            inv.injectItems(o, Actionable.MODULATE);
+            inv.insert(out.what(), out.amount() * times, Actionable.MODULATE);
         }
 
         inv.addCrafting(details, times);
@@ -144,12 +142,12 @@ public class CraftingTreeProcess {
         return tot;
     }
 
-    long getOutputCount(IAEStack what) {
+    long getOutputCount(AEKey what) {
         long tot = 0;
 
         for (var is : this.details.getOutputs()) {
-            if (is.equals(what)) {
-                tot += is.getStackSize();
+            if (what.matches(is)) {
+                tot += is.amount();
             }
         }
 

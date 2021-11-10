@@ -39,7 +39,8 @@ import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEKey;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.crafting.execution.CraftingCpuLogic;
@@ -151,18 +152,18 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    public IAEStack injectItems(final IAEStack input, final Actionable type, final IActionSource src) {
-        return craftingLogic.injectItems(input, type);
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        return craftingLogic.insert(what, amount, mode);
     }
 
     public void markDirty() {
         this.getCore().saveChanges();
     }
 
-    public void updateOutput(IAEStack finalOutput) {
+    public void updateOutput(GenericStack finalOutput) {
         var send = finalOutput;
 
-        if (finalOutput != null && finalOutput.getStackSize() <= 0) {
+        if (finalOutput != null && finalOutput.amount() <= 0) {
             send = null;
         }
 

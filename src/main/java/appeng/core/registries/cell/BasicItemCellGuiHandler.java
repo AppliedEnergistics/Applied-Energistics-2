@@ -27,14 +27,14 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.ItemTerminalMenu;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
-    public <T extends IAEStack> boolean isHandlerFor(final IStorageChannel<T> channel) {
+    public <T extends AEKey> boolean isHandlerFor(final IStorageChannel<T> channel) {
         return channel == StorageChannels.items();
     }
 

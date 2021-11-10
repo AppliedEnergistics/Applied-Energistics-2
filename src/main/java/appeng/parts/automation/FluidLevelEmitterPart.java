@@ -18,34 +18,20 @@
 
 package appeng.parts.automation;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.FluidStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AppEng;
-import appeng.helpers.IConfigurableFluidInventory;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.FluidLevelEmitterMenu;
+import appeng.menu.implementations.LevelEmitterMenu;
 import appeng.parts.PartModel;
-import appeng.util.fluid.AEFluidInventory;
-import appeng.util.fluid.IAEFluidTank;
-import appeng.util.inv.IAEFluidInventory;
 
-public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart<IAEFluidStack> implements
-        IAEFluidInventory, IConfigurableFluidInventory {
+public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart<AEFluidKey> {
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_level_emitter_base_off");
@@ -69,34 +55,17 @@ public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart<IAEFl
     public static final PartModel MODEL_ON_ON = new PartModel(MODEL_BASE_ON, MODEL_STATUS_ON);
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final AEFluidInventory config = new AEFluidInventory(this, 1);
-
     public FluidLevelEmitterPart(ItemStack is) {
         super(is, false);
     }
 
-    @Nullable
     @Override
-    protected IAEFluidStack getConfiguredStack() {
-        return config.getFluidInSlot(0);
-    }
-
-    @Override
-    protected IStorageChannel<IAEFluidStack> getChannel() {
+    protected FluidStorageChannel getChannel() {
         return StorageChannels.fluids();
     }
 
-    @Override
-    public void onFluidInventoryChanged(IAEFluidTank inv, int slot) {
-        this.configureWatchers();
-    }
-
-    @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
-            MenuOpener.open(FluidLevelEmitterMenu.TYPE, player, MenuLocator.forPart(this));
-        }
-        return true;
+    protected MenuType<?> getMenuType() {
+        return LevelEmitterMenu.FLUID_TYPE;
     }
 
     @Override
@@ -108,30 +77,6 @@ public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart<IAEFl
         } else {
             return this.isLevelEmitterOn() ? MODEL_ON_OFF : MODEL_OFF_OFF;
         }
-    }
-
-    public IAEFluidTank getConfig() {
-        return this.config;
-    }
-
-    @Override
-    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
-        if (name.equals("config")) {
-            return this.config;
-        }
-        return null;
-    }
-
-    @Override
-    public void readFromNBT(final CompoundTag data) {
-        super.readFromNBT(data);
-        this.config.readFromNBT(data, "config");
-    }
-
-    @Override
-    public void writeToNBT(final CompoundTag data) {
-        super.writeToNBT(data);
-        this.config.writeToNBT(data, "config");
     }
 
 }

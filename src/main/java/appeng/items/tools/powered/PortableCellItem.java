@@ -36,11 +36,10 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.ItemStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.IBasicCellItem;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.AEConfig;
 import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.contents.CellConfig;
@@ -51,9 +50,10 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.MEPortableCellMenu;
 import appeng.parts.automation.UpgradeInventory;
+import appeng.util.ConfigInventory;
 
 public class PortableCellItem extends AEBasePoweredItem
-        implements IBasicCellItem<IAEItemStack>, IGuiItem, ICustomReequipAnimation {
+        implements IBasicCellItem<AEItemKey>, IGuiItem, ICustomReequipAnimation {
 
     private final StorageTier tier;
 
@@ -98,7 +98,7 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public IStorageChannel<IAEItemStack> getChannel() {
+    public ItemStorageChannel getChannel() {
         return StorageChannels.items();
     }
 
@@ -113,8 +113,8 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public InternalInventory getConfigInventory(final ItemStack is) {
-        return new CellConfig(is);
+    public ConfigInventory<AEItemKey> getConfigInventory(final ItemStack is) {
+        return CellConfig.create(getChannel(), is);
     }
 
     @Override

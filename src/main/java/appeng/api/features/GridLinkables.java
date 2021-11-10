@@ -25,6 +25,7 @@ package appeng.api.features;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
@@ -56,9 +57,9 @@ public final class GridLinkables {
      * @param handler  The handler that handles linking and unlinking for the item stacks.
      */
     public synchronized static void register(ItemLike itemLike, IGridLinkableHandler handler) {
-        Preconditions.checkNotNull(itemLike, "itemLike");
-        Preconditions.checkNotNull(itemLike.asItem(), "itemLike.asItem()");
-        Preconditions.checkNotNull(handler, "handler");
+        Objects.requireNonNull(itemLike, "itemLike");
+        Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
+        Objects.requireNonNull(handler, "handler");
         var item = itemLike.asItem();
         Preconditions.checkState(!registry.containsKey(item), "Handler for %s already registered", item);
         registry.put(item, handler);
@@ -69,8 +70,8 @@ public final class GridLinkables {
      */
     @Nullable
     public static synchronized IGridLinkableHandler get(ItemLike itemLike) {
-        Preconditions.checkNotNull(itemLike, "itemLike");
-        Preconditions.checkNotNull(itemLike.asItem(), "itemLike.asItem()");
+        Objects.requireNonNull(itemLike, "itemLike");
+        Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
         return registry.get(itemLike.asItem());
     }
 

@@ -21,12 +21,11 @@ package appeng.parts;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
-
-import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -66,16 +65,11 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
-import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.parts.automation.FluidLevelEmitterPart;
-import appeng.parts.automation.ItemLevelEmitterPart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
-import appeng.util.fluid.AEFluidInventory;
-import appeng.util.inv.AppEngInternalAEInventory;
 
 public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory {
 
@@ -87,7 +81,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     private Direction side;
 
     public AEBasePart(final ItemStack is) {
-        Preconditions.checkNotNull(is);
+        Objects.requireNonNull(is);
 
         this.is = is;
         this.mainNode = createMainNode()
@@ -283,56 +277,24 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     /**
-     * depending on the from, different settings will be accepted, don't call this with null
+     * depending on the from, different settings will be accepted
      *
-     * @param from     source of settings
-     * @param compound compound of source
+     * @param mode  source of settings
+     * @param input compound of source
      */
-    private void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
+    @OverridingMethodsMustInvokeSuper
+    protected void importSettings(SettingsFrom mode, CompoundTag input) {
         if (this instanceof IConfigurableObject configurableObject) {
-            configurableObject.getConfigManager().readFromNBT(compound);
+            configurableObject.getConfigManager().readFromNBT(input);
         }
 
         if (this instanceof IPriorityHost pHost) {
-            pHost.setPriority(compound.getInt("priority"));
-        }
-
-        var inv = getSubInventory(ISegmentedInventory.CONFIG);
-        if (inv instanceof AppEngInternalAEInventory target) {
-            final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.size());
-            tmp.readFromNBT(compound, "config");
-            for (int x = 0; x < tmp.size(); x++) {
-                target.setItemDirect(x, tmp.getStackInSlot(x));
-            }
-            if (this instanceof ItemLevelEmitterPart partLevelEmitter) {
-                partLevelEmitter.setReportingValue(compound.getLong("reportingValue"));
-            }
-        }
-
-        if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
-            var tank = configurableFluidInventory.getFluidInventoryByName("config");
-            if (tank instanceof AEFluidInventory target) {
-                var tmp = new AEFluidInventory(null, target.getSlots());
-                tmp.readFromNBT(compound, "config");
-                for (int x = 0; x < tmp.getSlots(); x++) {
-                    target.setFluidInSlot(x, tmp.getFluidInSlot(x));
-                }
-            }
-            if (this instanceof FluidLevelEmitterPart fluidLevelEmitterPart) {
-                fluidLevelEmitterPart.setReportingValue(compound.getLong("reportingValue"));
-            }
+            pHost.setPriority(input.getInt("priority"));
         }
     }
 
-    /**
-     * null means nothing to store...
-     *
-     * @param from source of settings
-     * @return compound of source
-     */
-    private CompoundTag downloadSettings(final SettingsFrom from) {
-        final CompoundTag output = new CompoundTag();
-
+    @OverridingMethodsMustInvokeSuper
+    protected void exportSettings(SettingsFrom mode, CompoundTag output) {
         if (this instanceof IConfigurableObject configurableObject) {
             configurableObject.getConfigManager().writeToNBT(output);
         }
@@ -340,23 +302,6 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         if (this instanceof IPriorityHost pHost) {
             output.putInt("priority", pHost.getPriority());
         }
-
-        var inv = getSubInventory(ISegmentedInventory.CONFIG);
-        if (inv instanceof AppEngInternalAEInventory) {
-            ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
-            if (this instanceof ItemLevelEmitterPart partLevelEmitter) {
-                output.putLong("reportingValue", partLevelEmitter.getReportingValue());
-            }
-        }
-
-        if (this instanceof IConfigurableFluidInventory configurableFluidInventory) {
-            var tank = configurableFluidInventory.getFluidInventoryByName("config");
-            ((AEFluidInventory) tank).writeToNBT(output, "config");
-            if (this instanceof FluidLevelEmitterPart fluidLevelEmitterPart) {
-                output.putLong("reportingValue", fluidLevelEmitterPart.getReportingValue());
-            }
-        }
-        return output.isEmpty() ? null : output;
     }
 
     public boolean useStandardMemoryCard() {
@@ -374,13 +319,16 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
             // Blocks and parts share the same soul!
             if (AEParts.ITEM_INTERFACE.isSameAs(is)) {
                 is = AEBlocks.ITEM_INTERFACE.stack();
+            } else if (AEParts.FLUID_INTERFACE.isSameAs(is)) {
+                is = AEBlocks.FLUID_INTERFACE.stack();
             }
 
             final String name = is.getDescriptionId();
 
             if (InteractionUtil.isInAlternateUseMode(player)) {
-                final CompoundTag data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
-                if (data != null) {
+                var data = new CompoundTag();
+                this.exportSettings(SettingsFrom.MEMORY_CARD, data);
+                if (!data.isEmpty()) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                 }
@@ -388,7 +336,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
                 final String storedName = memoryCard.getSettingsName(memCardIS);
                 final CompoundTag data = memoryCard.getData(memCardIS);
                 if (name.equals(storedName)) {
-                    this.uploadSettings(SettingsFrom.MEMORY_CARD, data);
+                    this.importSettings(SettingsFrom.MEMORY_CARD, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                 } else {
                     memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);

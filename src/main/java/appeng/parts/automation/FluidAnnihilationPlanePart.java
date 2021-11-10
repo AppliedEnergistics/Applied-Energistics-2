@@ -23,18 +23,12 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BucketPickup;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
@@ -42,18 +36,15 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
@@ -62,7 +53,6 @@ import appeng.helpers.FluidContainerHelper;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
-import appeng.util.fluid.AEFluidStack;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
@@ -129,31 +119,31 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             return TickRateModulation.SLEEP;
         }
 
-        final BlockEntity te = this.getBlockEntity();
-        final Level level = te.getLevel();
-        final BlockPos pos = te.getBlockPos().relative(this.getSide());
+        final var te = this.getBlockEntity();
+        final var level = te.getLevel();
+        final var pos = te.getBlockPos().relative(this.getSide());
 
-        BlockState blockstate = level.getBlockState(pos);
+        var blockstate = level.getBlockState(pos);
         if (blockstate.getBlock() instanceof BucketPickup bucketPickup) {
-            FluidState fluidState = blockstate.getFluidState();
+            var fluidState = blockstate.getFluidState();
 
-            Fluid fluid = fluidState.getType();
+            var fluid = fluidState.getType();
             if (isFluidBlacklisted(fluid)) {
                 return TickRateModulation.SLEEP;
             }
 
             if (fluid != Fluids.EMPTY && fluidState.isSource()) {
                 // Attempt to store the fluid in the network
-                var blockFluid = AEFluidStack.of(FluidVariant.of(fluid), FluidConstants.BLOCK);
-                if (this.storeFluid(grid, blockFluid, false)) {
+                var what = AEFluidKey.of(fluid);
+                if (this.storeFluid(grid, what, AEFluidKey.AMOUNT_BLOCK, false)) {
                     // If that would succeed, actually slurp up the liquid as if we were using a
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
                     var fluidContainer = bucketPickup.pickupBlock(level, pos, blockstate);
-                    var pickedUpStack = FluidContainerHelper.getContainedFluid(fluidContainer);
-                    if (pickedUpStack != null) {
-                        this.storeFluid(grid, pickedUpStack, true);
+                    var pickedUpStack = FluidContainerHelper.getContainedStack(fluidContainer);
+                    if (pickedUpStack != null && pickedUpStack.what() instanceof AEFluidKey fluidKey) {
+                        this.storeFluid(grid, fluidKey, pickedUpStack.amount(), true);
                     }
 
                     if (!throttleEffect()) {
@@ -183,23 +173,21 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         return this.pickupFluid(node.getGrid());
     }
 
-    private boolean storeFluid(IGrid grid, IAEFluidStack stack, boolean modulate) {
-        final IStorageService storage = grid.getStorageService();
-        final IMEInventory<IAEFluidStack> inv = storage
-                .getInventory(StorageChannels.fluids());
+    private boolean storeFluid(IGrid grid, AEFluidKey what, long amount, boolean modulate) {
+        final var storage = grid.getStorageService();
+        var inv = storage.getInventory(StorageChannels.fluids());
 
         if (modulate) {
             var energy = grid.getEnergyService();
-            return StorageHelper.poweredInsert(energy, inv, stack, this.mySrc) == null;
+            return StorageHelper.poweredInsert(energy, inv, what, amount, this.mySrc) >= amount;
         } else {
-            var requiredPower = stack.getStackSize() / Math.min(1.0f, stack.getChannel().transferFactor());
-            final IEnergyService energy = grid.getEnergyService();
+            var requiredPower = amount / Math.min(1.0f, what.getChannel().transferFactor());
+            final var energy = grid.getEnergyService();
 
             if (energy.extractAEPower(requiredPower, Actionable.SIMULATE, PowerMultiplier.CONFIG) < requiredPower) {
                 return false;
             }
-            final IAEFluidStack leftOver = inv.injectItems(stack, Actionable.SIMULATE, this.mySrc);
-            return leftOver == null || leftOver.getStackSize() == 0;
+            return inv.insert(what, amount, Actionable.SIMULATE, this.mySrc) >= amount;
         }
     }
 
@@ -222,7 +210,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
      * Only play the effect every 250ms.
      */
     private boolean throttleEffect() {
-        long now = System.currentTimeMillis();
+        var now = System.currentTimeMillis();
         if (now < lastEffect + 250) {
             return true;
         }

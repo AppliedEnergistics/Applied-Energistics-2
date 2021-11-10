@@ -27,11 +27,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -89,7 +88,7 @@ public enum Upgrades {
      *                     key instead. If the items have different maxSupported values, the highest will be shown.
      */
     public void registerItem(final ItemLike item, final int maxSupported, @Nullable String tooltipGroup) {
-        Preconditions.checkNotNull(item);
+        Objects.requireNonNull(item);
         this.supported.add(new Supported(item.asItem(), maxSupported, tooltipGroup));
         supportedTooltipLines = null; // Reset tooltip
     }

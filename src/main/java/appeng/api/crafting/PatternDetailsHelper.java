@@ -33,7 +33,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AEPatternDecoder;
 
@@ -65,6 +66,17 @@ public final class PatternDetailsHelper {
     }
 
     @Nullable
+    public static IPatternDetails decodePattern(AEItemKey what, Level level) {
+        for (var decoder : DECODERS) {
+            var decoded = decoder.decodePattern(what, level);
+            if (decoded != null) {
+                return decoded;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     public static IPatternDetails decodePattern(ItemStack stack, Level level, boolean autoRecovery) {
         for (var decoder : DECODERS) {
             var decoded = decoder.decodePattern(stack, level, autoRecovery);
@@ -83,7 +95,7 @@ public final class PatternDetailsHelper {
      * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      * @return A new encoded pattern.
      */
-    public static ItemStack encodeProcessingPattern(IAEStack[] in, IAEStack[] out) {
+    public static ItemStack encodeProcessingPattern(GenericStack[] in, GenericStack[] out) {
         return AEItems.PROCESSING_PATTERN.asItem().encode(in, out);
     }
 

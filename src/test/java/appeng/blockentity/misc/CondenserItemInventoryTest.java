@@ -2,6 +2,8 @@ package appeng.blockentity.misc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.BlockPos;
@@ -10,7 +12,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -35,8 +37,11 @@ class CondenserItemInventoryTest {
         be.getInternalInventory().setItemDirect(2, AEItems.ITEM_64K_CELL_COMPONENT.stack());
         be.addPower(99999999999.0);
 
-        IAEItemStack singularity = IAEItemStack.of(AEItems.SINGULARITY.stack(2));
-        assertThat(inv.getAvailableStacks()).containsOnly(singularity);
+        var singularity = AEItemKey.of(AEItems.SINGULARITY.asItem());
+        assertThat(inv.getAvailableStacks())
+                .extracting(Map.Entry::getKey)
+                .containsOnly(singularity);
+        assertThat(inv.getAvailableStacks().get(singularity)).isEqualTo(2);
         assertThat(inv.isPreferredStorageFor(singularity, new BaseActionSource())).isFalse();
     }
 }

@@ -24,7 +24,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 public class CraftingLink implements ICraftingLink {
 
@@ -150,12 +150,12 @@ public class CraftingLink implements ICraftingLink {
         }
     }
 
-    public IAEStack injectItems(final IAEStack input, final Actionable mode) {
+    public long insert(AEKey what, long amount, final Actionable mode) {
         if (this.tie == null || this.tie.getRequest() == null || this.tie.getRequest().getRequester() == null) {
-            return input;
+            return 0;
         }
 
-        return this.tie.getRequest().getRequester().injectCraftedItems(this.tie.getRequest(), input, mode);
+        return this.tie.getRequest().getRequester().insertCraftedItems(this.tie.getRequest(), what, amount, mode);
     }
 
     public void markDone() {

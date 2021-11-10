@@ -64,7 +64,7 @@ public final class ConfigManager implements IConfigManager {
             return setting.getEnumClass().cast(oldValue);
         }
 
-        throw new IllegalStateException("Invalid Config setting. Expected a non-null value for " + setting);
+        throw new IllegalStateException("Invalid Config setting. Expected a non-null value for " + setting.getName());
     }
 
     @Override

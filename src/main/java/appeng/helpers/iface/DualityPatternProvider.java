@@ -63,12 +63,12 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
-import appeng.crafting.execution.GenericStackHelper;
 import appeng.helpers.ICustomNameObject;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
@@ -92,7 +92,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     private final List<IPatternDetails> patterns = new ArrayList<>();
     private int priority;
     // Pattern sending logic
-    private final List<IAEStack> sendList = new ArrayList<>();
+    private final List<GenericStack> sendList = new ArrayList<>();
     private Direction sendDirection;
     // Stack returning logic
     private final PatternProviderReturnInventory returnInv;
@@ -128,15 +128,15 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         tag.putInt("priority", this.priority);
 
         ListTag sendListTag = new ListTag();
-        for (var stack : sendList) {
-            sendListTag.add(GenericStackHelper.writeGenericStack(stack));
+        for (var toSend : sendList) {
+            sendListTag.add(GenericStack.writeTag(toSend));
         }
         tag.put("sendList", sendListTag);
         if (sendDirection != null) {
             tag.putByte("sendDirection", (byte) sendDirection.get3DDataValue());
         }
 
-        tag.put("returnInv", this.returnInv.writeToNBT());
+        tag.put("returnInv", this.returnInv.writeToTag());
     }
 
     public void readFromNBT(CompoundTag tag) {
@@ -146,13 +146,16 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
 
         ListTag sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
         for (int i = 0; i < sendListTag.size(); ++i) {
-            this.addToSendList(GenericStackHelper.readGenericStack(sendListTag.getCompound(i)));
+            var stack = GenericStack.readTag(sendListTag.getCompound(i));
+            if (stack != null) {
+                this.addToSendList(stack.what(), stack.amount());
+            }
         }
         if (tag.contains("sendDirection")) {
             sendDirection = Direction.from3DDataValue(tag.getByte("sendDirection"));
         }
 
-        this.returnInv.readFromNBT(tag.getList("returnInv", Tag.TAG_COMPOUND));
+        this.returnInv.readFromTag(tag.getList("returnInv", Tag.TAG_COMPOUND));
     }
 
     public IConfigManager getConfigManager() {
@@ -197,7 +200,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     }
 
     @Override
-    public boolean pushPattern(IPatternDetails patternDetails, MixedStackList[] inputHolder) {
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputHolder) {
         if (!sendList.isEmpty() || !this.mainNode.isActive() || !this.patterns.contains(patternDetails)) {
             return false;
         }
@@ -235,7 +238,12 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
             if (this.adapterAcceptsAll(adapter, inputHolder)) {
                 for (var inputList : inputHolder) {
                     for (var input : inputList) {
-                        this.addToSendList(adapter.injectItems(input, Actionable.MODULATE));
+                        var what = input.getKey();
+                        long amount = input.getLongValue();
+                        var inserted = adapter.insert(what, amount, Actionable.MODULATE);
+                        if (inserted < amount) {
+                            this.addToSendList(what, amount - inserted);
+                        }
                     }
                 }
                 this.sendDirection = direction;
@@ -255,11 +263,11 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
-    private boolean adapterAcceptsAll(IInterfaceTarget target, MixedStackList[] inputHolder) {
+    private boolean adapterAcceptsAll(IInterfaceTarget target, KeyCounter<AEKey>[] inputHolder) {
         for (var inputList : inputHolder) {
             for (var input : inputList) {
-                var leftover = target.injectItems(input, Actionable.SIMULATE);
-                if (IAEStack.getStackSizeOrZero(leftover) == input.getStackSize()) {
+                var inserted = target.insert(input.getKey(), input.getLongValue(), Actionable.SIMULATE);
+                if (inserted == 0) {
                     return false;
                 }
             }
@@ -267,9 +275,9 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         return true;
     }
 
-    private void addToSendList(@Nullable IAEStack stack) {
-        if (stack != null && stack.getStackSize() != 0) {
-            this.sendList.add(stack);
+    private void addToSendList(AEKey what, long amount) {
+        if (amount > 0) {
+            this.sendList.add(new GenericStack(what, amount));
 
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         }
@@ -297,12 +305,15 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
 
         for (var it = sendList.listIterator(); it.hasNext();) {
             var stack = it.next();
-            var leftover = adapter.injectItems(stack, Actionable.MODULATE);
-            if (leftover == null) {
+            var what = stack.what();
+            long amount = stack.amount();
+
+            var inserted = adapter.insert(what, amount, Actionable.MODULATE);
+            if (inserted >= amount) {
                 it.remove();
                 didSomething = true;
-            } else if (leftover.getStackSize() != stack.getStackSize()) {
-                it.set(leftover);
+            } else if (inserted > 0) {
+                it.set(new GenericStack(what, amount - inserted));
                 didSomething = true;
             }
         }
@@ -345,8 +356,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         }
 
         for (var stack : this.sendList) {
-            if (stack.getChannel() == StorageChannels.items()) {
-                drops.add(stack.cast(StorageChannels.items()).createItemStack());
+            if (stack.what() instanceof AEItemKey itemKey) {
+                drops.add(itemKey.toStack((int) stack.amount()));
             }
         }
 

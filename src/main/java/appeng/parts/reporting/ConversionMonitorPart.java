@@ -27,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.PlayerSource;
@@ -35,7 +35,6 @@ import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
-import appeng.util.item.AEItemStack;
 
 public class ConversionMonitorPart extends AbstractMonitorPart {
 
@@ -112,8 +111,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return false;
         }
 
-        if (this.getDisplayed() != null) {
-            this.extractItem(player, this.getDisplayed().getDefinition().getMaxStackSize());
+        if (this.getDisplayed() instanceof AEItemKey itemKey) {
+            this.extractItem(player, itemKey.getItem().getMaxStackSize());
         }
 
         return true;
@@ -140,41 +139,40 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         return true;
     }
 
-    private void insertItem(final Player player, final InteractionHand hand, final boolean allItems) {
+    private void insertItem(Player player, InteractionHand hand, boolean allItems) {
         getMainNode().ifPresent(grid -> {
             var energy = grid.getEnergyService();
             var cell = grid.getStorageService().getInventory(StorageChannels.items());
 
             if (allItems) {
-                if (this.getDisplayed() != null) {
-                    var input = this.getDisplayed().copy();
+                if (this.getDisplayed() instanceof AEItemKey itemKey) {
                     var inv = new PlayerInternalInventory(player.getInventory());
 
                     for (int x = 0; x < inv.size(); x++) {
                         var targetStack = inv.getStackInSlot(x);
-                        if (input.equals(targetStack)) {
+                        if (itemKey.matches(targetStack)) {
                             var canExtract = inv.extractItem(x, targetStack.getCount(), true);
                             if (!canExtract.isEmpty()) {
-                                input.setStackSize(canExtract.getCount());
-                                final IAEItemStack failedToInsert = StorageHelper.poweredInsert(energy, cell, input,
-                                        new PlayerSource(player, this));
-                                inv.extractItem(x, failedToInsert == null ? canExtract.getCount()
-                                        : canExtract.getCount() - (int) failedToInsert.getStackSize(), false);
+                                var inserted = StorageHelper.poweredInsert(energy, cell, itemKey,
+                                        canExtract.getCount(), new PlayerSource(player, this));
+                                inv.extractItem(x, (int) inserted, false);
                             }
                         }
                     }
                 }
             } else {
-                var input = AEItemStack.fromItemStack(player.getItemInHand(hand));
-                var failedToInsert = StorageHelper.poweredInsert(energy, cell, input,
-                        new PlayerSource(player, this));
-                player.setItemInHand(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
+                var input = player.getItemInHand(hand);
+                if (!input.isEmpty()) {
+                    var inserted = StorageHelper.poweredInsert(energy, cell, AEItemKey.of(input),
+                            input.getCount(), new PlayerSource(player, this));
+                    input.shrink((int) inserted);
+                }
             }
         });
     }
 
     private void extractItem(final Player player, int count) {
-        if (this.getDisplayed() == null) {
+        if (!(this.getDisplayed() instanceof AEItemKey itemKey)) {
             return;
         }
 
@@ -186,12 +184,10 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             var energy = grid.getEnergyService();
             var cell = grid.getStorageService().getInventory(StorageChannels.items());
 
-            var toExtract = getDisplayed().copy();
-            toExtract.setStackSize(count);
-
-            var retrieved = StorageHelper.poweredExtraction(energy, cell, toExtract, new PlayerSource(player, this));
-            if (retrieved != null) {
-                ItemStack newItems = retrieved.createItemStack();
+            var retrieved = StorageHelper.poweredExtraction(energy, cell, itemKey, count,
+                    new PlayerSource(player, this));
+            if (retrieved != 0) {
+                ItemStack newItems = itemKey.toStack((int) retrieved);
                 if (!player.getInventory().add(newItems)) {
                     player.drop(newItems, false);
                 }

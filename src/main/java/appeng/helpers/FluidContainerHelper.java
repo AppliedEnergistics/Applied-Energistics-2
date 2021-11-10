@@ -9,18 +9,15 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEFluidKey;
 
 public final class FluidContainerHelper {
     private FluidContainerHelper() {
     }
 
-    public static boolean isFluidContainer(ItemStack stack) {
-        return getReadOnlyStorage(stack) != null;
-    }
-
     @Nullable
-    public static IAEFluidStack getContainedFluid(ItemStack stack) {
+    public static GenericStack getContainedStack(ItemStack stack) {
         if (stack.isEmpty()) {
             return null;
         }
@@ -28,19 +25,12 @@ public final class FluidContainerHelper {
         var content = StorageUtil.findExtractableContent(
                 getReadOnlyStorage(stack), null);
         if (content != null) {
-            return IAEFluidStack.of(content);
+            return new GenericStack(
+                    AEFluidKey.of(content.resource()),
+                    content.amount());
         } else {
             return null;
         }
-    }
-
-    @Nullable
-    public static FluidVariant getContainedFluidVariant(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return null;
-        }
-
-        return StorageUtil.findExtractableResource(getReadOnlyStorage(stack), null);
     }
 
     public static Storage<FluidVariant> getReadOnlyStorage(ItemStack stack) {

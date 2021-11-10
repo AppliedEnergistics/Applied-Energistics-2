@@ -34,8 +34,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.client.AmountFormat;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.style.FluidBlitter;
@@ -48,7 +47,7 @@ import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, FluidTerminalMenu> {
+public class FluidTerminalScreen extends MEMonitorableScreen<AEFluidKey, FluidTerminalMenu> {
 
     public FluidTerminalScreen(FluidTerminalMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -56,34 +55,33 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     }
 
     @Override
-    protected Repo<IAEFluidStack> createRepo(IScrollSource scrollSource) {
+    protected Repo<AEFluidKey> createRepo(IScrollSource scrollSource) {
         return new FluidRepo(scrollSource, this);
     }
 
     @Override
-    protected IPartitionList<IAEFluidStack> createPartitionList(List<ItemStack> viewCells) {
+    protected IPartitionList<AEFluidKey> createPartitionList(List<ItemStack> viewCells) {
         return null;
     }
 
     @Override
     protected void renderGridInventoryEntry(PoseStack poseStack, int x, int y,
-            GridInventoryEntry<IAEFluidStack> entry) {
-        IAEFluidStack fs = entry.getStack();
-        FluidBlitter.create(fs.getFluid())
+            GridInventoryEntry<AEFluidKey> entry) {
+        FluidBlitter.create(entry.getWhat())
                 .dest(x, y, 16, 16)
                 .blit(poseStack, getBlitOffset());
     }
 
     @Override
-    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<IAEFluidStack> entry, int x,
+    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<AEFluidKey> entry, int x,
             int y) {
-        IAEFluidStack fluidStack = IAEStack.copy(entry.getStack(), entry.getStoredAmount());
-        String formattedAmount = AEStackRendering.formatAmount(fluidStack, AmountFormat.FULL);
+        var what = entry.getWhat();
+        String formattedAmount = AEStackRendering.formatAmount(what, entry.getStoredAmount(), AmountFormat.FULL);
 
-        String modName = Platform.formatModName(Platform.getModId(fluidStack));
+        String modName = Platform.formatModName(what.getModId());
 
         List<Component> list = new ArrayList<>();
-        list.add(FluidVariantRendering.getName(fluidStack.getFluid()));
+        list.add(FluidVariantRendering.getName(what.toVariant()));
         list.add(new TextComponent(formattedAmount));
         list.add(new TextComponent(modName));
 
@@ -91,7 +89,7 @@ public class FluidTerminalScreen extends MEMonitorableScreen<IAEFluidStack, Flui
     }
 
     @Override
-    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<IAEFluidStack> entry,
+    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<AEFluidKey> entry,
             int mouseButton, ClickType clickType) {
         if (clickType == ClickType.PICKUP) {
             // TODO: Allow more options

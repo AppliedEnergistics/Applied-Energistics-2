@@ -10,6 +10,9 @@
       "left": 35,
       "top": 35,
       "grid": "HORIZONTAL"
+    },
+    "STORAGE": {
+      "_comment": "Showing fluid storage is handled by the tank widgets (see tank1-6 below)"
     }
   },
   "text": {

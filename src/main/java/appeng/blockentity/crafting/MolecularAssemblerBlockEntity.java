@@ -56,10 +56,9 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
@@ -80,7 +79,6 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import appeng.util.item.AEItemStack;
 
 public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         implements IUpgradeableObject, IGridTickable, ICraftingMachine, IPowerChannelState {
@@ -133,7 +131,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public boolean pushPattern(final IPatternDetails patternDetails, final MixedStackList[] table,
+    public boolean pushPattern(final IPatternDetails patternDetails, KeyCounter<AEKey>[] table,
             final Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = this.gridInv.isEmpty() && this.patternInv.isEmpty();
@@ -156,7 +154,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return false;
     }
 
-    private void fillGrid(MixedStackList[] table, AECraftingPattern adapter) {
+    private void fillGrid(KeyCounter<AEKey>[] table, AECraftingPattern adapter) {
         for (int sparseIndex = 0; sparseIndex < 9; ++sparseIndex) {
             int inputId = adapter.getCompressedIndexFromSparse(sparseIndex);
             if (inputId != -1) {
@@ -165,26 +163,27 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 // Try substituting with a fluid, if allowed and available
                 var validFluid = myPlan.getValidFluid(sparseIndex);
                 if (validFluid != null) {
-                    var stack = (IAEFluidStack) list.findPrecise(validFluid);
-                    if (stack != null && stack.getStackSize() >= validFluid.getStackSize()) {
-                        var partialFluid = IAEStack.copy(stack, validFluid.getStackSize());
-                        this.gridInv.setItemDirect(sparseIndex, partialFluid.wrap());
-                        stack.decStackSize(validFluid.getStackSize());
+                    var validFluidKey = validFluid.what();
+                    var amount = list.get(validFluidKey);
+                    int requiredAmount = (int) validFluid.amount();
+                    if (amount >= requiredAmount) {
+                        this.gridInv.setItemDirect(sparseIndex, validFluidKey.wrap(requiredAmount));
+                        list.remove(validFluidKey, requiredAmount);
                         continue;
                     }
                 }
 
                 // Try falling back to whatever is available
-                var stack = list.iterator().next();
-                if (stack instanceof IAEItemStack) {
-                    this.gridInv.setItemDirect(sparseIndex, stack.asItemStackRepresentation());
-                    stack.decStackSize(1);
+                var firstKey = list.getFirstKey();
+                if (firstKey instanceof AEItemKey itemKey) {
+                    this.gridInv.setItemDirect(sparseIndex, itemKey.toStack());
+                    list.remove(firstKey, 1);
                 }
             }
         }
 
         // Sanity check
-        for (MixedStackList list : table) {
+        for (KeyCounter<AEKey> list : table) {
             if (!list.isEmpty()) {
                 throw new RuntimeException("Could not fill grid with some items, including " + list.iterator().next());
             }
@@ -245,7 +244,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         super.save(data);
         if (this.forcePlan) {
             // If the plan is null it means the pattern previously loaded from NBT hasn't been decoded yet
-            var pattern = myPlan != null ? myPlan.copyDefinition() : myPattern;
+            var pattern = myPlan != null ? myPlan.getDefinition().toStack() : myPattern;
             if (!pattern.isEmpty()) {
                 final CompoundTag compound = new CompoundTag();
                 pattern.save(compound);
@@ -447,7 +446,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
                 this.ejectHeldItems();
 
-                final IAEItemStack item = AEItemStack.fromItemStack(output);
+                var item = AEItemKey.of(output);
                 if (item != null) {
                     final TargetPoint where = new TargetPoint(this.worldPosition.getX(), this.worldPosition.getY(),
                             this.worldPosition.getZ(), 32,
@@ -471,7 +470,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             for (int x = 0; x < 9; x++) {
                 final ItemStack is = this.gridInv.getStackInSlot(x);
                 if (!is.isEmpty()
-                        && (this.myPlan == null || !this.myPlan.isItemValid(x, IAEItemStack.of(is), this.level))) {
+                        && (this.myPlan == null || !this.myPlan.isItemValid(x, AEItemKey.of(is), this.level))) {
                     this.gridInv.setItemDirect(9, is);
                     this.gridInv.setItemDirect(x, ItemStack.EMPTY);
                     this.saveChanges();
@@ -611,7 +610,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             }
 
             if (this.hasPattern()) {
-                return MolecularAssemblerBlockEntity.this.myPlan.isItemValid(slot, IAEItemStack.of(stack),
+                return MolecularAssemblerBlockEntity.this.myPlan.isItemValid(slot, AEItemKey.of(stack),
                         MolecularAssemblerBlockEntity.this.getLevel());
             }
             return false;

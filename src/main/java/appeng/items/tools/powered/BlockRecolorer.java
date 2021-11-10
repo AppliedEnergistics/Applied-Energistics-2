@@ -19,8 +19,8 @@
 package appeng.items.tools.powered;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumHashBiMap;
 import com.google.common.collect.ImmutableList;
@@ -150,7 +150,7 @@ public final class BlockRecolorer {
             new RecolorableBlockGroup(null, CONCRETE_BY_COLOR));
 
     public static Block recolor(Block block, AEColor newColor) {
-        Preconditions.checkNotNull(block);
+        Objects.requireNonNull(block);
 
         for (RecolorableBlockGroup group : BLOCK_GROUPS) {
             if (group.uncoloredVariant == block || group.coloredVariants.containsValue(block)) {

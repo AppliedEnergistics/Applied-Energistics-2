@@ -18,8 +18,6 @@
 
 package appeng.parts.misc;
 
-import javax.annotation.Nullable;
-
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +28,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.config.*;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.IncludeExclude;
+import appeng.api.config.Setting;
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
+import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -40,13 +45,21 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.storage.*;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorListener;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.StorageHelper;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.AdvancementTriggers;
+import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
@@ -58,22 +71,26 @@ import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.parts.PartAdjacentApi;
 import appeng.parts.automation.UpgradeablePart;
+import appeng.util.ConfigInventory;
+import appeng.util.SettingsFrom;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 /**
  * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
  */
-public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends UpgradeablePart
-        implements IGridTickable, IStorageProvider, IPriorityHost {
+public abstract class AbstractStorageBusPart<T extends AEKey, A> extends UpgradeablePart
+        implements IGridTickable, IStorageProvider, IPriorityHost, IConfigInvHost {
     protected final IActionSource source;
     private final TickRates tickRates;
+    private final ConfigInventory<T> config = ConfigInventory.configTypes(getChannel(), 63,
+            this::onConfigurationChanged);
     /**
      * This is the virtual inventory this storage bus exposes to the network it belongs to. To avoid continuous
      * cell-change notifications, we instead use a handler that will exist as long as this storage bus exists, while
      * changing the underlying inventory.
      */
-    private final StorageBusInventory<T> handler = new StorageBusInventory<>(NullInventory.of(getStorageChannel()));
+    private final StorageBusInventory<T> handler = new StorageBusInventory<>(NullInventory.of(getChannel()));
     /**
      * Listener for listening to changes in an {@link IMEMonitor} if this storage bus is attached to an interface.
      */
@@ -104,14 +121,9 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
                 .addService(IGridTickable.class, this);
     }
 
-    protected abstract IStorageChannel<T> getStorageChannel();
+    public abstract IStorageChannel<T> getChannel();
 
     protected abstract IMEInventory<T> adaptExternalApi(A handler, boolean extractableOnly, Runnable alertDevice);
-
-    protected abstract int getStackConfigSize();
-
-    @Nullable
-    protected abstract T getStackInConfigSlot(int slot);
 
     @Override
     protected final void onMainNodeStateChanged(IGridNodeListener.State reason) {
@@ -157,12 +169,14 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.priority = data.getInt("priority");
+        config.readFromChildTag(data, "config");
     }
 
     @Override
     public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         data.putInt("priority", this.priority);
+        config.writeToChildTag(data, "config");
     }
 
     @Override
@@ -248,7 +262,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         if (accessor != null) {
             var inventory = accessor.getInventory(this.source);
             if (inventory != null) {
-                foundMonitor = inventory.getInventory(getStorageChannel());
+                foundMonitor = inventory.getInventory(getChannel());
             }
 
             // So this could / can be a design decision. If the block entity does support our custom capability,
@@ -282,7 +296,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
                     });
                 });
             } else {
-                newInventory = NullInventory.of(getStorageChannel());
+                newInventory = NullInventory.of(getChannel());
             }
             this.handler.setDelegate(newInventory);
 
@@ -291,13 +305,13 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
             this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                     : IncludeExclude.WHITELIST);
 
-            var priorityList = getStorageChannel().createList();
+            var priorityList = new KeyCounter<T>();
 
             var slotsToUse = 18 + getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-            for (var x = 0; x < getStackConfigSize() && x < slotsToUse; x++) {
-                var is = getStackInConfigSlot(x);
-                if (is != null) {
-                    priorityList.add(is);
+            for (var x = 0; x < config.size() && x < slotsToUse; x++) {
+                var key = config.getKey(x);
+                if (key != null) {
+                    priorityList.add(key, 1);
                 }
             }
 
@@ -398,7 +412,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
                 final IActionSource source) {
             if (getMainNode().isActive()) {
                 getMainNode().ifPresent((grid, node) -> {
-                    grid.getStorageService().postAlterationOfStoredItems(getStorageChannel(), change, source);
+                    grid.getStorageService().postAlterationOfStoredItems(getChannel(), change, source);
                 });
             }
         }
@@ -412,7 +426,7 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
     /**
      * This inventory forwards to the actual external inventory and allows the inventory to be swapped out underneath.
      */
-    private static class StorageBusInventory<T extends IAEStack> extends MEInventoryHandler<T> {
+    private static class StorageBusInventory<T extends AEKey> extends MEInventoryHandler<T> {
         public StorageBusInventory(IMEInventory<T> inventory) {
             super(inventory);
         }
@@ -433,4 +447,20 @@ public abstract class AbstractStorageBusPart<T extends IAEStack, A> extends Upgr
         }
     }
 
+    @Override
+    public ConfigInventory<T> getConfig() {
+        return this.config;
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input) {
+        super.importSettings(mode, input);
+        config.readFromChildTag(input, "config");
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+        config.writeToChildTag(output, "config");
+    }
 }

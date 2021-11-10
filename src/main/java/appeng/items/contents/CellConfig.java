@@ -20,20 +20,37 @@ package appeng.items.contents;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.util.inv.AppEngInternalInventory;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.AEKey;
+import appeng.util.ConfigInventory;
 
-public class CellConfig extends AppEngInternalInventory {
-
-    private final ItemStack is;
-
-    public CellConfig(final ItemStack is) {
-        super(null, 63);
-        this.is = is;
-        this.readFromNBT(is.getOrCreateTag(), "list");
+public final class CellConfig {
+    private CellConfig() {
     }
 
-    @Override
-    protected void onContentsChanged(int slot, ItemStack oldStack) {
-        this.writeToNBT(this.is.getOrCreateTag(), "list");
+    public static <T extends AEKey> ConfigInventory<T> create(IStorageChannel<T> channel, ItemStack is) {
+        var holder = new Holder<T>(is);
+        holder.inv = ConfigInventory.configTypes(channel, 63, holder::save);
+        holder.load();
+        return holder.inv;
+    }
+
+    private static class Holder<T extends AEKey> {
+        private final ItemStack stack;
+        private ConfigInventory<T> inv;
+
+        public Holder(ItemStack stack) {
+            this.stack = stack;
+        }
+
+        public void load() {
+            if (stack.hasTag()) {
+                inv.readFromChildTag(stack.getOrCreateTag(), "list");
+            }
+        }
+
+        public void save() {
+            inv.writeToChildTag(stack.getOrCreateTag(), "list");
+        }
     }
 }

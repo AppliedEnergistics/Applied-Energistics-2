@@ -28,7 +28,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
@@ -43,16 +42,15 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
-import appeng.items.misc.WrappedFluidStack;
+import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -185,8 +183,8 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
             }
 
             var primaryInputTemplate = anIn.getPossibleInputs()[0];
-            var primaryInput = IAEStack.copy(primaryInputTemplate,
-                    primaryInputTemplate.getStackSize() * anIn.getMultiplier());
+            var primaryInput = new GenericStack(primaryInputTemplate.what(),
+                    primaryInputTemplate.amount() * anIn.getMultiplier());
             lines.add((first ? with : and).copy().append(getStackComponent(primaryInput)));
             first = false;
         }
@@ -199,17 +197,18 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
         }
     }
 
-    protected static Component getStackComponent(IAEStack stack) {
+    protected static Component getStackComponent(GenericStack stack) {
         String amountInfo;
         Component displayName;
-        if (stack.getChannel() == StorageChannels.items()) {
-            amountInfo = String.valueOf(stack.getStackSize());
-            displayName = Platform.getItemDisplayName(stack);
-        } else if (stack.getChannel() == StorageChannels.fluids()) {
-            amountInfo = Platform.formatFluidAmount(stack.getStackSize());
-            displayName = Platform.getFluidDisplayName(stack.cast(StorageChannels.fluids()));
+        var what = stack.what();
+        if (what instanceof AEItemKey itemKey) {
+            amountInfo = String.valueOf(stack.amount());
+            displayName = Platform.getItemDisplayName(itemKey);
+        } else if (what instanceof AEFluidKey fluidKey) {
+            amountInfo = Platform.formatFluidAmount(stack.amount());
+            displayName = Platform.getFluidDisplayName(fluidKey);
         } else {
-            throw new IllegalArgumentException("Unsupported storage channel: " + stack.getChannel());
+            throw new IllegalArgumentException("Unsupported storage channel: " + what);
         }
         return new TextComponent(amountInfo + " x ").append(displayName);
     }
@@ -236,10 +235,10 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
             var output = details.getPrimaryOutput();
 
             // Can only be an item or fluid stack.
-            if (output instanceof IAEItemStack itemStack) {
-                out = itemStack.createItemStack();
-            } else if (output instanceof IAEFluidStack fluidStack) {
-                out = WrappedFluidStack.wrap(fluidStack);
+            if (output.what() instanceof AEItemKey itemKey) {
+                out = itemKey.toStack();
+            } else if (output.what() instanceof AEFluidKey fluidKey) {
+                out = WrappedGenericStack.wrap(fluidKey, 0);
             }
         }
 
@@ -251,5 +250,5 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
     public abstract IAEPatternDetails decode(ItemStack stack, Level level, boolean tryRecovery);
 
     @Nullable
-    public abstract IAEPatternDetails decode(CompoundTag tag, Level level, boolean tryRecovery);
+    public abstract IAEPatternDetails decode(AEItemKey what, Level level);
 }

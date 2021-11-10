@@ -30,9 +30,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEItemKey;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
-import appeng.util.item.AEItemStack;
 
 /**
  * Contains statistics about an ME network and the machines that form it.
@@ -59,14 +58,12 @@ public class NetworkStatus {
         status.maxStoredPower = eg.getMaxStoredPower();
 
         // This is essentially a groupBy machineRepresentation + count, sum(idlePowerUsage)
-        Map<IAEItemStack, MachineGroup> groupedMachines = new HashMap<>();
+        Map<AEItemKey, MachineGroup> groupedMachines = new HashMap<>();
         for (var machineClass : grid.getMachineClasses()) {
             for (IGridNode machine : grid.getMachineNodes(machineClass)) {
                 var is = machine.getVisualRepresentation();
-                IAEItemStack ais = AEItemStack.fromItemStack(is);
+                AEItemKey ais = AEItemKey.of(is);
                 if (ais != null) {
-                    ais.setStackSize(1);
-
                     MachineGroup group = groupedMachines.get(ais);
                     if (group == null) {
                         groupedMachines.put(ais, group = new MachineGroup(is));

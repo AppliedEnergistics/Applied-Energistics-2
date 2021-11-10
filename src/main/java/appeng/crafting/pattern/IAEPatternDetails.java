@@ -19,12 +19,12 @@
 package appeng.crafting.pattern;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
 
 public interface IAEPatternDetails extends IPatternDetails {
-    IAEStack[] getSparseInputs();
+    GenericStack[] getSparseInputs();
 
-    IAEStack[] getSparseOutputs();
+    GenericStack[] getSparseOutputs();
 
     default boolean isCraftable() {
         return this instanceof AECraftingPattern;

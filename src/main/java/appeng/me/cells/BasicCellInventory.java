@@ -18,10 +18,16 @@
 
 package appeng.me.cells;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -34,28 +40,21 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
-import appeng.core.AEConfig;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.core.AELog;
+import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
-public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T> {
+public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
     private static final int MAX_ITEM_TYPES = 63;
-    private static final String ITEM_TYPE_TAG = "it";
     private static final String ITEM_COUNT_TAG = "ic";
-    private static final String ITEM_SLOT = "#";
-    private static final String[] ITEM_SLOT_KEYS = new String[MAX_ITEM_TYPES];
-
-    static {
-        for (int x = 0; x < MAX_ITEM_TYPES; x++) {
-            ITEM_SLOT_KEYS[x] = ITEM_SLOT + x;
-        }
-    }
+    private static final String STACK_KEYS = "keys";
+    private static final String STACK_AMOUNTS = "amts";
 
     private final IStorageChannel<T> channel;
     private final ISaveProvider container;
@@ -64,7 +63,7 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
     private int maxItemTypes;
     private short storedItems;
     private long storedItemCount;
-    private IAEStackList<T> cellItems;
+    private Object2LongMap<T> storedAmounts;
     private final ItemStack i;
     private final IBasicCellItem<T> cellType;
     private final int itemsPerByte;
@@ -84,9 +83,9 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
         }
 
         this.container = container;
-        this.storedItems = getTag().getShort(ITEM_TYPE_TAG);
+        this.storedItems = (short) getTag().getLongArray(STACK_AMOUNTS).length;
         this.storedItemCount = getTag().getLong(ITEM_COUNT_TAG);
-        this.cellItems = null;
+        this.storedAmounts = null;
         this.channel = cellType.getChannel();
 
         updateFilter();
@@ -96,7 +95,7 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
      * Updates the partition list and mode based on installed upgrades and the configured filter.
      */
     private void updateFilter() {
-        var priorityList = channel.createList();
+        var priorityList = new KeyCounter<T>();
 
         var upgrades = getUpgradesInventory();
         var config = getConfigInventory();
@@ -117,14 +116,8 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
             }
         }
 
-        for (var stack : config) {
-            T configItem = channel.createStack(stack);
-            if (configItem != null) {
-                // The config inventories stack size is meaningless, but stacks of size 0
-                // are ignored in the item list.
-                configItem.setStackSize(1);
-                priorityList.add(configItem);
-            }
+        for (T what : config.keySet()) {
+            priorityList.add(what, 1);
         }
 
         partitionListMode = (hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
@@ -160,7 +153,7 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
     }
 
     public static BasicCellInventory<?> createInventory(ItemStack o, ISaveProvider container) {
-        Preconditions.checkNotNull(o, "Cannot create cell inventory for null itemstack");
+        Objects.requireNonNull(o, "Cannot create cell inventory for null itemstack");
 
         if (!(o.getItem() instanceof IBasicCellItem<?>cellType)) {
             return null;
@@ -179,18 +172,21 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
         return getStorageCell(input) != null;
     }
 
-    private boolean isStorageCell(T input) {
-        if (input instanceof IAEItemStack stack) {
-            var type = getStorageCell(stack.getDefinition());
-
-            return type != null && !type.storableInStorageCell();
-        }
-
-        return false;
+    private boolean isStorageCell(AEItemKey key) {
+        var type = getStorageCell(key);
+        return type != null && !type.storableInStorageCell();
     }
 
     private static IBasicCellItem<?> getStorageCell(ItemStack input) {
         if (input != null && input.getItem() instanceof IBasicCellItem basicCellItem) {
+            return basicCellItem;
+        }
+
+        return null;
+    }
+
+    private static IBasicCellItem<?> getStorageCell(AEItemKey itemKey) {
+        if (itemKey.getItem() instanceof IBasicCellItem basicCellItem) {
             return basicCellItem;
         }
 
@@ -204,13 +200,13 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
         return true;
     }
 
-    protected IAEStackList<T> getCellItems() {
-        if (this.cellItems == null) {
-            this.cellItems = this.getChannel().createList();
+    protected Object2LongMap<T> getCellItems() {
+        if (this.storedAmounts == null) {
+            this.storedAmounts = new Object2LongOpenHashMap<>();
             this.loadCellItems();
         }
 
-        return this.cellItems;
+        return this.storedAmounts;
     }
 
     @Override
@@ -222,25 +218,28 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
         long itemCount = 0;
 
         // add new pretty stuff...
-        int x = 0;
-        for (final T v : this.cellItems) {
-            itemCount += v.getStackSize();
+        var amounts = new LongArrayList(storedAmounts.size());
+        var keys = new ListTag();
 
-            final CompoundTag g = new CompoundTag();
-            v.writeToNBT(g);
-            getTag().put(ITEM_SLOT_KEYS[x], g);
+        for (var entry : this.storedAmounts.object2LongEntrySet()) {
+            long amount = entry.getLongValue();
 
-            x++;
+            if (amount > 0) {
+                itemCount += amount;
+                keys.add(entry.getKey().toTag());
+                amounts.add(amount);
+            }
         }
 
-        short oldStoredItems = getTag().getShort(ITEM_TYPE_TAG);
-
-        this.storedItems = (short) this.cellItems.size();
-        if (this.cellItems.isEmpty()) {
-            getTag().remove(ITEM_TYPE_TAG);
+        if (keys.isEmpty()) {
+            getTag().remove(STACK_KEYS);
+            getTag().remove(STACK_AMOUNTS);
         } else {
-            getTag().putShort(ITEM_TYPE_TAG, this.storedItems);
+            getTag().put(STACK_KEYS, keys);
+            getTag().putLongArray(STACK_AMOUNTS, amounts.toArray(new long[0]));
         }
+
+        this.storedItems = (short) this.storedAmounts.size();
 
         this.storedItemCount = itemCount;
         if (itemCount == 0) {
@@ -249,20 +248,15 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
             getTag().putLong(ITEM_COUNT_TAG, itemCount);
         }
 
-        // clean any old crusty stuff...
-        for (; x < oldStoredItems && x < this.maxItemTypes; x++) {
-            getTag().remove(ITEM_SLOT_KEYS[x]);
-        }
-
         this.isPersisted = true;
     }
 
     protected void saveChanges() {
         // recalculate values
-        this.storedItems = (short) this.cellItems.size();
+        this.storedItems = (short) this.storedAmounts.size();
         this.storedItemCount = 0;
-        for (final T v : this.cellItems) {
-            this.storedItemCount += v.getStackSize();
+        for (var storedAmount : this.storedAmounts.values()) {
+            this.storedItemCount += storedAmount;
         }
 
         this.isPersisted = false;
@@ -275,32 +269,36 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
     }
 
     private void loadCellItems() {
-        if (this.cellItems == null) {
-            this.cellItems = this.getChannel().createList();
+        boolean corruptedTag = false;
+
+        var amounts = getTag().getLongArray(STACK_AMOUNTS);
+        var tags = getTag().getList(STACK_KEYS, Tag.TAG_COMPOUND);
+        if (amounts.length != tags.size()) {
+            AELog.warn("Loading storage cell with mismatched amounts/tags: %d != %d",
+                    amounts.length, tags.size());
         }
 
-        this.cellItems.resetStatus(); // clears totals and stuff.
+        for (int i = 0; i < Math.min(amounts.length, tags.size()); i++) {
+            var amount = amounts[i];
+            var key = channel.loadKeyFromTag(tags.getCompound(i));
 
-        final int types = (int) this.getStoredItemTypes();
-        boolean needsUpdate = false;
-
-        for (int slot = 0; slot < types; slot++) {
-            CompoundTag compoundTag = getTag().getCompound(ITEM_SLOT_KEYS[slot]);
-            needsUpdate |= !this.loadCellItem(compoundTag);
+            if (amount <= 0 || key == null) {
+                corruptedTag = true;
+            } else {
+                storedAmounts.put(key, amount);
+            }
         }
 
-        if (needsUpdate) {
+        if (corruptedTag) {
             this.saveChanges();
         }
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(final IAEStackList<T> out) {
-        for (final T item : this.getCellItems()) {
-            out.add(item);
+    public void getAvailableStacks(KeyCounter<T> out) {
+        for (var entry : this.getCellItems().object2LongEntrySet()) {
+            out.add(entry.getKey(), entry.getLongValue());
         }
-
-        return out;
     }
 
     @Override
@@ -312,7 +310,7 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
         return this.cellType.getFuzzyMode(this.i);
     }
 
-    public InternalInventory getConfigInventory() {
+    public ConfigInventory<T> getConfigInventory() {
         return this.cellType.getConfigInventory(this.i);
     }
 
@@ -392,149 +390,80 @@ public class BasicCellInventory<T extends IAEStack> implements ICellInventory<T>
     }
 
     @Override
-    public T injectItems(T input, Actionable mode, IActionSource src) {
-        if (input == null) {
-            return null;
-        }
-        if (input.getStackSize() == 0) {
-            return null;
+    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        if (amount == 0) {
+            return 0;
         }
 
-        if (this.cellType.isBlackListed(this.i, input)) {
-            return input;
+        if (this.cellType.isBlackListed(this.i, what)) {
+            return 0;
         }
+
         // This is slightly hacky as it expects a read-only access, but fine for now.
         // TODO: Guarantee a read-only access. E.g. provide an isEmpty() method and
         // ensure CellInventory does not write
         // any NBT data for empty cells instead of relying on an empty IAEStackList
-        if (this.isStorageCell(input)) {
+        if (what instanceof AEItemKey itemKey && this.isStorageCell(itemKey)) {
             // TODO: make it work for any cell, and not just BasicCellInventory!
-            var meInventory = createInventory(((IAEItemStack) input).createItemStack(), null);
+            var meInventory = createInventory(itemKey.toStack(), null);
             if (!isCellEmpty(meInventory)) {
-                return input;
+                return 0;
             }
         }
 
-        final T l = this.getCellItems().findPrecise(input);
-        if (l != null) {
-            final long remainingItemCount = this.getRemainingItemCount();
+        var currentAmount = this.getCellItems().getLong(what);
+        long remainingItemCount = this.getRemainingItemCount();
+
+        // Deduct the required storage for a new type if the type is new
+        if (currentAmount <= 0) {
+            remainingItemCount -= (long) this.getBytesPerType() * this.itemsPerByte;
             if (remainingItemCount <= 0) {
-                return input;
-            }
-
-            if (input.getStackSize() > remainingItemCount) {
-                final T r = IAEStack.copy(input);
-                r.setStackSize(r.getStackSize() - remainingItemCount);
-                if (mode == Actionable.MODULATE) {
-                    l.setStackSize(l.getStackSize() + remainingItemCount);
-                    this.saveChanges();
-                }
-                return r;
-            } else {
-                if (mode == Actionable.MODULATE) {
-                    l.setStackSize(l.getStackSize() + input.getStackSize());
-                    this.saveChanges();
-                }
-                return null;
+                return 0;
             }
         }
 
-        if (this.canHoldNewItem()) // room for new type, and for at least one item!
-        {
-            long remainingItemCount = this.getRemainingItemCount()
-                    - (long) this.getBytesPerType() * this.itemsPerByte;
-            if (remainingItemCount > 0) {
-                if (input.getStackSize() > remainingItemCount) {
-                    final T toReturn = IAEStack.copy(input);
-                    toReturn.setStackSize(input.getStackSize() - remainingItemCount);
-                    if (mode == Actionable.MODULATE) {
-                        final T toWrite = IAEStack.copy(input);
-                        toWrite.setStackSize(remainingItemCount);
-
-                        this.cellItems.add(toWrite);
-                        this.saveChanges();
-                    }
-                    return toReturn;
-                }
-
-                if (mode == Actionable.MODULATE) {
-                    this.cellItems.add(input);
-                    this.saveChanges();
-                }
-
-                return null;
-            }
+        if (amount > remainingItemCount) {
+            amount = remainingItemCount;
         }
 
-        return input;
+        if (mode == Actionable.MODULATE) {
+            getCellItems().put(what, currentAmount + amount);
+            this.saveChanges();
+        }
+
+        return amount;
     }
 
     @Override
-    public T extractItems(T request, Actionable mode, IActionSource src) {
-        if (request == null) {
-            return null;
-        }
+    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+        // To avoid long-overflow on the extracting callers side
+        var extractAmount = Math.min(Integer.MAX_VALUE, amount);
 
-        final long size = Math.min(Integer.MAX_VALUE, request.getStackSize());
-
-        T Results = null;
-
-        final T l = this.getCellItems().findPrecise(request);
-        if (l != null) {
-            Results = IAEStack.copy(l);
-
-            if (l.getStackSize() <= size) {
-                Results.setStackSize(l.getStackSize());
+        var currentAmount = getCellItems().getLong(what);
+        if (currentAmount > 0) {
+            if (extractAmount >= currentAmount) {
                 if (mode == Actionable.MODULATE) {
-                    l.setStackSize(0);
+                    getCellItems().remove(what, currentAmount);
                     this.saveChanges();
                 }
+
+                return currentAmount;
             } else {
-                Results.setStackSize(size);
                 if (mode == Actionable.MODULATE) {
-                    l.setStackSize(l.getStackSize() - size);
+                    getCellItems().put(what, currentAmount - extractAmount);
                     this.saveChanges();
                 }
+
+                return extractAmount;
             }
         }
 
-        return Results;
+        return 0;
     }
 
     @Override
     public IStorageChannel<T> getChannel() {
         return this.channel;
-    }
-
-    /**
-     * Load a single item.
-     *
-     * @return true when successfully loaded
-     */
-    private boolean loadCellItem(CompoundTag compoundTag) {
-        // Now load the item stack
-        T t;
-        try {
-            t = this.getChannel().createFromNBT(compoundTag);
-            if (t == null) {
-                AELog.warn("Removing item " + compoundTag
-                        + " from storage cell because the associated item type couldn't be found.");
-                return false;
-            }
-        } catch (Throwable ex) {
-            if (AEConfig.instance().isRemoveCrashingItemsOnLoad()) {
-                AELog.warn(ex,
-                        "Removing item " + compoundTag + " from storage cell because loading the ItemStack crashed.");
-                return false;
-            }
-            throw ex;
-        }
-
-        if (t.getStackSize() > 0) {
-            this.cellItems.add(t);
-        }
-
-        return true;
     }
 
 }

@@ -18,64 +18,72 @@
 
 package appeng.crafting.inv;
 
-import java.util.Collection;
+import java.util.Map;
 
-import javax.annotation.Nullable;
+import com.google.common.collect.Iterables;
 
 import net.minecraft.nbt.ListTag;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
-import appeng.crafting.execution.GenericStackHelper;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 public class ListCraftingInventory implements ICraftingInventory {
-    public final MixedStackList list = new MixedStackList();
+    public final KeyCounter<AEKey> list = new KeyCounter<>();
 
-    public void postChange(IAEStack template, long delta) {
+    private final ChangeListener listener;
+
+    @FunctionalInterface
+    public interface ChangeListener {
+        void onChange(AEKey key, long delta);
+    }
+
+    public ListCraftingInventory(ChangeListener listener) {
+        this.listener = listener;
     }
 
     @Override
-    public void injectItems(IAEStack input, Actionable mode) {
-        if (input != null && mode == Actionable.MODULATE) {
-            list.addStorage(input);
-            postChange(input, -input.getStackSize());
-        }
-    }
-
-    @Nullable
-    @Override
-    public IAEStack extractItems(IAEStack input, Actionable mode) {
-        IAEStack precise = list.findPrecise(input);
-        if (precise == null)
-            return null;
-        long extracted = Math.min(precise.getStackSize(), input.getStackSize());
+    public void insert(AEKey what, long amount, Actionable mode) {
         if (mode == Actionable.MODULATE) {
-            precise.decStackSize(extracted);
-            postChange(input, extracted);
+            list.add(what, amount);
+            listener.onChange(what, -amount);
         }
-        return IAEStack.copy(input, extracted);
     }
 
     @Override
-    public Collection<IAEStack> findFuzzyTemplates(IAEStack input) {
-        return list.findFuzzy(input, FuzzyMode.IGNORE_ALL);
+    public long extract(AEKey what, long amount, Actionable mode) {
+        var extracted = Math.min(list.get(what), amount);
+        if (mode == Actionable.MODULATE) {
+            list.remove(what, extracted);
+            listener.onChange(what, extracted);
+        }
+        return extracted;
+    }
+
+    @Override
+    public Iterable<AEKey> findFuzzyTemplates(AEKey what) {
+        return Iterables.transform(list.findFuzzy(what, FuzzyMode.IGNORE_ALL), Map.Entry::getKey);
     }
 
     public void clear() {
-        for (IAEStack stack : list) {
-            postChange(stack, stack.getStackSize());
+        for (var stack : list) {
+            listener.onChange(stack.getKey(), stack.getLongValue());
         }
-        list.resetStatus();
+        list.clear();
     }
 
     public void readFromNBT(ListTag data) {
-        list.resetStatus();
+        list.clear();
 
         if (data != null) {
             for (int i = 0; i < data.size(); ++i) {
-                injectItems(GenericStackHelper.readGenericStack(data.getCompound(i)), Actionable.MODULATE);
+                var compound = data.getCompound(i);
+                var key = AEKey.fromTagGeneric(compound);
+                if (key != null) {
+                    var amount = compound.getLong("#");
+                    insert(key, amount, Actionable.MODULATE);
+                }
             }
         }
     }
@@ -83,8 +91,13 @@ public class ListCraftingInventory implements ICraftingInventory {
     public ListTag writeToNBT() {
         ListTag tag = new ListTag();
 
-        for (IAEStack stack : list) {
-            tag.add(GenericStackHelper.writeGenericStack(stack));
+        for (var entry : list) {
+            var key = entry.getKey();
+            var amount = entry.getLongValue();
+
+            var entryTag = key.toTagGeneric();
+            entryTag.putLong("#", amount);
+            tag.add(entryTag);
         }
 
         return tag;

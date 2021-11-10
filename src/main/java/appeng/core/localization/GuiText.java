@@ -25,6 +25,8 @@ import net.minecraft.network.chat.TranslatableComponent;
 public enum GuiText {
     inventory("container"), // mc's default Inventory localization.
 
+    TankAmount, TankCapacity,
+
     Chest, StoredEnergy, Of, Condenser, Drive, SkyChest,
 
     VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
@@ -35,7 +37,7 @@ public enum GuiText {
 
     CompatibleUpgrades, CompatibleUpgrade, UpgradeToolbelt,
 
-    CellWorkbench, NetworkDetails, StorageCells, IOBuses, IOBusesFluids,
+    CellWorkbench, NetworkDetails, StorageCells, Interfaces, IOBuses, IOBusesFluids,
 
     IOPort, BytesUsed, Types, QuantumLinkChamber, PortableCell,
 

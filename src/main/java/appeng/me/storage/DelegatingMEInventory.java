@@ -6,8 +6,8 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 /**
  * Convenient base class for wrapping another {@link appeng.api.storage.IMEInventory} and forwarding
@@ -15,7 +15,7 @@ import appeng.api.storage.data.IAEStackList;
  * <p/>
  * If no delegate is set, it will act like a {@link NullInventory}.
  */
-public class DelegatingMEInventory<T extends IAEStack> implements IMEInventory<T> {
+public class DelegatingMEInventory<T extends AEKey> implements IMEInventory<T> {
     private IMEInventory<T> delegate;
 
     public DelegatingMEInventory(IMEInventory<T> delegate) {
@@ -36,18 +36,23 @@ public class DelegatingMEInventory<T extends IAEStack> implements IMEInventory<T
     }
 
     @Override
-    public T injectItems(T input, Actionable type, IActionSource src) {
-        return delegate.injectItems(input, type, src);
+    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        return delegate.insert(what, amount, mode, source);
     }
 
     @Override
-    public T extractItems(T request, Actionable mode, IActionSource src) {
-        return delegate.extractItems(request, mode, src);
+    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+        return delegate.extract(what, amount, mode, source);
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
-        return delegate.getAvailableStacks(out);
+    public void getAvailableStacks(KeyCounter<T> out) {
+        delegate.getAvailableStacks(out);
+    }
+
+    @Override
+    public KeyCounter<T> getAvailableStacks() {
+        return delegate.getAvailableStacks();
     }
 
     @Override

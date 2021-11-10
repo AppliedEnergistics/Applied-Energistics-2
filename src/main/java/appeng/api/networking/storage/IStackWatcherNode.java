@@ -24,10 +24,7 @@
 package appeng.api.networking.storage;
 
 import appeng.api.networking.IGridNodeService;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
 
 public interface IStackWatcherNode extends IGridNodeService {
 
@@ -41,14 +38,8 @@ public interface IStackWatcherNode extends IGridNodeService {
 
     /**
      * Called when a watched item changes amounts.
-     *
-     * @param o         changed item list
-     * @param fullStack old stack
-     * @param diffStack new stack
-     * @param src       action source
-     * @param chan      storage channel
+     * 
+     * @param what What has changed
      */
-    <T extends IAEStack> void onStackChange(IAEStackList<T> o, IAEStack fullStack, IAEStack diffStack,
-            IActionSource src,
-            IStorageChannel<T> chan);
+    <T extends AEKey> void onStackChange(T what, long amount);
 }

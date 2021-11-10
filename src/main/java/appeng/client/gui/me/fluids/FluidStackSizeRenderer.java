@@ -22,8 +22,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-
+import appeng.api.storage.data.AEFluidKey;
 import appeng.client.gui.me.common.StackSizeRenderer;
 
 /**
@@ -42,13 +41,13 @@ public class FluidStackSizeRenderer extends StackSizeRenderer {
         // Handle any value below 100 (large font) or 1000 (small font) Buckets with a
         // custom formatter,
         // otherwise pass it to the normal number converter
-        if (originalSize < FluidConstants.BUCKET * 100 && useLargeFonts) {
+        if (originalSize < AEFluidKey.AMOUNT_BUCKET * 100 && useLargeFonts) {
             return this.getSlimRenderedStacksize(originalSize);
-        } else if (originalSize < FluidConstants.BUCKET * 1000 && !useLargeFonts) {
+        } else if (originalSize < AEFluidKey.AMOUNT_BUCKET * 1000 && !useLargeFonts) {
             return this.getWideRenderedStacksize(originalSize);
         }
 
-        return super.getToBeRenderedStackSize(originalSize / FluidConstants.BUCKET, useLargeFonts);
+        return super.getToBeRenderedStackSize(originalSize / AEFluidKey.AMOUNT_BUCKET, useLargeFonts);
     }
 
     private String getSlimRenderedStacksize(final long originalSize) {
@@ -72,7 +71,7 @@ public class FluidStackSizeRenderer extends StackSizeRenderer {
         format.setDecimalFormatSymbols(symbols);
         format.setRoundingMode(RoundingMode.DOWN);
 
-        return format.format(originalSize / (double) FluidConstants.BUCKET);
+        return format.format(originalSize / (double) AEFluidKey.AMOUNT_BUCKET);
     }
 
 }

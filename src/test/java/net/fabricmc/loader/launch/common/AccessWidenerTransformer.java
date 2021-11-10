@@ -10,6 +10,10 @@ import org.spongepowered.asm.mixin.transformer.FabricMixinTransformerProxy;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Applies AccessWideners using the Java Instrumentation API.

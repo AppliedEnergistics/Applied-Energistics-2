@@ -29,7 +29,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Grid-wide storage services for all {@link IStorageChannel}.
@@ -46,7 +46,7 @@ public interface IStorageService extends IGridService, IStorageMonitorable {
      *
      * @param input injected items
      */
-    <T extends IAEStack> void postAlterationOfStoredItems(IStorageChannel<T> chan,
+    <T extends AEKey> void postAlterationOfStoredItems(IStorageChannel<T> chan,
             Iterable<T> input,
             IActionSource src);
 

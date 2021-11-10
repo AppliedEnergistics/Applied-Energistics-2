@@ -18,6 +18,9 @@
 
 package appeng.me.cells;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -25,54 +28,37 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.items.contents.CellConfig;
 
-class CreativeCellInventory<T extends IAEStack> implements ICellInventory<T> {
-    private final IAEStackList<T> cache;
+class CreativeCellInventory<T extends AEKey> implements ICellInventory<T> {
+    private final Set<T> configured;
     private final IStorageChannel<T> channel;
 
     protected CreativeCellInventory(IStorageChannel<T> channel, ItemStack o) {
         this.channel = channel;
-        this.cache = channel.createList();
+        this.configured = new HashSet<>();
 
-        var cc = new CellConfig(o);
-        for (var is : cc) {
-            var i = channel.createStack(is);
-            if (i != null) {
-                i.setStackSize(Integer.MAX_VALUE);
-                this.cache.add(i);
-            }
-        }
+        var cc = CellConfig.create(channel, o);
+        configured.addAll(cc.keySet());
     }
 
     @Override
-    public T injectItems(final T input, final Actionable mode, final IActionSource src) {
-        var local = this.cache.findPrecise(input);
-        if (local == null) {
-            return input;
-        }
-
-        return null;
+    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        return configured.contains(what) ? amount : 0;
     }
 
     @Override
-    public T extractItems(final T request, final Actionable mode, final IActionSource src) {
-        var local = this.cache.findPrecise(request);
-        if (local == null) {
-            return null;
-        }
-
-        return IAEStack.copy(request);
+    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+        return configured.contains(what) ? amount : 0;
     }
 
     @Override
-    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
-        for (var ais : this.cache) {
-            out.add(ais);
+    public void getAvailableStacks(KeyCounter<T> out) {
+        for (var key : this.configured) {
+            out.add(key, Integer.MAX_VALUE);
         }
-        return out;
     }
 
     @Override
@@ -82,7 +68,7 @@ class CreativeCellInventory<T extends IAEStack> implements ICellInventory<T> {
 
     @Override
     public boolean isPreferredStorageFor(T input, IActionSource source) {
-        return this.cache.findPrecise(input) != null;
+        return this.configured.contains(input);
     }
 
     @Override

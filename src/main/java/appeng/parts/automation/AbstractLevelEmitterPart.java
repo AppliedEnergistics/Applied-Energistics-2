@@ -37,6 +37,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.util.Platform;
+import appeng.util.SettingsFrom;
 
 public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     private static final int FLAG_ON = 4;
@@ -181,5 +182,17 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     @Override
     public final void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         this.configureWatchers();
+    }
+
+    @Override
+    protected void importSettings(SettingsFrom mode, CompoundTag input) {
+        super.importSettings(mode, input);
+        reportingValue = input.getLong("reportingValue");
+    }
+
+    @Override
+    protected void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+        output.putLong("reportingValue", reportingValue);
     }
 }

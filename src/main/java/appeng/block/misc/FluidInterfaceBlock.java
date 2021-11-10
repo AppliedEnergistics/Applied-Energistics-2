@@ -26,7 +26,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -34,7 +33,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.FluidInterfaceBlockEntity;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.FluidInterfaceMenu;
+import appeng.menu.implementations.InterfaceMenu;
 import appeng.util.InteractionUtil;
 
 public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEntity> {
@@ -50,10 +49,10 @@ public class FluidInterfaceBlock extends AEBaseEntityBlock<FluidInterfaceBlockEn
             return InteractionResult.PASS;
         }
 
-        final BlockEntity tg = this.getBlockEntity(level, pos);
+        var tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                MenuOpener.open(FluidInterfaceMenu.TYPE, p,
+                MenuOpener.open(InterfaceMenu.FLUID_TYPE, p,
                         MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

@@ -18,26 +18,26 @@
 
 package appeng.menu.implementations;
 
-import java.util.Map;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.api.storage.data.IAEStack;
-import appeng.core.AELog;
 import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.GenericStackInv;
-import appeng.helpers.iface.GenericStackSyncHelper;
 import appeng.helpers.iface.IPatternProviderHost;
+import appeng.helpers.iface.PatternProviderReturnInventory;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
+import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 
-public class PatternProviderMenu extends AEBaseMenu implements IGenericSyncMenu {
+/**
+ * @see appeng.client.gui.implementations.PatternProviderScreen
+ */
+public class PatternProviderMenu extends AEBaseMenu {
 
     public static final MenuType<PatternProviderMenu> TYPE = MenuTypeBuilder
             .create(PatternProviderMenu::new, IPatternProviderHost.class)
@@ -45,7 +45,6 @@ public class PatternProviderMenu extends AEBaseMenu implements IGenericSyncMenu 
             .build("pattern_provider");
 
     private final DualityPatternProvider duality;
-    private final GenericStackSyncHelper syncHelper;
 
     @GuiSync(3)
     public YesNo blockingMode = YesNo.NO;
@@ -58,13 +57,21 @@ public class PatternProviderMenu extends AEBaseMenu implements IGenericSyncMenu 
         this.createPlayerInventorySlots(playerInventory);
 
         this.duality = host.getDuality();
-        this.syncHelper = new GenericStackSyncHelper(getReturnInv(), 0);
 
         for (int x = 0; x < DualityPatternProvider.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
                     duality.getPatternInv(), x),
                     SlotSemantic.ENCODED_PATTERN);
         }
+
+        // Show first few entries of the return inv
+        var returnInv = duality.getReturnInv().createMenuWrapper();
+        for (int i = 0; i < PatternProviderReturnInventory.NUMBER_OF_SLOTS; i++) {
+            if (i < returnInv.size()) {
+                this.addSlot(new AppEngSlot(returnInv, i), SlotSemantic.STORAGE);
+            }
+        }
+
     }
 
     @Override
@@ -74,28 +81,9 @@ public class PatternProviderMenu extends AEBaseMenu implements IGenericSyncMenu 
         if (isServer()) {
             blockingMode = duality.getConfigManager().getSetting(Settings.BLOCKING_MODE);
             showInInterfaceTerminal = duality.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL);
-
-            this.syncHelper.sendDiff(getPlayer());
         }
 
         super.broadcastChanges();
-    }
-
-    @Override
-    public void sendAllDataToRemote() {
-        super.sendAllDataToRemote();
-        this.syncHelper.sendFull(getPlayer());
-    }
-
-    @Override
-    public void receiveGenericStacks(Map<Integer, IAEStack> stacks) {
-        if (isClient()) {
-            for (var entry : stacks.entrySet()) {
-                getReturnInv().setStack(entry.getKey(), entry.getValue());
-            }
-        } else {
-            AELog.warn("Client tried to override pattern provider return stacks!");
-        }
     }
 
     public GenericStackInv getReturnInv() {

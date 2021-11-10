@@ -21,9 +21,9 @@ package appeng.client.render.overlay;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -69,7 +69,7 @@ public class OverlayManager {
     }
 
     public OverlayRenderer showArea(IOverlayDataSource source) {
-        Preconditions.checkNotNull(source);
+        Objects.requireNonNull(source);
 
         OverlayRenderer handler = new OverlayRenderer(source);
         overlayHandlers.put(source.getOverlaySourceLocation(), handler);

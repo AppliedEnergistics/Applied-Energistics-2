@@ -18,8 +18,8 @@
 
 package appeng.parts.misc;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -27,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -37,17 +38,15 @@ import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityFluidInterface;
-import appeng.helpers.IConfigurableFluidInventory;
 import appeng.helpers.IFluidInterfaceHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.FluidInterfaceMenu;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class FluidInterfacePart extends BasicStatePart implements IFluidInterfaceHost, IConfigurableFluidInventory {
+public class FluidInterfacePart extends BasicStatePart implements IFluidInterfaceHost {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_base");
 
     private static final IGridNodeListener<FluidInterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
@@ -70,10 +69,11 @@ public class FluidInterfacePart extends BasicStatePart implements IFluidInterfac
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_has_channel"));
 
-    private final DualityFluidInterface duality = new DualityFluidInterface(this.getMainNode(), this);
+    private final DualityFluidInterface duality;
 
     public FluidInterfacePart(final ItemStack is) {
         super(is);
+        this.duality = new DualityFluidInterface(this.getMainNode(), this, is);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class FluidInterfacePart extends BasicStatePart implements IFluidInterfac
     }
 
     @Override
-    public DualityFluidInterface getDualityFluidInterface() {
+    public DualityFluidInterface getInterfaceDuality() {
         return this.duality;
     }
 
@@ -117,7 +117,7 @@ public class FluidInterfacePart extends BasicStatePart implements IFluidInterfac
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!isRemote()) {
-            MenuOpener.open(FluidInterfaceMenu.TYPE, p, MenuLocator.forPart(this));
+            MenuOpener.open(getMenuType(), p, MenuLocator.forPart(this));
         }
 
         return true;
@@ -134,9 +134,13 @@ public class FluidInterfacePart extends BasicStatePart implements IFluidInterfac
         }
     }
 
+    @Nullable
     @Override
-    public Storage<FluidVariant> getFluidInventoryByName(final String name) {
-        return this.duality.getFluidInventoryByName(name);
+    public InternalInventory getSubInventory(ResourceLocation id) {
+        if (id.equals(UPGRADES)) {
+            return duality.getUpgrades();
+        }
+        return super.getSubInventory(id);
     }
 
     @Override

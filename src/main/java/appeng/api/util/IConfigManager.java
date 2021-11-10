@@ -44,9 +44,16 @@ public interface IConfigManager {
     Set<Setting<?>> getSettings();
 
     /**
+     * Checks if this config manager supports the given setting.
+     */
+    default boolean hasSetting(Setting<?> setting) {
+        return getSettings().contains(setting);
+    }
+
+    /**
      * used to initialize the configuration manager, should be called for all settings.
      *
-     * @param settingName  name of setting
+     * @param setting      the setting
      * @param defaultValue default value of setting
      */
     <T extends Enum<T>> void registerSetting(Setting<T> setting, T defaultValue);
@@ -54,7 +61,7 @@ public interface IConfigManager {
     /**
      * Get Value of a particular setting
      *
-     * @param settingName name of setting
+     * @param setting the setting
      * @return value of setting
      */
     <T extends Enum<T>> T getSetting(Setting<T> setting);

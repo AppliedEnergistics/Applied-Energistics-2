@@ -17,15 +17,20 @@
  */
 package appeng.hooks;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.client.gui.style.FluidBlitter;
+import appeng.api.client.AEStackRendering;
+import appeng.api.client.AmountFormat;
+import appeng.api.storage.GenericStack;
+import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.crafting.pattern.EncodedPatternItem;
-import appeng.items.misc.WrappedFluidStack;
 
 public final class ItemRendererHooks {
 
@@ -56,13 +61,26 @@ public final class ItemRendererHooks {
                     return true;
                 }
             }
-        } else if (WrappedFluidStack.isWrapped(stack)) {
-            var fluidStack = WrappedFluidStack.unwrap(stack);
-            if (fluidStack != null) {
-                FluidBlitter.create(fluidStack.getFluid())
-                        .dest(x, y, 16, 16)
-                        .blit((int) (100.0 + renderer.blitOffset));
+
+            return false;
+        }
+
+        var unwrapped = GenericStack.unwrapItemStack(stack);
+        if (unwrapped != null) {
+            AEStackRendering.drawRepresentation(
+                    Minecraft.getInstance(),
+                    new PoseStack(),
+                    x,
+                    y,
+                    (int) renderer.blitOffset,
+                    unwrapped.what());
+
+            if (unwrapped.amount() > 0) {
+                String amtText = AEStackRendering.formatAmount(unwrapped.what(), unwrapped.amount(), AmountFormat.FULL);
+                Font font = Minecraft.getInstance().font;
+                StackSizeRenderer.renderSizeLabel(font, x, y, amtText, false);
             }
+
             return true;
         }
 

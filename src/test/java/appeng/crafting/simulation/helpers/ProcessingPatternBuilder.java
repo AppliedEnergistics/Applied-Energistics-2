@@ -1,7 +1,5 @@
 package appeng.crafting.simulation.helpers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,28 +10,29 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.util.CraftingRemainders;
-import appeng.util.item.AEItemStack;
 
 public class ProcessingPatternBuilder {
-    private final IAEStack[] outputs;
+    private final GenericStack[] outputs;
     private final List<IPatternDetails.IInput> inputs = new ArrayList<>();
 
-    public ProcessingPatternBuilder(IAEStack... outputs) {
+    public ProcessingPatternBuilder(GenericStack... outputs) {
         this.outputs = outputs;
     }
 
-    public ProcessingPatternBuilder addPreciseInput(long multiplier, IAEStack... possibleInputs) {
+    public ProcessingPatternBuilder addPreciseInput(long multiplier, GenericStack... possibleInputs) {
         return addPreciseInput(multiplier, false, possibleInputs);
     }
 
     public ProcessingPatternBuilder addPreciseInput(long multiplier, boolean containerItems,
-            IAEStack... possibleInputs) {
+            GenericStack... possibleInputs) {
         inputs.add(new IPatternDetails.IInput() {
             @Override
-            public IAEStack[] getPossibleInputs() {
+            public GenericStack[] getPossibleInputs() {
                 return possibleInputs;
             }
 
@@ -43,9 +42,9 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public boolean isValid(IAEStack input, Level level) {
+            public boolean isValid(AEKey input, Level level) {
                 for (var possibleInput : possibleInputs) {
-                    if (possibleInput.equals(input)) {
+                    if (possibleInput.what().equals(input)) {
                         return true;
                     }
                 }
@@ -54,9 +53,8 @@ public class ProcessingPatternBuilder {
 
             @Nullable
             @Override
-            public IAEStack getContainerItem(IAEStack template) {
+            public AEKey getContainerItem(AEKey template) {
                 if (containerItems && template.getChannel() == StorageChannels.items()) {
-                    assertThat(template.getStackSize()).isEqualTo(1);
                     return CraftingRemainders.getRemainder(template.cast(StorageChannels.items()));
                 }
                 return null;
@@ -66,10 +64,10 @@ public class ProcessingPatternBuilder {
     }
 
     public ProcessingPatternBuilder addDamageableInput(Item item) {
-        var possibleInputs = new IAEStack[] { AEItemStack.fromItemStack(new ItemStack(item)) };
+        var possibleInputs = new GenericStack[] { GenericStack.fromItemStack(new ItemStack(item)) };
         inputs.add(new IPatternDetails.IInput() {
             @Override
-            public IAEStack[] getPossibleInputs() {
+            public GenericStack[] getPossibleInputs() {
                 return possibleInputs;
             }
 
@@ -79,25 +77,23 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public boolean isValid(IAEStack input, Level level) {
-                if (input.getChannel() == StorageChannels.items()) {
-                    var itemStack = input.cast(StorageChannels.items());
-                    return itemStack.getItem() == item;
+            public boolean isValid(AEKey input, Level level) {
+                if (input instanceof AEItemKey itemKey) {
+                    return itemKey.getItem() == item;
                 }
                 return false;
             }
 
             @Nullable
             @Override
-            public IAEStack getContainerItem(IAEStack template) {
-                if (template.getChannel() == StorageChannels.items()) {
-                    assertThat(template.getStackSize()).isEqualTo(1);
-                    ItemStack stack = template.cast(StorageChannels.items()).createItemStack();
+            public AEKey getContainerItem(AEKey template) {
+                if (template instanceof AEItemKey itemKey) {
+                    ItemStack stack = itemKey.toStack();
                     stack.setDamageValue(stack.getDamageValue() - 1);
                     if (stack.getDamageValue() >= stack.getMaxDamage()) {
                         return null;
                     }
-                    return AEItemStack.fromItemStack(stack);
+                    return AEItemKey.of(stack);
                 }
                 return null;
             }
@@ -108,7 +104,7 @@ public class ProcessingPatternBuilder {
     public IPatternDetails build() {
         return new IPatternDetails() {
             @Override
-            public ItemStack copyDefinition() {
+            public AEItemKey getDefinition() {
                 throw new UnsupportedOperationException();
             }
 
@@ -118,7 +114,7 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public IAEStack[] getOutputs() {
+            public GenericStack[] getOutputs() {
                 return outputs;
             }
         };

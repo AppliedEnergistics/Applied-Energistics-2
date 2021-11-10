@@ -20,7 +20,12 @@ package appeng.parts.automation;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -37,17 +42,22 @@ import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.helpers.IConfigInvHost;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.util.ConfigInventory;
 
 /**
  * Abstract level emitter logic for storage-based level emitters (item and fluid).
  */
-public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extends AbstractLevelEmitterPart {
+public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends AbstractLevelEmitterPart
+        implements IConfigInvHost {
+    private final ConfigInventory<T> config = ConfigInventory.configTypes(getChannel(), 1, this::configureWatchers);
     private IStackWatcher stackWatcher;
     private ICraftingWatcher craftingWatcher;
 
-    private final IMEMonitorListener<T> handlerReceiver = new IMEMonitorListener<T>() {
+    private final IMEMonitorListener<T> handlerReceiver = new IMEMonitorListener<>() {
         @Override
         public boolean isValid(Object effectiveGrid) {
             return effectiveGrid != null && getMainNode().getGrid() == effectiveGrid;
@@ -73,11 +83,9 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
         }
 
         @Override
-        public <U extends IAEStack> void onStackChange(IAEStackList<U> o, IAEStack fullStack, IAEStack diffStack,
-                IActionSource src, IStorageChannel<U> chan) {
-            if (fullStack.equals(getConfiguredStack())
-                    && getInstalledUpgrades(Upgrades.FUZZY) == 0) {
-                lastReportedValue = fullStack.getStackSize();
+        public <U extends AEKey> void onStackChange(U what, long amount) {
+            if (what.equals(getConfiguredKey()) && getInstalledUpgrades(Upgrades.FUZZY) == 0) {
+                lastReportedValue = amount;
                 updateState();
             }
         }
@@ -90,7 +98,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
         }
 
         @Override
-        public void onRequestChange(ICraftingService craftingGrid, IAEStack what) {
+        public void onRequestChange(ICraftingService craftingGrid, AEKey what) {
             updateState();
         }
     };
@@ -98,8 +106,8 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
     private final ICraftingProvider craftingProvider = craftingTracker -> {
         if (getInstalledUpgrades(Upgrades.CRAFTING) > 0
                 && getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE) == YesNo.YES) {
-            if (getConfiguredStack() != null) {
-                craftingTracker.setEmitable(getConfiguredStack());
+            if (getConfiguredKey() != null) {
+                craftingTracker.setEmitable(getConfiguredKey());
             }
         }
     };
@@ -118,9 +126,13 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
     }
 
     @Nullable
-    protected abstract T getConfiguredStack();
+    private T getConfiguredKey() {
+        return config.getKey(0);
+    }
 
     protected abstract IStorageChannel<T> getChannel();
+
+    protected abstract MenuType<?> getMenuType();
 
     @Override
     protected final int getUpgradeSlots() {
@@ -141,7 +153,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
     protected boolean getDirectOutput() {
         var grid = getMainNode().getGrid();
         if (grid != null) {
-            return getConfiguredStack() != null && grid.getCraftingService().isRequesting(getConfiguredStack());
+            return getConfiguredKey() != null && grid.getCraftingService().isRequesting(getConfiguredKey());
         }
 
         return false;
@@ -149,7 +161,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
 
     @Override
     protected void configureWatchers() {
-        var myStack = getConfiguredStack();
+        var myStack = getConfiguredKey();
 
         if (this.stackWatcher != null) {
             this.stackWatcher.reset();
@@ -188,30 +200,49 @@ public abstract class AbstractStorageLevelEmitterPart<T extends IAEStack> extend
         updateState();
     }
 
-    private void updateReportingValue(final IMEMonitor<T> monitor) {
-        var myStack = getConfiguredStack();
+    private void updateReportingValue(IMEMonitor<T> monitor) {
+        var myStack = getConfiguredKey();
 
         if (myStack == null) {
             this.lastReportedValue = 0;
             for (var st : monitor.getCachedAvailableStacks()) {
-                this.lastReportedValue += st.getStackSize();
+                this.lastReportedValue += st.getLongValue();
             }
         } else if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             this.lastReportedValue = 0;
             final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
             var fuzzyList = monitor.getCachedAvailableStacks().findFuzzy(myStack, fzMode);
             for (var st : fuzzyList) {
-                this.lastReportedValue += st.getStackSize();
+                this.lastReportedValue += st.getLongValue();
             }
         } else {
-            var r = monitor.getCachedAvailableStacks().findPrecise(myStack);
-            if (r == null) {
-                this.lastReportedValue = 0;
-            } else {
-                this.lastReportedValue = r.getStackSize();
-            }
+            this.lastReportedValue = monitor.getCachedAvailableStacks().get(myStack);
         }
 
         this.updateState();
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
+        config.readFromChildTag(data, "config");
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        config.writeToChildTag(data, "config");
+    }
+
+    @Override
+    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+        if (!isRemote()) {
+            MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+        }
+        return true;
+    }
+
+    public ConfigInventory<T> getConfig() {
+        return config;
     }
 }

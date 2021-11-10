@@ -19,11 +19,11 @@
 package appeng.api.features;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -79,7 +79,7 @@ final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry 
 
     @Override
     public int getPlayerId(UUID profileId) {
-        Preconditions.checkNotNull(profileId, "profileId");
+        Objects.requireNonNull(profileId, "profileId");
 
         Integer playerId = mapping.get(profileId);
 

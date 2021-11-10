@@ -31,16 +31,16 @@ import com.google.common.collect.HashBiMap;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * This utility class helps menus that need to send a list of information that is grouped by
- * {@link appeng.api.storage.data.IAEItemStack} to the client and keep it updated, without having to resend the
- * {@link appeng.api.storage.data.IAEItemStack} everytime. This can be especially important if the item stack is
- * serialized using it's {@link ItemStack#getShareTag() share tag}, which would not match the server-side stack if it's
- * sent back, or that would group distinct server-side entries together on the client-side if their share tag was equal.
+ * {@link appeng.api.storage.data.AEKey} to the client and keep it updated, without having to resend the
+ * {@link appeng.api.storage.data.AEKey} everytime. This can be especially important if the item stack is serialized
+ * using it's {@link ItemStack#getShareTag() share tag}, which would not match the server-side stack if it's sent back,
+ * or that would group distinct server-side entries together on the client-side if their share tag was equal.
  */
-public class IncrementalUpdateHelper<T extends IAEStack> implements Iterable<T> {
+public class IncrementalUpdateHelper<T extends AEKey> implements Iterable<T> {
 
     /**
      * Maps stacks to serial numbers. This relies on the fact that these stacks are equal iff their type is equal, and
@@ -66,8 +66,8 @@ public class IncrementalUpdateHelper<T extends IAEStack> implements Iterable<T> 
         return mapping.get(stack);
     }
 
-    public long getOrAssignSerial(T stack) {
-        return mapping.computeIfAbsent(stack, key -> ++this.serial);
+    public long getOrAssignSerial(T key) {
+        return mapping.computeIfAbsent(key, k -> ++this.serial);
     }
 
     public T getBySerial(long serial) {
@@ -95,21 +95,21 @@ public class IncrementalUpdateHelper<T extends IAEStack> implements Iterable<T> 
     }
 
     public void addChange(T entry) {
-        // Ensure the stack size is not 0 to avoid deleting the mapping by mistake.
-        entry = IAEStack.copy(entry, 1);
         if (!changes.add(entry)) {
             changes.remove(entry);
             changes.add(entry);
         }
     }
 
+    /**
+     * Removes the serial mapping for the given key. Will lead to a new serial being generated the next time this
+     * particular key is used.
+     */
+    public void removeSerial(T what) {
+        mapping.remove(what);
+    }
+
     public void commitChanges() {
-        // Stacks that have become empty will lose their mapping to avoid leaking memory in the mapping over time
-        for (T stack : changes) {
-            if (!stack.isMeaningful()) {
-                mapping.remove(stack);
-            }
-        }
         changes.clear();
         fullUpdate = false;
     }
@@ -136,5 +136,4 @@ public class IncrementalUpdateHelper<T extends IAEStack> implements Iterable<T> 
     public Spliterator<T> spliterator() {
         return changes.spliterator();
     }
-
 }

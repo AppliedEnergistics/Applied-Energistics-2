@@ -18,11 +18,15 @@
 
 package appeng.menu.slot;
 
+import java.util.List;
+import java.util.function.Function;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -30,9 +34,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
+import appeng.api.storage.GenericStack;
 import appeng.client.gui.Icon;
 import appeng.core.AELog;
-import appeng.items.misc.WrappedFluidStack;
 import appeng.menu.AEBaseMenu;
 
 public class AppEngSlot extends Slot {
@@ -54,7 +58,7 @@ public class AppEngSlot extends Slot {
     private Boolean validState = null;
     private boolean rendering = false;
 
-    public AppEngSlot(final InternalInventory inv, final int invSlot) {
+    public AppEngSlot(InternalInventory inv, int invSlot) {
         super(EMPTY_INVENTORY, invSlot, 0, 0);
         this.inventory = inv;
         this.invSlot = invSlot;
@@ -65,12 +69,17 @@ public class AppEngSlot extends Slot {
         return this;
     }
 
-    public String getTooltip() {
-        return null;
-    }
-
     public void clearStack() {
         this.inventory.setItemDirect(this.invSlot, ItemStack.EMPTY);
+    }
+
+    /**
+     * @return Null if default tooltip should be shown. Empty to suppress tooltip entirely.
+     */
+    @Nullable
+    public List<Component> getCustomTooltip(Function<ItemStack, List<Component>> getItemTooltip,
+            ItemStack carriedItem) {
+        return null;
     }
 
     @Override
@@ -162,7 +171,7 @@ public class AppEngSlot extends Slot {
     }
 
     private boolean containsWrapperItem() {
-        return WrappedFluidStack.isWrapped(getItem());
+        return GenericStack.isWrapped(getItem());
     }
 
     public boolean isSameInventory(Slot other) {

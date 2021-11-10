@@ -50,7 +50,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
@@ -87,7 +87,7 @@ import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public abstract class MEMonitorableScreen<T extends IAEStack, C extends MEMonitorableMenu<T>>
+public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorableMenu<T>>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
     private static final int MIN_ROWS = 3;
@@ -443,7 +443,7 @@ public abstract class MEMonitorableScreen<T extends IAEStack, C extends MEMonito
     protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<T> entry, int x, int y) {
         final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
 
-        ItemStack stack = entry.getStack().asItemStackRepresentation();
+        ItemStack stack = entry.getWhat().wrapForDisplayOrFilter();
 
         final List<Component> currentToolTip = this.getTooltipFromItem(stack);
 

@@ -19,7 +19,6 @@
 package appeng.crafting.execution;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -35,8 +34,8 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.MixedStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.crafting.inv.ICraftingInventory;
 import appeng.crafting.inv.ListCraftingInventory;
 
@@ -48,17 +47,19 @@ public class CraftingCpuHelper {
             ListCraftingInventory cpuInventory, IActionSource src) {
         var storageService = grid.getStorageService();
 
-        for (var toExtract : plan.usedItems()) {
-            var extracted = GenericStackHelper.extractMonitorable(storageService, toExtract, Actionable.MODULATE, src);
-            cpuInventory.injectItems(extracted, Actionable.MODULATE);
+        for (var entry : plan.usedItems()) {
+            var what = entry.getKey();
+            var toExtract = entry.getLongValue();
+            var extracted = storageService.extract(what, toExtract, Actionable.MODULATE, src);
+            cpuInventory.insert(what, extracted, Actionable.MODULATE);
 
-            if (IAEStack.getStackSizeOrZero(extracted) < toExtract.getStackSize()) {
+            if (extracted < toExtract) {
                 // Failed to extract everything, reinject and hope for the best.
                 // TODO: maybe voiding items that fail to re-insert is not the best thing to do?
                 for (var stored : cpuInventory.list) {
-                    GenericStackHelper.injectMonitorable(storageService, stored, Actionable.MODULATE, src);
-                    stored.reset();
+                    storageService.insert(stored.getKey(), stored.getLongValue(), Actionable.MODULATE, src);
                 }
+                cpuInventory.clear();
 
                 return false;
             }
@@ -96,32 +97,33 @@ public class CraftingCpuHelper {
     }
 
     @Nullable
-    public static MixedStackList[] extractPatternInputs(
+    public static KeyCounter<AEKey>[] extractPatternInputs(
             IPatternDetails details,
             ICraftingInventory sourceInv,
             IEnergyService energyService,
             Level level,
-            MixedStackList expectedOutputs) {
+            KeyCounter<AEKey> expectedOutputs) {
         // Check energy first.
         if (!extractPatternPower(details, energyService, Actionable.SIMULATE))
             return null;
 
         // Extract inputs into the container.
         var inputs = details.getInputs();
-        MixedStackList[] inputHolder = new MixedStackList[inputs.length];
+        @SuppressWarnings("unchecked")
+        KeyCounter<AEKey>[] inputHolder = new KeyCounter[inputs.length];
         boolean found = true;
 
         for (int x = 0; x < inputs.length; x++) {
-            MixedStackList list = inputHolder[x] = new MixedStackList();
+            var list = inputHolder[x] = new KeyCounter<>();
             long remainingMultiplier = inputs[x].getMultiplier();
             for (var template : getValidItemTemplates(sourceInv, inputs[x], level)) {
                 long extracted = extractTemplates(sourceInv, template, remainingMultiplier);
-                list.add(IAEStack.copy(template, template.getStackSize() * extracted));
+                list.add(template.key(), extracted * template.amount());
 
                 // Container items!
-                var containerItem = inputs[x].getContainerItem(template);
+                var containerItem = inputs[x].getContainerItem(template.key());
                 if (containerItem != null) {
-                    expectedOutputs.add(IAEStack.copy(containerItem, containerItem.getStackSize() * extracted));
+                    expectedOutputs.add(containerItem, extracted);
                 }
 
                 remainingMultiplier -= extracted;
@@ -144,60 +146,59 @@ public class CraftingCpuHelper {
 
         // Add pattern outputs.
         for (var output : details.getOutputs()) {
-            expectedOutputs.addStorage(output);
+            expectedOutputs.add(output.what(), output.amount());
         }
 
         return inputHolder;
     }
 
     public static void reinjectPatternInputs(ICraftingInventory sourceInv,
-            MixedStackList[] inputHolder) {
+            KeyCounter<AEKey>[] inputHolder) {
         for (var list : inputHolder) {
             // List may be null if we failed to extract some of the pattern's inputs.
             if (list != null) {
-                for (var stack : list) {
-                    sourceInv.injectItems(stack, Actionable.MODULATE);
+                for (var entry : list) {
+                    sourceInv.insert(entry.getKey(), entry.getLongValue(), Actionable.MODULATE);
                 }
             }
         }
     }
 
     /**
-     * Get all stack templates that can be used for this pattern's input.
+     * Get all potential input templates that count as "1" ingredient according to the given inputs for a pattern slot,
+     * and which are available.
      */
-    public static Iterable<IAEStack> getValidItemTemplates(ICraftingInventory inv,
+    public static Iterable<InputTemplate> getValidItemTemplates(ICraftingInventory inv,
             IPatternDetails.IInput input, Level level) {
-        IAEStack[] possibleInputs = input.getPossibleInputs();
+        var possibleInputs = input.getPossibleInputs();
 
-        List<IAEStack> substitutes = new ArrayList<>(possibleInputs.length);
+        var substitutes = new ArrayList<InputTemplate>(possibleInputs.length);
 
         for (var stack : possibleInputs) {
-            for (var fuzz : inv.findFuzzyTemplates(stack)) {
-                // Set the correct amount, it has to match that of the template!
-                var fuzzCopy = IAEStack.copy(fuzz, stack.getStackSize());
-                substitutes.add(fuzzCopy);
+            for (var fuzz : inv.findFuzzyTemplates(stack.what())) {
+                substitutes.add(new InputTemplate(fuzz, stack.amount()));
             }
         }
 
-        return Iterables.filter(substitutes, stack -> input.isValid(stack, level));
+        return Iterables.filter(substitutes, stack -> input.isValid(stack.key(), level));
     }
 
     /**
      * Extract a whole number of templates, and return how many were extracted.
      */
-    public static long extractTemplates(ICraftingInventory inv, IAEStack template, long multiplier) {
-        long maxTotal = template.getStackSize() * multiplier;
+    public static long extractTemplates(ICraftingInventory inv, InputTemplate template, long multiplier) {
+        long maxTotal = template.amount() * multiplier;
         // Extract as much as possible.
-        var extracted = inv.extractItems(IAEStack.copy(template, maxTotal), Actionable.SIMULATE);
-        if (extracted == null)
+        var extracted = inv.extract(template.key(), maxTotal, Actionable.SIMULATE);
+        if (extracted == 0)
             return 0;
         // Adjust to have a whole number of templates.
-        multiplier = extracted.getStackSize() / template.getStackSize();
-        maxTotal = template.getStackSize() * multiplier;
+        multiplier = extracted / template.amount();
+        maxTotal = template.amount() * multiplier;
         if (maxTotal == 0)
             return 0;
-        extracted = inv.extractItems(IAEStack.copy(template, maxTotal), Actionable.MODULATE);
-        if (extracted == null || extracted.getStackSize() != maxTotal) {
+        extracted = inv.extract(template.key(), maxTotal, Actionable.MODULATE);
+        if (extracted == 0 || extracted != maxTotal) {
             throw new IllegalStateException("Failed to correctly extract whole number. Invalid simulation!");
         }
         return multiplier;

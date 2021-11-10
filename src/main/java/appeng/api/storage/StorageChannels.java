@@ -25,6 +25,7 @@ package appeng.api.storage;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
@@ -36,9 +37,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.AEKey;
 
 /**
  * AE2's registry of all known {@link IStorageChannel storage channels}.
@@ -79,12 +78,12 @@ public final class StorageChannels {
      * @param channel        The channel type, must be a subtype of {@link IStorageChannel}
      * @param implementation An instance implementing the channel.
      */
-    public static synchronized <T extends IAEStack, C extends IStorageChannel<T>> void register(
+    public static synchronized <T extends AEKey, C extends IStorageChannel<T>> void register(
             @Nonnull Class<C> channel,
             @Nonnull C implementation) {
-        Preconditions.checkNotNull(channel, "channel");
-        Preconditions.checkNotNull(implementation, "implementation");
-        Preconditions.checkNotNull(implementation.getId(), "implementation.id");
+        Objects.requireNonNull(channel, "channel");
+        Objects.requireNonNull(implementation, "implementation");
+        Objects.requireNonNull(implementation.getId(), "implementation.id");
         var existingChannel = registry.get(channel);
         Preconditions.checkState(existingChannel == null, "Implementation for channel %s is already registered: %s",
                 channel, existingChannel);
@@ -110,7 +109,7 @@ public final class StorageChannels {
      * @throws IllegalArgumentException when fetching an unregistered channel.
      */
     @Nonnull
-    public static <T extends IAEStack, C extends IStorageChannel<T>> C get(@Nonnull Class<C> channel) {
+    public static <T extends AEKey, C extends IStorageChannel<T>> C get(@Nonnull Class<C> channel) {
         var result = registry.getInstance(channel);
         if (result == null) {
             throw new IllegalArgumentException("No storage channel registered with interface " + channel);

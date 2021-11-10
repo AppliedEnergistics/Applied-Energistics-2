@@ -21,17 +21,15 @@ package appeng.me.storage;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 /**
  * An immutable inventory that is empty.
  */
-public class NullInventory<T extends IAEStack> implements IMEInventory<T> {
+public class NullInventory<T extends AEKey> implements IMEInventory<T> {
     private static final Map<IStorageChannel<?>, NullInventory<?>> NULL_INVENTORIES = new ConcurrentHashMap<>();
 
     private final IStorageChannel<T> storageChannel;
@@ -41,23 +39,12 @@ public class NullInventory<T extends IAEStack> implements IMEInventory<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends IAEStack> IMEInventory<T> of(IStorageChannel<T> channel) {
+    public static <T extends AEKey> IMEInventory<T> of(IStorageChannel<T> channel) {
         return (IMEInventory<T>) NULL_INVENTORIES.computeIfAbsent(channel, NullInventory::new);
     }
 
     @Override
-    public T injectItems(final T input, final Actionable mode, final IActionSource src) {
-        return input;
-    }
-
-    @Override
-    public T extractItems(final T request, final Actionable mode, final IActionSource src) {
-        return null;
-    }
-
-    @Override
-    public IAEStackList<T> getAvailableStacks(IAEStackList<T> out) {
-        return out;
+    public void getAvailableStacks(KeyCounter<T> out) {
     }
 
     @Override

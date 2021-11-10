@@ -23,13 +23,13 @@
 
 package appeng.api.storage;
 
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAEStackList;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 /**
  * A {@link IMEInventory} that allows listening for storage changes.
  */
-public interface IMEMonitor<T extends IAEStack> extends IMEInventory<T> {
+public interface IMEMonitor<T extends AEKey> extends IMEInventory<T> {
 
     /**
      * add a new Listener to the monitor, be sure to properly remove yourself when your done.
@@ -46,7 +46,7 @@ public interface IMEMonitor<T extends IAEStack> extends IMEInventory<T> {
      */
     @Override
     @Deprecated
-    IAEStackList<T> getAvailableStacks(IAEStackList<T> out);
+    void getAvailableStacks(KeyCounter<T> out);
 
     /**
      * Returns the cached list of stacks available from this inventory, which will be equal to the result of
@@ -54,7 +54,7 @@ public interface IMEMonitor<T extends IAEStack> extends IMEInventory<T> {
      *
      * @return The cached contents of this monitor. Does not return a copy. <strong>Do not modify!</strong>
      */
-    default IAEStackList<T> getCachedAvailableStacks() {
+    default KeyCounter<T> getCachedAvailableStacks() {
         return getAvailableStacks();
     }
 
@@ -65,7 +65,7 @@ public interface IMEMonitor<T extends IAEStack> extends IMEInventory<T> {
      * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
      */
     @SuppressWarnings("unchecked")
-    default <SC extends IAEStack> IMEMonitor<SC> cast(IStorageChannel<SC> channel) {
+    default <SC extends AEKey> IMEMonitor<SC> cast(IStorageChannel<SC> channel) {
         if (getChannel() == channel) {
             return (IMEMonitor<SC>) this;
         }
