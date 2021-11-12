@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -33,6 +35,9 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
@@ -108,6 +113,18 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         if (status != null) {
             this.table.render(poseStack, mouseX, mouseY, status.getEntries(), scrollbar.getCurrentScroll());
         }
+    }
+
+    @Nullable
+    @Override
+    public Object getIngredientUnderMouse(double mouseX, double mouseY) {
+        IAEStack hovered = table.getHoveredStack();
+        if (hovered instanceof IAEItemStack) {
+            return ((IAEItemStack) hovered).getDefinition();
+        } else if (hovered instanceof IAEFluidStack) {
+            return ((IAEFluidStack) hovered).getFluidStack();
+        }
+        return null;
     }
 
     public void postUpdate(CraftingStatus status) {
