@@ -410,3 +410,11 @@ if (System.getProperty("idea.sync.active") == "true") {
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
+
+allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.fork = true
+        options.incremental = true
+    }
+
+}
