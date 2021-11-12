@@ -20,6 +20,8 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -30,6 +32,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
@@ -125,6 +130,18 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
             this.table.render(poseStack, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
         }
 
+    }
+
+    @Nullable
+    @Override
+    public Object getIngredientUnderMouse(double mouseX, double mouseY) {
+        IAEStack hovered = table.getHoveredStack();
+        if (hovered instanceof IAEItemStack) {
+            return ((IAEItemStack) hovered).getDefinition();
+        } else if (hovered instanceof IAEFluidStack) {
+            return ((IAEFluidStack) hovered).getFluidStack();
+        }
+        return null;
     }
 
     // Allow players to confirm a craft via the enter key

@@ -56,6 +56,7 @@ public abstract class AbstractTableRenderer<T> {
     private final float lineHeight;
     private final int x;
     private final int y;
+    private IAEStack hoveredStack;
 
     public AbstractTableRenderer(AEBaseScreen<?> screen, int x, int y) {
         this.screen = screen;
@@ -71,6 +72,7 @@ public abstract class AbstractTableRenderer<T> {
 
         final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
         List<Component> tooltipLines = null;
+        IAEStack hovered = null;
 
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
@@ -125,13 +127,19 @@ public abstract class AbstractTableRenderer<T> {
                 if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH
                         && mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
                     tooltipLines = getEntryTooltip(entry);
+                    hovered = entryStack;
                 }
             }
         }
+        hoveredStack = hovered;
 
         if (tooltipLines != null) {
             screen.drawTooltip(poseStack, mouseX, mouseY, tooltipLines);
         }
+    }
+
+    public IAEStack getHoveredStack() {
+        return hoveredStack;
     }
 
     /**
