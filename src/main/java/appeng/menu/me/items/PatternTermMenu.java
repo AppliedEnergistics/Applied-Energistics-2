@@ -18,8 +18,6 @@
 
 package appeng.menu.me.items;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -221,46 +219,72 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             return;
         }
 
-        var encodeOutput = this.encodedPatternSlot.getItem();
+        var validatedInputs = this.getValidatedInputs();
+        var validatedOutputs = this.getValidatedOutputs();
 
-        // first check the output slots, should either be null, or a pattern
-        if (!encodeOutput.isEmpty() && !PatternDetailsHelper.isEncodedPattern(encodeOutput)) {
+        if (!hasCorrectRecipePreconditions(validatedInputs, validatedOutputs)) {
             return;
-        } // if nothing is there we should snag a new pattern.
-        else if (encodeOutput.isEmpty()) {
-            var blankPattern = this.blankPatternSlot.getItem();
-            if (!isPattern(blankPattern)) {
-                return; // no blanks.
-            }
+        }
 
-            // remove one, and clear the input slot.
-            blankPattern.shrink(1);
-            if (blankPattern.getCount() <= 0) {
-                this.blankPatternSlot.set(ItemStack.EMPTY);
+        var encodeOutput = this.encodedPatternSlot.getItem();
+        var blankPatterns = this.blankPatternSlot.getItem();
+
+        if (!isEncodeOutputCorrect(encodeOutput, blankPatterns)) {
+            return;
+        }
+
+        ItemStack encodedPattern = encodePattern(validatedInputs, validatedOutputs);
+        this.encodedPatternSlot.set(encodedPattern);
+        reduceEmptyBlanks(blankPatterns);
+    }
+
+    private boolean hasCorrectRecipePreconditions(ItemStack[] validatedInputs, ItemStack[] validatedOutputs) {
+        if (validatedOutputs == null) {
+            return false;
+        }
+        if (isCraftingMode()) {
+            return currentRecipe != null;
+        }
+        return validatedInputs != null;
+    }
+
+    private boolean isEncodeOutputCorrect(ItemStack encodeOutput, ItemStack blankPatterns) {
+        if (encodeOutput.isEmpty()) {
+            // if nothing is there we should snag a new pattern.
+            if (!isPattern(blankPatterns)) {
+                return false; // no blanks.
+            }
+        } else {
+            // first check the output slots, should either be null, or a pattern
+            if (!PatternDetailsHelper.isEncodedPattern(encodeOutput)) {
+                return false;
             }
         }
 
-        ItemStack encodedPattern = encodePattern();
-        if (encodedPattern != null) {
-            this.encodedPatternSlot.set(encodedPattern);
+        return true;
+    }
+
+    private void reduceEmptyBlanks(ItemStack blankPatterns) {
+        // remove one, and clear the input slot if no any other pattern
+        blankPatterns.shrink(1);
+        if (blankPatterns.getCount() <= 0) {
+            this.blankPatternSlot.set(ItemStack.EMPTY);
         }
     }
 
-    @Nullable
     private ItemStack encodePattern() {
-        var in = this.getValidatedInputs();
-        var out = this.getValidatedOutputs();
+        var validatedInputs = this.getValidatedInputs();
+        var validatedOutputs = this.getValidatedOutputs();
+        return encodePattern(validatedInputs, validatedOutputs);
+    }
 
-        // if there is no input, this would be silly.
-        if (in == null || out == null || isCraftingMode() && currentRecipe == null) {
-            return null;
-        }
-
+    private ItemStack encodePattern(ItemStack[] validatedInputs, ItemStack[] validatedOutputs) {
         if (this.isCraftingMode()) {
-            return PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute(),
-                    isSubstituteFluids());
+            return PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, validatedInputs, validatedOutputs[0],
+                    isSubstitute(), isSubstituteFluids());
         } else {
-            return PatternDetailsHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
+            return PatternDetailsHelper.encodeProcessingPattern(toAeStacks(validatedInputs),
+                    toAeStacks(validatedOutputs));
         }
     }
 
