@@ -33,10 +33,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkBootingStatusChange;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -172,51 +168,6 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 
 		this.requested = false;
 		return wasReq ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
-	}
-
-	@MENetworkEventSubscribe
-	public void changeStateA( final MENetworkBootingStatusChange bs )
-	{
-		if( !this.isOutput() )
-		{
-			this.cachedInv = null;
-			final int olderSize = this.oldSize;
-			this.oldSize = this.getDestination().getSlots();
-			if( olderSize != this.oldSize )
-			{
-				this.getHost().notifyNeighbors();
-			}
-		}
-	}
-
-	@MENetworkEventSubscribe
-	public void changeStateB( final MENetworkChannelsChanged bs )
-	{
-		if( !this.isOutput() )
-		{
-			this.cachedInv = null;
-			final int olderSize = this.oldSize;
-			this.oldSize = this.getDestination().getSlots();
-			if( olderSize != this.oldSize )
-			{
-				this.getHost().notifyNeighbors();
-			}
-		}
-	}
-
-	@MENetworkEventSubscribe
-	public void changeStateC( final MENetworkPowerStatusChange bs )
-	{
-		if( !this.isOutput() )
-		{
-			this.cachedInv = null;
-			final int olderSize = this.oldSize;
-			this.oldSize = this.getDestination().getSlots();
-			if( olderSize != this.oldSize )
-			{
-				this.getHost().notifyNeighbors();
-			}
-		}
 	}
 
 	@Override

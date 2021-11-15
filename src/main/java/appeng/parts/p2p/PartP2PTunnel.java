@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import appeng.api.networking.events.MENetworkBootingStatusChange;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -151,6 +155,30 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	{
 		super.writeToStream( data );
 		data.writeShort( this.getFrequency() );
+	}
+	
+	@Override
+	@MENetworkEventSubscribe
+	public void chanRender( final MENetworkChannelsChanged c )
+	{
+		this.onTunnelNetworkChange();
+		super.chanRender( c );
+	}
+
+	@Override
+	@MENetworkEventSubscribe
+	public void powerRender( final MENetworkPowerStatusChange c )
+	{
+		this.onTunnelNetworkChange();
+		super.powerRender( c );
+	}
+
+	@Override
+	@MENetworkEventSubscribe
+	public void bootingRender( final MENetworkBootingStatusChange bs )
+	{
+		this.onTunnelNetworkChange();
+		super.bootingRender( bs );
 	}
 
 	@Override

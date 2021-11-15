@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -55,6 +56,12 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 
 	@MENetworkEventSubscribe
 	public void powerRender( final MENetworkPowerStatusChange c )
+	{
+		this.getHost().markForUpdate();
+	}
+
+	@MENetworkEventSubscribe
+	public void bootingRender( final MENetworkBootingStatusChange bs )
 	{
 		this.getHost().markForUpdate();
 	}

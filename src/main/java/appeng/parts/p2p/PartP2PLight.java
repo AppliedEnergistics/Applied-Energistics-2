@@ -32,8 +32,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -41,7 +39,6 @@ import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import org.apache.logging.log4j.core.appender.rolling.action.IfAll;
 
 
 public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTickable
@@ -61,20 +58,6 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	public PartP2PLight( final ItemStack is )
 	{
 		super( is );
-	}
-
-	@Override
-	public void chanRender( final MENetworkChannelsChanged c )
-	{
-		this.onTunnelNetworkChange();
-		super.chanRender( c );
-	}
-
-	@Override
-	public void powerRender( final MENetworkPowerStatusChange c )
-	{
-		this.onTunnelNetworkChange();
-		super.powerRender( c );
 	}
 
 	@Override
@@ -116,9 +99,17 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 			this.lastValue = newLevel;
 			try
 			{
+				int light = 0;
+				for( PartP2PLight src : this.getInputs() )
+				{
+					if( src != null && src.getProxy().isActive() )
+					{
+						light = Math.max( light, src.lastValue );
+					}
+				}
 				for( final PartP2PLight out : this.getOutputs() )
 				{
-					out.setLightLevel( this.lastValue );
+					out.setLightLevel( light );
 				}
 			}
 			catch( final GridAccessException e )
@@ -199,24 +190,16 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		{
 			try
 			{
-				boolean hasValidInput = false;
 				int light = 0;
 				for( PartP2PLight src : this.getInputs() )
 				{
 					if( src != null && src.getProxy().isActive() )
 					{
-						hasValidInput = true;
 						light = Math.max( light, src.lastValue );
 					}
 				}
-				if( hasValidInput )
-				{
-					this.setLightLevel( light );
-				}
-				else
-				{
-					this.getHost().markForUpdate();
-				}
+				this.setLightLevel( light );
+				this.getHost().markForUpdate();
 			}
 			catch( GridAccessException e )
 			{

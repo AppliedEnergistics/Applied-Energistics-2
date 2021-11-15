@@ -31,10 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import appeng.api.networking.events.MENetworkBootingStatusChange;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -58,12 +54,6 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	public PartP2PRedstone( final ItemStack is )
 	{
 		super( is );
-	}
-
-	@MENetworkEventSubscribe
-	public void changeStateA( final MENetworkBootingStatusChange bs )
-	{
-		this.setNetworkReady();
 	}
 
 	private void setNetworkReady()
@@ -97,12 +87,20 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		}
 
 		this.recursive = true;
-		if( this.isOutput() && this.getProxy().isActive() )
+		if( this.isOutput() )
 		{
-			final int newPower = (Integer) o;
-			if( this.power != newPower )
+			if( this.getProxy().isActive() )
 			{
-				this.power = newPower;
+				final int newPower = (Integer) o;
+				if( this.power != newPower )
+				{
+					this.power = newPower;
+					this.notifyNeighbors();
+				}
+			}
+			else
+			{
+				this.power = 0;
 				this.notifyNeighbors();
 			}
 		}
@@ -120,18 +118,6 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		{
 			Platform.notifyBlocksOfNeighbors( world, this.getTile().getPos().offset( face ) );
 		}
-	}
-
-	@MENetworkEventSubscribe
-	public void changeStateB( final MENetworkChannelsChanged bs )
-	{
-		this.setNetworkReady();
-	}
-
-	@MENetworkEventSubscribe
-	public void changeStateC( final MENetworkPowerStatusChange bs )
-	{
-		this.setNetworkReady();
 	}
 
 	@Override
