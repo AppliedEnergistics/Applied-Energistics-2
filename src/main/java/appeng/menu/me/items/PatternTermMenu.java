@@ -222,27 +222,27 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             return;
         }
 
-        var encodeOutput = this.encodedPatternSlot.getItem();
-
-        // first check the output slots, should either be null, or a pattern
-        if (!encodeOutput.isEmpty() && !PatternDetailsHelper.isEncodedPattern(encodeOutput)) {
-            return;
-        } // if nothing is there we should snag a new pattern.
-        else if (encodeOutput.isEmpty()) {
-            var blankPattern = this.blankPatternSlot.getItem();
-            if (!isPattern(blankPattern)) {
-                return; // no blanks.
-            }
-
-            // remove one, and clear the input slot.
-            blankPattern.shrink(1);
-            if (blankPattern.getCount() <= 0) {
-                this.blankPatternSlot.set(ItemStack.EMPTY);
-            }
-        }
-
         ItemStack encodedPattern = encodePattern();
         if (encodedPattern != null) {
+            var encodeOutput = this.encodedPatternSlot.getItem();
+
+            // first check the output slots, should either be null, or a pattern
+            if (!encodeOutput.isEmpty() && !PatternDetailsHelper.isEncodedPattern(encodeOutput)) {
+                return;
+            } // if nothing is there we should snag a new pattern.
+            else if (encodeOutput.isEmpty()) {
+                var blankPattern = this.blankPatternSlot.getItem();
+                if (!isPattern(blankPattern)) {
+                    return; // no blanks.
+                }
+
+                // remove one, and clear the input slot.
+                blankPattern.shrink(1);
+                if (blankPattern.getCount() <= 0) {
+                    this.blankPatternSlot.set(ItemStack.EMPTY);
+                }
+            }
+
             this.encodedPatternSlot.set(encodedPattern);
         }
     }
