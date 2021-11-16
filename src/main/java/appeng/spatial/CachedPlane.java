@@ -21,11 +21,11 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.util.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
 import net.minecraft.world.level.ServerTickList;
@@ -325,7 +325,7 @@ public class CachedPlane {
 
                 CompassService.updateArea(this.getLevel(), c);
 
-                ClientboundLevelChunkPacket cdp = new ClientboundLevelChunkPacket(c);
+                var cdp = Platform.getFullChunkPacket(c);
                 level.getChunkSource().chunkMap.getPlayers(c.getPos(), false)
                         .forEach(spe -> spe.connection.send(cdp));
             }

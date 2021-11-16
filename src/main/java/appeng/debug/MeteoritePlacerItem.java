@@ -22,7 +22,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -132,7 +131,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         // is a debug tool, we'll not care about being terribly efficient here
         ChunkPos.rangeClosed(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
             LevelChunk c = level.getChunk(cp.x, cp.z);
-            player.connection.send(new ClientboundLevelChunkPacket(c));
+            player.connection.send(Platform.getFullChunkPacket(c));
         });
 
         return InteractionResult.sidedSuccess(level.isClientSide());
