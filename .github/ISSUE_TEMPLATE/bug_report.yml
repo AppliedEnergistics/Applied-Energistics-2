@@ -42,6 +42,7 @@ body:
     attributes:
       label: Which minecraft version are you using?
       options:
+        - 1.18
         - 1.17
         - 1.16
         - 1.15 - UNSUPPORTED
