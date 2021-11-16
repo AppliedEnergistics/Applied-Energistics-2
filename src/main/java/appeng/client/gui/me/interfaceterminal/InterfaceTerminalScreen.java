@@ -356,27 +356,18 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
-    public void postUpdate(boolean fullUpdate, final CompoundNBT in) {
-        if (fullUpdate) {
+    public void postInventoryUpdate(boolean clearExistingData, long inventoryId, CompoundNBT invData) {
+        if (clearExistingData) {
             this.byId.clear();
             this.refreshList = true;
-        }
+        } else {
+            ITextComponent un = ITextComponent.Serializer.getComponentFromJson(invData.getString("un"));
+            final InterfaceRecord current = this.getById(inventoryId, invData.getLong("sortBy"), un);
 
-        for (final String key : in.keySet()) {
-            if (key.startsWith("=")) {
-                try {
-                    final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
-                    final CompoundNBT invData = in.getCompound(key);
-                    ITextComponent un = ITextComponent.Serializer.getComponentFromJson(invData.getString("un"));
-                    final InterfaceRecord current = this.getById(id, invData.getLong("sortBy"), un);
-
-                    for (int x = 0; x < current.getInventory().getSlots(); x++) {
-                        final String which = Integer.toString(x);
-                        if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, ItemStack.read(invData.getCompound(which)));
-                        }
-                    }
-                } catch (final NumberFormatException ignored) {
+            for (int x = 0; x < current.getInventory().getSlots(); x++) {
+                final String which = Integer.toString(x);
+                if (invData.contains(which)) {
+                    current.getInventory().setStackInSlot(x, ItemStack.read(invData.getCompound(which)));
                 }
             }
         }
