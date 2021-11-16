@@ -23,7 +23,6 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -38,32 +37,39 @@ import appeng.core.sync.network.INetworkInfo;
 public class InterfaceTerminalPacket extends BasePacket {
 
     // input.
-    private final boolean fullUpdate;
-    private final CompoundTag in;
+    private boolean clearExistingData;
+    private long inventoryId;
+    private CompoundTag in;
 
     public InterfaceTerminalPacket(final FriendlyByteBuf stream) {
-        this.fullUpdate = stream.readBoolean();
+        this.clearExistingData = stream.readBoolean();
+        this.inventoryId = stream.readLong();
         this.in = stream.readNbt();
     }
 
     // api
-    public InterfaceTerminalPacket(boolean fullUpdate, CompoundTag din) {
-        this.fullUpdate = false;
-        this.in = null;
+    private InterfaceTerminalPacket(boolean clearExistingData, long inventoryId, CompoundTag din) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer(2048));
         data.writeInt(this.getPacketID());
-        data.writeBoolean(fullUpdate);
+        data.writeBoolean(clearExistingData);
+        data.writeLong(inventoryId);
         data.writeNbt(din);
         this.configureWrite(data);
     }
 
+    public static InterfaceTerminalPacket clearExistingData() {
+        return new InterfaceTerminalPacket(true, -1, new CompoundTag());
+    }
+
+    public static InterfaceTerminalPacket inventory(long id, CompoundTag data) {
+        return new InterfaceTerminalPacket(false, id, data);
+    }
+
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final Player player) {
-        final Screen gs = Minecraft.getInstance().screen;
-
-        if (gs instanceof InterfaceTerminalScreen) {
-            ((InterfaceTerminalScreen) gs).postUpdate(fullUpdate, this.in);
+    public void clientPacketData(INetworkInfo network, Player player) {
+        if (Minecraft.getInstance().screen instanceof InterfaceTerminalScreen interfaceTerminal) {
+            interfaceTerminal.postInventoryUpdate(this.clearExistingData, this.inventoryId, this.in);
         }
     }
 }

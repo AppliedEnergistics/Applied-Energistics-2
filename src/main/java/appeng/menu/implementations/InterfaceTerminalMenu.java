@@ -42,7 +42,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.core.AELog;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.helpers.InventoryAction;
@@ -96,15 +95,10 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
             visitInterfaceHosts(grid, PatternProviderPart.class, state);
         }
 
-        InterfaceTerminalPacket packet;
         if (state.total != this.diList.size() || state.forceFullUpdate) {
-            packet = this.createFullUpdate(grid);
+            sendFullUpdate(grid);
         } else {
-            packet = createIncrementalUpdate();
-        }
-
-        if (packet != null) {
-            NetworkHandler.instance().sendTo(packet, (ServerPlayer) this.getPlayerInventory().player);
+            sendIncrementalUpdate();
         }
     }
 
@@ -234,12 +228,14 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         }
     }
 
-    private InterfaceTerminalPacket createFullUpdate(@Nullable IGrid grid) {
+    private void sendFullUpdate(@Nullable IGrid grid) {
         this.byId.clear();
         this.diList.clear();
 
+        sendPacketToClient(InterfaceTerminalPacket.clearExistingData());
+
         if (grid == null) {
-            return new InterfaceTerminalPacket(true, new CompoundTag());
+            return;
         }
 
         for (var ih : grid.getActiveMachines(PatternProviderBlockEntity.class)) {
@@ -256,17 +252,17 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
             }
         }
 
-        CompoundTag data = new CompoundTag();
         for (var inv : this.diList.values()) {
             this.byId.put(inv.serverId, inv);
+            CompoundTag data = new CompoundTag();
             this.addItems(data, inv, 0, inv.server.size());
+            sendPacketToClient(InterfaceTerminalPacket.inventory(inv.serverId, data));
         }
-        return new InterfaceTerminalPacket(true, data);
     }
 
-    private InterfaceTerminalPacket createIncrementalUpdate() {
-        CompoundTag data = null;
+    private void sendIncrementalUpdate() {
         for (var inv : this.diList.values()) {
+            CompoundTag data = null;
             for (int x = 0; x < inv.server.size(); x++) {
                 if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
                     if (data == null) {
@@ -275,11 +271,10 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
                     this.addItems(data, inv, x, 1);
                 }
             }
+            if (data != null) {
+                sendPacketToClient(InterfaceTerminalPacket.inventory(inv.serverId, data));
+            }
         }
-        if (data != null) {
-            return new InterfaceTerminalPacket(false, data);
-        }
-        return null;
     }
 
     private boolean isDifferent(final ItemStack a, final ItemStack b) {
@@ -294,19 +289,16 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
         return !ItemStack.matches(a, b);
     }
 
-    private void addItems(final CompoundTag data, final InvTracker inv, final int offset, final int length) {
-        final String name = '=' + Long.toString(inv.serverId, Character.MAX_RADIX);
-        final CompoundTag tag = data.getCompound(name);
-
+    private void addItems(CompoundTag tag, final InvTracker inv, final int offset, final int length) {
         if (tag.isEmpty()) {
             tag.putLong("sortBy", inv.sortBy);
             tag.putString("un", Serializer.toJson(inv.name));
         }
 
         for (int x = 0; x < length; x++) {
-            final CompoundTag itemNBT = new CompoundTag();
+            var itemNBT = new CompoundTag();
 
-            final ItemStack is = inv.server.getStackInSlot(x + offset);
+            var is = inv.server.getStackInSlot(x + offset);
 
             // "update" client side.
             inv.client.setItemDirect(x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
@@ -317,8 +309,6 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
 
             tag.put(Integer.toString(x + offset), itemNBT);
         }
-
-        data.put(name, tag);
     }
 
     private static class InvTracker {

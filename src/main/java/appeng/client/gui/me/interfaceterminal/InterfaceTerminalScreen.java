@@ -355,27 +355,18 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
-    public void postUpdate(boolean fullUpdate, final CompoundTag in) {
-        if (fullUpdate) {
+    public void postInventoryUpdate(boolean clearExistingData, long inventoryId, CompoundTag invData) {
+        if (clearExistingData) {
             this.byId.clear();
             this.refreshList = true;
-        }
+        } else {
+            var un = Serializer.fromJson(invData.getString("un"));
+            var current = this.getById(inventoryId, invData.getLong("sortBy"), un);
 
-        for (final String key : in.getAllKeys()) {
-            if (key.startsWith("=")) {
-                try {
-                    final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
-                    final CompoundTag invData = in.getCompound(key);
-                    Component un = Serializer.fromJson(invData.getString("un"));
-                    final InterfaceRecord current = this.getById(id, invData.getLong("sortBy"), un);
-
-                    for (int x = 0; x < current.getInventory().size(); x++) {
-                        final String which = Integer.toString(x);
-                        if (invData.contains(which)) {
-                            current.getInventory().setItemDirect(x, ItemStack.of(invData.getCompound(which)));
-                        }
-                    }
-                } catch (final NumberFormatException ignored) {
+            for (int x = 0; x < current.getInventory().size(); x++) {
+                final String which = Integer.toString(x);
+                if (invData.contains(which)) {
+                    current.getInventory().setItemDirect(x, ItemStack.of(invData.getCompound(which)));
                 }
             }
         }
