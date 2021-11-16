@@ -38,32 +38,41 @@ import appeng.core.sync.network.INetworkInfo;
 public class InterfaceTerminalPacket extends BasePacket {
 
     // input.
-    private final boolean fullUpdate;
-    private final CompoundNBT in;
+    private boolean clearExistingData;
+    private long inventoryId;
+    private CompoundNBT in;
 
     public InterfaceTerminalPacket(final PacketBuffer stream) {
-        this.fullUpdate = stream.readBoolean();
+        this.clearExistingData = stream.readBoolean();
+        this.inventoryId = stream.readLong();
         this.in = stream.readCompoundTag();
     }
 
     // api
-    public InterfaceTerminalPacket(boolean fullUpdate, CompoundNBT din) {
-        this.fullUpdate = false;
-        this.in = null;
+    private InterfaceTerminalPacket(boolean clearExistingData, long inventoryId, CompoundNBT din) {
         PacketBuffer data = new PacketBuffer(Unpooled.buffer(2048));
         data.writeInt(this.getPacketID());
-        data.writeBoolean(fullUpdate);
+        data.writeBoolean(clearExistingData);
+        data.writeLong(inventoryId);
         data.writeCompoundTag(din);
         this.configureWrite(data);
     }
 
+    public static InterfaceTerminalPacket clearExistingData() {
+        return new InterfaceTerminalPacket(true, -1, new CompoundNBT());
+    }
+
+    public static InterfaceTerminalPacket inventory(long id, CompoundNBT data) {
+        return new InterfaceTerminalPacket(false, id, data);
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+    public void clientPacketData(INetworkInfo network, PlayerEntity player) {
         final Screen gs = Minecraft.getInstance().currentScreen;
 
         if (gs instanceof InterfaceTerminalScreen) {
-            ((InterfaceTerminalScreen) gs).postUpdate(fullUpdate, this.in);
+            ((InterfaceTerminalScreen) gs).postInventoryUpdate(this.clearExistingData, this.inventoryId, this.in);
         }
     }
 }

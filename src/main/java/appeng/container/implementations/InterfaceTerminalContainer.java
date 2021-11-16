@@ -21,6 +21,7 @@ package appeng.container.implementations;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
@@ -43,7 +44,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
-import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.BasePacket;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
@@ -102,15 +103,10 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             visitInterfaceHosts(grid, InterfacePart.class, state);
         }
 
-        InterfaceTerminalPacket packet;
         if (state.total != this.diList.size() || state.forceFullUpdate) {
-            packet = this.createFullUpdate(grid);
+            sendFullUpdate(grid, this::sendPacketToClient);
         } else {
-            packet = createIncrementalUpdate();
-        }
-
-        if (packet != null) {
-            NetworkHandler.instance().sendTo(packet, (ServerPlayerEntity) this.getPlayerInventory().player);
+            sendIncrementalUpdate(this::sendPacketToClient);
         }
     }
 
@@ -254,12 +250,14 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         this.updateHeld(player);
     }
 
-    private InterfaceTerminalPacket createFullUpdate(@Nullable IGrid grid) {
+    private void sendFullUpdate(@Nullable IGrid grid, Consumer<BasePacket> packetSender) {
         this.byId.clear();
         this.diList.clear();
 
+        packetSender.accept(InterfaceTerminalPacket.clearExistingData());
+
         if (grid == null) {
-            return new InterfaceTerminalPacket(true, new CompoundNBT());
+            return;
         }
 
         for (final IGridNode gn : grid.getMachines(InterfaceTileEntity.class)) {
@@ -278,16 +276,16 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             }
         }
 
-        CompoundNBT data = new CompoundNBT();
         for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
             this.byId.put(inv.serverId, inv);
+            CompoundNBT data = new CompoundNBT();
             this.addItems(data, inv, 0, inv.server.getSlots());
+            packetSender.accept(InterfaceTerminalPacket.inventory(inv.serverId, data));
         }
-        return new InterfaceTerminalPacket(true, data);
     }
 
-    private InterfaceTerminalPacket createIncrementalUpdate() {
+    private void sendIncrementalUpdate(Consumer<BasePacket> packetSender) {
         CompoundNBT data = null;
         for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
@@ -299,11 +297,11 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                     this.addItems(data, inv, x, 1);
                 }
             }
+            if (data != null) {
+                packetSender.accept(InterfaceTerminalPacket.inventory(inv.serverId, data));
+                data = null;
+            }
         }
-        if (data != null) {
-            return new InterfaceTerminalPacket(false, data);
-        }
-        return null;
     }
 
     private boolean isDifferent(final ItemStack a, final ItemStack b) {
@@ -318,10 +316,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         return !ItemStack.areItemStacksEqual(a, b);
     }
 
-    private void addItems(final CompoundNBT data, final InvTracker inv, final int offset, final int length) {
-        final String name = '=' + Long.toString(inv.serverId, Character.MAX_RADIX);
-        final CompoundNBT tag = data.getCompound(name);
-
+    private void addItems(CompoundNBT tag, InvTracker inv, int offset, int length) {
         if (tag.isEmpty()) {
             tag.putLong("sortBy", inv.sortBy);
             tag.putString("un", ITextComponent.Serializer.toJson(inv.name));
@@ -341,8 +336,6 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
             tag.put(Integer.toString(x + offset), itemNBT);
         }
-
-        data.put(name, tag);
     }
 
     private static class InvTracker {
