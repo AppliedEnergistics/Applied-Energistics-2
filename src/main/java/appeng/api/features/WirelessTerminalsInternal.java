@@ -24,9 +24,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.core.localization.PlayerMessages;
+import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.me.items.WirelessTermMenu;
 
 public final class WirelessTerminalsInternal {
 
@@ -40,15 +40,18 @@ public final class WirelessTerminalsInternal {
     private static class Opener implements WirelessTerminals.Opener {
         @Override
         public void open(ItemStack item, Player player, int inventorySlot) {
-            if (checkPreconditions(item, player)) {
-                MenuOpener.open(WirelessTermMenu.TYPE, player, MenuLocator.forInventorySlot(inventorySlot));
+            if (checkPreconditions(item, player)
+                    && item.getItem() instanceof WirelessTerminalItem wirelessTerminalItem) {
+                MenuOpener.open(wirelessTerminalItem.getMenuType(), player,
+                        MenuLocator.forInventorySlot(inventorySlot));
             }
         }
 
         @Override
         public void open(ItemStack item, Player player, InteractionHand hand) {
-            if (checkPreconditions(item, player)) {
-                MenuOpener.open(WirelessTermMenu.TYPE, player, MenuLocator.forHand(player, hand));
+            if (checkPreconditions(item, player)
+                    && item.getItem() instanceof WirelessTerminalItem wirelessTerminalItem) {
+                MenuOpener.open(wirelessTerminalItem.getMenuType(), player, MenuLocator.forHand(player, hand));
             }
         }
 

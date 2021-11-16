@@ -65,7 +65,7 @@ import appeng.helpers.iface.DualityPatternProvider;
 import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.util.Platform;
 
-public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu> {
+public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AEBaseScreen<C> {
 
     private static final int GUI_WIDTH = 195;
 
@@ -135,7 +135,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalMenu>
     private AETextField searchField;
     private int numLines = 0;
 
-    public InterfaceTerminalScreen(InterfaceTerminalMenu menu, Inventory playerInventory,
+    public InterfaceTerminalScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");

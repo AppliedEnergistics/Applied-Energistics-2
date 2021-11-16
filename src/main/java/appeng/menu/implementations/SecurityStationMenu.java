@@ -59,7 +59,7 @@ public class SecurityStationMenu extends ItemTerminalMenu implements InternalInv
     public int permissionMode = 0;
 
     public SecurityStationMenu(int id, final Inventory ip, final ITerminalHost monitorable) {
-        super(TYPE, id, ip, monitorable, false);
+        super(TYPE, id, ip, monitorable, true);
 
         this.securityBox = (SecurityStationBlockEntity) monitorable;
 
@@ -71,8 +71,6 @@ public class SecurityStationMenu extends ItemTerminalMenu implements InternalInv
         this.addSlot(this.linkableIn = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.GRID_LINKABLE_ITEM,
                 gridLinkingInv, 0), SlotSemantic.MACHINE_INPUT);
         this.addSlot(this.linkableOut = new OutputSlot(gridLinkingInv, 1, null), SlotSemantic.MACHINE_OUTPUT);
-
-        this.createPlayerInventorySlots(ip);
 
         registerClientAction(ACTION_TOGGLE_PERMISSION, SecurityPermissions.class, this::toggleSetting);
     }

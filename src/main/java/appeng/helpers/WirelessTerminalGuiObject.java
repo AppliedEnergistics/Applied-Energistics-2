@@ -138,7 +138,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         return false;
     }
 
-    private boolean testWap(final IWirelessAccessPoint wap) {
+    protected boolean testWap(final IWirelessAccessPoint wap) {
         double rangeLimit = wap.getRange();
         rangeLimit *= rangeLimit;
 

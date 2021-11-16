@@ -49,6 +49,7 @@ import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.IMenuCraftingPacket;
+import appeng.helpers.IPatternTerminalHost;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.NullMenu;
@@ -67,6 +68,8 @@ import appeng.util.inv.CarriedItemInventory;
 import appeng.util.inv.PlayerInternalInventory;
 
 /**
+ * Can only be used with a host that implements {@link IPatternTerminalHost}.
+ *
  * @see appeng.client.gui.me.items.PatternTermScreen
  */
 public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHost, IMenuCraftingPacket {
@@ -83,7 +86,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             .requirePermission(SecurityPermissions.CRAFT)
             .build("patternterm");
 
-    private final PatternTerminalPart patternTerminal;
+    private final IPatternTerminalHost patternTerminal;
     private final InternalInventory craftingGridInv;
     private final FakeCraftingMatrixSlot[] craftingGridSlots = new FakeCraftingMatrixSlot[9];
     private final OptionalFakeSlot[] processingOutputSlots = new OptionalFakeSlot[3];
@@ -107,14 +110,19 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     public IntSet slotsSupportingFluidSubstitution = new IntArraySet();
 
     public PatternTermMenu(int id, final Inventory ip, final ITerminalHost monitorable) {
-        super(TYPE, id, ip, monitorable, false);
-        this.patternTerminal = (PatternTerminalPart) monitorable;
+        this(TYPE, id, ip, monitorable, true);
+    }
+
+    public PatternTermMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost monitorable,
+            boolean bindInventory) {
+        super(menuType, id, ip, monitorable, bindInventory);
+        this.patternTerminal = (IPatternTerminalHost) monitorable;
 
         var patternInv = this.getPatternTerminal().getSubInventory(ISegmentedInventory.PATTERNS);
-        var output = this.getPatternTerminal().getSubInventory(PatternTerminalPart.INV_OUTPUT);
+        var output = this.getPatternTerminal().getSubInventory(IPatternTerminalHost.INV_OUTPUT);
 
         // Create the 3x3 crafting input grid, which is used for both processing and crafting mode
-        this.craftingGridInv = this.getPatternTerminal().getSubInventory(PatternTerminalPart.INV_CRAFTING);
+        this.craftingGridInv = this.getPatternTerminal().getSubInventory(IPatternTerminalHost.INV_CRAFTING);
         for (int i = 0; i < 9; i++) {
             this.addSlot(this.craftingGridSlots[i] = new FakeCraftingMatrixSlot(this.craftingGridInv, i),
                     SlotSemantic.CRAFTING_GRID);
@@ -147,8 +155,6 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
         this.encodedPatternSlot.setStackLimit(1);
 
-        this.createPlayerInventorySlots(ip);
-
         registerClientAction(ACTION_ENCODE, this::encode);
         registerClientAction(ACTION_CLEAR, this::clear);
         registerClientAction(ACTION_SET_CRAFT_MODE, Boolean.class, getPatternTerminal()::setCraftingRecipe);
@@ -173,7 +179,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, level)) {
             this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
-            this.currentRecipeCraftingMode = this.craftingMode;
+            this.currentRecipeCraftingMode = this.isCraftingMode();
             checkFluidSubstitutionSupport();
         }
 
@@ -447,7 +453,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
     public void onServerDataSync() {
         super.onServerDataSync();
 
-        if (this.currentRecipeCraftingMode != this.craftingMode) {
+        if (this.currentRecipeCraftingMode != this.isCraftingMode()) {
             this.getAndUpdateOutput();
         }
     }
@@ -503,11 +509,11 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         }
     }
 
-    public PatternTerminalPart getPatternTerminal() {
+    public IPatternTerminalHost getPatternTerminal() {
         return this.patternTerminal;
     }
 
-    private boolean isSubstitute() {
+    public boolean isSubstitute() {
         return this.substitute;
     }
 

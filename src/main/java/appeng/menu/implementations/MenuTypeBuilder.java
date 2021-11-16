@@ -39,7 +39,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.features.WirelessTerminals;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.parts.IPart;
@@ -47,7 +46,6 @@ import appeng.api.parts.IPartHost;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.helpers.ICustomNameObject;
-import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -263,16 +261,9 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         if (it.getItem() instanceof IGuiItem guiItem) {
             // Optionally contains the block the item was used on to open the menu
             BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
-            IGuiItemObject guiObject = guiItem.getGuiObject(it, locator.getItemIndex(), player.level, blockPos);
+            IGuiItemObject guiObject = guiItem.getGuiObject(it, locator.getItemIndex(), player, blockPos);
             if (hostInterface.isInstance(guiObject)) {
                 return hostInterface.cast(guiObject);
-            }
-        }
-
-        if (hostInterface.isAssignableFrom(WirelessTerminalGuiObject.class)) {
-            var wh = WirelessTerminals.get(it.getItem());
-            if (wh != null) {
-                return hostInterface.cast(new WirelessTerminalGuiObject(wh, it, player, locator.getItemIndex()));
             }
         }
 

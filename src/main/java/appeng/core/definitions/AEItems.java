@@ -34,6 +34,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.ids.AEItemIds;
 import appeng.api.storage.StorageChannels;
 import appeng.api.util.AEColor;
+import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.crafting.pattern.CraftingPatternItem;
@@ -60,13 +61,8 @@ import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
-import appeng.items.tools.powered.ChargedStaffItem;
-import appeng.items.tools.powered.ColorApplicatorItem;
-import appeng.items.tools.powered.EntropyManipulatorItem;
-import appeng.items.tools.powered.MatterCannonItem;
-import appeng.items.tools.powered.PortableCellItem;
+import appeng.items.tools.powered.*;
 import appeng.items.tools.powered.PortableCellItem.StorageTier;
-import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.items.tools.quartz.QuartzAxeItem;
 import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
 import appeng.items.tools.quartz.QuartzHoeItem;
@@ -114,7 +110,8 @@ public final class AEItems {
     ///
 
     public static final ItemDefinition<EntropyManipulatorItem> ENTROPY_MANIPULATOR = item(AEItemIds.ENTROPY_MANIPULATOR, p -> new EntropyManipulatorItem(p.stacksTo(1)));
-    public static final ItemDefinition<WirelessTerminalItem> WIRELESS_TERMINAL = item(AEItemIds.WIRELESS_TERMINAL, p -> new WirelessTerminalItem(p.stacksTo(1)));
+    public static final ItemDefinition<WirelessTerminalItem> WIRELESS_TERMINAL = item(AEItemIds.WIRELESS_TERMINAL, p -> new WirelessTerminalItem(AEConfig.instance().getWirelessTerminalBattery(), p.stacksTo(1)));
+    public static final ItemDefinition<WirelessTerminalItem> WIRELESS_CRAFTING_TERMINAL = item(AEItemIds.WIRELESS_CRAFTING_TERMINAL, p -> new WirelessCraftingTerminalItem(AEConfig.instance().getWirelessTerminalBattery(), p.stacksTo(1)));
     public static final ItemDefinition<ChargedStaffItem> CHARGED_STAFF = item(AEItemIds.CHARGED_STAFF, p -> new ChargedStaffItem(p.stacksTo(1)));
     public static final ItemDefinition<ColorApplicatorItem> COLOR_APPLICATOR = item(AEItemIds.COLOR_APPLICATOR, p -> new ColorApplicatorItem(p.stacksTo(1)));
     public static final ItemDefinition<MatterCannonItem> MASS_CANNON = item(AEItemIds.MATTER_CANNON, p -> new MatterCannonItem(p.stacksTo(1)));

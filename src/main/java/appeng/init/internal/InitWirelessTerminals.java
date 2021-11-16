@@ -31,6 +31,7 @@ public final class InitWirelessTerminals {
     public static void init() {
         WirelessTerminalsInternal.installOpener();
         WirelessTerminals.register(AEItems.WIRELESS_TERMINAL, WirelessTerminalItem.TERMINAL_HANDLER);
+        WirelessTerminals.register(AEItems.WIRELESS_CRAFTING_TERMINAL, WirelessTerminalItem.TERMINAL_HANDLER);
     }
 
 }

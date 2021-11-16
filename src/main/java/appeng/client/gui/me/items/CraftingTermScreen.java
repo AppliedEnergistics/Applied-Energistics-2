@@ -30,9 +30,9 @@ import appeng.menu.me.items.CraftingTermMenu;
  * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored server-side in
  * the crafting terminal itself.
  */
-public class CraftingTermScreen extends ItemTerminalScreen<CraftingTermMenu> {
+public class CraftingTermScreen<C extends CraftingTermMenu> extends ItemTerminalScreen<C> {
 
-    public CraftingTermScreen(CraftingTermMenu menu, Inventory playerInventory,
+    public CraftingTermScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 

@@ -50,11 +50,7 @@ import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.menu.me.fluids.FluidTerminalMenu;
-import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.me.items.ItemTerminalMenu;
-import appeng.menu.me.items.MEPortableCellMenu;
-import appeng.menu.me.items.PatternTermMenu;
-import appeng.menu.me.items.WirelessTermMenu;
+import appeng.menu.me.items.*;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
@@ -73,6 +69,7 @@ public final class InitMenuTypes {
                 CraftingCPUMenu.TYPE,
                 CraftingStatusMenu.TYPE,
                 CraftingTermMenu.TYPE,
+                WirelessCraftingTermMenu.TYPE,
                 DriveMenu.TYPE,
                 FormationPlaneMenu.ITEM_TYPE,
                 FormationPlaneMenu.FLUID_TYPE,
