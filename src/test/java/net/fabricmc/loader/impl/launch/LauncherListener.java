@@ -1,4 +1,4 @@
-package net.fabricmc.loader.launch.common;
+package net.fabricmc.loader.impl.launch;
 
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.launcher.LauncherDiscoveryListener;

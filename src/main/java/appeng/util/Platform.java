@@ -58,6 +58,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -709,7 +710,7 @@ public class Platform {
             return null;
         }
 
-        if (!serverLevel.isPositionTickingWithEntitiesLoaded(pos)) {
+        if (!serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
             return null;
         }
 
@@ -722,11 +723,10 @@ public class Platform {
 
     /**
      * Checks that the chunk at the given position in the given level is in a state where block entities would tick.
-     * 
-     * @see {@link net.minecraft.world.level.chunk.LevelChunk#isTicking(BlockPos)} (which is package-visible)
+     * Vanilla does this check in {@link Level#tickBlockEntities}
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
-        return level instanceof ServerLevel serverLevel && serverLevel.isPositionTickingWithEntitiesLoaded(pos);
+        return level instanceof ServerLevel serverLevel && serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos));
     }
 
     public static Transaction openOrJoinTx() {

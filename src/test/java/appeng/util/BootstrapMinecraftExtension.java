@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import net.fabricmc.loader.launch.common.LauncherAccessor;
+import net.fabricmc.loader.impl.launch.LauncherAccessor;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
 

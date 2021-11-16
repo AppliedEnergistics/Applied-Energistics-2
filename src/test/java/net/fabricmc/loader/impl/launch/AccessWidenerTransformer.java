@@ -1,19 +1,15 @@
-package net.fabricmc.loader.launch.common;
+package net.fabricmc.loader.impl.launch;
 
 import net.fabricmc.accesswidener.AccessWidener;
-import net.fabricmc.accesswidener.AccessWidenerVisitor;
-import net.fabricmc.loader.FabricLoader;
+import net.fabricmc.accesswidener.AccessWidenerClassVisitor;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.spongepowered.asm.mixin.transformer.FabricMixinTransformerProxy;
+import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Applies AccessWideners using the Java Instrumentation API.
@@ -22,10 +18,11 @@ class AccessWidenerTransformer implements ClassFileTransformer {
 
     private final AccessWidener accessWidener;
 
-    private final FabricMixinTransformerProxy mixinProxy = new FabricMixinTransformerProxy();
+    private final IMixinTransformer mixinTransformer;
 
-    public AccessWidenerTransformer(AccessWidener accessWidener) {
+    public AccessWidenerTransformer(AccessWidener accessWidener, IMixinTransformer mixinTransformer) {
         this.accessWidener = accessWidener;
+        this.mixinTransformer = mixinTransformer;
     }
 
     @Override
@@ -35,14 +32,14 @@ class AccessWidenerTransformer implements ClassFileTransformer {
             ClassReader classReader = new ClassReader(classfileBuffer);
             ClassWriter classWriter = new ClassWriter(0);
             ClassVisitor visitor = classWriter;
-            visitor = AccessWidenerVisitor.createClassVisitor(FabricLoader.ASM_VERSION, visitor, FabricLoader.INSTANCE.getAccessWidener());
+            visitor = AccessWidenerClassVisitor.createClassVisitor(FabricLoaderImpl.ASM_VERSION, visitor, FabricLoaderImpl.INSTANCE.getAccessWidener());
             classReader.accept(visitor, 0);
             classfileBuffer = classWriter.toByteArray();
         }
 
         if (className.startsWith("net/minecraft")) {
             className = className.replace('/', '.');
-            return mixinProxy.transformClassBytes(className, className, classfileBuffer);
+            return mixinTransformer.transformClassBytes(className, className, classfileBuffer);
         }
         return null;
     }

@@ -23,8 +23,6 @@
 
 package appeng.api.parts;
 
-import java.io.IOException;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
@@ -69,10 +67,8 @@ public interface IFacadeContainer {
      * @param data to be read data
      *
      * @return true if it was readable
-     *
-     * @throws IOException
      */
-    boolean readFromStream(FriendlyByteBuf data) throws IOException;
+    boolean readFromStream(FriendlyByteBuf data);
 
     /**
      * read from NBT
@@ -85,10 +81,8 @@ public interface IFacadeContainer {
      * write to stream
      *
      * @param data to be written data
-     *
-     * @throws IOException
      */
-    void writeToStream(FriendlyByteBuf data) throws IOException;
+    void writeToStream(FriendlyByteBuf data);
 
     /**
      * @return true if there are no facades.

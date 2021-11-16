@@ -1,7 +1,6 @@
-package net.fabricmc.loader.launch.common;
+package net.fabricmc.loader.impl.launch;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
-import org.spongepowered.tools.agent.MixinAgent;
 
 /**
  * Due to package-level visibility, we use this hack to access the loader internals.

@@ -1,1 +1,1 @@
-net.fabricmc.loader.launch.common.LauncherListener
+net.fabricmc.loader.impl.launch.LauncherListener

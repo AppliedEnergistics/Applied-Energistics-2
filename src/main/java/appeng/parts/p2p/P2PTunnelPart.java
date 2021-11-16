@@ -18,7 +18,6 @@
 
 package appeng.parts.p2p;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -135,7 +134,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final short oldf = this.freq;
         this.freq = data.readShort();
@@ -143,7 +142,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf data) throws IOException {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeShort(this.getFrequency());
     }

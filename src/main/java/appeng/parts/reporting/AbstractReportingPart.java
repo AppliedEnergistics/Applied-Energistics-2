@@ -18,8 +18,6 @@
 
 package appeng.parts.reporting;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
@@ -117,7 +115,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         this.clientFlags = this.getSpin() & 3;
 
@@ -141,7 +139,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) {
         super.readFromStream(data);
         final int oldFlags = this.getClientFlags();
         final int oldOpacity = this.opacity;

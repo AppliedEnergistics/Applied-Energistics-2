@@ -1,16 +1,18 @@
 package appeng.core.sync.packets;
 
-import appeng.blockentity.AEBaseBlockEntity;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
+import java.util.function.Consumer;
+
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import java.util.function.Consumer;
+import appeng.blockentity.AEBaseBlockEntity;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.INetworkInfo;
 
 /**
  * Sends updates from {@link appeng.blockentity.AEBaseBlockEntity} to the client.
@@ -21,8 +23,8 @@ public class BlockEntityUpdatePacket extends BasePacket {
     private byte[] data;
 
     public BlockEntityUpdatePacket(BlockPos blockPos,
-                                   BlockEntityType<?> blockEntityType,
-                                   Consumer<FriendlyByteBuf> writer) {
+            BlockEntityType<?> blockEntityType,
+            Consumer<FriendlyByteBuf> writer) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
         data.writeBlockPos(blockPos);

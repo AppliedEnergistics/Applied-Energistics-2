@@ -18,7 +18,6 @@
 
 package appeng.parts.networking;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
@@ -235,7 +234,7 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
         int flags = 0;
         boolean[] writeSide = new boolean[Direction.values().length];
         int[] channelsPerSide = new int[Direction.values().length];
@@ -278,7 +277,7 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) {
         int cs = data.readByte();
         // Save previous state for change-detection
         var previousConnections = this.getConnections();

@@ -18,7 +18,6 @@
 
 package appeng.parts.misc;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -132,12 +131,12 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
 
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) {
         return false;
     }
 

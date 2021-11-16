@@ -23,7 +23,6 @@
 
 package appeng.api.parts;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -146,10 +145,8 @@ public interface IPart extends ICustomCableConnection {
      * write data to bus packet.
      *
      * @param data to be written data
-     *
-     * @throws IOException
      */
-    void writeToStream(FriendlyByteBuf data) throws IOException;
+    void writeToStream(FriendlyByteBuf data);
 
     /**
      * read data from bus packet.
@@ -157,10 +154,8 @@ public interface IPart extends ICustomCableConnection {
      * @param data to be read data
      *
      * @return true will re-draw the part.
-     *
-     * @throws IOException
      */
-    boolean readFromStream(FriendlyByteBuf data) throws IOException;
+    boolean readFromStream(FriendlyByteBuf data);
 
     /**
      * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause

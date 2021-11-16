@@ -1,33 +1,30 @@
-package net.fabricmc.loader.launch.common;
+package net.fabricmc.loader.impl.launch;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.FabricLoader;
-import net.fabricmc.loader.game.MinecraftGameProvider;
-import org.junit.platform.commons.util.ReflectionUtils;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider;
+import net.fabricmc.loader.impl.launch.knot.MixinServiceKnotAccessor;
 import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.transformer.FabricMixinTransformerProxy;
-import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
-import org.spongepowered.tools.agent.MixinAgent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.jar.Manifest;
 
 class TestLauncher extends FabricLauncherBase {
 
-    public TestLauncher(Instrumentation instrumentation) throws Exception {
+    public TestLauncher(Instrumentation instrumentation) {
         setProperties(new HashMap<>());
 
         var provider = new MinecraftGameProvider();
-        provider.locateGame(EnvType.CLIENT, new String[]{}, Thread.currentThread().getContextClassLoader());
+        provider.locateGame(this, new String[]{}, Thread.currentThread().getContextClassLoader());
 
-        FabricLoader loader = FabricLoader.INSTANCE;
+        FabricLoaderImpl loader = FabricLoaderImpl.INSTANCE;
         loader.setGameProvider(provider);
         loader.load();
         loader.freeze();
@@ -37,11 +34,26 @@ class TestLauncher extends FabricLauncherBase {
         FabricMixinBootstrap.init(getEnvironmentType(), loader);
         FabricLauncherBase.finishMixinBootstrapping();
 
-        instrumentation.addTransformer(new AccessWidenerTransformer(loader.getAccessWidener()));
+        var transformer = MixinServiceKnotAccessor.getTransformer();
+        instrumentation.addTransformer(new AccessWidenerTransformer(loader.getAccessWidener(), transformer));
     }
 
     @Override
-    public void propose(URL url) {
+    public void addToClassPath(Path path, String... allowedPrefixes) {
+    }
+
+    @Override
+    public void setAllowedPrefixes(Path path, String... prefixes) {
+    }
+
+    @Override
+    public Class<?> loadIntoTarget(String name) throws ClassNotFoundException {
+        return null;
+    }
+
+    @Override
+    public Manifest getManifest(Path originPath) {
+        return null;
     }
 
     @Override

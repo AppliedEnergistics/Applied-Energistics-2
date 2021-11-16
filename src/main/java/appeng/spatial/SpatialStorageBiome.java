@@ -25,8 +25,6 @@ import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.Builder;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
-import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder;
 
 /**
  * The single biome used within the spatial storage level.
@@ -34,10 +32,8 @@ import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder;
 public class SpatialStorageBiome {
 
     public static final Biome INSTANCE = new BiomeBuilder()
-            .generationSettings(new BiomeGenerationSettings.Builder().surfaceBuilder(
-                    new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.CONFIG_STONE))
-                    .build())
-            .precipitation(Precipitation.NONE).biomeCategory(BiomeCategory.NONE).depth(0).scale(1)
+            .generationSettings(new BiomeGenerationSettings.Builder().build())
+            .precipitation(Precipitation.NONE).biomeCategory(BiomeCategory.NONE)
             // Copied from the vanilla void biome
             .temperature(0.5F).downfall(0.5F)
             .specialEffects(new Builder().waterColor(4159204).waterFogColor(329011).fogColor(0)

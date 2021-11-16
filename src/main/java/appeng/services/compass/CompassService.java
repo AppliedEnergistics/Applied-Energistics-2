@@ -29,7 +29,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.LevelChunk;
 
 import appeng.core.definitions.AEBlocks;
 
@@ -161,7 +160,7 @@ public final class CompassService {
         int cz = chunk.getPos().z;
 
         var section = chunk.getSections()[sectionIndex];
-        if (section == LevelChunk.EMPTY_SECTION) {
+        if (section.hasOnlyAir()) {
             compassRegion.setHasSkyStone(cx, cz, sectionIndex, false);
             return;
         }

@@ -29,13 +29,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess.RegistryHolder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.NearestNeighborBiomeZoomer;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
@@ -48,7 +45,7 @@ import appeng.spatial.SpatialStorageDimensionIds;
 public class DimensionTypeMixin {
 
     @Inject(method = "registerBuiltin", at = @At("TAIL"))
-    private static void addRegistryDefaults(RegistryHolder registryTracker, CallbackInfoReturnable<?> cir) {
+    private static void addRegistryDefaults(RegistryAccess registryAccess, CallbackInfoReturnable<?> cir) {
         var dimensionType = DimensionType.create(
                 OptionalLong.of(12000), // fixedTime
                 false, // hasSkylight
@@ -64,12 +61,11 @@ public class DimensionTypeMixin {
                 SpatialStorageChunkGenerator.MIN_Y, // minY
                 SpatialStorageChunkGenerator.HEIGHT, // height
                 SpatialStorageChunkGenerator.HEIGHT, // logicalHeight
-                NearestNeighborBiomeZoomer.INSTANCE, // biomeZoomer
                 BlockTags.INFINIBURN_OVERWORLD.getName(), // infiniburn
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, // effectsLocation
                 1.0f // ambientLight
         );
-        var dimensionTypes = registryTracker.ownedRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+        var dimensionTypes = registryAccess.ownedRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
         Registry.register(dimensionTypes, SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(), dimensionType);
     }
 
@@ -78,10 +74,12 @@ public class DimensionTypeMixin {
      * new World.</em>
      */
     @Inject(method = "defaultDimensions", at = @At("RETURN"))
-    private static void buildDimensionRegistry(Registry<DimensionType> dimensionTypes, Registry<Biome> biomes,
-            Registry<NoiseGeneratorSettings> dimensionSettings, long seed,
+    private static void buildDimensionRegistry(RegistryAccess registryAccess, long seed,
             CallbackInfoReturnable<MappedRegistry<LevelStem>> cir) {
         MappedRegistry<LevelStem> simpleregistry = cir.getReturnValue();
+
+        var dimensionTypes = registryAccess.ownedRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+        var biomes = registryAccess.ownedRegistryOrThrow(Registry.BIOME_REGISTRY);
 
         simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID,
                 new LevelStem(() -> dimensionTypes.getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),

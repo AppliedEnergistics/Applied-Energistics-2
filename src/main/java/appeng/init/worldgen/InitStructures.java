@@ -24,7 +24,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
@@ -47,9 +46,9 @@ public final class InitStructures {
                 MeteoriteStructure.CONFIGURED_INSTANCE);
 
         // Since we now always add our structure, we need to consider the superflat generator
-        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(
-                MeteoriteStructure.INSTANCE,
-                MeteoriteStructure.CONFIGURED_INSTANCE);
+// TODO 1.18       FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(
+// TODO 1.18               MeteoriteStructure.INSTANCE,
+// TODO 1.18               MeteoriteStructure.CONFIGURED_INSTANCE);
     }
 
     // This mirrors the Vanilla registration method for structures, but uses the

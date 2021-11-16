@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -685,7 +684,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return light;
     }
 
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
         int sides = 0;
         for (int x = 0; x < Platform.DIRECTIONS_WITH_NULL.length; x++) {
             final IPart p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
@@ -710,7 +709,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         this.getFacadeContainer().writeToStream(data);
     }
 
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(FriendlyByteBuf data) {
         final byte sides = data.readByte();
 
         boolean updateBlock = false;
@@ -1007,7 +1006,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     public VoxelShape getCollisionShape(CollisionContext context) {
         // This is a hack for annihilation planes
         var itemEntity = context instanceof EntityCollisionContext entityContext
-                && entityContext.getEntity().orElse(null) instanceof ItemEntity;
+                && entityContext.getEntity() instanceof ItemEntity;
 
         if (itemEntity) {
             if (cachedCollisionShapeLiving == null) {

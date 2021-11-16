@@ -58,18 +58,19 @@ dependencies {
     mappings loom.layered() {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-1.17.1:2021.09.05@zip")
+        signatureFix("net.fabricmc:yarn:${project.minecraft_version}+${project.yarn_version}:v2")
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
-    modRuntime("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+    modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 
@@ -99,7 +100,7 @@ archivesBaseName = artifact_basename
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(16)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 

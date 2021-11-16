@@ -35,6 +35,7 @@ import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -42,6 +43,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep.Carving;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.StructureSettings;
+import net.minecraft.world.level.levelgen.blending.Blender;
 
 import appeng.core.definitions.AEBlocks;
 
@@ -101,7 +103,23 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void buildSurfaceAndBedrock(WorldGenRegion region, ChunkAccess chunk) {
+    public int getGenDepth() {
+        return 256;
+    }
+
+    @Override
+    public int getMinY() {
+        return MIN_Y;
+    }
+
+    @Override
+    public Climate.Sampler climateSampler() {
+        return (i, j, k) -> Climate.target(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+    }
+
+    @Override
+    public void buildSurface(WorldGenRegion region, StructureFeatureManager structureFeatureManager,
+            ChunkAccess chunk) {
         this.fillChunk(chunk);
         chunk.setUnsaved(false);
     }
@@ -133,8 +151,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, StructureFeatureManager templates,
-            ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
+            StructureFeatureManager structureFeatureManager, ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
@@ -149,11 +167,11 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void applyBiomeDecoration(WorldGenRegion region, StructureFeatureManager accessor) {
+    public void applyCarvers(WorldGenRegion worldGenRegion, long l, BiomeManager biomeManager,
+            StructureFeatureManager structureFeatureManager, ChunkAccess chunkAccess, Carving carving) {
     }
 
     @Override
-    public void applyCarvers(long seed, BiomeManager access, ChunkAccess chunk, Carving carver) {
+    public void spawnOriginalMobs(WorldGenRegion level) {
     }
-
 }

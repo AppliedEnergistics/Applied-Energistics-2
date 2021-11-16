@@ -16,9 +16,9 @@
     "client": ["appeng.data.Entrypoint"]
   },
   "depends": {
-    "fabricloader": ">=0.7.1",
+    "fabricloader": ">=0.12.5",
     "fabric": "*",
-    "minecraft": "1.17.x",
+    "minecraft": "1.18-beta.2",
     "appliedenergistics2": "*"
   }
 }

@@ -21,6 +21,10 @@ extendable method net/minecraft/world/entity/item/ItemEntity setUnderwaterMoveme
 accessible field net/minecraft/world/level/levelgen/feature/StructureFeature STEP Ljava/util/Map;
 accessible field net/minecraft/world/level/levelgen/flat/FlatLevelGeneratorSettings STRUCTURE_FEATURES Ljava/util/Map;
 accessible method net/minecraft/data/worldgen/StructureFeatures register (Ljava/lang/String;Lnet/minecraft/world/level/levelgen/feature/ConfiguredStructureFeature;)Lnet/minecraft/world/level/levelgen/feature/ConfiguredStructureFeature;
+accessible method net/minecraft/world/level/levelgen/feature/StructurePieceType setPieceId (Lnet/minecraft/world/level/levelgen/feature/StructurePieceType$ContextlessType;Ljava/lang/String;)Lnet/minecraft/world/level/levelgen/feature/StructurePieceType;
+
+# features
+accessible method net/minecraft/data/worldgen/placement/OrePlacements commonOrePlacement (ILnet/minecraft/world/level/levelgen/placement/PlacementModifier;)Ljava/util/List;
 
 # For overlay rendering
 accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard

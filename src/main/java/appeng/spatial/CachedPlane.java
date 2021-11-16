@@ -21,15 +21,12 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.util.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
-import net.minecraft.world.level.ServerTickList;
-import net.minecraft.world.level.TickNextTickData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -38,6 +35,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.lighting.LevelLightEngine;
+import net.minecraft.world.ticks.LevelChunkTicks;
+import net.minecraft.world.ticks.ScheduledTick;
 
 import appeng.api.ids.AETags;
 import appeng.api.movable.BlockEntityMoveStrategies;
@@ -46,6 +45,7 @@ import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.services.compass.CompassService;
+import appeng.util.Platform;
 
 public class CachedPlane {
     private final int x_size;
@@ -59,7 +59,7 @@ public class CachedPlane {
     private final LevelChunk[][] myChunks;
     private final Column[][] myColumns;
     private final List<BlockEntityMoveRecord> blockEntities = new ArrayList<>();
-    private final List<TickNextTickData<Block>> ticks = new ArrayList<>();
+    private final List<ScheduledTick<Block>> ticks = new ArrayList<>();
     private final ServerLevel level;
     private final List<WorldCoord> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
@@ -149,17 +149,14 @@ public class CachedPlane {
                     }
                 }
 
-                final long gameTime = this.getLevel().getGameTime();
-                final ServerTickList<Block> pendingBlockTicks = this.getLevel().getBlockTicks();
-                var pending = pendingBlockTicks.fetchTicksInChunk(c.getPos(), false, true);
-                for (var entry : pending) {
-                    final BlockPos tePOS = entry.pos;
-                    if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
-                            && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
-                        this.ticks.add(new TickNextTickData<>(tePOS, entry.getType(),
-                                entry.triggerTick - gameTime, entry.priority));
+                var pending = (LevelChunkTicks<Block>) c.getBlockTicks();
+                pending.getAll().forEach(entry -> {
+                    var pos = entry.pos();
+                    if (pos.getX() >= minX && pos.getX() <= maxX && pos.getY() >= minY && pos.getY() <= maxY
+                            && pos.getZ() >= minZ && pos.getZ() <= maxZ) {
+                        this.ticks.add(entry);
                     }
-                }
+                });
             }
         }
     }
@@ -221,16 +218,14 @@ public class CachedPlane {
                         pos.getZ() - dst.z_offset, moveRecord);
             }
 
-            for (final TickNextTickData<Block> entry : this.ticks) {
-                final BlockPos tePOS = entry.pos;
-                dst.addTick(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
-                        entry);
+            for (var entry : this.ticks) {
+                var movedPos = entry.pos().offset(-this.x_offset, -this.y_offset, -this.z_offset);
+                dst.addTick(movedPos, entry);
             }
 
-            for (final TickNextTickData<Block> entry : dst.ticks) {
-                final BlockPos tePOS = entry.pos;
-                this.addTick(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset,
-                        entry);
+            for (var entry : dst.ticks) {
+                var movedPos = entry.pos().offset(-dst.x_offset, -dst.y_offset, -dst.z_offset);
+                addTick(movedPos, entry);
             }
 
             startTime = System.nanoTime();
@@ -250,10 +245,9 @@ public class CachedPlane {
         }
     }
 
-    private void addTick(final int x, final int y, final int z, final TickNextTickData<Block> entry) {
-        BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
-        this.level.getBlockTicks().scheduleTick(where, entry.getType(), (int) entry.triggerTick,
-                entry.priority);
+    private void addTick(BlockPos pos, ScheduledTick<Block> tick) {
+        this.level.getBlockTicks().schedule(new ScheduledTick<>(
+                tick.type(), pos, tick.triggerTick(), tick.priority(), tick.subTickOrder()));
     }
 
     private void addBlockEntity(final int x, final int y, final int z, BlockEntityMoveRecord moveRecord) {
@@ -312,7 +306,7 @@ public class CachedPlane {
                 for (int z = 0; z < this.cz_size; z++) {
                     final LevelChunk c = this.myChunks[x][z];
                     serverLightManager.lightChunk(c, false);
-                    c.markUnsaved();
+                    c.setUnsaved(true);
                 }
             }
         }
@@ -347,7 +341,7 @@ public class CachedPlane {
         public BlockState state;
     }
 
-    private class Column {
+    private static class Column {
         private final int x;
         private final int z;
 
@@ -377,8 +371,7 @@ public class CachedPlane {
         }
 
         public LevelChunkSection getSection(int y) {
-            return c.getOrCreateSection(
-                    c.getSectionIndexFromSectionY(SectionPos.blockToSectionCoord(y)));
+            return c.getSection(c.getSectionIndexFromSectionY(SectionPos.blockToSectionCoord(y)));
         }
     }
 

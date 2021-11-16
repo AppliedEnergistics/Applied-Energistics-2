@@ -129,7 +129,7 @@ public class TestOreGenCommand implements ISubCommand {
             blockPos.setX(x);
             for (int z = cp.getMinBlockZ(); z <= cp.getMaxBlockZ(); z++) {
                 blockPos.setZ(z);
-                for (int y = 0; y < level.getHeight(); y++) {
+                for (int y = level.getMinBuildHeight(); y < level.getHeight(); y++) {
                     blockPos.setY(y);
                     BlockState state = chunk.getBlockState(blockPos);
                     if (state == quartzOre) {

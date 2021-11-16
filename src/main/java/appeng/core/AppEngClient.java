@@ -173,7 +173,13 @@ public class AppEngClient extends AppEngBase {
         InitItemColors.init(ColorProviderRegistry.ITEM::register);
     }
 
+    private volatile boolean init = false;
+
     private void clientSetup(Minecraft client) {
+        if (init) {
+            return;
+        }
+        init = true;
         postClientSetup(client);
 
         MouseWheelScrolled.EVENT.register(this::wheelEvent);

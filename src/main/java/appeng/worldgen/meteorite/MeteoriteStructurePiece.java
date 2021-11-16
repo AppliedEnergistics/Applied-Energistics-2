@@ -21,7 +21,6 @@ import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -29,6 +28,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 
 import appeng.services.compass.CompassService;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
@@ -64,7 +64,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
                 chunkPos.getMaxBlockZ() + range);
     }
 
-    public MeteoriteStructurePiece(ServerLevel level, CompoundTag tag) {
+    public MeteoriteStructurePiece(CompoundTag tag) {
         super(TYPE, tag);
 
         BlockPos center = BlockPos.of(tag.getLong(Constants.TAG_POS));
@@ -86,7 +86,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    protected void addAdditionalSaveData(ServerLevel level, CompoundTag tag) {
+    protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tag) {
         tag.putFloat(Constants.TAG_RADIUS, settings.getMeteoriteRadius());
         tag.putLong(Constants.TAG_POS, settings.getPos().asLong());
         tag.putByte(Constants.TAG_CRATER, (byte) settings.getCraterType().ordinal());
@@ -96,13 +96,12 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel level, StructureFeatureManager featureManager,
+    public void postProcess(WorldGenLevel level, StructureFeatureManager featureManager,
             ChunkGenerator chunkGeneratorIn,
             Random rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos centerPos) {
         MeteoritePlacer placer = new MeteoritePlacer(level, settings, bounds, rand);
         placer.place();
 
         CompassService.updateArea(level.getLevel(), level.getChunk(chunkPos.x, chunkPos.z));
-        return true;
     }
 }

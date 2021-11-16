@@ -47,7 +47,7 @@ public final class InitBiomeModifications {
             BiomeModifications.addFeature(
                     shouldGenerateIn(AEWorldGenType.CERTUS_QUARTZ),
                     Decoration.UNDERGROUND_ORES,
-                    WorldgenIds.QUARTZ_ORE_KEY);
+                    WorldgenIds.PLACED_QUARTZ_ORE_KEY);
         }
     }
 

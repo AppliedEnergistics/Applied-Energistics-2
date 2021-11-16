@@ -22,6 +22,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import appeng.core.AppEng;
 
@@ -41,8 +42,13 @@ final class WorldgenIds {
     /**
      * Resource key of the {@link ConfiguredFeature} that generates quartz ore.
      */
-    @SuppressWarnings("unused")
     public static final ResourceKey<ConfiguredFeature<?, ?>> QUARTZ_ORE_KEY = ResourceKey
             .create(Registry.CONFIGURED_FEATURE_REGISTRY, QUARTZ_ORE);
+
+    /**
+     * Resource key of the {@link PlacedFeature} that generates quartz ore.
+     */
+    public static final ResourceKey<PlacedFeature> PLACED_QUARTZ_ORE_KEY = ResourceKey
+            .create(Registry.PLACED_FEATURE_REGISTRY, QUARTZ_ORE);
 
 }

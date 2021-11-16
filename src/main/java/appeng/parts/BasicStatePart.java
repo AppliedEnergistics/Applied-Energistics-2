@@ -18,8 +18,6 @@
 
 package appeng.parts;
 
-import java.io.IOException;
-
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -62,7 +60,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
 
         var flags = this.calculateClientFlags();
@@ -88,7 +86,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) {
         final boolean eh = super.readFromStream(data);
 
         final int old = this.getClientFlags();

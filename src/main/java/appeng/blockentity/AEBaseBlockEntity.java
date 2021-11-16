@@ -18,24 +18,19 @@
 
 package appeng.blockentity;
 
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.util.IBlockEntityDrops;
-import appeng.api.util.IConfigurableObject;
-import appeng.api.util.IOrientable;
-import appeng.block.AEBaseBlock;
-import appeng.block.AEBaseEntityBlock;
-import appeng.client.render.model.AEModelData;
-import appeng.core.AELog;
-import appeng.core.sync.packets.BlockEntityUpdatePacket;
-import appeng.helpers.IConfigInvHost;
-import appeng.helpers.ICustomNameObject;
-import appeng.helpers.IPriorityHost;
-import appeng.hooks.ticking.TickHandler;
-import appeng.util.Platform;
-import appeng.util.SettingsFrom;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
 import com.google.common.collect.Lists;
+
 import io.netty.buffer.Unpooled;
+
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,13 +52,22 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.util.IBlockEntityDrops;
+import appeng.api.util.IConfigurableObject;
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.client.render.model.AEModelData;
+import appeng.core.AELog;
+import appeng.core.sync.packets.BlockEntityUpdatePacket;
+import appeng.helpers.IConfigInvHost;
+import appeng.helpers.ICustomNameObject;
+import appeng.helpers.IPriorityHost;
+import appeng.hooks.ticking.TickHandler;
+import appeng.util.Platform;
+import appeng.util.SettingsFrom;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory,
@@ -231,7 +235,7 @@ public class AEBaseBlockEntity extends BlockEntity
                 boolean alreadyUpdated = false;
                 // Let the block update its own state with our internal state changes
                 BlockState currentState = getBlockState();
-                if (currentState.getBlock() instanceof AEBaseEntityBlock<?> block) {
+                if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
                     BlockState newState = block.getBlockEntityBlockState(currentState, this);
                     if (currentState != newState) {
                         AELog.blockUpdate(this.worldPosition, currentState, newState, this);

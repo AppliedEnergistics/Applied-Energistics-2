@@ -18,8 +18,6 @@
 
 package appeng.parts.reporting;
 
-import java.io.IOException;
-
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -98,7 +96,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
 
         data.writeBoolean(this.isLocked);
@@ -109,7 +107,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) {
         boolean needRedraw = super.readFromStream(data);
 
         var isLocked = data.readBoolean();

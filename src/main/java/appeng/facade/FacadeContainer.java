@@ -18,8 +18,6 @@
 
 package appeng.facade;
 
-import java.io.IOException;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -103,7 +101,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf out) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf out) {
         final int facadeSides = out.readByte();
 
         boolean changed = false;
@@ -129,7 +127,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf out) throws IOException {
+    public void writeToStream(final FriendlyByteBuf out) {
         int facadeSides = 0;
         for (var side : Direction.values()) {
             if (this.getFacade(side) != null) {

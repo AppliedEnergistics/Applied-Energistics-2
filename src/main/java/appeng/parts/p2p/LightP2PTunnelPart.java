@@ -18,7 +18,6 @@
 
 package appeng.parts.p2p;
 
-import java.io.IOException;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -67,14 +66,14 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeInt(this.isOutput() ? this.lastValue : 0);
         data.writeInt(this.opacity);
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) {
         boolean changed = super.readFromStream(data);
         final int oldValue = this.lastValue;
         final int oldOpacity = this.opacity;

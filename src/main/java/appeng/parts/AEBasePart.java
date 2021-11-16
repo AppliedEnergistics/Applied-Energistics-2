@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
@@ -209,12 +208,12 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
 
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) {
         return false;
     }
 
