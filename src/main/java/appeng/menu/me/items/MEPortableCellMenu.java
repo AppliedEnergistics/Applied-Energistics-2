@@ -18,13 +18,9 @@
 
 package appeng.menu.me.items;
 
-import java.util.Objects;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.interfaces.IInventorySlotAware;
@@ -38,47 +34,27 @@ public class MEPortableCellMenu extends ItemTerminalMenu {
             .create(MEPortableCellMenu::new, IPortableCell.class)
             .build("meportablecell");
 
-    private final IPortableCell cell;
-    private final int slot;
-    private int ticks = 0;
-    private double powerMultiplier = 0.5;
-
     protected MEPortableCellMenu(MenuType<? extends MEPortableCellMenu> type, int id,
             final Inventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         // Is the screen being opened a specific slot? If not, it must be for the currently held item
+        int slot;
         if (monitorable instanceof IInventorySlotAware) {
-            this.slot = ((IInventorySlotAware) monitorable).getInventorySlot();
+            slot = ((IInventorySlotAware) monitorable).getInventorySlot();
         } else {
-            this.slot = ip.selected;
+            slot = ip.selected;
         }
-        this.lockPlayerInventorySlot(this.slot);
-        this.cell = Objects.requireNonNull(monitorable);
+        this.lockPlayerInventorySlot(slot);
         this.createPlayerInventorySlots(ip);
     }
 
     @Override
     public void broadcastChanges() {
-        if (!ensureGuiItemIsInSlot(this.cell, this.slot)) {
-            this.setValidMenu(false);
+        if (checkGuiItemNotInSlot())
             return;
-        }
 
-        // drain 1 ae t
-        this.ticks++;
-        if (this.ticks > 10) {
-            this.cell.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE,
-                    PowerMultiplier.CONFIG);
-            this.ticks = 0;
-        }
+        updateItemPowerStatus();
         super.broadcastChanges();
     }
 
-    private double getPowerMultiplier() {
-        return this.powerMultiplier;
-    }
-
-    void setPowerMultiplier(final double powerMultiplier) {
-        this.powerMultiplier = powerMultiplier;
-    }
 }

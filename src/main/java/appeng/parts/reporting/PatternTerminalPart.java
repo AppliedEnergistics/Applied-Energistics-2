@@ -35,6 +35,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.storage.GenericStack;
 import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
+import appeng.helpers.IPatternTerminalHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
@@ -42,21 +43,7 @@ import appeng.parts.PartModel;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 
-public class PatternTerminalPart extends AbstractTerminalPart {
-
-    /**
-     * Identifies the sub-inventory used by the pattern terminal to encode the inputs of crafting or processing
-     * patterns.
-     */
-    public static final ResourceLocation INV_CRAFTING = new ResourceLocation(
-            "appliedenergistics2:pattern_terminal_crafting");
-
-    /**
-     * Identifies the sub-inventory used by the pattern terminal to encode the outputs of crafting or processing
-     * patterns.
-     */
-    public static final ResourceLocation INV_OUTPUT = new ResourceLocation(
-            "appliedenergistics2:pattern_terminal_output");
+public class PatternTerminalPart extends AbstractTerminalPart implements IPatternTerminalHost {
 
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/pattern_terminal_off");
@@ -143,17 +130,6 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         }
 
         this.getHost().markForSave();
-    }
-
-    private void fixCraftingRecipes() {
-        if (this.craftingMode) {
-            for (int x = 0; x < this.crafting.size(); x++) {
-                final ItemStack is = this.crafting.getStackInSlot(x);
-                if (!is.isEmpty()) {
-                    is.setCount(1);
-                }
-            }
-        }
     }
 
     public boolean isCraftingRecipe() {

@@ -64,7 +64,12 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
     private Recipe<CraftingContainer> currentRecipe;
 
     public CraftingTermMenu(int id, final Inventory ip, final ITerminalHost host) {
-        super(TYPE, id, ip, host, false);
+        this(TYPE, id, ip, host, true);
+    }
+
+    public CraftingTermMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
+            boolean bindInventory) {
+        super(menuType, id, ip, host, bindInventory);
         this.craftingInventoryHost = (ISegmentedInventory) host;
 
         var craftingGridInv = this.craftingInventoryHost
@@ -77,8 +82,6 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
 
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
                 this.powerSource, host, craftingGridInv, craftingGridInv, this), SlotSemantic.CRAFTING_RESULT);
-
-        this.createPlayerInventorySlots(ip);
 
         this.slotsChanged(craftingGridInv.toContainer());
     }

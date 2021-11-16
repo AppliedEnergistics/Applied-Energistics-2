@@ -47,10 +47,9 @@ import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public class FluidTerminalScreen extends MEMonitorableScreen<AEFluidKey, FluidTerminalMenu> {
+public class FluidTerminalScreen<C extends FluidTerminalMenu> extends MEMonitorableScreen<AEFluidKey, C> {
 
-    public FluidTerminalScreen(FluidTerminalMenu menu, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+    public FluidTerminalScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
     }
 

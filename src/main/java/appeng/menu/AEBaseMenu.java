@@ -34,6 +34,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -45,22 +46,29 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.parts.IPart;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.GuiDataSyncPacket;
 import appeng.helpers.InventoryAction;
+import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
+import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
@@ -84,6 +92,8 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private boolean menuValid = true;
     private MenuLocator locator;
     private int ticksSinceCheck = 900;
+    private int powerTicks = 0;
+    private double powerMultiplier = 0.5;
 
     public AEBaseMenu(MenuType<?> menuType, int id, final Inventory playerInventory,
             final Object host) {
@@ -823,6 +833,50 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
             this.handler.accept(arg);
         }
+    }
+
+    /**
+     * Can only be used with a host that implements {@link IEnergySource} only call once per broadcastChanges()
+     */
+    protected void updateItemPowerStatus() {
+        if ((guiItem instanceof IEnergySource energySource)) {
+            this.powerTicks++;
+            if (this.powerTicks > 10) {
+                energySource.extractAEPower(this.powerMultiplier * this.powerTicks, Actionable.MODULATE,
+                        PowerMultiplier.CONFIG);
+                this.powerTicks = 0;
+            }
+        }
+    }
+
+    /**
+     * Can only be used with a host that extends {@link WirelessTerminalGuiObject}
+     */
+    protected void checkWirelessRange() {
+        if (guiItem instanceof WirelessTerminalGuiObject wirelessTerminalGUIObject) {
+            if (!wirelessTerminalGUIObject.rangeCheck()) {
+                if (isServer() && this.isValidMenu()) {
+                    this.getPlayerInventory().player.sendMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
+                }
+
+                this.setValidMenu(false);
+            } else {
+                powerMultiplier = AEConfig.instance().wireless_getDrainRate(wirelessTerminalGUIObject.getRange());
+            }
+        }
+    }
+
+    /**
+     * Can only be used with a host that implements {@link IInventorySlotAware}
+     */
+    protected boolean checkGuiItemNotInSlot() {
+        if (guiItem instanceof IInventorySlotAware iInventorySlotAware) {
+            if (!ensureGuiItemIsInSlot(guiItem, iInventorySlotAware.getInventorySlot())) {
+                this.setValidMenu(false);
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -29,6 +29,7 @@ public final class InitGridLinkables {
 
     public static void init() {
         GridLinkables.register(AEItems.WIRELESS_TERMINAL, WirelessTerminalItem.LINKABLE_HANDLER);
+        GridLinkables.register(AEItems.WIRELESS_CRAFTING_TERMINAL, WirelessTerminalItem.LINKABLE_HANDLER);
     }
 
 }

@@ -234,6 +234,24 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_dense_energy_cell", has(AEBlocks.DENSE_ENERGY_CELL))
                 .unlockedBy("has_wireless_receiver", has(AEItems.WIRELESS_RECEIVER))
                 .save(consumer, AppEng.makeId("network/wireless_terminal"));
+        ShapedRecipeBuilder.shaped(AEItems.WIRELESS_CRAFTING_TERMINAL)
+                .pattern("a")
+                .pattern("b")
+                .pattern("c")
+                .define('a', AEItems.WIRELESS_RECEIVER)
+                .define('b', AEParts.CRAFTING_TERMINAL)
+                .define('c', AEBlocks.DENSE_ENERGY_CELL)
+                .unlockedBy("has_terminal", has(AEParts.CRAFTING_TERMINAL))
+                .unlockedBy("has_dense_energy_cell", has(AEBlocks.DENSE_ENERGY_CELL))
+                .unlockedBy("has_wireless_receiver", has(AEItems.WIRELESS_RECEIVER))
+                .save(consumer, AppEng.makeId("network/wireless_crafting_terminal"));
+        ShapelessRecipeBuilder.shapeless(AEItems.WIRELESS_CRAFTING_TERMINAL)
+                .requires(AEItems.WIRELESS_TERMINAL)
+                .requires(Items.CRAFTING_TABLE)
+                .requires(AEItems.CALCULATION_PROCESSOR)
+                .unlockedBy("has_terminal", has(AEItems.WIRELESS_TERMINAL))
+                .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
+                .save(consumer, AppEng.makeId("network/upgrade_wireless_crafting_terminal"));
 
         // ====================================================
         // recipes/network/blocks

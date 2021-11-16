@@ -18,17 +18,14 @@
 
 package appeng.menu.me.items;
 
-import net.minecraft.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.core.AEConfig;
-import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.menu.implementations.MenuTypeBuilder;
 
 /**
- * @see appeng.client.gui.implementations.WirelessScreen
+ * @see appeng.client.gui.me.items.ItemTerminalScreen
  */
 public class WirelessTermMenu extends MEPortableCellMenu {
 
@@ -36,26 +33,13 @@ public class WirelessTermMenu extends MEPortableCellMenu {
             .create(WirelessTermMenu::new, WirelessTerminalGuiObject.class)
             .build("wirelessterm");
 
-    private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
-
     public WirelessTermMenu(int id, final Inventory ip, final WirelessTerminalGuiObject gui) {
         super(TYPE, id, ip, gui);
-        this.wirelessTerminalGUIObject = gui;
     }
 
     @Override
     public void broadcastChanges() {
+        checkWirelessRange();
         super.broadcastChanges();
-
-        if (!this.wirelessTerminalGUIObject.rangeCheck()) {
-            if (isServer() && this.isValidMenu()) {
-                this.getPlayerInventory().player.sendMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
-            }
-
-            this.setValidMenu(false);
-        } else {
-            this.setPowerMultiplier(
-                    AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
-        }
     }
 }

@@ -20,9 +20,13 @@ package appeng.items.tools.powered;
 
 import java.util.List;
 import java.util.OptionalLong;
+import java.util.function.DoubleSupplier;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -30,27 +34,27 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.features.IWirelessTerminalHandler;
 import appeng.api.features.WirelessTerminals;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.util.IConfigManager;
-import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
+import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.menu.me.items.WirelessTermMenu;
 import appeng.util.ConfigManager;
 
-public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomReequipAnimation {
+public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomReequipAnimation, IGuiItem {
 
     public static final IWirelessTerminalHandler TERMINAL_HANDLER = new TerminalHandler();
 
@@ -58,8 +62,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
 
     private static final String TAG_GRID_KEY = "gridKey";
 
-    public WirelessTerminalItem(Item.Properties props) {
-        super(AEConfig.instance().getWirelessTerminalBattery(), props);
+    public WirelessTerminalItem(final DoubleSupplier powerCapacity, Item.Properties props) {
+        super(powerCapacity, props);
     }
 
     @Override
@@ -82,7 +86,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
         }
     }
 
-    private OptionalLong getGridKey(ItemStack item) {
+    public OptionalLong getGridKey(ItemStack item) {
         CompoundTag tag = item.getTag();
         if (tag != null && tag.contains(TAG_GRID_KEY, Tag.TAG_LONG)) {
             return OptionalLong.of(tag.getLong(TAG_GRID_KEY));
@@ -91,9 +95,25 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
         }
     }
 
+    public MenuType<?> getMenuType() {
+        return WirelessTermMenu.TYPE;
+    }
+
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
+    }
+
+    @Nullable
+    @Override
+    public IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Level level, @Nullable BlockPos pos) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Player player, @Nullable BlockPos pos) {
+        return new WirelessTerminalGuiObject(TERMINAL_HANDLER, is, player, playerInventorySlot);
     }
 
     private static class TerminalHandler implements IWirelessTerminalHandler {
@@ -117,7 +137,10 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
         }
 
         @Override
-        public IConfigManager getConfigManager(final ItemStack target) {
+        public IConfigManager getConfigManager(final ItemStack target) {// TODO maybe provide an easy way for other
+                                                                        // Terminals to overwrite this without making
+                                                                        // their own IWirelessTerminalHandler that
+                                                                        // mostly copies this one
             var out = new ConfigManager((manager, settingName) -> {
                 manager.writeToNBT(target.getOrCreateTag());
             });

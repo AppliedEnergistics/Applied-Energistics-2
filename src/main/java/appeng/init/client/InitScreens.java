@@ -100,11 +100,7 @@ import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.menu.me.fluids.FluidTerminalMenu;
-import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.me.items.ItemTerminalMenu;
-import appeng.menu.me.items.MEPortableCellMenu;
-import appeng.menu.me.items.PatternTermMenu;
-import appeng.menu.me.items.WirelessTermMenu;
+import appeng.menu.me.items.*;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
@@ -157,7 +153,8 @@ public final class InitScreens {
         register(MolecularAssemblerMenu.TYPE, MolecularAssemblerScreen::new, "/screens/molecular_assembler.json");
         register(CraftAmountMenu.TYPE, CraftAmountScreen::new, "/screens/craft_amount.json");
         register(CraftConfirmMenu.TYPE, CraftConfirmScreen::new, "/screens/craft_confirm.json");
-        register(InterfaceTerminalMenu.TYPE, InterfaceTerminalScreen::new, "/screens/interface_terminal.json");
+        InitScreens.<InterfaceTerminalMenu, InterfaceTerminalScreen<InterfaceTerminalMenu>>register(
+                InterfaceTerminalMenu.TYPE, InterfaceTerminalScreen::new, "/screens/interface_terminal.json");
         register(CraftingStatusMenu.TYPE, CraftingStatusScreen::new, "/screens/crafting_status.json");
         register(SpatialAnchorMenu.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
 
@@ -177,15 +174,19 @@ public final class InitScreens {
         register(SecurityStationMenu.TYPE,
                 SecurityStationScreen::new,
                 "/screens/terminals/security_station.json");
-        register(
+        InitScreens.<CraftingTermMenu, CraftingTermScreen<CraftingTermMenu>>register(
                 CraftingTermMenu.TYPE,
                 CraftingTermScreen::new,
                 "/screens/terminals/crafting_terminal.json");
-        register(
+        InitScreens.<WirelessCraftingTermMenu, CraftingTermScreen<WirelessCraftingTermMenu>>register(
+                WirelessCraftingTermMenu.TYPE,
+                CraftingTermScreen::new,
+                "/screens/terminals/crafting_terminal.json");
+        InitScreens.<PatternTermMenu, PatternTermScreen<PatternTermMenu>>register(
                 PatternTermMenu.TYPE,
                 PatternTermScreen::new,
                 "/screens/terminals/pattern_terminal.json");
-        register(
+        InitScreens.<FluidTerminalMenu, FluidTerminalScreen<FluidTerminalMenu>>register(
                 FluidTerminalMenu.TYPE,
                 FluidTerminalScreen::new,
                 "/screens/terminals/fluid_terminal.json");

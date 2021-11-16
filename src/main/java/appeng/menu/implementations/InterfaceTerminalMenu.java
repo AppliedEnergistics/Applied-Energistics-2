@@ -58,7 +58,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 /**
  * @see appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen
  */
-public final class InterfaceTerminalMenu extends AEBaseMenu {
+public class InterfaceTerminalMenu extends AEBaseMenu {
 
     public static final MenuType<InterfaceTerminalMenu> TYPE = MenuTypeBuilder
             .create(InterfaceTerminalMenu::new, InterfaceTerminalPart.class)
@@ -66,7 +66,7 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
             .build("interfaceterminal");
 
     /**
-     * this stuff is all server side..
+     * this stuff is all server side.
      */
 
     // We use this serial number to uniquely identify all inventories we send to the client
@@ -76,8 +76,15 @@ public final class InterfaceTerminalMenu extends AEBaseMenu {
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
 
     public InterfaceTerminalMenu(int id, final Inventory ip, final InterfaceTerminalPart anchor) {
-        super(TYPE, id, ip, anchor);
-        this.createPlayerInventorySlots(ip);
+        this(TYPE, id, ip, anchor, true);
+    }
+
+    public InterfaceTerminalMenu(MenuType<?> menuType, int id, final Inventory ip, final Object host,
+            boolean bindInventory) {
+        super(menuType, id, ip, host);
+        if (bindInventory) {
+            this.createPlayerInventorySlots(ip);
+        }
     }
 
     @Override

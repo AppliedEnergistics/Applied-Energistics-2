@@ -40,7 +40,7 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.menu.slot.PatternTermSlot;
 
-public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
+public class PatternTermScreen<C extends PatternTermMenu> extends ItemTerminalScreen<C> {
 
     private static final String MODES_TEXTURE = "guis/pattern_modes.png";
 
@@ -56,7 +56,7 @@ public class PatternTermScreen extends ItemTerminalScreen<PatternTermMenu> {
     private final ActionButton fluidSubstitutionsDisabledBtn;
     private final ActionButton convertItemsToFluidsBtn;
 
-    public PatternTermScreen(PatternTermMenu menu, Inventory playerInventory,
+    public PatternTermScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
