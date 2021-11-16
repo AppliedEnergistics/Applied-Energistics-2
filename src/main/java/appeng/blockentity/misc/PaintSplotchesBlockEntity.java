@@ -18,7 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -101,13 +100,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         this.writeBuffer(data);
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         super.readFromStream(data);
         this.readBuffer(data);
         return true;

@@ -18,7 +18,6 @@
 
 package appeng.blockentity.crafting;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -226,7 +225,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean oldPower = this.isPowered;
         this.isPowered = data.readBoolean();
@@ -234,7 +233,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.isPowered);
     }

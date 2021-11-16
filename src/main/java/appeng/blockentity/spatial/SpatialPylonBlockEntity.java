@@ -18,7 +18,6 @@
 
 package appeng.blockentity.spatial;
 
-import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Iterator;
 
@@ -172,7 +171,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int old = this.displayBits;
         this.displayBits = data.readByte();
@@ -180,7 +179,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeByte(this.displayBits);
     }

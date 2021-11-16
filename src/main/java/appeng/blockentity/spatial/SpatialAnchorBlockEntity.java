@@ -18,7 +18,6 @@
 
 package appeng.blockentity.spatial;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -110,7 +109,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    protected void writeToStream(FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.isActive());
         data.writeBoolean(displayOverlay);
@@ -120,7 +119,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         boolean ret = super.readFromStream(data);
 
         final boolean isActive = data.readBoolean();

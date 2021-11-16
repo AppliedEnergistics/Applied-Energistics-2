@@ -18,7 +18,6 @@
 
 package appeng.blockentity.crafting;
 
-import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -122,7 +121,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         boolean oldOmniDirectional = this.omniDirectional;
         this.omniDirectional = data.readBoolean();
@@ -130,7 +129,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.omniDirectional);
     }

@@ -18,7 +18,6 @@
 
 package appeng.blockentity.storage;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -322,7 +321,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
 
         this.state = 0;
@@ -348,7 +347,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
 
         final int oldState = this.state;

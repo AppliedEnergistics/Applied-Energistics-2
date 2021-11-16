@@ -18,7 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -79,7 +78,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         try {
             var item = AEItemKey.fromPacket(data);
@@ -92,7 +91,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         var is = AEItemKey.of(this.inv.getStackInSlot(0));
         if (is != null) {

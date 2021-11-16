@@ -18,7 +18,6 @@
 
 package appeng.blockentity.networking;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.core.BlockPos;
@@ -70,7 +69,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int old = this.getClientFlags();
         this.setClientFlags(data.readByte());
@@ -79,7 +78,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         this.setClientFlags(0);
 

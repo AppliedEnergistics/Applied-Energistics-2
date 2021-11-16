@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -55,6 +56,11 @@ public abstract class BasePacket {
     protected void configureWrite(final FriendlyByteBuf data) {
         data.capacity(data.readableBytes());
         this.p = data;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Packet<ClientGamePacketListener> toClientboundPacket() {
+        return (Packet<ClientGamePacketListener>) toPacket(PacketFlow.CLIENTBOUND);
     }
 
     public Packet<?> toPacket(PacketFlow direction) {

@@ -18,7 +18,6 @@
 
 package appeng.blockentity.qnb;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.core.BlockPos;
@@ -76,7 +75,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         int out = this.constructed;
 
@@ -92,7 +91,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int oldValue = this.constructed;
         this.constructed = data.readByte();

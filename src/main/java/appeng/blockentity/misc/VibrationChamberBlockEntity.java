@@ -18,8 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -75,7 +73,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean wasOn = this.isOn;
 
@@ -85,7 +83,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.getBurnTime() > 0);
     }

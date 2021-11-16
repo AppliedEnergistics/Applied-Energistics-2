@@ -18,7 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +117,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean wasActive = this.isActive;
         this.isActive = data.readBoolean();
@@ -130,7 +129,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.getMainNode().isActive());
         data.writeByte(this.paintedColor.ordinal());

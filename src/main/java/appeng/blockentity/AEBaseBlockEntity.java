@@ -18,20 +18,24 @@
 
 package appeng.blockentity;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.util.IBlockEntityDrops;
+import appeng.api.util.IConfigurableObject;
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseEntityBlock;
+import appeng.client.render.model.AEModelData;
+import appeng.core.AELog;
+import appeng.core.sync.packets.BlockEntityUpdatePacket;
+import appeng.helpers.IConfigInvHost;
+import appeng.helpers.ICustomNameObject;
+import appeng.helpers.IPriorityHost;
+import appeng.hooks.ticking.TickHandler;
+import appeng.util.Platform;
+import appeng.util.SettingsFrom;
 import com.google.common.collect.Lists;
-
 import io.netty.buffer.Unpooled;
-
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,6 +43,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -51,21 +57,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.util.IBlockEntityDrops;
-import appeng.api.util.IConfigurableObject;
-import appeng.api.util.IOrientable;
-import appeng.block.AEBaseBlock;
-import appeng.block.AEBaseEntityBlock;
-import appeng.client.render.model.AEModelData;
-import appeng.core.AELog;
-import appeng.helpers.IConfigInvHost;
-import appeng.helpers.ICustomNameObject;
-import appeng.helpers.IPriorityHost;
-import appeng.hooks.ticking.TickHandler;
-import appeng.util.Platform;
-import appeng.util.SettingsFrom;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory,
@@ -119,7 +117,7 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public void load(final CompoundTag data) {
+    public void load(CompoundTag data) {
         super.load(data);
 
         if (data.contains("customName")) {
@@ -158,27 +156,6 @@ public class AEBaseBlockEntity extends BlockEntity
     public void onReady() {
     }
 
-    /**
-     * This builds a tag with the actual data that should be sent to the client for update syncs. If the block entity
-     * doesn't need update syncs, it returns null.
-     */
-    private CompoundTag writeUpdateData(CompoundTag data) {
-        final FriendlyByteBuf stream = new FriendlyByteBuf(Unpooled.buffer());
-
-        try {
-            this.writeToStream(stream);
-            if (stream.readableBytes() == 0) {
-                return null;
-            }
-        } catch (final Throwable t) {
-            AELog.warn(t);
-        }
-
-        stream.capacity(stream.readableBytes());
-        data.putByteArray("X", stream.array());
-        return data;
-    }
-
     private boolean readUpdateData(FriendlyByteBuf stream) {
         boolean output = false;
 
@@ -198,30 +175,31 @@ public class AEBaseBlockEntity extends BlockEntity
         return output;
     }
 
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return new BlockEntityUpdatePacket(getBlockPos(), getType(), this::writeToStream).toClientboundPacket();
+    }
+
     /**
      * Handles block entities that are being sent to the client as part of a full chunk.
      */
     @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
-        this.writeUpdateData(tag);
-        // Fabric: return `tag` instead of the result of writeUpdateData, as we must always return the data that is
-        // passed to us even if no additional data is added by us (in which case writeUpdateData returns null).
-        return tag;
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     /**
      * Handles block entities that are being received by the client as part of a full chunk.
      */
-    @Override
-    public void fromClientTag(CompoundTag tag) {
-        final FriendlyByteBuf stream = new FriendlyByteBuf(Unpooled.copiedBuffer(tag.getByteArray("X")));
+    public void fromClientUpdate(byte[] clientUpdate) {
+        var stream = new FriendlyByteBuf(Unpooled.wrappedBuffer(clientUpdate));
 
         if (this.readUpdateData(stream)) {
             this.markForUpdate();
         }
     }
 
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         if (this.canBeRotated()) {
             final Direction old_Forward = this.forward;
             final Direction old_Up = this.up;
@@ -235,7 +213,7 @@ public class AEBaseBlockEntity extends BlockEntity
         return false;
     }
 
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(FriendlyByteBuf data) {
         if (this.canBeRotated()) {
             final byte orientation = (byte) (this.up.ordinal() << 3 | this.forward.ordinal());
             data.writeByte(orientation);
@@ -253,7 +231,7 @@ public class AEBaseBlockEntity extends BlockEntity
                 boolean alreadyUpdated = false;
                 // Let the block update its own state with our internal state changes
                 BlockState currentState = getBlockState();
-                if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
+                if (currentState.getBlock() instanceof AEBaseEntityBlock<?> block) {
                     BlockState newState = block.getBlockEntityBlockState(currentState, this);
                     if (currentState != newState) {
                         AELog.blockUpdate(this.worldPosition, currentState, newState, this);

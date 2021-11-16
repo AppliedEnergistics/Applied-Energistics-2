@@ -18,7 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.core.BlockPos;
@@ -58,7 +57,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    public boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean hadPower = this.isPowered();
         this.setPowered(data.readBoolean());
@@ -66,7 +65,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) throws IOException {
+    public void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.getMainNode().isPowered());
     }

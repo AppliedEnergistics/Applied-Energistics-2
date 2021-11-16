@@ -30,6 +30,8 @@ public class BasePacketHandler {
     private static final Map<Class<? extends BasePacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
 
     public enum PacketTypes {
+        BLOCK_ENTITY_UPDATE(BlockEntityUpdatePacket.class, BlockEntityUpdatePacket::new),
+
         SPAWN_ENTITY(SpawnEntityPacket.class, SpawnEntityPacket::new),
 
         COMPASS_REQUEST(CompassRequestPacket.class, CompassRequestPacket::new),

@@ -18,7 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -130,7 +129,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int slot = data.readByte();
 
@@ -155,7 +154,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         int slot = this.isSmash() ? 64 : 0;
 

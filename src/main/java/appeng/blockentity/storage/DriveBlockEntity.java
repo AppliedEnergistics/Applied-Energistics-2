@@ -18,7 +18,6 @@
 
 package appeng.blockentity.storage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -107,7 +106,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) throws IOException {
+    protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
         int newState = 0;
 
@@ -154,7 +153,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) throws IOException {
+    protected boolean readFromStream(final FriendlyByteBuf data) {
         boolean c = super.readFromStream(data);
         final int oldState = this.state;
         this.state = data.readInt();
