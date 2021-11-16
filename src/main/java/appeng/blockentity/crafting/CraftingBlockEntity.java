@@ -172,13 +172,12 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putBoolean("core", this.isCoreBlock());
         if (this.isCoreBlock() && this.cluster != null) {
             this.cluster.writeToNBT(data);
         }
-        return data;
     }
 
     @Override

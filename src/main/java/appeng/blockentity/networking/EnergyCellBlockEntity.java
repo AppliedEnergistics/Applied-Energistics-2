@@ -91,10 +91,9 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putDouble("internalCurrentPower", this.internalCurrentPower);
-        return data;
     }
 
     @Override

@@ -137,8 +137,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         this.cm.writeToNBT(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
 
@@ -152,7 +152,6 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         }
 
         data.put("cards", storedItems);
-        return data;
     }
 
     @Override

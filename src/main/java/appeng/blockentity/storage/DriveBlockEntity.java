@@ -248,10 +248,9 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putInt("priority", this.priority);
-        return data;
     }
 
     private void recalculateDisplay() {

@@ -374,12 +374,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         this.config.writeToNBT(data);
         data.putInt("priority", this.priority);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
-        return data;
     }
 
     @Override

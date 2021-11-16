@@ -107,11 +107,10 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putBoolean("omniDirectional", this.omniDirectional);
         this.duality.writeToNBT(data);
-        return data;
     }
 
     @Override

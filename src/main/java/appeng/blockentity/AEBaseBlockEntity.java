@@ -32,7 +32,6 @@ import com.google.common.collect.Lists;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -70,7 +69,7 @@ import appeng.util.SettingsFrom;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory,
-        BlockEntityClientSerializable, RenderAttachmentBlockEntity {
+        RenderAttachmentBlockEntity {
 
     static {
         DeferredBlockEntityUnloader.register();
@@ -139,8 +138,8 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
 
         if (this.canBeRotated()) {
             data.putString("forward", this.getForward().name());
@@ -150,8 +149,6 @@ public class AEBaseBlockEntity extends BlockEntity
         if (this.customName != null) {
             data.putString("customName", this.customName);
         }
-
-        return data;
     }
 
     /**

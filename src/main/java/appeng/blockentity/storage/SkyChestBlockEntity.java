@@ -172,8 +172,8 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
      * @see RandomizableContainerBlockEntity#trySaveLootTable(CompoundTag)
      */
     @Override
-    public CompoundTag save(CompoundTag data) {
-        data = super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
 
         if (this.lootTable != null) {
             data.putString(LOOT_TABLE_TAG, this.lootTable.toString());
@@ -181,8 +181,6 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
                 data.putLong(LOOT_TABLE_SEED_TAG, this.lootTableSeed);
             }
         }
-
-        return data;
     }
 
     /**

@@ -183,7 +183,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                                                         level.setBlockAndUpdate(d, state);
                                                         if (state.hasBlockEntity()) {
                                                             final BlockEntity ote = src_w.getBlockEntity(p);
-                                                            var data = ote.save(new CompoundTag());
+                                                            var data = ote.saveWithId();
                                                             var newBe = BlockEntity.loadStatic(d, state, data);
                                                             if (newBe != null) {
                                                                 level.setBlockEntity(newBe);

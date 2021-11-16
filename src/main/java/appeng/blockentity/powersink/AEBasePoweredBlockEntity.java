@@ -71,10 +71,9 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putDouble("internalCurrentPower", this.getInternalCurrentPower());
-        return data;
     }
 
     @Override

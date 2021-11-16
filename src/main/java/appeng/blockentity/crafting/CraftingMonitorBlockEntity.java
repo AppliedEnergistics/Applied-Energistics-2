@@ -84,10 +84,9 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
-        return data;
     }
 
     @Override

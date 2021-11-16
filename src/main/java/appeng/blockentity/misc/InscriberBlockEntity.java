@@ -118,10 +118,9 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         this.upgrades.writeToNBT(data, "upgrades");
-        return data;
     }
 
     @Override

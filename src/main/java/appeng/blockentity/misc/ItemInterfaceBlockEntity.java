@@ -80,10 +80,9 @@ public class ItemInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         this.duality.writeToNBT(data);
-        return data;
     }
 
     @Override

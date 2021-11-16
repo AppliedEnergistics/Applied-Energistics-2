@@ -98,10 +98,9 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public CompoundTag save(CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         this.manager.writeToNBT(data);
-        return data;
     }
 
     @Override

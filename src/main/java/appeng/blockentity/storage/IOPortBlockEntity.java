@@ -111,12 +111,11 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         this.manager.writeToNBT(data);
         this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
-        return data;
     }
 
     @Override

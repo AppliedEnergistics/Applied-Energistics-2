@@ -56,14 +56,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         final FriendlyByteBuf myDat = new FriendlyByteBuf(Unpooled.buffer());
         this.writeBuffer(myDat);
         if (myDat.hasArray()) {
             data.putByteArray("dots", myDat.array());
         }
-        return data;
     }
 
     private void writeBuffer(final FriendlyByteBuf out) {

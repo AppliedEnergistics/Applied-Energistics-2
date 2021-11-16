@@ -59,9 +59,9 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag data) {
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putString("filter", Registry.ITEM.getKey(filter).toString());
-        return super.save(data);
     }
 
     @Override

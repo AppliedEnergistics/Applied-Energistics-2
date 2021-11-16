@@ -79,12 +79,11 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         this.cell.writeToNBT(data, "cell");
         this.config.writeToChildTag(data, "config");
         this.manager.writeToNBT(data);
-        return data;
     }
 
     @Override

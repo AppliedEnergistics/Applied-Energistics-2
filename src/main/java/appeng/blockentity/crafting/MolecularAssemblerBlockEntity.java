@@ -240,13 +240,13 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         if (this.forcePlan) {
             // If the plan is null it means the pattern previously loaded from NBT hasn't been decoded yet
             var pattern = myPlan != null ? myPlan.getDefinition().toStack() : myPattern;
             if (!pattern.isEmpty()) {
-                final CompoundTag compound = new CompoundTag();
+                var compound = new CompoundTag();
                 pattern.save(compound);
                 data.put("myPlan", compound);
                 data.putInt("pushDirection", this.pushDirection.ordinal());
@@ -254,7 +254,6 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         this.upgrades.writeToNBT(data, "upgrades");
-        return data;
     }
 
     @Override

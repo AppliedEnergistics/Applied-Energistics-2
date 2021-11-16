@@ -91,12 +91,11 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    public CompoundTag save(final CompoundTag data) {
-        super.save(data);
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
         data.putDouble("burnTime", this.getBurnTime());
         data.putDouble("maxBurnTime", this.getMaxBurnTime());
         data.putInt("burnSpeed", this.getBurnSpeed());
-        return data;
     }
 
     @Override
