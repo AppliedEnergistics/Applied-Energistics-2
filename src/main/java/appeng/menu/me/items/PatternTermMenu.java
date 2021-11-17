@@ -62,7 +62,6 @@ import appeng.menu.slot.OptionalFakeSlot;
 import appeng.menu.slot.PatternOutputsSlot;
 import appeng.menu.slot.PatternTermSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.parts.reporting.PatternTerminalPart;
 import appeng.util.Platform;
 import appeng.util.inv.CarriedItemInventory;
 import appeng.util.inv.PlayerInternalInventory;
