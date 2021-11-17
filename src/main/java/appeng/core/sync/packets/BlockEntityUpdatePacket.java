@@ -33,10 +33,11 @@ public class BlockEntityUpdatePacket extends BasePacket {
         configureWrite(data);
     }
 
-    public BlockEntityUpdatePacket(FriendlyByteBuf friendlyByteBuf) {
-        this.pos = friendlyByteBuf.readBlockPos();
-        this.type = Registry.BLOCK_ENTITY_TYPE.byId(friendlyByteBuf.readVarInt());
-        this.data = friendlyByteBuf.readByteArray();
+    public BlockEntityUpdatePacket(FriendlyByteBuf buffer) {
+        this.pos = buffer.readBlockPos();
+        this.type = Registry.BLOCK_ENTITY_TYPE.byId(buffer.readVarInt());
+        this.data = new byte[buffer.readableBytes()];
+        buffer.readBytes(this.data);
     }
 
     @Override
