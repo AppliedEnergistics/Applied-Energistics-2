@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -90,6 +91,12 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     // Pattern storing logic
     private final AppEngInternalInventory patternInventory = new AppEngInternalInventory(this, NUMBER_OF_PATTERN_SLOTS);
     private final List<IPatternDetails> patterns = new ArrayList<>();
+    /**
+     * Keeps track of the inputs of all the patterns.
+     * When blocking mode is enabled, if any of these is contained in the target, the pattern won't be pushed.
+     * Always contains keys with the secondary component dropped.
+     */
+    private final Set<AEKey> patternInputs = new HashSet<>();
     private int priority;
     // Pattern sending logic
     private final List<GenericStack> sendList = new ArrayList<>();
@@ -180,12 +187,19 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
 
     public void updatePatterns() {
         patterns.clear();
+        patternInputs.clear();
 
         for (var stack : this.patternInventory) {
             var details = PatternDetailsHelper.decodePattern(stack, this.host.getBlockEntity().getLevel());
 
             if (details != null) {
                 patterns.add(details);
+
+                for (var iinput : details.getInputs()) {
+                    for (var inputCandidate : iinput.getPossibleInputs()) {
+                        patternInputs.add(inputCandidate.what().dropSecondary());
+                    }
+                }
             }
         }
 
@@ -231,7 +245,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
             if (adapter == null)
                 continue;
 
-            if (this.isBlocking() && adapter.isBusy()) {
+            if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs)) {
                 continue;
             }
 

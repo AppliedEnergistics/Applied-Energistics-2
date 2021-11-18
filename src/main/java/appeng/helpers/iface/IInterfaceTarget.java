@@ -19,6 +19,7 @@
 package appeng.helpers.iface;
 
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -27,6 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,8 +37,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
@@ -84,29 +84,18 @@ public interface IInterfaceTarget {
                 }
 
                 @Override
-                public boolean isBusy() {
+                public boolean containsPatternInput(Set<AEKey> patternInputs) {
                     for (var channel : StorageChannels.getAll()) {
-                        if (IInterfaceTarget.isChannelBusy(channel, monitorable, src)) {
-                            return true;
+                        for (var stack : monitorable.getInventory(channel).getCachedAvailableStacks()) {
+                            if (patternInputs.contains(stack.getKey().dropSecondary())) {
+                                return true;
+                            }
                         }
                     }
                     return false;
                 }
             };
         }
-    }
-
-    private static <T extends AEKey> boolean isChannelBusy(IStorageChannel<T> channel,
-            IStorageMonitorable monitorable, IActionSource src) {
-        var inventory = monitorable.getInventory(channel);
-        if (inventory != null) {
-            for (var stack : inventory.getCachedAvailableStacks()) {
-                if (inventory.extract(stack.getKey(), 1, Actionable.SIMULATE, src) > 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private static IInterfaceTarget wrapHandlers(Storage<ItemVariant> itemHandler, Storage<FluidVariant> fluidHandler,
@@ -134,17 +123,20 @@ public interface IInterfaceTarget {
             }
 
             @Override
-            public boolean isBusy() {
-                return IInterfaceTarget.canRemove(itemHandler) || IInterfaceTarget.canRemove(fluidHandler);
+            public boolean containsPatternInput(Set<AEKey> patternInputs) {
+                return IInterfaceTarget.canRemove(IVariantConversion.ITEM, itemHandler, patternInputs) || IInterfaceTarget.canRemove(IVariantConversion.FLUID, fluidHandler, patternInputs);
             }
         };
     }
 
-    private static <T> boolean canRemove(Storage<T> storage) {
+    private static <V extends TransferVariant<?>, T extends AEKey> boolean canRemove(IVariantConversion<V, T> conversion, Storage<V> storage, Set<AEKey> patternInputs) {
         try (Transaction tx = Transaction.openOuter()) {
             for (var view : storage.iterable(tx)) {
-                if (!view.isResourceBlank() && view.extract(view.getResource(), Long.MAX_VALUE, tx) > 0) {
-                    return true;
+                if (!view.isResourceBlank() && view.getAmount() > 0) {
+                    var key = conversion.getKey(view.getResource()).dropSecondary();
+                    if (patternInputs.contains(key)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -153,5 +145,5 @@ public interface IInterfaceTarget {
 
     long insert(AEKey what, long amount, Actionable type);
 
-    boolean isBusy();
+    boolean containsPatternInput(Set<AEKey> patternInputs);
 }
