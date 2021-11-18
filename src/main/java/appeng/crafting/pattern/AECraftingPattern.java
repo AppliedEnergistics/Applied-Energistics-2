@@ -51,7 +51,8 @@ public class AECraftingPattern implements IAEPatternDetails {
     private final GenericStack[] sparseInputs;
     private final int[] sparseToCompressed = new int[9];
     private final Input[] inputs;
-    private final GenericStack[] outputs;
+    private final AEItemKey output;
+    private final GenericStack[] outputsArray;
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
      */
@@ -77,17 +78,19 @@ public class AECraftingPattern implements IAEPatternDetails {
         // Build frame and find output
         this.testFrame = new CraftingContainer(new NullMenu(), 3, 3);
         for (int i = 0; i < 9; ++i) {
-            if (sparseInputs[i].what() instanceof AEItemKey itemKey) {
+            if (sparseInputs[i] != null) {
+                var itemKey = (AEItemKey) sparseInputs[i].what();
                 testFrame.setItem(i, itemKey.toStack());
             }
         }
         if (!this.recipe.matches(testFrame, level)) {
             throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
         }
-        this.outputs = new GenericStack[] { GenericStack.fromItemStack(this.recipe.assemble(testFrame)) };
-        if (this.outputs[0] == null) {
+        this.output = AEItemKey.of(this.recipe.assemble(testFrame));
+        if (this.output == null) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
+        this.outputsArray = new GenericStack[] { new GenericStack(this.output, 1) };
 
         // Compress inputs
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
@@ -131,7 +134,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     @Override
     public GenericStack[] getOutputs() {
-        return outputs;
+        return outputsArray;
     }
 
     /**
@@ -236,7 +239,7 @@ public class AECraftingPattern implements IAEPatternDetails {
         var previousStack = testFrame.removeItemNoUpdate(slot);
         testFrame.setItem(slot, key.toStack());
 
-        var newResult = recipe.matches(testFrame, level) && outputs[0].equals(recipe.assemble(testFrame));
+        var newResult = recipe.matches(testFrame, level) && output.matches(recipe.assemble(testFrame));
 
         setTestResult(slot, key, newResult);
 
@@ -276,7 +279,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     @Override
     public GenericStack[] getSparseOutputs() {
-        return outputs;
+        return outputsArray;
     }
 
     public int getCompressedIndexFromSparse(int sparse) {
@@ -300,11 +303,7 @@ public class AECraftingPattern implements IAEPatternDetails {
                 return ItemStack.EMPTY;
             }
         }
-
-        if (!(outputs[0].what() instanceof AEItemKey itemKey)) {
-            throw new IllegalStateException("Output of crafting pattern must be an item: " + outputs[0].what());
-        }
-        return itemKey.toStack((int) outputs[0].amount());
+        return output.toStack();
     }
 
     private GenericStack getItemOrFluidInput(int slot, GenericStack item) {
