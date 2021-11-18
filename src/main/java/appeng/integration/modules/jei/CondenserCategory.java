@@ -130,10 +130,10 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
         String key;
         switch (type) {
             case MATTER_BALLS:
-                key = "gui.tooltips.appliedenergistics2.MatterBalls";
+                key = "gui.tooltips.ae2.MatterBalls";
                 break;
             case SINGULARITY:
-                key = "gui.tooltips.appliedenergistics2.Singularity";
+                key = "gui.tooltips.ae2.Singularity";
                 break;
             default:
                 return Collections.emptyList();

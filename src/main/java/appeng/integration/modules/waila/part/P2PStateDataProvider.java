@@ -57,7 +57,7 @@ public final class P2PStateDataProvider implements IPartDataProvider {
 
             var freq = partTag.getShort(TAG_P2P_FREQUENCY);
             var freqTooltip = Platform.p2p().toHexString(freq);
-            tooltip.add(new TranslatableComponent("gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip));
+            tooltip.add(new TranslatableComponent("gui.tooltips.ae2.P2PFrequency", freqTooltip));
         }
     }
 

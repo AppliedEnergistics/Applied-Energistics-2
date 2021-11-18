@@ -52,7 +52,7 @@ class TooltipTest {
     @Test
     void testSplitAtNewlineInTranslationText() {
         Tooltip tooltip = new Tooltip(
-                new TranslatableComponent("gui.tooltips.appliedenergistics2.MatterBalls", 256));
+                new TranslatableComponent("gui.tooltips.ae2.MatterBalls", 256));
 
         assertThat(tooltip.getContent())
                 .extracting(net.minecraft.network.chat.Component::getString)

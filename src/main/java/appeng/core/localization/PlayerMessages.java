@@ -33,7 +33,7 @@ public enum PlayerMessages {
     }
 
     String getTranslationKey() {
-        return "chat.appliedenergistics2." + this.toString();
+        return "chat.ae2." + this.toString();
     }
 
 }
