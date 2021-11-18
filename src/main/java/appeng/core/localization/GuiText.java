@@ -97,7 +97,7 @@ public enum GuiText {
     private final Component text;
 
     GuiText() {
-        this.root = "gui.appliedenergistics2";
+        this.root = "gui.ae2";
         this.text = new TranslatableComponent(getTranslationKey());
     }
 

@@ -34,11 +34,11 @@ public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternT
     protected Result doTransferRecipe(PatternTermMenu container, Display recipe, Context context) {
 
         if (container.isCraftingMode() && recipe.getCategoryIdentifier() != DefaultPlugin.CRAFTING) {
-            return Result.createFailed(new TranslatableComponent("jei.appliedenergistics2.requires_processing_mode"));
+            return Result.createFailed(new TranslatableComponent("jei.ae2.requires_processing_mode"));
         }
 
         if (recipe.getOutputEntries().isEmpty()) {
-            return Result.createFailed(new TranslatableComponent("jei.appliedenergistics2.no_output"));
+            return Result.createFailed(new TranslatableComponent("jei.ae2.no_output"));
         }
 
         return null;

@@ -230,7 +230,7 @@ public class Platform {
 
                     final ISecurityService sg = g.getSecurityService();
                     if (!sg.hasPermission(player, requiredPermission)) {
-                        player.sendMessage(new TranslatableComponent("appliedenergistics2.permission_denied")
+                        player.sendMessage(new TranslatableComponent("ae2.permission_denied")
                                 .withStyle(ChatFormatting.RED), Util.NIL_UUID);
                         // FIXME trace logging?
                         return false;

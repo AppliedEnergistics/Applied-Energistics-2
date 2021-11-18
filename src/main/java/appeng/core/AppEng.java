@@ -22,6 +22,7 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
+import appeng.api.ids.AEConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,7 +37,7 @@ import appeng.core.sync.BasePacket;
 public interface AppEng {
 
     String MOD_NAME = "Applied Energistics 2";
-    String MOD_ID = "appliedenergistics2";
+    String MOD_ID = AEConstants.MOD_ID;
 
     static AppEng instance() {
         return AppEngBase.INSTANCE;

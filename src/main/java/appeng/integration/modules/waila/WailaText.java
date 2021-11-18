@@ -35,7 +35,7 @@ public enum WailaText {
     private final String root;
 
     WailaText() {
-        this.root = "waila.appliedenergistics2";
+        this.root = "waila.ae2";
     }
 
     public MutableComponent textComponent() {
