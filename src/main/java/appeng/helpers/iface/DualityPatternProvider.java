@@ -92,9 +92,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     private final AppEngInternalInventory patternInventory = new AppEngInternalInventory(this, NUMBER_OF_PATTERN_SLOTS);
     private final List<IPatternDetails> patterns = new ArrayList<>();
     /**
-     * Keeps track of the inputs of all the patterns.
-     * When blocking mode is enabled, if any of these is contained in the target, the pattern won't be pushed.
-     * Always contains keys with the secondary component dropped.
+     * Keeps track of the inputs of all the patterns. When blocking mode is enabled, if any of these is contained in the
+     * target, the pattern won't be pushed. Always contains keys with the secondary component dropped.
      */
     private final Set<AEKey> patternInputs = new HashSet<>();
     private int priority;

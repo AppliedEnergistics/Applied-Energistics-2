@@ -124,12 +124,14 @@ public interface IInterfaceTarget {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                return IInterfaceTarget.canRemove(IVariantConversion.ITEM, itemHandler, patternInputs) || IInterfaceTarget.canRemove(IVariantConversion.FLUID, fluidHandler, patternInputs);
+                return IInterfaceTarget.canRemove(IVariantConversion.ITEM, itemHandler, patternInputs)
+                        || IInterfaceTarget.canRemove(IVariantConversion.FLUID, fluidHandler, patternInputs);
             }
         };
     }
 
-    private static <V extends TransferVariant<?>, T extends AEKey> boolean canRemove(IVariantConversion<V, T> conversion, Storage<V> storage, Set<AEKey> patternInputs) {
+    private static <V extends TransferVariant<?>, T extends AEKey> boolean canRemove(
+            IVariantConversion<V, T> conversion, Storage<V> storage, Set<AEKey> patternInputs) {
         try (Transaction tx = Transaction.openOuter()) {
             for (var view : storage.iterable(tx)) {
                 if (!view.isResourceBlank() && view.getAmount() > 0) {
