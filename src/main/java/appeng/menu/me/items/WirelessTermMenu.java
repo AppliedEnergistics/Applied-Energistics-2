@@ -18,10 +18,11 @@
 
 package appeng.menu.me.items;
 
-import appeng.helpers.WirelessTerminalMenuHost;
-import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+
+import appeng.helpers.WirelessTerminalMenuHost;
+import appeng.menu.implementations.MenuTypeBuilder;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen

@@ -18,10 +18,10 @@
 
 package appeng.menu.me.networktool;
 
-import appeng.items.contents.NetworkToolMenuHost;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
+import appeng.items.contents.NetworkToolMenuHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;

@@ -39,8 +39,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.ItemMenuHost;
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.core.AELog;
@@ -258,12 +258,12 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
             return null;
         }
 
-        if (it.getItem() instanceof IGuiItem guiItem) {
+        if (it.getItem() instanceof IMenuItem guiItem) {
             // Optionally contains the block the item was used on to open the menu
             BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
-            ItemMenuHost guiObject = guiItem.getGuiObject(player, locator.getItemIndex(), it, blockPos);
-            if (hostInterface.isInstance(guiObject)) {
-                return hostInterface.cast(guiObject);
+            ItemMenuHost menuHost = guiItem.getMenuHost(player, locator.getItemIndex(), it, blockPos);
+            if (hostInterface.isInstance(menuHost)) {
+                return hostInterface.cast(menuHost);
             }
         }
 

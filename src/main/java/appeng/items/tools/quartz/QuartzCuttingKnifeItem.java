@@ -18,6 +18,8 @@
 
 package appeng.items.tools.quartz;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -28,16 +30,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.ItemMenuHost;
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.items.AEBaseItem;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.util.Platform;
-import org.jetbrains.annotations.Nullable;
 
-public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
+public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
     private final QuartzToolType type;
 
     public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
@@ -91,7 +92,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
 
     @Nullable
     @Override
-    public ItemMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+    public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
         return new ItemMenuHost(player, inventorySlot, stack);
     }
 }

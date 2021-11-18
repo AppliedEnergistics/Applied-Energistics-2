@@ -22,15 +22,15 @@ public class WirelessCraftingTermMenu extends CraftingTermMenu {
             .requirePermission(SecurityPermissions.CRAFT)
             .build("wirelesscraftingterm");
 
-    private final WirelessCraftingTerminalMenuHost guiObject;
+    private final WirelessCraftingTerminalMenuHost menuHost;
 
     public WirelessCraftingTermMenu(int id, Inventory ip, WirelessCraftingTerminalMenuHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
         this.createPlayerInventorySlots(ip);
-        this.guiObject = monitorable;
+        this.menuHost = monitorable;
     }
 
     public IGridNode getNetworkNode() {
-        return guiObject.getActionableNode();
+        return menuHost.getActionableNode();
     }
 }

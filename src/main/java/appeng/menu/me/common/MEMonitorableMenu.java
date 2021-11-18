@@ -38,7 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.*;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.implementations.blockentities.IViewCellStorage;
-import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.IPortableCell;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;

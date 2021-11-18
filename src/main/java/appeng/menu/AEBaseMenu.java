@@ -46,7 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.guiobjects.ItemMenuHost;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;

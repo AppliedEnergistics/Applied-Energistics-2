@@ -18,17 +18,18 @@
 
 package appeng.items.contents;
 
-import appeng.api.implementations.guiobjects.ItemMenuHost;
+import javax.annotation.Nullable;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 public class NetworkToolMenuHost extends ItemMenuHost implements InternalInventoryHost {
 
@@ -54,9 +55,8 @@ public class NetworkToolMenuHost extends ItemMenuHost implements InternalInvento
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack,
-                                  ItemStack newStack) {
+            ItemStack newStack) {
     }
-
 
     private static class NetworkToolInventoryFilter implements IAEItemFilter {
         @Override

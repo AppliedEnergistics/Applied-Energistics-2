@@ -21,7 +21,7 @@ package appeng.menu.me.items;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.IPortableCell;
 import appeng.menu.implementations.MenuTypeBuilder;
 
 /**

@@ -20,13 +20,13 @@ package appeng.menu.implementations;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.implementations.guiobjects.ItemMenuHost;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;

@@ -28,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.networking.GridHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.DimensionalBlockPos;
@@ -42,14 +42,14 @@ import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.util.Platform;
 
-public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem {
+public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem {
 
     public NetworkToolItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public NetworkToolMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
+    public NetworkToolMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
         var level = player.level;
         if (pos == null) {
             return new NetworkToolMenuHost(player, inventorySlot, stack, null);

@@ -21,14 +21,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.guiobjects;
+package appeng.api.implementations.menuobjects;
 
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.storage.ITerminalHost;
+import javax.annotation.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
- * Obtained via {@link IGuiItem} getGuiObject
+ * Implemented on Item objects, to return objects used to manage, and interact with the contents.
  */
-public interface IPortableCell extends ITerminalHost, IEnergySource {
-
+public interface IMenuItem {
+    /**
+     * @param player        The player opening the menu.
+     * @param inventorySlot The slot in the player's inventory the item is in.
+     * @param stack         The item used to open the menu.
+     * @param pos           If the item was used on a block in the world, has that block's position. Null if no block
+     *                      was targeted.
+     * @return Null if no menu host is available.
+     */
+    @Nullable
+    ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos);
 }

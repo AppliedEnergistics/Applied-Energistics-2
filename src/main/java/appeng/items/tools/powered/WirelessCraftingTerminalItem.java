@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.guiobjects.ItemMenuHost;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.helpers.WirelessCraftingTerminalMenuHost;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
 
@@ -25,7 +25,7 @@ public class WirelessCraftingTerminalItem extends WirelessTerminalItem {
 
     @Nullable
     @Override
-    public ItemMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+    public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
         return new WirelessCraftingTerminalMenuHost(player, inventorySlot, stack);
     }
 }
