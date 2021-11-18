@@ -154,12 +154,6 @@ sourceSets {
             srcDir 'src/generated/resources'
         }
     }
-    datagen {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.portaforgy.output
-        runtimeClasspath += sourceSets.portaforgy.output
-    }
     test {
         compileClasspath += sourceSets.portaforgy.output
         runtimeClasspath += sourceSets.portaforgy.output
@@ -168,8 +162,6 @@ sourceSets {
 
 configurations {
     portaforgyImplementation.extendsFrom(compileClasspath)
-    datagenCompileOnly.extendsFrom(compileClasspath)
-    datagenRuntimeOnly.extendsFrom(runtimeClasspath)
 }
 
 test {
@@ -184,7 +176,7 @@ loom {
     runs {
         datagen {
             client()
-            source "datagen"
+            source "main"
             property "appeng.generateData", "true"
             property "appeng.generateData.outputPath", file("src/generated/resources").absolutePath
             property "appeng.generateData.existingData", file("src/main/resources").absolutePath
