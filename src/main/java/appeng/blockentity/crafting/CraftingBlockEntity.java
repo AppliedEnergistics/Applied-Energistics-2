@@ -165,7 +165,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     public boolean isFormed() {
-        if (isRemote()) {
+        if (isClientSide()) {
             return this.level.getBlockState(this.worldPosition).getValue(AbstractCraftingUnitBlock.FORMED);
         }
         return this.cluster != null;
@@ -284,7 +284,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     public boolean isPowered() {
-        if (isRemote()) {
+        if (isClientSide()) {
             return this.level.getBlockState(this.worldPosition).getValue(AbstractCraftingUnitBlock.POWERED);
         }
         return this.getMainNode().isActive();
@@ -292,7 +292,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     public boolean isActive() {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             return this.getMainNode().isActive();
         }
         return this.isPowered() && this.isFormed();

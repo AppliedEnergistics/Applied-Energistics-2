@@ -130,7 +130,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
 
             if (newPart != null && hasPermission) {
-                if (isRemote()) {
+                if (isClientSide()) {
                     return true;
                 }
 
@@ -223,7 +223,7 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     protected void updateConnections() {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             final IGridNode n = this.getGridNode();
             if (n != null) {
                 this.setConnections(n.getConnectedSides());

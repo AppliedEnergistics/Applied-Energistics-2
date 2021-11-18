@@ -34,7 +34,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -46,29 +45,22 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.implementations.guiobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.parts.IPart;
-import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.GuiDataSyncPacket;
 import appeng.helpers.InventoryAction;
-import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
-import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
@@ -82,7 +74,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private final IActionSource mySrc;
     private final BlockEntity blockEntity;
     private final IPart part;
-    private final IGuiItemObject guiItem;
+    protected final ItemMenuHost itemMenuHost;
     private final DataSynchronization dataSync = new DataSynchronization(this);
     private final Inventory playerInventory;
     private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
@@ -92,8 +84,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private boolean menuValid = true;
     private MenuLocator locator;
     private int ticksSinceCheck = 900;
-    private int powerTicks = 0;
-    private double powerMultiplier = 0.5;
 
     public AEBaseMenu(MenuType<?> menuType, int id, final Inventory playerInventory,
             final Object host) {
@@ -101,18 +91,22 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
         this.part = host instanceof IPart ? (IPart) host : null;
-        this.guiItem = host instanceof IGuiItemObject ? (IGuiItemObject) host : null;
+        this.itemMenuHost = host instanceof ItemMenuHost ? (ItemMenuHost) host : null;
 
-        if (host != null && this.blockEntity == null && this.part == null && this.guiItem == null) {
+        if (host != null && this.blockEntity == null && this.part == null && this.itemMenuHost == null) {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);
+        }
+
+        if (itemMenuHost != null) {
+            lockPlayerInventorySlot(itemMenuHost.getSlot());
         }
 
         this.mySrc = new PlayerSource(getPlayer(), this.getActionHost());
     }
 
     protected final IActionHost getActionHost() {
-        if (this.guiItem instanceof IActionHost) {
-            return (IActionHost) this.guiItem;
+        if (this.itemMenuHost instanceof IActionHost) {
+            return (IActionHost) this.itemMenuHost;
         }
 
         if (this.blockEntity instanceof IActionHost) {
@@ -127,12 +121,12 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected final boolean isActionHost() {
-        return this.guiItem instanceof IActionHost
+        return this.itemMenuHost instanceof IActionHost
                 || this.blockEntity instanceof IActionHost
                 || this.part instanceof IActionHost;
     }
 
-    public boolean isRemote() {
+    public boolean isClientSide() {
         return getPlayer().getCommandSenderWorld().isClientSide();
     }
 
@@ -149,7 +143,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     public void verifyPermissions(final SecurityPermissions security, final boolean requirePower) {
-        if (isRemote()) {
+        if (isClientSide()) {
             return;
         }
 
@@ -209,7 +203,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         if (this.part != null) {
             return this.part;
         }
-        return this.guiItem;
+        return this.itemMenuHost;
     }
 
     public BlockEntity getBlockEntity() {
@@ -258,6 +252,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     @Override
     public void broadcastChanges() {
+        if (itemMenuHost != null && !itemMenuHost.onBroadcastChanges(this)) {
+            setValidMenu(false);
+            return;
+        }
+
         if (isServer()) {
             if (this.blockEntity != null
                     && this.blockEntity.getLevel().getBlockEntity(this.blockEntity.getBlockPos()) != this.blockEntity) {
@@ -290,7 +289,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(final Player p, final int idx) {
-        if (isRemote()) {
+        if (isClientSide()) {
             return ItemStack.EMPTY;
         }
 
@@ -675,31 +674,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
     }
 
-    /**
-     * Ensures that the item stack referenced by a given GUI item object is still in the expected player inventory slot.
-     * If necessary, referential equality is restored by overwriting the item in the player inventory if it is equal to
-     * the expected item.
-     *
-     * @return True if {@link IGuiItemObject#getItemStack()} is still in the expected slot.
-     */
-    protected final boolean ensureGuiItemIsInSlot(IGuiItemObject guiObject, int slot) {
-        ItemStack expectedItem = guiObject.getItemStack();
-
-        ItemStack currentItem = this.getPlayerInventory().getItem(slot);
-        if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
-            if (currentItem == expectedItem) {
-                return true;
-            } else if (ItemStack.isSame(expectedItem, currentItem)) {
-                // If the items are still equivalent, we just restore referential equality so that modifications
-                // to the GUI item are reflected in the slot
-                this.getPlayerInventory().setItem(slot, expectedItem);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @Override
     public void sendAllDataToRemote() {
         super.sendAllDataToRemote();
@@ -834,49 +808,4 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             this.handler.accept(arg);
         }
     }
-
-    /**
-     * Can only be used with a host that implements {@link IEnergySource} only call once per broadcastChanges()
-     */
-    protected void updateItemPowerStatus() {
-        if ((guiItem instanceof IEnergySource energySource)) {
-            this.powerTicks++;
-            if (this.powerTicks > 10) {
-                energySource.extractAEPower(this.powerMultiplier * this.powerTicks, Actionable.MODULATE,
-                        PowerMultiplier.CONFIG);
-                this.powerTicks = 0;
-            }
-        }
-    }
-
-    /**
-     * Can only be used with a host that extends {@link WirelessTerminalGuiObject}
-     */
-    protected void checkWirelessRange() {
-        if (guiItem instanceof WirelessTerminalGuiObject wirelessTerminalGUIObject) {
-            if (!wirelessTerminalGUIObject.rangeCheck()) {
-                if (isServer() && this.isValidMenu()) {
-                    this.getPlayerInventory().player.sendMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
-                }
-
-                this.setValidMenu(false);
-            } else {
-                powerMultiplier = AEConfig.instance().wireless_getDrainRate(wirelessTerminalGUIObject.getRange());
-            }
-        }
-    }
-
-    /**
-     * Can only be used with a host that implements {@link IInventorySlotAware}
-     */
-    protected boolean checkGuiItemNotInSlot() {
-        if (guiItem instanceof IInventorySlotAware iInventorySlotAware) {
-            if (!ensureGuiItemIsInSlot(guiItem, iInventorySlotAware.getInventorySlot())) {
-                this.setValidMenu(false);
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

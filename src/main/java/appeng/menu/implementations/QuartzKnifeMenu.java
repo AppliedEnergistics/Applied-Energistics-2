@@ -20,6 +20,7 @@ package appeng.menu.implementations;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.implementations.guiobjects.ItemMenuHost;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
-import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.NamePressItem;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
@@ -45,25 +45,20 @@ public class QuartzKnifeMenu extends AEBaseMenu {
     private static final String ACTION_SET_NAME = "setName";
 
     public static final MenuType<QuartzKnifeMenu> TYPE = MenuTypeBuilder
-            .create(QuartzKnifeMenu::new, QuartzKnifeObj.class)
+            .create(QuartzKnifeMenu::new, ItemMenuHost.class)
             .build("quartzknife");
-
-    private final QuartzKnifeObj toolInv;
 
     private final InternalInventory inSlot = new AppEngInternalInventory(null, 1, 1);
 
     private String currentName = "";
 
-    public QuartzKnifeMenu(int id, final Inventory ip, final QuartzKnifeObj te) {
-        super(TYPE, id, ip, te);
-        this.toolInv = te;
+    public QuartzKnifeMenu(int id, Inventory ip, ItemMenuHost host) {
+        super(TYPE, id, ip, host);
 
         this.addSlot(
                 new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0),
                 SlotSemantic.MACHINE_INPUT);
         this.addSlot(new QuartzKniveSlot(this.inSlot, 0, null), SlotSemantic.MACHINE_OUTPUT);
-
-        this.lockPlayerInventorySlot(ip.selected);
 
         this.createPlayerInventorySlots(ip);
 
@@ -78,17 +73,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
     }
 
     @Override
-    public void broadcastChanges() {
-        if (!ensureGuiItemIsInSlot(this.toolInv, this.getPlayerInventory().selected)) {
-            this.setValidMenu(false);
-            return;
-        }
-
-        super.broadcastChanges();
-    }
-
-    @Override
-    public void removed(final Player player) {
+    public void removed(Player player) {
         ItemStack item = this.inSlot.extractItem(0, Integer.MAX_VALUE, false);
         if (!item.isEmpty()) {
             player.drop(item, false);
@@ -137,7 +122,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
 
         private void makePlate() {
             if (isServer() && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
-                final ItemStack item = QuartzKnifeMenu.this.toolInv.getItemStack();
+                final ItemStack item = itemMenuHost.getItemStack();
                 final ItemStack before = item.copy();
                 Inventory playerInv = QuartzKnifeMenu.this.getPlayerInventory();
                 item.hurtAndBreak(1, playerInv.player, p -> {

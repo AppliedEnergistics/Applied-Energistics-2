@@ -121,7 +121,6 @@
   "chat.appliedenergistics2.CommunicationError": "Erro ao comunicar com a rede.",
   "chat.appliedenergistics2.DeviceNotLinked": "Dispositivo não conectado",
   "chat.appliedenergistics2.DeviceNotPowered": "Dispositivo está com baixa energia.",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "Dispositivo não é um terminal sem fios.",
   "chat.appliedenergistics2.InvalidMachine": "Máquina inválida.",
   "chat.appliedenergistics2.LoadedSettings": "Configuração de dispositivo carregada a partir do cartão de memória.",
   "chat.appliedenergistics2.MachineNotPowered": "Máquina não está sendo alimentada.",

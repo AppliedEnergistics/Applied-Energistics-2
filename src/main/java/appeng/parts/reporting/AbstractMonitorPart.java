@@ -127,7 +127,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (isRemote()) {
+        if (isClientSide()) {
             return true;
         }
 
@@ -154,7 +154,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     @Override
     public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (isRemote()) {
+        if (isClientSide()) {
             return true;
         }
 

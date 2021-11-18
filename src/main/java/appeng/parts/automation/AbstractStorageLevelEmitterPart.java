@@ -236,7 +236,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
 
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
         }
         return true;

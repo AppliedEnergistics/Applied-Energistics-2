@@ -118,7 +118,6 @@
   "chat.appliedenergistics2.CommunicationError": "Hiba a hálózattal való kommunikáció közben.",
   "chat.appliedenergistics2.DeviceNotLinked": "Az eszköz nincs összekötve.",
   "chat.appliedenergistics2.DeviceNotPowered": "A készülékenergia szintje alacsony.",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "A készülék nem egy Vezetéknélküli Terminál.",
   "chat.appliedenergistics2.InvalidMachine": "Érvénytelen gép.",
   "chat.appliedenergistics2.LoadedSettings": "Beállítások sikeresen beolvasva.",
   "chat.appliedenergistics2.MachineNotPowered": "A gép nem kap energiát.",

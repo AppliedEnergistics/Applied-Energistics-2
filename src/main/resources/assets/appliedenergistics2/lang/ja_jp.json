@@ -122,7 +122,6 @@
   "chat.appliedenergistics2.CommunicationError": "ネットワーク通信エラー。",
   "chat.appliedenergistics2.DeviceNotLinked": "デバイスはリンクされていません。",
   "chat.appliedenergistics2.DeviceNotPowered": "デバイスの電力が低下しています。",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "デバイスは無線ターミナルではありません。",
   "chat.appliedenergistics2.InvalidMachine": "無効な装置です。",
   "chat.appliedenergistics2.LoadedSettings": "メモリカードからデバイス構成をロードしました。",
   "chat.appliedenergistics2.MachineNotPowered": "マシンの電源が入っていません。",

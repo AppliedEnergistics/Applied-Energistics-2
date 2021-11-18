@@ -578,7 +578,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Nullable
     public AECraftingPattern getCurrentPattern() {
-        if (isRemote()) {
+        if (isClientSide()) {
             var patternItem = patternInv.getStackInSlot(0);
             var pattern = PatternDetailsHelper.decodePattern(patternItem, level);
             if (pattern instanceof AECraftingPattern craftingPattern) {

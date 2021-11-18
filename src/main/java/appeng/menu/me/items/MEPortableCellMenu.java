@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.interfaces.IInventorySlotAware;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
@@ -35,26 +34,9 @@ public class MEPortableCellMenu extends ItemTerminalMenu {
             .build("meportablecell");
 
     protected MEPortableCellMenu(MenuType<? extends MEPortableCellMenu> type, int id,
-            final Inventory ip, final IPortableCell monitorable) {
+            Inventory ip, IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
-        // Is the screen being opened a specific slot? If not, it must be for the currently held item
-        int slot;
-        if (monitorable instanceof IInventorySlotAware) {
-            slot = ((IInventorySlotAware) monitorable).getInventorySlot();
-        } else {
-            slot = ip.selected;
-        }
-        this.lockPlayerInventorySlot(slot);
         this.createPlayerInventorySlots(ip);
-    }
-
-    @Override
-    public void broadcastChanges() {
-        if (checkGuiItemNotInSlot())
-            return;
-
-        updateItemPowerStatus();
-        super.broadcastChanges();
     }
 
 }

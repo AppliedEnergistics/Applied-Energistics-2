@@ -6,7 +6,7 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.networking.IGridNode;
-import appeng.helpers.WirelessCraftingTerminalGuiObject;
+import appeng.helpers.WirelessCraftingTerminalMenuHost;
 import appeng.menu.implementations.MenuTypeBuilder;
 
 /**
@@ -18,27 +18,16 @@ import appeng.menu.implementations.MenuTypeBuilder;
 public class WirelessCraftingTermMenu extends CraftingTermMenu {
 
     public static final MenuType<WirelessCraftingTermMenu> TYPE = MenuTypeBuilder
-            .create(WirelessCraftingTermMenu::new, WirelessCraftingTerminalGuiObject.class)
+            .create(WirelessCraftingTermMenu::new, WirelessCraftingTerminalMenuHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("wirelesscraftingterm");
 
-    private final WirelessCraftingTerminalGuiObject guiObject;
+    private final WirelessCraftingTerminalMenuHost guiObject;
 
-    public WirelessCraftingTermMenu(int id, final Inventory ip, final WirelessCraftingTerminalGuiObject monitorable) {
+    public WirelessCraftingTermMenu(int id, Inventory ip, WirelessCraftingTerminalMenuHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
-        this.lockPlayerInventorySlot(monitorable.getInventorySlot());
         this.createPlayerInventorySlots(ip);
         this.guiObject = monitorable;
-    }
-
-    @Override
-    public void broadcastChanges() {
-        if (checkGuiItemNotInSlot())
-            return;
-
-        checkWirelessRange();
-        updateItemPowerStatus();
-        super.broadcastChanges();
     }
 
     public IGridNode getNetworkNode() {

@@ -116,7 +116,7 @@ public class FluidInterfacePart extends BasicStatePart implements IFluidInterfac
 
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             MenuOpener.open(getMenuType(), p, MenuLocator.forPart(this));
         }
 

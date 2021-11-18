@@ -49,7 +49,7 @@ public class InterfaceTerminalPart extends AbstractDisplayPart {
 
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!super.onPartActivate(player, hand, pos) && !isRemote()) {
+        if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
             MenuOpener.open(InterfaceTerminalMenu.TYPE, player, MenuLocator.forPart(this));
         }
         return true;

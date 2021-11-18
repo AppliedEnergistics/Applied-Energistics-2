@@ -159,7 +159,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (isRemote()) {
+        if (isClientSide()) {
             return true;
         }
 
@@ -229,7 +229,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     public boolean onPartShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         final ItemStack is = player.getInventory().getSelected();
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
-            if (isRemote()) {
+            if (isClientSide()) {
                 return true;
             }
 

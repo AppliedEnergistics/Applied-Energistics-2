@@ -65,7 +65,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (isRemote()) {
+        if (isClientSide()) {
             return true;
         }
 
@@ -99,7 +99,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @Override
     public boolean onClicked(Player player, Vec3 pos) {
-        if (isRemote()) {
+        if (isClientSide()) {
             return true;
         }
 
@@ -120,7 +120,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @Override
     public boolean onShiftClicked(Player player, Vec3 pos) {
-        if (isRemote()) {
+        if (isClientSide()) {
             return true;
         }
 

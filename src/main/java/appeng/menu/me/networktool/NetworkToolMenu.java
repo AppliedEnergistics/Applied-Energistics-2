@@ -18,12 +18,10 @@
 
 package appeng.menu.me.networktool;
 
-import net.minecraft.nbt.CompoundTag;
+import appeng.items.contents.NetworkToolMenuHost;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
@@ -38,22 +36,17 @@ public class NetworkToolMenu extends AEBaseMenu {
     private static final String ACTION_TOGGLE_FACADE_MODE = "toggleFacadeMode";
 
     public static final MenuType<NetworkToolMenu> TYPE = MenuTypeBuilder
-            .create(NetworkToolMenu::new, INetworkTool.class)
+            .create(NetworkToolMenu::new, NetworkToolMenuHost.class)
             .build("networktool");
-
-    private final INetworkTool toolInv;
 
     @GuiSync(1)
     public boolean facadeMode;
 
-    public NetworkToolMenu(int id, final Inventory ip, final INetworkTool te) {
-        super(TYPE, id, ip, null);
-        this.toolInv = te;
-
-        this.lockPlayerInventorySlot(ip.selected);
+    public NetworkToolMenu(int id, final Inventory ip, NetworkToolMenuHost host) {
+        super(TYPE, id, ip, host);
 
         for (int i = 0; i < 9; i++) {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, te.getInventory(),
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, host.getInventory(),
                     i), SlotSemantic.STORAGE);
         }
 
@@ -68,34 +61,19 @@ public class NetworkToolMenu extends AEBaseMenu {
             return;
         }
 
-        var data = this.toolInv.getItemStack().getOrCreateTag();
+        var data = this.itemMenuHost.getItemStack().getOrCreateTag();
         data.putBoolean("hideFacades", !data.getBoolean("hideFacades"));
         this.broadcastChanges();
     }
 
     @Override
     public void broadcastChanges() {
-        final ItemStack currentItem = this.getPlayerInventory().getSelected();
-
-        if (currentItem != this.toolInv.getItemStack()) {
-            if (!currentItem.isEmpty()) {
-                if (ItemStack.isSame(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInventory().setItem(this.getPlayerInventory().selected,
-                            this.toolInv.getItemStack());
-                } else {
-                    this.setValidMenu(false);
-                }
-            } else {
-                this.setValidMenu(false);
-            }
-        }
+        super.broadcastChanges();
 
         if (this.isValidMenu()) {
-            final CompoundTag data = currentItem.getOrCreateTag();
-            this.setFacadeMode(data.getBoolean("hideFacades"));
+            var tag = itemMenuHost.getItemStack().getOrCreateTag();
+            this.setFacadeMode(tag.getBoolean("hideFacades"));
         }
-
-        super.broadcastChanges();
     }
 
     public boolean isFacadeMode() {

@@ -119,7 +119,6 @@
   "chat.appliedenergistics2.CommunicationError": "Erreur de communication avec le réseau.",
   "chat.appliedenergistics2.DeviceNotLinked": "Le dispositif n'est pas lié.",
   "chat.appliedenergistics2.DeviceNotPowered": "Le dispositif manque de puissance.",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "Le dispositif n'est pas un terminal sans fil.",
   "chat.appliedenergistics2.InvalidMachine": "Machine invalide.",
   "chat.appliedenergistics2.LoadedSettings": "Paramètres chargés avec succès.",
   "chat.appliedenergistics2.MachineNotPowered": "La machine n'est pas alimentée.",

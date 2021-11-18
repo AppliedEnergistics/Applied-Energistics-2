@@ -173,7 +173,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     }
 
     @Override
-    public boolean isRemote() {
+    public boolean isClientSide() {
         Level level = this.host.getBlockEntity().getLevel();
         return level == null || level.isClientSide();
     }

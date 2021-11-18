@@ -18,12 +18,16 @@
 
 package appeng.helpers;
 
+import appeng.api.implementations.guiobjects.ItemMenuHost;
+import appeng.core.AEConfig;
+import appeng.core.localization.PlayerMessages;
+import net.minecraft.Util;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.features.IWirelessTerminalHandler;
 import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.guiobjects.IPortableCell;
@@ -34,38 +38,37 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
-import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessBlockEntity;
-import appeng.menu.interfaces.IInventorySlotAware;
+import appeng.items.tools.powered.WirelessTerminalItem;
 
-public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
+public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableCell, IActionHost {
 
-    private final ItemStack effectiveItem;
-    private final IWirelessTerminalHandler wth;
-    private final Player myPlayer;
+    private final WirelessTerminalItem terminal;
     private IGrid targetGrid;
     private IStorageService sg;
     private IWirelessAccessPoint myWap;
     private double sqRange = Double.MAX_VALUE;
-    private double myRange = Double.MAX_VALUE;
-    private final int inventorySlot;
+    /**
+     * The distance to the currently connected access point in blocks.
+     */
+    private double currentDistanceFromGrid = Double.MAX_VALUE;
 
-    public WirelessTerminalGuiObject(final IWirelessTerminalHandler wh, final ItemStack is, final Player ep,
-            int inventorySlot) {
-        this.effectiveItem = is;
-        this.myPlayer = ep;
-        this.wth = wh;
-        this.inventorySlot = inventorySlot;
+    public WirelessTerminalMenuHost(Player player, int slot, ItemStack itemStack) {
+        super(player, slot, itemStack);
+        if (!(itemStack.getItem() instanceof WirelessTerminalItem wirelessTerminalItem)) {
+            throw new IllegalArgumentException("Can only use this class with subclasses of WirelessTerminalItem");
+        }
+        this.terminal = wirelessTerminalItem;
 
-        var gridKey = wh.getGridKey(is);
+        var gridKey = terminal.getGridKey(itemStack);
         if (gridKey.isEmpty()) {
             return;
         }
 
-        var actionHost = Locatables.securityStations().get(ep.level, gridKey.getAsLong());
+        var actionHost = Locatables.securityStations().get(player.level, gridKey.getAsLong());
         if (actionHost != null) {
-            final IGridNode n = actionHost.getActionableNode();
+            var n = actionHost.getActionableNode();
             if (n != null) {
                 this.targetGrid = n.getGrid();
                 if (this.targetGrid != null) {
@@ -75,34 +78,25 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         }
     }
 
-    public double getRange() {
-        return this.myRange;
-    }
-
     @Override
     public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
         return this.sg.getInventory(channel);
     }
 
     @Override
-    public double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier) {
-        if (this.wth != null && this.effectiveItem != null) {
+    public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
+        if (this.terminal != null) {
             if (mode == Actionable.SIMULATE) {
-                return this.wth.hasPower(this.myPlayer, amt, this.effectiveItem) ? amt : 0;
+                return this.terminal.hasPower(getPlayer(), amt, getItemStack()) ? amt : 0;
             }
-            return this.wth.usePower(this.myPlayer, amt, this.effectiveItem) ? amt : 0;
+            return this.terminal.usePower(getPlayer(), amt, getItemStack()) ? amt : 0;
         }
         return 0.0;
     }
 
     @Override
-    public ItemStack getItemStack() {
-        return this.effectiveItem;
-    }
-
-    @Override
     public IConfigManager getConfigManager() {
-        return this.wth.getConfigManager(this.effectiveItem);
+        return this.terminal.getConfigManager(getItemStack());
     }
 
     @Override
@@ -115,17 +109,12 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     }
 
     public boolean rangeCheck() {
-        this.sqRange = this.myRange = Double.MAX_VALUE;
+        this.sqRange = this.currentDistanceFromGrid = Double.MAX_VALUE;
 
         if (this.targetGrid != null) {
             if (this.myWap != null) {
-                if (this.myWap.getGrid() == this.targetGrid && this.testWap(this.myWap)) {
-                    return true;
-                }
-                return false;
+                return this.myWap.getGrid() == this.targetGrid && this.testWap(this.myWap);
             }
-
-            this.myWap = null;
 
             for (var wap : this.targetGrid.getMachines(WirelessBlockEntity.class)) {
                 if (this.testWap(wap)) {
@@ -138,21 +127,21 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         return false;
     }
 
-    protected boolean testWap(final IWirelessAccessPoint wap) {
+    protected boolean testWap(IWirelessAccessPoint wap) {
         double rangeLimit = wap.getRange();
         rangeLimit *= rangeLimit;
 
-        final DimensionalBlockPos dc = wap.getLocation();
+        var dc = wap.getLocation();
 
-        if (dc.getLevel() == this.myPlayer.level) {
-            var offX = dc.getPos().getX() - this.myPlayer.getX();
-            var offY = dc.getPos().getY() - this.myPlayer.getY();
-            var offZ = dc.getPos().getZ() - this.myPlayer.getZ();
+        if (dc.getLevel() == this.getPlayer().level) {
+            var offX = dc.getPos().getX() - this.getPlayer().getX();
+            var offY = dc.getPos().getY() - this.getPlayer().getY();
+            var offZ = dc.getPos().getZ() - this.getPlayer().getZ();
 
             final double r = offX * offX + offY * offY + offZ * offZ;
             if (r < rangeLimit && this.sqRange > r && wap.isActive()) {
                 this.sqRange = r;
-                this.myRange = Math.sqrt(r);
+                this.currentDistanceFromGrid = Math.sqrt(r);
                 return true;
             }
         }
@@ -160,8 +149,23 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     }
 
     @Override
-    public int getInventorySlot() {
-        return this.inventorySlot;
+    public boolean onBroadcastChanges(AbstractContainerMenu menu) {
+        return super.onBroadcastChanges(menu)
+                && checkWirelessRange(menu);
     }
 
+    /**
+     * Can only be used with a host that extends {@link WirelessTerminalMenuHost}
+     */
+    private boolean checkWirelessRange(AbstractContainerMenu menu) {
+        if (!rangeCheck()) {
+            if (!isClientSide()) {
+                getPlayer().sendMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
+            }
+            return false;
+        }
+
+        setPowerDrainPerTick(AEConfig.instance().wireless_getDrainRate(currentDistanceFromGrid));
+        return true;
+    }
 }

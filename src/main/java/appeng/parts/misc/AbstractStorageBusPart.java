@@ -155,7 +155,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
      * Schedule a re-evaluation of the target inventory on the next tick alert the device in case its sleeping.
      */
     private void scheduleUpdate() {
-        if (isRemote()) {
+        if (isClientSide()) {
             return;
         }
 
@@ -181,7 +181,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
 
     @Override
     public final boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
         }
         return true;

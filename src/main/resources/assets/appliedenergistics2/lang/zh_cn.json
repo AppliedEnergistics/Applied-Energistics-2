@@ -121,7 +121,6 @@
   "chat.appliedenergistics2.CommunicationError": "网络交互错误.",
   "chat.appliedenergistics2.DeviceNotLinked": "设备未连接.",
   "chat.appliedenergistics2.DeviceNotPowered": "设备供能不足.",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "设备不是无线终端.",
   "chat.appliedenergistics2.InvalidMachine": "无效机器.",
   "chat.appliedenergistics2.LoadedSettings": "成功载入设定.",
   "chat.appliedenergistics2.MachineNotPowered": "机器未供能.",

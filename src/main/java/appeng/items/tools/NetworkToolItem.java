@@ -35,7 +35,7 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAware;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
-import appeng.items.contents.NetworkToolViewer;
+import appeng.items.contents.NetworkToolMenuHost;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.networktool.NetworkStatusMenu;
@@ -49,13 +49,13 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, AEToolItem 
     }
 
     @Override
-    public NetworkToolViewer getGuiObject(final ItemStack is, int playerInventorySlot, final Level level,
-            final BlockPos pos) {
+    public NetworkToolMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
+        var level = player.level;
         if (pos == null) {
-            return new NetworkToolViewer(is, null, level.isClientSide());
+            return new NetworkToolMenuHost(player, inventorySlot, stack, null);
         }
         var host = GridHelper.getNodeHost(level, pos);
-        return new NetworkToolViewer(is, host, level.isClientSide());
+        return new NetworkToolMenuHost(player, inventorySlot, stack, host);
     }
 
     @Override

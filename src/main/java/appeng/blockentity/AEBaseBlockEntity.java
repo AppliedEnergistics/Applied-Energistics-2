@@ -361,7 +361,7 @@ public class AEBaseBlockEntity extends BlockEntity
     /**
      * Checks if this block entity is remote (we are running on the logical client side).
      */
-    public boolean isRemote() {
+    public boolean isClientSide() {
         Level level = getLevel();
         return level == null || level.isClientSide();
     }

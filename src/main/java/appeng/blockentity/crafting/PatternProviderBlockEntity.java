@@ -77,7 +77,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             this.setOrientation(newForward, newUp);
         }
 
-        if (!isRemote()) {
+        if (!isClientSide()) {
             this.configureNodeSides();
             this.markForUpdate();
             this.saveChanges();

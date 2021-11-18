@@ -44,7 +44,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.AEKey;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
-import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
@@ -183,7 +183,7 @@ public class CraftConfirmMenu extends AEBaseMenu {
         MenuType<?> originalGui = null;
 
         final IActionHost ah = this.getActionHost();
-        if (ah instanceof WirelessTerminalGuiObject) {
+        if (ah instanceof WirelessTerminalMenuHost) {
             originalGui = WirelessTermMenu.TYPE;
         }
 

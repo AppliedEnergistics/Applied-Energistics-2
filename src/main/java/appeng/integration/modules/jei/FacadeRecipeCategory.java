@@ -16,11 +16,11 @@ import appeng.core.FacadeCreativeTab;
  */
 public class FacadeRecipeCategory extends DefaultCraftingCategory {
 
-    public static final CategoryIdentifier<? extends DefaultCraftingDisplay> ID = CategoryIdentifier
+    public static final CategoryIdentifier<? extends DefaultCraftingDisplay<?>> ID = CategoryIdentifier
             .of(AppEng.makeId("facades"));
 
     @Override
-    public CategoryIdentifier<? extends DefaultCraftingDisplay> getCategoryIdentifier() {
+    public CategoryIdentifier<? extends DefaultCraftingDisplay<?>> getCategoryIdentifier() {
         return ID;
     }
 

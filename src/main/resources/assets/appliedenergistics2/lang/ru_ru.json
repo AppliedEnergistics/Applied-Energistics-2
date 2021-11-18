@@ -140,7 +140,6 @@
   "chat.appliedenergistics2.CommunicationError": "Ошибка связи с сетью.",
   "chat.appliedenergistics2.DeviceNotLinked": "Устройство не соединено.",
   "chat.appliedenergistics2.DeviceNotPowered": "Устройству недостаточно энергии.",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "Это не беспроводной терминал.",
   "chat.appliedenergistics2.InvalidMachine": "Неподходящий механизм.",
   "chat.appliedenergistics2.LoadedSettings": "Настройки успешно загружены.",
   "chat.appliedenergistics2.MachineNotPowered": "Устройство без питания.",

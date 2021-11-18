@@ -118,7 +118,6 @@
   "chat.appliedenergistics2.CommunicationError": "Fehler beim Kommunizieren mit dem Netzwerk.",
   "chat.appliedenergistics2.DeviceNotLinked": "Gerät ist nicht verbunden.",
   "chat.appliedenergistics2.DeviceNotPowered": "Gerät hat zu wenig Energie",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "Gerät ist keine Drahtloskonsole.",
   "chat.appliedenergistics2.InvalidMachine": "Ungültige Maschine.",
   "chat.appliedenergistics2.LoadedSettings": "Geräteeinstellungen von Speicherkarte geladen.",
   "chat.appliedenergistics2.MachineNotPowered": "Maschine bekommt keine Energie.",

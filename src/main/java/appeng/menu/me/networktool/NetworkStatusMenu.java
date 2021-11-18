@@ -18,11 +18,11 @@
 
 package appeng.menu.me.networktool;
 
+import appeng.items.contents.NetworkToolMenuHost;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
@@ -37,19 +37,19 @@ import appeng.menu.implementations.MenuTypeBuilder;
 public class NetworkStatusMenu extends AEBaseMenu {
 
     public static final MenuType<NetworkStatusMenu> TYPE = MenuTypeBuilder
-            .create(NetworkStatusMenu::new, INetworkTool.class)
+            .create(NetworkStatusMenu::new, NetworkToolMenuHost.class)
             .build("networkstatus");
 
     private IGrid grid;
     private int delay = 40;
 
-    public NetworkStatusMenu(int id, Inventory ip, final INetworkTool te) {
-        super(TYPE, id, ip, null);
-        var host = te.getGridHost();
+    public NetworkStatusMenu(int id, Inventory ip, NetworkToolMenuHost host) {
+        super(TYPE, id, ip, host);
 
-        if (host != null) {
+        var gridHost = host.getGridHost();
+        if (gridHost != null) {
             for (var d : Direction.values()) {
-                this.findNode(host, d);
+                this.findNode(gridHost, d);
             }
         }
 

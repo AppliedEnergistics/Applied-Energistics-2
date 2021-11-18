@@ -84,7 +84,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
 
     @Override
     public boolean isPowered() {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             return this.getMainNode().isPowered();
         }
 

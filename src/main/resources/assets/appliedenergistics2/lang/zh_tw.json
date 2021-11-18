@@ -128,7 +128,6 @@
   "chat.appliedenergistics2.CommunicationError": "與網路溝通時發生錯誤。",
   "chat.appliedenergistics2.DeviceNotLinked": "裝置沒有連接。",
   "chat.appliedenergistics2.DeviceNotPowered": "裝置沒有能量。",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "裝置不是無線終端。",
   "chat.appliedenergistics2.InvalidMachine": "無效的機器。",
   "chat.appliedenergistics2.LoadedSettings": "從記憶卡中載入裝置的設定。",
   "chat.appliedenergistics2.MachineNotPowered": "機器沒有供電。",

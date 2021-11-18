@@ -34,7 +34,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.IPriorityHost;
-import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.menu.implementations.ChestMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.ItemTerminalMenu;
@@ -68,7 +68,7 @@ public final class AESubScreen {
         } else if (menuHost instanceof IPriorityHost priorityHost) {
             this.previousMenuIcon = priorityHost.getItemStackRepresentation();
             this.previousMenuType = priorityHost.getMenuType();
-        } else if (menuHost instanceof WirelessTerminalGuiObject) {
+        } else if (menuHost instanceof WirelessTerminalMenuHost) {
             this.previousMenuIcon = AEItems.WIRELESS_TERMINAL.stack();
             this.previousMenuType = WirelessTermMenu.TYPE;
         } else if (menuHost instanceof ItemTerminalPart) {

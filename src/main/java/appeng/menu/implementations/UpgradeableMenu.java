@@ -38,7 +38,7 @@ import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.items.contents.NetworkToolViewer;
+import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
@@ -60,7 +60,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
     @GuiSync(6)
     public SchedulingMode schedulingMode = SchedulingMode.DEFAULT;
     private int tbSlot;
-    private NetworkToolViewer tbInventory;
+    private NetworkToolMenuHost tbInventory;
 
     public UpgradeableMenu(MenuType<?> menuType, int id, Inventory ip, T host) {
         super(menuType, id, ip, host);
@@ -72,8 +72,8 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
                 this.lockPlayerInventorySlot(x);
                 this.tbSlot = x;
-                this.tbInventory = ((NetworkToolItem) pii.getItem()).getGuiObject(pii, x,
-                        getPlayerInventory().player.level, null);
+                this.tbInventory = ((NetworkToolItem) pii.getItem()).getGuiObject(getPlayerInventory().player, x, pii,
+                        null);
                 break;
             }
         }

@@ -84,7 +84,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
     }
 
     void click(final Player player) {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             final ItemStack hand = player.getInventory().getSelected();
             this.who = player;
 

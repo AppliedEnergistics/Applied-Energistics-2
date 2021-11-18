@@ -23,40 +23,24 @@
 
 package appeng.api.implementations.guiobjects;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
 
 /**
  * Implemented on Item objects, to return objects used to manage, and interact with the contents.
  */
 public interface IGuiItem {
     /**
-     *
-     * @param is                  The item used to open the menu.
-     * @param playerInventorySlot The slot in the player's inventory the item is in.
-     * @param level               The level the player is in.
-     * @param pos                 If the item was used on a block in the world, has that block's position. Null if no
-     *                            block was targeted.
+     * @param player        The player opening the menu.
+     * @param inventorySlot The slot in the player's inventory the item is in.
+     * @param stack         The item used to open the menu.
+     * @param pos           If the item was used on a block in the world, has that block's position. Null if no
+     *                      block was targeted.
      * @return Null if no GUI object is available.
      */
     @Nullable
-    IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Level level, @Nullable BlockPos pos);
-
-    /**
-     *
-     * @param is                  The item used to open the menu.
-     * @param playerInventorySlot The slot in the player's inventory the item is in.
-     * @param player              The player opening the menu.
-     * @param pos                 If the item was used on a block in the world, has that block's position. Null if no
-     *                            block was targeted.
-     * @return Null if no GUI object is available.
-     */
-    @Nullable
-    default IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Player player, @Nullable BlockPos pos) {
-        return getGuiObject(is, playerInventorySlot, player.level, pos);
-    }
+    ItemMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos);
 }

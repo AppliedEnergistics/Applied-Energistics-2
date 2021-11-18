@@ -237,7 +237,7 @@ public class AppEngSlot extends Slot {
     }
 
     protected boolean isRemote() {
-        return menu == null || menu.isRemote();
+        return menu == null || menu.isClientSide();
     }
 
     /**

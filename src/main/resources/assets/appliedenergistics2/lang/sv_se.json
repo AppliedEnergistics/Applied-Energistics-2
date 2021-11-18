@@ -127,7 +127,6 @@
   "chat.appliedenergistics2.CommunicationError": "Fel uppstod under kommunikation med nätverket.",
   "chat.appliedenergistics2.DeviceNotLinked": "Enheten är inte länkad.",
   "chat.appliedenergistics2.DeviceNotPowered": "Enheten har för lite ström.",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "Enheten är inte en trådlös terminal.",
   "chat.appliedenergistics2.InvalidMachine": "Ogiltig maskin.",
   "chat.appliedenergistics2.LoadedSettings": "Läste in enhetskonfiguration från minneskortet.",
   "chat.appliedenergistics2.MachineNotPowered": "Maskinen har ingen energi.",

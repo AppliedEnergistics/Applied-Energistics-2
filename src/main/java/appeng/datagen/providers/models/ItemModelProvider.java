@@ -18,6 +18,8 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
     protected void registerModels() {
         flatSingleLayer(AEItems.ITEM_CELL_CREATIVE, "item/creative_item_cell");
         flatSingleLayer(AEItems.FLUID_CELL_CREATIVE, "item/creative_fluid_cell");
+        flatSingleLayer(AEItems.WIRELESS_TERMINAL, "item/wireless_terminal");
+        flatSingleLayer(AEItems.WIRELESS_CRAFTING_TERMINAL, "item/wireless_crafting_terminal");
     }
 
     private void flatSingleLayer(ItemDefinition<?> item, String texture) {

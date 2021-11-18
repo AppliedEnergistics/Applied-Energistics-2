@@ -227,7 +227,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     public boolean isPowered() {
-        if (isRemote()) {
+        if (isClientSide()) {
             return (this.constructed & this.powered) == this.powered && this.constructed != -1;
         }
 

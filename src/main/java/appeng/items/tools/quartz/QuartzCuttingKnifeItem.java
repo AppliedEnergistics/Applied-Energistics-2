@@ -29,13 +29,13 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.implementations.guiobjects.ItemMenuHost;
 import appeng.items.AEBaseItem;
-import appeng.items.contents.QuartzKnifeObj;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.util.Platform;
+import org.jetbrains.annotations.Nullable;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final QuartzToolType type;
@@ -89,9 +89,9 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
 //        return true;
 //    }
 
+    @Nullable
     @Override
-    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level level,
-            final BlockPos pos) {
-        return new QuartzKnifeObj(is);
+    public ItemMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+        return new ItemMenuHost(player, inventorySlot, stack);
     }
 }

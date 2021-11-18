@@ -35,7 +35,7 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.implementations.guiobjects.ItemMenuHost;
 import appeng.api.storage.ItemStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.IBasicCellItem;
@@ -133,9 +133,8 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final Level level,
-            final BlockPos pos) {
-        return new PortableCellViewer(is, playerInventorySlot);
+    public ItemMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
+        return new PortableCellViewer(player, inventorySlot, stack);
     }
 
     @Override

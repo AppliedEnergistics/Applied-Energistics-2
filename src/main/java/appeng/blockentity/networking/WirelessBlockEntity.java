@@ -145,7 +145,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     @Override
     public boolean isActive() {
-        if (isRemote()) {
+        if (isClientSide()) {
             return this.isPowered() && CHANNEL_FLAG == (this.getClientFlags() & CHANNEL_FLAG);
         }
 

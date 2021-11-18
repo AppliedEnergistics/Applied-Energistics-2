@@ -100,7 +100,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
     }
 
-    public final boolean isRemote() {
+    public final boolean isClientSide() {
         return this.blockEntity == null
                 || this.blockEntity.getLevel() == null
                 || this.blockEntity.getLevel().isClientSide();

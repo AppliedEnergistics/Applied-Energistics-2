@@ -168,7 +168,7 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
 
     @Override
     public final boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
         }
         return true;

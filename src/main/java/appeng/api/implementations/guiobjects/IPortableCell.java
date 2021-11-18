@@ -29,6 +29,6 @@ import appeng.api.storage.ITerminalHost;
 /**
  * Obtained via {@link IGuiItem} getGuiObject
  */
-public interface IPortableCell extends ITerminalHost, IEnergySource, IGuiItemObject {
+public interface IPortableCell extends ITerminalHost, IEnergySource {
 
 }

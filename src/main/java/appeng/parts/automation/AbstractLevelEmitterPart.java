@@ -111,7 +111,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     protected boolean isLevelEmitterOn() {
-        if (isRemote()) {
+        if (isClientSide()) {
             return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
         }
 

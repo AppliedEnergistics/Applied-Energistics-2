@@ -30,5 +30,5 @@ public interface InternalInventoryHost {
 
     void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack, ItemStack newStack);
 
-    boolean isRemote();
+    boolean isClientSide();
 }

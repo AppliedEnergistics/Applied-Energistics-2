@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -42,21 +43,21 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.*;
 import appeng.api.features.IGridLinkableHandler;
-import appeng.api.features.IWirelessTerminalHandler;
-import appeng.api.features.WirelessTerminals;
+import appeng.api.features.Locatables;
 import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.implementations.guiobjects.ItemMenuHost;
 import appeng.api.util.IConfigManager;
 import appeng.core.localization.GuiText;
-import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.core.localization.PlayerMessages;
+import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.me.items.WirelessTermMenu;
 import appeng.util.ConfigManager;
 
 public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomReequipAnimation, IGuiItem {
-
-    public static final IWirelessTerminalHandler TERMINAL_HANDLER = new TerminalHandler();
 
     public static final IGridLinkableHandler LINKABLE_HANDLER = new LinkableHandler();
 
@@ -66,11 +67,34 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
         super(powerCapacity, props);
     }
 
+    /**
+     * Open a wireless terminal from a slot in the player inventory, i.e. activated via hotkey.
+     * 
+     * @return True if the menu was opened.
+     */
+    public boolean openFromInventory(Player player, int inventorySlot) {
+        var is = player.getInventory().getItem(inventorySlot);
+
+        if (!is.isEmpty() && checkPreconditions(is, player)) {
+            return MenuOpener.open(getMenuType(), player, MenuLocator.forInventorySlot(inventorySlot));
+        }
+        return false;
+    }
+
+    /**
+     * Opens a wireless terminal when activated by the player while held in hand.
+     */
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
-        WirelessTerminals.openTerminal(player.getItemInHand(hand), player, hand);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand));
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        var is = player.getItemInHand(hand);
+
+        if (!is.isEmpty() && checkPreconditions(is, player)) {
+            if (MenuOpener.open(getMenuType(), player, MenuLocator.forHand(player, hand))) {
+                return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), is);
+            }
+        }
+
+        return new InteractionResultHolder<>(InteractionResult.FAIL, is);
     }
 
     @Override
@@ -86,6 +110,12 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
         }
     }
 
+    /**
+     * Gets the key of the grid that the wireless terminal is linked to. This can be empty to signal that the terminal
+     * screen should be closed or be otherwise unavailable. The grid will be looked up using
+     * {@link Locatables#securityStations()}. To support setting the grid key using the standard security station slot,
+     * register a {@link IGridLinkableHandler} for your item.
+     */
     public OptionalLong getGridKey(ItemStack item) {
         CompoundTag tag = item.getTag();
         if (tag != null && tag.contains(TAG_GRID_KEY, Tag.TAG_LONG)) {
@@ -95,6 +125,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
         }
     }
 
+    /**
+     * Allows other wireless terminals to override which menu is shown when it is opened.
+     */
     public MenuType<?> getMenuType() {
         return WirelessTermMenu.TYPE;
     }
@@ -106,52 +139,76 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
 
     @Nullable
     @Override
-    public IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Level level, @Nullable BlockPos pos) {
-        return null;
+    public ItemMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+        return new WirelessTerminalMenuHost(player, inventorySlot, stack);
     }
 
-    @Nullable
-    @Override
-    public IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, Player player, @Nullable BlockPos pos) {
-        return new WirelessTerminalGuiObject(TERMINAL_HANDLER, is, player, playerInventorySlot);
+    /**
+     * Checks if a player can open a particular wireless terminal.
+     * 
+     * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
+     */
+    protected boolean checkPreconditions(ItemStack item, Player player) {
+        var level = player.getCommandSenderWorld();
+        if (level.isClientSide()) {
+            return false;
+        }
+
+        var key = getGridKey(item);
+        if (key.isEmpty()) {
+            player.sendMessage(PlayerMessages.DeviceNotLinked.get(), Util.NIL_UUID);
+            return false;
+        }
+
+        var securityStation = Locatables.securityStations().get(level, key.getAsLong());
+        if (securityStation == null) {
+            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.NIL_UUID);
+            return false;
+        }
+
+        if (!hasPower(player, 0.5, item)) {
+            player.sendMessage(PlayerMessages.DeviceNotPowered.get(), Util.NIL_UUID);
+            return false;
+        }
+        return true;
     }
 
-    private static class TerminalHandler implements IWirelessTerminalHandler {
-        private static WirelessTerminalItem getItem(ItemStack stack) {
-            return (WirelessTerminalItem) stack.getItem();
-        }
+    /**
+     * use an amount of power, in AE units
+     *
+     * @param amount is in AE units ( 5 per MJ ), if you return false, the item should be dead and return false for
+     *               hasPower
+     * @return true if wireless terminal uses power
+     */
+    public boolean usePower(Player player, double amount, ItemStack is) {
+        return extractAEPower(is, amount, Actionable.MODULATE) >= amount - 0.5;
+    }
 
-        @Override
-        public OptionalLong getGridKey(ItemStack is) {
-            return getItem(is).getGridKey(is);
-        }
+    /**
+     * gets the power status of the item.
+     *
+     * @return returns true if there is any power left.
+     */
+    public boolean hasPower(Player player, double amt, ItemStack is) {
+        return getAECurrentPower(is) >= amt;
+    }
 
-        @Override
-        public boolean usePower(final Player player, final double amount, final ItemStack is) {
-            return getItem(is).extractAEPower(is, amount, Actionable.MODULATE) >= amount - 0.5;
-        }
+    /**
+     * Return the config manager for the wireless terminal.
+     *
+     * @return config manager of wireless terminal
+     */
+    public IConfigManager getConfigManager(final ItemStack target) {
+        var out = new ConfigManager((manager, settingName) -> {
+            manager.writeToNBT(target.getOrCreateTag());
+        });
 
-        @Override
-        public boolean hasPower(final Player player, final double amt, final ItemStack is) {
-            return getItem(is).getAECurrentPower(is) >= amt;
-        }
+        out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+        out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
-        @Override
-        public IConfigManager getConfigManager(final ItemStack target) {// TODO maybe provide an easy way for other
-                                                                        // Terminals to overwrite this without making
-                                                                        // their own IWirelessTerminalHandler that
-                                                                        // mostly copies this one
-            var out = new ConfigManager((manager, settingName) -> {
-                manager.writeToNBT(target.getOrCreateTag());
-            });
-
-            out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-            out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-            out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
-
-            out.readFromNBT(target.getOrCreateTag().copy());
-            return out;
-        }
+        out.readFromNBT(target.getOrCreateTag().copy());
+        return out;
     }
 
     private static class LinkableHandler implements IGridLinkableHandler {

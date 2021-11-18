@@ -49,8 +49,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     }
 
     @Override
-    public boolean isRemote() {
-        return this.parent == null || this.parent.isRemote();
+    public boolean isClientSide() {
+        return this.parent == null || this.parent.isClientSide();
     }
 
     @Override
@@ -137,7 +137,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removedStack, final ItemStack newStack) {
         this.cached = false;
-        if (!isRemote()) {
+        if (!isClientSide()) {
             this.parent.onChangeInventory(inv, slot, removedStack, newStack);
         }
     }

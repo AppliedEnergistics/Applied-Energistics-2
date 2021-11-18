@@ -140,7 +140,6 @@
   "chat.appliedenergistics2.CommunicationError": "Error Communicating with Network.",
   "chat.appliedenergistics2.DeviceNotLinked": "Device is not linked.",
   "chat.appliedenergistics2.DeviceNotPowered": "Device is low on power.",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "Device is not a wireless terminal.",
   "chat.appliedenergistics2.InvalidMachine": "Invalid Machine.",
   "chat.appliedenergistics2.LoadedSettings": "Loaded device configuration from memory card.",
   "chat.appliedenergistics2.MachineNotPowered": "Machine is not powered.",

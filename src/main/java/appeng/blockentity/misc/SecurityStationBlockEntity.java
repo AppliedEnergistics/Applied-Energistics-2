@@ -198,7 +198,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     @Override
     public void onReady() {
         super.onReady();
-        if (!isRemote()) {
+        if (!isClientSide()) {
             this.isActive = true;
             Locatables.securityStations().register(getLevel(), securityKey, this);
         }

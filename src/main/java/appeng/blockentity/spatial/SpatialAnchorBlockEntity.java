@@ -202,7 +202,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (isRemote()) {
+        if (isClientSide()) {
             OverlayManager.getInstance().removeHandlers(this);
         } else {
             this.releaseAll();

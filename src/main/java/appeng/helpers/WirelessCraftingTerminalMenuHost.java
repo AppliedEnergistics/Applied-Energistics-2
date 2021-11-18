@@ -1,27 +1,21 @@
 package appeng.helpers;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-
-import appeng.api.features.IWirelessTerminalHandler;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
-public class WirelessCraftingTerminalGuiObject extends WirelessTerminalGuiObject
+public class WirelessCraftingTerminalMenuHost extends WirelessTerminalMenuHost
         implements ISegmentedInventory, InternalInventoryHost {
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
-    private final Player player;
 
-    public WirelessCraftingTerminalGuiObject(IWirelessTerminalHandler wh, ItemStack is, Player ep, int inventorySlot) {
-        super(wh, is, ep, inventorySlot);
-        player = ep;
+    public WirelessCraftingTerminalMenuHost(Player player, int slot, ItemStack itemStack) {
+        super(player, slot, itemStack);
         craftingGrid.readFromNBT(getItemStack().getOrCreateTag(), "craftingGrid");
     }
 
@@ -44,8 +38,4 @@ public class WirelessCraftingTerminalGuiObject extends WirelessTerminalGuiObject
 
     }
 
-    @Override
-    public boolean isRemote() {
-        return !(player instanceof ServerPlayer);
-    }
 }

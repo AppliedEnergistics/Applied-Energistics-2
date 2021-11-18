@@ -168,7 +168,7 @@ sourceSets {
 
 configurations {
     portaforgyImplementation.extendsFrom(compileClasspath)
-    datagenImplementation.extendsFrom(compileClasspath)
+    datagenCompileOnly.extendsFrom(compileClasspath)
     datagenRuntimeOnly.extendsFrom(runtimeClasspath)
 }
 
@@ -297,7 +297,7 @@ publishing {
         }
         maven {
             credentials {
-                username System.getenv("MODMAVEN_USER")
+                username System.getenv("MODMaAVEN_USER")
                 password System.getenv("MODMAVEN_PASSWORD")
             }
             name = "modmaven"

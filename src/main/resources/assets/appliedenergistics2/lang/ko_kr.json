@@ -131,7 +131,6 @@
   "chat.appliedenergistics2.CommunicationError": "네트워크와 소통하는 데 문제가 발생했습니다.",
   "chat.appliedenergistics2.DeviceNotLinked": "장치가 연결되지 않았습니다.",
   "chat.appliedenergistics2.DeviceNotPowered": "장치의 전력이 부족합니다.",
-  "chat.appliedenergistics2.DeviceNotWirelessTerminal": "장치가 무선 단말기가 아닙니다.",
   "chat.appliedenergistics2.InvalidMachine": "알 수 없는 기계입니다.",
   "chat.appliedenergistics2.LoadedSettings": "설정을 성공적으로 복사했습니다.",
   "chat.appliedenergistics2.MachineNotPowered": "장치가 전력을 받고 있지 않습니다.",

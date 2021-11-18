@@ -262,7 +262,7 @@ public abstract class AbstractFormationPlanePart<T extends AEKey> extends Upgrad
 
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
         }
         return true;

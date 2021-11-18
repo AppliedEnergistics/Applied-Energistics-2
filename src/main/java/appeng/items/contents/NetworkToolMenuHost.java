@@ -18,27 +18,27 @@
 
 package appeng.items.contents;
 
-import net.minecraft.world.item.ItemStack;
-
-import appeng.api.implementations.guiobjects.INetworkTool;
+import appeng.api.implementations.guiobjects.ItemMenuHost;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-public class NetworkToolViewer implements INetworkTool, InternalInventoryHost {
+import javax.annotation.Nullable;
+
+public class NetworkToolMenuHost extends ItemMenuHost implements InternalInventoryHost {
 
     private final AppEngInternalInventory inv;
-    private final ItemStack is;
+    @Nullable
     private final IInWorldGridNodeHost host;
-    private final boolean remote;
 
-    public NetworkToolViewer(final ItemStack is, final IInWorldGridNodeHost host, boolean remote) {
-        this.is = is;
+    public NetworkToolMenuHost(Player player, int slot, ItemStack is, @Nullable IInWorldGridNodeHost host) {
+        super(player, slot, is);
         this.host = host;
-        this.remote = remote;
         this.inv = new AppEngInternalInventory(this, 9);
         this.inv.setFilter(new NetworkToolInventoryFilter());
         if (is.hasTag()) // prevent crash when opening network status screen.
@@ -49,28 +49,14 @@ public class NetworkToolViewer implements INetworkTool, InternalInventoryHost {
 
     @Override
     public void saveChanges() {
-        this.inv.writeToNBT(this.is.getOrCreateTag(), "inv");
+        this.inv.writeToNBT(getItemStack().getOrCreateTag(), "inv");
     }
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack,
-            ItemStack newStack) {
+                                  ItemStack newStack) {
     }
 
-    @Override
-    public boolean isRemote() {
-        return this.remote;
-    }
-
-    @Override
-    public ItemStack getItemStack() {
-        return this.is;
-    }
-
-    @Override
-    public IInWorldGridNodeHost getGridHost() {
-        return this.host;
-    }
 
     private static class NetworkToolInventoryFilter implements IAEItemFilter {
         @Override
@@ -88,7 +74,11 @@ public class NetworkToolViewer implements INetworkTool, InternalInventoryHost {
         return this.inv;
     }
 
-    @Override
+    @Nullable
+    public IInWorldGridNodeHost getGridHost() {
+        return this.host;
+    }
+
     public InternalInventory getInventory() {
         return this.inv;
     }

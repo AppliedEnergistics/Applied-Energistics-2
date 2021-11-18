@@ -212,7 +212,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public CellState getCellStatus(final int slot) {
-        if (isRemote()) {
+        if (isClientSide()) {
             final int cellState = this.state >> slot * BIT_CELL_STATE_BITS & BIT_CELL_STATE_MASK;
             return CellState.values()[cellState];
         }
@@ -227,7 +227,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public boolean isPowered() {
-        if (isRemote()) {
+        if (isClientSide()) {
             return (this.state & BIT_POWER_MASK) == BIT_POWER_MASK;
         }
 

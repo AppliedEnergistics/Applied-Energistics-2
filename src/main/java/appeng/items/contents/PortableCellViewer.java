@@ -18,6 +18,9 @@
 
 package appeng.items.contents;
 
+import appeng.api.implementations.guiobjects.ItemMenuHost;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -37,34 +40,25 @@ import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.NullInventory;
-import appeng.menu.interfaces.IInventorySlotAware;
 import appeng.util.ConfigManager;
 
-public class PortableCellViewer implements IPortableCell, IInventorySlotAware {
+public class PortableCellViewer extends ItemMenuHost implements IPortableCell {
     private final MEMonitorHandler<?> cellMonitor;
-    private final ItemStack target;
     private final IAEItemPowerStorage ips;
-    private final int inventorySlot;
 
-    public PortableCellViewer(ItemStack is, int slot) {
-        IMEInventory<?> inv = StorageCells.getCellInventory(is, null);
+    public PortableCellViewer(Player player, int slot, ItemStack itemStack) {
+        super(player, slot, itemStack);
+        IMEInventory<?> inv = StorageCells.getCellInventory(itemStack, null);
         if (inv == null) {
             inv = NullInventory.of(StorageChannels.items());
         }
         this.cellMonitor = new MEMonitorHandler<>(inv);
-        this.ips = (IAEItemPowerStorage) is.getItem();
-        this.target = is;
-        this.inventorySlot = slot;
+        this.ips = (IAEItemPowerStorage) itemStack.getItem();
     }
 
     @Override
-    public int getInventorySlot() {
-        return this.inventorySlot;
-    }
-
-    @Override
-    public ItemStack getItemStack() {
-        return this.target;
+    public boolean onBroadcastChanges(AbstractContainerMenu menu) {
+        return ensureItemStillInSlot() && drainPower();
     }
 
     @Override
@@ -72,10 +66,10 @@ public class PortableCellViewer implements IPortableCell, IInventorySlotAware {
         amt = usePowerMultiplier.multiply(amt);
 
         if (mode == Actionable.SIMULATE) {
-            return usePowerMultiplier.divide(Math.min(amt, this.ips.getAECurrentPower(this.target)));
+            return usePowerMultiplier.divide(Math.min(amt, this.ips.getAECurrentPower(getItemStack())));
         }
 
-        return usePowerMultiplier.divide(this.ips.extractAEPower(this.target, amt, Actionable.MODULATE));
+        return usePowerMultiplier.divide(this.ips.extractAEPower(getItemStack(), amt, Actionable.MODULATE));
     }
 
     @Override
@@ -86,14 +80,14 @@ public class PortableCellViewer implements IPortableCell, IInventorySlotAware {
     @Override
     public IConfigManager getConfigManager() {
         var out = new ConfigManager((manager, settingName) -> {
-            manager.writeToNBT(this.target.getOrCreateTag());
+            manager.writeToNBT(getItemStack().getOrCreateTag());
         });
 
         out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
-        out.readFromNBT(this.target.getOrCreateTag().copy());
+        out.readFromNBT(getItemStack().getOrCreateTag().copy());
         return out;
     }
 }

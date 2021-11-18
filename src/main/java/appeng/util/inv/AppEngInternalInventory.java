@@ -184,7 +184,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     }
 
     protected boolean eventsEnabled() {
-        return this.host != null && !this.host.isRemote() || this.isEnableClientEvents();
+        return this.host != null && !this.host.isClientSide() || this.isEnableClientEvents();
     }
 
     public void setMaxStackSize(final int slot, final int size) {

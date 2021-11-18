@@ -18,28 +18,20 @@
 
 package appeng.menu.me.items;
 
+import appeng.helpers.WirelessTerminalMenuHost;
+import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-
-import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.menu.implementations.MenuTypeBuilder;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
  */
 public class WirelessTermMenu extends MEPortableCellMenu {
-
     public static final MenuType<WirelessTermMenu> TYPE = MenuTypeBuilder
-            .create(WirelessTermMenu::new, WirelessTerminalGuiObject.class)
+            .create(WirelessTermMenu::new, WirelessTerminalMenuHost.class)
             .build("wirelessterm");
 
-    public WirelessTermMenu(int id, final Inventory ip, final WirelessTerminalGuiObject gui) {
+    public WirelessTermMenu(int id, final Inventory ip, WirelessTerminalMenuHost gui) {
         super(TYPE, id, ip, gui);
-    }
-
-    @Override
-    public void broadcastChanges() {
-        checkWirelessRange();
-        super.broadcastChanges();
     }
 }
