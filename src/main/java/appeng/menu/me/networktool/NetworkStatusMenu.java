@@ -18,7 +18,6 @@
 
 package appeng.menu.me.networktool;
 
-import appeng.items.contents.NetworkToolMenuHost;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -28,6 +27,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.core.sync.packets.NetworkStatusPacket;
+import appeng.items.contents.NetworkToolMenuHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 

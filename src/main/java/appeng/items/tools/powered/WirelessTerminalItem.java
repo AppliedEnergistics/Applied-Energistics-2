@@ -44,8 +44,8 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.*;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.features.Locatables;
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.ItemMenuHost;
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.util.IConfigManager;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
@@ -57,7 +57,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.me.items.WirelessTermMenu;
 import appeng.util.ConfigManager;
 
-public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomReequipAnimation, IGuiItem {
+public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomReequipAnimation, IMenuItem {
 
     public static final IGridLinkableHandler LINKABLE_HANDLER = new LinkableHandler();
 
@@ -139,7 +139,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
 
     @Nullable
     @Override
-    public ItemMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+    public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
         return new WirelessTerminalMenuHost(player, inventorySlot, stack);
     }
 

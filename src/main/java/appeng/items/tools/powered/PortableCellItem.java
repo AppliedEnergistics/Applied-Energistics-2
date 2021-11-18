@@ -34,8 +34,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.ItemMenuHost;
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.storage.ItemStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.IBasicCellItem;
@@ -53,7 +53,7 @@ import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 
 public class PortableCellItem extends AEBasePoweredItem
-        implements IBasicCellItem<AEItemKey>, IGuiItem, ICustomReequipAnimation {
+        implements IBasicCellItem<AEItemKey>, IMenuItem, ICustomReequipAnimation {
 
     private final StorageTier tier;
 
@@ -133,7 +133,7 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public ItemMenuHost getGuiObject(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
+    public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
         return new PortableCellViewer(player, inventorySlot, stack);
     }
 

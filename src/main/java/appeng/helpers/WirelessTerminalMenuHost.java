@@ -18,9 +18,6 @@
 
 package appeng.helpers;
 
-import appeng.api.implementations.guiobjects.ItemMenuHost;
-import appeng.core.AEConfig;
-import appeng.core.localization.PlayerMessages;
 import net.minecraft.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,7 +27,8 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
-import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -40,6 +38,8 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessBlockEntity;
+import appeng.core.AEConfig;
+import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.WirelessTerminalItem;
 
 public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableCell, IActionHost {

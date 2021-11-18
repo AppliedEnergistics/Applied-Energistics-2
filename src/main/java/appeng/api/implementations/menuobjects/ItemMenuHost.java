@@ -16,15 +16,16 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.api.implementations.guiobjects;
+package appeng.api.implementations.menuobjects;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergySource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergySource;
 
 /**
  * Base interface for an adapter that connects an item stack in a player inventory with a menu that is opened by it.
@@ -81,9 +82,9 @@ public class ItemMenuHost {
     }
 
     /**
-     * Ensures that the item stack hosting the menu is still in the expected player inventory slot.
-     * If necessary, referential equality is restored by overwriting the item in the player inventory if it is equal to
-     * the expected item.
+     * Ensures that the item stack hosting the menu is still in the expected player inventory slot. If necessary,
+     * referential equality is restored by overwriting the item in the player inventory if it is equal to the expected
+     * item.
      *
      * @return True if {@link #getItemStack()} is still in the expected slot.
      */

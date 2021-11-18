@@ -72,7 +72,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
                 this.lockPlayerInventorySlot(x);
                 this.tbSlot = x;
-                this.tbInventory = ((NetworkToolItem) pii.getItem()).getGuiObject(getPlayerInventory().player, x, pii,
+                this.tbInventory = ((NetworkToolItem) pii.getItem()).getMenuHost(getPlayerInventory().player, x, pii,
                         null);
                 break;
             }

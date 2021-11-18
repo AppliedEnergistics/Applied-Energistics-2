@@ -18,7 +18,6 @@
 
 package appeng.items.contents;
 
-import appeng.api.implementations.guiobjects.ItemMenuHost;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -29,8 +28,9 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.api.implementations.menuobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
