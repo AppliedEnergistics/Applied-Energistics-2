@@ -20,7 +20,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.CraftingInterface"
+        "translate": "gui.ae2.CraftingInterface"
       },
       "position": {
         "left": 8,
@@ -29,7 +29,7 @@
     },
     "interface_config": {
       "text": {
-        "translate": "gui.appliedenergistics2.Patterns"
+        "translate": "gui.ae2.Patterns"
       },
       "position": {
         "left": 8,
@@ -38,7 +38,7 @@
     },
     "interface_stored_items": {
       "text": {
-        "translate": "gui.appliedenergistics2.ReturnInventory"
+        "translate": "gui.ae2.ReturnInventory"
       },
       "position": {
         "left": 8,

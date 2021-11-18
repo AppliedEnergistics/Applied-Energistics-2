@@ -1,10 +1,10 @@
 {
   "variants": {
     "formed=false": {
-      "model": "appliedenergistics2:block/qnb/ring"
+      "model": "ae2:block/qnb/ring"
     },
     "formed=true": {
-      "model": "appliedenergistics2:block/qnb/qnb_formed"
+      "model": "ae2:block/qnb/qnb_formed"
     }
   }
 }

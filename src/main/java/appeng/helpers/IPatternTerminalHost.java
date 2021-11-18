@@ -17,14 +17,14 @@ public interface IPatternTerminalHost extends ITerminalHost, IActionHost, Intern
      * patterns.
      */
     ResourceLocation INV_CRAFTING = new ResourceLocation(
-            "appliedenergistics2:pattern_terminal_crafting");
+            "ae2:pattern_terminal_crafting");
 
     /**
      * Identifies the sub-inventory used by the pattern terminal to encode the outputs of crafting or processing
      * patterns.
      */
     ResourceLocation INV_OUTPUT = new ResourceLocation(
-            "appliedenergistics2:pattern_terminal_output");
+            "ae2:pattern_terminal_output");
 
     @Nullable
     InternalInventory getSubInventory(ResourceLocation id);

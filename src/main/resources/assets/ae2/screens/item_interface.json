@@ -20,7 +20,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.ItemInterface"
+        "translate": "gui.ae2.ItemInterface"
       },
       "position": {
         "left": 8,
@@ -29,7 +29,7 @@
     },
     "interface_config": {
       "text": {
-        "translate": "gui.appliedenergistics2.Config"
+        "translate": "gui.ae2.Config"
       },
       "position": {
         "left": 8,
@@ -38,7 +38,7 @@
     },
     "interface_stored_items": {
       "text": {
-        "translate": "gui.appliedenergistics2.StoredItems"
+        "translate": "gui.ae2.StoredItems"
       },
       "position": {
         "left": 8,

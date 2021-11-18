@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "appliedenergistics2:item/matter_cannon"
+    "layer0": "ae2:item/matter_cannon"
   },
   "display": {
     "thirdperson_righthand": {

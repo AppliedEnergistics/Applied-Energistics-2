@@ -1,5 +1,5 @@
 {
-  "parent": "appliedenergistics2:block/cube/cube_ae",
+  "parent": "ae2:block/cube/cube_ae",
   "textures": {
     "down": "#bottom",
     "east": "#side",

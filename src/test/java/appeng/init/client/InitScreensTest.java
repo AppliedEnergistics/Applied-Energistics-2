@@ -63,7 +63,7 @@ class InitScreensTest {
     @Test
     void testMissingStyles() {
         List<String> missingStyles = InitScreens.MENU_STYLES.values().stream()
-                .filter(f -> (getClass().getResourceAsStream("/assets/appliedenergistics2" + f) == null))
+                .filter(f -> (getClass().getResourceAsStream("/assets/ae2" + f) == null))
                 .collect(Collectors.toList());
         assertThat(missingStyles).isEmpty();
     }

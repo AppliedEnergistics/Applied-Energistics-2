@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "particle": "appliedenergistics2:block/pattern_provider",
-    "down": "appliedenergistics2:block/pattern_provider_alternate",
-    "up": "appliedenergistics2:block/pattern_provider",
-    "north": "appliedenergistics2:block/pattern_provider_alternate_arrow",
-    "south": "appliedenergistics2:block/pattern_provider_alternate_arrow",
-    "east": "appliedenergistics2:block/pattern_provider_alternate_arrow",
-    "west": "appliedenergistics2:block/pattern_provider_alternate_arrow"
+    "particle": "ae2:block/pattern_provider",
+    "down": "ae2:block/pattern_provider_alternate",
+    "up": "ae2:block/pattern_provider",
+    "north": "ae2:block/pattern_provider_alternate_arrow",
+    "south": "ae2:block/pattern_provider_alternate_arrow",
+    "east": "ae2:block/pattern_provider_alternate_arrow",
+    "west": "ae2:block/pattern_provider_alternate_arrow"
   }
 }

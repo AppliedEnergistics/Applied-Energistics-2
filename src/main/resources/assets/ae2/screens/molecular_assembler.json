@@ -23,7 +23,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.MolecularAssembler"
+        "translate": "gui.ae2.MolecularAssembler"
       },
       "position": {
         "left": 8,

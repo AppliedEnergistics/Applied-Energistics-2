@@ -128,7 +128,7 @@
   ],
   "parent": "block/block",
   "textures": {
-    "metal": "appliedenergistics2:block/quartz_fixture_metal",
-    "quartz": "appliedenergistics2:block/quartz_fixture"
+    "metal": "ae2:block/quartz_fixture_metal",
+    "quartz": "ae2:block/quartz_fixture"
   }
 }

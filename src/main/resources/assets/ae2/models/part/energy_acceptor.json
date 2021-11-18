@@ -1,9 +1,9 @@
 {
   "textures": {
-    "sides": "appliedenergistics2:part/monitor_sides",
-    "back": "appliedenergistics2:part/monitor_back",
-    "front": "appliedenergistics2:block/energy_acceptor",
-    "particle": "appliedenergistics2:part/monitor_back"
+    "sides": "ae2:part/monitor_sides",
+    "back": "ae2:part/monitor_back",
+    "front": "ae2:block/energy_acceptor",
+    "particle": "ae2:part/monitor_back"
   },
   "elements": [
     {

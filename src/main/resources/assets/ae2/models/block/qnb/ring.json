@@ -1,8 +1,8 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "appliedenergistics2:block/quantum_ring",
-    "sides": "appliedenergistics2:block/quantum_ring"
+    "particle": "ae2:block/quantum_ring",
+    "sides": "ae2:block/quantum_ring"
   },
   "elements": [
     {

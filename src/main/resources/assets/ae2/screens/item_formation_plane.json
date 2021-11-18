@@ -15,7 +15,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.ItemFormationPlane"
+        "translate": "gui.ae2.ItemFormationPlane"
       },
       "position": {
         "left": 8,

@@ -64,7 +64,7 @@ public final class InitItemModelsProperties {
             }
 
             FabricModelPredicateProviderRegistry.register(chargeable,
-                    new ResourceLocation("appliedenergistics2:fill_level"),
+                    new ResourceLocation("ae2:fill_level"),
                     (is, level, entity, seed) -> {
                         double curPower = chargeable.getAECurrentPower(is);
                         double maxPower = chargeable.getAEMaxPower(is);
@@ -80,7 +80,7 @@ public final class InitItemModelsProperties {
     private static void registerSeedGrowth(ItemDefinition<?> definition) {
         // Expose the growth of the seed to the model system
         FabricModelPredicateProviderRegistry.register(definition.asItem(),
-                new ResourceLocation("appliedenergistics2:growth"),
+                new ResourceLocation("ae2:growth"),
                 (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is)
                         / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }

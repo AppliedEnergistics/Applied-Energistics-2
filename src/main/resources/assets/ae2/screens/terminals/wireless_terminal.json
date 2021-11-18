@@ -4,7 +4,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.WirelessTerminal"
+        "translate": "gui.ae2.WirelessTerminal"
       },
       "position": {
         "left": 8,

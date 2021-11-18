@@ -1,7 +1,7 @@
 {
   "textures": {
-    "fiber": "appliedenergistics2:part/quartz_fiber",
-    "particle": "appliedenergistics2:part/quartz_fiber"
+    "fiber": "ae2:part/quartz_fiber",
+    "particle": "ae2:part/quartz_fiber"
   },
   "elements": [
     {

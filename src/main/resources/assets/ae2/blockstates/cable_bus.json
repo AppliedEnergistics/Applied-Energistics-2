@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "appliedenergistics2:block/cable_bus"
+      "model": "ae2:block/cable_bus"
     }
   }
 }

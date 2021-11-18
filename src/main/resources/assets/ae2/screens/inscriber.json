@@ -26,7 +26,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.Inscriber"
+        "translate": "gui.ae2.Inscriber"
       },
       "position": {
         "left": 8,

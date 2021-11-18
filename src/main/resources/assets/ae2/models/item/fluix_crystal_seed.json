@@ -1,20 +1,20 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "appliedenergistics2:item/crystal_seed_fluix"
+    "layer0": "ae2:item/crystal_seed_fluix"
   },
   "overrides": [
     {
       "predicate": {
-        "appliedenergistics2:growth": 0.333
+        "ae2:growth": 0.333
       },
-      "model": "appliedenergistics2:item/fluix_crystal_seed_2"
+      "model": "ae2:item/fluix_crystal_seed_2"
     },
     {
       "predicate": {
-        "appliedenergistics2:growth": 0.666
+        "ae2:growth": 0.666
       },
-      "model": "appliedenergistics2:item/fluix_crystal_seed_3"
+      "model": "ae2:item/fluix_crystal_seed_3"
     }
   ]
 }

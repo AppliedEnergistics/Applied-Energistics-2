@@ -1,10 +1,10 @@
 {
   "parent": "block/orientable",
   "textures": {
-    "particle": "appliedenergistics2:block/charger",
-    "side": "appliedenergistics2:block/charger_side",
-    "top": "appliedenergistics2:block/charger",
-    "inside": "appliedenergistics2:block/charger_inside"
+    "particle": "ae2:block/charger",
+    "side": "ae2:block/charger_side",
+    "top": "ae2:block/charger",
+    "inside": "ae2:block/charger_inside"
   },
   "elements": [
     {

@@ -2,7 +2,7 @@
   "multipart": [
     {
       "apply": {
-        "model": "appliedenergistics2:block/chest/base"
+        "model": "ae2:block/chest/base"
       }
     },
     {
@@ -10,7 +10,7 @@
         "lights_on": false
       },
       "apply": {
-        "model": "appliedenergistics2:block/chest/lights_off"
+        "model": "ae2:block/chest/lights_off"
       }
     },
     {
@@ -18,7 +18,7 @@
         "lights_on": true
       },
       "apply": {
-        "model": "appliedenergistics2:block/chest/lights_on"
+        "model": "ae2:block/chest/lights_on"
       }
     }
   ]

@@ -35,7 +35,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.Terminal"
+        "translate": "gui.ae2.Terminal"
       },
       "position": {
         "left": 8,
@@ -44,7 +44,7 @@
     },
     "crafting_grid_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.PatternTerminal"
+        "translate": "gui.ae2.PatternTerminal"
       },
       "position": {
         "left": 8,
@@ -60,10 +60,10 @@
       "height": 24,
       "tooltip": [
         {
-          "translate": "gui.appliedenergistics2.PatternTerminal.primary_processing_result_tooltip"
+          "translate": "gui.ae2.PatternTerminal.primary_processing_result_tooltip"
         },
         {
-          "translate": "gui.appliedenergistics2.PatternTerminal.primary_processing_result_hint",
+          "translate": "gui.ae2.PatternTerminal.primary_processing_result_hint",
           "color": "#666666"
         }
       ]
@@ -75,10 +75,10 @@
       "height": 18,
       "tooltip": [
         {
-          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_tooltip"
+          "translate": "gui.ae2.PatternTerminal.secondary_processing_result_tooltip"
         },
         {
-          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_hint",
+          "translate": "gui.ae2.PatternTerminal.secondary_processing_result_hint",
           "color": "#666666"
         }
       ]
@@ -90,10 +90,10 @@
       "height": 18,
       "tooltip": [
         {
-          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_tooltip"
+          "translate": "gui.ae2.PatternTerminal.secondary_processing_result_tooltip"
         },
         {
-          "translate": "gui.appliedenergistics2.PatternTerminal.secondary_processing_result_hint",
+          "translate": "gui.ae2.PatternTerminal.secondary_processing_result_hint",
           "color": "#666666"
         }
       ]

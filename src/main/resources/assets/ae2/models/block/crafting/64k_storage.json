@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "appliedenergistics2:block/crafting/64k_storage"
+    "all": "ae2:block/crafting/64k_storage"
   }
 }

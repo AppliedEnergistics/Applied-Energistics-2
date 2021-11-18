@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "appliedenergistics2:block/controller"
+    "particle": "ae2:block/controller"
   },
   "elements": [
     {

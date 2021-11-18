@@ -1,8 +1,8 @@
 {
   "textures": {
-    "bus": "appliedenergistics2:part/toggle_bus",
-    "sides": "appliedenergistics2:part/monitor_sides_status",
-    "particle": "appliedenergistics2:part/toggle_bus"
+    "bus": "ae2:part/toggle_bus",
+    "sides": "ae2:part/monitor_sides_status",
+    "particle": "ae2:part/toggle_bus"
   },
   "elements": [
     {

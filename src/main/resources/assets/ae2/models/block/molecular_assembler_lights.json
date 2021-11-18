@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "all": "appliedenergistics2:block/molecular_assembler_lights"
+    "all": "ae2:block/molecular_assembler_lights"
   },
   "elements": [
     {

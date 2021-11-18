@@ -1,6 +1,6 @@
 {
-  "parent": "appliedenergistics2:block/vibration_chamber_off",
+  "parent": "ae2:block/vibration_chamber_off",
   "textures": {
-    "front": "appliedenergistics2:block/vibration_chamber_front_on"
+    "front": "ae2:block/vibration_chamber_front_on"
   }
 }

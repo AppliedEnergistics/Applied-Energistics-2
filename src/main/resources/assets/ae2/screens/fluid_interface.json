@@ -18,7 +18,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.FluidInterface"
+        "translate": "gui.ae2.FluidInterface"
       },
       "position": {
         "left": 8,
@@ -27,7 +27,7 @@
     },
     "interface_config": {
       "text": {
-        "translate": "gui.appliedenergistics2.Config"
+        "translate": "gui.ae2.Config"
       },
       "position": {
         "left": 35,
@@ -36,7 +36,7 @@
     },
     "interface_stored_fluids": {
       "text": {
-        "translate": "gui.appliedenergistics2.StoredFluids"
+        "translate": "gui.ae2.StoredFluids"
       },
       "position": {
         "left": 35,

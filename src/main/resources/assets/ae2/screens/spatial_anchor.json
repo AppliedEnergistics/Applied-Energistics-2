@@ -8,7 +8,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.SpatialAnchor"
+        "translate": "gui.ae2.SpatialAnchor"
       },
       "position": {
         "left": 8,
@@ -29,7 +29,7 @@
     },
     "statistics_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.SpatialAnchorStatistics"
+        "translate": "gui.ae2.SpatialAnchorStatistics"
       },
       "position": {
         "left": 8,

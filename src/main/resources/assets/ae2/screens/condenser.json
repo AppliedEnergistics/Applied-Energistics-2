@@ -22,7 +22,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.Condenser"
+        "translate": "gui.ae2.Condenser"
       },
       "position": {
         "left": 8,

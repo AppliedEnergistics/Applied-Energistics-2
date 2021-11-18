@@ -1,8 +1,8 @@
 {
   "textures": {
-    "lightsBright": "appliedenergistics2:part/interface_terminal_bright",
-    "lightsMedium": "appliedenergistics2:part/interface_terminal_medium",
-    "lightsDark": "appliedenergistics2:part/interface_terminal_dark"
+    "lightsBright": "ae2:part/interface_terminal_bright",
+    "lightsMedium": "ae2:part/interface_terminal_medium",
+    "lightsDark": "ae2:part/interface_terminal_dark"
   },
   "elements": [
     {

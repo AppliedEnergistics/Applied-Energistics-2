@@ -40,10 +40,10 @@ import appeng.client.render.BasicUnbakedModel;
 public class SkyCompassModel implements BasicUnbakedModel {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
-            "appliedenergistics2:block/sky_compass_base");
+            "ae2:block/sky_compass_base");
 
     private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
-            "appliedenergistics2:block/sky_compass_pointer");
+            "ae2:block/sky_compass_pointer");
 
     @Nullable
     @Override

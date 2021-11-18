@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "appliedenergistics2:block/smooth_sky_stone_block"
+      "model": "ae2:block/smooth_sky_stone_block"
     }
   }
 }

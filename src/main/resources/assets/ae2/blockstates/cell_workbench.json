@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "appliedenergistics2:block/cell_workbench"
+      "model": "ae2:block/cell_workbench"
     }
   }
 }

@@ -1,10 +1,10 @@
 {
   "variants": {
     "formed=false": {
-      "model": "appliedenergistics2:block/crafting/4k_storage"
+      "model": "ae2:block/crafting/4k_storage"
     },
     "formed=true": {
-      "model": "appliedenergistics2:block/crafting/4k_storage_formed"
+      "model": "ae2:block/crafting/4k_storage_formed"
     }
   }
 }

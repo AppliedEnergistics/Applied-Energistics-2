@@ -14,7 +14,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.FluidLevelEmitter"
+        "translate": "gui.ae2.FluidLevelEmitter"
       },
       "position": {
         "left": 8,
@@ -23,7 +23,7 @@
     },
     "level_emitter_unit": {
       "text": {
-        "translate": "gui.appliedenergistics2.FluidLevelEmitterUnit"
+        "translate": "gui.ae2.FluidLevelEmitterUnit"
       },
       "position": {
         "left": 110,

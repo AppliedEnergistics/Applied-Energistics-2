@@ -46,12 +46,12 @@ public final class ConventionTags {
     public static Tag.Named<Item> SILICON = tag("c:silicon");
 
     // Includes purified versions of certus/nether and the natural ones
-    public static Tag.Named<Item> ALL_QUARTZ = tag("appliedenergistics2:all_quartz");
+    public static Tag.Named<Item> ALL_QUARTZ = tag("ae2:all_quartz");
     // Includes both certus/nether quartz dust
-    public static Tag.Named<Item> ALL_QUARTZ_DUST = tag("appliedenergistics2:all_quartz_dust");
+    public static Tag.Named<Item> ALL_QUARTZ_DUST = tag("ae2:all_quartz_dust");
 
     // Includes charged, synthetic/purified and natural certus quartz
-    public static Tag.Named<Item> ALL_CERTUS_QUARTZ = tag("appliedenergistics2:all_certus_quartz");
+    public static Tag.Named<Item> ALL_CERTUS_QUARTZ = tag("ae2:all_certus_quartz");
     public static Tag.Named<Item> CERTUS_QUARTZ = tag("c:certus_quartz");
     public static Tag.Named<Item> CERTUS_QUARTZ_ORE = tag("c:certus_quartz_ores");
     public static Tag.Named<Block> CERTUS_QUARTZ_ORE_BLOCK = blockTag("c:certus_quartz_ores");
@@ -59,12 +59,12 @@ public final class ConventionTags {
     public static Tag.Named<Item> CERTUS_QUARTZ_DUST = tag("c:certus_quartz_dusts");
 
     // Includes synthetic/purified
-    public static Tag.Named<Item> ALL_NETHER_QUARTZ = tag("appliedenergistics2:all_nether_quartz");
+    public static Tag.Named<Item> ALL_NETHER_QUARTZ = tag("ae2:all_nether_quartz");
     public static Tag.Named<Item> NETHER_QUARTZ = tag("c:quartz");
     public static Tag.Named<Item> NETHER_QUARTZ_ORE = tag("c:quartz_ores");
 
     // Includes synthetic/purified
-    public static Tag.Named<Item> ALL_FLUIX = tag("appliedenergistics2:all_fluix");
+    public static Tag.Named<Item> ALL_FLUIX = tag("ae2:all_fluix");
     public static Tag.Named<Item> FLUIX_DUST = tag("c:fluix_dusts");
     public static Tag.Named<Item> FLUIX_CRYSTAL = tag("c:fluix");
 
@@ -93,17 +93,17 @@ public final class ConventionTags {
     public static Tag.Named<Item> COBBLESTONE = tag("c:cobblestone");
     public static Tag.Named<Item> GLASS = tag("c:glass");
 
-    public static Tag.Named<Item> GLASS_CABLE = tag("appliedenergistics2:glass_cable");
-    public static Tag.Named<Item> SMART_CABLE = tag("appliedenergistics2:smart_cable");
-    public static Tag.Named<Item> COVERED_CABLE = tag("appliedenergistics2:covered_cable");
-    public static Tag.Named<Item> COVERED_DENSE_CABLE = tag("appliedenergistics2:covered_dense_cable");
-    public static Tag.Named<Item> SMART_DENSE_CABLE = tag("appliedenergistics2:smart_dense_cable");
-    public static Tag.Named<Item> ILLUMINATED_PANEL = tag("appliedenergistics2:illuminated_panel");
-    public static Tag.Named<Item> ITEM_INTERFACE = tag("appliedenergistics2:item_interface");
-    public static Tag.Named<Item> FLUID_INTERFACE = tag("appliedenergistics2:fluid_interface");
-    public static Tag.Named<Item> QUARTZ_WRENCH = tag("appliedenergistics2:quartz_wrench");
-    public static Tag.Named<Item> QUARTZ_KNIFE = tag("appliedenergistics2:knife");
-    public static Tag.Named<Item> PAINT_BALLS = tag("appliedenergistics2:paint_balls");
+    public static Tag.Named<Item> GLASS_CABLE = tag("ae2:glass_cable");
+    public static Tag.Named<Item> SMART_CABLE = tag("ae2:smart_cable");
+    public static Tag.Named<Item> COVERED_CABLE = tag("ae2:covered_cable");
+    public static Tag.Named<Item> COVERED_DENSE_CABLE = tag("ae2:covered_dense_cable");
+    public static Tag.Named<Item> SMART_DENSE_CABLE = tag("ae2:smart_dense_cable");
+    public static Tag.Named<Item> ILLUMINATED_PANEL = tag("ae2:illuminated_panel");
+    public static Tag.Named<Item> ITEM_INTERFACE = tag("ae2:item_interface");
+    public static Tag.Named<Item> FLUID_INTERFACE = tag("ae2:fluid_interface");
+    public static Tag.Named<Item> QUARTZ_WRENCH = tag("ae2:quartz_wrench");
+    public static Tag.Named<Item> QUARTZ_KNIFE = tag("ae2:knife");
+    public static Tag.Named<Item> PAINT_BALLS = tag("ae2:paint_balls");
 
     /**
      * Used to identify items that act as wrenches.

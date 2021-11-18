@@ -1,6 +1,6 @@
 {
   "textures": {
-    "torch": "appliedenergistics2:block/wireless_access_point"
+    "torch": "ae2:block/wireless_access_point"
   },
   "elements": [
     {

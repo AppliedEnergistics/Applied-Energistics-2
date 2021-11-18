@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "appliedenergistics2:item/nether_quartz_pickaxe"
+    "layer0": "ae2:item/nether_quartz_pickaxe"
   }
 }

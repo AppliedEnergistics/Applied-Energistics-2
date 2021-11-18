@@ -1,6 +1,6 @@
 {
-  "parent": "appliedenergistics2:item/smart_cable_base",
+  "parent": "ae2:item/smart_cable_base",
   "textures": {
-    "base": "appliedenergistics2:part/cable/smart/red"
+    "base": "ae2:part/cable/smart/red"
   }
 }

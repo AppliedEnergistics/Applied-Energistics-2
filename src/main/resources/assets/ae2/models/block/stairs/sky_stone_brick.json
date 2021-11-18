@@ -1,8 +1,8 @@
 {
   "parent": "block/stairs",
   "textures": {
-    "bottom": "appliedenergistics2:block/sky_stone_brick",
-    "side": "appliedenergistics2:block/sky_stone_brick",
-    "top": "appliedenergistics2:block/sky_stone_brick"
+    "bottom": "ae2:block/sky_stone_brick",
+    "side": "ae2:block/sky_stone_brick",
+    "top": "ae2:block/sky_stone_brick"
   }
 }

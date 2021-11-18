@@ -4,7 +4,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.FluidTerminal"
+        "translate": "gui.ae2.FluidTerminal"
       },
       "position": {
         "left": 8,

@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "0": "appliedenergistics2:block/sky_compass"
+    "0": "ae2:block/sky_compass"
   },
   "elements": [
     {

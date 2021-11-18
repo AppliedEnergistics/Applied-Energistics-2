@@ -18,7 +18,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.SpatialIOPort"
+        "translate": "gui.ae2.SpatialIOPort"
       },
       "position": {
         "left": 8,

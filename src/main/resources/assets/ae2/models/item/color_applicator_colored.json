@@ -1,9 +1,9 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "appliedenergistics2:item/color_applicator",
-    "layer1": "appliedenergistics2:item/color_applicator_tip_dark",
-    "layer2": "appliedenergistics2:item/color_applicator_tip_medium",
-    "layer3": "appliedenergistics2:item/color_applicator_tip_bright"
+    "layer0": "ae2:item/color_applicator",
+    "layer1": "ae2:item/color_applicator_tip_dark",
+    "layer2": "ae2:item/color_applicator_tip_medium",
+    "layer3": "ae2:item/color_applicator_tip_bright"
   }
 }

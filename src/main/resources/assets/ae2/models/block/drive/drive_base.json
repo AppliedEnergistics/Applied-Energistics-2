@@ -1,12 +1,12 @@
 {
   "parent": "block/block",
   "textures": {
-    "inside": "appliedenergistics2:block/drive/drive_inside",
-    "particle": "appliedenergistics2:block/drive/drive_side",
-    "side": "appliedenergistics2:block/drive/drive_side",
-    "bottom": "appliedenergistics2:block/drive/drive_bottom",
-    "top": "appliedenergistics2:block/drive/drive_top",
-    "front": "appliedenergistics2:block/drive/drive_front"
+    "inside": "ae2:block/drive/drive_inside",
+    "particle": "ae2:block/drive/drive_side",
+    "side": "ae2:block/drive/drive_side",
+    "bottom": "ae2:block/drive/drive_bottom",
+    "top": "ae2:block/drive/drive_top",
+    "front": "ae2:block/drive/drive_front"
   },
   "elements": [
     {

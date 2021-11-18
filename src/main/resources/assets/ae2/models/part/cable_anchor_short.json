@@ -1,7 +1,7 @@
 {
   "textures": {
-    "0": "appliedenergistics2:part/cable_anchor",
-    "particle": "appliedenergistics2:part/cable_anchor"
+    "0": "ae2:part/cable_anchor",
+    "particle": "ae2:part/cable_anchor"
   },
   "elements": [
     {

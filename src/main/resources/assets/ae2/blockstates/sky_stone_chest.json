@@ -2,7 +2,7 @@
   "__comment": "This block is rendered via TESR, so this is only used for the particle texture.",
   "variants": {
     "": {
-      "model": "appliedenergistics2:block/sky_stone_block"
+      "model": "ae2:block/sky_stone_block"
     }
   }
 }

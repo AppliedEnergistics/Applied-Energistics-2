@@ -1,8 +1,8 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "emitter": "appliedenergistics2:part/item_level_emitter_on",
-    "particle": "appliedenergistics2:part/item_level_emitter_on"
+    "emitter": "ae2:part/item_level_emitter_on",
+    "particle": "ae2:part/item_level_emitter_on"
   },
   "elements": [
     {

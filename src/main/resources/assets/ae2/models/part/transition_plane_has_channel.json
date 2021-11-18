@@ -1,8 +1,8 @@
 {
   "textures": {
-    "sides": "appliedenergistics2:part/monitor_sides_status",
-    "back": "appliedenergistics2:part/transition_plane_back",
-    "indicator": "appliedenergistics2:part/monitor_sides_status_has_channel"
+    "sides": "ae2:part/monitor_sides_status",
+    "back": "ae2:part/transition_plane_back",
+    "indicator": "ae2:part/monitor_sides_status_has_channel"
   },
   "elements": [
     {

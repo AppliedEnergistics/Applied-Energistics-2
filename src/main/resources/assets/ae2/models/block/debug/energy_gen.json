@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "appliedenergistics2:block/debug/energy_gen"
+    "all": "ae2:block/debug/energy_gen"
   }
 }

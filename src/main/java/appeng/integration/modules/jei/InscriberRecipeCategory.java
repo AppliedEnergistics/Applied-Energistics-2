@@ -55,7 +55,7 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper>
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("block.appliedenergistics2.inscriber");
+        return new TranslatableComponent("block.ae2.inscriber");
     }
 
     @Override

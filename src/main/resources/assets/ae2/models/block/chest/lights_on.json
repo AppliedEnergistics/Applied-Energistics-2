@@ -1,8 +1,8 @@
 {
   "textures": {
-    "lights_bright": "appliedenergistics2:block/chest/lights_on_bright",
-    "lights_medium": "appliedenergistics2:block/chest/lights_on_medium",
-    "lights_dark": "appliedenergistics2:block/chest/lights_on_dark"
+    "lights_bright": "ae2:block/chest/lights_on_bright",
+    "lights_medium": "ae2:block/chest/lights_on_medium",
+    "lights_dark": "ae2:block/chest/lights_on_dark"
   },
   "elements": [
     {

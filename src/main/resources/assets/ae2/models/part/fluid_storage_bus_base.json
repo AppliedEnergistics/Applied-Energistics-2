@@ -1,10 +1,10 @@
 {
-  "parent": "appliedenergistics2:part/item_storage_bus_base",
+  "parent": "ae2:part/item_storage_bus_base",
   "textures": {
-    "sides": "appliedenergistics2:part/storage_bus_sides",
-    "sidesStatus": "appliedenergistics2:part/monitor_sides_status",
-    "back": "appliedenergistics2:part/storage_bus_back",
-    "front": "appliedenergistics2:part/fluid_storage_bus",
-    "particle": "appliedenergistics2:part/storage_bus_back"
+    "sides": "ae2:part/storage_bus_sides",
+    "sidesStatus": "ae2:part/monitor_sides_status",
+    "back": "ae2:part/storage_bus_back",
+    "front": "ae2:part/fluid_storage_bus",
+    "particle": "ae2:part/storage_bus_back"
   }
 }

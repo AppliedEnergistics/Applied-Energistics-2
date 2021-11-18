@@ -1,8 +1,8 @@
 {
-  "parent": "appliedenergistics2:item/part_base",
+  "parent": "ae2:item/part_base",
   "textures": {
-    "sides": "appliedenergistics2:part/plane_sides",
-    "plane": "appliedenergistics2:part/item_annihilation_plane"
+    "sides": "ae2:part/plane_sides",
+    "plane": "ae2:part/item_annihilation_plane"
   },
   "elements": [
     {

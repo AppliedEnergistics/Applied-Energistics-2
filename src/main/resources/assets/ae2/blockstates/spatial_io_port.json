@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "appliedenergistics2:block/spatial_io_port"
+      "model": "ae2:block/spatial_io_port"
     }
   }
 }

@@ -1,9 +1,9 @@
 {
   "parent": "block/block",
   "textures": {
-    "block": "appliedenergistics2:block/controller_column_powered",
-    "lights": "appliedenergistics2:block/controller_column_conflict",
-    "particle": "appliedenergistics2:block/controller"
+    "block": "ae2:block/controller_column_powered",
+    "lights": "ae2:block/controller_column_conflict",
+    "particle": "ae2:block/controller"
   },
   "elements": [
     {

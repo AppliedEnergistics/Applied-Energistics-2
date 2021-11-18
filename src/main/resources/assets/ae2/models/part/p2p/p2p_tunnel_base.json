@@ -1,10 +1,10 @@
 {
   "textures": {
-    "front": "appliedenergistics2:part/p2p_tunnel_front",
-    "sides": "appliedenergistics2:part/p2p_tunnel_sides",
-    "back": "appliedenergistics2:part/p2p_tunnel_back",
-    "particle": "appliedenergistics2:part/p2p_tunnel_back",
-    "back2": "appliedenergistics2:part/p2p_tunnel_back2"
+    "front": "ae2:part/p2p_tunnel_front",
+    "sides": "ae2:part/p2p_tunnel_sides",
+    "back": "ae2:part/p2p_tunnel_back",
+    "particle": "ae2:part/p2p_tunnel_back",
+    "back2": "ae2:part/p2p_tunnel_back2"
   },
   "elements": [
     {

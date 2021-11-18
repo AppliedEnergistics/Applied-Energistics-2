@@ -1,5 +1,5 @@
 {
-  "parent": "appliedenergistics2:item/part_base",
+  "parent": "ae2:item/part_base",
   "elements": [
     {
       "from": [6.0, 6.0, 2.0],

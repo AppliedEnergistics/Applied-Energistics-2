@@ -1,10 +1,10 @@
 {
   "variants": {
     "powered=false": {
-      "model": "appliedenergistics2:block/security_station_off"
+      "model": "ae2:block/security_station_off"
     },
     "powered=true": {
-      "model": "appliedenergistics2:block/security_station_on"
+      "model": "ae2:block/security_station_on"
     }
   }
 }

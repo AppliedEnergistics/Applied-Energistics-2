@@ -2,9 +2,9 @@
   "credit": "Made with Blockbench",
   "parent": "block/orientable",
   "textures": {
-    "inside": "appliedenergistics2:block/inscriber_internal",
-    "particle": "appliedenergistics2:block/inscriber",
-    "side": "appliedenergistics2:block/inscriber"
+    "inside": "ae2:block/inscriber_internal",
+    "particle": "ae2:block/inscriber",
+    "side": "ae2:block/inscriber"
   },
   "elements": [
     {

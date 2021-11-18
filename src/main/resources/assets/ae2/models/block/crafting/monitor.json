@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "particle": "appliedenergistics2:block/crafting/monitor",
-    "north": "appliedenergistics2:block/crafting/monitor",
-    "east": "appliedenergistics2:block/crafting/unit",
-    "west": "appliedenergistics2:block/crafting/unit",
-    "south": "appliedenergistics2:block/crafting/unit",
-    "up": "appliedenergistics2:block/crafting/unit",
-    "down": "appliedenergistics2:block/crafting/unit"
+    "particle": "ae2:block/crafting/monitor",
+    "north": "ae2:block/crafting/monitor",
+    "east": "ae2:block/crafting/unit",
+    "west": "ae2:block/crafting/unit",
+    "south": "ae2:block/crafting/unit",
+    "up": "ae2:block/crafting/unit",
+    "down": "ae2:block/crafting/unit"
   }
 }

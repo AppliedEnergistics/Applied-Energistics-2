@@ -59,7 +59,7 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("gui.appliedenergistics2.Condenser");
+        return new TranslatableComponent("gui.ae2.Condenser");
     }
 
     @Override

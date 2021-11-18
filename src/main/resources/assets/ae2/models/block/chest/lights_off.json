@@ -1,6 +1,6 @@
 {
   "textures": {
-    "lights": "appliedenergistics2:block/chest/lights_off"
+    "lights": "ae2:block/chest/lights_off"
   },
   "elements": [
     {

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "appliedenergistics2:item/4k_fluid_cell_component"
+    "layer0": "ae2:item/4k_fluid_cell_component"
   }
 }

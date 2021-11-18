@@ -1,8 +1,8 @@
 {
   "textures": {
-    "lightsBright": "appliedenergistics2:part/storage_monitor_bright",
-    "lightsMedium": "appliedenergistics2:part/storage_monitor_medium",
-    "lightsDark": "appliedenergistics2:part/storage_monitor_dark_locked"
+    "lightsBright": "ae2:part/storage_monitor_bright",
+    "lightsMedium": "ae2:part/storage_monitor_medium",
+    "lightsDark": "ae2:part/storage_monitor_dark_locked"
   },
   "elements": [
     {

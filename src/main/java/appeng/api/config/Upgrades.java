@@ -43,16 +43,16 @@ public enum Upgrades {
     /**
      * Gold Tier Upgrades.
      */
-    CAPACITY("item.appliedenergistics2.capacity_card", 0),
-    REDSTONE("item.appliedenergistics2.redstone_card", 0),
-    CRAFTING("item.appliedenergistics2.crafting_card", 0),
+    CAPACITY("item.ae2.capacity_card", 0),
+    REDSTONE("item.ae2.redstone_card", 0),
+    CRAFTING("item.ae2.crafting_card", 0),
 
     /**
      * Diamond Tier Upgrades.
      */
-    FUZZY("item.appliedenergistics2.fuzzy_card", 1),
-    SPEED("item.appliedenergistics2.speed_card", 1),
-    INVERTER("item.appliedenergistics2.inverter_card", 1);
+    FUZZY("item.ae2.fuzzy_card", 1),
+    SPEED("item.ae2.speed_card", 1),
+    INVERTER("item.ae2.inverter_card", 1);
 
     private final int tier;
     private final Component displayName;

@@ -15,7 +15,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.Drive"
+        "translate": "gui.ae2.Drive"
       },
       "position": {
         "left": 8,

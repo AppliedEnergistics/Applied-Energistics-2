@@ -15,7 +15,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.FluidFormationPlane"
+        "translate": "gui.ae2.FluidFormationPlane"
       },
       "position": {
         "left": 8,

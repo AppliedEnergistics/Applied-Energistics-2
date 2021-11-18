@@ -36,39 +36,39 @@ import net.minecraft.world.item.DyeColor;
  */
 public enum AEColor {
 
-    WHITE("gui.appliedenergistics2.White", "white", DyeColor.WHITE, 0xBEBEBE, 0xDBDBDB, 0xFAFAFA),
+    WHITE("gui.ae2.White", "white", DyeColor.WHITE, 0xBEBEBE, 0xDBDBDB, 0xFAFAFA),
 
-    ORANGE("gui.appliedenergistics2.Orange", "orange", DyeColor.ORANGE, 0xF99739, 0xFAAE44, 0xF4DEC3),
+    ORANGE("gui.ae2.Orange", "orange", DyeColor.ORANGE, 0xF99739, 0xFAAE44, 0xF4DEC3),
 
-    MAGENTA("gui.appliedenergistics2.Magenta", "magenta", DyeColor.MAGENTA, 0x821E82, 0xB82AB8, 0xC598C8),
+    MAGENTA("gui.ae2.Magenta", "magenta", DyeColor.MAGENTA, 0x821E82, 0xB82AB8, 0xC598C8),
 
-    LIGHT_BLUE("gui.appliedenergistics2.LightBlue", "light_blue", DyeColor.LIGHT_BLUE, 0x628DCB, 0x82ACE7, 0xD8F6FF),
+    LIGHT_BLUE("gui.ae2.LightBlue", "light_blue", DyeColor.LIGHT_BLUE, 0x628DCB, 0x82ACE7, 0xD8F6FF),
 
-    YELLOW("gui.appliedenergistics2.Yellow", "yellow", DyeColor.YELLOW, 0xFFF7AA, 0xF8FF4A, 0xFFFFE8),
+    YELLOW("gui.ae2.Yellow", "yellow", DyeColor.YELLOW, 0xFFF7AA, 0xF8FF4A, 0xFFFFE8),
 
-    LIME("gui.appliedenergistics2.Lime", "lime", DyeColor.LIME, 0x7CFF4A, 0xBBFF51, 0xE7F7D7),
+    LIME("gui.ae2.Lime", "lime", DyeColor.LIME, 0x7CFF4A, 0xBBFF51, 0xE7F7D7),
 
-    PINK("gui.appliedenergistics2.Pink", "pink", DyeColor.PINK, 0xDC8DB5, 0xF8B5D7, 0xF7DEEB),
+    PINK("gui.ae2.Pink", "pink", DyeColor.PINK, 0xDC8DB5, 0xF8B5D7, 0xF7DEEB),
 
-    GRAY("gui.appliedenergistics2.Gray", "gray", DyeColor.GRAY, 0x7C7C7C, 0xA0A0A0, 0xC9C9C9),
+    GRAY("gui.ae2.Gray", "gray", DyeColor.GRAY, 0x7C7C7C, 0xA0A0A0, 0xC9C9C9),
 
-    LIGHT_GRAY("gui.appliedenergistics2.LightGray", "light_gray", DyeColor.LIGHT_GRAY, 0x9D9D9D, 0xCDCDCD, 0xEFEFEF),
+    LIGHT_GRAY("gui.ae2.LightGray", "light_gray", DyeColor.LIGHT_GRAY, 0x9D9D9D, 0xCDCDCD, 0xEFEFEF),
 
-    CYAN("gui.appliedenergistics2.Cyan", "cyan", DyeColor.CYAN, 0x2F9BA5, 0x51AAC6, 0xAEDDF4),
+    CYAN("gui.ae2.Cyan", "cyan", DyeColor.CYAN, 0x2F9BA5, 0x51AAC6, 0xAEDDF4),
 
-    PURPLE("gui.appliedenergistics2.Purple", "purple", DyeColor.PURPLE, 0x8230B2, 0xA453CE, 0xC7A3CC),
+    PURPLE("gui.ae2.Purple", "purple", DyeColor.PURPLE, 0x8230B2, 0xA453CE, 0xC7A3CC),
 
-    BLUE("gui.appliedenergistics2.Blue", "blue", DyeColor.BLUE, 0x2D29A0, 0x514AFF, 0xDDE6FF),
+    BLUE("gui.ae2.Blue", "blue", DyeColor.BLUE, 0x2D29A0, 0x514AFF, 0xDDE6FF),
 
-    BROWN("gui.appliedenergistics2.Brown", "brown", DyeColor.BROWN, 0x724E35, 0xB7967F, 0xE0D2C8),
+    BROWN("gui.ae2.Brown", "brown", DyeColor.BROWN, 0x724E35, 0xB7967F, 0xE0D2C8),
 
-    GREEN("gui.appliedenergistics2.Green", "green", DyeColor.GREEN, 0x45A021, 0x60E32E, 0xE3F2E3),
+    GREEN("gui.ae2.Green", "green", DyeColor.GREEN, 0x45A021, 0x60E32E, 0xE3F2E3),
 
-    RED("gui.appliedenergistics2.Red", "red", DyeColor.RED, 0xA50029, 0xFF003C, 0xFFE6ED),
+    RED("gui.ae2.Red", "red", DyeColor.RED, 0xA50029, 0xFF003C, 0xFFE6ED),
 
-    BLACK("gui.appliedenergistics2.Black", "black", DyeColor.BLACK, 0x2B2B2B, 0x565656, 0x848484),
+    BLACK("gui.ae2.Black", "black", DyeColor.BLACK, 0x2B2B2B, 0x565656, 0x848484),
 
-    TRANSPARENT("gui.appliedenergistics2.Fluix", "fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC);
+    TRANSPARENT("gui.ae2.Fluix", "fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC);
 
     public static final List<AEColor> VALID_COLORS = Arrays.asList(WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
             PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK);

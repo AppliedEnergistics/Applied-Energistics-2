@@ -1,6 +1,6 @@
 {
   "textures": {
-    "facade": "appliedenergistics2:part/translucent_facade"
+    "facade": "ae2:part/translucent_facade"
   },
   "elements": [
     {

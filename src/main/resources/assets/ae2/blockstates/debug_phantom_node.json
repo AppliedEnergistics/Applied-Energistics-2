@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "appliedenergistics2:block/debug/phantom_node"
+      "model": "ae2:block/debug/phantom_node"
     }
   }
 }

@@ -8,7 +8,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.NetworkDetails"
+        "translate": "gui.ae2.NetworkDetails"
       },
       "position": {
         "left": 8,

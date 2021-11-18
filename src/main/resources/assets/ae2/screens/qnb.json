@@ -14,7 +14,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.QuantumLinkChamber"
+        "translate": "gui.ae2.QuantumLinkChamber"
       },
       "position": {
         "left": 8,

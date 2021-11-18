@@ -1,7 +1,7 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "torch": "appliedenergistics2:block/wireless_access_point_on"
+    "torch": "ae2:block/wireless_access_point_on"
   },
   "elements": [
     {

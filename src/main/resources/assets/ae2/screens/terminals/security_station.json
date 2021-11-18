@@ -18,7 +18,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.Security"
+        "translate": "gui.ae2.Security"
       },
       "position": {
         "left": 8,
@@ -27,7 +27,7 @@
     },
     "security_card_editor": {
       "text": {
-        "translate": "gui.appliedenergistics2.SecurityCardEditor"
+        "translate": "gui.ae2.SecurityCardEditor"
       },
       "position": {
         "left": 8,

@@ -15,7 +15,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.appliedenergistics2.NetworkTool"
+        "translate": "gui.ae2.NetworkTool"
       },
       "position": {
         "left": 8,

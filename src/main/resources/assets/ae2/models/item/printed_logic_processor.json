@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "appliedenergistics2:item/printed_logic_processor"
+    "layer0": "ae2:item/printed_logic_processor"
   }
 }

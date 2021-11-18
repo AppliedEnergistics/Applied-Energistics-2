@@ -1,7 +1,7 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "cell": "appliedenergistics2:block/drive/cells/default_cell"
+    "cell": "ae2:block/drive/cells/default_cell"
   },
   "elements": [
     {

@@ -1,12 +1,12 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "4": "appliedenergistics2:block/drive/drive_inside",
-    "up": "appliedenergistics2:block/chest/top",
-    "down": "appliedenergistics2:block/chest/bottom",
-    "north": "appliedenergistics2:block/chest/front",
-    "particle": "appliedenergistics2:block/chest/side",
-    "east": "appliedenergistics2:block/chest/side"
+    "4": "ae2:block/drive/drive_inside",
+    "up": "ae2:block/chest/top",
+    "down": "ae2:block/chest/bottom",
+    "north": "ae2:block/chest/front",
+    "particle": "ae2:block/chest/side",
+    "east": "ae2:block/chest/side"
   },
   "elements": [
     {

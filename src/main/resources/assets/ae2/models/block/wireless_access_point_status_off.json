@@ -1,6 +1,6 @@
 {
   "textures": {
-    "indicator": "appliedenergistics2:part/monitor_sides_status_off"
+    "indicator": "ae2:part/monitor_sides_status_off"
   },
   "elements": [
     {

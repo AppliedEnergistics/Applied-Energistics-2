@@ -36,28 +36,28 @@ public interface ISegmentedInventory {
      * Identifies an inventory that contains fake items for the purpose of configuring a filter or interface
      * auto-stocking.
      */
-    ResourceLocation CONFIG = new ResourceLocation("appliedenergistics2:config");
+    ResourceLocation CONFIG = new ResourceLocation("ae2:config");
 
     /**
      * Identifies the sub-inventory that contains installed upgrades. See
      * {@link appeng.api.implementations.IUpgradeInventory}.
      */
-    ResourceLocation UPGRADES = new ResourceLocation("appliedenergistics2:upgrades");
+    ResourceLocation UPGRADES = new ResourceLocation("ae2:upgrades");
 
     /**
      * Identifies the sub-inventory used locally by the machine to store items.
      */
-    ResourceLocation STORAGE = new ResourceLocation("appliedenergistics2:storage");
+    ResourceLocation STORAGE = new ResourceLocation("ae2:storage");
 
     /**
      * Identifies the sub-inventory used by interfaces or molecular assemblers to store crafting patterns.
      */
-    ResourceLocation PATTERNS = new ResourceLocation("appliedenergistics2:patterns");
+    ResourceLocation PATTERNS = new ResourceLocation("ae2:patterns");
 
     /**
      * Identifies the sub-inventory used to store storage cells in machines such as the cell workbench, drive, ME chest.
      */
-    ResourceLocation CELLS = new ResourceLocation("appliedenergistics2:cells");
+    ResourceLocation CELLS = new ResourceLocation("ae2:cells");
 
     /**
      * Access an internal inventory, note, not all inventories contain real items, some may be ghost items, and treating

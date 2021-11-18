@@ -1,11 +1,11 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "appliedenergistics2:block/wireless_access_point_inside",
-    "inside": "appliedenergistics2:block/wireless_access_point_inside",
-    "1": "appliedenergistics2:block/wireless_access_point",
-    "sides": "appliedenergistics2:part/monitor_sides",
-    "sidesStatus": "appliedenergistics2:part/monitor_sides_status"
+    "particle": "ae2:block/wireless_access_point_inside",
+    "inside": "ae2:block/wireless_access_point_inside",
+    "1": "ae2:block/wireless_access_point",
+    "sides": "ae2:part/monitor_sides",
+    "sidesStatus": "ae2:part/monitor_sides_status"
   },
   "elements": [
     {

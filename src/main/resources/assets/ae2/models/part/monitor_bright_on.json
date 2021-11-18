@@ -1,7 +1,7 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "lights": "appliedenergistics2:part/monitor_light"
+    "lights": "ae2:part/monitor_light"
   },
   "elements": [
     {

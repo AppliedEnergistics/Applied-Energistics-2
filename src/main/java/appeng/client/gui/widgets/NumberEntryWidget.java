@@ -49,8 +49,8 @@ import appeng.core.AEConfig;
 public class NumberEntryWidget extends GuiComponent implements ICompositeWidget {
 
     private static final Component INVALID_NUMBER = new TranslatableComponent(
-            "gui.appliedenergistics2.validation.InvalidNumber");
-    private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.appliedenergistics2.validation.NumberLessThanMinValue";
+            "gui.ae2.validation.InvalidNumber");
+    private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.ae2.validation.NumberLessThanMinValue";
     private static final Component PLUS = new TextComponent("+");
     private static final Component MINUS = new TextComponent("-");
     private static final int TEXT_COLOR_ERROR = 0xFF1900;
