@@ -1,8 +1,0 @@
-{
-  "parent": "block/slab",
-  "textures": {
-    "bottom": "ae2:block/quartz_block",
-    "side": "ae2:block/quartz_block",
-    "top": "ae2:block/quartz_block"
-  }
-}

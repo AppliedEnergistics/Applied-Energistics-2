@@ -1,32 +1,17 @@
 package appeng.datagen.providers.models;
 
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
-import net.minecraft.data.models.model.TextureMapping;
-import net.minecraft.data.models.model.TextureSlot;
-import net.minecraft.data.models.model.TexturedModel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.WallBlock;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.WallSide;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
-import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
-
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
-import appeng.decorative.solid.QuartzOreBlock;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
-public class BlockModelProvider extends BlockStateProvider implements IAE2DataProvider {
+public class BlockModelProvider extends AE2BlockStateProvider {
     public BlockModelProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
         super(gen, AppEng.MOD_ID, exFileHelper);
     }
@@ -35,6 +20,18 @@ public class BlockModelProvider extends BlockStateProvider implements IAE2DataPr
     protected void registerStatesAndModels() {
         generateOreBlock(AEBlocks.QUARTZ_ORE);
         generateOreBlock(AEBlocks.DEEPSLATE_QUARTZ_ORE);
+
+        simpleBlockAndItem(AEBlocks.CONDENSER);
+        simpleBlockAndItem(AEBlocks.ENERGY_ACCEPTOR);
+        simpleBlockAndItem(AEBlocks.FLUID_INTERFACE);
+        simpleBlockAndItem(AEBlocks.ITEM_INTERFACE);
+        simpleBlockAndItem(AEBlocks.PATTERN_PROVIDER);
+
+        simpleBlockAndItem(AEBlocks.DEBUG_ITEM_GEN, "block/debug/item_gen");
+        simpleBlockAndItem(AEBlocks.DEBUG_CHUNK_LOADER, "block/debug/chunk_loader");
+        simpleBlockAndItem(AEBlocks.DEBUG_PHANTOM_NODE, "block/debug/phantom_node");
+        simpleBlockAndItem(AEBlocks.DEBUG_CUBE_GEN, "block/debug/cube_gen");
+        simpleBlockAndItem(AEBlocks.DEBUG_ENERGY_GEN, "block/debug/energy_gen");
     }
 
     /**

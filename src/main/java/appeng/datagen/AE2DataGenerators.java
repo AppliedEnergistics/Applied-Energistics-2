@@ -52,8 +52,8 @@ public class AE2DataGenerators {
         generator.addProvider(new FluidTagsProvider(generator));
 
         // Misc
-        generator.addProvider(new DecorationModelProvider(generator, existingFileHelper));
         generator.addProvider(new BlockModelProvider(generator, existingFileHelper));
+        generator.addProvider(new DecorationModelProvider(generator, existingFileHelper));
         generator.addProvider(new AdvancementGenerator(generator));
         generator.addProvider(new ItemModelProvider(generator, existingFileHelper));
 

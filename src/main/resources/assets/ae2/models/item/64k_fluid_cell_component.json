@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "ae2:item/64k_fluid_cell_component"
-  }
-}

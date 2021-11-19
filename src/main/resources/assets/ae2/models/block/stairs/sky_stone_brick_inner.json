@@ -1,8 +1,0 @@
-{
-  "parent": "block/inner_stairs",
-  "textures": {
-    "bottom": "ae2:block/sky_stone_brick",
-    "side": "ae2:block/sky_stone_brick",
-    "top": "ae2:block/sky_stone_brick"
-  }
-}

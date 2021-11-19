@@ -1,7 +1,0 @@
-{
-  "parent": "block/cube_column",
-  "textures": {
-    "end": "ae2:block/chiseled_quartz_block_top",
-    "side": "ae2:block/chiseled_quartz_block_side"
-  }
-}
