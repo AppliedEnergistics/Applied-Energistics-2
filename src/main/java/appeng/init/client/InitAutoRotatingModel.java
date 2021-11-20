@@ -44,7 +44,7 @@ public final class InitAutoRotatingModel {
      * Blocks that should not use the auto rotation model.
      */
     private static final Set<BlockDefinition<?>> NO_AUTO_ROTATION = ImmutableSet.of(
-            AEBlocks.MULTI_PART,
+            AEBlocks.CABLE_BUS,
             AEBlocks.CONTROLLER,
             AEBlocks.PAINT,
             AEBlocks.QUANTUM_LINK,

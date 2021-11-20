@@ -105,7 +105,7 @@ class Scene {
     }
 
     public void putCable(BlockPos blockPos, Item item) {
-        blocks.put(blockPos, AEBlocks.MULTI_PART.block().defaultBlockState());
+        blocks.put(blockPos, AEBlocks.CABLE_BUS.block().defaultBlockState());
         cables.put(blockPos, item);
     }
 }

@@ -1,9 +1,14 @@
 package appeng.datagen.providers.models;
 
+import static appeng.core.AppEng.makeId;
+
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import appeng.api.util.AEColor;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
@@ -16,6 +21,8 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
 
     @Override
     protected void registerModels() {
+        registerPaintballs();
+
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.ANNIHILATION_CORE, "item/annihilation_core");
         flatSingleLayer(AEItems.BASIC_CARD, "item/basic_card");
@@ -97,6 +104,59 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.WIRELESS_CRAFTING_TERMINAL, "item/wireless_crafting_terminal");
         flatSingleLayer(AEItems.WIRELESS_RECEIVER, "item/wireless_receiver");
         flatSingleLayer(AEItems.WIRELESS_TERMINAL, "item/wireless_terminal");
+        registerEmptyModel(AEItems.WRAPPED_GENERIC_STACK);
+        registerEmptyModel(AEBlocks.CABLE_BUS);
+        registerHandheld();
+    }
+
+    private void registerHandheld() {
+        handheld(AEItems.CERTUS_QUARTZ_AXE);
+        handheld(AEItems.CERTUS_QUARTZ_HOE);
+        handheld(AEItems.CERTUS_QUARTZ_SHOVEL);
+        handheld(AEItems.CERTUS_QUARTZ_PICK);
+        handheld(AEItems.CERTUS_QUARTZ_SWORD);
+        handheld(AEItems.CERTUS_QUARTZ_WRENCH);
+        handheld(AEItems.CERTUS_QUARTZ_KNIFE);
+        handheld(AEItems.NETHER_QUARTZ_AXE);
+        handheld(AEItems.NETHER_QUARTZ_HOE);
+        handheld(AEItems.NETHER_QUARTZ_SHOVEL);
+        handheld(AEItems.NETHER_QUARTZ_PICK);
+        handheld(AEItems.NETHER_QUARTZ_SWORD);
+        handheld(AEItems.NETHER_QUARTZ_WRENCH);
+        handheld(AEItems.NETHER_QUARTZ_KNIFE);
+        handheld(AEItems.ENTROPY_MANIPULATOR);
+        handheld(AEItems.CHARGED_STAFF);
+    }
+
+    private void handheld(ItemDefinition<?> item) {
+        singleTexture(
+                item.id().getPath(),
+                new ResourceLocation("item/handheld"),
+                "layer0",
+                makeId("item/" + item.id().getPath()));
+    }
+
+    private void registerEmptyModel(ItemDefinition<?> item) {
+        this.getBuilder(item.id().getPath());
+    }
+
+    /**
+     * Note that color is applied to the textures in {@link appeng.init.client.InitItemColors}.
+     */
+    private void registerPaintballs() {
+        for (AEColor value : AEColor.values()) {
+            var id = AEItems.COLORED_PAINT_BALL.id(value);
+            if (id != null) {
+                flatSingleLayer(id, "item/paint_ball");
+            }
+        }
+
+        for (AEColor value : AEColor.values()) {
+            var id = AEItems.COLORED_LUMEN_PAINT_BALL.id(value);
+            if (id != null) {
+                flatSingleLayer(id, "item/paint_ball_shimmer");
+            }
+        }
     }
 
     private void flatSingleLayer(ItemDefinition<?> item, String texture) {
@@ -105,6 +165,14 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
                 id,
                 mcLoc("item/generated"),
                 "layer0",
-                AppEng.makeId(texture));
+                makeId(texture));
+    }
+
+    private void flatSingleLayer(ResourceLocation id, String texture) {
+        singleTexture(
+                id.getPath(),
+                mcLoc("item/generated"),
+                "layer0",
+                makeId(texture));
     }
 }

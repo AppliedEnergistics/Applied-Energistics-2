@@ -18,12 +18,13 @@
 
 package appeng.datagen.providers.models;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
+import static appeng.core.AppEng.makeId;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import static appeng.core.AppEng.makeId;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 
 public class DecorationModelProvider extends AE2BlockStateProvider {
 
@@ -36,10 +37,11 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
         simpleBlockAndItem(AEBlocks.CHISELED_QUARTZ_BLOCK, models().cubeColumn(
                 AEBlocks.CHISELED_QUARTZ_BLOCK.id().getPath(),
                 makeId("block/chiseled_quartz_block_side"),
-                makeId("block/chiseled_quartz_block_top")
-        ));
-        stairsBlock(AEBlocks.CHISELED_QUARTZ_STAIRS, "block/chiseled_quartz_block_top", "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
-        slabBlock(AEBlocks.CHISELED_QUARTZ_SLAB, AEBlocks.CHISELED_QUARTZ_BLOCK, "block/chiseled_quartz_block_top", "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
+                makeId("block/chiseled_quartz_block_top")));
+        stairsBlock(AEBlocks.CHISELED_QUARTZ_STAIRS, "block/chiseled_quartz_block_top",
+                "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
+        slabBlock(AEBlocks.CHISELED_QUARTZ_SLAB, AEBlocks.CHISELED_QUARTZ_BLOCK, "block/chiseled_quartz_block_top",
+                "block/chiseled_quartz_block_side", "block/chiseled_quartz_block_top");
         wall(AEBlocks.CHISELED_QUARTZ_WALL, "block/chiseled_quartz_block_side");
 
         simpleBlockAndItem(AEBlocks.FLUIX_BLOCK);
@@ -55,10 +57,11 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
         simpleBlockAndItem(AEBlocks.QUARTZ_PILLAR, models().cubeColumn(
                 AEBlocks.QUARTZ_PILLAR.id().getPath(),
                 makeId("block/quartz_pillar_side"),
-                makeId("block/quartz_pillar_top")
-        ));
-        stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, "block/quartz_pillar_top", "block/quartz_pillar_side", "block/quartz_pillar_top");
-        slabBlock(AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR, "block/quartz_pillar_top", "block/quartz_pillar_side", "block/quartz_pillar_top");
+                makeId("block/quartz_pillar_top")));
+        stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, "block/quartz_pillar_top", "block/quartz_pillar_side",
+                "block/quartz_pillar_top");
+        slabBlock(AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR, "block/quartz_pillar_top",
+                "block/quartz_pillar_side", "block/quartz_pillar_top");
         wall(AEBlocks.QUARTZ_PILLAR_WALL, "block/quartz_pillar_side");
 
         simpleBlockAndItem(AEBlocks.SKY_STONE_BLOCK);

@@ -1,6 +1,0 @@
-{
-  "parent": "ae2:item/covered_cable_base",
-  "textures": {
-    "base": "ae2:part/cable/covered/cyan"
-  }
-}

@@ -1,8 +1,5 @@
 package appeng.datagen.providers.models;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.BlockDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
@@ -11,14 +8,18 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import appeng.core.AppEng;
+import appeng.core.definitions.BlockDefinition;
+import appeng.datagen.providers.IAE2DataProvider;
+
 public abstract class AE2BlockStateProvider extends BlockStateProvider implements IAE2DataProvider {
     public AE2BlockStateProvider(DataGenerator gen, String modid, ExistingFileHelper exFileHelper) {
         super(gen, modid, exFileHelper);
     }
 
     /**
-     * Define a block model that is a simple textured cube, and uses the same model for its item.
-     * The texture path is derived from the block's id.
+     * Define a block model that is a simple textured cube, and uses the same model for its item. The texture path is
+     * derived from the block's id.
      */
     protected void simpleBlockAndItem(BlockDefinition<?> block) {
         var model = cubeAll(block.block());
@@ -53,7 +54,8 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
         slabBlock(slab, base, texture, texture, texture);
     }
 
-    protected void slabBlock(BlockDefinition<SlabBlock> slab, BlockDefinition<?> base, String bottomTexture, String sideTexture, String topTexture) {
+    protected void slabBlock(BlockDefinition<SlabBlock> slab, BlockDefinition<?> base, String bottomTexture,
+            String sideTexture, String topTexture) {
         var side = AppEng.makeId(sideTexture);
         var bottom = AppEng.makeId(bottomTexture);
         var top = AppEng.makeId(topTexture);
@@ -64,8 +66,7 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
                 slab.block(),
                 bottomModel,
                 models().slabTop(slab.id().getPath() + "_top", side, bottom, top),
-                models().getExistingFile(base.id())
-        );
+                models().getExistingFile(base.id()));
     }
 
     protected void stairsBlock(BlockDefinition<StairBlock> stairs, BlockDefinition<?> base) {
@@ -74,7 +75,8 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
         stairsBlock(stairs, texture, texture, texture);
     }
 
-    protected void stairsBlock(BlockDefinition<StairBlock> stairs, String bottomTexture, String sideTexture, String topTexture) {
+    protected void stairsBlock(BlockDefinition<StairBlock> stairs, String bottomTexture, String sideTexture,
+            String topTexture) {
         var baseName = stairs.id().getPath();
 
         var side = AppEng.makeId(sideTexture);

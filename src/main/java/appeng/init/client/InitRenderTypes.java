@@ -70,7 +70,7 @@ public final class InitRenderTypes {
 
         // Cable bus multiblock renders in all layers
         // TODO FABRIC 117 Fabric does not support rendering into multiple render layers simultaneously.
-        BlockRenderLayerMap.INSTANCE.putBlock(AEBlocks.MULTI_PART.block(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AEBlocks.CABLE_BUS.block(), RenderType.cutout());
     }
 
 }

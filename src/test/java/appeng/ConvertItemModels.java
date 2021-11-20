@@ -1,22 +1,21 @@
 package appeng;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
-import appeng.init.InitItems;
-import appeng.util.BootstrapMinecraft;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
-import org.junit.jupiter.api.Test;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.junit.jupiter.api.Test;
+
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.ItemDefinition;
+import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 public class ConvertItemModels {
