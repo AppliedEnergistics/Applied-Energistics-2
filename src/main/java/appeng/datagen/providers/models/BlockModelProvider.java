@@ -86,13 +86,13 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         var offModel = models().orientable(
                 modelPath(AEBlocks.VIBRATION_CHAMBER),
                 makeId("block/vibration_chamber"),
-                makeId("block/vibration_chamber"),
-                makeId("block/vibration_chamber_front"));
+                makeId("block/vibration_chamber_front"),
+                makeId("block/vibration_chamber"));
         var onModel = models().orientable(
                 modelPath(AEBlocks.VIBRATION_CHAMBER) + "_on",
                 makeId("block/vibration_chamber"),
-                makeId("block/vibration_chamber"),
-                makeId("block/vibration_chamber_front_on"));
+                makeId("block/vibration_chamber_front_on"),
+                makeId("block/vibration_chamber"));
 
         getVariantBuilder(AEBlocks.VIBRATION_CHAMBER.block())
                 .partialState().with(VibrationChamberBlock.ACTIVE, true).setModels(new ConfiguredModel(onModel))
