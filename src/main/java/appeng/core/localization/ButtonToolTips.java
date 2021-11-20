@@ -81,7 +81,7 @@ public enum ButtonToolTips {
     private final TranslatableComponent text;
 
     ButtonToolTips() {
-        this.text = new TranslatableComponent("gui.tooltips.appliedenergistics2." + this.name());
+        this.text = new TranslatableComponent("gui.tooltips.ae2." + this.name());
     }
 
     public Component text() {

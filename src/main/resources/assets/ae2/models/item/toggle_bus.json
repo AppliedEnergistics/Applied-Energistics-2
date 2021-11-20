@@ -1,0 +1,106 @@
+{
+  "parent": "ae2:item/part_base",
+  "textures": {
+    "bus": "ae2:part/toggle_bus",
+    "status": "ae2:part/monitor_sides_status",
+    "lights": "ae2:part/monitor_sides_status_off"
+  },
+  "elements": [
+    {
+      "from": [6, 6, 10],
+      "to": [10, 10, 12],
+      "faces": {
+        "north": {
+          "texture": "#bus"
+        },
+        "south": {
+          "texture": "#bus"
+        },
+        "east": {
+          "texture": "#bus"
+        },
+        "west": {
+          "texture": "#bus"
+        },
+        "up": {
+          "texture": "#bus"
+        },
+        "down": {
+          "texture": "#bus"
+        }
+      }
+    },
+    {
+      "from": [6, 6, 7],
+      "to": [10, 10, 9],
+      "faces": {
+        "north": {
+          "texture": "#bus"
+        },
+        "south": {
+          "texture": "#bus"
+        },
+        "east": {
+          "texture": "#bus"
+        },
+        "west": {
+          "texture": "#bus"
+        },
+        "up": {
+          "texture": "#bus"
+        },
+        "down": {
+          "texture": "#bus"
+        }
+      }
+    },
+    {
+      "from": [6, 6, 9],
+      "to": [10, 10, 10],
+      "faces": {
+        "north": {
+          "texture": "#status"
+        },
+        "south": {
+          "texture": "#status"
+        },
+        "east": {
+          "texture": "#status"
+        },
+        "west": {
+          "texture": "#status"
+        },
+        "up": {
+          "texture": "#status"
+        },
+        "down": {
+          "texture": "#status"
+        }
+      }
+    },
+    {
+      "from": [6, 6, 9],
+      "to": [10, 10, 10],
+      "faces": {
+        "north": {
+          "texture": "#lights"
+        },
+        "south": {
+          "texture": "#lights"
+        },
+        "east": {
+          "texture": "#lights"
+        },
+        "west": {
+          "texture": "#lights"
+        },
+        "up": {
+          "texture": "#lights"
+        },
+        "down": {
+          "texture": "#lights"
+        }
+      }
+    }
+  ]
+}

@@ -52,7 +52,7 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("rei.appliedenergistics2.throwing_in_water_category");
+        return new TranslatableComponent("rei.ae2.throwing_in_water_category");
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
 
             List<Component> tooltipLines = new ArrayList<>();
             tooltipLines.add(
-                    new TranslatableComponent("rei.appliedenergistics2.with_crystal_growth_accelerators"));
+                    new TranslatableComponent("rei.ae2.with_crystal_growth_accelerators"));
             for (var i = 1; i <= 5; i++) {
                 var duration = GrowingCrystalEntity.getGrowthDuration(i).toMillis();
                 tooltipLines.add(new TextComponent(i + ": " + DurationFormatUtils.formatDurationWords(

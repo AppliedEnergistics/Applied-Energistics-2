@@ -1,0 +1,49 @@
+{
+  "textures": {
+    "sides": "ae2:part/monitor_sides_status",
+    "back": "ae2:part/transition_plane_back",
+    "indicator": "ae2:part/monitor_sides_status_off",
+    "particle": "ae2:part/transition_plane_back"
+  },
+  "elements": [
+    {
+      "from": [5, 5, 1],
+      "to": [11, 11, 2],
+      "faces": {
+        "east": {
+          "texture": "#sides"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 1],
+      "to": [11, 11, 2],
+      "faces": {
+        "east": {
+          "texture": "#indicator"
+        },
+        "west": {
+          "texture": "#indicator"
+        },
+        "up": {
+          "texture": "#indicator"
+        },
+        "down": {
+          "texture": "#indicator"
+        }
+      }
+    }
+  ]
+}

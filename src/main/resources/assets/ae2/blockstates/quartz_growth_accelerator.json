@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "ae2:block/quartz_growth_accelerator_off"
+    },
+    "powered=true": {
+      "model": "ae2:block/quartz_growth_accelerator_on"
+    }
+  }
+}

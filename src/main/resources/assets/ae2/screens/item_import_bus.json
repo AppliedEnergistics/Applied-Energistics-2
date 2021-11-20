@@ -1,0 +1,15 @@
+{
+  "$schema": "schema.json",
+  "includes": ["io_bus.json"],
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.ImportBus"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  }
+}

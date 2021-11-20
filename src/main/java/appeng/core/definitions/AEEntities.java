@@ -71,7 +71,7 @@ public final class AEEntities {
             EntityFactory<T> entityFactory,
             MobCategory classification,
             Consumer<Builder<T>> customizer) {
-        String registryLoc = "appliedenergistics2:" + id;
+        String registryLoc = "ae2:" + id;
         Builder<T> builder = Builder.of(entityFactory, classification);
         customizer.accept(builder);
         EntityType<T> result = builder.build(registryLoc);

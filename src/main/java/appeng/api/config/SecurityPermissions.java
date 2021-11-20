@@ -60,7 +60,7 @@ public enum SecurityPermissions {
      */
     SECURITY;
 
-    private final String translationKey = "gui.appliedenergistics2.security." + this.name().toLowerCase(Locale.ROOT);
+    private final String translationKey = "gui.ae2.security." + this.name().toLowerCase(Locale.ROOT);
 
     private final Component displayName = new TranslatableComponent(this.translationKey + ".name");
 

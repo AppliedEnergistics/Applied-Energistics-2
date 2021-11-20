@@ -115,7 +115,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_DUST))
-                .save(consumer, "appliedenergistics2:main/root");
+                .save(consumer, "ae2:main/root");
 
         var quartzCrystal = Advancement.Builder.advancement()
                 .display(
@@ -131,7 +131,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .parent(root)
                 .addCriterion("certus",
                         InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL))
-                .save(consumer, "appliedenergistics2:main/quartz_crystal");
+                .save(consumer, "ae2:main/quartz_crystal");
 
         var chargedQuartz = Advancement.Builder.advancement()
                 .display(
@@ -147,7 +147,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .parent(quartzCrystal)
                 .addCriterion("certus",
                         InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
-                .save(consumer, "appliedenergistics2:main/charged_quartz");
+                .save(consumer, "ae2:main/charged_quartz");
 
         var charger = Advancement.Builder.advancement()
                 .display(
@@ -162,7 +162,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(chargedQuartz)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CHARGER))
-                .save(consumer, "appliedenergistics2:main/charger");
+                .save(consumer, "ae2:main/charger");
 
         var compass = Advancement.Builder.advancement()
                 .display(
@@ -177,7 +177,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(quartzCrystal)
                 .addCriterion("compass", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.SKY_COMPASS))
-                .save(consumer, "appliedenergistics2:main/compass");
+                .save(consumer, "ae2:main/compass");
 
         var pressesBuilder = Advancement.Builder.advancement()
                 .display(
@@ -212,7 +212,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(presses)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CONTROLLER))
-                .save(consumer, "appliedenergistics2:main/controller");
+                .save(consumer, "ae2:main/controller");
 
         var storageCell = Advancement.Builder.advancement()
                 .display(
@@ -230,7 +230,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL16K))
                 .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL64K))
                 .requirements(RequirementsStrategy.OR)
-                .save(consumer, "appliedenergistics2:main/storage_cell");
+                .save(consumer, "ae2:main/storage_cell");
 
         var ioport = Advancement.Builder.advancement()
                 .display(
@@ -245,7 +245,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(storageCell)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.IO_PORT))
-                .save(consumer, "appliedenergistics2:main/ioport");
+                .save(consumer, "ae2:main/ioport");
 
         var craftingTerminal = Advancement.Builder.advancement()
                 .display(
@@ -260,7 +260,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(controller)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.CRAFTING_TERMINAL))
-                .save(consumer, "appliedenergistics2:main/crafting_terminal");
+                .save(consumer, "ae2:main/crafting_terminal");
 
         var patternTerminal = Advancement.Builder.advancement()
                 .display(
@@ -275,7 +275,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(craftingTerminal)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.PATTERN_TERMINAL))
-                .save(consumer, "appliedenergistics2:main/pattern_terminal");
+                .save(consumer, "ae2:main/pattern_terminal");
 
         var craftingCpu = Advancement.Builder.advancement()
                 .display(
@@ -293,7 +293,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_16K))
                 .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_64K))
                 .requirements(RequirementsStrategy.OR)
-                .save(consumer, "appliedenergistics2:main/crafting_cpu");
+                .save(consumer, "ae2:main/crafting_cpu");
 
         var fluix = Advancement.Builder.advancement()
                 .display(
@@ -308,7 +308,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(chargedQuartz)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.FLUIX_DUST))
-                .save(consumer, "appliedenergistics2:main/fluix");
+                .save(consumer, "ae2:main/fluix");
 
         var glassCable = Advancement.Builder.advancement()
                 .display(
@@ -325,7 +325,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("certus",
                         InventoryChangeTrigger.TriggerInstance
                                 .hasItems(ItemPredicate.Builder.item().of(ConventionTags.GLASS_CABLE).build()))
-                .save(consumer, "appliedenergistics2:main/glass_cable");
+                .save(consumer, "ae2:main/glass_cable");
 
         var facade = Advancement.Builder.advancement()
                 .display(
@@ -340,7 +340,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(glassCable)
                 .addCriterion("facade", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.FACADE))
-                .save(consumer, "appliedenergistics2:main/facade");
+                .save(consumer, "ae2:main/facade");
 
         var growthAccelerator = Advancement.Builder.advancement()
                 .display(
@@ -356,7 +356,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .parent(fluix)
                 .addCriterion("certus",
                         InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.QUARTZ_GROWTH_ACCELERATOR))
-                .save(consumer, "appliedenergistics2:main/growth_accelerator");
+                .save(consumer, "ae2:main/growth_accelerator");
 
         var network1 = Advancement.Builder.advancement()
                 .display(
@@ -371,7 +371,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(glassCable)
                 .addCriterion("cable", AdvancementTriggers.NETWORK_APPRENTICE.instance())
-                .save(consumer, "appliedenergistics2:main/network1");
+                .save(consumer, "ae2:main/network1");
 
         var network2 = Advancement.Builder.advancement()
                 .display(
@@ -386,7 +386,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(network1)
                 .addCriterion("cable", AdvancementTriggers.NETWORK_ENGINEER.instance())
-                .save(consumer, "appliedenergistics2:main/network2");
+                .save(consumer, "ae2:main/network2");
 
         var network3 = Advancement.Builder.advancement()
                 .display(
@@ -401,7 +401,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(network2)
                 .addCriterion("cable", AdvancementTriggers.NETWORK_ADMIN.instance())
-                .save(consumer, "appliedenergistics2:main/network3");
+                .save(consumer, "ae2:main/network3");
 
         var networkTool = Advancement.Builder.advancement()
                 .display(
@@ -416,7 +416,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(controller)
                 .addCriterion("network_tool", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.NETWORK_TOOL))
-                .save(consumer, "appliedenergistics2:main/network_tool");
+                .save(consumer, "ae2:main/network_tool");
 
         var p2p = Advancement.Builder.advancement()
                 .display(
@@ -431,7 +431,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(glassCable)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.ME_P2P_TUNNEL))
-                .save(consumer, "appliedenergistics2:main/p2p");
+                .save(consumer, "ae2:main/p2p");
 
         var portableCell = Advancement.Builder.advancement()
                 .display(
@@ -449,7 +449,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("pc_16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_CELL16K))
                 .addCriterion("pc_64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_CELL64K))
                 .requirements(RequirementsStrategy.OR)
-                .save(consumer, "appliedenergistics2:main/portable_cell");
+                .save(consumer, "ae2:main/portable_cell");
 
         var qnb = Advancement.Builder.advancement()
                 .display(
@@ -464,7 +464,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(p2p)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.QUANTUM_LINK))
-                .save(consumer, "appliedenergistics2:main/qnb");
+                .save(consumer, "ae2:main/qnb");
 
         var spatialIoport = Advancement.Builder.advancement()
                 .display(
@@ -479,7 +479,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(ioport)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.SPATIAL_IO_PORT))
-                .save(consumer, "appliedenergistics2:main/spatial_ioport");
+                .save(consumer, "ae2:main/spatial_ioport");
 
         var spatialExplorer = Advancement.Builder.advancement()
                 .display(
@@ -493,7 +493,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false)
                 .parent(spatialIoport)
                 .addCriterion("explorer", AdvancementTriggers.SPATIAL_EXPLORER.instance())
-                .save(consumer, "appliedenergistics2:main/spatial_explorer");
+                .save(consumer, "ae2:main/spatial_explorer");
 
         var storageBus = Advancement.Builder.advancement()
                 .display(
@@ -508,7 +508,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(glassCable)
                 .addCriterion("part", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.ITEM_STORAGE_BUS))
-                .save(consumer, "appliedenergistics2:main/storage_bus");
+                .save(consumer, "ae2:main/storage_bus");
 
         var storageBusOnInterface = Advancement.Builder.advancement()
                 .display(
@@ -523,7 +523,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(storageBus)
                 .addCriterion("recursive", AdvancementTriggers.RECURSIVE.instance())
-                .save(consumer, "appliedenergistics2:main/recursive");
+                .save(consumer, "ae2:main/recursive");
 
     }
 

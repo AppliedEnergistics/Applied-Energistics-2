@@ -203,7 +203,7 @@ public final class AEBlocks {
     public static final BlockDefinition<WallBlock> CHISELED_QUARTZ_WALL = block(AEBlockIds.CHISELED_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<WallBlock> QUARTZ_PILLAR_WALL = block(AEBlockIds.QUARTZ_PILLAR_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
 
-    public static final BlockDefinition<CableBusBlock> MULTI_PART = block(AEBlockIds.CABLE_BUS, CableBusBlock::new);
+    public static final BlockDefinition<CableBusBlock> CABLE_BUS = block(AEBlockIds.CABLE_BUS, CableBusBlock::new);
 
     public static final BlockDefinition<SlabBlock> SKY_STONE_SLAB = block(AEBlockIds.SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
     public static final BlockDefinition<SlabBlock> SMOOTH_SKY_STONE_SLAB = block(AEBlockIds.SMOOTH_SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));

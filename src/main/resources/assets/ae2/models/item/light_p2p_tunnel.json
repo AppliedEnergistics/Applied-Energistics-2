@@ -1,0 +1,6 @@
+{
+  "parent": "ae2:item/p2p_tunnel_base",
+  "textures": {
+    "type": "block/quartz_block_top"
+  }
+}

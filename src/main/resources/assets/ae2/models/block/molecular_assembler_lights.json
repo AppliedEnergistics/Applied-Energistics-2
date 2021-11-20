@@ -1,0 +1,50 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "all": "ae2:block/molecular_assembler_lights"
+  },
+  "elements": [
+    {
+      "from": [2, 2, 2],
+      "to": [14, 14, 14],
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "uv": [2.6, 2.6, 13.4, 13.4],
+          "cullface": "down",
+          "unlit": true
+        },
+        "up": {
+          "texture": "#all",
+          "uv": [2.6, 2.6, 13.4, 13.4],
+          "cullface": "up",
+          "unlit": true
+        },
+        "north": {
+          "texture": "#all",
+          "uv": [2.6, 2.6, 13.4, 13.4],
+          "cullface": "north",
+          "unlit": true
+        },
+        "south": {
+          "texture": "#all",
+          "uv": [2.6, 2.6, 13.4, 13.4],
+          "cullface": "south",
+          "unlit": true
+        },
+        "west": {
+          "texture": "#all",
+          "uv": [2.6, 2.6, 13.4, 13.4],
+          "cullface": "west",
+          "unlit": true
+        },
+        "east": {
+          "texture": "#all",
+          "uv": [2.6, 2.6, 13.4, 13.4],
+          "cullface": "east",
+          "unlit": true
+        }
+      }
+    }
+  ]
+}

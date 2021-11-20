@@ -1,0 +1,39 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "0": "ae2:block/sky_compass"
+  },
+  "elements": [
+    {
+      "name": "Pointer",
+      "from": [7.7, 1.0, 6],
+      "to": [8.2, 1.5, 8],
+      "faces": {
+        "north": {
+          "texture": "#0",
+          "uv": [0.0, 5.0, 16.0, 8]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [0.0, 5.0, 16, 8]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [0.0, 5.0, 16.0, 8]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [0.0, 5.0, 16, 8]
+        },
+        "up": {
+          "texture": "#0",
+          "uv": [0.0, 5.0, 16.0, 8]
+        },
+        "down": {
+          "texture": "#0",
+          "uv": [0.0, 5.0, 16.0, 8]
+        }
+      }
+    }
+  ]
+}

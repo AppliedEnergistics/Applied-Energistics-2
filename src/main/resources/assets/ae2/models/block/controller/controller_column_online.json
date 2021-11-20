@@ -1,0 +1,77 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "block": "ae2:block/controller_column_powered",
+    "lights": "ae2:block/controller_column_lights",
+    "particle": "ae2:block/controller"
+  },
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "unlit": true
+        },
+        "east": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "unlit": true
+        },
+        "north": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "unlit": true
+        },
+        "south": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "unlit": true
+        },
+        "up": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "unlit": true
+        },
+        "west": {
+          "texture": "#lights",
+          "uv": [0, 0, 16, 16],
+          "unlit": true
+        }
+      },
+      "from": [0, 0, 0],
+      "shade": false,
+      "to": [16, 16, 16]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "east": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "north": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "south": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "up": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        },
+        "west": {
+          "texture": "#block",
+          "uv": [0, 0, 16, 16]
+        }
+      },
+      "from": [0, 0, 0],
+      "to": [16, 16, 16]
+    }
+  ]
+}

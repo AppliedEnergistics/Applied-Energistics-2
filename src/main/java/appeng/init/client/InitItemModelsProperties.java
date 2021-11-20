@@ -38,13 +38,17 @@ import appeng.items.tools.powered.ColorApplicatorItem;
 @Environment(EnvType.CLIENT)
 public final class InitItemModelsProperties {
 
+    public static final ResourceLocation GROWTH_PREDICATE_ID = AppEng.makeId("growth");
+    public static final ResourceLocation COLORED_PREDICATE_ID = AppEng.makeId("colored");
+    public static final ResourceLocation ENERGY_FILL_LEVEL_ID = AppEng.makeId("fill_level");
+
     private InitItemModelsProperties() {
     }
 
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
         FabricModelPredicateProviderRegistry.register(colorApplicatorItem,
-                new ResourceLocation(AppEng.MOD_ID, "colored"),
+                COLORED_PREDICATE_ID,
                 (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of
                     // calling getColor for every quad is extremely high, if the stack tries to
@@ -64,7 +68,7 @@ public final class InitItemModelsProperties {
             }
 
             FabricModelPredicateProviderRegistry.register(chargeable,
-                    new ResourceLocation("appliedenergistics2:fill_level"),
+                    ENERGY_FILL_LEVEL_ID,
                     (is, level, entity, seed) -> {
                         double curPower = chargeable.getAECurrentPower(is);
                         double maxPower = chargeable.getAEMaxPower(is);
@@ -80,7 +84,7 @@ public final class InitItemModelsProperties {
     private static void registerSeedGrowth(ItemDefinition<?> definition) {
         // Expose the growth of the seed to the model system
         FabricModelPredicateProviderRegistry.register(definition.asItem(),
-                new ResourceLocation("appliedenergistics2:growth"),
+                GROWTH_PREDICATE_ID,
                 (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is)
                         / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }

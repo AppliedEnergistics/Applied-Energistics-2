@@ -1,0 +1,46 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/molecular_assembler.png",
+    "srcRect": [0, 0, 176, 197]
+  },
+  "slots": {
+    "MACHINE_CRAFTING_GRID": {
+      "left": 29,
+      "top": 30,
+      "grid": "BREAK_AFTER_3COLS"
+    },
+    "ENCODED_PATTERN": {
+      "left": 126,
+      "top": 16
+    },
+    "MACHINE_OUTPUT": {
+      "left": 126,
+      "top": 48
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.MolecularAssembler"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "images": {
+    "progressBar": {
+      "texture": "guis/molecular_assembler.png",
+      "srcRect": [148, 201, 6, 18]
+    }
+  },
+  "widgets": {
+    "progressBar": {
+      "left": 148,
+      "top": 48
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["base_terminal.json"],
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "terminalStyle": {
+    "supportsAutoCrafting": true
+  }
+}

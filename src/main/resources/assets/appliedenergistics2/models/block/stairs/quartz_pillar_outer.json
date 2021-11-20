@@ -1,8 +1,0 @@
-{
-  "parent": "block/outer_stairs",
-  "textures": {
-    "bottom": "appliedenergistics2:block/quartz_pillar_top",
-    "side": "appliedenergistics2:block/quartz_pillar_side",
-    "top": "appliedenergistics2:block/quartz_pillar_top"
-  }
-}

@@ -1,0 +1,8 @@
+{
+  "parent": "ae2:part/display_off",
+  "textures": {
+    "lightsBright": "ae2:part/storage_monitor_bright",
+    "lightsMedium": "ae2:part/storage_monitor_medium",
+    "lightsDark": "ae2:part/storage_monitor_dark"
+  }
+}

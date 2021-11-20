@@ -1,0 +1,33 @@
+{
+  "textures": {
+    "indicator": "ae2:part/monitor_sides_status_has_channel"
+  },
+  "elements": [
+    {
+      "from": [5, 5, 2],
+      "to": [11, 11, 3],
+      "faces": {
+        "down": {
+          "texture": "#indicator",
+          "tintindex": 1,
+          "unlit": true
+        },
+        "up": {
+          "texture": "#indicator",
+          "tintindex": 1,
+          "unlit": true
+        },
+        "east": {
+          "texture": "#indicator",
+          "tintindex": 1,
+          "unlit": true
+        },
+        "west": {
+          "texture": "#indicator",
+          "tintindex": 1,
+          "unlit": true
+        }
+      }
+    }
+  ]
+}

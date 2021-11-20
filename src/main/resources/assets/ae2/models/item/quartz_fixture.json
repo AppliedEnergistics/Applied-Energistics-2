@@ -1,0 +1,134 @@
+{
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "up": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      },
+      "from": [6.0, 8.0, 6.0],
+      "name": "Middle Plate",
+      "to": [10.0, 9.0, 10.0]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 6.0, 7.0],
+      "name": "Lower Quartz Block",
+      "to": [9.0, 8.0, 9.0]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [8.0, 5.0, 7.0],
+      "name": "Lower Quartz Tip",
+      "to": [9.0, 6.0, 8.0]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 9.0, 7.0],
+      "name": "Upper Quartz Block",
+      "to": [9.0, 11.0, 9.0]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#quartz"
+        },
+        "east": {
+          "texture": "#quartz"
+        },
+        "north": {
+          "texture": "#quartz"
+        },
+        "south": {
+          "texture": "#quartz"
+        },
+        "up": {
+          "texture": "#quartz"
+        },
+        "west": {
+          "texture": "#quartz"
+        }
+      },
+      "from": [7.0, 11.0, 8.0],
+      "name": "Upper Quartz Tip",
+      "to": [8.0, 12.0, 9.0]
+    }
+  ],
+  "parent": "block/block",
+  "textures": {
+    "metal": "ae2:block/quartz_fixture_metal",
+    "quartz": "ae2:block/quartz_fixture"
+  }
+}

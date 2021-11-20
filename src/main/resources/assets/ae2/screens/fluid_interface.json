@@ -1,0 +1,89 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/interfacefluid.png",
+    "srcRect": [0, 0, 176, 231]
+  },
+  "slots": {
+    "CONFIG": {
+      "left": 35,
+      "top": 35,
+      "grid": "HORIZONTAL"
+    },
+    "STORAGE": {
+      "_comment": "Showing fluid storage is handled by the tank widgets (see tank1-6 below)"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.FluidInterface"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "interface_config": {
+      "text": {
+        "translate": "gui.ae2.Config"
+      },
+      "position": {
+        "left": 35,
+        "top": 24
+      }
+    },
+    "interface_stored_fluids": {
+      "text": {
+        "translate": "gui.ae2.StoredFluids"
+      },
+      "position": {
+        "left": 35,
+        "top": 125
+      }
+    }
+  },
+  "widgets": {
+    "openPriority": {
+      "left": 154,
+      "top": 0
+    },
+    "tank1": {
+      "left": 35,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank2": {
+      "left": 53,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank3": {
+      "left": 71,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank4": {
+      "left": 89,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank5": {
+      "left": 107,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    },
+    "tank6": {
+      "left": 125,
+      "top": 53,
+      "width": 16,
+      "height": 68
+    }
+  }
+}

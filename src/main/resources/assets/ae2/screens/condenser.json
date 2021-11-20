@@ -1,0 +1,49 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/condenser.png",
+    "srcRect": [0, 0, 176, 197]
+  },
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 51,
+      "top": 52
+    },
+    "STORAGE_CELL": {
+      "left": 101,
+      "top": 26
+    },
+    "MACHINE_OUTPUT": {
+      "left": 105,
+      "top": 52
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.Condenser"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "images": {
+    "progressBar": {
+      "texture": "guis/condenser.png",
+      "srcRect": [178, 25, 6, 18]
+    }
+  },
+  "widgets": {
+    "mode": {
+      "left": 128,
+      "top": 52
+    },
+    "progressBar": {
+      "left": 120,
+      "top": 25
+    }
+  }
+}

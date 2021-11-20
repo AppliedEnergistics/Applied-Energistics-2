@@ -1,0 +1,37 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/vibchamber.png",
+    "srcRect": [0, 0, 176, 166]
+  },
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 80,
+      "top": 37
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.VibrationChamber"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "images": {
+    "generationRateBar": {
+      "texture": "guis/vibchamber.png",
+      "srcRect": [176, 14, 6, 18]
+    }
+  },
+  "widgets": {
+    "generationRateBar": {
+      "left": 99,
+      "top": 36
+    }
+  }
+}

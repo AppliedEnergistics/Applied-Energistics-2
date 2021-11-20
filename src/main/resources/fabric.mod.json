@@ -1,33 +1,33 @@
 {
   "schemaVersion": 1,
-  "id": "appliedenergistics2",
+  "id": "ae2",
   "version": "${version}",
   "name": "Applied Energistics 2",
   "description": "A Mod about matter, energy and using them to conquer the world..",
   "authors": ["TeamAppliedEnergistics"],
   "contact": {
-    "homepage": "https://ae-mod.info/",
+    "homepage": "https://appliedenergistics.github.io/",
     "sources": "https://github.com/AppliedEnergistics/Applied-Energistics-2/"
   },
   "license": "LGPL",
-  "icon": "assets/appliedenergistics2/logo.png",
+  "icon": "assets/ae2/logo.png",
   "environment": "*",
   "entrypoints": {
     "client": ["appeng.core.AppEngClientStartup"],
     "server": ["appeng.core.AppEngServerStartup"],
     "rei_plugins": ["appeng.integration.modules.jei.ReiPlugin"]
   },
-  "mixins": ["appliedenergistics2.mixins.json"],
+  "mixins": ["ae2.mixins.json"],
   "depends": {
     "fabricloader": ">=0.12.5",
     "fabric": ">=0.42.4",
     "minecraft": "1.18-beta.2"
   },
   "suggests": {},
-  "accessWidener": "appliedenergistics2.accesswidener",
+  "accessWidener": "ae2.accesswidener",
   "custom": {
     "waila:plugins": {
-      "id": "appliedenergistics2:waila",
+      "id": "ae2:waila",
       "initializer": "appeng.integration.modules.waila.WailaModule"
     }
   }

@@ -1,0 +1,102 @@
+{
+  "parent": "ae2:item/part_base",
+  "textures": {
+    "channelsOdd": "ae2:part/cable/smart/channels_00",
+    "channelsEven": "ae2:part/cable/smart/channels_10"
+  },
+  "elements": [
+    {
+      "name": "Element",
+      "from": [5.0, 5.0, 2.0],
+      "to": [11.0, 11.0, 14.0],
+      "faces": {
+        "north": {
+          "texture": "#base",
+          "uv": [5.0, 5.0, 11.0, 11.0]
+        },
+        "east": {
+          "texture": "#base",
+          "uv": [0.0, 5.0, 5.0, 11.0]
+        },
+        "south": {
+          "texture": "#base",
+          "uv": [11.0, 5.0, 5.0, 11.0]
+        },
+        "west": {
+          "texture": "#base",
+          "uv": [5.0, 5.0, 0.0, 11.0]
+        },
+        "up": {
+          "texture": "#base",
+          "uv": [5.0, 0.0, 11.0, 5.0]
+        },
+        "down": {
+          "texture": "#base",
+          "uv": [5.0, 11.0, 11.0, 16.0]
+        }
+      }
+    },
+    {
+      "name": "Channels Odd",
+      "from": [5.0, 5.0, 2.0],
+      "to": [11.0, 11.0, 14.0],
+      "faces": {
+        "north": {
+          "texture": "#channelsOdd",
+          "uv": [5.0, 5.0, 11.0, 11.0]
+        },
+        "east": {
+          "texture": "#channelsOdd",
+          "uv": [0.0, 5.0, 5.0, 11.0]
+        },
+        "south": {
+          "texture": "#channelsOdd",
+          "uv": [11.0, 5.0, 5.0, 11.0]
+        },
+        "west": {
+          "texture": "#channelsOdd",
+          "uv": [5.0, 5.0, 0.0, 11.0]
+        },
+        "up": {
+          "texture": "#channelsOdd",
+          "uv": [5.0, 0.0, 11.0, 5.0]
+        },
+        "down": {
+          "texture": "#channelsOdd",
+          "uv": [5.0, 11.0, 11.0, 16.0]
+        }
+      }
+    },
+    {
+      "name": "Channels Even",
+      "from": [5.0, 5.0, 2.0],
+      "to": [11.0, 11.0, 14.0],
+      "faces": {
+        "north": {
+          "texture": "#channelsEven",
+          "uv": [5.0, 5.0, 11.0, 11.0]
+        },
+        "east": {
+          "texture": "#channelsEven",
+          "uv": [0.0, 5.0, 5.0, 11.0]
+        },
+        "south": {
+          "texture": "#channelsEven",
+          "uv": [11.0, 5.0, 5.0, 11.0]
+        },
+        "west": {
+          "texture": "#channelsEven",
+          "uv": [5.0, 5.0, 0.0, 11.0]
+        },
+        "up": {
+          "texture": "#channelsEven",
+          "uv": [5.0, 0.0, 11.0, 5.0]
+        },
+        "down": {
+          "texture": "#channelsEven",
+          "uv": [5.0, 11.0, 11.0, 16.0]
+        }
+      }
+    }
+  ]
+}

@@ -1,9 +1,0 @@
-{
-  "parent": "appliedenergistics2:item/display_base",
-  "textures": {
-    "front": "appliedenergistics2:part/storage_monitor",
-    "front_bright": "appliedenergistics2:part/storage_monitor_bright",
-    "front_medium": "appliedenergistics2:part/storage_monitor_medium",
-    "front_dark": "appliedenergistics2:part/storage_monitor_dark"
-  }
-}

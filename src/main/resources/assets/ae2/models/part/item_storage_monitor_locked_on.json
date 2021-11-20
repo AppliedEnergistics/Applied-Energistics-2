@@ -1,0 +1,42 @@
+{
+  "textures": {
+    "lightsBright": "ae2:part/storage_monitor_bright",
+    "lightsMedium": "ae2:part/storage_monitor_medium",
+    "lightsDark": "ae2:part/storage_monitor_dark_locked"
+  },
+  "elements": [
+    {
+      "from": [2, 2, 0],
+      "to": [14, 14, 2],
+      "faces": {
+        "north": {
+          "texture": "#lightsBright",
+          "tintindex": 3,
+          "unlit": true
+        }
+      }
+    },
+    {
+      "from": [2, 2, 0],
+      "to": [14, 14, 2],
+      "faces": {
+        "north": {
+          "texture": "#lightsMedium",
+          "tintindex": 2,
+          "unlit": true
+        }
+      }
+    },
+    {
+      "from": [2, 2, 0],
+      "to": [14, 14, 2],
+      "faces": {
+        "north": {
+          "texture": "#lightsDark",
+          "tintindex": 1,
+          "unlit": true
+        }
+      }
+    }
+  ]
+}

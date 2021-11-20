@@ -66,10 +66,10 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
 
         if (recipe instanceof SimpleGridMenuDisplay gridDisplay) {
             if (gridDisplay.getWidth() > 3 || gridDisplay.getHeight() > 3) {
-                return Result.createFailed(new TranslatableComponent("jei.appliedenergistics2.recipe_too_large"));
+                return Result.createFailed(new TranslatableComponent("jei.ae2.recipe_too_large"));
             }
         } else if (recipe.getInputEntries().size() > 9) {
-            return Result.createFailed(new TranslatableComponent("jei.appliedenergistics2.recipe_too_large"));
+            return Result.createFailed(new TranslatableComponent("jei.ae2.recipe_too_large"));
         }
 
         final Result error = doTransferRecipe(menu, recipe, context);
@@ -95,7 +95,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
                     }
                 }
                 if (output == null || output.isEmpty()) {
-                    return Result.createFailed(new TranslatableComponent("jei.appliedenergistics2.no_output"));
+                    return Result.createFailed(new TranslatableComponent("jei.ae2.no_output"));
                 }
 
                 // Now map the actual ingredients into the output/input

@@ -251,7 +251,7 @@ public class ReiPlugin implements REIClientPlugin {
 
         if (AEItems.WRAPPED_GENERIC_STACK.isSameAs(stack)
                 || AEItems.FACADE.isSameAs(stack) // REI will add a broken facade with no NBT
-                || AEBlocks.MULTI_PART.isSameAs(stack)
+                || AEBlocks.CABLE_BUS.isSameAs(stack)
                 || AEBlocks.MATRIX_FRAME.isSameAs(stack)
                 || AEBlocks.PAINT.isSameAs(stack)) {
             return true;

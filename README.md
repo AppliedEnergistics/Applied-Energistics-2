@@ -162,7 +162,7 @@ Files must be encoded as UTF-8.
 
 ### New or updated Translations
 
-The language files are located in `/src/main/resources/assets/appliedenergistics2/lang/` and use the [appropriate locale code](http://minecraft.gamepedia.com/Language) as name and `.lang` as extension.
+The language files are located in `/src/main/resources/assets/ae2/lang/` and use the [appropriate locale code](http://minecraft.gamepedia.com/Language) as name and `.lang` as extension.
 
 To update an translation edit the corresponding file and improve/correct the existing entry. Or copy any entries from `en_US.lang` for missing translation.
 

@@ -1,0 +1,33 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "ae2:block/quantum_link",
+    "sides": "ae2:block/quantum_link"
+  },
+  "elements": [
+    {
+      "from": [2, 2, 2],
+      "to": [14, 14, 14],
+      "faces": {
+        "down": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "north": {
+          "texture": "#sides"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "south": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        }
+      }
+    }
+  ]
+}

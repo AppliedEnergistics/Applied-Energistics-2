@@ -45,7 +45,7 @@ import appeng.util.InteractionUtil;
  */
 public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEntity> {
 
-    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public SpatialAnchorBlock() {
         super(defaultProps(Material.METAL));

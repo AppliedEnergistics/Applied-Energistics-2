@@ -29,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
+import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
 import appeng.core.sync.BasePacket;
@@ -36,7 +37,7 @@ import appeng.core.sync.BasePacket;
 public interface AppEng {
 
     String MOD_NAME = "Applied Energistics 2";
-    String MOD_ID = "appliedenergistics2";
+    String MOD_ID = AEConstants.MOD_ID;
 
     static AppEng instance() {
         return AppEngBase.INSTANCE;

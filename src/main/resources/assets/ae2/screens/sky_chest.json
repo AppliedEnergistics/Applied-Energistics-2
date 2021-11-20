@@ -1,0 +1,26 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/skychest.png",
+    "srcRect": [0, 0, 176, 195]
+  },
+  "slots": {
+    "STORAGE": {
+      "left": 8,
+      "top": 24,
+      "grid": "BREAK_AFTER_9COLS"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.SkyChest"
+      },
+      "position": {
+        "left": 8,
+        "top": 8
+      }
+    }
+  }
+}

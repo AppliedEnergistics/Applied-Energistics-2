@@ -1,8 +1,0 @@
-{
-  "parent": "block/slab",
-  "textures": {
-    "bottom": "appliedenergistics2:block/sky_stone_block",
-    "side": "appliedenergistics2:block/sky_stone_block",
-    "top": "appliedenergistics2:block/sky_stone_block"
-  }
-}

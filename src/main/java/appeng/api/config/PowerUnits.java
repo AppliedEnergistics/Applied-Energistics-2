@@ -27,8 +27,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public enum PowerUnits {
-    AE("gui.appliedenergistics2.units.appliedenergstics", "AE"), // Native Units - AE Energy
-    TR("gui.appliedenergistics2.units.tr", "E"); // TR - TechReborn energy
+    AE("gui.ae2.units.appliedenergstics", "AE"), // Native Units - AE Energy
+    TR("gui.ae2.units.tr", "E"); // TR - TechReborn energy
 
     /**
      * unlocalized name for the power unit.

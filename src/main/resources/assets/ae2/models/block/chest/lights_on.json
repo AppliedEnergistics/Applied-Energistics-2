@@ -1,0 +1,42 @@
+{
+  "textures": {
+    "lights_bright": "ae2:block/chest/lights_on_bright",
+    "lights_medium": "ae2:block/chest/lights_on_medium",
+    "lights_dark": "ae2:block/chest/lights_on_dark"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {
+          "texture": "#lights_bright",
+          "tintindex": 3,
+          "unlit": true
+        }
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {
+          "texture": "#lights_medium",
+          "tintindex": 2,
+          "unlit": true
+        }
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {
+          "texture": "#lights_dark",
+          "tintindex": 1,
+          "unlit": true
+        }
+      }
+    }
+  ]
+}

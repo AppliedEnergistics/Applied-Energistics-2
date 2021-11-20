@@ -1,0 +1,32 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/drive.png",
+    "srcRect": [0, 0, 176, 199]
+  },
+  "slots": {
+    "STORAGE_CELL": {
+      "left": 71,
+      "top": 14,
+      "grid": "BREAK_AFTER_2COLS"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.Drive"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "widgets": {
+    "openPriority": {
+      "left": 154,
+      "top": 0
+    }
+  }
+}

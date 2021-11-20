@@ -1,0 +1,44 @@
+{
+  "parent": "ae2:item/part_base",
+  "textures": {
+    "sides": "ae2:part/p2p_tunnel_sides",
+    "back": "ae2:part/p2p_tunnel_back",
+    "front": "ae2:part/p2p_tunnel_front",
+    "type": "ae2:block/quartz_block"
+  },
+  "elements": [
+    {
+      "from": [2, 2, 7],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#type"
+        }
+      }
+    },
+    {
+      "from": [2, 2, 7],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    }
+  ]
+}

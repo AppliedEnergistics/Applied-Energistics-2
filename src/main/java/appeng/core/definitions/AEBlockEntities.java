@@ -100,7 +100,7 @@ public final class AEBlockEntities {
     public static final BlockEntityType<SpatialAnchorBlockEntity> SPATIAL_ANCHOR = create("spatial_anchor",
             SpatialAnchorBlockEntity.class, SpatialAnchorBlockEntity::new, AEBlocks.SPATIAL_ANCHOR);
     public static final BlockEntityType<CableBusBlockEntity> CABLE_BUS = create("cable_bus", CableBusBlockEntity.class,
-            CableBusBlockEntity::new, AEBlocks.MULTI_PART);
+            CableBusBlockEntity::new, AEBlocks.CABLE_BUS);
     public static final BlockEntityType<ControllerBlockEntity> CONTROLLER = create("controller",
             ControllerBlockEntity.class, ControllerBlockEntity::new, AEBlocks.CONTROLLER);
     public static final BlockEntityType<DriveBlockEntity> DRIVE = create("drive", DriveBlockEntity.class,

@@ -1,0 +1,33 @@
+{
+  "textures": {
+    "indicator": "ae2:part/monitor_sides_status_on"
+  },
+  "elements": [
+    {
+      "from": [4, 4, 2],
+      "to": [12, 12, 3],
+      "faces": {
+        "down": {
+          "texture": "#indicator",
+          "tintindex": 3,
+          "unlit": true
+        },
+        "up": {
+          "texture": "#indicator",
+          "tintindex": 3,
+          "unlit": true
+        },
+        "east": {
+          "texture": "#indicator",
+          "tintindex": 3,
+          "unlit": true
+        },
+        "west": {
+          "texture": "#indicator",
+          "tintindex": 3,
+          "unlit": true
+        }
+      }
+    }
+  ]
+}

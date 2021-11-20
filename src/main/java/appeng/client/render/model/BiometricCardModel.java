@@ -42,7 +42,7 @@ import appeng.core.AppEng;
  */
 public class BiometricCardModel implements BasicUnbakedModel {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_base");
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/biometric_card_hash"));
 

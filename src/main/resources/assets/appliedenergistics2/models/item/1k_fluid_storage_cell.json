@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "appliedenergistics2:item/1k_fluid_storage_cell"
-  }
-}

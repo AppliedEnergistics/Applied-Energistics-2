@@ -1,0 +1,10 @@
+{
+  "parent": "ae2:part/item_export_bus_base",
+  "textures": {
+    "sides": "ae2:part/export_bus_sides",
+    "sidesStatus": "ae2:part/monitor_sides_status",
+    "back": "ae2:part/monitor_back",
+    "front": "ae2:part/fluid_export_bus",
+    "particle": "ae2:part/monitor_back"
+  }
+}

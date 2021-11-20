@@ -1,0 +1,32 @@
+{
+  "parent": "ae2:item/part_base",
+  "textures": {
+    "cable": "ae2:part/quartz_fiber"
+  },
+  "elements": [
+    {
+      "from": [6, 6, 5],
+      "to": [10, 10, 11],
+      "faces": {
+        "north": {
+          "texture": "#cable"
+        },
+        "south": {
+          "texture": "#cable"
+        },
+        "east": {
+          "texture": "#cable"
+        },
+        "west": {
+          "texture": "#cable"
+        },
+        "up": {
+          "texture": "#cable"
+        },
+        "down": {
+          "texture": "#cable"
+        }
+      }
+    }
+  ]
+}

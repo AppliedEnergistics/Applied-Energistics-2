@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_bottom_top",
-  "textures": {
-    "bottom": "appliedenergistics2:block/spatial_anchor_bottom",
-    "side": "appliedenergistics2:block/spatial_anchor_side",
-    "top": "appliedenergistics2:block/spatial_anchor_top"
-  }
-}

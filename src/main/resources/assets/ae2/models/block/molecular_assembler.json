@@ -1,0 +1,210 @@
+{
+  "parent": "block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "ae2:block/molecular_assembler",
+    "outside": "ae2:block/molecular_assembler"
+  },
+  "elements": [
+    {
+      "name": "Shell",
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "faces": {
+        "down": {
+          "texture": "#outside",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#outside",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#outside",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#outside",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#outside",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#outside",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "name": "Beam Bottom North",
+      "from": [2, 0, 0],
+      "to": [14, 2, 2],
+      "shade": false,
+      "faces": {
+        "up": {
+          "texture": "#outside"
+        },
+        "south": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Beam Bottom South",
+      "from": [2, 0, 14],
+      "to": [14, 2, 16],
+      "shade": false,
+      "faces": {
+        "up": {
+          "texture": "#outside"
+        },
+        "north": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Beam Top North",
+      "from": [2, 14, 0],
+      "to": [14, 16, 2],
+      "shade": false,
+      "faces": {
+        "down": {
+          "texture": "#outside"
+        },
+        "south": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Beam Top South",
+      "from": [2, 14, 14],
+      "to": [14, 16, 16],
+      "shade": false,
+      "faces": {
+        "down": {
+          "texture": "#outside"
+        },
+        "north": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Beam Bottom West",
+      "from": [0, 0, 0],
+      "to": [2, 2, 16],
+      "shade": false,
+      "faces": {
+        "up": {
+          "texture": "#outside"
+        },
+        "east": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Beam Bottom East",
+      "from": [14, 0, 0],
+      "to": [16, 2, 16],
+      "shade": false,
+      "faces": {
+        "up": {
+          "texture": "#outside"
+        },
+        "west": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Beam Top West",
+      "from": [0, 14, 0],
+      "to": [2, 16, 16],
+      "shade": false,
+      "faces": {
+        "down": {
+          "texture": "#outside"
+        },
+        "east": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Beam Top East",
+      "from": [14, 14, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "faces": {
+        "down": {
+          "texture": "#outside"
+        },
+        "west": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Strut North West",
+      "from": [0, 2, 0],
+      "to": [2, 14, 2],
+      "shade": false,
+      "faces": {
+        "south": {
+          "texture": "#outside"
+        },
+        "east": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Strut South West",
+      "from": [0, 2, 14],
+      "to": [2, 14, 16],
+      "shade": false,
+      "faces": {
+        "north": {
+          "texture": "#outside"
+        },
+        "east": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Strut North East",
+      "from": [14, 2, 0],
+      "to": [16, 14, 2],
+      "shade": false,
+      "faces": {
+        "south": {
+          "texture": "#outside"
+        },
+        "west": {
+          "texture": "#outside"
+        }
+      }
+    },
+    {
+      "name": "Strut South East",
+      "from": [14, 2, 14],
+      "to": [16, 14, 16],
+      "shade": false,
+      "faces": {
+        "north": {
+          "texture": "#outside"
+        },
+        "west": {
+          "texture": "#outside"
+        }
+      }
+    }
+  ]
+}

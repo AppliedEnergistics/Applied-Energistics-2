@@ -1,0 +1,37 @@
+{
+  "textures": {
+    "torch": "ae2:block/wireless_access_point"
+  },
+  "elements": [
+    {
+      "from": [7, 7, 1],
+      "to": [9, 9, 9],
+      "faces": {
+        "up": {
+          "texture": "#torch",
+          "uv": [1, 7, 9, 9],
+          "rotation": 90
+        },
+        "down": {
+          "texture": "#torch",
+          "uv": [1, 7, 9, 9],
+          "rotation": 270
+        },
+        "east": {
+          "texture": "#torch",
+          "uv": [1, 7, 9, 9],
+          "rotation": 180
+        },
+        "west": {
+          "texture": "#torch",
+          "uv": [1, 7, 9, 9]
+        },
+        "south": {
+          "texture": "#torch",
+          "uv": [7, 7, 9, 9],
+          "rotation": 270
+        }
+      }
+    }
+  ]
+}

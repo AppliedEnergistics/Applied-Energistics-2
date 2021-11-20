@@ -1,8 +1,0 @@
-{
-  "parent": "appliedenergistics2:item/item_import_bus",
-  "textures": {
-    "sides": "appliedenergistics2:part/import_bus_sides",
-    "back": "appliedenergistics2:part/monitor_back",
-    "front": "appliedenergistics2:part/fluid_import_bus"
-  }
-}

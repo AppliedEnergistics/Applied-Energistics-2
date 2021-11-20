@@ -1,0 +1,30 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/cellworkbench.png",
+    "srcRect": [0, 0, 176, 251]
+  },
+  "slots": {
+    "STORAGE_CELL": {
+      "left": 152,
+      "top": 8
+    },
+    "CONFIG": {
+      "left": 8,
+      "top": 29,
+      "grid": "BREAK_AFTER_9COLS"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.CellWorkbench"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  }
+}

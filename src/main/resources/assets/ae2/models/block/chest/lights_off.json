@@ -1,0 +1,17 @@
+{
+  "textures": {
+    "lights": "ae2:block/chest/lights_off"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {
+          "texture": "#lights",
+          "tintindex": 3
+        }
+      }
+    }
+  ]
+}

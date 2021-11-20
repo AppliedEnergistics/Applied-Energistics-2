@@ -1,0 +1,25 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "ae2:block/chest/base"
+      }
+    },
+    {
+      "when": {
+        "lights_on": false
+      },
+      "apply": {
+        "model": "ae2:block/chest/lights_off"
+      }
+    },
+    {
+      "when": {
+        "lights_on": true
+      },
+      "apply": {
+        "model": "ae2:block/chest/lights_on"
+      }
+    }
+  ]
+}

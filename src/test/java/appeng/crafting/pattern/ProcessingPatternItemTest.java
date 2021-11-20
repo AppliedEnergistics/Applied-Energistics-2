@@ -86,7 +86,7 @@ class ProcessingPatternItemTest {
         var encodedTag = encoded.getTag();
 
         var inputTag = encodedTag.getList("in", Tag.TAG_COMPOUND).getCompound(0);
-        assertEquals("appliedenergistics2:item", inputTag.getString("#c"));
+        assertEquals("ae2:item", inputTag.getString("#c"));
         inputTag.putString("#c", "some_mod:missing_chan");
 
         assertNull(decode(encodedTag));

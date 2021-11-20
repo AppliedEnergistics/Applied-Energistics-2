@@ -1,0 +1,192 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "ae2:block/wireless_access_point_inside",
+    "inside": "ae2:block/wireless_access_point_inside",
+    "sides": "ae2:part/monitor_sides",
+    "sidesStatus": "ae2:part/monitor_sides_status",
+    "torch": "ae2:block/wireless_access_point",
+    "indicator": "ae2:part/monitor_sides_status_off"
+  },
+  "elements": [
+    {
+      "from": [4.875, 5, 5],
+      "to": [5.875, 11, 11],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [12, 5, 13, 11], "texture": "#sidesStatus" },
+        "east": { "uv": [5, 5, 11, 11], "texture": "#sides" },
+        "south": { "uv": [3, 5, 4, 11], "texture": "#sidesStatus" },
+        "west": { "uv": [5, 5, 11, 11], "texture": "#sides" },
+        "up": {
+          "uv": [12, 5, 13, 11],
+          "rotation": 270,
+          "texture": "#sidesStatus"
+        },
+        "down": {
+          "uv": [12, 5, 13, 11],
+          "rotation": 90,
+          "texture": "#sidesStatus"
+        }
+      }
+    },
+    {
+      "from": [5.875, 5, 5],
+      "to": [6.875, 11, 11],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [11, 5, 12, 11], "texture": "#sides" },
+        "east": { "uv": [5, 5, 11, 11], "texture": "#inside" },
+        "south": { "uv": [4, 5, 5, 11], "texture": "#sides" },
+        "west": { "uv": [5, 5, 11, 11], "texture": "#inside" },
+        "up": { "uv": [11, 5, 12, 11], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [11, 5, 12, 11], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Side Antenna I Up",
+      "from": [6.875, 10, 6],
+      "to": [8.875, 12, 10],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [9, 4, 11, 6], "texture": "#sides" },
+        "east": { "uv": [6, 4, 10, 6], "texture": "#inside" },
+        "south": { "uv": [5, 4, 7, 6], "texture": "#sides" },
+        "west": { "uv": [6, 4, 10, 6], "texture": "#inside" },
+        "up": { "uv": [9, 6, 11, 10], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [9, 6, 11, 10], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Side Antenna I Down",
+      "from": [6.875, 4, 6],
+      "to": [8.875, 6, 10],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [9, 10, 11, 12], "texture": "#sides" },
+        "east": { "uv": [6, 10, 10, 12], "texture": "#inside" },
+        "south": { "uv": [5, 10, 7, 12], "texture": "#sides" },
+        "west": { "uv": [6, 10, 10, 12], "texture": "#inside" },
+        "up": { "uv": [9, 6, 11, 10], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [9, 6, 11, 10], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Side Antenna I West",
+      "from": [6.875, 6, 10],
+      "to": [8.875, 10, 12],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [9, 6, 11, 10], "texture": "#sides" },
+        "east": { "uv": [4, 6, 6, 10], "texture": "#inside" },
+        "south": { "uv": [5, 6, 7, 10], "texture": "#sides" },
+        "west": { "uv": [10, 6, 12, 10], "texture": "#inside" },
+        "up": { "uv": [9, 4, 11, 6], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [9, 10, 11, 12], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Side Antenna I East",
+      "from": [6.875, 6, 4],
+      "to": [8.875, 10, 6],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [9, 6, 11, 10], "texture": "#sides" },
+        "east": { "uv": [10, 6, 12, 10], "texture": "#inside" },
+        "south": { "uv": [5, 6, 7, 10], "texture": "#sides" },
+        "west": { "uv": [4, 6, 6, 10], "texture": "#inside" },
+        "up": { "uv": [9, 10, 11, 12], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [9, 4, 11, 6], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Side Antenna II Up",
+      "from": [7.875, 12, 7],
+      "to": [10.875, 13, 9],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [7, 3, 10, 4], "texture": "#sides" },
+        "east": { "uv": [7, 3, 9, 4], "texture": "#inside" },
+        "south": { "uv": [6, 3, 9, 4], "texture": "#sides" },
+        "west": { "uv": [7, 3, 9, 4], "texture": "#inside" },
+        "up": { "uv": [7, 7, 10, 9], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [7, 7, 10, 9], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Side Antenna II Down",
+      "from": [7.875, 3, 7],
+      "to": [10.875, 4, 9],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [7, 12, 10, 13], "texture": "#sides" },
+        "east": { "uv": [7, 12, 9, 13], "texture": "#inside" },
+        "south": { "uv": [6, 12, 9, 13], "texture": "#sides" },
+        "west": { "uv": [7, 12, 9, 13], "texture": "#inside" },
+        "up": { "uv": [7, 7, 10, 9], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [7, 7, 10, 9], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Side Antenna II West",
+      "from": [7.875, 7, 12],
+      "to": [10.875, 9, 13],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [7, 7, 10, 9], "texture": "#sides" },
+        "east": { "uv": [3, 7, 4, 9], "texture": "#inside" },
+        "south": { "uv": [6, 7, 9, 9], "texture": "#sides" },
+        "west": { "uv": [12, 7, 13, 9], "texture": "#inside" },
+        "up": { "uv": [7, 3, 10, 4], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [7, 12, 10, 13], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Side Antenna II East",
+      "from": [7.875, 7, 3],
+      "to": [10.875, 9, 4],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [7, 7, 10, 9], "texture": "#sides" },
+        "east": { "uv": [12, 7, 13, 9], "texture": "#inside" },
+        "south": { "uv": [6, 7, 9, 9], "texture": "#sides" },
+        "west": { "uv": [3, 7, 4, 9], "texture": "#inside" },
+        "up": { "uv": [7, 12, 10, 13], "rotation": 270, "texture": "#sides" },
+        "down": { "uv": [7, 3, 10, 4], "rotation": 90, "texture": "#sides" }
+      }
+    },
+    {
+      "name": "Antenna Off",
+      "from": [5.875, 7, 7],
+      "to": [13.875, 9, 9],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [1, 7, 9, 9], "rotation": 180, "texture": "#torch" },
+        "east": { "uv": [7, 7, 9, 9], "rotation": 270, "texture": "#torch" },
+        "south": { "uv": [1, 7, 9, 9], "texture": "#torch" },
+        "up": { "uv": [1, 7, 9, 9], "texture": "#torch" },
+        "down": { "uv": [1, 7, 9, 9], "texture": "#torch" }
+      }
+    },
+    {
+      "name": "Status Off",
+      "from": [4.875, 5, 5],
+      "to": [5.875, 11, 11],
+      "rotation": { "angle": 0, "axis": "y", "origin": [12.875, 8, 8] },
+      "faces": {
+        "north": { "uv": [12, 5, 13, 11], "texture": "#indicator" },
+        "south": { "uv": [3, 5, 4, 11], "texture": "#indicator" },
+        "up": {
+          "uv": [12, 5, 13, 11],
+          "rotation": 270,
+          "texture": "#indicator"
+        },
+        "down": {
+          "uv": [12, 5, 13, 11],
+          "rotation": 90,
+          "texture": "#indicator"
+        }
+      }
+    }
+  ]
+}

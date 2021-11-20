@@ -1,7 +1,0 @@
-{
-  "parent": "block/cube_column",
-  "textures": {
-    "end": "appliedenergistics2:block/quartz_pillar_top",
-    "side": "appliedenergistics2:block/quartz_pillar_side"
-  }
-}

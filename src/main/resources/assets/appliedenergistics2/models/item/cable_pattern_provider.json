@@ -1,8 +1,0 @@
-{
-  "parent": "appliedenergistics2:item/cable_item_interface",
-  "textures": {
-    "sides": "appliedenergistics2:part/monitor_sides",
-    "back": "appliedenergistics2:part/monitor_back",
-    "front": "appliedenergistics2:part/pattern_provider"
-  }
-}

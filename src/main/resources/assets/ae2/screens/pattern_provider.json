@@ -1,0 +1,55 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/pattern_provider.png",
+    "srcRect": [0, 0, 176, 185]
+  },
+  "slots": {
+    "ENCODED_PATTERN": {
+      "left": 8,
+      "top": 35,
+      "grid": "HORIZONTAL"
+    },
+    "STORAGE": {
+      "left": 8,
+      "top": 69,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.CraftingInterface"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "interface_config": {
+      "text": {
+        "translate": "gui.ae2.Patterns"
+      },
+      "position": {
+        "left": 8,
+        "top": 24
+      }
+    },
+    "interface_stored_items": {
+      "text": {
+        "translate": "gui.ae2.ReturnInventory"
+      },
+      "position": {
+        "left": 8,
+        "top": 58
+      }
+    }
+  },
+  "widgets": {
+    "openPriority": {
+      "left": 154,
+      "top": 0
+    }
+  }
+}

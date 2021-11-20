@@ -1,0 +1,25 @@
+{
+  "textures": {
+    "indicator": "ae2:part/monitor_sides_status_off"
+  },
+  "elements": [
+    {
+      "from": [6, 6, 2],
+      "to": [10, 10, 3],
+      "faces": {
+        "down": {
+          "texture": "#indicator"
+        },
+        "up": {
+          "texture": "#indicator"
+        },
+        "east": {
+          "texture": "#indicator"
+        },
+        "west": {
+          "texture": "#indicator"
+        }
+      }
+    }
+  ]
+}

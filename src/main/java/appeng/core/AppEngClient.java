@@ -95,7 +95,7 @@ import appeng.util.Platform;
  */
 @Environment(EnvType.CLIENT)
 public class AppEngClient extends AppEngBase {
-    private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
+    private final static String KEY_CATEGORY = "key.ae2.category";
 
     private static AppEngClient INSTANCE;
 

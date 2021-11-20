@@ -1,0 +1,52 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/spatialanchor.png",
+    "srcRect": [0, 0, 195, 100]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.SpatialAnchor"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "used_power": {
+      "position": {
+        "left": 13,
+        "top": 21
+      }
+    },
+    "loaded_chunks": {
+      "position": {
+        "left": 13,
+        "top": 31
+      }
+    },
+    "statistics_title": {
+      "text": {
+        "translate": "gui.ae2.SpatialAnchorStatistics"
+      },
+      "position": {
+        "left": 8,
+        "top": 56
+      }
+    },
+    "statistics_loaded": {
+      "position": {
+        "left": 13,
+        "top": 71
+      }
+    },
+    "statistics_total": {
+      "position": {
+        "left": 13,
+        "top": 81
+      }
+    }
+  }
+}

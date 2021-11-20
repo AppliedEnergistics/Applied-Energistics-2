@@ -46,7 +46,7 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper>
     private static final int SLOT_OUTPUT = 3;
 
     static final CategoryIdentifier<InscriberRecipeWrapper> ID = CategoryIdentifier
-            .of(AppEng.makeId("appliedenergistics2.inscriber"));
+            .of(AppEng.makeId("ae2.inscriber"));
 
     @Override
     public Renderer getIcon() {
@@ -55,7 +55,7 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper>
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("block.appliedenergistics2.inscriber");
+        return new TranslatableComponent("block.ae2.inscriber");
     }
 
     @Override

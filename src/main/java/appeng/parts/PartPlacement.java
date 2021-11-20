@@ -133,7 +133,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final BlockDefinition<?> multiPart = AEBlocks.MULTI_PART;
+        final BlockDefinition<?> multiPart = AEBlocks.CABLE_BUS;
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 

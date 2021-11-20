@@ -1,7 +1,0 @@
-{
-  "parent": "appliedenergistics2:item/sky_stone_chest",
-  "textures": {
-    "particle": "appliedenergistics2:models/skyblockchest",
-    "0": "appliedenergistics2:models/skyblockchest"
-  }
-}

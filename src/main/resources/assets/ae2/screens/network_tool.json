@@ -1,0 +1,26 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/toolbox.png",
+    "srcRect": [0, 0, 176, 166]
+  },
+  "slots": {
+    "STORAGE": {
+      "left": 62,
+      "top": 19,
+      "grid": "BREAK_AFTER_3COLS"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.NetworkTool"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "parent": "ae2:item/part_base",
+  "elements": [
+    {
+      "from": [6.0, 6.0, 2.0],
+      "to": [10.0, 10.0, 14.0],
+      "faces": {
+        "north": {
+          "texture": "#base"
+        },
+        "east": {
+          "texture": "#base"
+        },
+        "south": {
+          "texture": "#base"
+        },
+        "west": {
+          "texture": "#base"
+        },
+        "up": {
+          "texture": "#base"
+        },
+        "down": {
+          "texture": "#base"
+        }
+      }
+    }
+  ]
+}

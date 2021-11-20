@@ -7,8 +7,8 @@ package appeng.api;
  * Entrypoint IDs supported by AE2:
  * <ul>
  * <li><code>appliedenergistics2</code> will be called on both server and client.</li>
- * <li><code>appliedenergistics2:client</code> will be called on the client.</li>
- * <li><code>appliedenergistics2:server</code> will be called on a dedicated server.</li>
+ * <li><code>ae2:client</code> will be called on the client.</li>
+ * <li><code>ae2:server</code> will be called on a dedicated server.</li>
  * </ul>
  * <p/>
  * See <a href="https://fabricmc.net/wiki/documentation:entrypoint">the Fabric Wiki</a> for an explanation of

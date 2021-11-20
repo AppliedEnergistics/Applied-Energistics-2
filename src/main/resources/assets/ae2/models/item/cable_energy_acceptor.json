@@ -1,0 +1,82 @@
+{
+  "parent": "ae2:item/part_base",
+  "textures": {
+    "sides": "ae2:part/monitor_sides",
+    "back": "ae2:part/monitor_back",
+    "front": "ae2:block/energy_acceptor"
+  },
+  "elements": [
+    {
+      "from": [2, 2, 7],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 10],
+      "to": [11, 11, 11],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 9],
+      "to": [11, 11, 10],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    }
+  ]
+}

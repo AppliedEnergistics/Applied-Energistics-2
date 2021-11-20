@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "side": "ae2:block/controller_column",
+    "end": "ae2:block/controller"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "textures": {
+    "base": "ae2:part/cable/glass/transparent"
+  },
+  "elements": [
+    {
+      "name": "Element",
+      "from": [6.0, 6.0, 0.0],
+      "to": [10.0, 10.0, 6.0],
+      "faces": {
+        "east": {
+          "texture": "#base",
+          "uv": [10.0, 6.0, 16.0, 10.0]
+        },
+        "west": {
+          "texture": "#base",
+          "uv": [16.0, 6.0, 10.0, 10.0]
+        },
+        "up": {
+          "texture": "#base",
+          "uv": [6.0, 0.0, 10.0, 6.0]
+        },
+        "down": {
+          "texture": "#base",
+          "uv": [6.0, 10.0, 10.0, 16.0]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "parent": "ae2:item/part_base",
+  "textures": {
+    "sides": "ae2:part/monitor_sides",
+    "back": "ae2:part/monitor_back",
+    "front_medium_bright": "ae2:part/monitor_colored"
+  },
+  "elements": [
+    {
+      "name": "Front",
+      "from": [2, 2, 8],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "name": "Front Bright",
+      "from": [2, 2, 8],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#front_bright",
+          "tintindex": 3
+        }
+      }
+    },
+    {
+      "name": "Front Medium Bright",
+      "from": [2, 2, 8],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#front_medium_bright",
+          "tintindex": 4
+        }
+      }
+    },
+    {
+      "name": "Front Medium",
+      "from": [2, 2, 8],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#front_medium",
+          "tintindex": 2
+        }
+      }
+    },
+    {
+      "name": "Front Dark",
+      "from": [2, 2, 8],
+      "to": [14, 14, 9],
+      "faces": {
+        "north": {
+          "texture": "#front_dark",
+          "tintindex": 1
+        }
+      }
+    },
+    {
+      "name": "Back",
+      "from": [4, 4, 9],
+      "to": [12, 12, 10],
+      "faces": {
+        "east": {
+          "texture": "#sides"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "west": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "down": {
+          "texture": "#sides"
+        }
+      }
+    }
+  ]
+}

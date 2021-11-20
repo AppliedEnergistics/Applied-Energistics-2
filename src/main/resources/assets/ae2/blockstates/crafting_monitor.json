@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "ae2:block/crafting/monitor"
+    },
+    "formed=true": {
+      "model": "ae2:block/crafting/monitor_formed"
+    }
+  }
+}

@@ -1,8 +1,0 @@
-{
-  "parent": "appliedenergistics2:item/item_storage_bus",
-  "textures": {
-    "sides": "appliedenergistics2:part/storage_bus_sides",
-    "back": "appliedenergistics2:part/storage_bus_back",
-    "front": "appliedenergistics2:part/fluid_storage_bus"
-  }
-}

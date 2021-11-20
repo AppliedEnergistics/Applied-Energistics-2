@@ -171,7 +171,7 @@ test {
 ////////////////////
 // Forge/Minecraft
 loom {
-    accessWidenerPath = file("src/main/resources/appliedenergistics2.accesswidener")
+    accessWidenerPath = file("src/main/resources/ae2.accesswidener")
 
     runs {
         datagen {
@@ -209,7 +209,7 @@ jar {
                 "Implementation-Version": "${project.version}",
                 "Implementation-Vendor" :"TeamAppliedEnergistics",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "appliedenergistics2.mixins.json"
+                "MixinConfigs": "ae2.mixins.json"
         ])
     }
 }

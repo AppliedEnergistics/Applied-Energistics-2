@@ -1,0 +1,20 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "lights": "ae2:part/monitor_light"
+  },
+  "elements": [
+    {
+      "shade": false,
+      "from": [2, 2, 0],
+      "to": [14, 14, 2],
+      "faces": {
+        "north": {
+          "texture": "#lights",
+          "tintindex": 3,
+          "unlit": true
+        }
+      }
+    }
+  ]
+}

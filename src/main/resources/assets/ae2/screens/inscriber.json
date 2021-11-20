@@ -1,0 +1,49 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/inscriber.png",
+    "srcRect": [0, 0, 176, 176]
+  },
+  "slots": {
+    "INSCRIBER_PLATE_TOP": {
+      "left": 45,
+      "top": 16
+    },
+    "MACHINE_INPUT": {
+      "left": 63,
+      "top": 39
+    },
+    "INSCRIBER_PLATE_BOTTOM": {
+      "left": 45,
+      "top": 62
+    },
+    "MACHINE_OUTPUT": {
+      "left": 113,
+      "top": 40
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.Inscriber"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "images": {
+    "progressBar": {
+      "texture": "guis/inscriber.png",
+      "srcRect": [135, 177, 6, 18]
+    }
+  },
+  "widgets": {
+    "progressBar": {
+      "left": 135,
+      "top": 39
+    }
+  }
+}

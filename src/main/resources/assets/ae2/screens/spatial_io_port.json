@@ -1,0 +1,59 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/spatialio.png",
+    "srcRect": [0, 0, 176, 197]
+  },
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 52,
+      "top": 48
+    },
+    "MACHINE_OUTPUT": {
+      "left": 113,
+      "top": 48
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.SpatialIOPort"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "stored_power": {
+      "position": {
+        "left": 13,
+        "top": 21
+      }
+    },
+    "max_power": {
+      "position": {
+        "left": 13,
+        "top": 31
+      }
+    },
+    "required_power": {
+      "position": {
+        "left": 13,
+        "top": 73
+      }
+    },
+    "efficiency": {
+      "position": {
+        "left": 13,
+        "top": 83
+      }
+    },
+    "scs_size": {
+      "position": {
+        "left": 13,
+        "top": 93
+      }
+    }
+  }
+}

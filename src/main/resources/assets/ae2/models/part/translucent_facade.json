@@ -1,0 +1,58 @@
+{
+  "textures": {
+    "facade": "ae2:part/translucent_facade"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 0.25, 0.25],
+      "faces": {
+        "north": { "uv": [0, 15.75, 16, 16], "texture": "#facade" },
+        "east": { "uv": [15.75, 15.75, 16, 16], "texture": "#facade" },
+        "south": { "uv": [0, 15.75, 16, 16], "texture": "#facade" },
+        "west": { "uv": [0, 15.75, 1, 16], "texture": "#facade" },
+        "up": { "uv": [0, 0, 16, 1], "texture": "#facade" },
+        "down": { "uv": [0, 15.75, 16, 16], "texture": "#facade" }
+      }
+    },
+    {
+      "from": [0, 15.75, 0],
+      "to": [16, 16, 0.25],
+      "rotation": { "angle": 0, "axis": "y", "origin": [8, 23, 8] },
+      "faces": {
+        "north": { "uv": [0, 0, 16, 1], "texture": "#facade" },
+        "east": { "uv": [15.75, 0, 16, 1], "texture": "#facade" },
+        "south": { "uv": [0, 0, 16, 1], "texture": "#facade" },
+        "west": { "uv": [0, 0, 1, 1], "texture": "#facade" },
+        "up": { "uv": [0, 0, 16, 1], "texture": "#facade" },
+        "down": { "uv": [0, 15.75, 16, 16], "texture": "#facade" }
+      }
+    },
+    {
+      "from": [0, 0.25, 0],
+      "to": [0.25, 15.75, 0.25],
+      "rotation": { "angle": 0, "axis": "y", "origin": [8, 23, 8] },
+      "faces": {
+        "north": { "uv": [15.75, 1, 16, 15.75], "texture": "#facade" },
+        "east": { "uv": [15.75, 1, 16, 15.75], "texture": "#facade" },
+        "south": { "uv": [0, 1, 1, 15.75], "texture": "#facade" },
+        "west": { "uv": [0, 1, 1, 15.75], "texture": "#facade" },
+        "up": { "uv": [0, 0, 1, 1], "texture": "#facade" },
+        "down": { "uv": [0, 15.75, 1, 16], "texture": "#facade" }
+      }
+    },
+    {
+      "from": [15.75, 0.25, 0],
+      "to": [16, 15.75, 0.25],
+      "rotation": { "angle": 0, "axis": "y", "origin": [23, 23, 8] },
+      "faces": {
+        "north": { "uv": [0, 1, 1, 15.75], "texture": "#facade" },
+        "east": { "uv": [15.75, 1, 16, 15.75], "texture": "#facade" },
+        "south": { "uv": [15.75, 1, 16, 15.75], "texture": "#facade" },
+        "west": { "uv": [0, 1, 1, 15.75], "texture": "#facade" },
+        "up": { "uv": [15.75, 0, 16, 1], "texture": "#facade" },
+        "down": { "uv": [15.75, 15.75, 16, 16], "texture": "#facade" }
+      }
+    }
+  ]
+}

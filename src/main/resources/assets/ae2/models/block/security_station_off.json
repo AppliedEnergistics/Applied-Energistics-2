@@ -1,0 +1,68 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "ae2:block/security_station_side",
+    "side": "ae2:block/security_station_side",
+    "bottom": "ae2:block/security_station_bottom",
+    "top": "ae2:block/security_station_top",
+    "lightsBright": "ae2:block/security_station_light_bright",
+    "lightsMedium": "ae2:block/security_station_light_medium",
+    "lightsDark": "ae2:block/security_station_light_dark"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": {
+          "texture": "#bottom"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "north": {
+          "texture": "#side"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#side"
+        },
+        "east": {
+          "texture": "#side"
+        }
+      }
+    },
+    {
+      "from": [0, 15, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {
+          "texture": "#lightsBright",
+          "tintindex": 3
+        }
+      }
+    },
+    {
+      "from": [0, 15, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {
+          "texture": "#lightsMedium",
+          "tintindex": 3
+        }
+      }
+    },
+    {
+      "from": [0, 15, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {
+          "texture": "#lightsDark",
+          "tintindex": 3
+        }
+      }
+    }
+  ]
+}
