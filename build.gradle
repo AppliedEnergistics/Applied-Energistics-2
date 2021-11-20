@@ -40,13 +40,9 @@ repositories {
             includeGroup "mcp.mobius.waila"
         }
     }
-    exclusiveContent {
-        forRepository {
-            maven {
-                url "https://maven.parchmentmc.net/"
-            }
-        }
-        filter {
+    maven {
+        url "https://maven.parchmentmc.net/"
+        content {
             includeGroup "org.parchmentmc.data"
         }
     }
