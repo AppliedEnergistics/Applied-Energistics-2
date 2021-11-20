@@ -54,6 +54,9 @@ accessible field net/minecraft/client/Minecraft itemColors Lnet/minecraft/client
 accessible field net/minecraft/client/resources/model/ModelManager bakedRegistry Ljava/util/Map;
 accessible method net/minecraft/client/renderer/block/model/ItemOverrides <init> ()V
 
+accessible field net/minecraft/client/renderer/block/model/BlockModel FACE_BAKERY Lnet/minecraft/client/renderer/block/model/FaceBakery;
+accessible method net/minecraft/client/renderer/block/model/FaceBakery recalculateWinding ([ILnet/minecraft/core/Direction;)V
+
 accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;IZZLnet/minecraft/client/renderer/RenderType$CompositeState;)Lnet/minecraft/client/renderer/RenderType$CompositeRenderType;
 
 accessible class net/minecraft/client/renderer/RenderType$CompositeState
