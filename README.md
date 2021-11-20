@@ -92,7 +92,7 @@ AE2 is also available without authentication from Modmaven. You can use the foll
 When compiling against the AE2 API you can use gradle dependencies, just add
 
     dependencies {
-        compileOnly "appeng:ae2:VERSION:api"
+        compileOnly "appeng:appliedenergistics2:VERSION:api"
     }
 
 or add the `compileOnly` line to your existing dependencies task to your build.gradle.
@@ -101,10 +101,10 @@ Replace `VERSION` with the desired one. With 1.15+ we switched to using [semver]
 It is highly recommended following its specification and further considering an upper bound for the dependency version.
 A change of the `MAJOR` version will be an API break and can lead to various crashes. Better to inform a player about the addon not supporting the new version until it could be tested or updated.
 
-An example string would be `appeng:ae2:7.0.0-alpha.6:api` for the API only or `appeng:ae2:7.0.0-alpha.6` for the whole mod.
+An example string would be `appeng:appliedenergistics2:7.0.0-alpha.6:api` for the API only or `appeng:appliedenergistics2:7.0.0-alpha.6` for the whole mod.
 
 Builds obtained [here](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) or via [maven](https://github.com/AppliedEnergistics/Applied-Energistics-2/packages) should work in a development environment.
-However the dependency might need to be wrapped in `fg.deobf()` like `runtimeOnly fg.deobf("appeng:ae2:VERSION:api")`
+However the dependency might need to be wrapped in `fg.deobf()` like `runtimeOnly fg.deobf("appeng:appliedenergistics2:VERSION:api")`
 
 ## Building
 
