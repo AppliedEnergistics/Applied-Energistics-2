@@ -19,7 +19,9 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        emptyModel(AEBlocks.CABLE_BUS);
         emptyModel(AEBlocks.MATRIX_FRAME);
+        emptyModel(AEBlocks.PAINT);
 
         generateOreBlock(AEBlocks.QUARTZ_ORE);
         generateOreBlock(AEBlocks.DEEPSLATE_QUARTZ_ORE);
