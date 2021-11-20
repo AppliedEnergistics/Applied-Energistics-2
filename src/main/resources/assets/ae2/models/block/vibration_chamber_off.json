@@ -1,9 +1,0 @@
-{
-  "parent": "ae2:block/cube/cube_ae_machine",
-  "textures": {
-    "bottom": "ae2:block/vibration_chamber",
-    "front": "ae2:block/vibration_chamber_front",
-    "side": "ae2:block/vibration_chamber",
-    "top": "ae2:block/vibration_chamber"
-  }
-}

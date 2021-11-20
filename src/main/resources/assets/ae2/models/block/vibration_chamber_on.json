@@ -1,6 +1,0 @@
-{
-  "parent": "ae2:block/vibration_chamber_off",
-  "textures": {
-    "front": "ae2:block/vibration_chamber_front_on"
-  }
-}

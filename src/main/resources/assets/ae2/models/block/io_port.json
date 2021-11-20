@@ -1,8 +1,0 @@
-{
-  "parent": "ae2:block/cube/cube_ae_bottom_top",
-  "textures": {
-    "bottom": "ae2:block/io_port_bottom",
-    "side": "ae2:block/io_port_side",
-    "top": "ae2:block/io_port"
-  }
-}

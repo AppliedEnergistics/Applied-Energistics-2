@@ -4,14 +4,18 @@ import static appeng.core.AppEng.makeId;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.api.util.AEColor;
+import appeng.client.render.model.BiometricCardModel;
+import appeng.client.render.model.MemoryCardModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
+import appeng.init.client.InitItemModelsProperties;
 
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider
         implements IAE2DataProvider {
@@ -22,6 +26,18 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
     @Override
     protected void registerModels() {
         registerPaintballs();
+
+        flatSingleLayer(BiometricCardModel.MODEL_BASE, "item/biometric_card");
+        flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card");
+
+        crystalSeed(AEItems.CERTUS_CRYSTAL_SEED,
+                "item/crystal_seed_certus",
+                "item/crystal_seed_certus2",
+                "item/crystal_seed_certus3");
+        crystalSeed(AEItems.FLUIX_CRYSTAL_SEED,
+                "item/crystal_seed_fluix",
+                "item/crystal_seed_fluix2",
+                "item/crystal_seed_fluix3");
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.ANNIHILATION_CORE, "item/annihilation_core");
@@ -109,6 +125,34 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         registerHandheld();
     }
 
+    /**
+     * Define a crystal seed item model with three growth stages shown by three textures. The fully grown crystal is not
+     * part of this model.
+     */
+    private void crystalSeed(ItemDefinition<?> seed,
+            String texture0,
+            String texture1,
+            String texture2) {
+
+        var baseId = seed.id().getPath();
+
+        var model1 = flatSingleLayer(makeId(baseId + "_1"), texture1);
+        var model2 = flatSingleLayer(makeId(baseId + "_2"), texture2);
+
+        withExistingParent(baseId, "item/generated")
+                .texture("layer0", makeId(texture0))
+                // 2nd growth stage
+                .override()
+                .predicate(InitItemModelsProperties.GROWTH_PREDICATE_ID, 0.333f)
+                .model(model1)
+                .end()
+                // 3rd growth stage
+                .override()
+                .predicate(InitItemModelsProperties.GROWTH_PREDICATE_ID, 0.666f)
+                .model(model2)
+                .end();
+    }
+
     private void registerHandheld() {
         handheld(AEItems.CERTUS_QUARTZ_AXE);
         handheld(AEItems.CERTUS_QUARTZ_HOE);
@@ -126,6 +170,21 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         handheld(AEItems.NETHER_QUARTZ_KNIFE);
         handheld(AEItems.ENTROPY_MANIPULATOR);
         handheld(AEItems.CHARGED_STAFF);
+
+        // The color applicator uses a separate model when colored
+        var coloredColorApplicator = withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath() + "_colored",
+                "item/generated")
+                        .texture("layer0", makeId("item/color_applicator"))
+                        .texture("layer1", makeId("item/color_applicator_tip_dark"))
+                        .texture("layer2", makeId("item/color_applicator_tip_medium"))
+                        .texture("layer3", makeId("item/color_applicator_tip_bright"));
+        withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath(), "item/generated")
+                .texture("layer0", makeId("item/color_applicator"))
+                // Use different model when colored
+                .override()
+                .predicate(InitItemModelsProperties.COLORED_PREDICATE_ID, 1)
+                .model(coloredColorApplicator)
+                .end();
     }
 
     private void handheld(ItemDefinition<?> item) {
@@ -159,17 +218,17 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         }
     }
 
-    private void flatSingleLayer(ItemDefinition<?> item, String texture) {
+    private ItemModelBuilder flatSingleLayer(ItemDefinition<?> item, String texture) {
         String id = item.id().getPath();
-        singleTexture(
+        return singleTexture(
                 id,
                 mcLoc("item/generated"),
                 "layer0",
                 makeId(texture));
     }
 
-    private void flatSingleLayer(ResourceLocation id, String texture) {
-        singleTexture(
+    private ItemModelBuilder flatSingleLayer(ResourceLocation id, String texture) {
+        return singleTexture(
                 id.getPath(),
                 mcLoc("item/generated"),
                 "layer0",
