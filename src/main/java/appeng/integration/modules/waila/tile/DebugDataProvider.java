@@ -18,9 +18,21 @@
 
 package appeng.integration.modules.waila.tile;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.parts.IPart;
+import appeng.blockentity.AEBaseBlockEntity;
+import appeng.core.definitions.AEItems;
+import appeng.integration.modules.waila.BaseDataProvider;
+import appeng.integration.modules.waila.part.IPartDataProvider;
+import appeng.me.InWorldGridNode;
+import appeng.me.helpers.IGridConnectedBlockEntity;
+import appeng.me.service.TickManagerService;
+import appeng.parts.AEBasePart;
+import appeng.util.Platform;
+import mcp.mobius.waila.api.IBlockAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,21 +45,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
-
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.parts.IPart;
-import appeng.core.definitions.AEItems;
-import appeng.integration.modules.waila.BaseDataProvider;
-import appeng.integration.modules.waila.part.IPartDataProvider;
-import appeng.me.InWorldGridNode;
-import appeng.me.helpers.IGridConnectedBlockEntity;
-import appeng.me.service.TickManagerService;
-import appeng.parts.AEBasePart;
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Add debug info to the waila tooltip if the user is holding a debug card.
@@ -72,7 +71,25 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
 
     @Override
     public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+        if (!isVisible(accessor.getPlayer())) {
+            return;
+        }
+
+        addBlockEntityRotation(tooltip, accessor);
         addToTooltip(accessor.getServerData(), tooltip);
+    }
+
+    private static void addBlockEntityRotation(List<Component> tooltip, IBlockAccessor accessor) {
+        if (accessor.getBlockEntity() instanceof AEBaseBlockEntity be && be.canBeRotated()) {
+            var up = be.getUp();
+            var forward = be.getForward();
+            tooltip.add(
+                    new TextComponent("")
+                            .append(new TextComponent("Up: ").withStyle(ChatFormatting.WHITE))
+                            .append(new TextComponent(up.name()))
+                            .append(new TextComponent(" Forward: ").withStyle(ChatFormatting.WHITE))
+                            .append(new TextComponent(forward.name())));
+        }
     }
 
     private static void addToTooltip(CompoundTag serverData, List<Component> tooltip) {
@@ -200,7 +217,7 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
             var max = tickManager.getMaximumTime(node);
             var sum = tickManager.getOverallTime(node);
 
-            tag.putLongArray(TAG_TICK_TIME, new long[] { avg, max, sum });
+            tag.putLongArray(TAG_TICK_TIME, new long[]{avg, max, sum});
 
             var status = tickManager.getStatus(node);
             tag.putBoolean(TAG_TICK_SLEEPING, status.sleeping());
