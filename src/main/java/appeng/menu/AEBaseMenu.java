@@ -47,12 +47,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityService;
 import appeng.api.parts.IPart;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
@@ -67,6 +63,7 @@ import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
+import appeng.util.Platform;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
@@ -156,34 +153,17 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.setValidMenu(this.isValidMenu() && this.hasAccess(security, requirePower));
     }
 
-    protected boolean hasAccess(final SecurityPermissions perm, final boolean requirePower) {
+    protected final boolean hasAccess(final SecurityPermissions perm, final boolean requirePower) {
         if (!isActionHost() && !requirePower) {
             return true; // Hosts that are not grid connected always give access
         }
 
         var host = this.getActionHost();
-
         if (host != null) {
-            final IGridNode gn = host.getActionableNode();
-            if (gn != null) {
-                final IGrid g = gn.getGrid();
-                if (g != null) {
-                    if (requirePower) {
-                        final IEnergyService eg = g.getEnergyService();
-                        if (!eg.isNetworkPowered()) {
-                            return false;
-                        }
-                    }
-
-                    final ISecurityService sg = g.getSecurityService();
-                    if (sg.hasPermission(this.getPlayerInventory().player, perm)) {
-                        return true;
-                    }
-                }
-            }
+            return Platform.checkPermissions(getPlayer(), host, perm, requirePower, false);
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     public Inventory getPlayerInventory() {
@@ -288,7 +268,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(final Player p, final int idx) {
+    public ItemStack quickMoveStack(Player player, final int idx) {
         if (isClientSide()) {
             return ItemStack.EMPTY;
         }
@@ -550,6 +530,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
     }
 
+    /**
+     * @return Returns the remainder.
+     */
     protected ItemStack transferStackToMenu(final ItemStack input) {
         return input;
     }

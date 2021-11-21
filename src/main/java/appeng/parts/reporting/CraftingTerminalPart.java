@@ -84,7 +84,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
 
     @Override
     public MenuType<?> getMenuType(final Player p) {
-        if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
+        if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return CraftingTermMenu.TYPE;
         }
         return ItemTerminalMenu.TYPE;

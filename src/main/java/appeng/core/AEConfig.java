@@ -105,7 +105,6 @@ public final class AEConfig {
     }
 
     // Misc
-    private boolean removeCrashingItemsOnLoad;
     private int formationPlaneEntityLimit;
     private boolean enableEffects;
     private boolean useLargeFonts;
@@ -190,8 +189,6 @@ public final class AEConfig {
 
         this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
 
-        this.removeCrashingItemsOnLoad = COMMON.removeCrashingItemsOnLoad.get();
-
         AEWorldGenInternal.setConfigBlacklists(
                 COMMON.quartzOresBiomeBlacklist.get().stream().map(ResourceLocation::new)
                         .collect(Collectors.toList()),
@@ -254,7 +251,6 @@ public final class AEConfig {
             case LEVEL_ITEM_COUNT -> levelByStacks;
             case LEVEL_FLUID_VOLUME -> levelByMillibuckets;
             case LEVEL_ENERGY_AMOUNT -> levelByStacks;
-            default -> throw new IllegalArgumentException("Unknown number entry: " + type);
         };
     }
 
@@ -262,7 +258,6 @@ public final class AEConfig {
         return this.CLIENT.selectedPowerUnit.get();
     }
 
-    @SuppressWarnings("unchecked")
     public void nextPowerUnit(final boolean backwards) {
         PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(getSelectedPowerUnit(), backwards,
                 Settings.POWER_UNITS.getValues());
@@ -270,10 +265,6 @@ public final class AEConfig {
     }
 
     // Getters
-    public boolean isRemoveCrashingItemsOnLoad() {
-        return this.removeCrashingItemsOnLoad;
-    }
-
     public boolean isBlockEntityFacadesEnabled() {
         return COMMON.allowBlockEntityFacades.get();
     }
@@ -336,14 +327,6 @@ public final class AEConfig {
 
     public DoubleSupplier getChargedStaffBattery() {
         return () -> this.chargedStaffBattery;
-    }
-
-    public double getPowerTransactionLimitTechReborn() {
-        return COMMON.powerTransactionLimitTechReborn.get();
-    }
-
-    public float getSpawnChargedChance() {
-        return (float) COMMON.spawnChargedChance.get();
     }
 
     public int getQuartzOresPerCluster() {
@@ -419,6 +402,10 @@ public final class AEConfig {
         return COMMON.chunkLoggerTrace.get();
     }
 
+    public boolean serverOpsIgnoreSecurity() {
+        return COMMON.serverOpsIgnoreSecurity.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -479,13 +466,13 @@ public final class AEConfig {
     private static class CommonConfig {
 
         // Misc
-        public final BooleanOption removeCrashingItemsOnLoad;
         public final IntegerOption formationPlaneEntityLimit;
         public final IntegerOption craftingCalculationTimePerTick;
         public final BooleanOption allowBlockEntityFacades;
         public final BooleanOption debugTools;
         public final BooleanOption matterCannonBlockDamage;
         public final BooleanOption tinyTntBlockDamage;
+        public final BooleanOption serverOpsIgnoreSecurity;
 
         // Crafting
         public final BooleanOption inWorldSingularity;
@@ -514,7 +501,6 @@ public final class AEConfig {
         public final IntegerOption chargedStaffBattery;
 
         // Certus quartz
-        public final DoubleOption spawnChargedChance;
         public final IntegerOption quartzOresPerCluster;
         public final IntegerOption quartzOresClusterAmount;
         public final BooleanOption generateQuartzOre;
@@ -538,9 +524,6 @@ public final class AEConfig {
         public final DoubleOption powerRatioTechReborn;
         public final DoubleOption powerUsageMultiplier;
 
-        // How much TR energy can be transfered at most in one operation
-        public final DoubleOption powerTransactionLimitTechReborn;
-
         // Condenser Power Requirement
         public final IntegerOption condenserMatterBallsPower;
         public final IntegerOption condenserSingularityPower;
@@ -556,13 +539,13 @@ public final class AEConfig {
         public CommonConfig(ConfigSection root) {
 
             ConfigSection general = root.subsection("general");
-            removeCrashingItemsOnLoad = general.addBoolean("removeCrashingItemsOnLoad", false,
-                    "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!");
             debugTools = general.addBoolean("unsupportedDeveloperTools", false);
             matterCannonBlockDamage = general.addBoolean("matterCannonBlockDamage", true,
                     "Enables the ability of the Matter Cannon to break blocks.");
             tinyTntBlockDamage = general.addBoolean("tinyTntBlockDamage", true,
                     "Enables the ability of Tiny TNT to break blocks.");
+            serverOpsIgnoreSecurity = general.addBoolean("serverOpsIgnoreSecurity", true,
+                    "Server operators are not restricted by ME security terminal settings.");
 
             ConfigSection automation = root.subsection("automation");
             formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
@@ -606,7 +589,6 @@ public final class AEConfig {
 
             ConfigSection worldGen = root.subsection("worldGen");
 
-            this.spawnChargedChance = worldGen.addDouble("spawnChargedChance", 0.08, 0.0, 1.0);
             this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
             this.meteoriteBiomeBlacklist = worldGen.addStringList("meteoriteBiomeBlacklist", new ArrayList<>(),
                     "Biome IDs in which meteorites should NOT be generated (i.e. minecraft:plains).");
@@ -630,10 +612,6 @@ public final class AEConfig {
             ConfigSection PowerRatios = root.subsection("PowerRatios");
             powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
-
-            ConfigSection integration = root.subsection("Integration");
-            powerTransactionLimitTechReborn = integration.addDouble("MaxTechRebornEnergyPerTransaction", 10000.0, 0.1,
-                    1000000.0, "The maximum amount of TechReborn energy units that can be transfered per operation.");
 
             ConfigSection Condenser = root.subsection("Condenser");
             condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);
