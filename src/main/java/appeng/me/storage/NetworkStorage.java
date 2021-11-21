@@ -28,10 +28,7 @@ import java.util.TreeMap;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityService;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
@@ -134,16 +131,16 @@ public class NetworkStorage<T extends AEKey> implements IMEInventory<T> {
                 return true;
             }
         } else if (src.machine().isPresent() && this.security.isAvailable()) {
-            final IGridNode n = src.machine().get().getActionableNode();
+            var n = src.machine().get().getActionableNode();
             if (n == null) {
                 return true;
             }
 
-            final IGrid gn = n.getGrid();
+            var gn = n.getGrid();
             if (gn != this.security.getGrid()) {
 
-                final ISecurityService sg = gn.getSecurityService();
-                final int playerID = sg.getOwner();
+                var sg = gn.getSecurityService();
+                var playerID = sg.getOwner();
 
                 if (!this.security.hasPermission(playerID, permission)) {
                     return true;

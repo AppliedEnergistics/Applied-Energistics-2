@@ -77,11 +77,9 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityService;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
@@ -211,30 +209,29 @@ public class Platform {
         return player.level.mayInteract(player, dc.getPos());
     }
 
-    public static boolean checkPermissions(final Player player, final Object accessInterface,
-            SecurityPermissions requiredPermission, boolean notifyPlayer) {
-        // FIXME: Check permissions...
-        if (requiredPermission != null && accessInterface instanceof IActionHost) {
-            final IGridNode gn = ((IActionHost) accessInterface).getActionableNode();
-            if (gn != null) {
-                final IGrid g = gn.getGrid();
-                if (g != null) {
-                    final boolean requirePower = false;
-                    if (requirePower) {
-                        final IEnergyService eg = g.getEnergyService();
-                        if (!eg.isNetworkPowered()) {
-                            // FIXME trace logging?
-                            return false;
-                        }
-                    }
-
-                    final ISecurityService sg = g.getSecurityService();
-                    if (!sg.hasPermission(player, requiredPermission)) {
-                        player.sendMessage(new TranslatableComponent("ae2.permission_denied")
-                                .withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                        // FIXME trace logging?
+    public static boolean checkPermissions(Player player,
+            IActionHost actionHost,
+            SecurityPermissions requiredPermission,
+            boolean requirePower,
+            boolean notifyPlayer) {
+        var gn = actionHost.getActionableNode();
+        if (gn != null) {
+            var g = gn.getGrid();
+            if (g != null) {
+                if (requirePower) {
+                    var eg = g.getEnergyService();
+                    if (!eg.isNetworkPowered()) {
                         return false;
                     }
+                }
+
+                var sg = g.getSecurityService();
+                if (!sg.hasPermission(player, requiredPermission)) {
+                    if (notifyPlayer) {
+                        player.sendMessage(new TranslatableComponent("ae2.permission_denied")
+                                .withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    }
+                    return false;
                 }
             }
         }
@@ -545,17 +542,8 @@ public class Platform {
             return true;
         }
 
-        final ISecurityService gs = grid.getSecurityService();
-
-        if (gs == null) {
-            return true;
-        }
-
-        if (!gs.isAvailable()) {
-            return true;
-        }
-
-        return gs.hasPermission(playerID, SecurityPermissions.BUILD);
+        var gs = grid.getSecurityService();
+        return !gs.isAvailable() || gs.hasPermission(playerID, SecurityPermissions.BUILD);
     }
 
     public static void configurePlayer(final Player player, final Direction side, final BlockEntity blockEntity) {

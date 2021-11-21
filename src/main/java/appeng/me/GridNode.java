@@ -40,6 +40,7 @@ import com.google.common.collect.MutableClassToInstanceMap;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
@@ -637,7 +638,12 @@ public class GridNode implements IGridNode, IPathItem {
 
     @Override
     public String toString() {
-        return "node hosted by " + getOwner().getClass().getName();
+        if (getOwner() instanceof BlockEntity blockEntity) {
+            var beType = Registry.BLOCK_ENTITY_TYPE.getKey(blockEntity.getType());
+            return "node hosted by " + beType;
+        } else {
+            return "node hosted by " + getOwner().getClass().getName();
+        }
     }
 
     @Override

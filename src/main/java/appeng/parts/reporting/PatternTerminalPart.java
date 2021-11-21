@@ -99,7 +99,7 @@ public class PatternTerminalPart extends AbstractTerminalPart implements IPatter
 
     @Override
     public MenuType<?> getMenuType(final Player p) {
-        if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
+        if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return PatternTermMenu.TYPE;
         }
         return ItemTerminalMenu.TYPE;

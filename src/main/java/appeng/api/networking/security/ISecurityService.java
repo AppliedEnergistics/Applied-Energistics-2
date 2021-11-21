@@ -24,7 +24,6 @@
 package appeng.api.networking.security;
 
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 
 import net.minecraft.world.entity.player.Player;
 
@@ -49,7 +48,7 @@ public interface ISecurityService extends IGridService {
      * @param perm   The permission to check.
      * @return True if the player has permission.
      */
-    boolean hasPermission(@Nonnull Player player, @Nonnull SecurityPermissions perm);
+    boolean hasPermission(Player player, SecurityPermissions perm);
 
     /**
      * Check if a player has the specified permissions on this grid.
@@ -60,7 +59,7 @@ public interface ISecurityService extends IGridService {
      * @param perm     The permission to check.
      * @return True if the player has permission.
      */
-    boolean hasPermission(@Nonnegative int playerId, @Nonnull SecurityPermissions perm);
+    boolean hasPermission(@Nonnegative int playerId, SecurityPermissions perm);
 
     /**
      * @return PlayerID of the admin, or owner, this is the person who placed the security block.

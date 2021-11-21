@@ -36,6 +36,7 @@ import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.networking.security.ISecurityService;
+import appeng.core.AEConfig;
 import appeng.me.GridNode;
 
 public class SecurityService implements ISecurityService, IGridServiceProvider {
@@ -124,9 +125,13 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
     }
 
     @Override
-    public boolean hasPermission(final Player player, final SecurityPermissions perm) {
+    public boolean hasPermission(Player player, SecurityPermissions perm) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(perm);
+
+        if (AEConfig.instance().serverOpsIgnoreSecurity() && player.hasPermissions(4)) {
+            return true;
+        }
 
         if (player instanceof ServerPlayer serverPlayer) {
             var playerID = IPlayerRegistry.getPlayerId(serverPlayer);

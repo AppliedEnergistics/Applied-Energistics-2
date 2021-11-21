@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.core.AELog;
@@ -313,8 +314,8 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
     private boolean checkPermission(Player player, Object accessInterface) {
 
-        if (requiredPermission != null) {
-            return Platform.checkPermissions(player, accessInterface, requiredPermission, true);
+        if (requiredPermission != null && accessInterface instanceof IActionHost actionHost) {
+            return Platform.checkPermissions(player, actionHost, requiredPermission, false, true);
         }
 
         return true;
