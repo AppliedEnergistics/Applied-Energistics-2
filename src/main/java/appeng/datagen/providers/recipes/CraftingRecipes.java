@@ -17,6 +17,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
 
 public class CraftingRecipes extends AE2RecipeProvider {
@@ -915,38 +916,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_engineering_processor", has(AEItems.ENGINEERING_PROCESSOR))
                 .save(consumer, AppEng.makeId("tools/misctools_entropy_manipulator"));
 
-        ShapedRecipeBuilder.shaped(AEItems.PORTABLE_ITEM_CELL1K)
-                .pattern("abc")
-                .define('a', AEBlocks.CHEST)
-                .define('b', AEItems.ITEM_1K_CELL_COMPONENT)
-                .define('c', AEBlocks.ENERGY_CELL)
-                .unlockedBy("has_1k_item_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
-                .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
-                .save(consumer, AppEng.makeId("tools/portable_1k_item_cell"));
-        ShapedRecipeBuilder.shaped(AEItems.PORTABLE_ITEM_CELL4k)
-                .pattern("abc")
-                .define('a', AEBlocks.CHEST)
-                .define('b', AEItems.ITEM_4K_CELL_COMPONENT)
-                .define('c', AEBlocks.ENERGY_CELL)
-                .unlockedBy("has_4k_item_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
-                .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
-                .save(consumer, AppEng.makeId("tools/portable_4k_item_cell"));
-        ShapedRecipeBuilder.shaped(AEItems.PORTABLE_ITEM_CELL16K)
-                .pattern("abc")
-                .define('a', AEBlocks.CHEST)
-                .define('b', AEItems.ITEM_16K_CELL_COMPONENT)
-                .define('c', AEBlocks.ENERGY_CELL)
-                .unlockedBy("has_16k_item_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
-                .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
-                .save(consumer, AppEng.makeId("tools/portable_16k_item_cell"));
-        ShapedRecipeBuilder.shaped(AEItems.PORTABLE_ITEM_CELL64K)
-                .pattern("abc")
-                .define('a', AEBlocks.CHEST)
-                .define('b', AEItems.ITEM_64K_CELL_COMPONENT)
-                .define('c', AEBlocks.ENERGY_CELL)
-                .unlockedBy("has_64k_item_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
-                .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
-                .save(consumer, AppEng.makeId("tools/portable_64k_item_cell"));
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL1K, AEItems.ITEM_1K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4k, AEItems.ITEM_4K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL16K, AEItems.ITEM_16K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL64K, AEItems.ITEM_64K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL1K, AEItems.FLUID_1K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4k, AEItems.FLUID_4K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL16K, AEItems.FLUID_16K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K, AEItems.FLUID_64K_CELL_COMPONENT);
 
         ShapedRecipeBuilder.shaped(AEItems.BIOMETRIC_CARD)
                 .pattern("abb")
@@ -988,6 +965,19 @@ public class CraftingRecipes extends AE2RecipeProvider {
 
         addPaintBalls(consumer);
 
+    }
+
+    private void portableCell(Consumer<FinishedRecipe> consumer,
+            ItemDefinition<?> cell,
+            ItemDefinition<?> component) {
+        ShapedRecipeBuilder.shaped(cell)
+                .pattern("abc")
+                .define('a', AEBlocks.CHEST)
+                .define('b', component)
+                .define('c', AEBlocks.ENERGY_CELL)
+                .unlockedBy("has_" + component.id().getPath(), has(component))
+                .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
+                .save(consumer, AppEng.makeId("tools/" + cell.id().getPath()));
     }
 
     private void addSpatialCells(Consumer<FinishedRecipe> consumer) {

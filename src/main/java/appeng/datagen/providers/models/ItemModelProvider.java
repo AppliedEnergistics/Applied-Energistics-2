@@ -100,6 +100,10 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.PORTABLE_ITEM_CELL4k, "item/4k_portable_item_cell");
         flatSingleLayer(AEItems.PORTABLE_ITEM_CELL16K, "item/16k_portable_item_cell");
         flatSingleLayer(AEItems.PORTABLE_ITEM_CELL64K, "item/64k_portable_item_cell");
+        flatSingleLayer(AEItems.PORTABLE_FLUID_CELL1K, "item/1k_portable_fluid_cell");
+        flatSingleLayer(AEItems.PORTABLE_FLUID_CELL4k, "item/4k_portable_fluid_cell");
+        flatSingleLayer(AEItems.PORTABLE_FLUID_CELL16K, "item/16k_portable_fluid_cell");
+        flatSingleLayer(AEItems.PORTABLE_FLUID_CELL64K, "item/64k_portable_fluid_cell");
         flatSingleLayer(AEItems.PROCESSING_PATTERN, "item/processing_pattern");
         flatSingleLayer(AEItems.QUANTUM_ENTANGLED_SINGULARITY, "item/quantum_entangled_singularity");
         flatSingleLayer(AEItems.REDSTONE_CARD, "item/card_redstone");
