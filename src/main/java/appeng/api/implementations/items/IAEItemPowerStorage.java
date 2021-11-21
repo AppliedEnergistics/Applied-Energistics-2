@@ -66,8 +66,7 @@ public interface IAEItemPowerStorage {
     AccessRestriction getPowerFlow(ItemStack stack);
 
     /**
-     * @return The amount of AE per tick that the AE charger will charge this item at. Can be overridden in
-     *         {@link appeng.api.features.ChargerRegistry}.
+     * @return The amount of AE per tick that the AE charger will charge this item at.
      */
     double getChargeRate();
 }

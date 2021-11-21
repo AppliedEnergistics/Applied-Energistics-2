@@ -8,9 +8,7 @@ relevant during mod initialization:
 | `appeng.api.storage.StorageChannels`  | Access to AE2's built-in item and fluid storage channels, as well as storage channels registered by addons. Addons also register their storage channels here.  |
 | `appeng.api.networking.GridServices`  | Addons can register their own grid-wide services here. |
 | `appeng.api.features.AEWorldGen`  | Offers limited control over AE2's world generation. |
-| `appeng.api.features.ChargerRegistry` | Controls how fast items charge in AE2's charger. |
 | `appeng.api.movable.BlockEntityMoveStrategies` | Allows mods to register custom strategies for moving block entities in and out of spatial storage. |
-| `appeng.api.features.WirelessTerminals` | For working with and adding items that can open wireless terminal screens. |
 | `appeng.api.features.GridLinkables` | For working with and adding items that can be linked to a grid in the security station. |
 | `appeng.api.storage.StorageCells` | For working with and adding items that serve as storage cells for grids. |
 | `appeng.api.features.Locatables` | For discovering security stations and quantum network bridges based on their unique keys, regardless of location. |
