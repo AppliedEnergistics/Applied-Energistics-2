@@ -29,13 +29,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
@@ -45,6 +41,7 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 
 import appeng.core.AppEng;
@@ -68,20 +65,18 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
             .configured(NoneFeatureConfiguration.INSTANCE);
 
     public MeteoriteStructure(Codec<NoneFeatureConfiguration> configCodec) {
-        super(configCodec, MeteoriteStructure::generatePieces);
+        super(configCodec,
+                PieceGeneratorSupplier.simple(MeteoriteStructure::checkLocation, MeteoriteStructure::generatePieces));
     }
 
-    @Override
-    protected boolean isFeatureChunk(ChunkGenerator chunkGenerator, BiomeSource biomeSource, long l, ChunkPos chunkPos,
-            NoneFeatureConfiguration featureConfiguration, LevelHeightAccessor levelHeightAccessor) {
+    private static boolean checkLocation(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(0L));
-        worldgenRandom.setLargeFeatureSeed(l, chunkPos.x, chunkPos.z);
+        worldgenRandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x, context.chunkPos().z);
         return worldgenRandom.nextBoolean();
     }
 
     private static void generatePieces(StructurePiecesBuilder piecesBuilder,
-            NoneFeatureConfiguration featureConfig,
-            PieceGenerator.Context context) {
+            PieceGenerator.Context<NoneFeatureConfiguration> context) {
 
         var chunkPos = context.chunkPos();
         var random = context.random();

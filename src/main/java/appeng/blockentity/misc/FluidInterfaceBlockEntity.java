@@ -84,8 +84,8 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity implements I
     }
 
     @Override
-    public void load(final CompoundTag data) {
-        super.load(data);
+    public void loadTag(final CompoundTag data) {
+        super.loadTag(data);
         this.duality.readFromNBT(data);
     }
 

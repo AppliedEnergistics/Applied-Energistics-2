@@ -46,6 +46,12 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
         builder.add(POWERED_ON);
     }
 
+    @Override
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, SpatialPylonBlockEntity be) {
+        var poweredOn = (be.getDisplayBits() & SpatialPylonBlockEntity.DISPLAY_POWERED_ENABLED) != 0;
+        return currentState.setValue(SpatialPylonBlock.POWERED_ON, poweredOn);
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,

@@ -78,8 +78,8 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public void load(final CompoundTag data) {
-        super.load(data);
+    public void loadTag(final CompoundTag data) {
+        super.loadTag(data);
         if (data.contains("dots")) {
             this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }

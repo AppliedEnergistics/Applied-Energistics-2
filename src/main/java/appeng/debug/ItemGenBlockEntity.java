@@ -65,12 +65,12 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         if (data.contains("filter")) {
             Item item = Registry.ITEM.get(new ResourceLocation(data.getString("filter")));
             this.setItem(item);
         }
-        super.load(data);
+        super.loadTag(data);
     }
 
     public Storage<ItemVariant> getItemHandler() {

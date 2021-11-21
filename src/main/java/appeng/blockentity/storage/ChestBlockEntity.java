@@ -363,8 +363,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void load(final CompoundTag data) {
-        super.load(data);
+    public void loadTag(final CompoundTag data) {
+        super.loadTag(data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
         if (data.contains("paintedColor")) {

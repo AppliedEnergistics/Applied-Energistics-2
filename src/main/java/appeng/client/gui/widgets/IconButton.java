@@ -96,7 +96,7 @@ public abstract class IconButton extends Button implements ITooltip {
             }
             RenderSystem.enableDepthTest();
 
-            if (isHovered()) {
+            if (isHoveredOrFocused()) {
                 renderToolTip(poseStack, mouseX, mouseY);
             }
         }

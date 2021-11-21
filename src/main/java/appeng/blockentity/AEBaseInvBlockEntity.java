@@ -41,8 +41,8 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void load(final CompoundTag data) {
-        super.load(data);
+    public void loadTag(final CompoundTag data) {
+        super.loadTag(data);
         var inv = this.getInternalInventory();
         if (inv != InternalInventory.empty()) {
             var opt = data.getCompound("inv");

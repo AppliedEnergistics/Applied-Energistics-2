@@ -113,8 +113,8 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void load(final CompoundTag data) {
-        super.load(data);
+    public void loadTag(final CompoundTag data) {
+        super.loadTag(data);
         this.omniDirectional = data.getBoolean("omniDirectional");
 
         this.duality.readFromNBT(data);

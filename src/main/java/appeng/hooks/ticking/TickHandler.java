@@ -333,8 +333,6 @@ public class TickHandler {
      * Ready the block entities in this level. server-side only.
      */
     private void readyBlockEntities(ServerLevel level) {
-        var chunkProvider = level.getChunkSource();
-
         var levelQueue = blockEntities.getBlockEntities(level);
 
         // Make a copy because this set may be modified when new chunks are loaded by an onReady call below
@@ -343,7 +341,7 @@ public class TickHandler {
         for (long packedChunkPos : workSet) {
             // Readies all of our block entities in this chunk as soon as it can tick BEs
             // The following test is equivalent to ServerLevel#isPositionTickingWithEntitiesLoaded
-            if (level.areEntitiesLoaded(packedChunkPos) && chunkProvider.isPositionTicking(packedChunkPos)) {
+            if (level.shouldTickBlocksAt(packedChunkPos)) {
                 // Take the currently waiting block entities for this chunk and ready them all. Should more block
                 // entities be added to this chunk while we're working on it, a new list will be added automatically and
                 // we'll work on this chunk again next tick.

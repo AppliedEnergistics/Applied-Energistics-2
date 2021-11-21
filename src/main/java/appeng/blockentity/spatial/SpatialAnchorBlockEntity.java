@@ -103,8 +103,8 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void load(CompoundTag data) {
-        super.load(data);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
         this.manager.readFromNBT(data);
     }
 

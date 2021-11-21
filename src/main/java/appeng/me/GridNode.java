@@ -162,10 +162,15 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     void validateGrid() {
-        final GridSplitDetector gsd = new GridSplitDetector(this.getInternalGrid().getPivot());
+        if (!ready) {
+            // We're in the process of being destroyed
+            return;
+        }
+
+        var gsd = new GridSplitDetector(this.getInternalGrid().getPivot());
         this.beginVisit(gsd);
         if (!gsd.isPivotFound()) {
-            final IGridVisitor gp = new GridPropagator(Grid.create(this));
+            var gp = new GridPropagator(Grid.create(this));
             this.beginVisit(gp);
         }
     }
@@ -305,14 +310,18 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     public void destroy() {
+        // Allows connection destroy logic to know that this node is
+        // no longer available.
+        this.ready = false;
+
         while (!this.connections.isEmpty()) {
             // not part of this network for real anymore.
             if (this.connections.size() == 1) {
                 this.setGridStorage(null);
             }
 
-            final IGridConnection c = this.connections.listIterator().next();
-            final GridNode otherSide = (GridNode) c.getOtherSide(this);
+            var c = this.connections.listIterator().next();
+            var otherSide = (GridNode) c.getOtherSide(this);
             otherSide.getInternalGrid().setPivot(otherSide);
             c.destroy();
         }
