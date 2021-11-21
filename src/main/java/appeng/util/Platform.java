@@ -740,19 +740,27 @@ public class Platform {
         return (!a.hasTag() || a.getTag().equals(b.getTag()));
     }
 
-    @Nonnull
-    public static ItemStack copyStackWithSize(@Nonnull ItemStack itemStack, int size) {
-        if (size == 0)
-            return ItemStack.EMPTY;
-        ItemStack copy = itemStack.copy();
-        copy.setCount(size);
-        return copy;
-    }
-
     /**
      * Create a full packet of the chunks data with lighting.
      */
     public static Packet<?> getFullChunkPacket(LevelChunk c) {
         return new ClientboundLevelChunkWithLightPacket(c, c.getLevel().getLightEngine(), null, null, true);
+    }
+
+    public static ItemStack getInsertionRemainder(ItemStack original, long inserted) {
+        if (inserted >= original.getCount()) {
+            return ItemStack.EMPTY;
+        } else {
+            return copyStackWithSize(original, (int) (original.getCount() - inserted));
+        }
+    }
+
+    public static ItemStack copyStackWithSize(ItemStack itemStack, int size) {
+        if (size <= 0) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack copy = itemStack.copy();
+        copy.setCount(size);
+        return copy;
     }
 }

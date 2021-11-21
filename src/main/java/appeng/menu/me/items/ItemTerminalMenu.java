@@ -36,6 +36,7 @@ import appeng.menu.MenuLocator;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
+import appeng.util.Platform;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
@@ -200,14 +201,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
 
         var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, amount,
                 this.getActionSource());
-
-        if (inserted >= heldStack.getCount()) {
-            setCarried(ItemStack.EMPTY);
-        } else {
-            heldStack = heldStack.copy();
-            heldStack.setCount(heldStack.getCount() - (int) inserted);
-            setCarried(heldStack);
-        }
+        setCarried(Platform.getInsertionRemainder(heldStack, inserted));
     }
 
     private boolean moveOneStackToPlayer(AEItemKey stack) {
@@ -244,6 +238,9 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
         return true;
     }
 
+    /**
+     * Try to transfer an item stack into the grid.
+     */
     @Override
     protected ItemStack transferStackToMenu(ItemStack input) {
         if (!canInteractWithGrid()) {
@@ -258,7 +255,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
         var inserted = StorageHelper.poweredInsert(powerSource, monitor,
                 key, input.getCount(),
                 this.getActionSource());
-        return inserted > 0 ? key.toStack((int) inserted) : ItemStack.EMPTY;
+        return Platform.getInsertionRemainder(input, inserted);
     }
 
     public boolean hasItemType(ItemStack itemStack, int amount) {
