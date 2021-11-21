@@ -84,8 +84,8 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public void destroy() {
-        // a connection was destroyed RE-PATH!!
-        final IPathingService p = this.sideA.getInternalGrid().getPathingService();
+        // a connection was destroyed RE-PATH!! (this is not done immediately)
+        var p = this.sideA.getInternalGrid().getPathingService();
         p.repath();
 
         this.sideA.removeConnection(this);

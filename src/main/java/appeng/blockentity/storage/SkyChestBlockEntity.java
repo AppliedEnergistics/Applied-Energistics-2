@@ -159,8 +159,8 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
      * @see RandomizableContainerBlockEntity#tryLoadLootTable(CompoundTag)
      */
     @Override
-    public void load(CompoundTag data) {
-        super.load(data);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
 
         if (data.contains(LOOT_TABLE_TAG, Tag.TAG_STRING)) {
             this.lootTable = new ResourceLocation(data.getString(LOOT_TABLE_TAG));

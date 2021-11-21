@@ -154,8 +154,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void load(CompoundTag data) {
-        super.load(data);
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];

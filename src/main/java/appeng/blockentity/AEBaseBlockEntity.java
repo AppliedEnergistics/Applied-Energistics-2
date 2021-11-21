@@ -35,11 +35,13 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -61,7 +63,6 @@ import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
-import appeng.core.sync.packets.BlockEntityUpdatePacket;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
@@ -82,7 +83,6 @@ public class AEBaseBlockEntity extends BlockEntity
 
     private static final ThreadLocal<WeakReference<AEBaseBlockEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
-    private int renderFragment = 0;
     @Nullable
     private String customName;
     private Direction forward = Direction.NORTH;
@@ -121,9 +121,25 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public void load(CompoundTag data) {
-        super.load(data);
+    public final void load(CompoundTag tag) {
+        // On the client, this can either be data received as part of an initial chunk update,
+        // or as part of a sole block entity data update.
+        if (level != null && level.isClientSide) {
+            if (tag.contains("#upd", Tag.TAG_BYTE_ARRAY)) {
+                var updateData = tag.getByteArray("#upd");
+                if (readUpdateData(new FriendlyByteBuf(Unpooled.wrappedBuffer(updateData)))) {
+                    // Triggers a chunk re-render
+                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
+                }
+            }
+            return;
+        }
 
+        super.load(tag);
+        loadTag(tag);
+    }
+
+    public void loadTag(CompoundTag data) {
         if (data.contains("customName")) {
             this.customName = data.getString("customName");
         } else {
@@ -160,18 +176,27 @@ public class AEBaseBlockEntity extends BlockEntity
     public void onReady() {
     }
 
+    /**
+     * This builds a tag with the actual data that should be sent to the client for update syncs. If the block entity
+     * doesn't need update syncs, it returns null.
+     */
+    @Override
+    public CompoundTag getUpdateTag() {
+        var data = new CompoundTag();
+
+        var stream = new FriendlyByteBuf(Unpooled.buffer());
+        this.writeToStream(stream);
+
+        stream.capacity(stream.readableBytes());
+        data.putByteArray("#upd", stream.array());
+        return data;
+    }
+
     private boolean readUpdateData(FriendlyByteBuf stream) {
         boolean output = false;
 
         try {
-            this.renderFragment = 100;
-
             output = this.readFromStream(stream);
-
-            if ((this.renderFragment & 1) == 1) {
-                output = true;
-            }
-            this.renderFragment = 0;
         } catch (final Throwable t) {
             AELog.warn(t);
         }
@@ -181,15 +206,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return new BlockEntityUpdatePacket(getBlockPos(), getType(), this::writeToStream).toClientboundPacket();
-    }
-
-    /**
-     * Handles block entities that are being sent to the client as part of a full chunk.
-     */
-    @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithoutMetadata();
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     /**
@@ -225,28 +242,23 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     public void markForUpdate() {
-        if (this.renderFragment > 0) {
-            this.renderFragment |= 1;
-        } else {
+        // TODO: Optimize Network Load
+        if (this.level != null && !this.isRemoved() && !notLoaded()) {
 
-            // TODO: Optimize Network Load
-            if (this.level != null && !this.isRemoved() && !notLoaded()) {
-
-                boolean alreadyUpdated = false;
-                // Let the block update its own state with our internal state changes
-                BlockState currentState = getBlockState();
-                if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
-                    BlockState newState = block.getBlockEntityBlockState(currentState, this);
-                    if (currentState != newState) {
-                        AELog.blockUpdate(this.worldPosition, currentState, newState, this);
-                        this.level.setBlockAndUpdate(worldPosition, newState);
-                        alreadyUpdated = true;
-                    }
+            boolean alreadyUpdated = false;
+            // Let the block update its own state with our internal state changes
+            BlockState currentState = getBlockState();
+            if (currentState.getBlock() instanceof AEBaseEntityBlock<?>block) {
+                BlockState newState = block.getBlockEntityBlockState(currentState, this);
+                if (currentState != newState) {
+                    AELog.blockUpdate(this.worldPosition, currentState, newState, this);
+                    this.level.setBlockAndUpdate(worldPosition, newState);
+                    alreadyUpdated = true;
                 }
+            }
 
-                if (!alreadyUpdated) {
-                    this.level.sendBlockUpdated(this.worldPosition, currentState, currentState, 1);
-                }
+            if (!alreadyUpdated) {
+                this.level.sendBlockUpdated(this.worldPosition, currentState, currentState, Block.UPDATE_NEIGHBORS);
             }
         }
     }

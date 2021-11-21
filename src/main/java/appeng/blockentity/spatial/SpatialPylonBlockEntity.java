@@ -36,7 +36,6 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.block.spatial.SpatialPylonBlock;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.SpatialPylonCalculator;
@@ -159,8 +158,6 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         }
 
         if (oldBits != this.displayBits) {
-            level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(SpatialPylonBlock.POWERED_ON,
-                    (this.displayBits & DISPLAY_POWERED_ENABLED) != 0));
             this.markForUpdate();
         }
     }

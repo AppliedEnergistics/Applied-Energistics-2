@@ -87,8 +87,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void load(final CompoundTag data) {
-        super.load(data);
+    public void loadTag(final CompoundTag data) {
+        super.loadTag(data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromChildTag(data, "config");
         this.manager.readFromNBT(data);

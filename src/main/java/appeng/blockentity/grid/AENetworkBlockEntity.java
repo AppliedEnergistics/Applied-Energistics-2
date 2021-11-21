@@ -53,8 +53,8 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
     }
 
     @Override
-    public void load(final CompoundTag data) {
-        super.load(data);
+    public void loadTag(final CompoundTag data) {
+        super.loadTag(data);
         this.getMainNode().loadFromNBT(data);
     }
 
