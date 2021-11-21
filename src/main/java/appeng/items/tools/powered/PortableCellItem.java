@@ -63,6 +63,11 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
+    public double getChargeRate() {
+        return 80d;
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
         MenuOpener.open(MEPortableCellMenu.TYPE, player, MenuLocator.forHand(player, hand));
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),

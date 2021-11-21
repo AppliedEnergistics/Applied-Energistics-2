@@ -41,8 +41,8 @@ import appeng.core.localization.GuiText;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
-    public AEBaseBlockItemChargeable(Block id, Item.Properties props) {
-        super(id, props);
+    public AEBaseBlockItemChargeable(Block block, Item.Properties props) {
+        super(block, props);
     }
 
     @Override
@@ -113,8 +113,17 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
         return AccessRestriction.WRITE;
     }
 
+    @Override
+    public double getChargeRate() {
+        if (getBlock() == AEBlocks.ENERGY_CELL.block()) {
+            return 800d;
+        } else {
+            return 1600d;
+        }
+    }
+
     private double getMaxEnergyCapacity() {
-        if (Block.byItem(this) == AEBlocks.ENERGY_CELL.block()) {
+        if (getBlock() == AEBlocks.ENERGY_CELL.block()) {
             return 200000;
         } else {
             return 8 * 200000;

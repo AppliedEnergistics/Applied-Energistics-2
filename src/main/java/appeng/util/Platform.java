@@ -53,7 +53,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag.Default;
@@ -376,9 +375,9 @@ public class Platform {
         if (i.isEmpty()) {
             return false;
         }
-        final Item it = i.getItem();
-        if (it instanceof IAEItemPowerStorage) {
-            return ((IAEItemPowerStorage) it).getPowerFlow(i) != AccessRestriction.READ;
+        if (i.getItem() instanceof IAEItemPowerStorage powerStorage) {
+            return powerStorage.getAEMaxPower(i) > 0 &&
+                    powerStorage.getPowerFlow(i) != AccessRestriction.READ;
         }
         return false;
     }
@@ -387,10 +386,6 @@ public class Platform {
         Objects.requireNonNull(level);
 
         return FakePlayer.getOrCreate(level);
-    }
-
-    public static boolean isFakePlayer(Player player) {
-        return FakePlayer.isFakePlayer(player);
     }
 
     /**

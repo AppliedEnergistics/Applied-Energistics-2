@@ -92,6 +92,11 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
+    public double getChargeRate() {
+        return 80d;
+    }
+
+    @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();

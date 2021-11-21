@@ -30,7 +30,7 @@ public enum WailaText {
 
     Locked, Unlocked, Showing,
 
-    Stored, Contains, Channels;
+    Stored, Contains, Charged, Channels;
 
     private final String root;
 

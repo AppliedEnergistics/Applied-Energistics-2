@@ -45,7 +45,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
     private final DoubleSupplier powerCapacity;
 
-    public AEBasePoweredItem(final DoubleSupplier powerCapacity, Item.Properties props) {
+    public AEBasePoweredItem(DoubleSupplier powerCapacity, Item.Properties props) {
         super(props);
         this.powerCapacity = powerCapacity;
     }

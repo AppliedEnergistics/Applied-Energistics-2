@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.features.ChargerRegistry;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
@@ -44,6 +43,7 @@ import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
@@ -155,11 +155,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall) {
-        return this.doWork() ? TickRateModulation.FASTER : TickRateModulation.SLEEP;
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        doWork(ticksSinceLastCall);
+        return TickRateModulation.FASTER;
     }
 
-    private boolean doWork() {
+    private void doWork(int ticksSinceLastCall) {
         var wasWorking = this.working;
         this.working = false;
         var changed = false;
@@ -169,18 +170,25 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         if (!myItem.isEmpty()) {
 
             if (Platform.isChargeable(myItem)) {
-                final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
+                var ps = (IAEItemPowerStorage) myItem.getItem();
 
-                if (ps.getAEMaxPower(myItem) > ps.getAECurrentPower(myItem)) {
-                    var chargeRate = ChargerRegistry.getChargeRate(myItem.getItem());
+                var currentPower = ps.getAECurrentPower(myItem);
+                var maxPower = ps.getAEMaxPower(myItem);
+                if (currentPower < maxPower) {
+                    // Since we specify the charge rate in "per tick", calculate it per tick of the charger,
+                    // which only ticks once every few actual game ticks.
+                    var chargeRate = ps.getChargeRate() * ticksSinceLastCall
+                            * AEConfig.instance().getChargerChargeRate();
 
+                    // First charge from the local buffer
                     double extractedAmount = this.extractAEPower(chargeRate, Actionable.MODULATE,
                             PowerMultiplier.CONFIG);
 
                     var missingChargeRate = chargeRate - extractedAmount;
-                    var missingAEPower = ps.getAEMaxPower(myItem) - ps.getAECurrentPower(myItem);
+                    var missingAEPower = maxPower - currentPower;
                     var toExtract = Math.min(missingChargeRate, missingAEPower);
 
+                    // Then directly extract from the grid
                     var grid = getMainNode().getGrid();
                     if (grid != null) {
                         extractedAmount += grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
@@ -226,8 +234,6 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         if (changed || this.working != wasWorking) {
             this.markForUpdate();
         }
-
-        return true;
     }
 
     public boolean isWorking() {

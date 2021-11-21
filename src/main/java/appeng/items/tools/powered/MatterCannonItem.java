@@ -95,6 +95,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         super(AEConfig.instance().getMatterCannonBattery(), props);
     }
 
+    @Override
+    public double getChargeRate() {
+        return 800d;
+    }
+
     @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,

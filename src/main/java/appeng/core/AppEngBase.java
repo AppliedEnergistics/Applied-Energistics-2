@@ -69,7 +69,6 @@ import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.client.InitParticleTypes;
-import appeng.init.internal.InitChargerRegistry;
 import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitStorageCells;
@@ -112,7 +111,7 @@ public abstract class AppEngBase implements AppEng {
         }
         INSTANCE = this;
 
-        AEConfig.load(FabricLoader.getInstance().getConfigDirectory());
+        AEConfig.load(FabricLoader.getInstance().getConfigDir());
 
         CreativeTab.init();
 
@@ -122,7 +121,6 @@ public abstract class AppEngBase implements AppEng {
         AEParts.init();
 
         // Now that item instances are available, we can initialize registries that need item instances
-        InitChargerRegistry.init();
         InitGridLinkables.init();
         InitStorageCells.init();
 

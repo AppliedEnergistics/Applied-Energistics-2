@@ -742,6 +742,7 @@
   "theoneprobe.ae2.stored_energy": "%1$d / %2$d",
   "theoneprobe.ae2.unlocked": "Unlocked",
   "waila.ae2.Channels": "%1$d of %2$d Channels",
+  "waila.ae2.Charged": "%d%% charged",
   "waila.ae2.Contains": "Contains: %s",
   "waila.ae2.Crafting": "Crafting: %s",
   "waila.ae2.DeviceMissingChannel": "Device Missing Channel",
