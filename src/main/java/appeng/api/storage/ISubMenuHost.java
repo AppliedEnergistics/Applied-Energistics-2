@@ -11,12 +11,13 @@ import appeng.menu.ISubMenu;
  */
 public interface ISubMenuHost {
     /**
-     * Used to show the user interface of this part when returning from the priority GUI.
+     * Returns to the primary user interface for this host. Used by sub-menus when players want to return to the
+     * previous screen.
      */
     void returnToMainMenu(Player player, ISubMenu subMenu);
 
     /**
-     * Used to show the user interface of this part when returning from the priority GUI.
+     * Gets the icon to represent the host of the submenu. Used as the icon for the back button.
      */
     ItemStack getMainMenuIcon();
 }
