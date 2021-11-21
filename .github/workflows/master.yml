@@ -32,3 +32,7 @@ jobs:
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
         run: ./gradlew build --no-daemon --info
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: build/libs/
