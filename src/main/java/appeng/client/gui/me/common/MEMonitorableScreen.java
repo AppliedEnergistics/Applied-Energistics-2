@@ -188,7 +188,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
     }
 
     private void showCraftingStatus() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(CraftingStatusMenu.TYPE));
+        NetworkHandler.instance().sendToServer(SwitchGuisPacket.openSubMenu(CraftingStatusMenu.TYPE));
     }
 
     private int getSlotsPerRow() {

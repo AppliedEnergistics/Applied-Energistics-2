@@ -38,7 +38,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -92,8 +91,10 @@ import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.helpers.MachineSource;
-import appeng.menu.me.fluids.FluidTerminalMenu;
-import appeng.menu.me.items.ItemTerminalMenu;
+import appeng.menu.ISubMenu;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.ChestMenu;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
@@ -538,6 +539,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.level.blockEntityChanged(this.worldPosition);
     }
 
+    public void openCellInventoryMenu(Player player) {
+        MenuOpener.open(ChestMenu.TYPE, player, MenuLocator.forBlockEntitySide(this, getForward()));
+    }
+
     private class ChestNetNotifier<T extends AEKey> implements IMEMonitorListener<T> {
 
         private final IStorageChannel<T> chan;
@@ -767,22 +772,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public ItemStack getItemStackRepresentation() {
+    public ItemStack getMainMenuIcon() {
         return AEBlocks.CHEST.stack();
     }
 
     @Override
-    public MenuType<?> getMenuType() {
-        this.updateHandler();
-        if (this.cellHandler != null) {
-            if (this.cellHandler.getChannel() == StorageChannels.items()) {
-                return ItemTerminalMenu.TYPE;
-            }
-            if (this.cellHandler.getChannel() == StorageChannels.fluids()) {
-                return FluidTerminalMenu.TYPE;
-            }
-        }
-        return null;
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openCellInventoryMenu(player);
     }
-
 }

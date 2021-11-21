@@ -18,11 +18,9 @@
 
 package appeng.helpers;
 
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
+import appeng.api.storage.ISubMenuHost;
 
-public interface IPriorityHost {
-
+public interface IPriorityHost extends ISubMenuHost {
     /**
      * get current priority.
      */
@@ -32,12 +30,4 @@ public interface IPriorityHost {
      * set new priority
      */
     void setPriority(int newValue);
-
-    ItemStack getItemStackRepresentation();
-
-    /**
-     * Used to show the user interface of this part when returning from the priority GUI.
-     */
-    MenuType<?> getMenuType();
-
 }

@@ -18,48 +18,86 @@
 
 package appeng.core.sync.packets;
 
+import javax.annotation.Nullable;
+
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.MenuLocator;
+import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 
 public class SwitchGuisPacket extends BasePacket {
 
+    @Nullable
     private final MenuType<?> newGui;
 
     public SwitchGuisPacket(final FriendlyByteBuf stream) {
-        this.newGui = Registry.MENU.get(stream.readResourceLocation());
+        if (stream.readBoolean()) {
+            this.newGui = Registry.MENU.get(stream.readResourceLocation());
+        } else {
+            this.newGui = null;
+        }
     }
 
     // api
-    public SwitchGuisPacket(final MenuType<?> newGui) {
-        this.newGui = newGui;
+    private SwitchGuisPacket(@Nullable MenuType<? extends ISubMenu> newGui) {
+        this.newGui = null;
 
-        final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+        var data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
-        data.writeResourceLocation(Registry.MENU.getKey(newGui));
+        if (newGui != null) {
+            data.writeBoolean(true);
+            data.writeResourceLocation(Registry.MENU.getKey(newGui));
+        } else {
+            data.writeBoolean(false);
+        }
 
         this.configureWrite(data);
     }
 
+    /**
+     * Opens a sub-menu for the current menu, which will allow the player to return to the previous menu.
+     */
+    public static SwitchGuisPacket openSubMenu(MenuType<? extends ISubMenu> menuType) {
+        return new SwitchGuisPacket(menuType);
+    }
+
+    /**
+     * Creates a packet that instructs the server to return to the parent menu for the currently opened sub-menu.
+     */
+    public static SwitchGuisPacket returnToParentMenu() {
+        return new SwitchGuisPacket((MenuType<? extends ISubMenu>) null);
+    }
+
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
-        final AbstractContainerMenu c = player.containerMenu;
-        if (c instanceof AEBaseMenu bc) {
-            final MenuLocator locator = bc.getLocator();
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+        if (this.newGui != null) {
+            doOpenSubMenu(player);
+        } else {
+            doReturnToParentMenu(player);
+        }
+    }
+
+    private void doOpenSubMenu(ServerPlayer player) {
+        if (player.containerMenu instanceof AEBaseMenu bc) {
+            var locator = bc.getLocator();
             if (locator != null) {
                 MenuOpener.open(newGui, player, locator);
             }
+        }
+    }
+
+    private void doReturnToParentMenu(ServerPlayer player) {
+        if (player.containerMenu instanceof ISubMenu subMenu) {
+            subMenu.getHost().returnToMainMenu(player, subMenu);
         }
     }
 }

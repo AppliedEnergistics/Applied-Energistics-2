@@ -37,9 +37,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.core.localization.PlayerMessages;
-import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.ChestMenu;
 import appeng.util.InteractionUtil;
 
 public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
@@ -77,16 +74,15 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
             final InteractionHand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        final ChestBlockEntity tg = this.getBlockEntity(level, pos);
-        if (tg != null && !InteractionUtil.isInAlternateUseMode(p)) {
+        var be = this.getBlockEntity(level, pos);
+        if (be != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {
-                if (hit.getDirection() == tg.getUp()) {
-                    if (!tg.openGui(p)) {
+                if (hit.getDirection() == be.getUp()) {
+                    if (!be.openGui(p)) {
                         p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
                     }
                 } else {
-                    MenuOpener.open(ChestMenu.TYPE, p,
-                            MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
+                    be.openCellInventoryMenu(p);
                 }
             }
 

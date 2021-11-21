@@ -41,8 +41,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> 
         super(menu, playerInventory, title, style);
         this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
 
-        AESubScreen subGui = new AESubScreen(menu.getTarget());
-        subGui.addBackButton("back", widgets);
+        AESubScreen.addBackButton(menu, "back", widgets);
     }
 
     @Override

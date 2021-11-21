@@ -18,6 +18,8 @@
 
 package appeng.helpers;
 
+import java.util.function.BiConsumer;
+
 import net.minecraft.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -41,10 +43,12 @@ import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.menu.ISubMenu;
 
 public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableCell, IActionHost {
 
     private final WirelessTerminalItem terminal;
+    private final BiConsumer<Player, ISubMenu> returnToMainMenu;
     private IGrid targetGrid;
     private IStorageService sg;
     private IWirelessAccessPoint myWap;
@@ -54,12 +58,14 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableC
      */
     private double currentDistanceFromGrid = Double.MAX_VALUE;
 
-    public WirelessTerminalMenuHost(Player player, int slot, ItemStack itemStack) {
+    public WirelessTerminalMenuHost(Player player, int slot, ItemStack itemStack,
+            BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(player, slot, itemStack);
         if (!(itemStack.getItem() instanceof WirelessTerminalItem wirelessTerminalItem)) {
             throw new IllegalArgumentException("Can only use this class with subclasses of WirelessTerminalItem");
         }
         this.terminal = wirelessTerminalItem;
+        this.returnToMainMenu = returnToMainMenu;
 
         var gridKey = terminal.getGridKey(itemStack);
         if (gridKey.isEmpty()) {
@@ -167,5 +173,15 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableC
 
         setPowerDrainPerTick(AEConfig.instance().wireless_getDrainRate(currentDistanceFromGrid));
         return true;
+    }
+
+    @Override
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        returnToMainMenu.accept(player, subMenu);
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return getItemStack();
     }
 }

@@ -285,7 +285,7 @@ public class WidgetContainer {
     }
 
     private void openPriorityGui() {
-        NetworkHandler.instance().sendToServer(new SwitchGuisPacket(PriorityMenu.TYPE));
+        NetworkHandler.instance().sendToServer(SwitchGuisPacket.openSubMenu(PriorityMenu.TYPE));
     }
 
     /**

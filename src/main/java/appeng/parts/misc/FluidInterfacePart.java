@@ -36,12 +36,10 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityFluidInterface;
 import appeng.helpers.IFluidInterfaceHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -117,10 +115,15 @@ public class FluidInterfacePart extends BasicStatePart implements IFluidInterfac
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!isClientSide()) {
-            MenuOpener.open(getMenuType(), p, MenuLocator.forPart(this));
+            openMenu(p, MenuLocator.forPart(this));
         }
 
         return true;
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return getItemStack();
     }
 
     @Override
@@ -141,11 +144,6 @@ public class FluidInterfacePart extends BasicStatePart implements IFluidInterfac
             return duality.getUpgrades();
         }
         return super.getSubInventory(id);
-    }
-
-    @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEParts.FLUID_INTERFACE.stack();
     }
 
     @Override

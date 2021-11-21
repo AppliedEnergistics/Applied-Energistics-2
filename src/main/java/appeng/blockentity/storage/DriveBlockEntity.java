@@ -32,7 +32,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -54,6 +54,9 @@ import appeng.client.render.model.DriveModelData;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.storage.DriveWatcher;
+import appeng.menu.ISubMenu;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.DriveMenu;
 import appeng.util.inv.filter.IAEItemFilter;
 
@@ -397,20 +400,23 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     }
 
-    @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEBlocks.DRIVE.stack();
-    }
-
     @Nonnull
     @Override
     public DriveModelData getRenderAttachmentData() {
         return new DriveModelData(getUp(), getForward(), DriveSlotsState.fromChestOrDrive(this));
     }
 
-    @Override
-    public MenuType<?> getMenuType() {
-        return DriveMenu.TYPE;
+    public void openMenu(Player player) {
+        MenuOpener.open(DriveMenu.TYPE, player, MenuLocator.forBlockEntity(this));
     }
 
+    @Override
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openMenu(player);
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return AEBlocks.DRIVE.stack();
+    }
 }

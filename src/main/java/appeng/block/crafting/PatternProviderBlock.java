@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -38,9 +37,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
-import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.PatternProviderMenu;
 import appeng.util.InteractionUtil;
 
 public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlockEntity> {
@@ -71,11 +67,10 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
             return InteractionResult.PASS;
         }
 
-        final BlockEntity tg = this.getBlockEntity(level, pos);
-        if (tg != null) {
+        var be = this.getBlockEntity(level, pos);
+        if (be != null) {
             if (!level.isClientSide()) {
-                MenuOpener.open(PatternProviderMenu.TYPE, p,
-                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
+                be.openMenu(p);
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

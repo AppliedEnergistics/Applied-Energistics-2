@@ -26,7 +26,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
@@ -40,13 +39,10 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
 import appeng.helpers.DualityItemInterface;
 import appeng.helpers.IItemInterfaceHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.InterfaceMenu;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -134,7 +130,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            MenuOpener.open(InterfaceMenu.ITEM_TYPE, p, MenuLocator.forPart(this));
+            openMenu(p, MenuLocator.forPart(this));
         }
         return true;
     }
@@ -175,12 +171,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     }
 
     @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEParts.ITEM_INTERFACE.stack();
-    }
-
-    @Override
-    public MenuType<?> getMenuType() {
-        return InterfaceMenu.ITEM_TYPE;
+    public ItemStack getMainMenuIcon() {
+        return getItemStack();
     }
 }

@@ -104,7 +104,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity implements I
     }
 
     @Override
-    public ItemStack getItemStackRepresentation() {
+    public ItemStack getMainMenuIcon() {
         return AEBlocks.FLUID_INTERFACE.stack();
     }
 
