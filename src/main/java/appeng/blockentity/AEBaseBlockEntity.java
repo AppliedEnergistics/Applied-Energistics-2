@@ -124,11 +124,11 @@ public class AEBaseBlockEntity extends BlockEntity
     public final void load(CompoundTag tag) {
         // On the client, this can either be data received as part of an initial chunk update,
         // or as part of a sole block entity data update.
-        if (level != null && level.isClientSide) {
-            if (tag.contains("#upd", Tag.TAG_BYTE_ARRAY)) {
-                var updateData = tag.getByteArray("#upd");
-                if (readUpdateData(new FriendlyByteBuf(Unpooled.wrappedBuffer(updateData)))) {
-                    // Triggers a chunk re-render
+        if (tag.contains("#upd", Tag.TAG_BYTE_ARRAY) && tag.size() == 1) {
+            var updateData = tag.getByteArray("#upd");
+            if (readUpdateData(new FriendlyByteBuf(Unpooled.wrappedBuffer(updateData)))) {
+                // Triggers a chunk re-render if the level is already loaded
+                if (level != null) {
                     level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
                 }
             }
