@@ -119,14 +119,22 @@ public final class AEItems {
     ///
     /// PORTABLE CELLS
     ///
-    private static ItemDefinition<PortableCellItem> makePortableCell(ResourceLocation id, StorageTier tier) {
-        return item(id, p -> new PortableCellItem(tier, p.stacksTo(1)));
+    private static ItemDefinition<PortableItemCellItem> makePortableItemCell(ResourceLocation id, StorageTier tier) {
+        return item(id, p -> new PortableItemCellItem(tier, p.stacksTo(1)));
+    }
+    private static ItemDefinition<PortableFluidCellItem> makePortableFluidCell(ResourceLocation id, StorageTier tier) {
+        return item(id, p -> new PortableFluidCellItem(tier, p.stacksTo(1)));
     }
 
-    public static final ItemDefinition<PortableCellItem> PORTABLE_CELL1K = makePortableCell(AEItemIds.PORTABLE_ITEM_CELL1K, StorageTier.SIZE_1K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_CELL4k = makePortableCell(AEItemIds.PORTABLE_ITEM_CELL4K, StorageTier.SIZE_4K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_CELL16K = makePortableCell(AEItemIds.PORTABLE_ITEM_CELL16K, StorageTier.SIZE_16K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_CELL64K = makePortableCell(AEItemIds.PORTABLE_ITEM_CELL64K, StorageTier.SIZE_64K);
+    public static final ItemDefinition<PortableItemCellItem> PORTABLE_ITEM_CELL1K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL1K, PortableCellItem.SIZE_1K);
+    public static final ItemDefinition<PortableItemCellItem> PORTABLE_ITEM_CELL4k = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL4K, PortableCellItem.SIZE_4K);
+    public static final ItemDefinition<PortableItemCellItem> PORTABLE_ITEM_CELL16K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL16K, PortableCellItem.SIZE_16K);
+    public static final ItemDefinition<PortableItemCellItem> PORTABLE_ITEM_CELL64K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL64K, PortableCellItem.SIZE_64K);
+
+    public static final ItemDefinition<PortableFluidCellItem> PORTABLE_FLUID_CELL1K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL1K, PortableCellItem.SIZE_1K);
+    public static final ItemDefinition<PortableFluidCellItem> PORTABLE_FLUID_CELL4k = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL4K, PortableCellItem.SIZE_4K);
+    public static final ItemDefinition<PortableFluidCellItem> PORTABLE_FLUID_CELL16K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL16K, PortableCellItem.SIZE_16K);
+    public static final ItemDefinition<PortableFluidCellItem> PORTABLE_FLUID_CELL64K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL64K, PortableCellItem.SIZE_64K);
 
     ///
     /// NETWORK RELATED TOOLS

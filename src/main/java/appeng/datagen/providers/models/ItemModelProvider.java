@@ -96,10 +96,10 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.NETHER_QUARTZ_KNIFE, "item/nether_quartz_cutting_knife");
         flatSingleLayer(AEItems.NETHER_QUARTZ_WRENCH, "item/nether_quartz_wrench");
         flatSingleLayer(AEItems.NETWORK_TOOL, "item/network_tool");
-        flatSingleLayer(AEItems.PORTABLE_CELL1K, "item/1k_portable_item_cell");
-        flatSingleLayer(AEItems.PORTABLE_CELL4k, "item/4k_portable_item_cell");
-        flatSingleLayer(AEItems.PORTABLE_CELL16K, "item/16k_portable_item_cell");
-        flatSingleLayer(AEItems.PORTABLE_CELL64K, "item/64k_portable_item_cell");
+        flatSingleLayer(AEItems.PORTABLE_ITEM_CELL1K, "item/1k_portable_item_cell");
+        flatSingleLayer(AEItems.PORTABLE_ITEM_CELL4k, "item/4k_portable_item_cell");
+        flatSingleLayer(AEItems.PORTABLE_ITEM_CELL16K, "item/16k_portable_item_cell");
+        flatSingleLayer(AEItems.PORTABLE_ITEM_CELL64K, "item/64k_portable_item_cell");
         flatSingleLayer(AEItems.PROCESSING_PATTERN, "item/processing_pattern");
         flatSingleLayer(AEItems.QUANTUM_ENTANGLED_SINGULARITY, "item/quantum_entangled_singularity");
         flatSingleLayer(AEItems.REDSTONE_CARD, "item/card_redstone");

@@ -20,6 +20,8 @@ package appeng.items.contents;
 
 import java.util.function.BiConsumer;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -30,39 +32,36 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.menuobjects.IPortableCell;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
+import appeng.items.tools.powered.PortableCellItem;
 import appeng.me.helpers.MEMonitorHandler;
-import appeng.me.storage.NullInventory;
 import appeng.menu.ISubMenu;
 import appeng.util.ConfigManager;
 
 /**
  * Hosts the terminal interface for a {@link appeng.items.tools.powered.PortableCellItem}.
  */
-public class PortableCellMenuHost extends ItemMenuHost implements IPortableCell {
+public class PortableCellMenuHost<T extends AEKey> extends ItemMenuHost implements IPortableCell {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEMonitorHandler<?> cellMonitor;
-    private final IAEItemPowerStorage energyStorage;
+    private final PortableCellItem<T> item;
 
-    public PortableCellMenuHost(Player player, int slot, ItemStack itemStack,
+    public PortableCellMenuHost(Player player, int slot, PortableCellItem<T> item, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(player, slot, itemStack);
+        Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
         IMEInventory<?> inv = StorageCells.getCellInventory(itemStack, null);
-        if (inv == null) {
-            inv = NullInventory.of(StorageChannels.items());
-        }
+        Preconditions.checkArgument(inv != null, "Portable cell doesn't expose a cell inventory.");
         this.cellMonitor = new MEMonitorHandler<>(inv);
-        this.energyStorage = (IAEItemPowerStorage) itemStack.getItem();
+        this.item = item;
     }
 
     @Override
@@ -75,14 +74,14 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableCell 
         amt = usePowerMultiplier.multiply(amt);
 
         if (mode == Actionable.SIMULATE) {
-            return usePowerMultiplier.divide(Math.min(amt, this.energyStorage.getAECurrentPower(getItemStack())));
+            return usePowerMultiplier.divide(Math.min(amt, this.item.getAECurrentPower(getItemStack())));
         }
 
-        return usePowerMultiplier.divide(this.energyStorage.extractAEPower(getItemStack(), amt, Actionable.MODULATE));
+        return usePowerMultiplier.divide(this.item.extractAEPower(getItemStack(), amt, Actionable.MODULATE));
     }
 
     @Override
-    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public <S extends AEKey> IMEMonitor<S> getInventory(IStorageChannel<S> channel) {
         return cellMonitor.cast(channel);
     }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,18 +21,22 @@ package appeng.menu.me.items;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.helpers.WirelessTerminalMenuHost;
+import appeng.api.implementations.menuobjects.IPortableCell;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.fluids.FluidTerminalMenu;
 
 /**
- * @see appeng.client.gui.me.items.ItemTerminalScreen
+ * @see appeng.client.gui.me.fluids.FluidTerminalScreen
  */
-public class WirelessTermMenu extends PortableItemCellMenu {
-    public static final MenuType<WirelessTermMenu> TYPE = MenuTypeBuilder
-            .create(WirelessTermMenu::new, WirelessTerminalMenuHost.class)
-            .build("wirelessterm");
+public class PortableFluidCellMenu extends FluidTerminalMenu {
 
-    public WirelessTermMenu(int id, final Inventory ip, WirelessTerminalMenuHost gui) {
-        super(TYPE, id, ip, gui);
+    public static final MenuType<PortableFluidCellMenu> TYPE = MenuTypeBuilder
+            .create(PortableFluidCellMenu::new, IPortableCell.class)
+            .build("portable_fluid_cell");
+
+    protected PortableFluidCellMenu(MenuType<? extends PortableFluidCellMenu> type, int id,
+            Inventory ip, IPortableCell monitorable) {
+        super(type, id, ip, monitorable, false);
+        this.createPlayerInventorySlots(ip);
     }
 }

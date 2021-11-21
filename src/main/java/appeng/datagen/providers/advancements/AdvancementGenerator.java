@@ -435,7 +435,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var portableCell = Advancement.Builder.advancement()
                 .display(
-                        AEItems.PORTABLE_CELL1K,
+                        AEItems.PORTABLE_ITEM_CELL1K,
                         new TranslatableComponent("achievement.ae2.PortableCell"),
                         new TranslatableComponent("achievement.ae2.PortableCell.desc"),
                         null /* background */,
@@ -444,10 +444,10 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false,
                         false)
                 .parent(storageCell)
-                .addCriterion("pc_1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_CELL1K))
-                .addCriterion("pc_4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_CELL4k))
-                .addCriterion("pc_16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_CELL16K))
-                .addCriterion("pc_64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_CELL64K))
+                .addCriterion("pc_1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL1K))
+                .addCriterion("pc_4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL4k))
+                .addCriterion("pc_16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL16K))
+                .addCriterion("pc_64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL64K))
                 .requirements(RequirementsStrategy.OR)
                 .save(consumer, "ae2:main/portable_cell");
 

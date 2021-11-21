@@ -27,13 +27,13 @@ import appeng.menu.implementations.MenuTypeBuilder;
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
  */
-public class MEPortableCellMenu extends ItemTerminalMenu {
+public class PortableItemCellMenu extends ItemTerminalMenu {
 
-    public static final MenuType<MEPortableCellMenu> TYPE = MenuTypeBuilder
-            .create(MEPortableCellMenu::new, IPortableCell.class)
-            .build("meportablecell");
+    public static final MenuType<PortableItemCellMenu> TYPE = MenuTypeBuilder
+            .create(PortableItemCellMenu::new, IPortableCell.class)
+            .build("portable_item_cell");
 
-    protected MEPortableCellMenu(MenuType<? extends MEPortableCellMenu> type, int id,
+    protected PortableItemCellMenu(MenuType<? extends PortableItemCellMenu> type, int id,
             Inventory ip, IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         this.createPlayerInventorySlots(ip);
