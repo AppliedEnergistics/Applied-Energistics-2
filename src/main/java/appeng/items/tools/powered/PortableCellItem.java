@@ -45,7 +45,7 @@ import appeng.core.AEConfig;
 import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
-import appeng.items.contents.PortableCellViewer;
+import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -156,7 +156,7 @@ public class PortableCellItem extends AEBasePoweredItem
 
     @Override
     public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
-        return new PortableCellViewer(player, inventorySlot, stack, (p, sm) -> openFromInventory(p, inventorySlot));
+        return new PortableCellMenuHost(player, inventorySlot, stack, (p, sm) -> openFromInventory(p, inventorySlot));
     }
 
     @Override

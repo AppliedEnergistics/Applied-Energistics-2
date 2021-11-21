@@ -114,9 +114,8 @@ public class ItemMenuHost {
         if (this instanceof IEnergySource energySource) {
             this.powerTicks++;
             if (this.powerTicks > 10) {
-                this.powerTicks = 0;
-
                 var amt = this.powerTicks * this.powerDrainPerTick;
+                this.powerTicks = 0;
                 return energySource.extractAEPower(amt, Actionable.MODULATE, PowerMultiplier.CONFIG) > 0;
             }
         }

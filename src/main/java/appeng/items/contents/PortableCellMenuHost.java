@@ -45,12 +45,15 @@ import appeng.me.storage.NullInventory;
 import appeng.menu.ISubMenu;
 import appeng.util.ConfigManager;
 
-public class PortableCellViewer extends ItemMenuHost implements IPortableCell {
+/**
+ * Hosts the terminal interface for a {@link appeng.items.tools.powered.PortableCellItem}.
+ */
+public class PortableCellMenuHost extends ItemMenuHost implements IPortableCell {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEMonitorHandler<?> cellMonitor;
-    private final IAEItemPowerStorage ips;
+    private final IAEItemPowerStorage energyStorage;
 
-    public PortableCellViewer(Player player, int slot, ItemStack itemStack,
+    public PortableCellMenuHost(Player player, int slot, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(player, slot, itemStack);
         this.returnMainMenu = returnMainMenu;
@@ -59,7 +62,7 @@ public class PortableCellViewer extends ItemMenuHost implements IPortableCell {
             inv = NullInventory.of(StorageChannels.items());
         }
         this.cellMonitor = new MEMonitorHandler<>(inv);
-        this.ips = (IAEItemPowerStorage) itemStack.getItem();
+        this.energyStorage = (IAEItemPowerStorage) itemStack.getItem();
     }
 
     @Override
@@ -72,10 +75,10 @@ public class PortableCellViewer extends ItemMenuHost implements IPortableCell {
         amt = usePowerMultiplier.multiply(amt);
 
         if (mode == Actionable.SIMULATE) {
-            return usePowerMultiplier.divide(Math.min(amt, this.ips.getAECurrentPower(getItemStack())));
+            return usePowerMultiplier.divide(Math.min(amt, this.energyStorage.getAECurrentPower(getItemStack())));
         }
 
-        return usePowerMultiplier.divide(this.ips.extractAEPower(getItemStack(), amt, Actionable.MODULATE));
+        return usePowerMultiplier.divide(this.energyStorage.extractAEPower(getItemStack(), amt, Actionable.MODULATE));
     }
 
     @Override

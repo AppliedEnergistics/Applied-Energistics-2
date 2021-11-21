@@ -157,7 +157,8 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableC
     @Override
     public boolean onBroadcastChanges(AbstractContainerMenu menu) {
         return super.onBroadcastChanges(menu)
-                && checkWirelessRange(menu);
+                && checkWirelessRange(menu)
+                && drainPower();
     }
 
     /**
