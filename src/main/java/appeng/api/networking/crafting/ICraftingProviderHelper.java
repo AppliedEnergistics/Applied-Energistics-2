@@ -34,7 +34,7 @@ public interface ICraftingProviderHelper {
     /**
      * Add new Pattern to AE's crafting cache.
      */
-    void addCraftingOption(ICraftingMedium medium, IPatternDetails api, int priority);
+    void addCraftingOption(ICraftingMedium medium, IPatternDetails pattern, int priority);
 
     /**
      * Set an item can Emitable

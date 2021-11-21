@@ -126,6 +126,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     public void setPriority(int priority) {
         this.priority = priority;
         this.host.saveChanges();
+        this.updatePatterns();
     }
 
     public void writeToNBT(CompoundTag tag) {
@@ -175,6 +176,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack, ItemStack newStack) {
+        this.saveChanges();
         this.updatePatterns();
     }
 

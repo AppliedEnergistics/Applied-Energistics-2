@@ -23,13 +23,13 @@
 
 package appeng.api.networking.crafting;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.world.level.Level;
@@ -45,9 +45,9 @@ public interface ICraftingService extends IGridService {
     /**
      * @param whatToCraft requested craft
      *
-     * @return a collection of crafting patterns for the item in question.
+     * @return an unmodifiable collection of crafting patterns for the item in question.
      */
-    ImmutableCollection<IPatternDetails> getCraftingFor(AEKey whatToCraft);
+    Collection<IPatternDetails> getCraftingFor(AEKey whatToCraft);
 
     /**
      * @return true if the grid knows how to craft the given key

@@ -19,14 +19,12 @@
 package appeng.me.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,18 +34,12 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.SortedMultiset;
-import com.google.common.collect.TreeMultiset;
 
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
@@ -62,7 +54,6 @@ import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 import appeng.crafting.CraftingCalculation;
@@ -72,8 +63,9 @@ import appeng.crafting.CraftingWatcher;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.InterestManager;
 import appeng.me.service.helpers.CraftingServiceStorage;
+import appeng.me.service.helpers.NetworkCraftingMethods;
 
-public class CraftingService implements ICraftingService, IGridServiceProvider, ICraftingProviderHelper {
+public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     private static final ExecutorService CRAFTING_POOL;
 
@@ -100,26 +92,18 @@ public class CraftingService implements ICraftingService, IGridServiceProvider, 
     private final Set<ICraftingProvider> craftingProviders = new HashSet<>();
     private final Map<IGridNode, ICraftingWatcher> craftingWatchers = new HashMap<>();
     private final IGrid grid;
-    private final Map<IPatternDetails, SortedMultiset<CraftingMedium>> craftingMethods = new HashMap<>();
-    private final Map<AEKey, ImmutableList<IPatternDetails>> craftableItems = new HashMap<>();
-    /**
-     * Used for looking up craftable alternatives using fuzzy search (i.e. ignore NBT).
-     */
-    private final KeyCounter<AEKey> craftableItemsList = new KeyCounter<>();
-    private final Set<AEKey> emitableItems = new HashSet<>();
+    private final NetworkCraftingMethods networkCraftingMethods = new NetworkCraftingMethods();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<AEKey, CraftingWatcher> interests = HashMultimap.create();
     private final InterestManager<CraftingWatcher> interestManager = new InterestManager<>((Multimap) this.interests);
-    private final IStorageService storageGrid;
     private final IEnergyService energyGrid;
     private boolean updateList = false;
 
     public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyService energyGrid) {
         this.grid = grid;
-        this.storageGrid = storageGrid;
         this.energyGrid = energyGrid;
 
-        this.storageGrid.addGlobalStorageProvider(new CraftingServiceStorage(this));
+        storageGrid.addGlobalStorageProvider(new CraftingServiceStorage(this));
     }
 
     @Override
@@ -196,54 +180,11 @@ public class CraftingService implements ICraftingService, IGridServiceProvider, 
 
     @Override
     public <T extends AEKey> Set<T> getCraftables(IStorageChannel<T> channel) {
-        var result = new HashSet<T>();
-
-        // add craftable items!
-        for (var stack : this.craftableItems.keySet()) {
-            if (stack.getChannel() == channel) {
-                result.add(stack.cast(channel));
-            }
-        }
-
-        for (var stack : this.emitableItems) {
-            if (stack.getChannel() == channel) {
-                result.add(stack.cast(channel));
-            }
-        }
-
-        return result;
+        return networkCraftingMethods.getCraftables(channel);
     }
 
     private void updatePatterns() {
-        // erase list.
-        this.craftingMethods.clear();
-        this.craftableItems.clear();
-        this.craftableItemsList.reset();
-        this.emitableItems.clear();
-
-        // re-create list..
-        for (final ICraftingProvider provider : this.craftingProviders) {
-            provider.provideCrafting(this);
-        }
-
-        final Map<AEKey, Set<IPatternDetails>> tmpCraft = new HashMap<>();
-        // Sort by highest priority (that of the highest priority crafting medium).
-        Comparator<IPatternDetails> detailsComparator = Comparator
-                .comparing(details -> -this.craftingMethods.get(details).firstEntry().getElement().priority);
-        // new craftables!
-        for (var details : this.craftingMethods.keySet()) {
-            var primaryOutputKey = details.getPrimaryOutput().what();
-            tmpCraft.computeIfAbsent(primaryOutputKey, k -> new TreeSet<>(detailsComparator)).add(details);
-        }
-
-        // make them immutable
-        for (var e : tmpCraft.entrySet()) {
-            var output = e.getKey();
-            this.craftableItems.put(output, ImmutableList.copyOf(e.getValue()));
-            this.craftableItemsList.add(output, 1);
-        }
-
-        this.craftableItemsList.removeZeros();
+        this.networkCraftingMethods.rebuild(this.craftingProviders);
     }
 
     private void updateCPUClusters() {
@@ -276,17 +217,6 @@ public class CraftingService implements ICraftingService, IGridServiceProvider, 
         link.setNexus(nexus);
     }
 
-    @Override
-    public void addCraftingOption(ICraftingMedium medium, IPatternDetails api, int priority) {
-        this.craftingMethods.computeIfAbsent(api, pattern -> TreeMultiset.create())
-                .add(new CraftingMedium(medium, priority));
-    }
-
-    @Override
-    public void setEmitable(AEKey someItem) {
-        this.emitableItems.add(someItem);
-    }
-
     public long insertIntoCpus(AEKey what, long amount, Actionable type) {
         long inserted = 0;
         for (var cpu : this.craftingCPUClusters) {
@@ -297,19 +227,14 @@ public class CraftingService implements ICraftingService, IGridServiceProvider, 
     }
 
     @Override
-    public ImmutableCollection<IPatternDetails> getCraftingFor(AEKey whatToCraft) {
-        return this.craftableItems.getOrDefault(whatToCraft, ImmutableList.of());
+    public Collection<IPatternDetails> getCraftingFor(AEKey whatToCraft) {
+        return this.networkCraftingMethods.getCraftingFor(whatToCraft);
     }
 
     @Nullable
     @Override
     public AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter) {
-        for (var fuzzy : craftableItemsList.findFuzzy(whatToCraft, FuzzyMode.IGNORE_ALL)) {
-            if (filter.test(fuzzy.getKey())) {
-                return fuzzy.getKey();
-            }
-        }
-        return null;
+        return this.networkCraftingMethods.getFuzzyCraftable(whatToCraft, filter);
     }
 
     @Override
@@ -387,7 +312,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider, 
 
     @Override
     public boolean canEmitFor(AEKey someItem) {
-        return this.emitableItems.contains(someItem);
+        return this.networkCraftingMethods.canEmitFor(someItem);
     }
 
     @Override
@@ -406,14 +331,8 @@ public class CraftingService implements ICraftingService, IGridServiceProvider, 
         return requested;
     }
 
-    public Iterable<ICraftingMedium> getMediums(final IPatternDetails key) {
-        var mediums = this.craftingMethods.get(key);
-
-        if (mediums == null) {
-            return Collections.emptyList();
-        } else {
-            return Iterables.transform(mediums, CraftingMedium::medium);
-        }
+    public Iterable<ICraftingMedium> getMediums(IPatternDetails key) {
+        return networkCraftingMethods.getMediums(key);
     }
 
     public boolean hasCpu(final ICraftingCPU cpu) {
@@ -422,14 +341,5 @@ public class CraftingService implements ICraftingService, IGridServiceProvider, 
 
     public InterestManager<CraftingWatcher> getInterestManager() {
         return this.interestManager;
-    }
-
-    private record CraftingMedium(ICraftingMedium medium, int priority) implements Comparable<CraftingMedium> {
-
-        @Override
-        public int compareTo(CraftingMedium o) {
-            // Higher priority goes first.
-            return o.priority - this.priority;
-        }
     }
 }
