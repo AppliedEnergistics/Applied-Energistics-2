@@ -36,7 +36,7 @@ public enum TickRates {
 
     Inscriber(1, 1),
 
-    Charger(10, 120),
+    Charger(10, 10),
 
     IOPort(1, 5),
 
