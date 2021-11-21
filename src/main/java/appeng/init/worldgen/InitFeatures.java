@@ -60,7 +60,7 @@ public final class InitFeatures {
                 WorldgenIds.PLACED_QUARTZ_ORE_KEY,
                 configuredQuartz.placed(
                         OrePlacements.commonOrePlacement(
-                                AEConfig.instance().getQuartzOresPerCluster(),
+                                AEConfig.instance().getQuartzOresClusterAmount(),
                                 HeightRangePlacement.triangle(VerticalAnchor.absolute(-34),
                                         VerticalAnchor.absolute(36)))));
     }
