@@ -18,7 +18,8 @@
 
 package appeng.core;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +60,7 @@ public final class AEConfig {
     public final CommonConfig COMMON;
     public final ConfigFileManager commonConfigManager;
 
-    AEConfig(File configDir) {
+    AEConfig(Path configDir) {
         ConfigSection clientRoot = ConfigSection.createRoot();
         CLIENT = new ClientConfig(clientRoot);
         clientConfigManager = createConfigFileManager(clientRoot, configDir, "appliedenergistics2/client.json");
@@ -72,11 +73,11 @@ public final class AEConfig {
         syncCommonConfig();
     }
 
-    private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, File configDir,
+    private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, Path configDir,
             String filename) {
-        File configFile = new File(configDir, filename);
+        var configFile = configDir.resolve(filename);
         ConfigFileManager result = new ConfigFileManager(commonRoot, configFile);
-        if (!configFile.exists()) {
+        if (!Files.exists(configFile)) {
             result.save(); // Save a default file
         } else {
             result.load();
@@ -97,7 +98,7 @@ public final class AEConfig {
     // Config instance
     private static AEConfig instance;
 
-    public static void load(File configFolder) {
+    public static void load(Path configFolder) {
         if (instance != null) {
             throw new IllegalStateException();
         }
@@ -305,6 +306,10 @@ public final class AEConfig {
         return this.spatialPowerMultiplier;
     }
 
+    public double getChargerChargeRate() {
+        return COMMON.chargerChargeRate.get();
+    }
+
     public DoubleSupplier getWirelessTerminalBattery() {
         return () -> this.wirelessTerminalBattery;
     }
@@ -493,6 +498,7 @@ public final class AEConfig {
         public final BooleanOption chunkLoggerTrace;
 
         // Batteries
+        public final DoubleOption chargerChargeRate;
         public final IntegerOption wirelessTerminalBattery;
         public final IntegerOption entropyManipulatorBattery;
         public final IntegerOption matterCannonBattery;
@@ -580,6 +586,9 @@ public final class AEConfig {
                     "Enable stack trace logging for the chunk loading debug command");
 
             ConfigSection battery = root.subsection("battery");
+            this.chargerChargeRate = battery.addDouble("chargerChargeRate", 1,
+                    0.1, 10,
+                    "The chargers charging rate factor, which is applied to the charged items charge rate. 2 means it charges everything twice as fast. 0.5 half as fast.");
             this.wirelessTerminalBattery = battery.addInt("wirelessTerminal", 1600000);
             this.chargedStaffBattery = battery.addInt("chargedStaff", 8000);
             this.entropyManipulatorBattery = battery.addInt("entropyManipulator", 200000);

@@ -79,7 +79,12 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public boolean hurtEnemy(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
+    public double getChargeRate() {
+        return 800d;
+    }
+
+    @Override
+    public boolean hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
         if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             target.setSecondsOnFire(8);

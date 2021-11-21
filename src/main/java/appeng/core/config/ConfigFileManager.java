@@ -1,15 +1,10 @@
 package appeng.core.config;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,11 +16,11 @@ public class ConfigFileManager {
 
     private final ConfigSection rootSection;
 
-    private final File file;
+    private final Path file;
 
     private boolean loading;
 
-    public ConfigFileManager(ConfigSection rootSection, File file) {
+    public ConfigFileManager(ConfigSection rootSection, Path file) {
         this.rootSection = rootSection;
         this.file = file;
         rootSection.setChangeListener(() -> {
@@ -37,8 +32,8 @@ public class ConfigFileManager {
 
     public void load() {
         loading = true;
-        try (InputStream in = new FileInputStream(file)) {
-            JsonObject rootObj = GSON.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), JsonObject.class);
+        try (var reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
+            JsonObject rootObj = GSON.fromJson(reader, JsonObject.class);
             rootSection.read(rootObj);
         } catch (FileNotFoundException ignored) {
         } catch (Exception e) {
@@ -49,16 +44,15 @@ public class ConfigFileManager {
     }
 
     public void save() {
-        File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) {
+        if (file.getParent() != null) {
             try {
-                Files.createDirectories(parent.toPath());
+                Files.createDirectories(file.getParent());
             } catch (IOException e) {
-                throw new RuntimeException("Failed to create AE2 config directory: " + parent);
+                throw new RuntimeException("Failed to create AE2 config directory: " + file.getParent());
             }
         }
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+        try (var writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
             GSON.toJson(rootSection.write(), writer);
         } catch (Exception e) {
             throw new RuntimeException("Failed to write AE2 config: " + file, e);

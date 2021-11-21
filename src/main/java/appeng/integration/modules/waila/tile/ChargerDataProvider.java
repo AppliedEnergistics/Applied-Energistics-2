@@ -20,16 +20,18 @@ package appeng.integration.modules.waila.tile;
 
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.util.Mth;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.integration.modules.waila.BaseDataProvider;
 import appeng.integration.modules.waila.WailaText;
+import appeng.util.Platform;
 
 /**
  * Shows the tooltip of the item being charged, which usually includes a charge meter.
@@ -44,19 +46,16 @@ public final class ChargerDataProvider extends BaseDataProvider {
             var chargingItem = chargerInventory.getStackInSlot(0);
 
             if (!chargingItem.isEmpty()) {
-                var player = accessor.getPlayer();
+                tooltip.add(WailaText.Contains.textComponent(
+                        chargingItem.getHoverName().copy().withStyle(ChatFormatting.WHITE)));
 
-                var tooltipFlag = Minecraft.getInstance().options.advancedItemTooltips
-                        ? TooltipFlag.Default.ADVANCED
-                        : TooltipFlag.Default.NORMAL;
-                var lines = chargingItem.getTooltipLines(player, tooltipFlag);
-                if (lines.isEmpty()) {
-                    return;
+                if (chargingItem.getItem() instanceof IAEItemPowerStorage powerStorage
+                        && Platform.isChargeable(chargingItem)) {
+                    var fillRate = Mth.floor(powerStorage.getAECurrentPower(chargingItem) * 100 /
+                            powerStorage.getAEMaxPower(chargingItem));
+                    tooltip.add(WailaText.Charged.textComponent(
+                            fillRate));
                 }
-
-                // Prepend the first line with Contains:
-                lines.set(0, WailaText.Contains.textComponent(lines.get(0)));
-                tooltip.addAll(lines);
             }
         }
 

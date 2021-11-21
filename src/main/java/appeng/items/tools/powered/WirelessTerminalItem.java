@@ -67,6 +67,11 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
         super(powerCapacity, props);
     }
 
+    @Override
+    public double getChargeRate() {
+        return 800d;
+    }
+
     /**
      * Open a wireless terminal from a slot in the player inventory, i.e. activated via hotkey.
      * 

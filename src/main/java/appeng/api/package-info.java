@@ -34,9 +34,7 @@
  * <li>{@link appeng.api.storage.StorageChannels}</li>
  * <li>{@link appeng.api.networking.GridServices}</li>
  * <li>{@link appeng.api.features.AEWorldGen}</li>
- * <li>{@link appeng.api.features.ChargerRegistry}</li>
  * <li>{@link appeng.api.movable.BlockEntityMoveStrategies}</li>
- * <li>{@link appeng.api.features.WirelessTerminals}</li>
  * <li>{@link appeng.api.features.GridLinkables}</li>
  * <li>{@link appeng.api.storage.StorageCells}</li>
  * <li>{@link appeng.api.features.Locatables}</li>

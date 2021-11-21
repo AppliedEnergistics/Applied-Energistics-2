@@ -44,7 +44,6 @@ public interface IAEItemPowerStorage {
      * Attempt to extract power from the device, it will extract what it can and return it.
      *
      * @param amount to be extracted power from device
-     *
      * @return what it could extract
      */
     double extractAEPower(ItemStack stack, double amount, Actionable mode);
@@ -66,4 +65,8 @@ public interface IAEItemPowerStorage {
      */
     AccessRestriction getPowerFlow(ItemStack stack);
 
+    /**
+     * @return The amount of AE per tick that the AE charger will charge this item at.
+     */
+    double getChargeRate();
 }
