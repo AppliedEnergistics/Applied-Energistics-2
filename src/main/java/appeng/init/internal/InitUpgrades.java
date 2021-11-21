@@ -91,14 +91,14 @@ public final class InitUpgrades {
         Upgrades.FUZZY.registerItem(AEItems.CELL64K, 1, storageCellGroup);
         Upgrades.INVERTER.registerItem(AEItems.CELL64K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(AEItems.PORTABLE_CELL1K, 1, storageCellGroup);
-        Upgrades.FUZZY.registerItem(AEItems.PORTABLE_CELL4k, 1, storageCellGroup);
-        Upgrades.FUZZY.registerItem(AEItems.PORTABLE_CELL16K, 1, storageCellGroup);
-        Upgrades.FUZZY.registerItem(AEItems.PORTABLE_CELL64K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.PORTABLE_CELL1K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.PORTABLE_CELL4k, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.PORTABLE_CELL16K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.PORTABLE_CELL64K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.PORTABLE_ITEM_CELL1K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.PORTABLE_ITEM_CELL4k, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.PORTABLE_ITEM_CELL16K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.PORTABLE_ITEM_CELL64K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.PORTABLE_ITEM_CELL1K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.PORTABLE_ITEM_CELL4k, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.PORTABLE_ITEM_CELL16K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.PORTABLE_ITEM_CELL64K, 1, storageCellGroup);
 
         Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL1K, 1, storageCellGroup);
         Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL4K, 1, storageCellGroup);

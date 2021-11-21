@@ -75,6 +75,10 @@ public final class AEItemIds {
     public static final ResourceLocation PORTABLE_ITEM_CELL4K = id("4k_portable_item_cell");
     public static final ResourceLocation PORTABLE_ITEM_CELL16K = id("16k_portable_item_cell");
     public static final ResourceLocation PORTABLE_ITEM_CELL64K = id("64k_portable_item_cell");
+    public static final ResourceLocation PORTABLE_FLUID_CELL1K = id("1k_portable_fluid_cell");
+    public static final ResourceLocation PORTABLE_FLUID_CELL4K = id("4k_portable_fluid_cell");
+    public static final ResourceLocation PORTABLE_FLUID_CELL16K = id("16k_portable_fluid_cell");
+    public static final ResourceLocation PORTABLE_FLUID_CELL64K = id("64k_portable_fluid_cell");
 
     ///
     /// PAINT BALLS

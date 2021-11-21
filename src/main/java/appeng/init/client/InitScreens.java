@@ -163,10 +163,14 @@ public final class InitScreens {
                 ItemTerminalMenu.TYPE,
                 ItemTerminalScreen::new,
                 "/screens/terminals/item_terminal.json");
-        InitScreens.<MEPortableCellMenu, ItemTerminalScreen<MEPortableCellMenu>>register(
-                MEPortableCellMenu.TYPE,
+        InitScreens.<PortableItemCellMenu, ItemTerminalScreen<PortableItemCellMenu>>register(
+                PortableItemCellMenu.TYPE,
                 ItemTerminalScreen::new,
-                "/screens/terminals/portable_cell.json");
+                "/screens/terminals/portable_item_cell.json");
+        InitScreens.<PortableFluidCellMenu, FluidTerminalScreen<PortableFluidCellMenu>>register(
+                PortableFluidCellMenu.TYPE,
+                FluidTerminalScreen::new,
+                "/screens/terminals/portable_fluid_cell.json");
         InitScreens.<WirelessTermMenu, ItemTerminalScreen<WirelessTermMenu>>register(
                 WirelessTermMenu.TYPE,
                 ItemTerminalScreen::new,

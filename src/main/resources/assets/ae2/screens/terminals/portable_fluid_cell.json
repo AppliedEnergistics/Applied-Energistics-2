@@ -1,0 +1,21 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["fluid_terminal.json"],
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.PortableCell"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "terminalStyle": {
+    "maxRows": 3,
+    "supportsAutoCrafting": false,
+    "stackSizeStyle": "FLUIDS",
+    "showTooltipsWithItemInHand": true
+  }
+}
