@@ -45,6 +45,7 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -52,6 +53,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
@@ -327,15 +329,20 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
+        // Max width should be half screen with some padding.
+        // Vanilla will place the tooltip on the right or left of the cursor
+        // automatically, but uses a 12px offset (we use 20px for some extra space)
+        int maxWidth = width / 2 - 20;
+
         // Make the first line white
         // All lines after the first are colored gray
-        List<Component> styledLines = new ArrayList<>(lines.size());
+        List<FormattedCharSequence> styledLines = new ArrayList<>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
             Style style = i == 0 ? TOOLTIP_HEADER : TOOLTIP_BODY;
-            styledLines.add(lines.get(i).copy().withStyle(s -> style));
+            styledLines.addAll(
+                    ComponentRenderUtils.wrapComponents(lines.get(i).copy().withStyle(s -> style), maxWidth, font));
         }
-
-        this.renderComponentTooltip(poseStack, styledLines, x, y);
+        this.renderTooltip(poseStack, styledLines, x, y);
 
     }
 
