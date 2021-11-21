@@ -73,16 +73,15 @@ public class AutoRotatingBakedModel extends ForwardingBakedModel implements Fabr
     }
 
     private RenderContext.QuadTransform getTransform(BlockAndTintGetter view, BlockPos pos) {
-        if (!(view instanceof RenderAttachedBlockView)) {
+        if (!(view instanceof RenderAttachedBlockView renderBlockView)) {
             return null;
         }
 
-        Object data = ((RenderAttachedBlockView) view).getBlockEntityRenderAttachment(pos);
-        if (!(data instanceof AEModelData)) {
+        Object data = renderBlockView.getBlockEntityRenderAttachment(pos);
+        if (!(data instanceof AEModelData aeModelData)) {
             return null;
         }
 
-        AEModelData aeModelData = (AEModelData) data;
         RenderContext.QuadTransform transform = QuadRotator.get(aeModelData.getForward(), aeModelData.getUp());
         if (transform == QuadRotator.NULL_TRANSFORM) {
             return null;

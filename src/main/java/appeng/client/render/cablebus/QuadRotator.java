@@ -20,11 +20,13 @@ package appeng.client.render.cablebus;
 
 import java.util.EnumMap;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.Direction;
 
 import appeng.client.render.FacingToRotation;
@@ -98,7 +100,15 @@ public class QuadRotator implements RenderContext.QuadTransform {
         if (cullFace != null) {
             quad.cullFace(rotation.rotate(cullFace));
         }
-        quad.nominalFace(rotation.rotate(nominalFace));
+        var rotatedNominalFace = rotation.rotate(nominalFace);
+        quad.nominalFace(rotatedNominalFace);
+
+        // The vanilla lighting engine expects the vertices of each quad
+        // in a specific order for each cardinal direction.
+        var data = new int[DefaultVertexFormat.BLOCK.getIntegerSize() * 4];
+        quad.toVanilla(0, data, 0, false);
+        BlockModel.FACE_BAKERY.recalculateWinding(data, rotatedNominalFace);
+        quad.fromVanilla(data, 0, false);
 
         return true;
     }
