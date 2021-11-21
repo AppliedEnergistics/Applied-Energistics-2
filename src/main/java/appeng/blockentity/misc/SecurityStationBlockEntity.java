@@ -61,6 +61,10 @@ import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.items.tools.BiometricCardItem;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
+import appeng.menu.ISubMenu;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.SecurityStationMenu;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
@@ -295,5 +299,19 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
 
     public AppEngInternalInventory getConfigSlot() {
         return this.configSlot;
+    }
+
+    @Override
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openMenu(player);
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return getItemFromBlockEntity();
+    }
+
+    public void openMenu(Player p) {
+        MenuOpener.open(SecurityStationMenu.TYPE, p, MenuLocator.forBlockEntitySide(this, getUp()));
     }
 }

@@ -26,13 +26,14 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.storage.ITerminalHost;
+import appeng.menu.ISubMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingStatusScreen
  */
-public class CraftingStatusMenu extends CraftingCPUMenu {
+public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
 
     private static final String ACTION_CYCLE_CPU = "cycleCpu";
 
@@ -49,9 +50,17 @@ public class CraftingStatusMenu extends CraftingCPUMenu {
     @GuiSync(7)
     public Component cpuName;
 
-    public CraftingStatusMenu(int id, final Inventory ip, final ITerminalHost te) {
-        super(TYPE, id, ip, te);
+    private final ITerminalHost host;
+
+    public CraftingStatusMenu(int id, Inventory ip, ITerminalHost host) {
+        super(TYPE, id, ip, host);
+        this.host = host;
         registerClientAction(ACTION_CYCLE_CPU, Boolean.class, this::cycleSelectedCPU);
+    }
+
+    @Override
+    public ITerminalHost getHost() {
+        return host;
     }
 
     @Override

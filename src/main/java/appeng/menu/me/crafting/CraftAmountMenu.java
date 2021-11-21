@@ -44,6 +44,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantic;
@@ -55,7 +56,7 @@ import appeng.util.inv.AppEngInternalInventory;
 /**
  * @see appeng.client.gui.me.crafting.CraftAmountScreen
  */
-public class CraftAmountMenu extends AEBaseMenu {
+public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
     public static final MenuType<CraftAmountMenu> TYPE = MenuTypeBuilder
             .create(CraftAmountMenu::new, ITerminalHost.class)
@@ -75,11 +76,18 @@ public class CraftAmountMenu extends AEBaseMenu {
     @GuiSync(1)
     private int initialAmount = -1;
 
-    public CraftAmountMenu(int id, Inventory ip, final ITerminalHost te) {
-        super(TYPE, id, ip, te);
+    private final ITerminalHost host;
 
+    public CraftAmountMenu(int id, Inventory ip, ITerminalHost host) {
+        super(TYPE, id, ip, host);
+        this.host = host;
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
         this.addSlot(this.craftingItem, SlotSemantic.MACHINE_OUTPUT);
+    }
+
+    @Override
+    public ITerminalHost getHost() {
+        return host;
     }
 
     /**

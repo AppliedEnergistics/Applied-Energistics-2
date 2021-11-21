@@ -18,6 +18,8 @@
 
 package appeng.items.contents;
 
+import java.util.function.BiConsumer;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -40,14 +42,18 @@ import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.NullInventory;
+import appeng.menu.ISubMenu;
 import appeng.util.ConfigManager;
 
 public class PortableCellViewer extends ItemMenuHost implements IPortableCell {
+    private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEMonitorHandler<?> cellMonitor;
     private final IAEItemPowerStorage ips;
 
-    public PortableCellViewer(Player player, int slot, ItemStack itemStack) {
+    public PortableCellViewer(Player player, int slot, ItemStack itemStack,
+            BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(player, slot, itemStack);
+        this.returnMainMenu = returnMainMenu;
         IMEInventory<?> inv = StorageCells.getCellInventory(itemStack, null);
         if (inv == null) {
             inv = NullInventory.of(StorageChannels.items());
@@ -89,5 +95,15 @@ public class PortableCellViewer extends ItemMenuHost implements IPortableCell {
 
         out.readFromNBT(getItemStack().getOrCreateTag().copy());
         return out;
+    }
+
+    @Override
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        returnMainMenu.accept(player, subMenu);
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return getItemStack();
     }
 }

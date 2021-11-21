@@ -24,11 +24,12 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.helpers.IPriorityHost;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.ISubMenu;
 
 /**
  * @see appeng.client.gui.implementations.PriorityScreen
  */
-public class PriorityMenu extends AEBaseMenu {
+public class PriorityMenu extends AEBaseMenu implements ISubMenu {
 
     private static final String ACTION_SET_PRIORITY = "setPriority";
 
@@ -42,14 +43,14 @@ public class PriorityMenu extends AEBaseMenu {
             })
             .build("priority");
 
-    private final IPriorityHost priHost;
+    private final IPriorityHost host;
 
     private int priorityValue;
 
-    public PriorityMenu(int id, final Inventory ip, final IPriorityHost te) {
-        super(TYPE, id, ip, te);
-        this.priHost = te;
-        this.priorityValue = te.getPriority();
+    public PriorityMenu(int id, Inventory ip, IPriorityHost host) {
+        super(TYPE, id, ip, host);
+        this.host = host;
+        this.priorityValue = host.getPriority();
 
         registerClientAction(ACTION_SET_PRIORITY, Integer.class, this::setPriority);
     }
@@ -62,7 +63,7 @@ public class PriorityMenu extends AEBaseMenu {
                 this.priorityValue = newValue;
                 sendClientAction(ACTION_SET_PRIORITY, newValue);
             } else {
-                this.priHost.setPriority(newValue);
+                this.host.setPriority(newValue);
                 this.priorityValue = newValue;
             }
         }
@@ -78,8 +79,9 @@ public class PriorityMenu extends AEBaseMenu {
         return priorityValue;
     }
 
-    public IPriorityHost getPriorityHost() {
-        return this.priHost;
+    @Override
+    public IPriorityHost getHost() {
+        return this.host;
     }
 
 }

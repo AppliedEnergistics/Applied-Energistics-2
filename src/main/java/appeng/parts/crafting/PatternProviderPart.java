@@ -33,12 +33,13 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
 import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.IPatternProviderHost;
 import appeng.items.parts.PartModels;
+import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.implementations.PatternProviderMenu;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
@@ -109,14 +110,23 @@ public class PatternProviderPart extends BasicStatePart implements IPatternProvi
     @Override
     public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            MenuOpener.open(getMenuType(), p, MenuLocator.forPart(this));
+            openMenu(p);
         }
         return true;
     }
 
+    private void openMenu(Player p) {
+        MenuOpener.open(PatternProviderMenu.TYPE, p, MenuLocator.forPart(this));
+    }
+
     @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEParts.PATTERN_PROVIDER.stack();
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openMenu(player);
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return getItemStack();
     }
 
     @Override

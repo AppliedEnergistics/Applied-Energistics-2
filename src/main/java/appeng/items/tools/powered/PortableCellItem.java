@@ -28,6 +28,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -67,9 +68,25 @@ public class PortableCellItem extends AEBasePoweredItem
         return 80d;
     }
 
+    /**
+     * Open a wireless terminal from a slot in the player inventory, i.e. activated via hotkey.
+     *
+     * @return True if the menu was opened.
+     */
+    public boolean openFromInventory(Player player, int inventorySlot) {
+        var is = player.getInventory().getItem(inventorySlot);
+        if (is.getItem() == this) {
+            return MenuOpener.open(getMenuType(), player, MenuLocator.forInventorySlot(inventorySlot));
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
-        MenuOpener.open(MEPortableCellMenu.TYPE, player, MenuLocator.forHand(player, hand));
+        if (!level.isClientSide()) {
+            MenuOpener.open(getMenuType(), player, MenuLocator.forHand(player, hand));
+        }
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
@@ -139,7 +156,7 @@ public class PortableCellItem extends AEBasePoweredItem
 
     @Override
     public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
-        return new PortableCellViewer(player, inventorySlot, stack);
+        return new PortableCellViewer(player, inventorySlot, stack, (p, sm) -> openFromInventory(p, inventorySlot));
     }
 
     @Override
@@ -175,5 +192,9 @@ public class PortableCellItem extends AEBasePoweredItem
             return bytesPerType;
         }
 
+    }
+
+    protected MenuType<MEPortableCellMenu> getMenuType() {
+        return MEPortableCellMenu.TYPE;
     }
 }

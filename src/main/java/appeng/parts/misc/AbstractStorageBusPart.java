@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
@@ -67,6 +68,7 @@ import appeng.me.storage.IHandlerAdapter;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.NullInventory;
+import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.parts.PartAdjacentApi;
@@ -182,10 +184,26 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
     @Override
     public final boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isClientSide()) {
-            MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+            openConfigMenu(player);
         }
         return true;
     }
+
+    protected final void openConfigMenu(Player player) {
+        MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+    }
+
+    @Override
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openConfigMenu(player);
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return getItemStack();
+    }
+
+    protected abstract MenuType<?> getMenuType();
 
     @Override
     public final void getBoxes(final IPartCollisionHelper bch) {

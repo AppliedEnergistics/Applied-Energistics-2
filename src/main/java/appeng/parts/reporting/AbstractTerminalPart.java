@@ -38,6 +38,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
+import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.items.ItemTerminalMenu;
@@ -111,6 +112,16 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
             MenuOpener.open(getMenuType(player), player, MenuLocator.forPart(this));
         }
         return true;
+    }
+
+    @Override
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        MenuOpener.open(getMenuType(player), player, subMenu.getLocator());
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return getItemStack();
     }
 
     public MenuType<?> getMenuType(final Player player) {

@@ -45,6 +45,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
+import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.util.ConfigInventory;
@@ -191,14 +192,20 @@ public abstract class AbstractFormationPlanePart<T extends AEKey> extends Upgrad
     }
 
     @Override
-    public ItemStack getItemStackRepresentation() {
-        return getItemStack();
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openConfigMenu(player);
     }
 
     @Override
-    public MenuType<?> getMenuType() {
-        return null;
+    public ItemStack getMainMenuIcon() {
+        return getItemStack();
     }
+
+    private void openConfigMenu(Player player) {
+        MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+    }
+
+    protected abstract MenuType<?> getMenuType();
 
     /**
      * Creates a partition list to filter stacks being injected into the plane against. If an inverter card is present,
@@ -263,7 +270,7 @@ public abstract class AbstractFormationPlanePart<T extends AEKey> extends Upgrad
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isClientSide()) {
-            MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+            openConfigMenu(player);
         }
         return true;
     }

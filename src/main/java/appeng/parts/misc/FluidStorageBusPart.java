@@ -34,7 +34,6 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.storage.StorageAdapter;
@@ -86,11 +85,6 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<AEFluidKey, Stor
         } else {
             return MODELS_OFF;
         }
-    }
-
-    @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEParts.FLUID_STORAGE_BUS.stack();
     }
 
     @Override

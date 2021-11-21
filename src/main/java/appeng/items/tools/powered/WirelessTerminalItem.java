@@ -80,7 +80,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
     public boolean openFromInventory(Player player, int inventorySlot) {
         var is = player.getInventory().getItem(inventorySlot);
 
-        if (!is.isEmpty() && checkPreconditions(is, player)) {
+        if (checkPreconditions(is, player)) {
             return MenuOpener.open(getMenuType(), player, MenuLocator.forInventorySlot(inventorySlot));
         }
         return false;
@@ -93,7 +93,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         var is = player.getItemInHand(hand);
 
-        if (!is.isEmpty() && checkPreconditions(is, player)) {
+        if (checkPreconditions(is, player)) {
             if (MenuOpener.open(getMenuType(), player, MenuLocator.forHand(player, hand))) {
                 return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), is);
             }
@@ -145,7 +145,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
     @Nullable
     @Override
     public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
-        return new WirelessTerminalMenuHost(player, inventorySlot, stack);
+        return new WirelessTerminalMenuHost(player, inventorySlot, stack,
+                (p, subMenu) -> openFromInventory(p, inventorySlot));
     }
 
     /**
@@ -154,6 +155,10 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
      * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
      */
     protected boolean checkPreconditions(ItemStack item, Player player) {
+        if (item.isEmpty() || item.getItem() != this) {
+            return false;
+        }
+
         var level = player.getCommandSenderWorld();
         if (level.isClientSide()) {
             return false;

@@ -33,7 +33,6 @@ import appeng.api.storage.ItemStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.storage.StorageAdapter;
@@ -87,11 +86,6 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<AEItemKey, Storag
         } else {
             return MODELS_OFF;
         }
-    }
-
-    @Override
-    public ItemStack getItemStackRepresentation() {
-        return AEParts.ITEM_STORAGE_BUS.stack();
     }
 
     @Override

@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,6 +37,10 @@ import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.IPatternProviderHost;
+import appeng.menu.ISubMenu;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.PatternProviderMenu;
 import appeng.util.Platform;
 
 public class PatternProviderBlockEntity extends AENetworkBlockEntity implements IPatternProviderHost {
@@ -140,7 +145,12 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public ItemStack getItemStackRepresentation() {
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openMenu(player);
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
         return AEBlocks.PATTERN_PROVIDER.stack();
     }
 
@@ -159,5 +169,9 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     public boolean isOmniDirectional() {
         return this.omniDirectional;
+    }
+
+    public void openMenu(Player player) {
+        MenuOpener.open(PatternProviderMenu.TYPE, player, MenuLocator.forBlockEntitySide(this, getForward()));
     }
 }

@@ -21,6 +21,8 @@ package appeng.menu;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
@@ -41,6 +43,7 @@ public final class MenuOpener {
     }
 
     public static boolean open(MenuType<?> type, Player player, MenuLocator locator) {
+        Preconditions.checkArgument(!player.getLevel().isClientSide(), "Menus must be opened on the server.");
         Opener opener = registry.get(type);
         if (opener == null) {
             AELog.warn("Trying to open menu for unknown menu type {}", type);

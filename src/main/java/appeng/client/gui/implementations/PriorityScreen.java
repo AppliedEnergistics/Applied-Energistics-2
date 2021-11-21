@@ -33,15 +33,12 @@ import appeng.menu.implementations.PriorityMenu;
 
 public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
 
-    private final AESubScreen subGui;
-
     private final NumberEntryWidget priority;
 
     public PriorityScreen(PriorityMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
-        this.subGui = new AESubScreen(menu.getPriorityHost());
-        this.subGui.addBackButton("back", widgets);
+        AESubScreen.addBackButton(menu, "back", widgets);
 
         this.priority = new NumberEntryWidget(NumberEntryType.PRIORITY);
         this.priority.setTextFieldBounds(62, 57, 50);
@@ -50,7 +47,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
         this.priority.setOnChange(this::savePriority);
         this.priority.setOnConfirm(() -> {
             savePriority();
-            this.subGui.goBack();
+            AESubScreen.goBack();
         });
         widgets.add("priority", priority);
     }

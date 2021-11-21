@@ -49,8 +49,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
 
         this.next = widgets.addButton("next", GuiText.Next.text(), this::confirm);
 
-        AESubScreen subGui = new AESubScreen(menu.getTarget());
-        subGui.addBackButton("back", widgets);
+        AESubScreen.addBackButton(menu, "back", widgets);
 
         this.amountToCraft = new NumberEntryWidget(NumberEntryType.CRAFT_ITEM_COUNT);
         this.amountToCraft.setValue(1);

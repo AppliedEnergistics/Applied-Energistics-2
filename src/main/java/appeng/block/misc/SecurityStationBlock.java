@@ -35,9 +35,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
-import appeng.menu.MenuLocator;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.SecurityStationMenu;
 import appeng.util.InteractionUtil;
 
 public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlockEntity> {
@@ -69,11 +66,10 @@ public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlock
             return InteractionResult.PASS;
         }
 
-        final SecurityStationBlockEntity tg = this.getBlockEntity(level, pos);
-        if (tg != null) {
+        var be = this.getBlockEntity(level, pos);
+        if (be != null) {
             if (!level.isClientSide()) {
-                MenuOpener.open(SecurityStationMenu.TYPE, p,
-                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
+                be.openMenu(p);
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide());

@@ -18,15 +18,22 @@
 
 package appeng.helpers;
 
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.entity.player.Player;
 
+import appeng.menu.ISubMenu;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InterfaceMenu;
 
 public interface IItemInterfaceHost extends IInterfaceHost {
     DualityItemInterface getInterfaceDuality();
 
+    default void openMenu(Player player, MenuLocator locator) {
+        MenuOpener.open(InterfaceMenu.ITEM_TYPE, player, locator);
+    }
+
     @Override
-    default MenuType<?> getMenuType() {
-        return InterfaceMenu.ITEM_TYPE;
+    default void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openMenu(player, subMenu.getLocator());
     }
 }
