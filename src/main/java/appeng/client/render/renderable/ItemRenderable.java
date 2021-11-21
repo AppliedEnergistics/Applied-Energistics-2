@@ -40,9 +40,9 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
     }
 
     @Override
-    public void renderBlockEntityAt(T te, float partialTicks, PoseStack poseStack,
+    public void renderBlockEntityAt(T be, float partialTicks, PoseStack poseStack,
             MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
-        Pair<ItemStack, Transformation> pair = this.f.apply(te);
+        Pair<ItemStack, Transformation> pair = this.f.apply(be);
         if (pair != null && pair.getLeft() != null) {
             poseStack.pushPose();
             if (pair.getRight() != null) {

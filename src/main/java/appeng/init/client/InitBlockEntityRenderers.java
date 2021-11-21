@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.render.crafting.CraftingMonitorTESR;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
-import appeng.client.render.tesr.ChargerTESR;
+import appeng.client.render.tesr.ChargerBlockEntityRenderer;
 import appeng.client.render.tesr.ChestBlockEntityRenderer;
 import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
@@ -46,7 +46,7 @@ public final class InitBlockEntityRenderers {
 
         register(AEBlockEntities.INSCRIBER, InscriberTESR::new);
         register(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
-        register(AEBlockEntities.CHARGER, ChargerTESR.FACTORY);
+        register(AEBlockEntities.CHARGER, ChargerBlockEntityRenderer.FACTORY);
         register(AEBlockEntities.DRIVE, DriveLedBlockEntityRenderer::new);
         register(AEBlockEntities.CHEST, ChestBlockEntityRenderer::new);
         register(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorTESR::new);

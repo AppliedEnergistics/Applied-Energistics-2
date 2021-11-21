@@ -22,11 +22,14 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import com.mojang.math.Vector3f;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -44,10 +48,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.ChargerBlockEntity;
-import appeng.client.render.effects.ParticleTypes;
+import appeng.client.render.FacingToRotation;
+import appeng.client.render.effects.LightningArcParticleData;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
-import appeng.core.definitions.AEItems;
 import appeng.util.InteractionUtil;
 
 public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
@@ -86,22 +90,43 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
             return;
         }
 
-        if (r.nextFloat() < 0.98) {
-            return;
-        }
+        var blockEntity = this.getBlockEntity(level, pos);
+        if (blockEntity != null && blockEntity.isWorking()) {
+            if (r.nextFloat() < 0.5) {
+                return;
+            }
 
-        final ChargerBlockEntity blockEntity = this.getBlockEntity(level, pos);
-        if (blockEntity != null && AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
-                .isSameAs(blockEntity.getInternalInventory().getStackInSlot(0))) {
-            final double xOff = 0.0;
-            final double yOff = 0.0;
-            final double zOff = 0.0;
+            var rotation = FacingToRotation.get(blockEntity.getForward(), blockEntity.getUp());
 
             for (int bolts = 0; bolts < 3; bolts++) {
+                // Slightly offset the lightning arc on the x/z plane
+                var xOff = Mth.randomBetween(r, -0.15f, 0.15f);
+                var zOff = Mth.randomBetween(r, -0.15f, 0.15f);
+
+                // Compute two points in the charger block. One at the bottom, and one on the top.
+                // Account for the rotation while doing this.
+                var center = new Vector3f(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+                var origin = new Vector3f(xOff, -0.3f, zOff);
+                origin.transform(rotation.getRot());
+                origin.add(center);
+                var target = new Vector3f(xOff, 0.3f, zOff);
+                target.transform(rotation.getRot());
+                target.add(center);
+
+                // Split the arcs between arc coming from the top/bottom of the charger since it's symmetrical
+                if (r.nextBoolean()) {
+                    var tmp = target;
+                    target = origin;
+                    origin = tmp;
+                }
+
                 if (AppEngClient.instance().shouldAddParticles(r)) {
-                    Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING,
-                            xOff + 0.5 + pos.getX(),
-                            yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
+                    Minecraft.getInstance().particleEngine.createParticle(
+                            new LightningArcParticleData(new Vec3(target)),
+                            origin.x(),
+                            origin.y(),
+                            origin.z(),
+                            0.0, 0.0, 0.0);
                 }
             }
         }
