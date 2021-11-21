@@ -32,7 +32,7 @@ public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback
 
         configDir = Files.createTempDirectory("ae2config");
         if (AEConfig.instance() == null) {
-            AEConfig.load(configDir.toFile());
+            AEConfig.load(configDir);
         }
     }
 

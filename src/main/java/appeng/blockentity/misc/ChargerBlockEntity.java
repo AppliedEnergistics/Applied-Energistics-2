@@ -53,6 +53,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
     private static final int POWER_MAXIMUM_AMOUNT = 1600;
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
+    private boolean working;
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
 
@@ -79,21 +80,26 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
 
     @Override
     protected boolean readFromStream(final FriendlyByteBuf data) {
-        final boolean c = super.readFromStream(data);
-        try {
+        var changed = super.readFromStream(data);
+
+        this.working = data.readBoolean();
+
+        if (data.readBoolean()) {
             var item = AEItemKey.fromPacket(data);
-            final ItemStack is = item.toStack();
-            this.inv.setItemDirect(0, is);
-        } catch (final Throwable t) {
+            this.inv.setItemDirect(0, item.toStack());
+        } else {
             this.inv.setItemDirect(0, ItemStack.EMPTY);
         }
-        return c; // TESR doesn't need updates!
+
+        return changed; // TESR doesn't need updates!
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
+        data.writeBoolean(working);
         var is = AEItemKey.of(this.inv.getStackInSlot(0));
+        data.writeBoolean(is != null);
         if (is != null) {
             is.writeToPacket(data);
         }
@@ -154,8 +160,11 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     private boolean doWork() {
-        final ItemStack myItem = this.inv.getStackInSlot(0);
-        boolean changed = false;
+        var wasWorking = this.working;
+        this.working = false;
+        var changed = false;
+
+        var myItem = this.inv.getStackInSlot(0);
 
         if (!myItem.isEmpty()) {
 
@@ -168,9 +177,9 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                     double extractedAmount = this.extractAEPower(chargeRate, Actionable.MODULATE,
                             PowerMultiplier.CONFIG);
 
-                    final double missingChargeRate = chargeRate - extractedAmount;
-                    final double missingAEPower = ps.getAEMaxPower(myItem) - ps.getAECurrentPower(myItem);
-                    final double toExtract = Math.min(missingChargeRate, missingAEPower);
+                    var missingChargeRate = chargeRate - extractedAmount;
+                    var missingAEPower = ps.getAEMaxPower(myItem) - ps.getAECurrentPower(myItem);
+                    var toExtract = Math.min(missingChargeRate, missingAEPower);
 
                     var grid = getMainNode().getGrid();
                     if (grid != null) {
@@ -179,23 +188,25 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                     }
 
                     if (extractedAmount > 0) {
-                        final double adjustment = ps.injectAEPower(myItem, extractedAmount, Actionable.MODULATE);
+                        var adjustment = ps.injectAEPower(myItem, extractedAmount, Actionable.MODULATE);
 
                         this.setInternalCurrentPower(this.getInternalCurrentPower() + adjustment);
 
+                        this.working = true;
                         changed = true;
                     }
                 }
             } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
-                    && AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem) && Platform.getRandomFloat() > 0.8f) // simulate
-            // wait
-            {
-                this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
+                    && AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem)) {
+                this.working = true;
+                if (Platform.getRandomFloat() > 0.8f) {
+                    this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
-                this.inv.setItemDirect(0, charged);
+                    ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                    this.inv.setItemDirect(0, charged);
 
-                changed = true;
+                    changed = true;
+                }
             }
         }
 
@@ -212,11 +223,15 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             changed = true;
         }
 
-        if (changed) {
+        if (changed || this.working != wasWorking) {
             this.markForUpdate();
         }
 
         return true;
+    }
+
+    public boolean isWorking() {
+        return working;
     }
 
     private static class ChargerInvFilter implements IAEItemFilter {

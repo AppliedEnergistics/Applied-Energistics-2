@@ -29,7 +29,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Contains the target point of the lightning arc (the source point is infered from the particle starting position).
+ * Contains the target point of the lightning arc (the source point is inferred from the particle starting position).
  */
 public class LightningArcParticleData implements ParticleOptions {
 
