@@ -44,11 +44,6 @@ public final class InitStructures {
 
         StructureFeatures.register(MeteoriteStructure.ID.toString(),
                 MeteoriteStructure.CONFIGURED_INSTANCE);
-
-        // Since we now always add our structure, we need to consider the superflat generator
-// TODO 1.18       FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(
-// TODO 1.18               MeteoriteStructure.INSTANCE,
-// TODO 1.18               MeteoriteStructure.CONFIGURED_INSTANCE);
     }
 
     // This mirrors the Vanilla registration method for structures, but uses the
