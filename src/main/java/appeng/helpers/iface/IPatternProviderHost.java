@@ -27,9 +27,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.helpers.IPriorityHost;
 
-public interface IPatternProviderHost extends IConfigurableObject, IPriorityHost {
+public interface IPatternProviderHost extends IConfigurableObject {
     DualityPatternProvider getDuality();
 
     /**
@@ -40,16 +39,6 @@ public interface IPatternProviderHost extends IConfigurableObject, IPriorityHost
     EnumSet<Direction> getTargets();
 
     void saveChanges();
-
-    @Override
-    default int getPriority() {
-        return getDuality().getPriority();
-    }
-
-    @Override
-    default void setPriority(int newValue) {
-        getDuality().setPriority(newValue);
-    }
 
     @Nonnull
     @Override

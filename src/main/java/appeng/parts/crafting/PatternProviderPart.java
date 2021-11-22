@@ -36,7 +36,6 @@ import appeng.core.AppEng;
 import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.IPatternProviderHost;
 import appeng.items.parts.PartModels;
-import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternProviderMenu;
@@ -117,16 +116,6 @@ public class PatternProviderPart extends BasicStatePart implements IPatternProvi
 
     private void openMenu(Player p) {
         MenuOpener.open(PatternProviderMenu.TYPE, p, MenuLocator.forPart(this));
-    }
-
-    @Override
-    public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openMenu(player);
-    }
-
-    @Override
-    public ItemStack getMainMenuIcon() {
-        return getItemStack();
     }
 
     @Override

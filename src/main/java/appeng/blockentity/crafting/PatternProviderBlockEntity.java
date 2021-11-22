@@ -34,10 +34,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.core.definitions.AEBlocks;
 import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.IPatternProviderHost;
-import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternProviderMenu;
@@ -142,16 +140,6 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     @Override
     public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
-    }
-
-    @Override
-    public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openMenu(player);
-    }
-
-    @Override
-    public ItemStack getMainMenuIcon() {
-        return AEBlocks.PATTERN_PROVIDER.stack();
     }
 
     @Override

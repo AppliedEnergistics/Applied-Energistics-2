@@ -3,16 +3,17 @@ package appeng.me.service.helpers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Iterators;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.crafting.IPatternDetails;
@@ -27,10 +28,7 @@ import appeng.api.storage.data.KeyCounter;
  * Lists the crafting methods in the network, and related information.
  */
 public class NetworkCraftingMethods {
-    private final Map<IPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<>();
-    /**
-     * The sets here are linked hash sets to preserve highest -> lowest priority ordering.
-     */
+    private final Map<IPatternDetails, CraftingMediumList> craftingMethods = new HashMap<>();
     private final Map<AEKey, Set<IPatternDetails>> craftableItems = new HashMap<>();
     /**
      * Used for looking up craftable alternatives using fuzzy search (i.e. ignore NBT).
@@ -48,18 +46,6 @@ public class NetworkCraftingMethods {
         var helper = new ProviderHelper();
         for (ICraftingProvider provider : craftingProviders) {
             provider.provideCrafting(helper);
-        }
-        // Sort options. Highest priority first.
-        helper.offeredOptions.sort(Comparator.comparingInt(o -> -o.priority));
-
-        for (var method : helper.offeredOptions) {
-            // output -> pattern (for simulation)
-            var primaryOutput = method.pattern.getPrimaryOutput();
-            craftableItemsList.add(primaryOutput.what(), 1);
-            craftableItems.computeIfAbsent(primaryOutput.what(), k -> new LinkedHashSet<>()).add(method.pattern);
-
-            // pattern -> method (for execution)
-            craftingMethods.computeIfAbsent(method.pattern, d -> new ArrayList<>()).add(method.medium);
         }
     }
 
@@ -105,23 +91,38 @@ public class NetworkCraftingMethods {
     }
 
     public Iterable<ICraftingMedium> getMediums(IPatternDetails key) {
-        return this.craftingMethods.getOrDefault(key, Collections.emptyList());
-    }
-
-    private record OfferedCraftingOption(ICraftingMedium medium, IPatternDetails pattern, int priority) {
+        var mediumList = this.craftingMethods.get(key);
+        if (mediumList != null) {
+            return mediumList.cycleIterable;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private class ProviderHelper implements ICraftingProviderHelper {
-        private final List<OfferedCraftingOption> offeredOptions = new ArrayList<>();
-
         @Override
-        public void addCraftingOption(ICraftingMedium medium, IPatternDetails pattern, int priority) {
-            offeredOptions.add(new OfferedCraftingOption(medium, pattern, priority));
+        public void addCraftingOption(ICraftingMedium medium, IPatternDetails pattern) {
+            // output -> pattern (for simulation)
+            var primaryOutput = pattern.getPrimaryOutput();
+            craftableItemsList.add(primaryOutput.what(), 1);
+            craftableItems.computeIfAbsent(primaryOutput.what(), k -> new HashSet<>()).add(pattern);
+
+            // pattern -> method (for execution)
+            craftingMethods.computeIfAbsent(pattern, d -> new CraftingMediumList()).mediums.add(medium);
         }
 
         @Override
         public void setEmitable(AEKey what) {
-            emitableItems.add(what); // write to network methods directly.
+            emitableItems.add(what);
         }
+    }
+
+    private static class CraftingMediumList {
+        private final List<ICraftingMedium> mediums = new ArrayList<>();
+        /**
+         * Cycling iterator for round-robin.
+         */
+        private final Iterator<ICraftingMedium> cycleIterator = Iterators.cycle(mediums);
+        private final Iterable<ICraftingMedium> cycleIterable = () -> Iterators.limit(cycleIterator, mediums.size());
     }
 }

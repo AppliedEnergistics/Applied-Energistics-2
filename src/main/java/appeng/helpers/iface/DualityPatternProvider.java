@@ -96,7 +96,6 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
      * target, the pattern won't be pushed. Always contains keys with the secondary component dropped.
      */
     private final Set<AEKey> patternInputs = new HashSet<>();
-    private int priority;
     // Pattern sending logic
     private final List<GenericStack> sendList = new ArrayList<>();
     private Direction sendDirection;
@@ -119,20 +118,9 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         });
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-        this.host.saveChanges();
-        this.updatePatterns();
-    }
-
     public void writeToNBT(CompoundTag tag) {
         this.configManager.writeToNBT(tag);
         this.patternInventory.writeToNBT(tag, "patterns");
-        tag.putInt("priority", this.priority);
 
         ListTag sendListTag = new ListTag();
         for (var toSend : sendList) {
@@ -149,7 +137,6 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     public void readFromNBT(CompoundTag tag) {
         this.configManager.readFromNBT(tag);
         this.patternInventory.readFromNBT(tag, "patterns");
-        this.priority = tag.getInt("priority");
 
         ListTag sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
         for (int i = 0; i < sendListTag.size(); ++i) {
@@ -210,7 +197,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     @Override
     public void provideCrafting(ICraftingProviderHelper craftingTracker) {
         for (var details : this.patterns) {
-            craftingTracker.addCraftingOption(this, details, this.priority);
+            craftingTracker.addCraftingOption(this, details);
         }
     }
 
