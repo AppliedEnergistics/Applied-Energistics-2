@@ -28,13 +28,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
-import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
@@ -45,8 +41,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplie
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 
 import appeng.core.AppEng;
-import appeng.datagen.providers.tags.ConventionTags;
-import appeng.worldgen.meteorite.fallout.FalloutMode;
+import appeng.worldgen.meteorite.fallout.Fallout;
 
 public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguration> {
 
@@ -124,11 +119,7 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
         CraterType craterType = determineCraterType(spawnBiome, random);
         boolean pureCrater = random.nextFloat() > .9f;
 
-        FalloutMode fallout = FalloutMode.NONE;
-        if (generator instanceof NoiseBasedChunkGenerator noiseBasedChunkGenerator) {
-            // TODO 1.18: Make biome based, sadly :-|
-            fallout = getFalloutFromBaseBlock(Blocks.GRASS_BLOCK.defaultBlockState());
-        }
+        var fallout = Fallout.fromBiome(spawnBiome);
 
         piecesBuilder.addPiece(
                 new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));
@@ -139,7 +130,7 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
      *
      * @return true, if it found a single block of water
      */
-    private static boolean locateWaterAroundTheCrater(BlockPos pos, float radius, PieceGenerator.Context context) {
+    private static boolean locateWaterAroundTheCrater(BlockPos pos, float radius, PieceGenerator.Context<?> context) {
         var generator = context.chunkGenerator();
         var heightAccessor = context.heightAccessor();
 
@@ -265,21 +256,6 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
         }
 
         return CraterType.NORMAL;
-    }
-
-    private static FalloutMode getFalloutFromBaseBlock(BlockState blockState) {
-        var block = blockState.getBlock();
-
-        if (BlockTags.SAND.contains(block)) {
-            return FalloutMode.SAND;
-        } else if (ConventionTags.TERRACOTTA_BLOCK.contains(block)) {
-            return FalloutMode.TERRACOTTA;
-        } else if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK || block == Blocks.ICE
-                || block == Blocks.PACKED_ICE) {
-            return FalloutMode.ICE_SNOW;
-        } else {
-            return FalloutMode.DEFAULT;
-        }
     }
 
 }
