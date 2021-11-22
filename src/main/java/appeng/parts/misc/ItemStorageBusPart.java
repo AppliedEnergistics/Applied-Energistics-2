@@ -28,8 +28,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.ItemStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
@@ -67,7 +67,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<AEItemKey, Storag
 
     @Nullable
     @Override
-    protected IMEInventory<AEItemKey> adaptExternalApi(Storage<ItemVariant> handler, boolean extractableOnly,
+    protected MEStorage adaptExternalApi(Storage<ItemVariant> handler, boolean extractableOnly,
             Runnable alertDevice) {
         return new StorageAdapter<>(IVariantConversion.ITEM, handler, extractableOnly) {
             @Override

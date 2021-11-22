@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.FluidStorageChannel;
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AppEng;
@@ -65,7 +65,7 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<AEFluidKey, Stor
 
     @Nullable
     @Override
-    protected IMEInventory<AEFluidKey> adaptExternalApi(Storage<FluidVariant> handler, boolean extractableOnly,
+    protected MEStorage adaptExternalApi(Storage<FluidVariant> handler, boolean extractableOnly,
             Runnable alertDevice) {
         return new StorageAdapter<>(IVariantConversion.FLUID, handler, extractableOnly) {
             @Override

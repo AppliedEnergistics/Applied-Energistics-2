@@ -23,31 +23,26 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.client.gui.me.common.MEMonitorableScreen;
-import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.IScrollSource;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.util.prioritylist.IPartitionList;
 
-public class ItemTerminalScreen<C extends MEMonitorableMenu<AEItemKey>>
+public class ItemTerminalScreen<C extends MEMonitorableMenu>
         extends MEMonitorableScreen<AEItemKey, C> {
     public ItemTerminalScreen(C menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
@@ -55,26 +50,12 @@ public class ItemTerminalScreen<C extends MEMonitorableMenu<AEItemKey>>
     }
 
     @Override
-    protected Repo<AEItemKey> createRepo(IScrollSource scrollSource) {
-        return new ItemRepo(scrollSource, this);
-    }
-
-    @Override
-    protected IPartitionList<AEItemKey> createPartitionList(List<ItemStack> viewCells) {
+    protected IPartitionList createPartitionList(List<ItemStack> viewCells) {
         return ViewCellItem.createFilter(StorageChannels.items(), viewCells);
     }
 
     @Override
-    protected void renderGridInventoryEntry(PoseStack poseStack, int x, int y,
-            GridInventoryEntry<AEItemKey> entry) {
-        // Annoying but easier than trying to splice into render item
-        ItemStack displayStack = entry.getWhat().toStack();
-        SimpleContainer displayInv = new SimpleContainer(displayStack);
-        super.renderSlot(poseStack, new Slot(displayInv, 0, x, y));
-    }
-
-    @Override
-    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<AEItemKey> entry, int mouseButton,
+    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry, int mouseButton,
             ClickType clickType) {
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
@@ -130,7 +111,7 @@ public class ItemTerminalScreen<C extends MEMonitorableMenu<AEItemKey>>
         }
     }
 
-    private boolean shouldCraftOnClick(GridInventoryEntry<AEItemKey> entry) {
+    private boolean shouldCraftOnClick(GridInventoryEntry entry) {
         // Always auto-craft when viewing only craftable items
         if (isViewOnlyCraftable()) {
             return true;

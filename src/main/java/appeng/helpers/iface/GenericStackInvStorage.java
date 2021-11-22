@@ -27,12 +27,12 @@ import appeng.util.IVariantConversion;
  * type.
  */
 public class GenericStackInvStorage<V extends TransferVariant<?>, T extends AEKey> implements Storage<V> {
-    private final IVariantConversion<V, T> conversion;
+    private final IVariantConversion<V> conversion;
     private final GenericStackInv inv;
     private final IStorageChannel<T> channel;
     private final List<View> storageViews;
 
-    public GenericStackInvStorage(IVariantConversion<V, T> conversion, IStorageChannel<T> channel,
+    public GenericStackInvStorage(IVariantConversion<V> conversion, IStorageChannel<T> channel,
             GenericStackInv inv) {
         this.conversion = conversion;
         this.channel = channel;

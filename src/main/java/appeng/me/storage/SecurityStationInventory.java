@@ -26,10 +26,9 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.core.definitions.AEItems;
@@ -39,7 +38,7 @@ import appeng.items.tools.BiometricCardItem;
  * Inventory for biometric cards. It does not allow duplicates/stacking, as such it simply stores the item keys for the
  * cards in a set.
  */
-public class SecurityStationInventory implements IMEInventory<AEItemKey> {
+public class SecurityStationInventory implements MEStorage {
 
     private final Set<AEItemKey> storedItems = new HashSet<>();
     private final SecurityStationBlockEntity blockEntity;
@@ -49,13 +48,14 @@ public class SecurityStationInventory implements IMEInventory<AEItemKey> {
     }
 
     @Override
-    public long insert(AEItemKey what, long amount, Actionable mode, IActionSource source) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (this.hasPermission(source)
-                && AEItems.BIOMETRIC_CARD.isSameAs(what)
-                && canAccept(what)
+                && what instanceof AEItemKey itemKey
+                && AEItems.BIOMETRIC_CARD.isSameAs(itemKey)
+                && canAccept(itemKey)
                 && amount > 0) {
             if (mode == Actionable.MODULATE) {
-                storedItems.add(what);
+                storedItems.add(itemKey);
                 blockEntity.inventoryChanged();
             }
             return 1;
@@ -74,11 +74,11 @@ public class SecurityStationInventory implements IMEInventory<AEItemKey> {
     }
 
     @Override
-    public long extract(AEItemKey what, long amount, Actionable mode, IActionSource source) {
-        if (this.hasPermission(source) && amount > 0) {
-            if (mode == Actionable.SIMULATE && storedItems.contains(what)) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (this.hasPermission(source) && amount > 0 && what instanceof AEItemKey itemKey) {
+            if (mode == Actionable.SIMULATE && storedItems.contains(itemKey)) {
                 return 1;
-            } else if (storedItems.remove(what)) {
+            } else if (storedItems.remove(itemKey)) {
                 this.blockEntity.inventoryChanged();
                 return 1;
             }
@@ -87,15 +87,10 @@ public class SecurityStationInventory implements IMEInventory<AEItemKey> {
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<AEItemKey> out) {
+    public void getAvailableStacks(KeyCounter out) {
         for (var storedItem : storedItems) {
             out.add(storedItem, 1);
         }
-    }
-
-    @Override
-    public IStorageChannel<AEItemKey> getChannel() {
-        return StorageChannels.items();
     }
 
     public boolean canAccept(AEItemKey what) {

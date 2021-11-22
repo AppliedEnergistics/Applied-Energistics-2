@@ -23,15 +23,14 @@ import java.util.Map;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
 public record CraftingPlan(GenericStack finalOutput,
         long bytes,
         boolean simulation,
         boolean multiplePaths,
-        KeyCounter<AEKey> usedItems,
-        KeyCounter<AEKey> emittedItems,
-        KeyCounter<AEKey> missingItems,
+        KeyCounter usedItems,
+        KeyCounter emittedItems,
+        KeyCounter missingItems,
         Map<IPatternDetails, Long> patternTimes) implements ICraftingPlan {
 }

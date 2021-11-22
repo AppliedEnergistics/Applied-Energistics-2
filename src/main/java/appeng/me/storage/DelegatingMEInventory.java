@@ -4,59 +4,53 @@ import java.util.Objects;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
 /**
- * Convenient base class for wrapping another {@link appeng.api.storage.IMEInventory} and forwarding
- * <strong>all</strong> methods to the base inventory.
+ * Convenient base class for wrapping another {@link MEStorage} and forwarding <strong>all</strong> methods to the base
+ * inventory.
  * <p/>
  * If no delegate is set, it will act like a {@link NullInventory}.
  */
-public class DelegatingMEInventory<T extends AEKey> implements IMEInventory<T> {
-    private IMEInventory<T> delegate;
+public class DelegatingMEInventory implements MEStorage {
+    private MEStorage delegate;
 
-    public DelegatingMEInventory(IMEInventory<T> delegate) {
+    public DelegatingMEInventory(MEStorage delegate) {
         this.delegate = Objects.requireNonNull(delegate, "delegate");
     }
 
-    protected IMEInventory<T> getDelegate() {
+    protected MEStorage getDelegate() {
         return delegate;
     }
 
-    protected void setDelegate(IMEInventory<T> delegate) {
+    protected void setDelegate(MEStorage delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public boolean isPreferredStorageFor(T input, IActionSource source) {
+    public boolean isPreferredStorageFor(AEKey input, IActionSource source) {
         return delegate.isPreferredStorageFor(input, source);
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         return delegate.insert(what, amount, mode, source);
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         return delegate.extract(what, amount, mode, source);
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
+    public void getAvailableStacks(KeyCounter out) {
         delegate.getAvailableStacks(out);
     }
 
     @Override
-    public KeyCounter<T> getAvailableStacks() {
+    public KeyCounter getAvailableStacks() {
         return delegate.getAvailableStacks();
-    }
-
-    @Override
-    public IStorageChannel<T> getChannel() {
-        return delegate.getChannel();
     }
 }

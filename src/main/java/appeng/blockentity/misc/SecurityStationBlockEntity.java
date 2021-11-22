@@ -47,13 +47,10 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
@@ -76,7 +73,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);
     private final IConfigManager cm = new ConfigManager();
     private final SecurityStationInventory inventory = new SecurityStationInventory(this);
-    private final MEMonitorHandler<AEItemKey> securityMonitor = new MEMonitorHandler<>(this.inventory);
+    private final MEMonitorHandler securityMonitor = new MEMonitorHandler(this.inventory);
     private long securityKey;
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isActive = false;
@@ -116,7 +113,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         }
     }
 
-    IMEInventory<AEItemKey> getSecurityInventory() {
+    MEStorage getSecurityInventory() {
         return this.inventory;
     }
 
@@ -224,11 +221,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        if (channel == StorageChannels.items()) {
-            return this.securityMonitor.cast(channel);
-        }
-        return null;
+    public IMEMonitor getInventory() {
+        return securityMonitor;
     }
 
     public boolean isPowered() {

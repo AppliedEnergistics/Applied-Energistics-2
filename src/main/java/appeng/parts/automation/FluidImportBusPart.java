@@ -81,7 +81,7 @@ public class FluidImportBusPart extends ImportBusPart<AEFluidKey, Storage<FluidV
 
         long remainingTransferAmount = calculateAmountPerTick();
 
-        var inv = grid.getStorageService().getInventory(this.getChannel());
+        var inv = grid.getStorageService().getInventory();
         try (var tx = Transaction.openOuter()) {
 
             // Try to find an extractable resource that fits our filter, and if we've found at least one,
@@ -143,7 +143,7 @@ public class FluidImportBusPart extends ImportBusPart<AEFluidKey, Storage<FluidV
     private boolean isInFilter(FluidVariant fluid) {
         for (var i = 0; i < this.getConfig().size(); i++) {
             var what = this.getConfig().getKey(i);
-            if (what != null && what.matches(fluid)) {
+            if (AEFluidKey.matches(what, fluid)) {
                 return true;
             }
         }

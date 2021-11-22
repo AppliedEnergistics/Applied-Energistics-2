@@ -44,12 +44,10 @@ import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -278,7 +276,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
      * condenser is only ever used if an item can't go anywhere else.
      */
     private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable {
-        private final CondenserItemInventory itemInventory = new CondenserItemInventory(CondenserBlockEntity.this);
+        private final CondenserInventory itemInventory = new CondenserInventory(CondenserBlockEntity.this);
 
         void outputChanged(ItemStack added, ItemStack removed) {
             this.itemInventory.updateOutput(added, removed);
@@ -291,12 +289,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         }
 
         @Override
-        public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-            if (channel == StorageChannels.items()) {
-                return (IMEMonitor<T>) this.itemInventory;
-            } else {
-                return new CondenserVoidInventory<>(CondenserBlockEntity.this, channel);
-            }
+        public IMEMonitor getInventory() {
+            return this.itemInventory;
         }
     }
 }

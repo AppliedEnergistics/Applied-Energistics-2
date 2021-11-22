@@ -52,9 +52,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
@@ -75,8 +73,7 @@ import appeng.util.inv.InternalInventoryHost;
 public abstract class DualityInterface<T extends AEKey> implements ICraftingRequester, IUpgradeableObject,
         IConfigurableObject, InternalInventoryHost {
 
-    protected final MEMonitorPassThrough<AEItemKey> items = new MEMonitorPassThrough<>(StorageChannels.items());
-    protected final MEMonitorPassThrough<AEFluidKey> fluids = new MEMonitorPassThrough<>(StorageChannels.fluids());
+    protected final MEMonitorPassThrough networkStorage = new MEMonitorPassThrough();
 
     protected final IInterfaceHost host;
     protected final IManagedGridNode mainNode;
@@ -97,13 +94,13 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
     /**
      * Configures what and how much to stock in this inventory.
      */
-    private final ConfigInventory<T> config = ConfigInventory.configStacks(getChannel(), getStorageSlots(),
+    private final ConfigInventory config = ConfigInventory.configStacks(getChannel(), getStorageSlots(),
             this::readConfig);
     /**
      * True if the interface is configured to stock certain types of resources.
      */
     private boolean hasConfig = false;
-    private final ConfigInventory<T> storage = ConfigInventory.storage(getChannel(), getStorageSlots(),
+    private final ConfigInventory storage = ConfigInventory.storage(getChannel(), getStorageSlots(),
             this::updatePlan);
 
     public DualityInterface(IManagedGridNode gridNode, IInterfaceHost host, ItemStack is) {
@@ -113,8 +110,7 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
                 .addService(IGridTickable.class, new Ticker());
         this.actionSource = new MachineSource(mainNode::getNode);
 
-        this.fluids.setChangeSource(this.actionSource);
-        this.items.setChangeSource(this.actionSource);
+        this.networkStorage.setChangeSource(this.actionSource);
 
         this.interfaceRequestSource = new InterfaceRequestSource(mainNode::getNode);
 
@@ -219,11 +215,9 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
     public void gridChanged() {
         var grid = mainNode.getGrid();
         if (grid != null) {
-            this.items.setMonitor(grid.getStorageService().getInventory(StorageChannels.items()));
-            this.fluids.setMonitor(grid.getStorageService().getInventory(StorageChannels.fluids()));
+            this.networkStorage.setMonitor(grid.getStorageService().getInventory());
         } else {
-            this.items.setMonitor(null);
-            this.fluids.setMonitor(null);
+            this.networkStorage.setMonitor(null);
         }
 
         this.notifyNeighbors();
@@ -234,22 +228,22 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
         return this.cm;
     }
 
-    public ConfigInventory<T> getStorage() {
+    public ConfigInventory getStorage() {
         return storage;
     }
 
-    public ConfigInventory<T> getConfig() {
+    public ConfigInventory getConfig() {
         return config;
     }
 
     private IStorageMonitorable getMonitorable(IActionSource src) {
         // If the given action source can access the grid, return the real inventory
         if (Platform.canAccess(mainNode, src)) {
-            return this::getInventory;
+            return () -> getInventory();
         }
 
         // Otherwise, return a fallback that only exposes the local interface inventory
-        return this::getLocalInventory;
+        return () -> getLocalInventory();
     }
 
     /**
@@ -259,24 +253,18 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
      * If the interface has configured slots, it will <b>always</b> expose its local inventory instead of the grid's
      * inventory.
      */
-    private <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    private IMEMonitor getInventory() {
         if (hasConfig) {
-            return getLocalInventory(channel);
+            return getLocalInventory();
         }
 
-        if (channel == StorageChannels.items()) {
-            return this.items.cast(channel);
-        } else if (channel == StorageChannels.fluids()) {
-            return this.fluids.cast(channel);
-        }
-
-        return null;
+        return networkStorage;
     }
 
     /**
      * Returns an ME compatible monitor for the interface's local storage for a given storage channel.
      */
-    protected abstract <T extends AEKey> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel);
+    protected abstract IMEMonitor getLocalInventory();
 
     private class InterfaceRequestSource extends MachineSource {
         private final InterfaceRequestContext context;
@@ -421,7 +409,7 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
             return false;
         }
 
-        var networkInv = grid.getStorageService().getInventory(getChannel());
+        var networkInv = grid.getStorageService().getInventory();
         var energySrc = grid.getEnergyService();
 
         if (this.craftingTracker.isBusy(slot)) {

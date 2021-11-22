@@ -18,7 +18,6 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.core.AELog;
 import appeng.crafting.CraftingPlan;
@@ -316,8 +315,8 @@ public class CraftingSimulationTest {
             return patternsMatch(Map.of(p1, t1, p2, t2, p3, t3));
         }
 
-        private CraftingPlanAssert listMatches(KeyCounter<AEKey> actualList, GenericStack... expectedStacks) {
-            var expectedList = new KeyCounter<>();
+        private CraftingPlanAssert listMatches(KeyCounter actualList, GenericStack... expectedStacks) {
+            var expectedList = new KeyCounter();
             for (var stack : expectedStacks) {
                 expectedList.add(stack.what(), stack.amount());
             }

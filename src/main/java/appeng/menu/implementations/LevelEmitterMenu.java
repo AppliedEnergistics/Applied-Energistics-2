@@ -32,7 +32,7 @@ import appeng.parts.automation.AbstractStorageLevelEmitterPart;
 import appeng.parts.automation.FluidLevelEmitterPart;
 import appeng.parts.automation.ItemLevelEmitterPart;
 
-public class LevelEmitterMenu extends UpgradeableMenu<AbstractStorageLevelEmitterPart<?>> {
+public class LevelEmitterMenu extends UpgradeableMenu<AbstractStorageLevelEmitterPart> {
 
     private static final String ACTION_SET_REPORTING_VALUE = "setReportingValue";
 
@@ -61,7 +61,7 @@ public class LevelEmitterMenu extends UpgradeableMenu<AbstractStorageLevelEmitte
     private long reportingValue;
 
     public LevelEmitterMenu(MenuType<LevelEmitterMenu> menuType, int id, Inventory ip,
-            AbstractStorageLevelEmitterPart<?> te) {
+            AbstractStorageLevelEmitterPart te) {
         super(menuType, id, ip, te);
 
         registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setReportingValue);

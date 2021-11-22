@@ -81,17 +81,17 @@ public class FluidExportBusPart extends ExportBusPart<AEFluidKey, Storage<FluidV
             return TickRateModulation.SLEEP;
         }
 
-        var inv = grid.getStorageService().getInventory(this.getChannel());
+        var inv = grid.getStorageService().getInventory();
 
         for (int i = 0; i < this.getConfig().size(); i++) {
             var what = this.getConfig().getKey(i);
-            if (what != null) {
+            if (what instanceof AEFluidKey fluidKey) {
                 var amount = this.calculateAmountPerTick();
 
                 var extracted = inv.extract(what, amount, Actionable.SIMULATE, this.source);
                 if (extracted > 0) {
                     try (var tx = Transaction.openOuter()) {
-                        long wasInserted = fh.insert(what.toVariant(), extracted, tx);
+                        long wasInserted = fh.insert(fluidKey.toVariant(), extracted, tx);
 
                         if (wasInserted > 0) {
                             inv.extract(what, wasInserted, Actionable.MODULATE, this.source);

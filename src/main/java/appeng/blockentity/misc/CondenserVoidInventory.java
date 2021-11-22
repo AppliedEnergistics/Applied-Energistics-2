@@ -22,45 +22,36 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
-class CondenserVoidInventory<T extends AEKey> implements IMEMonitor<T> {
-
+class CondenserVoidInventory implements IMEMonitor {
     private final CondenserBlockEntity target;
-    private final IStorageChannel<T> channel;
 
-    CondenserVoidInventory(final CondenserBlockEntity te, final IStorageChannel<T> channel) {
+    CondenserVoidInventory(CondenserBlockEntity te) {
         this.target = te;
-        this.channel = channel;
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (mode == Actionable.MODULATE) {
-            this.target.addPower(amount / (double) this.channel.transferFactor());
+            this.target.addPower(amount / (double) what.transferFactor());
         }
         return amount;
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
+    public void getAvailableStacks(KeyCounter out) {
     }
 
     @Override
-    public IStorageChannel<T> getChannel() {
-        return this.channel;
-    }
-
-    @Override
-    public void addListener(IMEMonitorListener<T> l, Object verificationToken) {
+    public void addListener(IMEMonitorListener l, Object verificationToken) {
         // Not implemented since the Condenser automatically voids everything, and there
         // are no updates
     }
 
     @Override
-    public void removeListener(IMEMonitorListener<T> l) {
+    public void removeListener(IMEMonitorListener l) {
         // Not implemented since we don't remember registered listeners anyway
     }
 }

@@ -49,13 +49,14 @@ import appeng.api.config.YesNo;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.core.AEConfig;
 import appeng.hooks.AECustomEntityItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.FormationPlaneMenu;
 import appeng.util.Platform;
 
-public class ItemFormationPlanePart extends AbstractFormationPlanePart<AEItemKey> {
+public class ItemFormationPlanePart extends AbstractFormationPlanePart {
 
     private static final PlaneModels MODELS = new PlaneModels("part/item_formation_plane",
             "part/item_formation_plane_on");
@@ -85,17 +86,17 @@ public class ItemFormationPlanePart extends AbstractFormationPlanePart<AEItemKey
     }
 
     @Override
-    protected final long placeInWorld(AEItemKey what, long amount, Actionable type) {
-        if (this.blocked || what == null || amount <= 0) {
+    protected final long placeInWorld(AEKey what, long amount, Actionable type) {
+        if (this.blocked || !(what instanceof AEItemKey whatItem) || amount <= 0) {
             return 0;
         }
 
         var placeBlock = this.getConfigManager().getSetting(Settings.PLACE_BLOCK);
 
-        var i = what.getItem();
+        var i = whatItem.getItem();
 
         var maxStorage = (int) Math.min(amount, i.getMaxStackSize());
-        var is = what.toStack(maxStorage);
+        var is = whatItem.toStack(maxStorage);
         var worked = false;
 
         var te = this.getHost().getBlockEntity();

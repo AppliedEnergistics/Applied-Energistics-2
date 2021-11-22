@@ -41,5 +41,5 @@ public interface IStackWatcherNode extends IGridNodeService {
      * 
      * @param what What has changed
      */
-    <T extends AEKey> void onStackChange(T what, long amount);
+    void onStackChange(AEKey what, long amount);
 }

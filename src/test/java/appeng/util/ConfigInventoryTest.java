@@ -28,7 +28,7 @@ public class ConfigInventoryTest {
      */
     @Nested
     class ChannelFiltering {
-        ConfigInventory<AEItemKey> inv = ConfigInventory.configStacks(StorageChannels.items(), 2, null);
+        ConfigInventory inv = ConfigInventory.configStacks(StorageChannels.items(), 2, null);
 
         @BeforeEach
         void loadMixedStacks() {
@@ -53,7 +53,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class TypesMode {
-        ConfigInventory<AEItemKey> inv = ConfigInventory.configTypes(StorageChannels.items(), 1, null);
+        ConfigInventory inv = ConfigInventory.configTypes(StorageChannels.items(), 1, null);
 
         @Test
         void amountZeroIsAllowed() {
@@ -70,7 +70,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class StacksMode {
-        ConfigInventory<AEItemKey> inv = ConfigInventory.configStacks(StorageChannels.items(), 1, null);
+        ConfigInventory inv = ConfigInventory.configStacks(StorageChannels.items(), 1, null);
 
         @Test
         void stacksWithAmountZeroAreDropped() {

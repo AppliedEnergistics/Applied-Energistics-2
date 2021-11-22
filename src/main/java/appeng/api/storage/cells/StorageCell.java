@@ -23,13 +23,12 @@
 
 package appeng.api.storage.cells;
 
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.data.AEKey;
+import appeng.api.storage.MEStorage;
 
 /**
  * Represents the most general possible cell inventory. Register a {@link ICellHandler} to provide custom subclasses.
  */
-public interface ICellInventory<T extends AEKey> extends IMEInventory<T> {
+public interface StorageCell extends MEStorage {
     /**
      * Return the current status of the cell.
      */

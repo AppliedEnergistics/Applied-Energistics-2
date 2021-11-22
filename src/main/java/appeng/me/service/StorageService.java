@@ -40,12 +40,10 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.InterestManager;
@@ -66,9 +64,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     private final List<ProviderState> globalProviders = new ArrayList<>();
     private final SetMultimap<AEKey, StackWatcher> interests = HashMultimap.create();
     private final InterestManager<StackWatcher> interestManager = new InterestManager<>(this.interests);
-    private final Map<IStorageChannel<?>, NetworkStorage<?>> storage;
-    private final Map<IStorageChannel<?>, NetworkInventoryMonitor<?>> storageMonitors;
-    private final SecurityService security;
+    private final NetworkStorage storage;
+    private final NetworkInventoryMonitor storageMonitor;
     /**
      * When mounting many storage providers at once, we use a batch operation to prevent repeated rescans and rebuilds
      * of the network inventory.
@@ -83,18 +80,15 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     public StorageService(IGrid g, ISecurityService security) {
         this.grid = g;
-        this.security = (SecurityService) security;
-        this.storage = new IdentityHashMap<>(StorageChannels.getAll().size());
-        this.storageMonitors = new IdentityHashMap<>(StorageChannels.getAll().size());
+        this.storage = new NetworkStorage((SecurityService) security);
+        this.storageMonitor = new NetworkInventoryMonitor(this.storage, interestManager);
     }
 
     @Override
     public void onServerEndTick() {
-        for (var monitor : this.storageMonitors.values()) {
-            if (monitor.hasChangedLastTick()) {
-                monitor.clearHasChangedLastTick();
-                grid.postEvent(new GridStorageEvent(monitor));
-            }
+        if (this.storageMonitor.hasChangedLastTick()) {
+            this.storageMonitor.clearHasChangedLastTick();
+            grid.postEvent(new GridStorageEvent(this.storageMonitor));
         }
     }
 
@@ -147,49 +141,21 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @Override
-    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        return getNetworkMonitor(channel);
+    public IMEMonitor getInventory() {
+        return storageMonitor;
     }
 
-    @SuppressWarnings("unchecked")
-    private <T extends AEKey> NetworkInventoryMonitor<T> getNetworkMonitor(IStorageChannel<T> channel) {
-        return (NetworkInventoryMonitor<T>) storageMonitors.computeIfAbsent(channel, c -> {
-            var monitor = new NetworkInventoryMonitor<>(interestManager, channel);
-            var existingStorage = storage.get(channel);
-            if (existingStorage != null) {
-                monitor.setNetworkInventory((IMEInventory<T>) existingStorage);
-            }
-            return monitor;
-        });
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends AEKey> NetworkStorage<T> getOrCreateNetworkStorage(IStorageChannel<T> channel) {
-        return (NetworkStorage<T>) storage.computeIfAbsent(channel, c -> {
-            var storage = new NetworkStorage<>(channel, security);
-            var monitor = storageMonitors.get(c);
-            if (monitor != null) {
-                ((NetworkInventoryMonitor<T>) monitor).setNetworkInventory(storage);
-            }
-            return storage;
-        });
-    }
-
-    private <T extends AEKey> void postChangesToNetwork(IStorageChannel<T> channel,
-            Iterable<T> changedItems,
-            IActionSource src) {
+    private void postChangesToNetwork(Iterable<AEKey> changedItems, IActionSource src) {
         if (currentBatch != null) {
-            currentBatch.pending.add(new PendingChangeNotification<>(channel, changedItems, src));
+            currentBatch.pending.add(new PendingChangeNotification(changedItems, src));
         } else {
-            getNetworkMonitor(channel).postChange(changedItems, src);
+            storageMonitor.postChange(changedItems, src);
         }
     }
 
     @Override
-    public <T extends AEKey> void postAlterationOfStoredItems(IStorageChannel<T> channel,
-            Iterable<T> input,
-            IActionSource src) {
-        postChangesToNetwork(channel, input, src);
+    public void postAlterationOfStoredItems(Iterable<AEKey> input, IActionSource src) {
+        postChangesToNetwork(input, src);
     }
 
     @Override
@@ -248,7 +214,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * Batches mount and unmount operations together to only notify storage listeners at the very end.
      */
     private class MountBatchChange implements AutoCloseable {
-        private final List<PendingChangeNotification<?>> pending = new ArrayList<>();
+        private final List<PendingChangeNotification> pending = new ArrayList<>();
 
         public MountBatchChange() {
             Preconditions.checkState(currentBatch == null, "Cannot perform multiple batch updates simultaneously");
@@ -265,15 +231,14 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             }
         }
 
-        private <T extends AEKey> void apply(PendingChangeNotification<T> rec) {
-            postChangesToNetwork(rec.channel(), rec.list(), rec.src);
+        private void apply(PendingChangeNotification rec) {
+            postChangesToNetwork(rec.list(), rec.src);
         }
     }
 
-    private record PendingChangeNotification<T extends AEKey> (
-            IStorageChannel<T> channel,
-            // The list of stacks in the added or removed inventory
-            Iterable<T> list,
+    private record PendingChangeNotification(
+            // The list of keys in the added or removed inventory
+            Iterable<AEKey> list,
             // The action source used to notify about the changes caused by this operation.
             IActionSource src) {
     }
@@ -285,7 +250,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     private class ProviderState implements IStorageMounts {
         private final IStorageProvider provider;
         private final IActionSource actionSource;
-        private final Set<IMEInventory<?>> inventories = new HashSet<>();
+        private final Set<MEStorage> inventories = new HashSet<>();
         private boolean mounted;
 
         public ProviderState(IStorageProvider provider, IActionSource actionSource) {
@@ -309,7 +274,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         }
 
         @Override
-        public <T extends AEKey> void mount(IMEInventory<T> inventory, int priority) {
+        public <T extends AEKey> void mount(MEStorage inventory, int priority) {
             Preconditions.checkState(mounted, "Cannot use StorageMounts after the storage has been unmounted.");
 
             if (!inventories.add(inventory)) {
@@ -317,10 +282,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             }
 
             // Mount this inventory into the network storage
-            var networkStorage = getOrCreateNetworkStorage(inventory.getChannel());
-            networkStorage.mount(priority, inventory);
+            storage.mount(priority, inventory);
 
-            postChangesToNetwork(inventory.getChannel(), inventory.getAvailableStacks().keySet(), actionSource);
+            postChangesToNetwork(inventory.getAvailableStacks().keySet(), actionSource);
         }
 
         public void update() {
@@ -340,9 +304,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             inventories.clear();
         }
 
-        private <T extends AEKey> void unmount(IMEInventory<T> inventory) {
-            getOrCreateNetworkStorage(inventory.getChannel()).unmount(inventory);
-            postChangesToNetwork(inventory.getChannel(), inventory.getAvailableStacks().keySet(), actionSource);
+        private <T extends AEKey> void unmount(MEStorage inventory) {
+            storage.unmount(inventory);
+            postChangesToNetwork(inventory.getAvailableStacks().keySet(), actionSource);
         }
     }
 }

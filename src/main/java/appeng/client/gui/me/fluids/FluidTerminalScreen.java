@@ -18,33 +18,22 @@
 
 package appeng.client.gui.me.fluids;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.client.AEStackRendering;
-import appeng.api.client.AmountFormat;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.client.gui.me.common.MEMonitorableScreen;
-import appeng.client.gui.me.common.Repo;
-import appeng.client.gui.style.FluidBlitter;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.IScrollSource;
 import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.fluids.FluidTerminalMenu;
-import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 public class FluidTerminalScreen<C extends FluidTerminalMenu> extends MEMonitorableScreen<AEFluidKey, C> {
@@ -54,41 +43,12 @@ public class FluidTerminalScreen<C extends FluidTerminalMenu> extends MEMonitora
     }
 
     @Override
-    protected Repo<AEFluidKey> createRepo(IScrollSource scrollSource) {
-        return new FluidRepo(scrollSource, this);
-    }
-
-    @Override
-    protected IPartitionList<AEFluidKey> createPartitionList(List<ItemStack> viewCells) {
+    protected IPartitionList createPartitionList(List<ItemStack> viewCells) {
         return null;
     }
 
     @Override
-    protected void renderGridInventoryEntry(PoseStack poseStack, int x, int y,
-            GridInventoryEntry<AEFluidKey> entry) {
-        FluidBlitter.create(entry.getWhat())
-                .dest(x, y, 16, 16)
-                .blit(poseStack, getBlitOffset());
-    }
-
-    @Override
-    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<AEFluidKey> entry, int x,
-            int y) {
-        var what = entry.getWhat();
-        String formattedAmount = AEStackRendering.formatAmount(what, entry.getStoredAmount(), AmountFormat.FULL);
-
-        String modName = Platform.formatModName(what.getModId());
-
-        List<Component> list = new ArrayList<>();
-        list.add(FluidVariantRendering.getName(what.toVariant()));
-        list.add(new TextComponent(formattedAmount));
-        list.add(new TextComponent(modName));
-
-        this.renderComponentTooltip(poseStack, list, x, y);
-    }
-
-    @Override
-    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<AEFluidKey> entry,
+    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry,
             int mouseButton, ClickType clickType) {
         if (clickType == ClickType.PICKUP) {
             // TODO: Allow more options

@@ -50,19 +50,19 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
         this.channel = channel;
     }
 
-    public static <T extends AEKey> IPartitionList<T> createFilter(IStorageChannel<T> channel,
+    public static <T extends AEKey> IPartitionList createFilter(IStorageChannel<T> channel,
             Collection<ItemStack> list) {
-        IPartitionList<T> myPartitionList = null;
+        IPartitionList myPartitionList = null;
 
-        final MergedPriorityList<T> myMergedList = new MergedPriorityList<>();
+        final MergedPriorityList myMergedList = new MergedPriorityList();
 
-        for (final ItemStack currentViewCell : list) {
+        for (var currentViewCell : list) {
             if (currentViewCell == null) {
                 continue;
             }
 
             if (currentViewCell.getItem() instanceof ViewCellItem) {
-                var priorityList = new KeyCounter<T>();
+                var priorityList = new KeyCounter();
 
                 var vc = (ICellWorkbenchItem) currentViewCell.getItem();
                 var upgrades = vc.getUpgradesInventory(currentViewCell);
@@ -95,9 +95,9 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
                 if (!priorityList.isEmpty()) {
                     if (hasFuzzy) {
-                        myMergedList.addNewList(new FuzzyPriorityList<>(priorityList, fzMode), !hasInverter);
+                        myMergedList.addNewList(new FuzzyPriorityList(priorityList, fzMode), !hasInverter);
                     } else {
-                        myMergedList.addNewList(new PrecisePriorityList<>(priorityList), !hasInverter);
+                        myMergedList.addNewList(new PrecisePriorityList(priorityList), !hasInverter);
                     }
 
                     myPartitionList = myMergedList;
@@ -119,7 +119,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public ConfigInventory<?> getConfigInventory(final ItemStack is) {
+    public ConfigInventory getConfigInventory(final ItemStack is) {
         return CellConfig.create(channel, is);
     }
 

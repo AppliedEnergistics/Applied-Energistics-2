@@ -30,6 +30,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
 import appeng.menu.MenuLocator;
@@ -41,7 +42,7 @@ import appeng.util.Platform;
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
  */
-public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
+public class ItemTerminalMenu extends MEMonitorableMenu {
 
     public static final MenuType<ItemTerminalMenu> TYPE = MenuTypeBuilder
             .create(ItemTerminalMenu::new, ITerminalHost.class)
@@ -58,7 +59,12 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
     }
 
     @Override
-    protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEItemKey clickedKey,
+    protected boolean isKeyVisible(AEKey key) {
+        return key instanceof AEItemKey;
+    }
+
+    @Override
+    protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey,
             InventoryAction action) {
 
         // Handle interactions where the player wants to put something into the network
@@ -71,6 +77,10 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
             return;
         }
 
+        if (!(clickedKey instanceof AEItemKey clickedItem)) {
+            return;
+        }
+
         switch (action) {
             case AUTO_CRAFT:
                 final MenuLocator locator = getLocator();
@@ -80,7 +90,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
                 break;
 
             case SHIFT_CLICK:
-                moveOneStackToPlayer(clickedKey);
+                moveOneStackToPlayer(clickedItem);
                 break;
 
             case ROLL_DOWN: {
@@ -105,16 +115,16 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
                     if (item.getCount() >= item.getMaxStackSize()) {
                         return; // Max stack size reached
                     }
-                    if (!clickedKey.matches(item)) {
+                    if (!clickedItem.matches(item)) {
                         return; // Not stackable
                     }
                 }
 
-                var extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedKey, 1,
+                var extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedItem, 1,
                         this.getActionSource());
                 if (extracted > 0) {
                     if (item.isEmpty()) {
-                        setCarried(clickedKey.toStack());
+                        setCarried(clickedItem.toStack());
                     } else {
                         // we checked beforehand that max stack size was not reached
                         item.grow(1);
@@ -129,11 +139,11 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
                     var extracted = StorageHelper.poweredExtraction(
                             powerSource,
                             monitor,
-                            clickedKey,
-                            clickedKey.getItem().getMaxStackSize(),
+                            clickedItem,
+                            clickedItem.getItem().getMaxStackSize(),
                             this.getActionSource());
                     if (extracted > 0) {
-                        setCarried(clickedKey.toStack((int) extracted));
+                        setCarried(clickedItem.toStack((int) extracted));
                     } else {
                         setCarried(ItemStack.EMPTY);
                     }
@@ -145,20 +155,20 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
                     putCarriedItemIntoNetwork(true);
                 } else {
                     var extracted = monitor.extract(
-                            clickedKey,
-                            clickedKey.getItem().getMaxStackSize(),
+                            clickedItem,
+                            clickedItem.getItem().getMaxStackSize(),
                             Actionable.SIMULATE,
                             this.getActionSource());
 
                     if (extracted > 0) {
                         // Half
                         extracted = extracted + 1 >> 1;
-                        extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedKey, extracted,
+                        extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedItem, extracted,
                                 this.getActionSource());
                     }
 
                     if (extracted > 0) {
-                        setCarried(clickedKey.toStack((int) extracted));
+                        setCarried(clickedItem.toStack((int) extracted));
                     } else {
                         setCarried(ItemStack.EMPTY);
                     }
@@ -167,7 +177,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
                 break;
             case CREATIVE_DUPLICATE:
                 if (player.getAbilities().instabuild) {
-                    var is = clickedKey.toStack();
+                    var is = clickedItem.toStack();
                     is.setCount(is.getMaxStackSize());
                     setCarried(is);
                 }
@@ -175,7 +185,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
             case MOVE_REGION:
                 final int playerInv = player.getInventory().items.size();
                 for (int slotNum = 0; slotNum < playerInv; slotNum++) {
-                    if (!moveOneStackToPlayer(clickedKey)) {
+                    if (!moveOneStackToPlayer(clickedItem)) {
                         break;
                     }
                 }
@@ -263,7 +273,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu<AEItemKey> {
 
         if (clientRepo != null) {
             for (var stack : clientRepo.getAllEntries()) {
-                if (stack.getWhat().matches(itemStack)) {
+                if (AEItemKey.matches(stack.getWhat(), itemStack)) {
                     if (stack.getStoredAmount() >= amount) {
                         return true;
                     }

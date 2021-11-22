@@ -46,9 +46,7 @@ public interface IStorageService extends IGridService, IStorageMonitorable {
      *
      * @param input injected items
      */
-    <T extends AEKey> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-            Iterable<T> input,
-            IActionSource src);
+    void postAlterationOfStoredItems(Iterable<AEKey> input, IActionSource src);
 
     /**
      * Adds a {@link IStorageProvider} that is not associated with a specific {@link appeng.api.networking.IGridNode }.

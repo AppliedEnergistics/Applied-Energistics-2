@@ -35,12 +35,11 @@ import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IConfigInvHost;
@@ -49,29 +48,25 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.util.ConfigInventory;
-import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
-import appeng.util.prioritylist.PrecisePriorityList;
 
-public abstract class AbstractFormationPlanePart<T extends AEKey> extends UpgradeablePart
+public abstract class AbstractFormationPlanePart extends UpgradeablePart
         implements IStorageProvider, IPriorityHost, IConfigInvHost {
 
     private boolean wasActive = false;
     private int priority = 0;
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
-    private final IMEInventory<T> inventory = new InWorldStorage();
-    private final IStorageChannel<T> channel;
-    private final ConfigInventory<T> config;
+    private final MEStorage inventory = new InWorldStorage();
+    private final ConfigInventory config;
     private IncludeExclude filterMode = IncludeExclude.WHITELIST;
-    private IPartitionList<T> filter;
+    private IPartitionList filter;
     /**
      * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
      */
     private long lastEffect;
 
-    public AbstractFormationPlanePart(ItemStack is, IStorageChannel<T> channel) {
+    public AbstractFormationPlanePart(ItemStack is, IStorageChannel<?> channel) {
         super(is);
-        this.channel = channel;
         getMainNode().addService(IStorageProvider.class, this);
         this.config = ConfigInventory.configTypes(channel, 63, this::updateFilter);
     }
@@ -140,10 +135,10 @@ public abstract class AbstractFormationPlanePart<T extends AEKey> extends Upgrad
     /**
      * Places the given stacks in-world and returns what couldn't be placed.
      *
-     * @see IMEInventory#insert
      * @return The amount that was placed.
+     * @see MEStorage#insert
      */
-    protected abstract long placeInWorld(T input, long amount, Actionable type);
+    protected abstract long placeInWorld(AEKey input, long amount, Actionable type);
 
     /**
      * Indicates whether this formation plane supports placement of injected stacks as entities into the world.
@@ -212,46 +207,29 @@ public abstract class AbstractFormationPlanePart<T extends AEKey> extends Upgrad
      * it's a blacklist. If a fuzzy card is present and the storage channel supports fuzzy search, it'll be a list with
      * fuzzy support.
      */
-    private IPartitionList<T> createFilter() {
-        var priorityList = new KeyCounter<T>();
-
+    private IPartitionList createFilter() {
+        var builder = IPartitionList.builder();
+        if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+            builder.fuzzyMode(getConfigManager().getSetting(Settings.FUZZY_MODE));
+        }
         var slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
         for (var x = 0; x < this.config.size() && x < slotsToUse; x++) {
-            var what = this.config.getKey(x);
-            if (what != null) {
-                priorityList.add(what, 1);
-            }
+            builder.add(this.config.getKey(x));
         }
-
-        if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 && channel.supportsFuzzyRangeSearch()) {
-            return new FuzzyPriorityList<>(
-                    priorityList,
-                    this.getConfigManager().getSetting(Settings.FUZZY_MODE));
-        } else {
-            return new PrecisePriorityList<>(priorityList);
-        }
-    }
-
-    public IStorageChannel<T> getChannel() {
-        return channel;
+        return builder.build();
     }
 
     /**
      * Models the block adjacent to this formation plane as storage.
      */
-    class InWorldStorage implements IMEInventory<T> {
+    class InWorldStorage implements MEStorage {
         @Override
-        public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
             if (filter != null && !filter.matchesFilter(what, filterMode)) {
                 return 0;
             }
 
             return placeInWorld(what, amount, mode);
-        }
-
-        @Override
-        public IStorageChannel<T> getChannel() {
-            return channel;
         }
     }
 
@@ -276,7 +254,7 @@ public abstract class AbstractFormationPlanePart<T extends AEKey> extends Upgrad
     }
 
     @Override
-    public ConfigInventory<T> getConfig() {
+    public ConfigInventory getConfig() {
         return config;
     }
 

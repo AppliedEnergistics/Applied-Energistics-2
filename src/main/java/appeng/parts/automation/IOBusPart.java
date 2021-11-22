@@ -49,7 +49,7 @@ import appeng.util.Platform;
 
 public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart implements IGridTickable, IConfigInvHost {
 
-    private final ConfigInventory<T> config = ConfigInventory.configTypes(getChannel(), 9, this::updateState);
+    private final ConfigInventory config = ConfigInventory.configTypes(getChannel(), 9, this::updateState);
 
     private final TickRates tickRates;
 
@@ -102,7 +102,7 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
     }
 
     @Override
-    public ConfigInventory<T> getConfig() {
+    public ConfigInventory getConfig() {
         return config;
     }
 

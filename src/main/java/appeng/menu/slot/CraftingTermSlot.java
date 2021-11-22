@@ -93,7 +93,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
 
         final var inv = this.storage
-                .getInventory(StorageChannels.items());
+                .getInventory();
         final var howManyPerCraft = this.getItem().getCount();
 
         int maxTimesToCraft;
@@ -172,8 +172,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return super.getRemainingItems(ic, level);
     }
 
-    private ItemStack craftItem(final Player p, ItemStack request, IMEMonitor<AEItemKey> inv,
-            KeyCounter<AEItemKey> all) {
+    private ItemStack craftItem(final Player p, ItemStack request, IMEMonitor inv,
+            KeyCounter all) {
         // update crafting matrix...
         var is = this.getItem();
 
@@ -244,7 +244,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return ItemStack.EMPTY;
     }
 
-    private boolean preCraft(final Player p, final IMEMonitor<AEItemKey> inv, final ItemStack[] set,
+    private boolean preCraft(final Player p, final IMEMonitor inv, final ItemStack[] set,
             final ItemStack result) {
         return true;
     }
@@ -253,7 +253,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         super.onTake(p, is);
     }
 
-    private void postCraft(final Player p, final IMEMonitor<AEItemKey> inv, final ItemStack[] set,
+    private void postCraft(final Player p, final IMEMonitor inv, final ItemStack[] set,
             final ItemStack result) {
         final List<ItemStack> drops = new ArrayList<>();
 

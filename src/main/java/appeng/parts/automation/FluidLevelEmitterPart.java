@@ -23,15 +23,14 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.FluidStorageChannel;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.LevelEmitterMenu;
 import appeng.parts.PartModel;
 
-public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart<AEFluidKey> {
+public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart {
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_level_emitter_base_off");
@@ -60,7 +59,7 @@ public class FluidLevelEmitterPart extends AbstractStorageLevelEmitterPart<AEFlu
     }
 
     @Override
-    protected FluidStorageChannel getChannel() {
+    protected IStorageChannel<?> getChannel() {
         return StorageChannels.fluids();
     }
 

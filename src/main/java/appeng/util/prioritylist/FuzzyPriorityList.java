@@ -22,18 +22,18 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
-public class FuzzyPriorityList<T extends AEKey> implements IPartitionList<T> {
+public class FuzzyPriorityList implements IPartitionList {
 
-    private final KeyCounter<T> list;
+    private final KeyCounter list;
     private final FuzzyMode mode;
 
-    public FuzzyPriorityList(KeyCounter<T> in, final FuzzyMode mode) {
+    public FuzzyPriorityList(KeyCounter in, final FuzzyMode mode) {
         this.list = in;
         this.mode = mode;
     }
 
     @Override
-    public boolean isListed(final T input) {
+    public boolean isListed(final AEKey input) {
         return !this.list.findFuzzy(input, this.mode).isEmpty();
     }
 
@@ -43,7 +43,7 @@ public class FuzzyPriorityList<T extends AEKey> implements IPartitionList<T> {
     }
 
     @Override
-    public Iterable<T> getItems() {
+    public Iterable<AEKey> getItems() {
         return this.list.keySet();
     }
 }

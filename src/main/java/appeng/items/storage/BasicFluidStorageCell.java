@@ -22,7 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.storage.FluidStorageChannel;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 
@@ -49,7 +49,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<AEFluidKey>
     }
 
     @Override
-    public FluidStorageChannel getChannel() {
+    public IStorageChannel<?> getChannel() {
         return StorageChannels.fluids();
     }
 

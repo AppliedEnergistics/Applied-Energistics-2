@@ -197,7 +197,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     }
 
     @Override
-    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputHolder) {
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
         if (!sendList.isEmpty() || !this.mainNode.isActive() || !this.patterns.contains(patternDetails)) {
             return false;
         }
@@ -260,7 +260,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
-    private boolean adapterAcceptsAll(IInterfaceTarget target, KeyCounter<AEKey>[] inputHolder) {
+    private boolean adapterAcceptsAll(IInterfaceTarget target, KeyCounter[] inputHolder) {
         for (var inputList : inputHolder) {
             for (var input : inputList) {
                 var inserted = target.insert(input.getKey(), input.getLongValue(), Actionable.SIMULATE);

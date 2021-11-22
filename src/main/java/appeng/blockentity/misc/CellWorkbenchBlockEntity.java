@@ -57,7 +57,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     private final ConfigManager manager = new ConfigManager();
 
     private IUpgradeInventory cacheUpgrades = null;
-    private ConfigInventory<?> cacheConfig = null;
+    private ConfigInventory cacheConfig = null;
     private boolean locked = false;
 
     public CellWorkbenchBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -163,7 +163,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         }
     }
 
-    private ConfigInventory<?> getCellConfigInventory() {
+    private ConfigInventory getCellConfigInventory() {
         if (this.cacheConfig == null) {
             var cell = this.getCell();
             if (cell == null) {

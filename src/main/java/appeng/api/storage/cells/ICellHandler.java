@@ -54,6 +54,6 @@ public interface ICellHandler {
      * @return The cell inventory or null if the stack is not a cell supported by this handler.
      */
     @Nullable
-    ICellInventory<?> getCellInventory(ItemStack is, @Nullable ISaveProvider host);
+    StorageCell getCellInventory(ItemStack is, @Nullable ISaveProvider host);
 
 }

@@ -18,37 +18,21 @@
 
 package appeng.me.storage;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
 /**
  * An immutable inventory that is empty.
  */
-public class NullInventory<T extends AEKey> implements IMEInventory<T> {
-    private static final Map<IStorageChannel<?>, NullInventory<?>> NULL_INVENTORIES = new ConcurrentHashMap<>();
+public class NullInventory implements MEStorage {
+    private static final NullInventory NULL_INVENTORY = new NullInventory();
 
-    private final IStorageChannel<T> storageChannel;
-
-    private NullInventory(IStorageChannel<T> storageChannel) {
-        this.storageChannel = storageChannel;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends AEKey> IMEInventory<T> of(IStorageChannel<T> channel) {
-        return (IMEInventory<T>) NULL_INVENTORIES.computeIfAbsent(channel, NullInventory::new);
+    public static <T extends AEKey> MEStorage of() {
+        return NULL_INVENTORY;
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
-    }
-
-    @Override
-    public IStorageChannel<T> getChannel() {
-        return storageChannel;
+    public void getAvailableStacks(KeyCounter out) {
     }
 }

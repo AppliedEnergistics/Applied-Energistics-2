@@ -54,7 +54,7 @@ import appeng.util.InteractionUtil;
  * @since rv6 2018-01-17
  */
 public abstract class AbstractStorageCell<T extends AEKey> extends AEBaseItem
-        implements IBasicCellItem<T>, AEToolItem {
+        implements IBasicCellItem, AEToolItem {
     /**
      * This can be retrieved when disassembling the storage cell.
      */
@@ -95,7 +95,7 @@ public abstract class AbstractStorageCell<T extends AEKey> extends AEBaseItem
     }
 
     @Override
-    public ConfigInventory<T> getConfigInventory(final ItemStack is) {
+    public ConfigInventory getConfigInventory(final ItemStack is) {
         return CellConfig.create(getChannel(), is);
     }
 
@@ -131,7 +131,7 @@ public abstract class AbstractStorageCell<T extends AEKey> extends AEBaseItem
             }
 
             final Inventory playerInventory = player.getInventory();
-            var inv = StorageCells.getCellInventory(stack, null, this.getChannel());
+            var inv = StorageCells.getCellInventory(stack, null);
             if (inv != null && playerInventory.getSelected() == stack) {
                 var list = inv.getAvailableStacks();
                 if (list.isEmpty()) {

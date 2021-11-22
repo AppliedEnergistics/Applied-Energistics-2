@@ -389,7 +389,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             return;
         }
 
-        var storage = this.getPatternTerminal().getInventory(StorageChannels.items());
+        var storage = this.getPatternTerminal().getInventory();
         var all = storage.getCachedAvailableStacks();
 
         final ItemStack is = r.assemble(ic);

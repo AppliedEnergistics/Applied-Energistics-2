@@ -46,16 +46,15 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
@@ -75,8 +74,7 @@ import appeng.parts.PartAdjacentApi;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.ConfigInventory;
 import appeng.util.SettingsFrom;
-import appeng.util.prioritylist.FuzzyPriorityList;
-import appeng.util.prioritylist.PrecisePriorityList;
+import appeng.util.prioritylist.IPartitionList;
 
 /**
  * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
@@ -85,14 +83,14 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
         implements IGridTickable, IStorageProvider, IPriorityHost, IConfigInvHost {
     protected final IActionSource source;
     private final TickRates tickRates;
-    private final ConfigInventory<T> config = ConfigInventory.configTypes(getChannel(), 63,
+    private final ConfigInventory config = ConfigInventory.configTypes(getChannel(), 63,
             this::onConfigurationChanged);
     /**
      * This is the virtual inventory this storage bus exposes to the network it belongs to. To avoid continuous
      * cell-change notifications, we instead use a handler that will exist as long as this storage bus exists, while
      * changing the underlying inventory.
      */
-    private final StorageBusInventory<T> handler = new StorageBusInventory<>(NullInventory.of(getChannel()));
+    private final StorageBusInventory handler = new StorageBusInventory(NullInventory.of());
     /**
      * Listener for listening to changes in an {@link IMEMonitor} if this storage bus is attached to an interface.
      */
@@ -125,7 +123,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
 
     public abstract IStorageChannel<T> getChannel();
 
-    protected abstract IMEInventory<T> adaptExternalApi(A handler, boolean extractableOnly, Runnable alertDevice);
+    protected abstract MEStorage adaptExternalApi(A handler, boolean extractableOnly, Runnable alertDevice);
 
     @Override
     protected final void onMainNodeStateChanged(IGridNodeListener.State reason) {
@@ -257,7 +255,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
     /**
      * Used by the menu to configure based on stored contents.
      */
-    public IMEInventory<T> getInternalHandler() {
+    public MEStorage getInternalHandler() {
         return this.handler.getDelegate();
     }
 
@@ -271,7 +269,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
 
     private void updateTarget(boolean forceFullUpdate) {
         boolean wasInventory = this.handler.getDelegate() instanceof IHandlerAdapter;
-        IMEMonitor<T> foundMonitor = null;
+        IMEMonitor foundMonitor = null;
         A foundExternalApi = null;
 
         // Prioritize a handler to directly link to another ME network
@@ -280,7 +278,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
         if (accessor != null) {
             var inventory = accessor.getInventory(this.source);
             if (inventory != null) {
-                foundMonitor = inventory.getInventory(getChannel());
+                foundMonitor = inventory.getInventory();
             }
 
             // So this could / can be a design decision. If the block entity does support our custom capability,
@@ -303,7 +301,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
             // Update inventory
             boolean extractableOnly = this.getConfigManager()
                     .getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY;
-            IMEInventory<T> newInventory;
+            MEStorage newInventory;
             if (foundMonitor != null) {
                 newInventory = foundMonitor;
                 this.checkStorageBusOnInterface();
@@ -314,7 +312,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
                     });
                 });
             } else {
-                newInventory = NullInventory.of(getChannel());
+                newInventory = NullInventory.of();
             }
             this.handler.setDelegate(newInventory);
 
@@ -323,22 +321,16 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
             this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                     : IncludeExclude.WHITELIST);
 
-            var priorityList = new KeyCounter<T>();
+            var filterBuilder = IPartitionList.builder();
+            if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+                filterBuilder.fuzzyMode(this.getConfigManager().getSetting(Settings.FUZZY_MODE));
+            }
 
             var slotsToUse = 18 + getInstalledUpgrades(Upgrades.CAPACITY) * 9;
             for (var x = 0; x < config.size() && x < slotsToUse; x++) {
-                var key = config.getKey(x);
-                if (key != null) {
-                    priorityList.add(key, 1);
-                }
+                filterBuilder.add(config.getKey(x));
             }
-
-            if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-                this.handler.setPartitionList(new FuzzyPriorityList<>(priorityList,
-                        this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
-            } else {
-                this.handler.setPartitionList(new PrecisePriorityList<>(priorityList));
-            }
+            this.handler.setPartitionList(filterBuilder.build());
 
             // Ensure we apply the partition list to the available items.
             boolean filterOnExtract = this.getConfigManager().getSetting(Settings.FILTER_ON_EXTRACT) == YesNo.YES;
@@ -359,7 +351,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
             }
 
             // Notify the network of any external change to the inventory.
-            if (newInventory instanceof IMEMonitor<T>monitor) {
+            if (newInventory instanceof IMEMonitor monitor) {
                 monitor.addListener(listener, newInventory);
             }
 
@@ -419,18 +411,17 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
         this.remountStorage();
     }
 
-    private class Listener implements IMEMonitorListener<T> {
+    private class Listener implements IMEMonitorListener {
         @Override
         public final boolean isValid(Object verificationToken) {
             return handler.getDelegate() == verificationToken;
         }
 
         @Override
-        public final void postChange(final IMEMonitor<T> monitor, final Iterable<T> change,
-                final IActionSource source) {
+        public final void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource source) {
             if (getMainNode().isActive()) {
                 getMainNode().ifPresent((grid, node) -> {
-                    grid.getStorageService().postAlterationOfStoredItems(getChannel(), change, source);
+                    grid.getStorageService().postAlterationOfStoredItems(change, source);
                 });
             }
         }
@@ -444,18 +435,18 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
     /**
      * This inventory forwards to the actual external inventory and allows the inventory to be swapped out underneath.
      */
-    private static class StorageBusInventory<T extends AEKey> extends MEInventoryHandler<T> {
-        public StorageBusInventory(IMEInventory<T> inventory) {
+    private static class StorageBusInventory extends MEInventoryHandler {
+        public StorageBusInventory(MEStorage inventory) {
             super(inventory);
         }
 
         @Override
-        protected IMEInventory<T> getDelegate() {
+        protected MEStorage getDelegate() {
             return super.getDelegate();
         }
 
         @Override
-        protected void setDelegate(IMEInventory<T> delegate) {
+        protected void setDelegate(MEStorage delegate) {
             super.setDelegate(delegate);
         }
 
@@ -466,7 +457,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
     }
 
     @Override
-    public ConfigInventory<T> getConfig() {
+    public ConfigInventory getConfig() {
         return this.config;
     }
 

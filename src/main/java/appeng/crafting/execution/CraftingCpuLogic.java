@@ -168,7 +168,7 @@ public class CraftingCpuLogic {
             }
 
             var details = task.getKey();
-            var expectedOutputs = new KeyCounter<>();
+            var expectedOutputs = new KeyCounter();
             // Contains the inputs for the pattern.
             @Nullable
             var craftingContainer = CraftingCpuHelper.extractPatternInputs(
@@ -461,7 +461,7 @@ public class CraftingCpuLogic {
     /**
      * Used by the menu to gather all the kinds of stored items.
      */
-    public void getAllItems(KeyCounter<AEKey> out) {
+    public void getAllItems(KeyCounter out) {
         out.addAll(this.inventory.list);
         if (this.job != null) {
             out.addAll(job.waitingFor.list);

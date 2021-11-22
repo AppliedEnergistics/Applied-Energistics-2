@@ -21,37 +21,42 @@ import appeng.helpers.iface.GenericStackInv;
  * AE differentiates between two modes of filter-configuration for machines. Sometimes only the *type* of stack is
  * relevant. In this mode, amounts are ignored. Other times (i.e. interface stocking), the type and amount are relevant.
  */
-public class ConfigInventory<T extends AEKey> extends GenericStackInv {
-    private final IStorageChannel<T> channel;
+public class ConfigInventory extends GenericStackInv {
+    @Nullable
+    private final IStorageChannel<?> filterChannel;
 
-    protected ConfigInventory(IStorageChannel<T> channel, Mode mode, int size, @Nullable Runnable listener) {
+    protected ConfigInventory(@Nullable IStorageChannel<?> channel, Mode mode, int size, @Nullable Runnable listener) {
         super(listener, mode, size);
-        this.channel = channel;
+        this.filterChannel = channel;
     }
 
     /**
      * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
      * inventory.
      */
-    public static <T extends AEKey> ConfigInventory<T> configTypes(IStorageChannel<T> channel, int size,
+    public static <T extends AEKey> ConfigInventory configTypes(@Nullable IStorageChannel<?> channel, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory<>(channel, Mode.CONFIG_TYPES, size, changeListener);
+        return new ConfigInventory(channel, Mode.CONFIG_TYPES, size, changeListener);
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
-    public static <T extends AEKey> ConfigInventory<T> configStacks(IStorageChannel<T> channel, int size,
+    public static <T extends AEKey> ConfigInventory configStacks(@Nullable IStorageChannel<?> channel, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory<>(channel, Mode.CONFIG_STACKS, size, changeListener);
+        return new ConfigInventory(channel, Mode.CONFIG_STACKS, size, changeListener);
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
-    public static <T extends AEKey> ConfigInventory<T> storage(IStorageChannel<T> channel, int size,
+    public static <T extends AEKey> ConfigInventory storage(@Nullable IStorageChannel<?> channel, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory<>(channel, Mode.STORAGE, size, changeListener);
+        return new ConfigInventory(channel, Mode.STORAGE, size, changeListener);
+    }
+
+    private boolean passesFilter(AEKey what) {
+        return filterChannel == null || what.getChannel() == filterChannel;
     }
 
     @Nullable
@@ -59,7 +64,7 @@ public class ConfigInventory<T extends AEKey> extends GenericStackInv {
     public GenericStack getStack(int slot) {
         var stack = super.getStack(slot);
         // Filter and clear stacks not supported by the underlying storage channel
-        if (stack != null && channel.tryCast(stack.what()) == null) {
+        if (stack != null && !passesFilter(stack.what())) {
             setStack(slot, null);
             stack = null;
         }
@@ -68,21 +73,20 @@ public class ConfigInventory<T extends AEKey> extends GenericStackInv {
 
     @Nullable
     @Override
-    public T getKey(int slot) {
+    public AEKey getKey(int slot) {
         var key = super.getKey(slot);
         if (key == null) {
             return null;
         }
         // Filter and clear stacks not supported by the underlying storage channel
-        var channelKey = channel.tryCast(key);
-        if (channelKey == null) {
+        if (!passesFilter(key)) {
             setStack(slot, null);
         }
-        return channelKey;
+        return key;
     }
 
-    public Set<T> keySet() {
-        var result = new LinkedHashSet<T>();
+    public Set<AEKey> keySet() {
+        var result = new LinkedHashSet<AEKey>();
         for (int i = 0; i < stacks.length; i++) {
             var what = getKey(i);
             if (what != null) {
@@ -94,7 +98,7 @@ public class ConfigInventory<T extends AEKey> extends GenericStackInv {
 
     @Override
     public void setStack(int slot, @Nullable GenericStack stack) {
-        if (stack != null && channel.tryCast(stack.what()) == null) {
+        if (stack != null && !passesFilter(stack.what())) {
             return;
         }
         if (stack != null) {
@@ -112,7 +116,7 @@ public class ConfigInventory<T extends AEKey> extends GenericStackInv {
 
     @Override
     public ConfigMenuInventory createMenuWrapper() {
-        return new ConfigMenuInventory(this, channel);
+        return new ConfigMenuInventory(this, filterChannel);
     }
 
 }

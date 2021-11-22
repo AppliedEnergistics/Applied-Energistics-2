@@ -21,23 +21,29 @@ package appeng.items.contents;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.AEKey;
 import appeng.util.ConfigInventory;
 
 public final class CellConfig {
     private CellConfig() {
     }
 
-    public static <T extends AEKey> ConfigInventory<T> create(IStorageChannel<T> channel, ItemStack is) {
-        var holder = new Holder<T>(is);
+    public static ConfigInventory create(IStorageChannel<?> channel, ItemStack is) {
+        var holder = new Holder(is);
         holder.inv = ConfigInventory.configTypes(channel, 63, holder::save);
         holder.load();
         return holder.inv;
     }
 
-    private static class Holder<T extends AEKey> {
+    public static ConfigInventory create(ItemStack is) {
+        var holder = new Holder(is);
+        holder.inv = ConfigInventory.configTypes(null, 63, holder::save);
+        holder.load();
+        return holder.inv;
+    }
+
+    private static class Holder {
         private final ItemStack stack;
-        private ConfigInventory<T> inv;
+        private ConfigInventory inv;
 
         public Holder(ItemStack stack) {
             this.stack = stack;

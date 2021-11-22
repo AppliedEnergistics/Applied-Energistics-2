@@ -20,9 +20,6 @@ package appeng.menu.me.common;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
-
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
 
 /**
@@ -30,14 +27,12 @@ import appeng.api.storage.data.AEKey;
  * grid inventory to a client, and incrementally update the information. To this end, each stack sent to the client is
  * identified by a {@link #serial}, which is subsequently used to update the inventory entry for that specific
  * item/fluid/etc.
- *
- * @param <T> The general type of what is being stored (items, fluids, etc.)
  */
-public class GridInventoryEntry<T extends AEKey> {
+public class GridInventoryEntry {
     private final long serial;
 
     @Nullable
-    private final T what;
+    private final AEKey what;
 
     private final long storedAmount;
 
@@ -45,7 +40,7 @@ public class GridInventoryEntry<T extends AEKey> {
 
     private final boolean craftable;
 
-    public GridInventoryEntry(long serial, @Nullable T what, long storedAmount, long requestableAmount,
+    public GridInventoryEntry(long serial, @Nullable AEKey what, long storedAmount, long requestableAmount,
             boolean craftable) {
         this.serial = serial;
         this.what = what;
@@ -69,7 +64,7 @@ public class GridInventoryEntry<T extends AEKey> {
      * that should be updated.
      */
     @Nullable
-    public T getWhat() {
+    public AEKey getWhat() {
         return what;
     }
 
@@ -92,37 +87,6 @@ public class GridInventoryEntry<T extends AEKey> {
      */
     public boolean isCraftable() {
         return craftable;
-    }
-
-    /**
-     * Writes this entry to a packet buffer for shipping it to the client.
-     */
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeVarLong(serial);
-        buffer.writeBoolean(what != null);
-        if (what != null) {
-            what.writeToPacket(buffer);
-        }
-        buffer.writeVarLong(storedAmount);
-        buffer.writeVarLong(requestableAmount);
-        buffer.writeBoolean(craftable);
-    }
-
-    /**
-     * Reads an inventory entry from a packet for a given storage channel. The storage channel is used to read the
-     * {@link #what} field.
-     */
-    public static <T extends AEKey> GridInventoryEntry<T> read(IStorageChannel<T> storageChannel,
-            FriendlyByteBuf buffer) {
-        long serial = buffer.readVarLong();
-        T stack = null;
-        if (buffer.readBoolean()) {
-            stack = storageChannel.readFromPacket(buffer);
-        }
-        long storedAmount = buffer.readVarLong();
-        long requestableAmount = buffer.readVarLong();
-        boolean craftable = buffer.readBoolean();
-        return new GridInventoryEntry<>(serial, stack, storedAmount, requestableAmount, craftable);
     }
 
     /**

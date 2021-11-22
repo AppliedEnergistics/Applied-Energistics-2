@@ -23,30 +23,28 @@
 
 package appeng.api.storage;
 
-import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
 /**
- * A {@link IMEInventory} that allows listening for storage changes.
+ * A {@link MEStorage} that allows listening for storage changes.
  */
-public interface IMEMonitor<T extends AEKey> extends IMEInventory<T> {
-
+public interface IMEMonitor extends MEStorage {
     /**
      * add a new Listener to the monitor, be sure to properly remove yourself when your done.
      */
-    void addListener(IMEMonitorListener<T> l, Object verificationToken);
+    void addListener(IMEMonitorListener l, Object verificationToken);
 
     /**
      * remove a Listener to the monitor.
      */
-    void removeListener(IMEMonitorListener<T> l);
+    void removeListener(IMEMonitorListener l);
 
     /**
      * This method is discouraged when accessing data via a IMEMonitor
      */
     @Override
     @Deprecated
-    void getAvailableStacks(KeyCounter<T> out);
+    void getAvailableStacks(KeyCounter out);
 
     /**
      * Returns the cached list of stacks available from this inventory, which will be equal to the result of
@@ -54,23 +52,7 @@ public interface IMEMonitor<T extends AEKey> extends IMEInventory<T> {
      *
      * @return The cached contents of this monitor. Does not return a copy. <strong>Do not modify!</strong>
      */
-    default KeyCounter<T> getCachedAvailableStacks() {
+    default KeyCounter getCachedAvailableStacks() {
         return getAvailableStacks();
     }
-
-    /**
-     * Convenience method to cast monitors with wildcard generic types to the concrete type used by the given storage
-     * channel, but only if the given storage channel is equal to {@link #getChannel()}.
-     *
-     * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
-     */
-    @SuppressWarnings("unchecked")
-    default <SC extends AEKey> IMEMonitor<SC> cast(IStorageChannel<SC> channel) {
-        if (getChannel() == channel) {
-            return (IMEMonitor<SC>) this;
-        }
-        throw new IllegalArgumentException("The monitors storage channel " + getChannel()
-                + " is not compatible with " + channel);
-    }
-
 }

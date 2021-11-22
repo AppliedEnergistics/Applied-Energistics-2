@@ -34,6 +34,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEKey;
 import appeng.core.AELog;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.MenuTypeBuilder;
@@ -44,7 +45,7 @@ import appeng.util.fluid.FluidSoundHelper;
  * @see appeng.client.gui.me.fluids.FluidTerminalScreen
  * @since rv6 12/05/2018
  */
-public class FluidTerminalMenu extends MEMonitorableMenu<AEFluidKey> {
+public class FluidTerminalMenu extends MEMonitorableMenu {
 
     public static final MenuType<FluidTerminalMenu> TYPE = MenuTypeBuilder
             .create(FluidTerminalMenu::new, ITerminalHost.class)
@@ -57,8 +58,12 @@ public class FluidTerminalMenu extends MEMonitorableMenu<AEFluidKey> {
 
     public FluidTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
             boolean bindInventory) {
-        super(menuType, id, ip, host, bindInventory,
-                StorageChannels.fluids());
+        super(menuType, id, ip, host, bindInventory, StorageChannels.fluids());
+    }
+
+    @Override
+    protected boolean isKeyVisible(AEKey key) {
+        return key instanceof AEFluidKey;
     }
 
     @Override
@@ -67,7 +72,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<AEFluidKey> {
     }
 
     @Override
-    protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEFluidKey clickedKey,
+    protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey,
             InventoryAction action) {
 
         if (action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM) {
@@ -79,11 +84,11 @@ public class FluidTerminalMenu extends MEMonitorableMenu<AEFluidKey> {
             return;
         }
 
-        if (action == InventoryAction.FILL_ITEM && clickedKey != null) {
+        if (action == InventoryAction.FILL_ITEM && clickedKey instanceof AEFluidKey clickedFluid) {
             // Check how much we can store in the item
             long amountAllowed;
             try (var tx = Transaction.openOuter()) {
-                amountAllowed = fh.insert(clickedKey.toVariant(), Long.MAX_VALUE, tx);
+                amountAllowed = fh.insert(clickedFluid.toVariant(), Long.MAX_VALUE, tx);
                 if (amountAllowed == 0) {
                     return; // Nothing.
                 }
@@ -98,7 +103,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<AEFluidKey> {
 
             // How much could fit into the carried container
             try (var tx = Transaction.openOuter()) {
-                long canFill = fh.insert(clickedKey.toVariant(), canPull, tx);
+                long canFill = fh.insert(clickedFluid.toVariant(), canPull, tx);
                 if (canFill == 0) {
                     return;
                 }
@@ -115,7 +120,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu<AEFluidKey> {
                 tx.commit();
             }
 
-            FluidSoundHelper.playFillSound(player, clickedKey.toVariant());
+            FluidSoundHelper.playFillSound(player, clickedFluid.toVariant());
         } else if (action == InventoryAction.EMPTY_ITEM) {
             // See how much we can drain from the item
             var content = StorageUtil.findExtractableContent(fh, null);
@@ -129,6 +134,9 @@ public class FluidTerminalMenu extends MEMonitorableMenu<AEFluidKey> {
             // Check if we can push into the system
             var canInsert = StorageHelper.poweredInsert(this.powerSource, this.monitor, what, amount,
                     this.getActionSource(), Actionable.SIMULATE);
+            if (canInsert <= 0) {
+                return;
+            }
 
             // Actually drain
             try (var tx = Transaction.openOuter()) {

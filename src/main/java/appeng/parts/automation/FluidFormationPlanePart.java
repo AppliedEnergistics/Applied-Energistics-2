@@ -46,10 +46,11 @@ import appeng.api.config.Actionable;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEKey;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.FormationPlaneMenu;
 
-public class FluidFormationPlanePart extends AbstractFormationPlanePart<AEFluidKey> {
+public class FluidFormationPlanePart extends AbstractFormationPlanePart {
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
             "part/fluid_formation_plane_on");
 
@@ -73,13 +74,17 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<AEFluidK
     }
 
     @Override
-    protected final long placeInWorld(AEFluidKey what, long amount, Actionable type) {
+    protected final long placeInWorld(AEKey what, long amount, Actionable type) {
+        if (!(what instanceof AEFluidKey fluidKey)) {
+            return 0;
+        }
+
         if (amount < AEFluidKey.AMOUNT_BLOCK) {
             // need a full bucket
             return 0;
         }
 
-        var fluid = what.getFluid();
+        var fluid = fluidKey.getFluid();
 
         // We previously tried placing this fluid unsuccessfully, so don't check it again.
         if (blocked.contains(fluid)) {
@@ -87,7 +92,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<AEFluidK
         }
 
         // We do not support placing fluids with NBT for now
-        if (what.hasTag()) {
+        if (fluidKey.hasTag()) {
             return 0;
         }
 

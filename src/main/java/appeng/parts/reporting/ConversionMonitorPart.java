@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
@@ -142,7 +141,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     private void insertItem(Player player, InteractionHand hand, boolean allItems) {
         getMainNode().ifPresent(grid -> {
             var energy = grid.getEnergyService();
-            var cell = grid.getStorageService().getInventory(StorageChannels.items());
+            var cell = grid.getStorageService().getInventory();
 
             if (allItems) {
                 if (this.getDisplayed() instanceof AEItemKey itemKey) {
@@ -182,7 +181,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
         getMainNode().ifPresent(grid -> {
             var energy = grid.getEnergyService();
-            var cell = grid.getStorageService().getInventory(StorageChannels.items());
+            var cell = grid.getStorageService().getInventory();
 
             var retrieved = StorageHelper.poweredExtraction(energy, cell, itemKey, count,
                     new PlayerSource(player, this));

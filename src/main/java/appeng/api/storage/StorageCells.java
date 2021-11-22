@@ -38,8 +38,8 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.storage.data.AEKey;
 
 /**
@@ -126,19 +126,16 @@ public final class StorageCells {
      * @return the handler registered for this channel.
      */
     @Nullable
-    public static synchronized <T extends AEKey> ICellGuiHandler getGuiHandler(IStorageChannel<T> channel,
-            ItemStack is) {
+    public static synchronized <T extends AEKey> ICellGuiHandler getGuiHandler(ItemStack is) {
         ICellGuiHandler fallBack = null;
 
         for (final ICellGuiHandler ch : guiHandlers) {
-            if (ch.isHandlerFor(channel)) {
-                if (ch.isSpecializedFor(is)) {
-                    return ch;
-                }
+            if (ch.isSpecializedFor(is)) {
+                return ch;
+            }
 
-                if (fallBack == null) {
-                    fallBack = ch;
-                }
+            if (fallBack == null) {
+                fallBack = ch;
             }
         }
         return fallBack;
@@ -152,7 +149,7 @@ public final class StorageCells {
      * @return The cell inventory, or null if there isn't one.
      */
     @Nullable
-    public static synchronized ICellInventory<?> getCellInventory(ItemStack is, @Nullable ISaveProvider host) {
+    public static synchronized StorageCell getCellInventory(ItemStack is, @Nullable ISaveProvider host) {
         if (is.isEmpty()) {
             return null;
         }
@@ -161,27 +158,6 @@ public final class StorageCells {
             if (inventory != null) {
                 return inventory;
             }
-        }
-        return null;
-    }
-
-    /**
-     * Convenience version of {@link #getCellInventory(ItemStack, ISaveProvider)}, which automatically casts the cell's
-     * inventory to the requested storage channel.
-     *
-     * @param is      item with inventory handler
-     * @param host    can be null. If provided, the host is responsible for persisting the cell content.
-     * @param channel the storage channel to request the handler for.
-     * @return The cell inventory, or null if there isn't one, or the channel is unsupported.
-     */
-    @SuppressWarnings("unchecked")
-    @Nullable
-    public static synchronized <T extends AEKey> ICellInventory<T> getCellInventory(ItemStack is,
-            @Nullable ISaveProvider host,
-            IStorageChannel<T> channel) {
-        var inventory = getCellInventory(is, host);
-        if (inventory != null && inventory.getChannel() == channel) {
-            return (ICellInventory<T>) inventory;
         }
         return null;
     }

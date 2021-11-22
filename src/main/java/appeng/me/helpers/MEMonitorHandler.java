@@ -31,10 +31,9 @@ import com.google.common.collect.ImmutableList;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
@@ -44,31 +43,31 @@ import appeng.api.storage.data.KeyCounter;
  * <p>
  * TODO: Needs to be redesigned to solve performance issues.
  */
-public class MEMonitorHandler<T extends AEKey> implements IMEMonitor<T> {
+public class MEMonitorHandler implements IMEMonitor {
 
-    private final IMEInventory<T> internalHandler;
-    private final KeyCounter<T> cachedList;
-    private final HashMap<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
+    private final MEStorage internalHandler;
+    private final KeyCounter cachedList;
+    private final HashMap<IMEMonitorListener, Object> listeners = new HashMap<>();
 
     protected boolean hasChanged = true;
 
-    public MEMonitorHandler(IMEInventory<T> t) {
+    public MEMonitorHandler(MEStorage t) {
         this.internalHandler = t;
-        this.cachedList = new KeyCounter<>();
+        this.cachedList = new KeyCounter();
     }
 
     @Override
-    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorListener<T> l) {
+    public void removeListener(final IMEMonitorListener l) {
         this.listeners.remove(l);
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         var inserted = internalHandler.insert(what, amount, mode, source);
         if (mode == Actionable.MODULATE) {
             monitorDifference(what, inserted, source);
@@ -77,7 +76,7 @@ public class MEMonitorHandler<T extends AEKey> implements IMEMonitor<T> {
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         var extracted = internalHandler.extract(what, amount, mode, source);
         if (mode == Actionable.MODULATE) {
             monitorDifference(what, -extracted, source);
@@ -85,26 +84,26 @@ public class MEMonitorHandler<T extends AEKey> implements IMEMonitor<T> {
         return extracted;
     }
 
-    protected IMEInventory<T> getHandler() {
+    protected MEStorage getHandler() {
         return this.internalHandler;
     }
 
-    private void monitorDifference(T what, long difference, IActionSource source) {
+    private void monitorDifference(AEKey what, long difference, IActionSource source) {
         if (difference != 0) {
             this.postChangesToListeners(ImmutableList.of(what), source);
         }
     }
 
-    protected void postChangesToListeners(final Iterable<T> changes, final IActionSource src) {
+    protected void postChangesToListeners(final Iterable<AEKey> changes, final IActionSource src) {
         this.notifyListenersOfChange(changes, src);
     }
 
-    protected void notifyListenersOfChange(final Iterable<T> diff, final IActionSource src) {
+    protected void notifyListenersOfChange(final Iterable<AEKey> diff, final IActionSource src) {
         this.hasChanged = true;// need to update the cache.
-        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.getListeners();
+        final Iterator<Entry<IMEMonitorListener, Object>> i = this.getListeners();
         while (i.hasNext()) {
-            final Entry<IMEMonitorListener<T>, Object> o = i.next();
-            final IMEMonitorListener<T> receiver = o.getKey();
+            final Entry<IMEMonitorListener, Object> o = i.next();
+            final IMEMonitorListener receiver = o.getKey();
             if (receiver.isValid(o.getValue())) {
                 receiver.postChange(this, diff, src);
             } else {
@@ -113,17 +112,12 @@ public class MEMonitorHandler<T extends AEKey> implements IMEMonitor<T> {
         }
     }
 
-    protected Iterator<Entry<IMEMonitorListener<T>, Object>> getListeners() {
+    protected Iterator<Entry<IMEMonitorListener, Object>> getListeners() {
         return this.listeners.entrySet().iterator();
     }
 
     @Override
-    public IStorageChannel<T> getChannel() {
-        return this.getHandler().getChannel();
-    }
-
-    @Override
-    public KeyCounter<T> getCachedAvailableStacks() {
+    public KeyCounter getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.reset();
@@ -135,7 +129,7 @@ public class MEMonitorHandler<T extends AEKey> implements IMEMonitor<T> {
     }
 
     @Override
-    public void getAvailableStacks(final KeyCounter<T> out) {
+    public void getAvailableStacks(final KeyCounter out) {
         this.getHandler().getAvailableStacks(out);
     }
 

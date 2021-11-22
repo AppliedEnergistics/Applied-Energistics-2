@@ -43,11 +43,11 @@ import appeng.util.item.VariantCounter;
 /**
  * Associates a generic value of type T with AE keys and makes key/value pairs searchable with fuzzy mode semantics.
  */
-public class KeyCounter<T extends AEKey> implements Iterable<Object2LongMap.Entry<T>> {
+public class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     // First map contains a mapping from AEKey#primaryKey
-    private final Map<Object, VariantCounter<T>> lists = new IdentityHashMap<>();
+    private final Map<Object, VariantCounter> lists = new IdentityHashMap<>();
 
-    public Collection<Object2LongMap.Entry<T>> findFuzzy(T key, FuzzyMode fuzzy) {
+    public Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey key, FuzzyMode fuzzy) {
         Objects.requireNonNull(key, "key");
         return getSubIndex(key).findFuzzy(key, fuzzy);
     }
@@ -64,7 +64,7 @@ public class KeyCounter<T extends AEKey> implements Iterable<Object2LongMap.Entr
         }
     }
 
-    public void addAll(KeyCounter<T> other) {
+    public void addAll(KeyCounter other) {
         for (var entry : other.lists.entrySet()) {
             var ourSubIndex = lists.get(entry.getKey());
             if (ourSubIndex == null) {
@@ -75,7 +75,7 @@ public class KeyCounter<T extends AEKey> implements Iterable<Object2LongMap.Entr
         }
     }
 
-    public void removeAll(KeyCounter<T> other) {
+    public void removeAll(KeyCounter other) {
         for (var entry : other.lists.entrySet()) {
             var ourSubIndex = lists.get(entry.getKey());
             if (ourSubIndex == null) {
@@ -88,16 +88,16 @@ public class KeyCounter<T extends AEKey> implements Iterable<Object2LongMap.Entr
         }
     }
 
-    public void add(T key, long amount) {
+    public void add(AEKey key, long amount) {
         Objects.requireNonNull(key, "key");
         getSubIndex(key).add(key, amount);
     }
 
-    public void remove(T key, long amount) {
+    public void remove(AEKey key, long amount) {
         add(key, -amount);
     }
 
-    public void set(T key, long amount) {
+    public void set(AEKey key, long amount) {
         getSubIndex(key).set(key, amount);
     }
 
@@ -140,12 +140,12 @@ public class KeyCounter<T extends AEKey> implements Iterable<Object2LongMap.Entr
     }
 
     @Override
-    public Iterator<Object2LongMap.Entry<T>> iterator() {
+    public Iterator<Object2LongMap.Entry<AEKey>> iterator() {
         return Iterators.concat(
                 Iterators.transform(lists.values().iterator(), VariantCounter::iterator));
     }
 
-    private VariantCounter<T> getSubIndex(T key) {
+    private VariantCounter getSubIndex(AEKey key) {
         var subIndex = lists.get(key.getPrimaryKey());
         if (subIndex == null) {
             subIndex = VariantCounter.create(key);
@@ -155,13 +155,19 @@ public class KeyCounter<T extends AEKey> implements Iterable<Object2LongMap.Entr
     }
 
     @Nullable
-    public T getFirstKey() {
+    public AEKey getFirstKey() {
         var e = getFirstEntry();
         return e != null ? e.getKey() : null;
     }
 
     @Nullable
-    public Object2LongMap.Entry<T> getFirstEntry() {
+    public <T extends AEKey> T getFirstKey(Class<T> keyClass) {
+        var e = getFirstEntry(keyClass);
+        return e != null ? keyClass.cast(e.getKey()) : null;
+    }
+
+    @Nullable
+    public Object2LongMap.Entry<AEKey> getFirstEntry() {
         for (var value : lists.values()) {
             var it = value.iterator();
             if (it.hasNext()) {
@@ -171,8 +177,22 @@ public class KeyCounter<T extends AEKey> implements Iterable<Object2LongMap.Entr
         return null;
     }
 
-    public Set<T> keySet() {
-        var keys = new HashSet<T>(size());
+    @Nullable
+    public <T extends AEKey> Object2LongMap.Entry<AEKey> getFirstEntry(Class<T> keyClass) {
+        for (var value : lists.values()) {
+            var it = value.iterator();
+            if (it.hasNext()) {
+                var entry = it.next();
+                if (keyClass.isInstance(entry.getKey())) {
+                    return entry;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Set<AEKey> keySet() {
+        var keys = new HashSet<AEKey>(size());
         for (var list : lists.values()) {
             for (var entry : list) {
                 keys.add(entry.getKey());

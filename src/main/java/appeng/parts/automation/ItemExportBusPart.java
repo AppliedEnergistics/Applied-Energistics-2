@@ -40,8 +40,8 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
@@ -106,7 +106,7 @@ public class ItemExportBusPart extends ExportBusPart<AEItemKey, Storage<ItemVari
         var grid = getMainNode().getGrid();
         if (grid != null) {
             var destination = this.getHandler();
-            var inv = grid.getStorageService().getInventory(StorageChannels.items());
+            var inv = grid.getStorageService().getInventory();
             var energy = grid.getEnergyService();
             var cg = grid.getCraftingService();
             var fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
@@ -118,11 +118,13 @@ public class ItemExportBusPart extends ExportBusPart<AEItemKey, Storage<ItemVari
                 for (x = 0; x < this.availableSlots() && this.itemToSend > 0; x++) {
                     final int slotToExport = this.getStartingSlot(schedulingMode, x);
 
-                    var key = this.getConfig().getKey(slotToExport);
+                    if (!(this.getConfig().getKey(slotToExport) instanceof AEItemKey what)) {
+                        continue;
+                    }
 
-                    if (key == null || this.itemToSend <= 0 || this.craftOnly()) {
-                        if (key != null && this.isCraftingEnabled()) {
-                            requestCrafting(cg, slotToExport, key);
+                    if (this.itemToSend <= 0 || this.craftOnly()) {
+                        if (this.isCraftingEnabled()) {
+                            requestCrafting(cg, slotToExport, what);
                         }
                         continue;
                     }
@@ -131,18 +133,20 @@ public class ItemExportBusPart extends ExportBusPart<AEItemKey, Storage<ItemVari
 
                     if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
                         for (var o : ImmutableList
-                                .copyOf(inv.getCachedAvailableStacks().findFuzzy(key, fzMode))) {
-                            this.pushItemIntoTarget(destination, energy, inv, o.getKey());
+                                .copyOf(inv.getCachedAvailableStacks().findFuzzy(what, fzMode))) {
+                            if (o.getKey() instanceof AEItemKey itemKey) {
+                                this.pushItemIntoTarget(destination, energy, inv, itemKey);
+                            }
                             if (this.itemToSend <= 0) {
                                 break;
                             }
                         }
                     } else {
-                        this.pushItemIntoTarget(destination, energy, inv, key);
+                        this.pushItemIntoTarget(destination, energy, inv, what);
                     }
 
                     if (this.itemToSend == before && this.isCraftingEnabled()) {
-                        requestCrafting(cg, slotToExport, key);
+                        requestCrafting(cg, slotToExport, what);
                     }
                 }
 
@@ -205,7 +209,7 @@ public class ItemExportBusPart extends ExportBusPart<AEItemKey, Storage<ItemVari
         return this.getInstalledUpgrades(Upgrades.CRAFTING) > 0;
     }
 
-    private void pushItemIntoTarget(ItemTransfer d, IEnergyService energy, IMEInventory<AEItemKey> inv, AEItemKey ais) {
+    private void pushItemIntoTarget(ItemTransfer d, IEnergyService energy, MEStorage inv, AEItemKey ais) {
         var is = ais.toStack((int) this.itemToSend);
 
         final ItemStack o = d.simulateAdd(is);

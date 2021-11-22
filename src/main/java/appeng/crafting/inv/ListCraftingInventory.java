@@ -30,7 +30,7 @@ import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
 public class ListCraftingInventory implements ICraftingInventory {
-    public final KeyCounter<AEKey> list = new KeyCounter<>();
+    public final KeyCounter list = new KeyCounter();
 
     private final ChangeListener listener;
 

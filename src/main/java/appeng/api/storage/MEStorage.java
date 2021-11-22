@@ -44,7 +44,7 @@ import appeng.api.storage.data.KeyCounter;
  * If you want to request at most a stack of an item, you need to use {@link ItemStack#getMaxStackSize()} before
  * extracting from this inventory.
  */
-public interface IMEInventory<T extends AEKey> {
+public interface MEStorage {
     /**
      * Returns whether this inventory is the preferred storage location for the given stack when being compared to other
      * inventories of the same overall priority.
@@ -54,7 +54,7 @@ public interface IMEInventory<T extends AEKey> {
      *
      * @param source The source trying to find storage for stacks.
      */
-    default boolean isPreferredStorageFor(T what, IActionSource source) {
+    default boolean isPreferredStorageFor(AEKey what, IActionSource source) {
         return false;
     }
 
@@ -66,7 +66,7 @@ public interface IMEInventory<T extends AEKey> {
      * @param mode   action type
      * @return returns the number of items inserted.
      */
-    default long insert(T what, long amount, Actionable mode, IActionSource source) {
+    default long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         return 0;
     }
 
@@ -78,7 +78,7 @@ public interface IMEInventory<T extends AEKey> {
      * @param mode   simulate, or perform action?
      * @return returns the number of items extracted
      */
-    default long extract(T what, long amount, Actionable mode, IActionSource source) {
+    default long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         return 0;
     }
 
@@ -87,7 +87,7 @@ public interface IMEInventory<T extends AEKey> {
      *
      * @param out The amounts for all available keys will be added to this tally.
      */
-    default void getAvailableStacks(KeyCounter<T> out) {
+    default void getAvailableStacks(KeyCounter out) {
     }
 
     /**
@@ -95,30 +95,10 @@ public interface IMEInventory<T extends AEKey> {
      *
      * @return a new list of this inventories content
      */
-    default KeyCounter<T> getAvailableStacks() {
-        var result = new KeyCounter<T>();
+    default KeyCounter getAvailableStacks() {
+        var result = new KeyCounter();
         getAvailableStacks(result);
         return result;
-    }
-
-    /**
-     * @return the type of channel your handler should be part of
-     */
-    IStorageChannel<T> getChannel();
-
-    /**
-     * Convenience method to cast inventory handlers with wildcard generic types to the concrete type used by the given
-     * storage channel, but only if the given storage channel is equal to {@link #getChannel()}.
-     *
-     * @throws IllegalArgumentException If channel is not equal to {@link #getChannel()}.
-     */
-    @SuppressWarnings("unchecked")
-    default <SC extends AEKey> IMEInventory<SC> cast(IStorageChannel<SC> channel) {
-        if (getChannel() == channel) {
-            return (IMEInventory<SC>) this;
-        }
-        throw new IllegalArgumentException("This inventories storage channel " + getChannel()
-                + " is not compatible with " + channel);
     }
 
     static void checkPreconditions(AEKey what, long amount, Actionable mode, IActionSource source) {

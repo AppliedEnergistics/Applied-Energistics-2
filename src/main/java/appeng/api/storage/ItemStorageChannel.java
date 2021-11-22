@@ -66,6 +66,6 @@ public final class ItemStorageChannel implements IStorageChannel<AEItemKey> {
 
     @Override
     public boolean supportsFuzzyRangeSearch() {
-        return true;
+        return false;
     }
 }

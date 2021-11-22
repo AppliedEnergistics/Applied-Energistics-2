@@ -11,25 +11,24 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 
-public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEKey>
-        implements IMEMonitor<T>, ITickingMonitor, IHandlerAdapter<Storage<V>> {
+public abstract class StorageAdapter<V extends TransferVariant<?>>
+        implements IMEMonitor, ITickingMonitor, IHandlerAdapter<Storage<V>> {
     /**
      * Clamp reported values to avoid overflows when amounts get too close to Long.MAX_VALUE.
      */
     private static final long MAX_REPORTED_AMOUNT = 1L << 42;
-    private final Map<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
+    private final Map<IMEMonitorListener, Object> listeners = new HashMap<>();
     private IActionSource source;
-    private final IVariantConversion<V, T> conversion;
+    private final IVariantConversion<V> conversion;
     private Storage<V> storage;
     private final InventoryCache cache;
 
-    public StorageAdapter(IVariantConversion<V, T> conversion, Storage<V> storage, boolean showExtractableOnly) {
+    public StorageAdapter(IVariantConversion<V> conversion, Storage<V> storage, boolean showExtractableOnly) {
         this.conversion = conversion;
         this.storage = storage;
         this.cache = new InventoryCache(showExtractableOnly);
@@ -47,9 +46,14 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
     protected abstract void onInjectOrExtract();
 
     @Override
-    public long insert(T what, long amount, Actionable type, IActionSource src) {
+    public long insert(AEKey what, long amount, Actionable type, IActionSource src) {
+        var variant = conversion.getVariant(what);
+        if (variant.isBlank()) {
+            return 0;
+        }
+
         try (var tx = Platform.openOrJoinTx()) {
-            var inserted = this.storage.insert(conversion.getVariant(what), amount, tx);
+            var inserted = this.storage.insert(variant, amount, tx);
 
             if (inserted > 0 && type == Actionable.MODULATE) {
                 tx.commit();
@@ -61,9 +65,14 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        var variant = conversion.getVariant(what);
+        if (variant.isBlank()) {
+            return 0;
+        }
+
         try (var tx = Platform.openOrJoinTx()) {
-            var extracted = this.storage.extract(conversion.getVariant(what), amount, tx);
+            var extracted = this.storage.extract(variant, amount, tx);
 
             if (extracted > 0 && mode == Actionable.MODULATE) {
                 tx.commit();
@@ -86,13 +95,8 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
+    public void getAvailableStacks(KeyCounter out) {
         this.cache.getAvailableKeys(out);
-    }
-
-    @Override
-    public IStorageChannel<T> getChannel() {
-        return conversion.getChannel();
     }
 
     @Override
@@ -101,16 +105,16 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
     }
 
     @Override
-    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorListener<T> l) {
+    public void removeListener(final IMEMonitorListener l) {
         this.listeners.remove(l);
     }
 
-    private void postDifference(Set<T> a) {
+    private void postDifference(Set<AEKey> a) {
         var i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
             var l = i.next();
@@ -124,15 +128,15 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
     }
 
     private class InventoryCache {
-        private KeyCounter<T> frontBuffer = new KeyCounter<>();
-        private KeyCounter<T> backBuffer = new KeyCounter<>();
+        private KeyCounter frontBuffer = new KeyCounter();
+        private KeyCounter backBuffer = new KeyCounter();
         private final boolean extractableOnly;
 
         public InventoryCache(boolean extractableOnly) {
             this.extractableOnly = extractableOnly;
         }
 
-        public Set<T> update() {
+        public Set<AEKey> update() {
             // Flip back & front buffer and start building a new list
             var tmp = backBuffer;
             backBuffer = frontBuffer;
@@ -170,7 +174,7 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
             }
 
             // Diff the front-buffer against the backbuffer
-            var changes = new KeyCounter<T>();
+            var changes = new KeyCounter();
             for (var entry : frontBuffer) {
                 var old = backBuffer.get(entry.getKey());
                 if (old == 0 || old != entry.getLongValue()) {
@@ -187,7 +191,7 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
             return changes.keySet();
         }
 
-        public void getAvailableKeys(KeyCounter<T> out) {
+        public void getAvailableKeys(KeyCounter out) {
             out.addAll(frontBuffer);
         }
     }

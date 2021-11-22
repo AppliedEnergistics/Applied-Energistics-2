@@ -6,45 +6,34 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 
-import appeng.api.storage.FluidStorageChannel;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.ItemStorageChannel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 
 // Consider moving to API?
-public interface IVariantConversion<V extends TransferVariant<?>, T extends AEKey> {
-    IVariantConversion<ItemVariant, AEItemKey> ITEM = new Item();
-    IVariantConversion<FluidVariant, AEFluidKey> FLUID = new Fluid();
+public interface IVariantConversion<V extends TransferVariant<?>> {
+    IVariantConversion<ItemVariant> ITEM = new Item();
+    IVariantConversion<FluidVariant> FLUID = new Fluid();
 
-    IStorageChannel<T> getChannel();
-
-    V getVariant(@Nullable T key);
+    V getVariant(@Nullable AEKey key);
 
     @Nullable
-    T getKey(V variant);
+    AEKey getKey(V variant);
 
-    default boolean variantMatches(T key, V variant) {
+    default boolean variantMatches(AEKey key, V variant) {
         return getVariant(key).equals(variant);
     }
 
     long getBaseSlotSize(V variant);
 
-    class Fluid implements IVariantConversion<FluidVariant, AEFluidKey> {
+    class Fluid implements IVariantConversion<FluidVariant> {
         @Override
-        public FluidStorageChannel getChannel() {
-            return StorageChannels.fluids();
+        public FluidVariant getVariant(AEKey key) {
+            return key instanceof AEFluidKey fluidKey ? fluidKey.toVariant() : FluidVariant.blank();
         }
 
         @Override
-        public FluidVariant getVariant(AEFluidKey key) {
-            return key == null ? FluidVariant.blank() : key.toVariant();
-        }
-
-        @Override
-        public AEFluidKey getKey(FluidVariant variant) {
+        public AEKey getKey(FluidVariant variant) {
             return AEFluidKey.of(variant);
         }
 
@@ -54,15 +43,10 @@ public interface IVariantConversion<V extends TransferVariant<?>, T extends AEKe
         }
     }
 
-    class Item implements IVariantConversion<ItemVariant, AEItemKey> {
+    class Item implements IVariantConversion<ItemVariant> {
         @Override
-        public ItemStorageChannel getChannel() {
-            return StorageChannels.items();
-        }
-
-        @Override
-        public ItemVariant getVariant(AEItemKey key) {
-            return key == null ? ItemVariant.blank() : key.toVariant();
+        public ItemVariant getVariant(AEKey key) {
+            return key instanceof AEItemKey itemKey ? itemKey.toVariant() : ItemVariant.blank();
         }
 
         @org.jetbrains.annotations.Nullable

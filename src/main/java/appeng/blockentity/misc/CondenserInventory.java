@@ -27,31 +27,30 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.storage.ITickingMonitor;
 
-class CondenserItemInventory implements IMEMonitor<AEItemKey>, ITickingMonitor {
-    private final HashMap<IMEMonitorListener<AEItemKey>, Object> listeners = new HashMap<>();
+class CondenserInventory implements IMEMonitor, ITickingMonitor {
+    private final HashMap<IMEMonitorListener, Object> listeners = new HashMap<>();
     private final CondenserBlockEntity target;
     private boolean hasChanged = true;
-    private final KeyCounter<AEItemKey> cachedList = new KeyCounter<>();
+    private final KeyCounter cachedList = new KeyCounter();
     private IActionSource actionSource = new BaseActionSource();
-    private Set<AEItemKey> changeSet = new HashSet<>();
+    private Set<AEKey> changeSet = new HashSet<>();
 
-    CondenserItemInventory(final CondenserBlockEntity te) {
+    CondenserInventory(final CondenserBlockEntity te) {
         this.target = te;
     }
 
     @Override
-    public long insert(AEItemKey what, long amount, Actionable mode, IActionSource source) {
-        IMEInventory.checkPreconditions(what, amount, mode, source);
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        MEStorage.checkPreconditions(what, amount, mode, source);
         if (mode == Actionable.MODULATE) {
             this.target.addPower(amount);
         }
@@ -59,11 +58,11 @@ class CondenserItemInventory implements IMEMonitor<AEItemKey>, ITickingMonitor {
     }
 
     @Override
-    public long extract(AEItemKey what, long amount, Actionable mode, IActionSource source) {
-        IMEInventory.checkPreconditions(what, amount, mode, source);
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        MEStorage.checkPreconditions(what, amount, mode, source);
         var slotItem = this.target.getOutputSlot().getStackInSlot(0);
 
-        if (what.matches(slotItem)) {
+        if (what instanceof AEItemKey itemKey && itemKey.matches(slotItem)) {
             int count = (int) Math.min(amount, Integer.MAX_VALUE);
             return this.target.getOutputSlot().extractItem(0, count, mode == Actionable.SIMULATE)
                     .getCount();
@@ -73,7 +72,7 @@ class CondenserItemInventory implements IMEMonitor<AEItemKey>, ITickingMonitor {
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<AEItemKey> out) {
+    public void getAvailableStacks(KeyCounter out) {
         var stack = this.target.getOutputSlot().getStackInSlot(0);
         if (!stack.isEmpty()) {
             out.add(AEItemKey.of(stack), stack.getCount());
@@ -81,7 +80,7 @@ class CondenserItemInventory implements IMEMonitor<AEItemKey>, ITickingMonitor {
     }
 
     @Override
-    public KeyCounter<AEItemKey> getCachedAvailableStacks() {
+    public KeyCounter getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.clear();
@@ -91,17 +90,12 @@ class CondenserItemInventory implements IMEMonitor<AEItemKey>, ITickingMonitor {
     }
 
     @Override
-    public IStorageChannel<AEItemKey> getChannel() {
-        return StorageChannels.items();
-    }
-
-    @Override
-    public void addListener(IMEMonitorListener<AEItemKey> l, final Object verificationToken) {
+    public void addListener(IMEMonitorListener l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(IMEMonitorListener<AEItemKey> l) {
+    public void removeListener(IMEMonitorListener l) {
         this.listeners.remove(l);
     }
 

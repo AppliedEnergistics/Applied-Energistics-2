@@ -90,21 +90,18 @@ public class DualityItemInterface extends DualityInterface<AEItemKey> {
      * Returns an ME compatible monitor for the interfaces local storage.
      */
     @Override
-    protected <T extends AEKey> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
-        if (channel == StorageChannels.items()) {
-            if (localInvHandler == null) {
-                localInvHandler = new InterfaceInventory();
-            }
-            return localInvHandler.cast(channel);
+    protected IMEMonitor getLocalInventory() {
+        if (localInvHandler == null) {
+            localInvHandler = new InterfaceInventory();
         }
-        return null;
+        return localInvHandler;
     }
 
     /**
      * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
      */
-    private class InterfaceInventory extends StorageAdapter<ItemVariant, AEItemKey>
-            implements IMEMonitor<AEItemKey> {
+    private class InterfaceInventory extends StorageAdapter<ItemVariant>
+            implements IMEMonitor {
 
         InterfaceInventory() {
             super(IVariantConversion.ITEM, localStorage, false);
@@ -112,7 +109,7 @@ public class DualityItemInterface extends DualityInterface<AEItemKey> {
         }
 
         @Override
-        public long insert(AEItemKey what, long amount, Actionable mode, IActionSource source) {
+        public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
             // Prevents other interfaces from injecting their items into this interface when they push
             // their local inventory into the network. This prevents items from bouncing back and forth
             // between interfaces.
@@ -124,7 +121,7 @@ public class DualityItemInterface extends DualityInterface<AEItemKey> {
         }
 
         @Override
-        public long extract(AEItemKey what, long amount, Actionable mode, IActionSource source) {
+        public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
             // Prevents interfaces of lower priority fullfilling their item stocking requests from this interface
             // Otherwise we'd see a "ping-pong" effect where two interfaces could start pulling items back and
             // forth of they wanted to stock the same item and happened to have storage buses on them.
@@ -143,7 +140,7 @@ public class DualityItemInterface extends DualityInterface<AEItemKey> {
         }
 
         @Override
-        public KeyCounter<AEItemKey> getCachedAvailableStacks() {
+        public KeyCounter getCachedAvailableStacks() {
             return getAvailableStacks();
         }
     }

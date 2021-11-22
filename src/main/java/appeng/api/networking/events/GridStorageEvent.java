@@ -34,9 +34,9 @@ import appeng.api.storage.IMEMonitor;
  * Do not modify the list or its contents in any way.
  */
 public class GridStorageEvent extends GridEvent {
-    public final IMEMonitor<?> monitor;
+    public final IMEMonitor monitor;
 
-    public GridStorageEvent(IMEMonitor<?> o) {
+    public GridStorageEvent(IMEMonitor o) {
         this.monitor = o;
     }
 }

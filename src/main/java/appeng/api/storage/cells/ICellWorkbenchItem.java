@@ -59,7 +59,7 @@ public interface ICellWorkbenchItem {
      * <p>
      * onInventoryChange will be called when saving is needed.
      */
-    ConfigInventory<?> getConfigInventory(ItemStack is);
+    ConfigInventory getConfigInventory(ItemStack is);
 
     /**
      * @return the current fuzzy status.

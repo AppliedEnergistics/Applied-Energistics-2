@@ -42,7 +42,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.util.AECableType;
@@ -175,7 +174,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
     private boolean storeFluid(IGrid grid, AEFluidKey what, long amount, boolean modulate) {
         final var storage = grid.getStorageService();
-        var inv = storage.getInventory(StorageChannels.fluids());
+        var inv = storage.getInventory();
 
         if (modulate) {
             var energy = grid.getEnergyService();

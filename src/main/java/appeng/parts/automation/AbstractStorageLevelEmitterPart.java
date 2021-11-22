@@ -55,27 +55,27 @@ import appeng.util.ConfigInventory;
 /**
  * Abstract level emitter logic for storage-based level emitters (item and fluid).
  */
-public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends AbstractLevelEmitterPart
+public abstract class AbstractStorageLevelEmitterPart extends AbstractLevelEmitterPart
         implements IConfigInvHost, ICraftingProvider {
-    private final ConfigInventory<T> config = ConfigInventory.configTypes(getChannel(), 1, this::configureWatchers);
+    private final ConfigInventory config = ConfigInventory.configTypes(getChannel(), 1, this::configureWatchers);
     private IStackWatcher stackWatcher;
     private ICraftingWatcher craftingWatcher;
 
-    private final IMEMonitorListener<T> handlerReceiver = new IMEMonitorListener<>() {
+    private final IMEMonitorListener handlerReceiver = new IMEMonitorListener() {
         @Override
         public boolean isValid(Object effectiveGrid) {
             return effectiveGrid != null && getMainNode().getGrid() == effectiveGrid;
         }
 
         @Override
-        public void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource actionSource) {
+        public void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource actionSource) {
             updateReportingValue(monitor);
         }
 
         @Override
         public void onListUpdate() {
             getMainNode().ifPresent(grid -> {
-                updateReportingValue(grid.getStorageService().getInventory(getChannel()));
+                updateReportingValue(grid.getStorageService().getInventory());
             });
         }
     };
@@ -87,7 +87,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
         }
 
         @Override
-        public <U extends AEKey> void onStackChange(U what, long amount) {
+        public void onStackChange(AEKey what, long amount) {
             if (what.equals(getConfiguredKey()) && getInstalledUpgrades(Upgrades.FUZZY) == 0) {
                 lastReportedValue = amount;
                 updateState();
@@ -121,11 +121,11 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
     }
 
     @Nullable
-    private T getConfiguredKey() {
+    private AEKey getConfiguredKey() {
         return config.getKey(0);
     }
 
-    protected abstract IStorageChannel<T> getChannel();
+    protected abstract IStorageChannel<?> getChannel();
 
     protected abstract MenuType<?> getMenuType();
 
@@ -200,7 +200,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
             }
         } else {
             getMainNode().ifPresent(grid -> {
-                var monitor = grid.getStorageService().getInventory(getChannel());
+                var monitor = grid.getStorageService().getInventory();
 
                 if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
                     monitor.addListener(handlerReceiver, grid);
@@ -219,7 +219,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
         updateState();
     }
 
-    private void updateReportingValue(IMEMonitor<T> monitor) {
+    private void updateReportingValue(IMEMonitor monitor) {
         var myStack = getConfiguredKey();
 
         if (myStack == null) {
@@ -261,7 +261,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
         return true;
     }
 
-    public ConfigInventory<T> getConfig() {
+    public ConfigInventory getConfig() {
         return config;
     }
 }

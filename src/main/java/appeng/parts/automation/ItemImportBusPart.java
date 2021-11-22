@@ -93,7 +93,7 @@ public class ItemImportBusPart extends ImportBusPart<AEItemKey, Storage<ItemVari
         var grid = getMainNode().getGrid();
         if (grid != null) {
             var inv = grid.getStorageService()
-                    .getInventory(StorageChannels.items());
+                    .getInventory();
 
             var inserted = inv.insert(
                     what,
@@ -129,16 +129,16 @@ public class ItemImportBusPart extends ImportBusPart<AEItemKey, Storage<ItemVari
                 this.itemsToSend = this.calculateAmountPerTick();
 
                 var inv = grid.getStorageService()
-                        .getInventory(StorageChannels.items());
+                        .getInventory();
                 var energy = grid.getEnergyService();
 
                 boolean configured = false;
                 for (int x = 0; x < this.availableSlots(); x++) {
                     var what = this.getConfig().getKey(x);
-                    if (what != null && this.itemsToSend > 0) {
+                    if (what instanceof AEItemKey itemKey && this.itemsToSend > 0) {
                         configured = true;
                         while (this.itemsToSend > 0) {
-                            if (this.importStuff(myAdaptor, what, inv, energy, fzMode)) {
+                            if (this.importStuff(myAdaptor, itemKey, inv, energy, fzMode)) {
                                 break;
                             }
                         }
@@ -161,7 +161,7 @@ public class ItemImportBusPart extends ImportBusPart<AEItemKey, Storage<ItemVari
     }
 
     private boolean importStuff(ItemTransfer srcInv, AEItemKey whatToImport,
-            final IMEMonitor<AEItemKey> inv, final IEnergySource energy, final FuzzyMode fzMode) {
+            final IMEMonitor inv, final IEnergySource energy, final FuzzyMode fzMode) {
         final int toSend = this.calculateMaximumAmountToImport(srcInv, whatToImport, inv, fzMode);
         final ItemStack newItems;
 
@@ -198,7 +198,7 @@ public class ItemImportBusPart extends ImportBusPart<AEItemKey, Storage<ItemVari
     }
 
     private int calculateMaximumAmountToImport(ItemTransfer srcInv, AEItemKey whatToImport,
-            IMEMonitor<AEItemKey> inv, FuzzyMode fzMode) {
+            IMEMonitor inv, FuzzyMode fzMode) {
         int toSend = Math.min(this.itemsToSend, 64);
         ItemStack itemStackToImport;
 

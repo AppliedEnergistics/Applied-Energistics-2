@@ -16,35 +16,34 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.me.items;
+package appeng.client.gui.me.common;
 
 import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.data.AEItemKey;
-import appeng.util.Platform;
+import appeng.api.storage.data.AEKey;
 
-final class ItemSorters {
+final class KeySorters {
 
-    private ItemSorters() {
+    private KeySorters() {
     }
 
     // FIXME: Calling .getString() to compare two untranslated strings is a problem, we need to investigate how to do
     // this better
-    public static final Comparator<AEItemKey> NAME_ASC = Comparator.comparing(
-            is -> Platform.getItemDisplayName(is).getString(),
+    public static final Comparator<AEKey> NAME_ASC = Comparator.comparing(
+            is -> is.getDisplayName().getString(),
             String::compareToIgnoreCase);
 
-    public static final Comparator<AEItemKey> NAME_DESC = NAME_ASC.reversed();
+    public static final Comparator<AEKey> NAME_DESC = NAME_ASC.reversed();
 
-    public static final Comparator<AEItemKey> MOD_ASC = Comparator.comparing(
-            AEItemKey::getModId,
+    public static final Comparator<AEKey> MOD_ASC = Comparator.comparing(
+            AEKey::getModId,
             String::compareToIgnoreCase).thenComparing(NAME_ASC);
 
-    public static final Comparator<AEItemKey> MOD_DESC = MOD_ASC.reversed();
+    public static final Comparator<AEKey> MOD_DESC = MOD_ASC.reversed();
 
-    public static Comparator<AEItemKey> getComparator(SortOrder order, SortDir dir) {
+    public static Comparator<AEKey> getComparator(SortOrder order, SortDir dir) {
         return switch (order) {
             case NAME -> dir == SortDir.ASCENDING ? NAME_ASC : NAME_DESC;
             case MOD -> dir == SortDir.ASCENDING ? MOD_ASC : MOD_DESC;

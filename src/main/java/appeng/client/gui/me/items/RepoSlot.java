@@ -18,32 +18,28 @@
 
 package appeng.client.gui.me.items;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.AEKey;
 import appeng.client.gui.me.common.ClientReadOnlySlot;
 import appeng.client.gui.me.common.Repo;
 import appeng.menu.me.common.GridInventoryEntry;
 
 /**
  * This is a virtual slot that has no corresponding slot on the server-side. It displays an item stack from the
- * client-side {@link ItemRepo}.
+ * client-side {@link Repo}.
  */
-public class RepoSlot<T extends AEKey> extends ClientReadOnlySlot {
+public class RepoSlot extends ClientReadOnlySlot {
 
-    private final Repo<T> repo;
+    private final Repo repo;
     private final int offset;
 
-    public RepoSlot(Repo<T> repo, int offset, int displayX, int displayY) {
+    public RepoSlot(Repo repo, int offset, int displayX, int displayY) {
         super(displayX, displayY);
         this.repo = repo;
         this.offset = offset;
     }
 
-    public GridInventoryEntry<T> getEntry() {
+    public GridInventoryEntry getEntry() {
         if (this.repo.hasPower()) {
             return this.repo.get(this.offset);
         }
@@ -51,23 +47,23 @@ public class RepoSlot<T extends AEKey> extends ClientReadOnlySlot {
     }
 
     public long getStoredAmount() {
-        GridInventoryEntry<T> entry = getEntry();
+        GridInventoryEntry entry = getEntry();
         return entry != null ? entry.getStoredAmount() : 0;
     }
 
     public long getRequestableAmount() {
-        GridInventoryEntry<T> entry = getEntry();
+        GridInventoryEntry entry = getEntry();
         return entry != null ? entry.getRequestableAmount() : 0;
     }
 
     public boolean isCraftable() {
-        GridInventoryEntry<T> entry = getEntry();
+        GridInventoryEntry entry = getEntry();
         return entry != null && entry.isCraftable();
     }
 
     @Override
     public ItemStack getItem() {
-        GridInventoryEntry<T> entry = getEntry();
+        GridInventoryEntry entry = getEntry();
         if (entry != null) {
             return entry.getWhat().wrapForDisplayOrFilter();
         }
@@ -77,21 +73,6 @@ public class RepoSlot<T extends AEKey> extends ClientReadOnlySlot {
     @Override
     public boolean hasItem() {
         return getEntry() != null;
-    }
-
-    /**
-     * Tries to cast any given slot (which may be null) to a {@link RepoSlot} of the same type as the given repo.
-     * Returns null when the given slot is not compatible.
-     */
-    @SuppressWarnings("unchecked")
-    @Nullable
-    public static <T extends AEKey> RepoSlot<T> tryCast(Repo<T> repo, @Nullable Slot slot) {
-        if (slot instanceof RepoSlot<?>repoSlot) {
-            if (repoSlot.repo == repo) {
-                return (RepoSlot<T>) repoSlot;
-            }
-        }
-        return null;
     }
 
 }

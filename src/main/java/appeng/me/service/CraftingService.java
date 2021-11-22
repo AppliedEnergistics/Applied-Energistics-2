@@ -51,7 +51,6 @@ import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingStorageBlockEntity;

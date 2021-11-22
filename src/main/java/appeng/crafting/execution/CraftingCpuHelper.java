@@ -34,7 +34,6 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.crafting.inv.ICraftingInventory;
 import appeng.crafting.inv.ListCraftingInventory;
@@ -97,12 +96,12 @@ public class CraftingCpuHelper {
     }
 
     @Nullable
-    public static KeyCounter<AEKey>[] extractPatternInputs(
+    public static KeyCounter[] extractPatternInputs(
             IPatternDetails details,
             ICraftingInventory sourceInv,
             IEnergyService energyService,
             Level level,
-            KeyCounter<AEKey> expectedOutputs) {
+            KeyCounter expectedOutputs) {
         // Check energy first.
         if (!extractPatternPower(details, energyService, Actionable.SIMULATE))
             return null;
@@ -110,11 +109,11 @@ public class CraftingCpuHelper {
         // Extract inputs into the container.
         var inputs = details.getInputs();
         @SuppressWarnings("unchecked")
-        KeyCounter<AEKey>[] inputHolder = new KeyCounter[inputs.length];
+        KeyCounter[] inputHolder = new KeyCounter[inputs.length];
         boolean found = true;
 
         for (int x = 0; x < inputs.length; x++) {
-            var list = inputHolder[x] = new KeyCounter<>();
+            var list = inputHolder[x] = new KeyCounter();
             long remainingMultiplier = inputs[x].getMultiplier();
             for (var template : getValidItemTemplates(sourceInv, inputs[x], level)) {
                 long extracted = extractTemplates(sourceInv, template, remainingMultiplier);
@@ -153,7 +152,7 @@ public class CraftingCpuHelper {
     }
 
     public static void reinjectPatternInputs(ICraftingInventory sourceInv,
-            KeyCounter<AEKey>[] inputHolder) {
+            KeyCounter[] inputHolder) {
         for (var list : inputHolder) {
             // List may be null if we failed to extract some of the pattern's inputs.
             if (list != null) {

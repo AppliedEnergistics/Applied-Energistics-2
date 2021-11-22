@@ -57,6 +57,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.networking.CableBusBlock;
@@ -78,7 +79,7 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class ColorApplicatorItem extends AEBasePoweredItem
-        implements IBasicCellItem<AEItemKey>, IBlockTool, IMouseWheelItem {
+        implements IBasicCellItem, IBlockTool, IMouseWheelItem {
 
     private static final Map<Tag.Named<Item>, AEColor> TAG_TO_COLOR = AEColor.VALID_COLORS.stream()
             .collect(Collectors.toMap(
@@ -114,7 +115,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         var source = new PlayerSource(p);
 
-        var inv = StorageCells.getCellInventory(is, null, StorageChannels.items());
+        var inv = StorageCells.getCellInventory(is, null);
         if (inv != null) {
             var extracted = inv.extract(paintBallKey, 1, Actionable.SIMULATE, source);
 
@@ -230,11 +231,11 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     private ItemStack findNextColor(final ItemStack is, final ItemStack anchor, final int scrollOffset) {
         ItemStack newColor = ItemStack.EMPTY;
 
-        var inv = StorageCells.getCellInventory(is, null, StorageChannels.items());
+        var inv = StorageCells.getCellInventory(is, null);
         if (inv != null) {
             var itemList = inv.getAvailableStacks();
             if (anchor.isEmpty()) {
-                var firstItem = itemList.getFirstKey();
+                var firstItem = itemList.getFirstKey(AEItemKey.class);
                 if (firstItem != null) {
                     newColor = firstItem.toStack();
                 }
@@ -242,7 +243,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 var list = new LinkedList<AEItemKey>();
 
                 for (var i : itemList) {
-                    list.add(i.getKey());
+                    if (i.getKey() instanceof AEItemKey itemKey) {
+                        list.add(itemKey);
+                    }
                 }
 
                 if (list.isEmpty()) {
@@ -364,9 +367,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public boolean isBlackListed(ItemStack cellItem, AEItemKey requestedAddition) {
-        if (requestedAddition != null) {
-            return getColorFromItem(requestedAddition.getItem()) == null;
+    public boolean isBlackListed(ItemStack cellItem, AEKey requestedAddition) {
+        if (requestedAddition instanceof AEItemKey itemKey) {
+            return getColorFromItem(itemKey.getItem()) == null;
         }
         return true;
     }
@@ -397,7 +400,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public ConfigInventory<AEItemKey> getConfigInventory(ItemStack is) {
+    public ConfigInventory getConfigInventory(ItemStack is) {
         return CellConfig.create(getChannel(), is);
     }
 

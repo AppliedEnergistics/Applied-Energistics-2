@@ -25,13 +25,12 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.LevelEmitterMenu;
 import appeng.parts.PartModel;
 
-public class ItemLevelEmitterPart extends AbstractStorageLevelEmitterPart<AEItemKey> {
+public class ItemLevelEmitterPart extends AbstractStorageLevelEmitterPart {
     @PartModels
     public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
             "part/item_level_emitter_base_off");
@@ -60,7 +59,7 @@ public class ItemLevelEmitterPart extends AbstractStorageLevelEmitterPart<AEItem
     }
 
     @Override
-    protected IStorageChannel<AEItemKey> getChannel() {
+    protected IStorageChannel<?> getChannel() {
         return StorageChannels.items();
     }
 

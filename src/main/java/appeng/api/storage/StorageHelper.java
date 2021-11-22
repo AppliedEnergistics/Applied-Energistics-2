@@ -58,7 +58,7 @@ public final class StorageHelper {
     }
 
     /**
-     * Extracts items from a {@link IMEInventory} respecting power requirements.
+     * Extracts items from a {@link MEStorage} respecting power requirements.
      *
      * @param energy  Energy source.
      * @param inv     Inventory to extract from.
@@ -66,13 +66,13 @@ public final class StorageHelper {
      * @param src     Action source.
      * @return extracted items or {@code null} of nothing was extracted.
      */
-    public static <T extends AEKey> long poweredExtraction(IEnergySource energy, IMEInventory<T> inv,
+    public static <T extends AEKey> long poweredExtraction(IEnergySource energy, MEStorage inv,
             T request, long amount, IActionSource src) {
         return poweredExtraction(energy, inv, request, amount, src, Actionable.MODULATE);
     }
 
     /**
-     * Extracts items from a {@link IMEInventory} respecting power requirements.
+     * Extracts items from a {@link MEStorage} respecting power requirements.
      *
      * @param energy  Energy source.
      * @param inv     Inventory to extract from.
@@ -81,7 +81,7 @@ public final class StorageHelper {
      * @param mode    Simulate or modulate
      * @return extracted items or {@code null} of nothing was extracted.
      */
-    public static <T extends AEKey> long poweredExtraction(IEnergySource energy, IMEInventory<T> inv,
+    public static <T extends AEKey> long poweredExtraction(IEnergySource energy, MEStorage inv,
             T request, long amount, IActionSource src, Actionable mode) {
         Objects.requireNonNull(energy, "energy");
         Objects.requireNonNull(inv, "inv");
@@ -91,7 +91,7 @@ public final class StorageHelper {
 
         var retrieved = inv.extract(request, amount, Actionable.SIMULATE, src);
 
-        var energyFactor = Math.max(1.0, inv.getChannel().transferFactor());
+        var energyFactor = Math.max(1.0, request.transferFactor());
         var availablePower = energy.extractAEPower(retrieved / energyFactor, Actionable.SIMULATE,
                 PowerMultiplier.CONFIG);
         var itemToExtract = Math.min((long) (availablePower * energyFactor + 0.9), retrieved);
@@ -115,7 +115,7 @@ public final class StorageHelper {
     }
 
     /**
-     * Inserts items into a {@link IMEInventory} respecting power requirements.
+     * Inserts items into a {@link MEStorage} respecting power requirements.
      *
      * @param energy Energy source.
      * @param inv    Inventory to insert into.
@@ -123,13 +123,13 @@ public final class StorageHelper {
      * @param src    Action source.
      * @return items not inserted or {@code null} if everything was inserted.
      */
-    public static <T extends AEKey> long poweredInsert(final IEnergySource energy, final IMEInventory<T> inv,
+    public static <T extends AEKey> long poweredInsert(final IEnergySource energy, final MEStorage inv,
             final T input, long amount, final IActionSource src) {
         return poweredInsert(energy, inv, input, amount, src, Actionable.MODULATE);
     }
 
     /**
-     * Inserts items into a {@link IMEInventory} respecting power requirements.
+     * Inserts items into a {@link MEStorage} respecting power requirements.
      *
      * @param energy Energy source.
      * @param inv    Inventory to insert into.
@@ -138,7 +138,7 @@ public final class StorageHelper {
      * @param mode   Simulate or modulate
      * @return items not inserted or {@code null} if everything was inserted.
      */
-    public static <T extends AEKey> long poweredInsert(IEnergySource energy, IMEInventory<T> inv, T input, long amount,
+    public static <T extends AEKey> long poweredInsert(IEnergySource energy, MEStorage inv, T input, long amount,
             IActionSource src, Actionable mode) {
         Objects.requireNonNull(energy);
         Objects.requireNonNull(inv);
@@ -148,7 +148,7 @@ public final class StorageHelper {
 
         amount = inv.insert(input, amount, Actionable.SIMULATE, src);
 
-        final double energyFactor = Math.max(1.0, inv.getChannel().transferFactor());
+        final double energyFactor = Math.max(1.0, input.transferFactor());
         final double availablePower = energy.extractAEPower(amount / energyFactor, Actionable.SIMULATE,
                 PowerMultiplier.CONFIG);
         amount = Math.min((long) (availablePower * energyFactor + 0.9), amount);
@@ -180,29 +180,14 @@ public final class StorageHelper {
      * @param addedCell   the added cell. May be {@link ItemStack#EMPTY} if no cell was added.
      * @param src         the action source
      */
-    public static void postWholeCellChanges(IStorageService service,
+    private static void postWholeCellChanges(IStorageService service,
             ItemStack removedCell,
             ItemStack addedCell,
             IActionSource src) {
-        Objects.requireNonNull(service);
-        Objects.requireNonNull(removedCell);
-        Objects.requireNonNull(addedCell);
-        Objects.requireNonNull(src);
-
-        for (var channel : StorageChannels.getAll()) {
-            postWholeCellChanges(service, channel, removedCell, addedCell, src);
-        }
-    }
-
-    private static <T extends AEKey> void postWholeCellChanges(IStorageService service,
-            IStorageChannel<T> channel,
-            ItemStack removedCell,
-            ItemStack addedCell,
-            IActionSource src) {
-        var myChanges = new KeyCounter<T>();
+        var myChanges = new KeyCounter();
 
         if (!removedCell.isEmpty()) {
-            var myInv = StorageCells.getCellInventory(removedCell, null, channel);
+            var myInv = StorageCells.getCellInventory(removedCell, null);
             if (myInv != null) {
                 myInv.getAvailableStacks(myChanges);
                 for (var is : myChanges) {
@@ -211,20 +196,20 @@ public final class StorageHelper {
             }
         }
         if (!addedCell.isEmpty()) {
-            var myInv = StorageCells.getCellInventory(addedCell, null, channel);
+            var myInv = StorageCells.getCellInventory(addedCell, null);
             if (myInv != null) {
                 myInv.getAvailableStacks(myChanges);
             }
 
         }
-        service.postAlterationOfStoredItems(channel, myChanges.keySet(), src);
+        service.postAlterationOfStoredItems(myChanges.keySet(), src);
     }
 
-    public static <T extends AEKey> void postListChanges(KeyCounter<T> before,
-            KeyCounter<T> after,
-            IMEMonitorListener<T> monitor,
+    public static void postListChanges(KeyCounter before,
+            KeyCounter after,
+            IMEMonitorListener monitor,
             IActionSource source) {
-        var changes = new KeyCounter<T>();
+        var changes = new KeyCounter();
         changes.removeAll(before);
         changes.addAll(after);
         changes.removeZeros();

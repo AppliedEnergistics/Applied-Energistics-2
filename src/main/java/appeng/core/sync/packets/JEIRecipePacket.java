@@ -153,7 +153,7 @@ public class JEIRecipePacket extends BasePacket {
         var crafting = grid.getCraftingService();
         var craftMatrix = cct.getCraftingMatrix();
 
-        var storage = inv.getInventory(StorageChannels.items());
+        var storage = inv.getInventory();
         var filter = ViewCellItem.createFilter(StorageChannels.items(), cct.getViewCells());
         var ingredients = this.ensure3by3CraftingMatrix(recipe);
 
@@ -285,8 +285,8 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * Finds the first matching itemstack with the highest stored amount.
      */
-    private AEItemKey findBestMatchingItemStack(Ingredient ingredients, IPartitionList<AEItemKey> filter,
-            IMEMonitor<AEItemKey> storage, IMenuCraftingPacket cct) {
+    private AEItemKey findBestMatchingItemStack(Ingredient ingredients, IPartitionList filter,
+            IMEMonitor storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of) //
                 .filter(r -> r != null && (filter == null || filter.isListed(r)));
@@ -298,8 +298,8 @@ public class JEIRecipePacket extends BasePacket {
      * <p>
      * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
-    private AEItemKey findBestMatchingPattern(Ingredient ingredients, IPartitionList<AEItemKey> filter,
-            ICraftingService crafting, IMEMonitor<AEItemKey> storage, IMenuCraftingPacket cct) {
+    private AEItemKey findBestMatchingPattern(Ingredient ingredients, IPartitionList filter,
+            ICraftingService crafting, IMEMonitor storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
@@ -312,7 +312,7 @@ public class JEIRecipePacket extends BasePacket {
      * the stream is empty.
      */
     @Nullable
-    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, IMEMonitor<AEItemKey> storage,
+    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, IMEMonitor storage,
             IMenuCraftingPacket cct) {
         return stacks//
                 .map(s -> {

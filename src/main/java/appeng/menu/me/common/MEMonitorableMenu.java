@@ -74,8 +74,8 @@ import appeng.util.IConfigManagerListener;
 /**
  * @see MEMonitorableScreen
  */
-public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
-        implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener<T>, IMEInteractionHandler {
+public abstract class MEMonitorableMenu extends AEBaseMenu
+        implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener, IMEInteractionHandler {
 
     private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;
@@ -95,30 +95,26 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
     private IGridNode networkNode;
 
     protected final IEnergySource powerSource;
-    protected final IMEMonitor<T> monitor;
+    protected final IMEMonitor monitor;
 
-    private final IncrementalUpdateHelper<T> updateHelper = new IncrementalUpdateHelper<>();
-
-    private final IStorageChannel<T> storageChannel;
+    private final IncrementalUpdateHelper updateHelper = new IncrementalUpdateHelper();
 
     /**
      * The repository of entries currently known on the client-side. This is maintained by the screen associated with
      * this menu and will only be non-null on the client-side.
      */
     @Nullable
-    private IClientRepo<T> clientRepo;
+    private IClientRepo clientRepo;
 
     /**
      * The last set of craftables sent to the client.
      */
-    private Set<T> previousCraftables = Collections.emptySet();
+    private Set<AEKey> previousCraftables = Collections.emptySet();
 
     public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip,
             final ITerminalHost host, final boolean bindInventory,
-            IStorageChannel<T> storageChannel) {
+            IStorageChannel<?> storageChannel) {
         super(menuType, id, ip, host);
-
-        this.storageChannel = storageChannel;
 
         this.host = host;
         this.clientCM = new ConfigManager(this);
@@ -131,7 +127,7 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         if (isServer()) {
             this.serverCM = host.getConfigManager();
 
-            this.monitor = host.getInventory(storageChannel);
+            this.monitor = host.getInventory();
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
 
@@ -183,11 +179,15 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         return this.networkNode;
     }
 
+    protected boolean isKeyVisible(AEKey key) {
+        return true;
+    }
+
     @Override
     public void broadcastChanges() {
         if (isServer()) {
             // Close the screen if the backing network inventory has changed
-            if (this.monitor != this.host.getInventory(storageChannel)) {
+            if (this.monitor != this.host.getInventory()) {
                 this.setValidMenu(false);
                 return;
             }
@@ -206,12 +206,13 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
 
             var craftables = getCraftablesFromGrid();
             // This is currently not supported/backed by any network service
-            var requestables = new KeyCounter<T>();
+            var requestables = new KeyCounter();
 
             if (this.updateHelper.hasChanges() || !previousCraftables.equals(craftables)) {
                 try {
                     var builder = MEInventoryUpdatePacket
-                            .builder(getStorageChannel(), containerId, updateHelper.isFullUpdate());
+                            .builder(containerId, updateHelper.isFullUpdate());
+                    builder.setFilter(this::isKeyVisible);
 
                     var storageList = monitor.getCachedAvailableStacks();
                     if (this.updateHelper.isFullUpdate()) {
@@ -239,9 +240,12 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
 
     }
 
-    private Set<T> getCraftablesFromGrid() {
+    private Set<AEKey> getCraftablesFromGrid() {
         if (networkNode != null && networkNode.isActive()) {
-            return networkNode.getGrid().getCraftingService().getCraftables(storageChannel);
+            return networkNode.getGrid().getCraftingService().getCraftables()
+                    .stream()
+                    .filter(this::isKeyVisible)
+                    .collect(Collectors.toSet());
         }
         return Collections.emptySet();
     }
@@ -328,8 +332,8 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
     }
 
     @Override
-    public void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource source) {
-        for (var key : change) {
+    public void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource source) {
+        for (AEKey key : change) {
             this.updateHelper.addChange(key);
         }
     }
@@ -392,7 +396,7 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
             return;
         }
 
-        T stack = getStackBySerial(serial);
+        AEKey stack = getStackBySerial(serial);
         if (stack == null) {
             // This can happen if the client sent the request after we removed the item, but before
             // the client knows about it (-> network delay).
@@ -402,11 +406,11 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         handleNetworkInteraction(player, stack, action);
     }
 
-    protected abstract void handleNetworkInteraction(ServerPlayer player, @Nullable T clickedKey,
+    protected abstract void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey,
             InventoryAction action);
 
     @Nullable
-    protected final T getStackBySerial(long serial) {
+    protected final AEKey getStackBySerial(long serial) {
         return updateHelper.getBySerial(serial);
     }
 
@@ -426,16 +430,12 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         this.gui = gui;
     }
 
-    public IStorageChannel<T> getStorageChannel() {
-        return this.storageChannel;
-    }
-
     @Nullable
-    public IClientRepo<T> getClientRepo() {
+    public IClientRepo getClientRepo() {
         return clientRepo;
     }
 
-    public void setClientRepo(@Nullable IClientRepo<T> clientRepo) {
+    public void setClientRepo(@Nullable IClientRepo clientRepo) {
         this.clientRepo = clientRepo;
     }
 

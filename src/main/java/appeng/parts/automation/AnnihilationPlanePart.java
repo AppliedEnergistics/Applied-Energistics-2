@@ -51,7 +51,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AECableType;
@@ -229,7 +228,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         var storage = grid.getStorageService();
         var energy = grid.getEnergyService();
         var inserted = (int) StorageHelper.poweredInsert(energy,
-                storage.getInventory(StorageChannels.items()),
+                storage.getInventory(),
                 what, amount, this.mySrc);
 
         this.isAccepting = inserted >= amount;

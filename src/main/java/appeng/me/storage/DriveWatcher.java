@@ -21,25 +21,25 @@ package appeng.me.storage;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellInventory;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.storage.data.AEKey;
 
-public class DriveWatcher<T extends AEKey> extends MEInventoryHandler<T> {
+public class DriveWatcher<T extends AEKey> extends MEInventoryHandler {
 
     private CellState oldStatus = CellState.EMPTY;
     private final Runnable activityCallback;
 
-    public DriveWatcher(ICellInventory<T> i, Runnable activityCallback) {
+    public DriveWatcher(StorageCell i, Runnable activityCallback) {
         super(i);
         this.activityCallback = activityCallback;
     }
 
     public CellState getStatus() {
-        return ((ICellInventory<?>) getDelegate()).getStatus();
+        return ((StorageCell) getDelegate()).getStatus();
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         var inserted = super.insert(what, amount, mode, source);
 
         if (mode == Actionable.MODULATE && inserted > 0) {
@@ -55,7 +55,7 @@ public class DriveWatcher<T extends AEKey> extends MEInventoryHandler<T> {
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         var extracted = super.extract(what, amount, mode, source);
 
         if (mode == Actionable.MODULATE && extracted > 0) {

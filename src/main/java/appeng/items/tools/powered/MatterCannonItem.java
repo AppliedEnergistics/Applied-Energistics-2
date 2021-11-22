@@ -64,6 +64,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
@@ -84,7 +85,7 @@ import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellItem<AEItemKey> {
+public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellItem {
 
     /**
      * AE energy units consumer per shot fired.
@@ -119,11 +120,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 shots += cu.getInstalledUpgrades(Upgrades.SPEED);
             }
 
-            var inv = StorageCells.getCellInventory(p.getItemInHand(hand), null, StorageChannels.items());
+            var inv = StorageCells.getCellInventory(p.getItemInHand(hand), null);
             if (inv != null) {
                 var itemList = inv.getAvailableStacks();
-                var req = itemList.getFirstEntry();
-                if (req != null) {
+                var req = itemList.getFirstEntry(AEItemKey.class);
+                if (req.getKey() instanceof AEItemKey itemKey) {
                     shots = Math.min(shots, (int) req.getLongValue());
                     for (int sh = 0; sh < shots; sh++) {
                         this.extractAEPower(p.getItemInHand(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
@@ -150,7 +151,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                         var y = rayFrom.y;
                         var z = rayFrom.z;
 
-                        var stack = req.getKey().toStack();
+                        var stack = itemKey.toStack();
                         var penetration = getPenetration(stack); // 196.96655f;
                         if (penetration <= 0) {
                             if (stack.getItem() instanceof PaintBallItem) {
@@ -376,7 +377,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public ConfigInventory<AEItemKey> getConfigInventory(final ItemStack is) {
+    public ConfigInventory getConfigInventory(final ItemStack is) {
         return CellConfig.create(StorageChannels.items(), is);
     }
 
@@ -411,14 +412,18 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public boolean isBlackListed(ItemStack cellItem, AEItemKey requestedAddition) {
+    public boolean isBlackListed(ItemStack cellItem, AEKey requestedAddition) {
 
-        var pen = getPenetration(requestedAddition.toStack());
-        if (pen > 0) {
-            return false;
+        if (requestedAddition instanceof AEItemKey itemKey) {
+            var pen = getPenetration(itemKey.toStack());
+            if (pen > 0) {
+                return false;
+            }
+
+            return !(itemKey.getItem() instanceof PaintBallItem);
         }
 
-        return !(requestedAddition.getItem() instanceof PaintBallItem);
+        return true;
     }
 
     private float getPenetration(ItemStack itemStack) {

@@ -14,7 +14,7 @@ import appeng.api.storage.data.AEKey;
 /**
  * Tallies a negative or positive amount for sub-variants of a {@link appeng.api.storage.data.AEKey}.
  */
-public abstract class VariantCounter<T extends AEKey> implements Iterable<Object2LongMap.Entry<T>> {
+public abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     /**
      * Enable to skip and remove keys that are mapped to zero.
      */
@@ -23,11 +23,11 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
     /**
      * Creates a variant map that is suitable for the given key, considering it's support for fuzzy search.
      */
-    public static <T extends AEKey> VariantCounter<T> create(T keyTemplate) {
+    public static VariantCounter create(AEKey keyTemplate) {
         if (keyTemplate.getFuzzySearchMaxValue() > 0) {
-            return new FuzzyVariantMap<>();
+            return new FuzzyVariantMap();
         } else {
-            return new UnorderedVariantMap<>();
+            return new UnorderedVariantMap();
         }
     }
 
@@ -43,11 +43,11 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
         return this.getRecords().getOrDefault(key, 0);
     }
 
-    public void add(T key, long amount) {
+    public void add(AEKey key, long amount) {
         this.getRecords().mergeLong(key, amount, Long::sum);
     }
 
-    public void set(T key, long amount) {
+    public void set(AEKey key, long amount) {
         if (dropZeros && amount == 0) {
             getRecords().removeLong(key);
         } else {
@@ -55,19 +55,19 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
         }
     }
 
-    public void addAll(VariantCounter<T> other) {
+    public void addAll(VariantCounter other) {
         for (var entry : other.getRecords().object2LongEntrySet()) {
             add(entry.getKey(), entry.getLongValue());
         }
     }
 
-    public void removeAll(VariantCounter<T> other) {
+    public void removeAll(VariantCounter other) {
         for (var entry : other.getRecords().object2LongEntrySet()) {
             add(entry.getKey(), -entry.getLongValue());
         }
     }
 
-    public abstract Collection<Object2LongMap.Entry<T>> findFuzzy(T filter, FuzzyMode fuzzy);
+    public abstract Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey filter, FuzzyMode fuzzy);
 
     public int size() {
         if (!dropZeros) {
@@ -99,7 +99,7 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
     }
 
     @Override
-    public Iterator<Object2LongMap.Entry<T>> iterator() {
+    public Iterator<Object2LongMap.Entry<AEKey>> iterator() {
         if (!dropZeros) {
             return getRecords().object2LongEntrySet().iterator();
         }
@@ -107,7 +107,7 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
         return new NonDefaultIterator();
     }
 
-    abstract Object2LongMap<T> getRecords();
+    abstract Object2LongMap<AEKey> getRecords();
 
     /**
      * Sets all amounts to zero.
@@ -124,7 +124,7 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
         getRecords().clear();
     }
 
-    public abstract VariantCounter<T> copy();
+    public abstract VariantCounter copy();
 
     public void invert() {
         for (var entry : getRecords().object2LongEntrySet()) {
@@ -145,9 +145,9 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
     /**
      * Only returns entries that do not have amount 0.
      */
-    private class NonDefaultIterator implements Iterator<Object2LongMap.Entry<T>> {
-        private final Iterator<Object2LongMap.Entry<T>> parent;
-        private Object2LongMap.Entry<T> next;
+    private class NonDefaultIterator implements Iterator<Object2LongMap.Entry<AEKey>> {
+        private final Iterator<Object2LongMap.Entry<AEKey>> parent;
+        private Object2LongMap.Entry<AEKey> next;
 
         public NonDefaultIterator() {
             this.parent = getRecords().object2LongEntrySet().iterator();
@@ -160,7 +160,7 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
         }
 
         @Override
-        public Object2LongMap.Entry<T> next() {
+        public Object2LongMap.Entry<AEKey> next() {
             if (this.next == null) {
                 throw new NoSuchElementException();
             }
@@ -170,7 +170,7 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
             return result;
         }
 
-        private Object2LongMap.Entry<T> seekNext() {
+        private Object2LongMap.Entry<AEKey> seekNext() {
             while (this.parent.hasNext()) {
                 var entry = this.parent.next();
 
@@ -189,26 +189,26 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
      * This variant list is optimized for items that cannot be damaged and thus do not support querying durability
      * ranges via {@link #findFuzzy}.
      */
-    private static class UnorderedVariantMap<T extends AEKey> extends VariantCounter<T> {
-        private final Object2LongMap<T> records = new Object2LongOpenHashMap<>();
+    private static class UnorderedVariantMap extends VariantCounter {
+        private final Object2LongMap<AEKey> records = new Object2LongOpenHashMap<>();
 
         /**
          * For keys whose primary key does not support fuzzy range lookups, we simply return all records, which amounts
          * to ignoring NBT.
          */
         @Override
-        public Collection<Object2LongMap.Entry<T>> findFuzzy(T filter, FuzzyMode fuzzy) {
+        public Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey filter, FuzzyMode fuzzy) {
             return records.object2LongEntrySet();
         }
 
         @Override
-        Object2LongMap<T> getRecords() {
+        Object2LongMap<AEKey> getRecords() {
             return records;
         }
 
         @Override
-        public VariantCounter<T> copy() {
-            var result = new UnorderedVariantMap<T>();
+        public VariantCounter copy() {
+            var result = new UnorderedVariantMap();
             result.records.putAll(records);
             return result;
         }
@@ -218,22 +218,22 @@ public abstract class VariantCounter<T extends AEKey> implements Iterable<Object
      * This variant list is optimized for damageable items, and supports selecting durability ranges with
      * {@link #findFuzzy}.
      */
-    private static class FuzzyVariantMap<T extends AEKey> extends VariantCounter<T> {
-        private final Object2LongSortedMap<T> records = FuzzySearch.createMap2Long();
+    private static class FuzzyVariantMap extends VariantCounter {
+        private final Object2LongSortedMap<AEKey> records = FuzzySearch.createMap2Long();
 
         @Override
-        public Collection<Object2LongMap.Entry<T>> findFuzzy(T key, FuzzyMode fuzzy) {
+        public Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey key, FuzzyMode fuzzy) {
             return FuzzySearch.findFuzzy(records, key, fuzzy).object2LongEntrySet();
         }
 
         @Override
-        Object2LongMap<T> getRecords() {
+        Object2LongMap<AEKey> getRecords() {
             return this.records;
         }
 
         @Override
-        public VariantCounter<T> copy() {
-            var result = new FuzzyVariantMap<T>();
+        public VariantCounter copy() {
+            var result = new FuzzyVariantMap();
             result.records.putAll(records);
             return result;
         }

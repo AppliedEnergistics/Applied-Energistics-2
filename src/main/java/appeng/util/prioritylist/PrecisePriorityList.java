@@ -21,16 +21,16 @@ package appeng.util.prioritylist;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
-public class PrecisePriorityList<T extends AEKey> implements IPartitionList<T> {
+public class PrecisePriorityList implements IPartitionList {
 
-    private final KeyCounter<T> list;
+    private final KeyCounter list;
 
-    public PrecisePriorityList(KeyCounter<T> in) {
+    public PrecisePriorityList(KeyCounter in) {
         this.list = in;
     }
 
     @Override
-    public boolean isListed(final T input) {
+    public boolean isListed(final AEKey input) {
         return this.list.get(input) > 0;
     }
 
@@ -40,7 +40,7 @@ public class PrecisePriorityList<T extends AEKey> implements IPartitionList<T> {
     }
 
     @Override
-    public Iterable<T> getItems() {
+    public Iterable<AEKey> getItems() {
         return this.list.keySet();
     }
 }

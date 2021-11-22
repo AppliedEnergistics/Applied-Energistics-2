@@ -54,7 +54,7 @@ import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 
 public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredItem
-        implements IBasicCellItem<T>, IMenuItem, ICustomReequipAnimation {
+        implements IBasicCellItem, IMenuItem, ICustomReequipAnimation {
 
     public static final StorageTier SIZE_1K = new StorageTier(512, 54, 8);
     public static final StorageTier SIZE_4K = new StorageTier(2048, 45, 32);
@@ -143,7 +143,7 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     }
 
     @Override
-    public ConfigInventory<T> getConfigInventory(final ItemStack is) {
+    public ConfigInventory getConfigInventory(final ItemStack is) {
         return CellConfig.create(getChannel(), is);
     }
 
@@ -189,18 +189,15 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
             return 0;
         }
 
-        var inv = host.getInventory(getChannel());
+        var inv = host.getInventory();
         if (inv != null) {
-            var typedInv = inv.cast(getChannel());
-            if (typedInv != null) {
-                return StorageHelper.poweredInsert(
-                        host,
-                        typedInv,
-                        typedWhat,
-                        amount,
-                        new PlayerSource(player),
-                        mode);
-            }
+            return StorageHelper.poweredInsert(
+                    host,
+                    inv,
+                    typedWhat,
+                    amount,
+                    new PlayerSource(player),
+                    mode);
         }
         return 0;
     }

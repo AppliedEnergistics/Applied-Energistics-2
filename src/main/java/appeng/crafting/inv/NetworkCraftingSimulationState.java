@@ -39,7 +39,7 @@ import appeng.api.storage.data.KeyCounter;
  * the server.
  */
 public class NetworkCraftingSimulationState extends CraftingSimulationState {
-    private final KeyCounter<AEKey> list = new KeyCounter<>();
+    private final KeyCounter list = new KeyCounter();
 
     public NetworkCraftingSimulationState(IStorageMonitorable monitorable, @Nullable IActionSource src) {
         // Take care of the edge case where ICraftingSimulationRequester#getActionSource() returns null.
@@ -54,7 +54,7 @@ public class NetworkCraftingSimulationState extends CraftingSimulationState {
 
     private <T extends AEKey> void collectChannelContents(IStorageChannel<T> channel,
             IStorageMonitorable monitorable, IActionSource src) {
-        var monitor = monitorable.getInventory(channel);
+        var monitor = monitorable.getInventory();
         for (var stack : monitor.getCachedAvailableStacks()) {
             long extracted = monitor.extract(stack.getKey(), stack.getLongValue(), Actionable.SIMULATE, src);
             if (extracted > 0) {

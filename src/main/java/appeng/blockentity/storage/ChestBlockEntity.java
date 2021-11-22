@@ -56,30 +56,23 @@ import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
-import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.security.ISecurityService;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -124,7 +117,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private boolean wasActive = false;
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isCached = false;
-    private ChestMonitorHandler<?> cellHandler;
+    private ChestMonitorHandler cellHandler;
     private Accessor accessor;
     private Storage<FluidVariant> fluidHandler;
     // This is only used on the client to display the right cell model without
@@ -210,7 +203,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                     this.getMainNode().setIdlePowerUsage(idlePowerUsage);
                     this.accessor = new Accessor();
 
-                    if (this.cellHandler != null && this.cellHandler.getChannel() == StorageChannels.fluids()) {
+                    if (this.cellHandler != null) {
                         this.fluidHandler = new FluidHandler();
                     }
                 }
@@ -218,13 +211,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private <T extends AEKey> ChestMonitorHandler<T> wrap(ICellInventory<T> cellInventory) {
+    private ChestMonitorHandler wrap(StorageCell cellInventory) {
         if (cellInventory == null) {
             return null;
         }
 
-        var g = new ChestMonitorHandler<>(cellInventory, cellInventory);
-        g.addListener(new ChestNetNotifier<>(cellInventory.getChannel()), g);
+        var g = new ChestMonitorHandler(cellInventory, cellInventory);
+        g.addListener(new ChestNetNotifier(), g);
 
         return g;
     }
@@ -387,11 +380,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public IMEMonitor getInventory() {
         this.updateHandler();
 
-        if (this.cellHandler != null && this.cellHandler.getChannel() == channel) {
-            return this.cellHandler.cast(channel);
+        if (this.cellHandler != null) {
+            return this.cellHandler;
         }
         return null;
     }
@@ -435,15 +428,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (!this.inputInventory.isEmpty()) {
             this.updateHandler();
 
-            if (this.cellHandler != null && this.cellHandler.getChannel() == StorageChannels.items()) {
-                var storage = this.cellHandler.cast(StorageChannels.items());
-
+            if (this.cellHandler != null) {
                 var stack = this.inputInventory.getStackInSlot(0);
                 if (stack.isEmpty()) {
                     return;
                 }
 
-                var inserted = StorageHelper.poweredInsert(this, storage,
+                var inserted = StorageHelper.poweredInsert(this, this.cellHandler,
                         AEItemKey.of(stack), stack.getCount(), this.mySrc);
 
                 if (inserted >= stack.getCount()) {
@@ -504,7 +495,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             var ch = StorageCells.getHandler(this.getCell());
 
             if (ch != null) {
-                var chg = StorageCells.getGuiHandler(this.cellHandler.getChannel(), this.getCell());
+                var chg = StorageCells.getGuiHandler(this.getCell());
                 if (chg != null) {
                     chg.openChestGui(p, this, ch, this.getCell());
                     return true;
@@ -543,31 +534,23 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         MenuOpener.open(ChestMenu.TYPE, player, MenuLocator.forBlockEntitySide(this, getForward()));
     }
 
-    private class ChestNetNotifier<T extends AEKey> implements IMEMonitorListener<T> {
-
-        private final IStorageChannel<T> chan;
-
-        public ChestNetNotifier(final IStorageChannel<T> chan) {
-            this.chan = chan;
-        }
-
+    private class ChestNetNotifier implements IMEMonitorListener {
         @Override
         public boolean isValid(final Object verificationToken) {
             ChestBlockEntity.this.updateHandler();
-            if (ChestBlockEntity.this.cellHandler != null
-                    && this.chan == ChestBlockEntity.this.cellHandler.getChannel()) {
+            if (ChestBlockEntity.this.cellHandler != null) {
                 return verificationToken == ChestBlockEntity.this.cellHandler;
             }
             return false;
         }
 
         @Override
-        public void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource source) {
+        public void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource source) {
             if (source == ChestBlockEntity.this.mySrc
                     || source.machine().map(machine -> machine == ChestBlockEntity.this).orElse(false)) {
                 if (getMainNode().isActive()) {
                     getMainNode()
-                            .ifPresent(grid -> grid.getStorageService().postAlterationOfStoredItems(this.chan, change,
+                            .ifPresent(grid -> grid.getStorageService().postAlterationOfStoredItems(change,
                                     ChestBlockEntity.this.mySrc));
                 }
             }
@@ -581,16 +564,16 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private class ChestMonitorHandler<T extends AEKey> extends MEMonitorHandler<T> {
-        private final ICellInventory<T> cellInventory;
+    private class ChestMonitorHandler extends MEMonitorHandler {
+        private final StorageCell cellInventory;
 
-        public ChestMonitorHandler(IMEInventory<T> inventory, ICellInventory<T> cellInventory) {
+        public ChestMonitorHandler(MEStorage inventory, StorageCell cellInventory) {
             super(inventory);
             this.cellInventory = cellInventory;
         }
 
         @Override
-        public long insert(T what, long amount, Actionable mode, IActionSource source) {
+        public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
             if (source.player().map(player -> !this.securityCheck(player, SecurityPermissions.INJECT)).orElse(false)) {
                 return 0;
             }
@@ -598,32 +581,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         private boolean securityCheck(final Player player, final SecurityPermissions requiredPermission) {
-            if (ChestBlockEntity.this.getBlockEntity() instanceof IActionHost && requiredPermission != null) {
-
-                final IGridNode gn = ((IActionHost) ChestBlockEntity.this.getBlockEntity()).getActionableNode();
-                if (gn != null && gn.getGrid() != null) {
-                    final IGrid g = gn.getGrid();
-                    final boolean requirePower = false;
-                    if (requirePower) {
-                        final IEnergyService eg = g.getEnergyService();
-                        if (!eg.isNetworkPowered()) {
-                            return false;
-                        }
-                    }
-
-                    final ISecurityService sg = g.getSecurityService();
-                    if (sg.hasPermission(player, requiredPermission)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-            return true;
+            return Platform.checkPermissions(player, ChestBlockEntity.this, requiredPermission, false, false);
         }
 
         @Override
-        public long extract(T what, long amount, Actionable mode, IActionSource source) {
+        public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
             if (source.player().map(player -> !this.securityCheck(player, SecurityPermissions.EXTRACT)).orElse(false)) {
                 return 0;
             }
@@ -674,8 +636,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 new BlankVariantView<>(FluidVariant.blank(), AEFluidKey.AMOUNT_BUCKET));
 
         private boolean canAcceptLiquids() {
-            return ChestBlockEntity.this.cellHandler != null
-                    && ChestBlockEntity.this.cellHandler.getChannel() == StorageChannels.fluids();
+            return ChestBlockEntity.this.cellHandler != null;
         }
 
         @Override
@@ -730,7 +691,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 final Actionable mode = commit ? Actionable.MODULATE : Actionable.SIMULATE;
                 return StorageHelper.poweredInsert(
                         ChestBlockEntity.this,
-                        ChestBlockEntity.this.cellHandler.cast(StorageChannels.fluids()),
+                        ChestBlockEntity.this.cellHandler,
                         queuedInsert.what(),
                         queuedInsert.amount(),
                         ChestBlockEntity.this.mySrc,
@@ -750,8 +711,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             if (ChestBlockEntity.this.isPowered()) {
                 ChestBlockEntity.this.updateHandler();
-                return ChestBlockEntity.this.cellHandler != null
-                        && ChestBlockEntity.this.cellHandler.getChannel() == StorageChannels.items();
+                return ChestBlockEntity.this.cellHandler != null;
             }
             return false;
         }

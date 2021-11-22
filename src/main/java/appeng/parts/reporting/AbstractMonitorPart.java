@@ -264,7 +264,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public <T extends AEKey> void onStackChange(T what, long amount) {
+    public void onStackChange(AEKey what, long amount) {
         if (what.equals(this.configuredItem)) {
             this.amount = amount;
 

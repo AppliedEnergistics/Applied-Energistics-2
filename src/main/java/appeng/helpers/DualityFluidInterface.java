@@ -61,14 +61,11 @@ public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
      * Returns an ME compatible monitor for the interfaces local storage.
      */
     @Override
-    protected <T extends AEKey> IMEMonitor<T> getLocalInventory(IStorageChannel<T> channel) {
-        if (channel == StorageChannels.fluids()) {
-            if (localInvHandler == null) {
-                localInvHandler = new InterfaceInventory();
-            }
-            return localInvHandler.cast(channel);
+    protected IMEMonitor getLocalInventory() {
+        if (localInvHandler == null) {
+            localInvHandler = new InterfaceInventory();
         }
-        return null;
+        return localInvHandler;
     }
 
     public AECableType getCableConnectionType(Direction dir) {
@@ -93,8 +90,7 @@ public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
         return localStorage;
     }
 
-    private class InterfaceInventory extends StorageAdapter<FluidVariant, AEFluidKey>
-            implements IMEMonitor<AEFluidKey> {
+    private class InterfaceInventory extends StorageAdapter<FluidVariant> implements IMEMonitor {
 
         InterfaceInventory() {
             super(IVariantConversion.FLUID,
@@ -104,7 +100,7 @@ public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
         }
 
         @Override
-        public long insert(AEFluidKey what, long amount, Actionable mode, IActionSource source) {
+        public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
             if (getRequestInterfacePriority(source).isPresent()) {
                 return 0;
             }
@@ -113,7 +109,7 @@ public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
         }
 
         @Override
-        public long extract(AEFluidKey what, long amount, Actionable mode, IActionSource source) {
+        public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
             var requestPriority = getRequestInterfacePriority(source);
             if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority()) {
                 return 0;
@@ -129,7 +125,7 @@ public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
         }
 
         @Override
-        public KeyCounter<AEFluidKey> getCachedAvailableStacks() {
+        public KeyCounter getCachedAvailableStacks() {
             return getAvailableStacks();
         }
     }

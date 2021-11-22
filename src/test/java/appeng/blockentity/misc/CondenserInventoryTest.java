@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
@@ -20,7 +19,7 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
-class CondenserItemInventoryTest {
+class CondenserInventoryTest {
     CondenserBlockEntity be = new CondenserBlockEntity(AEBlockEntities.CONDENSER, BlockPos.ZERO,
             AEBlocks.CONDENSER.block().defaultBlockState());
     IStorageMonitorableAccessor storageAccessor = be.getMEHandler();
@@ -28,9 +27,9 @@ class CondenserItemInventoryTest {
     @Test
     void testSingularityProductionAndPriority() {
         var inv = storageAccessor.getInventory(new BaseActionSource())
-                .getInventory(StorageChannels.items());
+                .getInventory();
         assertThat(inv).isNotNull();
-        assertThat(inv).isInstanceOf(CondenserItemInventory.class);
+        assertThat(inv).isInstanceOf(CondenserInventory.class);
         assertThat(inv.getAvailableStacks()).isEmpty();
 
         be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY);

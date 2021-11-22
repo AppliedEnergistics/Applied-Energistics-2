@@ -53,7 +53,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public ConfigInventory<?> getConfigInventory(final ItemStack is) {
+    public ConfigInventory getConfigInventory(final ItemStack is) {
         return CellConfig.create(this.storageChannel, is);
     }
 

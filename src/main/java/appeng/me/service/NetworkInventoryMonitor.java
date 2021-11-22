@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -34,10 +33,9 @@ import com.google.common.collect.Queues;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.me.helpers.InterestManager;
@@ -47,50 +45,44 @@ import appeng.me.storage.StackWatcher;
 /**
  * Wraps a {@link NetworkStorage} and adds change detection.
  */
-public class NetworkInventoryMonitor<T extends AEKey> implements IMEMonitor<T> {
-    private static final Deque<NetworkInventoryMonitor<?>> GLOBAL_DEPTH = Queues.newArrayDeque();
+public class NetworkInventoryMonitor implements IMEMonitor {
+    private static final Deque<NetworkInventoryMonitor> GLOBAL_DEPTH = Queues.newArrayDeque();
 
     private final InterestManager<StackWatcher> interestManager;
-    private final IStorageChannel<T> channel;
-    private final KeyCounter<T> cachedList;
-    private final Map<IMEMonitorListener<T>, Object> listeners;
+    private final KeyCounter cachedList;
+    private final Map<IMEMonitorListener, Object> listeners;
     @Nullable
-    private IMEInventory<T> networkInventory;
+    private MEStorage storage;
 
     private boolean hasChangedLastTick = false;
     private boolean hasChanged = false;
     @Nonnegative
     private int recursionDepth = 0;
 
-    public NetworkInventoryMonitor(InterestManager<StackWatcher> interestManager, IStorageChannel<T> channel) {
+    public NetworkInventoryMonitor(NetworkStorage storage, InterestManager<StackWatcher> interestManager) {
         this.interestManager = interestManager;
-        this.channel = channel;
-        this.cachedList = new KeyCounter<>();
+        this.cachedList = new KeyCounter();
         this.listeners = new HashMap<>();
-    }
-
-    public void setNetworkInventory(IMEInventory<T> networkInventory) {
-        this.networkInventory = Objects.requireNonNull(networkInventory);
-        forceUpdate();
+        this.storage = storage;
     }
 
     @Override
-    public void addListener(IMEMonitorListener<T> l, Object verificationToken) {
+    public void addListener(IMEMonitorListener l, Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
-        if (networkInventory == null) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (storage == null) {
             return 0;
         }
 
         if (mode == Actionable.SIMULATE) {
-            return networkInventory.extract(what, amount, mode, source);
+            return storage.extract(what, amount, mode, source);
         }
 
         this.recursionDepth++;
-        var extracted = networkInventory.extract(what, amount, mode, source);
+        var extracted = storage.extract(what, amount, mode, source);
         this.recursionDepth--;
 
         if (this.recursionDepth == 0) {
@@ -101,20 +93,15 @@ public class NetworkInventoryMonitor<T extends AEKey> implements IMEMonitor<T> {
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
-        if (networkInventory != null) {
-            networkInventory.getAvailableStacks(out);
+    public void getAvailableStacks(KeyCounter out) {
+        if (storage != null) {
+            storage.getAvailableStacks(out);
         }
-    }
-
-    @Override
-    public IStorageChannel<T> getChannel() {
-        return channel;
     }
 
     @Nonnull
     @Override
-    public KeyCounter<T> getCachedAvailableStacks() {
+    public KeyCounter getCachedAvailableStacks() {
         if (this.hasChanged) {
             this.hasChanged = false;
             this.cachedList.reset();
@@ -126,17 +113,17 @@ public class NetworkInventoryMonitor<T extends AEKey> implements IMEMonitor<T> {
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
-        if (networkInventory == null) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (storage == null) {
             return 0;
         }
 
         if (mode == Actionable.SIMULATE) {
-            return networkInventory.insert(what, amount, mode, source);
+            return storage.insert(what, amount, mode, source);
         }
 
         this.recursionDepth++;
-        var inserted = networkInventory.insert(what, amount, mode, source);
+        var inserted = storage.insert(what, amount, mode, source);
         this.recursionDepth--;
 
         if (this.recursionDepth == 0) {
@@ -147,25 +134,25 @@ public class NetworkInventoryMonitor<T extends AEKey> implements IMEMonitor<T> {
     }
 
     @Override
-    public void removeListener(IMEMonitorListener<T> l) {
+    public void removeListener(IMEMonitorListener l) {
         this.listeners.remove(l);
     }
 
-    private Iterator<Entry<IMEMonitorListener<T>, Object>> getListeners() {
+    private Iterator<Entry<IMEMonitorListener, Object>> getListeners() {
         return this.listeners.entrySet().iterator();
     }
 
-    private void monitorDifference(T what, long difference, IActionSource source) {
+    private void monitorDifference(AEKey what, long difference, IActionSource source) {
         if (difference != 0) {
             this.postChangesToListeners(Collections.singleton(what), source);
         }
     }
 
-    private void postChangesToListeners(Iterable<T> changes, final IActionSource src) {
+    private void postChangesToListeners(Iterable<AEKey> changes, final IActionSource src) {
         this.postChange(changes, src);
     }
 
-    protected void postChange(Iterable<T> changes, IActionSource src) {
+    protected void postChange(Iterable<AEKey> changes, IActionSource src) {
         if (this.recursionDepth > 0 || GLOBAL_DEPTH.contains(this)) {
             return;
         }
@@ -177,7 +164,7 @@ public class NetworkInventoryMonitor<T extends AEKey> implements IMEMonitor<T> {
 
         this.notifyListenersOfChange(changes, src);
 
-        for (var changedItem : changes) {
+        for (AEKey changedItem : changes) {
             if (interestManager.containsKey(changedItem)) {
                 var list = interestManager.get(changedItem);
 
@@ -202,31 +189,15 @@ public class NetworkInventoryMonitor<T extends AEKey> implements IMEMonitor<T> {
         }
     }
 
-    private void notifyListenersOfChange(Iterable<T> diff, IActionSource src) {
+    private void notifyListenersOfChange(Iterable<AEKey> diff, IActionSource src) {
         this.hasChanged = true;
         var i = this.getListeners();
 
         while (i.hasNext()) {
-            final Entry<IMEMonitorListener<T>, Object> o = i.next();
-            final IMEMonitorListener<T> receiver = o.getKey();
+            final Entry<IMEMonitorListener, Object> o = i.next();
+            final IMEMonitorListener receiver = o.getKey();
             if (receiver.isValid(o.getValue())) {
                 receiver.postChange(this, diff, src);
-            } else {
-                i.remove();
-            }
-        }
-    }
-
-    private void forceUpdate() {
-        this.hasChanged = true;
-
-        var i = this.getListeners();
-        while (i.hasNext()) {
-            var o = i.next();
-            var receiver = o.getKey();
-
-            if (receiver.isValid(o.getValue())) {
-                receiver.onListUpdate();
             } else {
                 i.remove();
             }

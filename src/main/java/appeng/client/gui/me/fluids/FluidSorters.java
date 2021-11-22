@@ -22,8 +22,7 @@ import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.util.Platform;
+import appeng.api.storage.data.AEKey;
 
 final class FluidSorters {
 
@@ -32,19 +31,19 @@ final class FluidSorters {
 
     // FIXME: Calling .getString() to compare two untranslated strings is a problem, we need to investigate how to do
     // this better
-    public static final Comparator<AEFluidKey> NAME_ASC = Comparator.comparing(
-            fs -> Platform.getFluidDisplayName(fs).getString(),
+    public static final Comparator<AEKey> NAME_ASC = Comparator.comparing(
+            fs -> fs.getDisplayName().getString(),
             String::compareToIgnoreCase);
 
-    public static final Comparator<AEFluidKey> NAME_DESC = NAME_ASC.reversed();
+    public static final Comparator<AEKey> NAME_DESC = NAME_ASC.reversed();
 
-    public static final Comparator<AEFluidKey> MOD_ASC = Comparator.comparing(
-            AEFluidKey::getModId,
+    public static final Comparator<AEKey> MOD_ASC = Comparator.comparing(
+            AEKey::getModId,
             String::compareToIgnoreCase).thenComparing(NAME_ASC);
 
-    public static final Comparator<AEFluidKey> MOD_DESC = MOD_ASC.reversed();
+    public static final Comparator<AEKey> MOD_DESC = MOD_ASC.reversed();
 
-    public static Comparator<AEFluidKey> getComparator(SortOrder order, SortDir dir) {
+    public static Comparator<AEKey> getComparator(SortOrder order, SortDir dir) {
         return switch (order) {
             case NAME -> dir == SortDir.ASCENDING ? NAME_ASC : NAME_DESC;
             case MOD -> dir == SortDir.ASCENDING ? MOD_ASC : MOD_DESC;

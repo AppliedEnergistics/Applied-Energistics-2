@@ -34,9 +34,8 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.menuobjects.IPortableCell;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
@@ -50,7 +49,7 @@ import appeng.util.ConfigManager;
  */
 public class PortableCellMenuHost<T extends AEKey> extends ItemMenuHost implements IPortableCell {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
-    private final MEMonitorHandler<?> cellMonitor;
+    private final MEMonitorHandler cellMonitor;
     private final PortableCellItem<T> item;
 
     public PortableCellMenuHost(Player player, int slot, PortableCellItem<T> item, ItemStack itemStack,
@@ -58,9 +57,9 @@ public class PortableCellMenuHost<T extends AEKey> extends ItemMenuHost implemen
         super(player, slot, itemStack);
         Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
-        IMEInventory<?> inv = StorageCells.getCellInventory(itemStack, null);
+        MEStorage inv = StorageCells.getCellInventory(itemStack, null);
         Preconditions.checkArgument(inv != null, "Portable cell doesn't expose a cell inventory.");
-        this.cellMonitor = new MEMonitorHandler<>(inv);
+        this.cellMonitor = new MEMonitorHandler(inv);
         this.item = item;
     }
 
@@ -81,8 +80,8 @@ public class PortableCellMenuHost<T extends AEKey> extends ItemMenuHost implemen
     }
 
     @Override
-    public <S extends AEKey> IMEMonitor<S> getInventory(IStorageChannel<S> channel) {
-        return cellMonitor.cast(channel);
+    public IMEMonitor getInventory() {
+        return cellMonitor;
     }
 
     @Override

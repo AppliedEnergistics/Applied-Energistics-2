@@ -29,7 +29,6 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
@@ -39,23 +38,17 @@ import appeng.api.storage.data.KeyCounter;
  * underlying inventory is switched, the resulting changes in the observable inventory are reported to listeners of this
  * monitor.
  */
-public class MEMonitorPassThrough<T extends AEKey> implements IMEMonitor<T>, IMEMonitorListener<T> {
+public class MEMonitorPassThrough implements IMEMonitor, IMEMonitorListener {
 
-    private final Map<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
-
-    private final IStorageChannel<T> channel;
+    private final Map<IMEMonitorListener, Object> listeners = new HashMap<>();
 
     @Nullable
     private IActionSource changeSource;
 
     @Nullable
-    private IMEMonitor<T> monitor;
+    private IMEMonitor monitor;
 
-    public MEMonitorPassThrough(IStorageChannel<T> channel) {
-        this.channel = channel;
-    }
-
-    public void setMonitor(@Nullable IMEMonitor<T> monitor) {
+    public void setMonitor(@Nullable IMEMonitor monitor) {
         if (this.monitor != null) {
             this.monitor.removeListener(this);
             this.monitor = null;
@@ -75,12 +68,12 @@ public class MEMonitorPassThrough<T extends AEKey> implements IMEMonitor<T>, IME
     }
 
     @Override
-    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
+    public void addListener(final IMEMonitorListener l, final Object verificationToken) {
         this.listeners.put(l, verificationToken);
     }
 
     @Override
-    public void removeListener(final IMEMonitorListener<T> l) {
+    public void removeListener(final IMEMonitorListener l) {
         this.listeners.remove(l);
     }
 
@@ -90,11 +83,11 @@ public class MEMonitorPassThrough<T extends AEKey> implements IMEMonitor<T>, IME
     }
 
     @Override
-    public void postChange(IMEMonitor<T> monitor, Iterable<T> change, final IActionSource source) {
-        final Iterator<Entry<IMEMonitorListener<T>, Object>> i = this.listeners.entrySet().iterator();
+    public void postChange(IMEMonitor monitor, Iterable<AEKey> change, final IActionSource source) {
+        final Iterator<Entry<IMEMonitorListener, Object>> i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
-            final Entry<IMEMonitorListener<T>, Object> e = i.next();
-            final IMEMonitorListener<T> receiver = e.getKey();
+            final Entry<IMEMonitorListener, Object> e = i.next();
+            final IMEMonitorListener receiver = e.getKey();
             if (receiver.isValid(e.getValue())) {
                 receiver.postChange(this, change, source);
             } else {
@@ -107,8 +100,8 @@ public class MEMonitorPassThrough<T extends AEKey> implements IMEMonitor<T>, IME
     public void onListUpdate() {
         var i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
-            final Entry<IMEMonitorListener<T>, Object> e = i.next();
-            final IMEMonitorListener<T> receiver = e.getKey();
+            final Entry<IMEMonitorListener, Object> e = i.next();
+            final IMEMonitorListener receiver = e.getKey();
             if (receiver.isValid(e.getValue())) {
                 receiver.onListUpdate();
             } else {
@@ -122,32 +115,27 @@ public class MEMonitorPassThrough<T extends AEKey> implements IMEMonitor<T>, IME
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         return monitor != null ? monitor.insert(what, amount, mode, source) : 0;
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         return monitor != null ? monitor.extract(what, amount, mode, source) : 0;
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
+    public void getAvailableStacks(KeyCounter out) {
         if (monitor != null) {
             monitor.getAvailableStacks(out);
         }
     }
 
     @Override
-    public KeyCounter<T> getCachedAvailableStacks() {
+    public KeyCounter getCachedAvailableStacks() {
         if (this.monitor == null) {
-            return new KeyCounter<>();
+            return new KeyCounter();
         }
         return this.monitor.getCachedAvailableStacks();
-    }
-
-    @Override
-    public IStorageChannel<T> getChannel() {
-        return channel;
     }
 }

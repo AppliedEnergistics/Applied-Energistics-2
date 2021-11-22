@@ -56,7 +56,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -130,7 +129,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public boolean pushPattern(final IPatternDetails patternDetails, KeyCounter<AEKey>[] table,
+    public boolean pushPattern(final IPatternDetails patternDetails, KeyCounter[] table,
             final Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = this.gridInv.isEmpty() && this.patternInv.isEmpty();
@@ -153,7 +152,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return false;
     }
 
-    private void fillGrid(KeyCounter<AEKey>[] table, AECraftingPattern adapter) {
+    private void fillGrid(KeyCounter[] table, AECraftingPattern adapter) {
         for (int sparseIndex = 0; sparseIndex < 9; ++sparseIndex) {
             int inputId = adapter.getCompressedIndexFromSparse(sparseIndex);
             if (inputId != -1) {
@@ -182,7 +181,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         // Sanity check
-        for (KeyCounter<AEKey> list : table) {
+        for (KeyCounter list : table) {
             if (!list.isEmpty()) {
                 throw new RuntimeException("Could not fill grid with some items, including " + list.iterator().next());
             }

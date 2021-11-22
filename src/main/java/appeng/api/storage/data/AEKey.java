@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -86,6 +87,26 @@ public abstract class AEKey {
     }
 
     /**
+     * Can be used as factor for transferring stacks of a channel.
+     * <p>
+     * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel transferring a full bucket per
+     * operation.
+     */
+    public int transferFactor() {
+        return 1;
+    }
+
+    /**
+     * The number of units (eg item count, or millibuckets) that can be stored per byte in a storage cell. Standard
+     * value for items is 8, and for fluids it's 8000
+     *
+     * @return number of units
+     */
+    public int getUnitsPerByte() {
+        return 8;
+    }
+
+    /**
      * The storage channel this type of resource key is used for.
      */
     public abstract IStorageChannel<?> getChannel();
@@ -145,4 +166,16 @@ public abstract class AEKey {
      * Wraps a key in an ItemStack that can be unwrapped into a key later.
      */
     public abstract ItemStack wrap(int amount);
+
+    /**
+     * True to indicate that this type of {@link AEKey} supports range-based fuzzy search using
+     * {@link AEKey#getFuzzySearchValue()} and {@link AEKey#getFuzzySearchMaxValue()}.
+     * <p/>
+     * For items this is used for damage-based search and filtering.
+     */
+    public boolean supportsFuzzyRangeSearch() {
+        return false;
+    }
+
+    public abstract Component getDisplayName();
 }

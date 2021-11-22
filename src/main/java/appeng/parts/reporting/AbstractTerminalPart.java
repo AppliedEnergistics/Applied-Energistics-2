@@ -34,9 +34,7 @@ import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
@@ -129,10 +127,10 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public IMEMonitor getInventory() {
         var grid = getMainNode().getGrid();
         if (grid != null) {
-            return grid.getStorageService().getInventory(channel);
+            return grid.getStorageService().getInventory();
         }
         return null;
     }

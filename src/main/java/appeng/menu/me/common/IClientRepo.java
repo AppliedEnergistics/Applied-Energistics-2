@@ -21,13 +21,11 @@ package appeng.menu.me.common;
 import java.util.List;
 import java.util.Set;
 
-import appeng.api.storage.data.AEKey;
-
 /**
  * Represents a client-side only repository of {@link GridInventoryEntry} entries that represent the network content
  * currently known to the client. This is actively synchronized by the server via {@link IncrementalUpdateHelper}.
  */
-public interface IClientRepo<T extends AEKey> {
+public interface IClientRepo {
 
     /**
      * Handle incoming updates from the server.
@@ -35,11 +33,11 @@ public interface IClientRepo<T extends AEKey> {
      * @param fullUpdate Completely replace the repo contents.
      * @param entries    The updated entries.
      */
-    void handleUpdate(boolean fullUpdate, List<GridInventoryEntry<T>> entries);
+    void handleUpdate(boolean fullUpdate, List<GridInventoryEntry> entries);
 
     /**
      * @return All entries in this repository, regardless of any filter.
      */
-    Set<GridInventoryEntry<T>> getAllEntries();
+    Set<GridInventoryEntry> getAllEntries();
 
 }

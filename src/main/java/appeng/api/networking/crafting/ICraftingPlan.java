@@ -27,7 +27,6 @@ import java.util.Map;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
 /**
@@ -59,17 +58,17 @@ public interface ICraftingPlan {
     /**
      * List of items that were used. (They would need to be extracted to start the job).
      */
-    KeyCounter<AEKey> usedItems();
+    KeyCounter usedItems();
 
     /**
      * List of items that need to be emitted for this job.
      */
-    KeyCounter<AEKey> emittedItems();
+    KeyCounter emittedItems();
 
     /**
      * List of missing items if this is a simulation.
      */
-    KeyCounter<AEKey> missingItems();
+    KeyCounter missingItems();
 
     /**
      * Map of each pattern to the number of times it needs to be crafted. Can be used to retrieve the crafted items:

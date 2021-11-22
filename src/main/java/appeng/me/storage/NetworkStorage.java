@@ -29,41 +29,38 @@ import java.util.TreeMap;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.me.service.SecurityService;
 
 /**
- * Manages all available {@link IConfigurableMEInventory} on the network.
+ * Manages all available {@link MEStorage} on the network.
  */
-public class NetworkStorage<T extends AEKey> implements IMEInventory<T> {
+public class NetworkStorage implements MEStorage {
 
-    private static final ThreadLocal<Deque<NetworkStorage<?>>> DEPTH_MOD = new ThreadLocal<>();
-    private static final ThreadLocal<Deque<NetworkStorage<?>>> DEPTH_SIM = new ThreadLocal<>();
+    private static final ThreadLocal<Deque<NetworkStorage>> DEPTH_MOD = new ThreadLocal<>();
+    private static final ThreadLocal<Deque<NetworkStorage>> DEPTH_SIM = new ThreadLocal<>();
     private static final Comparator<Integer> PRIORITY_SORTER = (o1, o2) -> Integer.compare(o2, o1);
 
     private static int currentPass = 0;
 
-    private final IStorageChannel<T> channel;
     private final SecurityService security;
-    private final NavigableMap<Integer, List<IMEInventory<T>>> priorityInventory;
-    private final List<IMEInventory<T>> secondPassInventories = new ArrayList<>();
+    private final NavigableMap<Integer, List<MEStorage>> priorityInventory;
+    private final List<MEStorage> secondPassInventories = new ArrayList<>();
     private int myPass = 0;
 
-    public NetworkStorage(IStorageChannel<T> channel, SecurityService security) {
-        this.channel = channel;
+    public NetworkStorage(SecurityService security) {
         this.security = security;
         this.priorityInventory = new TreeMap<>(PRIORITY_SORTER);
     }
 
-    public void mount(int priority, IMEInventory<T> inventory) {
+    public void mount(int priority, MEStorage inventory) {
         this.priorityInventory.computeIfAbsent(priority, k -> new ArrayList<>())
                 .add(inventory);
     }
 
-    public void unmount(IMEInventory<T> inventory) {
+    public void unmount(MEStorage inventory) {
         var prioIt = this.priorityInventory.entrySet().iterator();
         while (prioIt.hasNext()) {
             var prioEntry = prioIt.next();
@@ -75,7 +72,7 @@ public class NetworkStorage<T extends AEKey> implements IMEInventory<T> {
         }
     }
 
-    public long insert(T what, long amount, final Actionable type, final IActionSource src) {
+    public long insert(AEKey what, long amount, final Actionable type, final IActionSource src) {
         if (this.diveList(type)) {
             return 0;
         }
@@ -157,7 +154,7 @@ public class NetworkStorage<T extends AEKey> implements IMEInventory<T> {
         }
     }
 
-    private Deque<NetworkStorage<?>> getDepth(Actionable type) {
+    private Deque<NetworkStorage> getDepth(Actionable type) {
         var depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
 
         var s = depth.get();
@@ -169,7 +166,7 @@ public class NetworkStorage<T extends AEKey> implements IMEInventory<T> {
         return s;
     }
 
-    public long extract(T what, long amount, final Actionable mode, final IActionSource source) {
+    public long extract(AEKey what, long amount, final Actionable mode, final IActionSource source) {
         if (this.diveList(mode)) {
             return 0;
         }
@@ -199,12 +196,7 @@ public class NetworkStorage<T extends AEKey> implements IMEInventory<T> {
     }
 
     @Override
-    public IStorageChannel<T> getChannel() {
-        return channel;
-    }
-
-    @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
+    public void getAvailableStacks(KeyCounter out) {
         if (diveIteration(Actionable.SIMULATE)) {
             return;
         }

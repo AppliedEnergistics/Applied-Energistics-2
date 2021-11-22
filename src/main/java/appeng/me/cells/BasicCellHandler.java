@@ -41,7 +41,7 @@ public class BasicCellHandler implements ICellHandler {
     }
 
     @Override
-    public BasicCellInventory<?> getCellInventory(ItemStack is, ISaveProvider container) {
+    public BasicCellInventory getCellInventory(ItemStack is, ISaveProvider container) {
         return BasicCellInventory.createInventory(is, container);
     }
 

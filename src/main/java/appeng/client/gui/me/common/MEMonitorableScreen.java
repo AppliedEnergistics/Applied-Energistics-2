@@ -32,17 +32,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.lwjgl.glfw.GLFW;
 
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.client.AEStackRendering;
+import appeng.api.client.AmountFormat;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -50,6 +54,8 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -59,10 +65,10 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.me.items.RepoSlot;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.FluidBlitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
-import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -87,14 +93,14 @@ import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorableMenu<T>>
+public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorableMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
     private static final int MIN_ROWS = 3;
 
     private static String memoryText = "";
     private final TerminalStyle style;
-    protected final Repo<T> repo;
+    protected final Repo repo;
     private final List<ItemStack> currentViewCells = new ArrayList<>();
     private final IConfigManager configSrc;
     private final boolean supportsViewCells;
@@ -120,7 +126,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
         }
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
-        this.repo = createRepo(scrollbar);
+        this.repo = new Repo(scrollbar, this);
         menu.setClientRepo(this.repo);
         this.repo.setUpdateViewListener(this::updateScrollbar);
         updateScrollbar();
@@ -171,14 +177,24 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
         }
     }
 
-    protected abstract Repo<T> createRepo(IScrollSource scrollSource);
-
     @Nullable
-    protected abstract IPartitionList<T> createPartitionList(List<ItemStack> viewCells);
+    protected abstract IPartitionList createPartitionList(List<ItemStack> viewCells);
 
-    protected abstract void renderGridInventoryEntry(PoseStack poseStack, int x, int y, GridInventoryEntry<T> entry);
+    private void renderGridInventoryEntry(PoseStack poseStack, int x, int y, AEKey what) {
+        if (what instanceof AEFluidKey fluidKey) {
+            FluidBlitter.create(fluidKey)
+                    .dest(x, y, 16, 16)
+                    .blit(poseStack, getBlitOffset());
+        } else if (what instanceof AEItemKey itemKey) {
+            // Annoying but easier than trying to splice into render item
+            ItemStack displayStack = itemKey.toStack();
+            SimpleContainer displayInv = new SimpleContainer(displayStack);
+            super.renderSlot(poseStack, new Slot(displayInv, 0, x, y));
+        }
+        throw new UnsupportedOperationException();
+    }
 
-    protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<T> entry, int mouseButton,
+    protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry, int mouseButton,
             ClickType clickType);
 
     private void updateScrollbar() {
@@ -213,7 +229,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
             for (int col = 0; col < style.getSlotsPerRow(); col++) {
                 Point pos = style.getSlotPos(row, col);
 
-                slots.add(new RepoSlot<>(this.repo, repoIndex++, pos.getX(), pos.getY()));
+                slots.add(new RepoSlot(this.repo, repoIndex++, pos.getX(), pos.getY()));
             }
         }
 
@@ -311,10 +327,8 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
         if (wheelDelta != 0 && hasShiftDown()) {
-            final Slot slot = this.getSlot((int) x, (int) y);
-            RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
-            if (repoSlot != null) {
-                GridInventoryEntry<T> entry = repoSlot.getEntry();
+            if (this.getSlot((int) x, (int) y) instanceof RepoSlot repoSlot) {
+                GridInventoryEntry entry = repoSlot.getEntry();
                 long serial = entry != null ? entry.getSerial() : -1;
                 final InventoryAction direction = wheelDelta > 0 ? InventoryAction.ROLL_DOWN
                         : InventoryAction.ROLL_UP;
@@ -332,8 +346,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
 
     @Override
     protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
-        RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
-        if (repoSlot != null) {
+        if (slot instanceof RepoSlot repoSlot) {
             handleGridInventoryEntryMouseClick(repoSlot.getEntry(), mouseButton, clickType);
             return;
         }
@@ -383,15 +396,14 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
 
     @Override
     public void renderSlot(PoseStack poseStack, Slot s) {
-        RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, s);
-        if (repoSlot != null) {
+        if (s instanceof RepoSlot repoSlot) {
             if (!this.repo.hasPower()) {
                 fill(poseStack, s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
             } else {
-                GridInventoryEntry<T> entry = repoSlot.getEntry();
+                GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
-                        renderGridInventoryEntry(poseStack, s.x, s.y, entry);
+                        renderGridInventoryEntry(poseStack, s.x, s.y, entry.getWhat());
                     } catch (final Exception err) {
                         AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
@@ -426,12 +438,10 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
     protected void renderTooltip(PoseStack poseStack, int x, int y) {
         // Vanilla doesn't show item tooltips when the player have something in their hand
         if (style.isShowTooltipsWithItemInHand() || getMenu().getCarried().isEmpty()) {
-            RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, this.hoveredSlot);
-
-            if (repoSlot != null) {
-                GridInventoryEntry<T> entry = repoSlot.getEntry();
+            if (this.hoveredSlot instanceof RepoSlot repoSlot) {
+                GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
-                    this.renderGridInventoryEntryTooltip(poseStack, entry, x, y);
+                    renderGridInventoryEntryTooltip(poseStack, entry, x, y);
                 }
                 return;
             }
@@ -440,7 +450,22 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
         super.renderTooltip(poseStack, x, y);
     }
 
-    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<T> entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry entry, int x, int y) {
+        if (entry.getWhat() instanceof AEFluidKey fluidKey) {
+            var what = entry.getWhat();
+            String formattedAmount = AEStackRendering.formatAmount(what, entry.getStoredAmount(), AmountFormat.FULL);
+
+            String modName = Platform.formatModName(what.getModId());
+
+            List<Component> list = new ArrayList<>();
+            list.add(FluidVariantRendering.getName(fluidKey.toVariant()));
+            list.add(new TextComponent(formattedAmount));
+            list.add(new TextComponent(modName));
+
+            this.renderComponentTooltip(poseStack, list, x, y);
+            return;
+        }
+
         final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
 
         ItemStack stack = entry.getWhat().wrapForDisplayOrFilter();

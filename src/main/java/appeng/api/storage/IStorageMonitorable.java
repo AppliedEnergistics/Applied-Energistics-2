@@ -33,28 +33,25 @@ import appeng.api.storage.data.AEKey;
  */
 public interface IStorageMonitorable {
 
-    <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel);
+    IMEMonitor getInventory();
 
     /**
-     * @see IMEInventory#insert
+     * @see MEStorage#insert
      */
     @SuppressWarnings("unchecked")
     default <T extends AEKey> long insert(T what, long amount, Actionable mode, IActionSource source) {
-        IStorageChannel<T> channel = (IStorageChannel<T>) what.getChannel();
-        return getInventory(channel).insert(what, amount, mode, source);
+        return getInventory().insert(what, amount, mode, source);
     }
 
     /**
-     * @see IMEInventory#extract
+     * @see MEStorage#extract
      */
     @SuppressWarnings("unchecked")
     default <T extends AEKey> long extract(T what, long amount, Actionable mode, IActionSource source) {
-        IStorageChannel<T> channel = (IStorageChannel<T>) what.getChannel();
-        return getInventory(channel).insert(what, amount, mode, source);
+        return getInventory().insert(what, amount, mode, source);
     }
 
     default long getStoredAmountCached(AEKey key) {
-        var inventory = getInventory(key.getChannel());
-        return inventory.getCachedAvailableStacks().get(key);
+        return getInventory().getCachedAvailableStacks().get(key);
     }
 }
