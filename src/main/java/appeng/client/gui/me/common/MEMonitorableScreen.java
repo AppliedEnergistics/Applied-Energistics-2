@@ -438,8 +438,8 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
                 var emptyingAction = StackInteractions.getEmptyingAction(carried);
                 if (emptyingAction != null) {
                     renderTooltip(poseStack, List.of(
-                            new TextComponent("Left-Click: Store ").append(carried.getHoverName()).getVisualOrderText(),
-                            new TextComponent("Right-Click: ").append(emptyingAction.description()).getVisualOrderText()
+                            new TextComponent("Left-Click: Store ").append(carried.getHoverName()).withStyle(ChatFormatting.GRAY).getVisualOrderText(),
+                            new TextComponent("Right-Click: ").append(emptyingAction.description()).withStyle(ChatFormatting.GRAY).getVisualOrderText()
                     ), x, y);
                     return;
                 }
