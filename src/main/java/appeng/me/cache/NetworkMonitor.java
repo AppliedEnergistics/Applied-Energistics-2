@@ -19,7 +19,6 @@
 package appeng.me.cache;
 
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import appeng.api.AEApi;
@@ -36,7 +35,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.ItemWatcher;
-import com.google.common.collect.Queues;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
@@ -47,9 +45,10 @@ import java.util.Map.Entry;
 public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 {
 	@Nonnull
-	private static final Set<NetworkMonitor<?>> NESTED_MONITORS = new HashSet<>();
-	private static final HashMap<IActionSource, Set<NetworkMonitor<?>>> sourceSetHashMap = new HashMap<>();
-	protected static boolean nested = false;
+	private static final HashMap<IActionSource, Set<NetworkMonitor<?>>> src2MonitorsMap = new HashMap<>();
+	private static final Set<IActionSource> nestingSources = new HashSet<>();
+
+	protected boolean wasNested = false;
 	protected boolean isNested = false;
 
 	@Nonnull
@@ -63,8 +62,6 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	private boolean sendEvent = false;
 	private boolean forceUpdate = false;
-	@Nonnegative
-	private int localDepthSemaphore = 0;
 	private long gridItemCount;
 	private long gridFluidCount;
 
@@ -229,16 +226,19 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	protected void postChange( final boolean add, final Iterable<T> changes, final IActionSource src )
 	{
-
-		if( sourceSetHashMap.get( src ) != null && sourceSetHashMap.get( src ).contains( this ) )
+		src2MonitorsMap.putIfAbsent( src, new HashSet<>() );
+		isNested = false;
+		if( nestingSources.contains( src ) )
 		{
-			NESTED_MONITORS.add( this );
-			nested = true;
+			forceUpdate = true;
+		}
+		if( !src2MonitorsMap.get( src ).add( this ) )
+		{
+			nestingSources.add( src );
+			forceUpdate = true;
+			src2MonitorsMap.get( src ).forEach( networkMonitor -> networkMonitor.isNested = true );
 			return;
 		}
-
-		sourceSetHashMap.putIfAbsent( src, new HashSet<>() );
-		sourceSetHashMap.get( src ).add( this );
 
 		this.sendEvent = true;
 
@@ -282,28 +282,16 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 		this.notifyListenersOfChange( changes, src );
 
-		sourceSetHashMap.get( src ).remove( this );
-		if( sourceSetHashMap.get( src ).isEmpty() )
+		src2MonitorsMap.get( src ).remove( this );
+		if( src2MonitorsMap.get( src ).isEmpty() )
 		{
-			sourceSetHashMap.remove( src );
+			src2MonitorsMap.remove( src );
+			nestingSources.remove( src );
 		}
 
-		if( sourceSetHashMap.isEmpty() )
+		if( isNested != wasNested || forceUpdate )
 		{
-			for( NetworkMonitor<?> nm : NESTED_MONITORS )
-			{
-				nm.setupForceUpdate();
-			}
-			nested = false;
-			NESTED_MONITORS.clear();
-		}
-	}
-
-	void setupForceUpdate()
-	{
-		if( nested != isNested )
-		{
-			isNested = nested;
+			wasNested = isNested;
 			forceUpdate();
 		}
 	}
