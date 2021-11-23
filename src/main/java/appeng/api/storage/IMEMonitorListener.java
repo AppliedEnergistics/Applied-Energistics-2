@@ -27,7 +27,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.AEKey;
 
 public interface IMEMonitorListener {
-
     /**
      * return true if this object should remain as a listener.
      *
@@ -42,7 +41,7 @@ public interface IMEMonitorListener {
      *
      * @param change The keys that have changed.
      */
-    void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource actionSource);
+    void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource actionSource);
 
     /**
      * called when the list updates its contents, this is mostly for handling power events.

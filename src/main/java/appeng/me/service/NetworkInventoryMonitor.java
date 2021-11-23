@@ -33,7 +33,7 @@ import com.google.common.collect.Queues;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
@@ -45,7 +45,7 @@ import appeng.me.storage.StackWatcher;
 /**
  * Wraps a {@link NetworkStorage} and adds change detection.
  */
-public class NetworkInventoryMonitor implements IMEMonitor {
+public class NetworkInventoryMonitor implements MEMonitorStorage {
     private static final Deque<NetworkInventoryMonitor> GLOBAL_DEPTH = Queues.newArrayDeque();
 
     private final InterestManager<StackWatcher> interestManager;

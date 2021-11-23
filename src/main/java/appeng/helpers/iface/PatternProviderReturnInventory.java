@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.storage.MEMonitorStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -36,7 +38,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.AEItemKey;
 import appeng.util.IVariantConversion;
 
@@ -60,7 +61,7 @@ public class PatternProviderReturnInventory extends GenericStackInv {
     /**
      * Return true if something could be injected into the network.
      */
-    public boolean injectIntoNetwork(IStorageMonitorable network, IActionSource src) {
+    public boolean injectIntoNetwork(MEMonitorStorage storage, IActionSource src) {
         var didSomething = false;
         injectingIntoNetwork = true;
 
@@ -69,7 +70,7 @@ public class PatternProviderReturnInventory extends GenericStackInv {
                 GenericStack stack = stacks[i];
                 if (stack != null) {
                     long sizeBefore = stack.amount();
-                    var inserted = network.insert(stack.what(), stack.amount(), Actionable.MODULATE, src);
+                    var inserted = storage.insert(stack.what(), stack.amount(), Actionable.MODULATE, src);
                     if (inserted >= stack.amount()) {
                         stacks[i] = null;
                     } else {

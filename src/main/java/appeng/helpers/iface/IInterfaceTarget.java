@@ -73,20 +73,20 @@ public interface IInterfaceTarget {
     }
 
     private static IInterfaceTarget wrapStorageMonitorable(IStorageMonitorableAccessor accessor, IActionSource src) {
-        var monitorable = accessor.getInventory(src);
-        if (monitorable == null) {
+        var storage = accessor.getInventory(src);
+        if (storage == null) {
             return null;
         } else {
             return new IInterfaceTarget() {
                 @Override
                 public long insert(AEKey what, long amount, Actionable type) {
-                    return monitorable.insert(what, amount, type, src);
+                    return storage.insert(what, amount, type, src);
                 }
 
                 @Override
                 public boolean containsPatternInput(Set<AEKey> patternInputs) {
                     for (var channel : StorageChannels.getAll()) {
-                        for (var stack : monitorable.getInventory().getCachedAvailableStacks()) {
+                        for (var stack : storage.getCachedAvailableStacks()) {
                             if (patternInputs.contains(stack.getKey().dropSecondary())) {
                                 return true;
                             }

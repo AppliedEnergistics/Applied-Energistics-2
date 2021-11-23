@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import appeng.menu.me.interaction.StackInteractions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -39,7 +40,6 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -55,7 +55,6 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -65,7 +64,6 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.me.items.RepoSlot;
 import appeng.client.gui.style.Blitter;
-import appeng.client.gui.style.FluidBlitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
@@ -180,20 +178,6 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
     @Nullable
     protected abstract IPartitionList createPartitionList(List<ItemStack> viewCells);
 
-    private void renderGridInventoryEntry(PoseStack poseStack, int x, int y, AEKey what) {
-        if (what instanceof AEFluidKey fluidKey) {
-            FluidBlitter.create(fluidKey)
-                    .dest(x, y, 16, 16)
-                    .blit(poseStack, getBlitOffset());
-        } else if (what instanceof AEItemKey itemKey) {
-            // Annoying but easier than trying to splice into render item
-            ItemStack displayStack = itemKey.toStack();
-            SimpleContainer displayInv = new SimpleContainer(displayStack);
-            super.renderSlot(poseStack, new Slot(displayInv, 0, x, y));
-        }
-        throw new UnsupportedOperationException();
-    }
-
     protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry, int mouseButton,
             ClickType clickType);
 
@@ -301,7 +285,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
-            style.getStackSizeRenderer().renderSizeLabel(font, x - this.leftPos, y - this.topPos,
+            StackSizeRenderer.renderSizeLabel(font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
         }
     }
@@ -403,7 +387,14 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
-                        renderGridInventoryEntry(poseStack, s.x, s.y, entry.getWhat());
+                        AEStackRendering.drawRepresentation(
+                                minecraft,
+                                poseStack,
+                                s.x,
+                                s.y,
+                                getBlitOffset(),
+                                entry.getWhat()
+                        );
                     } catch (final Exception err) {
                         AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
@@ -412,11 +403,16 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
                     // regardless of stack size
                     long storedAmount = entry.getStoredAmount();
                     boolean craftable = entry.isCraftable();
+                    var useLargeFonts = AEConfig.instance().isUseLargeFonts();
                     if (isViewOnlyCraftable() && craftable) {
-                        style.getStackSizeRenderer().renderStackSize(this.font, 0, true, s.x, s.y);
+                        var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
+                                : GuiText.SmallFontCraft.getLocal();
+                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
                     } else {
-                        style.getStackSizeRenderer().renderStackSize(this.font, storedAmount, craftable, s.x,
-                                s.y);
+                        var text = AEStackRendering.formatAmount(entry.getWhat(), storedAmount,
+                                useLargeFonts ?  AmountFormat.PREVIEW_LARGE_FONT : AmountFormat.PREVIEW_REGULAR
+                        );
+                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
                     }
                 }
             }
@@ -436,15 +432,29 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
 
     @Override
     protected void renderTooltip(PoseStack poseStack, int x, int y) {
-        // Vanilla doesn't show item tooltips when the player have something in their hand
-        if (style.isShowTooltipsWithItemInHand() || getMenu().getCarried().isEmpty()) {
-            if (this.hoveredSlot instanceof RepoSlot repoSlot) {
+        if (this.hoveredSlot instanceof RepoSlot repoSlot) {
+            var carried = menu.getCarried();
+            if (!carried.isEmpty()) {
+                var emptyingAction = StackInteractions.getEmptyingAction(carried);
+                if (emptyingAction != null) {
+                    renderTooltip(poseStack, List.of(
+                            new TextComponent("Left-Click: Store ").append(carried.getHoverName()).getVisualOrderText(),
+                            new TextComponent("Right-Click: ").append(emptyingAction.description()).getVisualOrderText()
+                    ), x, y);
+                    return;
+                }
+
+                // TODO: Fill action same way
+            }
+
+            // Vanilla doesn't show item tooltips when the player have something in their hand
+            if (carried.isEmpty()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     renderGridInventoryEntryTooltip(poseStack, entry, x, y);
                 }
-                return;
             }
+            return;
         }
 
         super.renderTooltip(poseStack, x, y);

@@ -81,7 +81,7 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
         }
 
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
-                this.powerSource, host, craftingGridInv, craftingGridInv, this), SlotSemantic.CRAFTING_RESULT);
+                this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this), SlotSemantic.CRAFTING_RESULT);
 
         this.slotsChanged(craftingGridInv.toContainer());
     }

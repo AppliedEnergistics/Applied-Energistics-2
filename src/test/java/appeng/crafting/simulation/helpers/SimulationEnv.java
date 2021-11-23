@@ -31,7 +31,7 @@ import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.data.AEKey;
@@ -182,7 +182,7 @@ public class SimulationEnv {
     }
 
     private IStorageService createStorageServiceMock() {
-        IMEMonitor monitor = createMonitorMock();
+        MEMonitorStorage monitor = createMonitorMock();
         return new IStorageService() {
             @Override
             public void postAlterationOfStoredItems(Iterable<AEKey> input, IActionSource src) {
@@ -200,7 +200,7 @@ public class SimulationEnv {
             }
 
             @Override
-            public IMEMonitor getInventory() {
+            public MEMonitorStorage getInventory() {
                 return monitor;
             }
 
@@ -216,8 +216,8 @@ public class SimulationEnv {
         };
     }
 
-    private <T extends AEKey> IMEMonitor createMonitorMock() {
-        return new IMEMonitor() {
+    private <T extends AEKey> MEMonitorStorage createMonitorMock() {
+        return new MEMonitorStorage() {
             @Override
             public void getAvailableStacks(KeyCounter out) {
                 throw new UnsupportedOperationException();

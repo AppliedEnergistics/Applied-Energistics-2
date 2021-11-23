@@ -81,6 +81,7 @@ public class ConfigInventory extends GenericStackInv {
         // Filter and clear stacks not supported by the underlying storage channel
         if (!passesFilter(key)) {
             setStack(slot, null);
+            key = null;
         }
         return key;
     }

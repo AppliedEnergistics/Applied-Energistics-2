@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEKey;
@@ -38,7 +38,7 @@ import appeng.api.storage.data.KeyCounter;
  * underlying inventory is switched, the resulting changes in the observable inventory are reported to listeners of this
  * monitor.
  */
-public class MEMonitorPassThrough implements IMEMonitor, IMEMonitorListener {
+public class MEMonitorPassThrough implements MEMonitorStorage, IMEMonitorListener {
 
     private final Map<IMEMonitorListener, Object> listeners = new HashMap<>();
 
@@ -46,9 +46,9 @@ public class MEMonitorPassThrough implements IMEMonitor, IMEMonitorListener {
     private IActionSource changeSource;
 
     @Nullable
-    private IMEMonitor monitor;
+    private MEMonitorStorage monitor;
 
-    public void setMonitor(@Nullable IMEMonitor monitor) {
+    public void setMonitor(@Nullable MEMonitorStorage monitor) {
         if (this.monitor != null) {
             this.monitor.removeListener(this);
             this.monitor = null;
@@ -83,7 +83,7 @@ public class MEMonitorPassThrough implements IMEMonitor, IMEMonitorListener {
     }
 
     @Override
-    public void postChange(IMEMonitor monitor, Iterable<AEKey> change, final IActionSource source) {
+    public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, final IActionSource source) {
         final Iterator<Entry<IMEMonitorListener, Object>> i = this.listeners.entrySet().iterator();
         while (i.hasNext()) {
             final Entry<IMEMonitorListener, Object> e = i.next();

@@ -20,12 +20,12 @@ package appeng.blockentity.misc;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
-class CondenserVoidInventory implements IMEMonitor {
+class CondenserVoidInventory implements MEMonitorStorage {
     private final CondenserBlockEntity target;
 
     CondenserVoidInventory(CondenserBlockEntity te) {

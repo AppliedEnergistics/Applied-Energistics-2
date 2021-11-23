@@ -48,9 +48,8 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
@@ -236,14 +235,14 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
         return config;
     }
 
-    private IStorageMonitorable getMonitorable(IActionSource src) {
+    private MEMonitorStorage getMonitorable(IActionSource src) {
         // If the given action source can access the grid, return the real inventory
         if (Platform.canAccess(mainNode, src)) {
-            return () -> getInventory();
+            return getInventory();
         }
 
         // Otherwise, return a fallback that only exposes the local interface inventory
-        return () -> getLocalInventory();
+        return getLocalInventory();
     }
 
     /**
@@ -253,7 +252,7 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
      * If the interface has configured slots, it will <b>always</b> expose its local inventory instead of the grid's
      * inventory.
      */
-    private IMEMonitor getInventory() {
+    private MEMonitorStorage getInventory() {
         if (hasConfig) {
             return getLocalInventory();
         }
@@ -264,7 +263,7 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
     /**
      * Returns an ME compatible monitor for the interface's local storage for a given storage channel.
      */
-    protected abstract IMEMonitor getLocalInventory();
+    protected abstract MEMonitorStorage getLocalInventory();
 
     private class InterfaceRequestSource extends MachineSource {
         private final InterfaceRequestContext context;

@@ -42,7 +42,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
@@ -286,7 +286,7 @@ public class JEIRecipePacket extends BasePacket {
      * Finds the first matching itemstack with the highest stored amount.
      */
     private AEItemKey findBestMatchingItemStack(Ingredient ingredients, IPartitionList filter,
-            IMEMonitor storage, IMenuCraftingPacket cct) {
+                                                MEMonitorStorage storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of) //
                 .filter(r -> r != null && (filter == null || filter.isListed(r)));
@@ -299,7 +299,7 @@ public class JEIRecipePacket extends BasePacket {
      * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
     private AEItemKey findBestMatchingPattern(Ingredient ingredients, IPartitionList filter,
-            ICraftingService crafting, IMEMonitor storage, IMenuCraftingPacket cct) {
+                                              ICraftingService crafting, MEMonitorStorage storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
@@ -312,7 +312,7 @@ public class JEIRecipePacket extends BasePacket {
      * the stream is empty.
      */
     @Nullable
-    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, IMEMonitor storage,
+    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, MEMonitorStorage storage,
             IMenuCraftingPacket cct) {
         return stacks//
                 .map(s -> {

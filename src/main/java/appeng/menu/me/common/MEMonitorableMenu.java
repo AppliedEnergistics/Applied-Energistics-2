@@ -27,8 +27,22 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.StorageHelper;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
+import appeng.helpers.FluidContainerHelper;
+import appeng.menu.MenuLocator;
+import appeng.menu.me.crafting.CraftAmountMenu;
+import appeng.menu.me.interaction.ItemInteractionHandler;
+import appeng.menu.me.interaction.StackInteractionHandler;
+import appeng.util.Platform;
+import appeng.util.fluid.FluidSoundHelper;
 import com.google.common.collect.ImmutableSet;
 
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +61,7 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
@@ -95,7 +109,7 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
     private IGridNode networkNode;
 
     protected final IEnergySource powerSource;
-    protected final IMEMonitor monitor;
+    protected final MEMonitorStorage monitor;
 
     private final IncrementalUpdateHelper updateHelper = new IncrementalUpdateHelper();
 
@@ -332,7 +346,7 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
     }
 
     @Override
-    public void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource source) {
+    public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource source) {
         for (AEKey key : change) {
             this.updateHelper.addChange(key);
         }
@@ -406,8 +420,282 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
         handleNetworkInteraction(player, stack, action);
     }
 
-    protected abstract void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey,
-            InventoryAction action);
+    protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey, InventoryAction action) {
+
+        if (action == InventoryAction.PICKUP_OR_SET_DOWN && clickedKey instanceof AEFluidKey fluidKey) {
+            action = InventoryAction.FILL_ITEM;
+        }
+
+        if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE) {
+            if (FluidContainerHelper.getContainedStack(getCarried()) != null) {
+                action = InventoryAction.EMPTY_ITEM;
+            }
+        }
+
+        if (action == InventoryAction.FILL_ITEM || action == InventoryAction.EMPTY_ITEM) {
+            var fh = ContainerItemContext.ofPlayerCursor(player, this).find(FluidStorage.ITEM);
+            if (fh == null) {
+                return;
+            }
+
+            if (action == InventoryAction.FILL_ITEM && clickedKey instanceof AEFluidKey clickedFluid) {
+                // Check how much we can store in the item
+                long amountAllowed;
+                try (var tx = Transaction.openOuter()) {
+                    amountAllowed = fh.insert(clickedFluid.toVariant(), Long.MAX_VALUE, tx);
+                    if (amountAllowed == 0) {
+                        return; // Nothing.
+                    }
+                }
+
+                // Check if we can pull out of the system
+                var canPull = StorageHelper.poweredExtraction(this.powerSource, this.monitor, clickedKey, amountAllowed,
+                        this.getActionSource(), Actionable.SIMULATE);
+                if (canPull <= 0) {
+                    return;
+                }
+
+                // How much could fit into the carried container
+                try (var tx = Transaction.openOuter()) {
+                    long canFill = fh.insert(clickedFluid.toVariant(), canPull, tx);
+                    if (canFill == 0) {
+                        return;
+                    }
+
+                    // Now actually pull out of the system
+                    var inserted = StorageHelper.poweredExtraction(this.powerSource, this.monitor, clickedKey, canFill,
+                            this.getActionSource());
+                    if (inserted <= 0) {
+                        // Something went wrong
+                        AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
+                        return;
+                    }
+
+                    tx.commit();
+                }
+
+                FluidSoundHelper.playFillSound(player, clickedFluid.toVariant());
+            } else if (action == InventoryAction.EMPTY_ITEM) {
+                // See how much we can drain from the item
+                var content = StorageUtil.findExtractableContent(fh, null);
+                if (content == null) {
+                    return;
+                }
+
+                var what = AEFluidKey.of(content.resource());
+                var amount = content.amount();
+
+                // Check if we can push into the system
+                var canInsert = StorageHelper.poweredInsert(this.powerSource, this.monitor, what, amount,
+                        this.getActionSource(), Actionable.SIMULATE);
+                if (canInsert <= 0) {
+                    return;
+                }
+
+                // Actually drain
+                try (var tx = Transaction.openOuter()) {
+                    var extracted = fh.extract(what.toVariant(), canInsert, tx);
+                    if (extracted != canInsert) {
+                        AELog.error(
+                                "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
+                                getCarried());
+                        return;
+                    }
+
+                    if (StorageHelper.poweredInsert(this.powerSource, this.monitor, what,
+                            extracted, this.getActionSource()) != extracted) {
+                        AELog.error("Failed to insert previously simulated %s into ME system", what);
+                        return;
+                    }
+
+                    tx.commit();
+                }
+
+                FluidSoundHelper.playEmptySound(player, what.toVariant());
+                return;
+            }
+        }
+
+        // Handle interactions where the player wants to put something into the network
+        if (clickedKey == null) {
+            if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE || action == InventoryAction.ROLL_DOWN) {
+                putCarriedItemIntoNetwork(true);
+            } else if (action == InventoryAction.PICKUP_OR_SET_DOWN) {
+                putCarriedItemIntoNetwork(false);
+            }
+            return;
+        }
+
+        if (!(clickedKey instanceof AEItemKey clickedItem)) {
+            return;
+        }
+
+        switch (action) {
+            case AUTO_CRAFT:
+                final MenuLocator locator = getLocator();
+                if (locator != null) {
+                    CraftAmountMenu.open(player, locator, clickedKey, 1);
+                }
+                break;
+
+            case SHIFT_CLICK:
+                moveOneStackToPlayer(clickedItem);
+                break;
+
+            case ROLL_DOWN: {
+                // Insert 1 of the carried stack into the network (or at least try to), regardless of what we're
+                // hovering in the network inventory.
+                var carried = getCarried();
+                if (!carried.isEmpty()) {
+                    var what = AEItemKey.of(carried);
+                    var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, 1, this.getActionSource());
+                    if (inserted > 0) {
+                        getCarried().shrink(1);
+                    }
+                }
+            }
+            break;
+            case ROLL_UP:
+            case PICKUP_SINGLE: {
+                // Extract 1 of the hovered stack from the network (or at least try to), and add it to the carried item
+                var item = getCarried();
+
+                if (!item.isEmpty()) {
+                    if (item.getCount() >= item.getMaxStackSize()) {
+                        return; // Max stack size reached
+                    }
+                    if (!clickedItem.matches(item)) {
+                        return; // Not stackable
+                    }
+                }
+
+                var extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedItem, 1,
+                        this.getActionSource());
+                if (extracted > 0) {
+                    if (item.isEmpty()) {
+                        setCarried(clickedItem.toStack());
+                    } else {
+                        // we checked beforehand that max stack size was not reached
+                        item.grow(1);
+                    }
+                }
+            }
+            break;
+            case PICKUP_OR_SET_DOWN: {
+                if (!getCarried().isEmpty()) {
+                    putCarriedItemIntoNetwork(false);
+                } else {
+                    var extracted = StorageHelper.poweredExtraction(
+                            powerSource,
+                            monitor,
+                            clickedItem,
+                            clickedItem.getItem().getMaxStackSize(),
+                            this.getActionSource());
+                    if (extracted > 0) {
+                        setCarried(clickedItem.toStack((int) extracted));
+                    } else {
+                        setCarried(ItemStack.EMPTY);
+                    }
+                }
+            }
+            break;
+            case SPLIT_OR_PLACE_SINGLE:
+                if (!getCarried().isEmpty()) {
+                    putCarriedItemIntoNetwork(true);
+                } else {
+                    var extracted = monitor.extract(
+                            clickedItem,
+                            clickedItem.getItem().getMaxStackSize(),
+                            Actionable.SIMULATE,
+                            this.getActionSource());
+
+                    if (extracted > 0) {
+                        // Half
+                        extracted = extracted + 1 >> 1;
+                        extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedItem, extracted,
+                                this.getActionSource());
+                    }
+
+                    if (extracted > 0) {
+                        setCarried(clickedItem.toStack((int) extracted));
+                    } else {
+                        setCarried(ItemStack.EMPTY);
+                    }
+                }
+
+                break;
+            case CREATIVE_DUPLICATE:
+                if (player.getAbilities().instabuild) {
+                    var is = clickedItem.toStack();
+                    is.setCount(is.getMaxStackSize());
+                    setCarried(is);
+                }
+                break;
+            case MOVE_REGION:
+                final int playerInv = player.getInventory().items.size();
+                for (int slotNum = 0; slotNum < playerInv; slotNum++) {
+                    if (!moveOneStackToPlayer(clickedItem)) {
+                        break;
+                    }
+                }
+                break;
+            default:
+                AELog.warn("Received unhandled inventory action %s from client in %s", action, getClass());
+                break;
+        }
+    }
+
+    protected void putCarriedItemIntoNetwork(boolean singleItem) {
+        var heldStack = getCarried();
+
+        var what = AEItemKey.of(heldStack);
+        if (what == null) {
+            return;
+        }
+
+        var amount = heldStack.getCount();
+        if (singleItem) {
+            amount = 1;
+        }
+
+        var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, amount,
+                this.getActionSource());
+        setCarried(Platform.getInsertionRemainder(heldStack, inserted));
+    }
+
+    private boolean moveOneStackToPlayer(AEItemKey stack) {
+        ItemStack myItem = stack.toStack();
+
+        var playerInv = getPlayerInventory();
+        var slot = playerInv.getSlotWithRemainingSpace(myItem);
+        int toExtract;
+        if (slot != -1) {
+            // Try to fill up existing slot with item
+            toExtract = myItem.getMaxStackSize() - playerInv.getItem(slot).getCount();
+        } else {
+            slot = playerInv.getFreeSlot();
+            if (slot == -1) {
+                return false; // No more free space
+            }
+            toExtract = myItem.getMaxStackSize();
+        }
+        if (toExtract <= 0) {
+            return false;
+        }
+
+        var extracted = StorageHelper.poweredExtraction(powerSource, monitor, stack, toExtract, getActionSource());
+        if (extracted == 0) {
+            return false; // No items available
+        }
+
+        var itemInSlot = playerInv.getItem(slot);
+        if (itemInSlot.isEmpty()) {
+            playerInv.setItem(slot, stack.toStack((int) extracted));
+        } else {
+            itemInSlot.grow((int) extracted);
+        }
+        return true;
+    }
 
     @Nullable
     protected final AEKey getStackBySerial(long serial) {
@@ -437,6 +725,48 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
 
     public void setClientRepo(@Nullable IClientRepo clientRepo) {
         this.clientRepo = clientRepo;
+    }
+
+    /**
+     * Try to transfer an item stack into the grid.
+     */
+    @Override
+    protected ItemStack transferStackToMenu(ItemStack input) {
+        if (!canInteractWithGrid()) {
+            // Allow non-grid slots to be use
+            return super.transferStackToMenu(input);
+        }
+
+        var key = AEItemKey.of(input);
+        if (key == null || !isKeyVisible(key)) {
+            return input;
+        }
+
+        var inserted = StorageHelper.poweredInsert(powerSource, monitor,
+                key, input.getCount(),
+                this.getActionSource());
+        return Platform.getInsertionRemainder(input, inserted);
+    }
+
+    /**
+     * Checks if the terminal has a given amount of the requested item. Used to determine for REI/JEI if a
+     * recipe is potentially craftable based on the available items.
+     */
+    public boolean hasItemType(ItemStack itemStack, int amount) {
+        var clientRepo = getClientRepo();
+
+        if (clientRepo != null) {
+            for (var stack : clientRepo.getAllEntries()) {
+                if (AEItemKey.matches(stack.getWhat(), itemStack)) {
+                    if (stack.getStoredAmount() >= amount) {
+                        return true;
+                    }
+                    amount -= stack.getStoredAmount();
+                }
+            }
+        }
+
+        return false;
     }
 
 }

@@ -43,20 +43,6 @@ public class StackSizeRenderer {
     protected static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
     protected static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
-    public void renderStackSize(Font fontRenderer, long stackSize, boolean craftable, int xPos, int yPos) {
-        if (stackSize == 0 && craftable) {
-            final String craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.getLocal()
-                    : GuiText.SmallFontCraft.getLocal();
-
-            renderSizeLabel(fontRenderer, xPos, yPos, craftLabelText);
-        }
-
-        if (stackSize > 0) {
-            renderSizeLabel(fontRenderer, xPos, yPos,
-                    this.getToBeRenderedStackSize(stackSize, AEConfig.instance().isUseLargeFonts()));
-        }
-    }
-
     public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text) {
         renderSizeLabel(fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
     }

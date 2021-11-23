@@ -338,11 +338,11 @@ public class CraftingCpuLogic {
         if (g == null)
             return;
 
-        var sg = g.getStorageService();
+        var storage = g.getStorageService().getInventory();
 
         for (var entry : this.inventory.list) {
             this.postChange(entry.getKey());
-            var inserted = sg.insert(entry.getKey(), entry.getLongValue(),
+            var inserted = storage.insert(entry.getKey(), entry.getLongValue(),
                     Actionable.MODULATE, cluster.getSrc());
 
             // The network was unable to receive all of the items, i.e. no or not enough storage space left

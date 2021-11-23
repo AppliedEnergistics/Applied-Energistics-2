@@ -34,7 +34,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.menuobjects.IPortableCell;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.data.AEKey;
@@ -80,7 +80,7 @@ public class PortableCellMenuHost<T extends AEKey> extends ItemMenuHost implemen
     }
 
     @Override
-    public IMEMonitor getInventory() {
+    public MEMonitorStorage getInventory() {
         return cellMonitor;
     }
 

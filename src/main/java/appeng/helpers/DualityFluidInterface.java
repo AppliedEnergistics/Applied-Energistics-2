@@ -29,7 +29,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
@@ -61,7 +61,7 @@ public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
      * Returns an ME compatible monitor for the interfaces local storage.
      */
     @Override
-    protected IMEMonitor getLocalInventory() {
+    protected MEMonitorStorage getLocalInventory() {
         if (localInvHandler == null) {
             localInvHandler = new InterfaceInventory();
         }
@@ -90,7 +90,7 @@ public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
         return localStorage;
     }
 
-    private class InterfaceInventory extends StorageAdapter<FluidVariant> implements IMEMonitor {
+    private class InterfaceInventory extends StorageAdapter<FluidVariant> implements MEMonitorStorage {
 
         InterfaceInventory() {
             super(IVariantConversion.FLUID,

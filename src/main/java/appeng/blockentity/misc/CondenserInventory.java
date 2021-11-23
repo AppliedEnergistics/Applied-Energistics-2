@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEItemKey;
@@ -36,7 +36,7 @@ import appeng.api.storage.data.KeyCounter;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.storage.ITickingMonitor;
 
-class CondenserInventory implements IMEMonitor, ITickingMonitor {
+class CondenserInventory implements MEMonitorStorage, ITickingMonitor {
     private final HashMap<IMEMonitorListener, Object> listeners = new HashMap<>();
     private final CondenserBlockEntity target;
     private boolean hasChanged = true;

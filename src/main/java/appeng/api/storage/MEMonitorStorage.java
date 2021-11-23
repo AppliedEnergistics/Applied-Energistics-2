@@ -28,7 +28,7 @@ import appeng.api.storage.data.KeyCounter;
 /**
  * A {@link MEStorage} that allows listening for storage changes.
  */
-public interface IMEMonitor extends MEStorage {
+public interface MEMonitorStorage extends MEStorage {
     /**
      * add a new Listener to the monitor, be sure to properly remove yourself when your done.
      */

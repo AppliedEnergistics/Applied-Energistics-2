@@ -46,7 +46,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorableAccessor;
@@ -92,7 +92,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
      */
     private final StorageBusInventory handler = new StorageBusInventory(NullInventory.of());
     /**
-     * Listener for listening to changes in an {@link IMEMonitor} if this storage bus is attached to an interface.
+     * Listener for listening to changes in an {@link MEMonitorStorage} if this storage bus is attached to an interface.
      */
     private final Listener listener = new Listener();
     private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
@@ -269,7 +269,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
 
     private void updateTarget(boolean forceFullUpdate) {
         boolean wasInventory = this.handler.getDelegate() instanceof IHandlerAdapter;
-        IMEMonitor foundMonitor = null;
+        MEMonitorStorage foundMonitor = null;
         A foundExternalApi = null;
 
         // Prioritize a handler to directly link to another ME network
@@ -278,7 +278,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
         if (accessor != null) {
             var inventory = accessor.getInventory(this.source);
             if (inventory != null) {
-                foundMonitor = inventory.getInventory();
+                foundMonitor = inventory;
             }
 
             // So this could / can be a design decision. If the block entity does support our custom capability,
@@ -351,7 +351,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
             }
 
             // Notify the network of any external change to the inventory.
-            if (newInventory instanceof IMEMonitor monitor) {
+            if (newInventory instanceof MEMonitorStorage monitor) {
                 monitor.addListener(listener, newInventory);
             }
 
@@ -418,7 +418,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
         }
 
         @Override
-        public final void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource source) {
+        public final void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource source) {
             if (getMainNode().isActive()) {
                 getMainNode().ifPresent((grid, node) -> {
                     grid.getStorageService().postAlterationOfStoredItems(change, source);

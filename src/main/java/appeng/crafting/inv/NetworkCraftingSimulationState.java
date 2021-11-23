@@ -18,20 +18,16 @@
 
 package appeng.crafting.inv;
 
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import com.google.common.collect.Iterables;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
+import com.google.common.collect.Iterables;
+
+import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * Currently, extracts the whole network contents when the job starts. Lazily extracting is unfortunately not possible
@@ -41,22 +37,18 @@ import appeng.api.storage.data.KeyCounter;
 public class NetworkCraftingSimulationState extends CraftingSimulationState {
     private final KeyCounter list = new KeyCounter();
 
-    public NetworkCraftingSimulationState(IStorageMonitorable monitorable, @Nullable IActionSource src) {
+    public NetworkCraftingSimulationState(MEMonitorStorage storage, @Nullable IActionSource src) {
         // Take care of the edge case where ICraftingSimulationRequester#getActionSource() returns null.
         if (src == null) {
             return;
         }
 
-        for (var channel : StorageChannels.getAll()) {
-            collectChannelContents(channel, monitorable, src);
-        }
+        collectChannelContents(storage, src);
     }
 
-    private <T extends AEKey> void collectChannelContents(IStorageChannel<T> channel,
-            IStorageMonitorable monitorable, IActionSource src) {
-        var monitor = monitorable.getInventory();
-        for (var stack : monitor.getCachedAvailableStacks()) {
-            long extracted = monitor.extract(stack.getKey(), stack.getLongValue(), Actionable.SIMULATE, src);
+    private void collectChannelContents(MEMonitorStorage storage, IActionSource src) {
+        for (var stack : storage.getCachedAvailableStacks()) {
+            long extracted = storage.extract(stack.getKey(), stack.getLongValue(), Actionable.SIMULATE, src);
             if (extracted > 0) {
                 this.list.add(stack.getKey(), extracted);
             }

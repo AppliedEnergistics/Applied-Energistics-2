@@ -112,10 +112,10 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         this(TYPE, id, ip, monitorable, true);
     }
 
-    public PatternTermMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost monitorable,
+    public PatternTermMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
             boolean bindInventory) {
-        super(menuType, id, ip, monitorable, bindInventory);
-        this.patternTerminal = (IPatternTerminalHost) monitorable;
+        super(menuType, id, ip, host, bindInventory);
+        this.patternTerminal = (IPatternTerminalHost) host;
 
         var patternInv = this.getPatternTerminal().getSubInventory(ISegmentedInventory.PATTERNS);
         var output = this.getPatternTerminal().getSubInventory(IPatternTerminalHost.INV_OUTPUT);
@@ -129,7 +129,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
         // Create the output slot used for crafting mode patterns
         this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
-                monitorable, this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
+                host.getInventory(), this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
         this.craftOutputSlot.setIcon(null);
 
         // Create slots for the outputs of processing-mode patterns. Unrolled as each as a different semantic

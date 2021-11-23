@@ -409,12 +409,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         var grid = getMainNode().getGrid();
         if (grid != null) {
-            var storage = grid.getStorageService();
+            var storage = grid.getStorageService().getInventory();
 
             for (var itemStack : itemStacks) {
                 var itemToTest = AEItemKey.of(itemStack);
-                var inserted = storage
-                        .insert(itemToTest, itemStack.getCount(), Actionable.SIMULATE, this.mySrc);
+                var inserted = storage.insert(itemToTest, itemStack.getCount(), Actionable.SIMULATE, this.mySrc);
                 if (inserted > 0) {
                     canStore = true;
                 }

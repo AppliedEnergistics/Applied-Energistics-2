@@ -60,9 +60,8 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -380,7 +379,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public IMEMonitor getInventory() {
+    public MEMonitorStorage getInventory() {
         this.updateHandler();
 
         if (this.cellHandler != null) {
@@ -545,7 +544,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource source) {
+        public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource source) {
             if (source == ChestBlockEntity.this.mySrc
                     || source.machine().map(machine -> machine == ChestBlockEntity.this).orElse(false)) {
                 if (getMainNode().isActive()) {
@@ -614,9 +613,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private class Accessor implements IStorageMonitorableAccessor {
         @Nullable
         @Override
-        public IStorageMonitorable getInventory(IActionSource src) {
+        public MEMonitorStorage getInventory(IActionSource src) {
             if (Platform.canAccess(ChestBlockEntity.this.getMainNode(), src)) {
-                return ChestBlockEntity.this;
+                return ChestBlockEntity.this.getInventory();
             }
             return null;
         }

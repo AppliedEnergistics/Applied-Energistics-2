@@ -24,6 +24,7 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.data.AEKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -43,8 +44,7 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
@@ -272,10 +272,10 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     /**
      * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
-     * enable the condenser to override the {@link IConfigurableMEInventory#validForPass(int)} method to make sure a
-     * condenser is only ever used if an item can't go anywhere else.
+     * enable the condenser to override the {@link appeng.api.storage.MEStorage#isPreferredStorageFor} method to make
+     * sure a condenser is only ever used if an item can't go anywhere else.
      */
-    private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable {
+    private class MEHandler implements IStorageMonitorableAccessor {
         private final CondenserInventory itemInventory = new CondenserInventory(CondenserBlockEntity.this);
 
         void outputChanged(ItemStack added, ItemStack removed) {
@@ -284,12 +284,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
         @Nullable
         @Override
-        public IStorageMonitorable getInventory(IActionSource src) {
-            return this;
-        }
-
-        @Override
-        public IMEMonitor getInventory() {
+        public MEMonitorStorage getInventory(IActionSource src) {
             return this.itemInventory;
         }
     }

@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
@@ -17,7 +17,7 @@ import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 
 public abstract class StorageAdapter<V extends TransferVariant<?>>
-        implements IMEMonitor, ITickingMonitor, IHandlerAdapter<Storage<V>> {
+        implements MEMonitorStorage, ITickingMonitor, IHandlerAdapter<Storage<V>> {
     /**
      * Clamp reported values to avoid overflows when amounts get too close to Long.MAX_VALUE.
      */

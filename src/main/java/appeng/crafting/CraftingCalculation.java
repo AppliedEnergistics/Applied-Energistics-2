@@ -59,9 +59,9 @@ public class CraftingCalculation {
         this.output = output;
         this.simRequester = simRequester;
 
-        var storageService = grid.getStorageService();
+        var storage = grid.getStorageService().getInventory();
         var craftingService = grid.getCraftingService();
-        this.networkInv = new NetworkCraftingSimulationState(storageService, simRequester.getActionSource());
+        this.networkInv = new NetworkCraftingSimulationState(storage, simRequester.getActionSource());
 
         this.tree = new CraftingTreeNode(craftingService, this, output.what(), 1, null, -1);
     }

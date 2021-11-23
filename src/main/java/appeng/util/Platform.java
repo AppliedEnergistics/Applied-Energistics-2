@@ -79,7 +79,7 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -609,7 +609,7 @@ public class Platform {
 
     public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
             IActionSource mySrc,
-            IMEMonitor src,
+            MEMonitorStorage src,
             Level level,
             Recipe<CraftingContainer> r,
             ItemStack output,

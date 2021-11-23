@@ -28,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
@@ -90,7 +90,7 @@ public class DualityItemInterface extends DualityInterface<AEItemKey> {
      * Returns an ME compatible monitor for the interfaces local storage.
      */
     @Override
-    protected IMEMonitor getLocalInventory() {
+    protected MEMonitorStorage getLocalInventory() {
         if (localInvHandler == null) {
             localInvHandler = new InterfaceInventory();
         }
@@ -101,7 +101,7 @@ public class DualityItemInterface extends DualityInterface<AEItemKey> {
      * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
      */
     private class InterfaceInventory extends StorageAdapter<ItemVariant>
-            implements IMEMonitor {
+            implements MEMonitorStorage {
 
         InterfaceInventory() {
             super(IVariantConversion.ITEM, localStorage, false);

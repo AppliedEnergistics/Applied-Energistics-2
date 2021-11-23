@@ -42,7 +42,7 @@ import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
@@ -68,7 +68,7 @@ public abstract class AbstractStorageLevelEmitterPart extends AbstractLevelEmitt
         }
 
         @Override
-        public void postChange(IMEMonitor monitor, Iterable<AEKey> change, IActionSource actionSource) {
+        public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource actionSource) {
             updateReportingValue(monitor);
         }
 
@@ -219,7 +219,7 @@ public abstract class AbstractStorageLevelEmitterPart extends AbstractLevelEmitt
         updateState();
     }
 
-    private void updateReportingValue(IMEMonitor monitor) {
+    private void updateReportingValue(MEMonitorStorage monitor) {
         var myStack = getConfiguredKey();
 
         if (myStack == null) {

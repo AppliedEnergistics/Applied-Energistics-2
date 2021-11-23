@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import appeng.api.networking.storage.IStorageService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -35,8 +36,7 @@ import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.KeyCounter;
@@ -60,11 +60,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     private final IActionSource mySrc;
     private final IEnergySource energySrc;
-    private final IStorageMonitorable storage;
+    private final MEMonitorStorage storage;
     private final IMenuCraftingPacket menu;
 
     public CraftingTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
-            final IStorageMonitorable storage, final InternalInventory cMatrix, final InternalInventory secondMatrix,
+            final MEMonitorStorage storage, final InternalInventory cMatrix, final InternalInventory secondMatrix,
             final IMenuCraftingPacket ccp) {
         super(player, cMatrix);
         this.energySrc = energySrc;
@@ -92,8 +92,6 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             return;
         }
 
-        final var inv = this.storage
-                .getInventory();
         final var howManyPerCraft = this.getItem().getCount();
 
         int maxTimesToCraft;
@@ -114,7 +112,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             if (getMenu().getCarried().isEmpty()) {
                 var rs = getItem().copy();
                 if (!rs.isEmpty()) {
-                    getMenu().setCarried(this.craftItem(who, rs, inv, inv.getCachedAvailableStacks()));
+                    getMenu().setCarried(this.craftItem(who, rs, storage, storage.getCachedAvailableStacks()));
                 }
                 return;
             }
@@ -130,8 +128,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         for (var x = 0; x < maxTimesToCraft; x++) {
             if (target.simulateAdd(rs).isEmpty()) {
-                var all = inv.getCachedAvailableStacks();
-                final var extra = target.addItems(this.craftItem(who, rs, inv, all));
+                var all = storage.getCachedAvailableStacks();
+                final var extra = target.addItems(this.craftItem(who, rs, storage, all));
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();
                     drops.add(extra);
@@ -172,7 +170,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return super.getRemainingItems(ic, level);
     }
 
-    private ItemStack craftItem(final Player p, ItemStack request, IMEMonitor inv,
+    private ItemStack craftItem(final Player p, ItemStack request, MEMonitorStorage inv,
             KeyCounter all) {
         // update crafting matrix...
         var is = this.getItem();
@@ -244,8 +242,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return ItemStack.EMPTY;
     }
 
-    private boolean preCraft(final Player p, final IMEMonitor inv, final ItemStack[] set,
-            final ItemStack result) {
+    private boolean preCraft(final Player p, final MEMonitorStorage inv, final ItemStack[] set,
+                             final ItemStack result) {
         return true;
     }
 
@@ -253,8 +251,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         super.onTake(p, is);
     }
 
-    private void postCraft(final Player p, final IMEMonitor inv, final ItemStack[] set,
-            final ItemStack result) {
+    private void postCraft(final Player p, final MEMonitorStorage inv, final ItemStack[] set,
+                           final ItemStack result) {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...

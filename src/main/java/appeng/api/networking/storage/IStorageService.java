@@ -27,14 +27,19 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageProvider;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 
 /**
  * Grid-wide storage services for all {@link IStorageChannel}.
  */
-public interface IStorageService extends IGridService, IStorageMonitorable {
+public interface IStorageService extends IGridService {
+
+    /**
+     * @return The network inventory.
+     */
+    MEMonitorStorage getInventory();
 
     /**
      * Used to inform the network of alterations to the storage system that fall outside of the standard Network

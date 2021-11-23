@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
@@ -43,7 +43,7 @@ import appeng.api.storage.data.KeyCounter;
  * <p>
  * TODO: Needs to be redesigned to solve performance issues.
  */
-public class MEMonitorHandler implements IMEMonitor {
+public class MEMonitorHandler implements MEMonitorStorage {
 
     private final MEStorage internalHandler;
     private final KeyCounter cachedList;

@@ -26,8 +26,7 @@ class CondenserInventoryTest {
 
     @Test
     void testSingularityProductionAndPriority() {
-        var inv = storageAccessor.getInventory(new BaseActionSource())
-                .getInventory();
+        var inv = storageAccessor.getInventory(new BaseActionSource());
         assertThat(inv).isNotNull();
         assertThat(inv).isInstanceOf(CondenserInventory.class);
         assertThat(inv.getAvailableStacks()).isEmpty();

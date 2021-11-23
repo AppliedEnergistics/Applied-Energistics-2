@@ -44,19 +44,19 @@ import appeng.crafting.inv.ListCraftingInventory;
 public class CraftingCpuHelper {
     public static boolean tryExtractInitialItems(ICraftingPlan plan, IGrid grid,
             ListCraftingInventory cpuInventory, IActionSource src) {
-        var storageService = grid.getStorageService();
+        var storage = grid.getStorageService().getInventory();
 
         for (var entry : plan.usedItems()) {
             var what = entry.getKey();
             var toExtract = entry.getLongValue();
-            var extracted = storageService.extract(what, toExtract, Actionable.MODULATE, src);
+            var extracted = storage.extract(what, toExtract, Actionable.MODULATE, src);
             cpuInventory.insert(what, extracted, Actionable.MODULATE);
 
             if (extracted < toExtract) {
                 // Failed to extract everything, reinject and hope for the best.
                 // TODO: maybe voiding items that fail to re-insert is not the best thing to do?
                 for (var stored : cpuInventory.list) {
-                    storageService.insert(stored.getKey(), stored.getLongValue(), Actionable.MODULATE, src);
+                    storage.insert(stored.getKey(), stored.getLongValue(), Actionable.MODULATE, src);
                 }
                 cpuInventory.clear();
 

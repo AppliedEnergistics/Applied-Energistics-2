@@ -40,7 +40,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
@@ -141,7 +141,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @Override
-    public IMEMonitor getInventory() {
+    public MEMonitorStorage getInventory() {
         return storageMonitor;
     }
 
