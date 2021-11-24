@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeySpace;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 
@@ -43,7 +44,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.storage.MEMonitorStorage;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.sync.BasePacket;
@@ -154,7 +154,7 @@ public class JEIRecipePacket extends BasePacket {
         var craftMatrix = cct.getCraftingMatrix();
 
         var storage = inv.getInventory();
-        var filter = ViewCellItem.createFilter(StorageChannels.items(), cct.getViewCells());
+        var filter = ViewCellItem.createFilter(AEKeySpace.items(), cct.getViewCells());
         var ingredients = this.ensure3by3CraftingMatrix(recipe);
 
         // Handle each slot

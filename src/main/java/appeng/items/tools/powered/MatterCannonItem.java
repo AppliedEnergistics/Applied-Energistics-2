@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEItemKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -59,9 +60,8 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -378,7 +378,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     @Override
     public ConfigInventory getConfigInventory(final ItemStack is) {
-        return CellConfig.create(StorageChannels.items(), is);
+        return CellConfig.create(AEItemKey.filter(), is);
     }
 
     @Override
@@ -454,10 +454,5 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     @Override
     public double getIdleDrain() {
         return 0.5;
-    }
-
-    @Override
-    public IStorageChannel<AEItemKey> getChannel() {
-        return StorageChannels.items();
     }
 }

@@ -16,8 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 
@@ -58,7 +57,7 @@ class ConfigMenuInventoryTest {
 
     @Test
     void testFluidConfigReadsAsWrappedStackOfCount1() {
-        var inv = ConfigInventory.configTypes(StorageChannels.fluids(), 1, null);
+        var inv = ConfigInventory.configTypes(AEKeySpace.fluids(), 1, null);
         inv.setStack(0, WATER);
         var wrappedStack = inv.createMenuWrapper().getStackInSlot(0);
         assertEquals(1, wrappedStack.getCount());
@@ -72,7 +71,7 @@ class ConfigMenuInventoryTest {
      */
     @Test
     void testItemTypeConfigReadsAsItemWithAmount1() {
-        var inv = ConfigInventory.configTypes(StorageChannels.items(), 1, null);
+        var inv = ConfigInventory.configTypes(AEKeySpace.items(), 1, null);
         inv.setStack(0, ZERO_STICK);
         var fakeStack = inv.createMenuWrapper().getStackInSlot(0);
         assertEquals(Items.STICK, fakeStack.getItem());
@@ -82,16 +81,16 @@ class ConfigMenuInventoryTest {
     // Test when an item-based machine's config inventory is interacted with
     private DynamicTest itemTest(String displayName, ItemStack inserted, @Nullable GenericStack expectedStack,
             @Nullable GenericStack initialStack) {
-        return test(displayName, StorageChannels.items(), inserted, expectedStack, initialStack);
+        return test(displayName, AEKeySpace.items(), inserted, expectedStack, initialStack);
     }
 
     private DynamicTest fluidTest(String displayName, ItemStack inserted, @Nullable GenericStack expectedStack,
             @Nullable GenericStack initialStack) {
-        return test(displayName, StorageChannels.fluids(), inserted, expectedStack, initialStack);
+        return test(displayName, AEKeySpace.fluids(), inserted, expectedStack, initialStack);
     }
 
-    private DynamicTest test(String displayName, IStorageChannel<?> channel, ItemStack inserted,
-            @Nullable GenericStack expectedStack, @Nullable GenericStack initialStack) {
+    private DynamicTest test(String displayName, AEKeySpace channel, ItemStack inserted,
+                             @Nullable GenericStack expectedStack, @Nullable GenericStack initialStack) {
         return DynamicTest.dynamicTest(
                 displayName,
                 () -> {

@@ -18,20 +18,12 @@
 
 package appeng.helpers;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEMonitorStorage;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
@@ -40,18 +32,23 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.helpers.iface.GenericStackInvStorage;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 
-public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
+import javax.annotation.Nullable;
+
+public class DualityFluidInterface extends DualityInterface {
     public static final int NUMBER_OF_TANKS = 6;
     public static final long TANK_CAPACITY = 4 * AEFluidKey.AMOUNT_BUCKET;
 
     @Nullable
     private InterfaceInventory localInvHandler;
 
-    private final GenericStackInvStorage<FluidVariant, AEFluidKey> localStorage;
+    private final GenericStackInvStorage<FluidVariant> localStorage;
 
     public DualityFluidInterface(IManagedGridNode gridNode, IFluidInterfaceHost ih, ItemStack is) {
-        super(gridNode, ih, is);
+        super(gridNode, ih, is, AEFluidKey::is);
         getConfig().setCapacity(TANK_CAPACITY);
         getStorage().setCapacity(TANK_CAPACITY);
         this.localStorage = GenericStackInvStorage.fluids(getStorage());
@@ -77,16 +74,11 @@ public class DualityFluidInterface extends DualityInterface<AEFluidKey> {
     }
 
     @Override
-    protected IStorageChannel<AEFluidKey> getChannel() {
-        return StorageChannels.fluids();
-    }
-
-    @Override
     protected int getStorageSlots() {
         return NUMBER_OF_TANKS;
     }
 
-    public GenericStackInvStorage<FluidVariant, AEFluidKey> getLocalStorage() {
+    public GenericStackInvStorage<FluidVariant> getLocalStorage() {
         return localStorage;
     }
 

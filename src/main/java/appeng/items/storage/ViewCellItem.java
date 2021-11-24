@@ -18,16 +18,9 @@
 
 package appeng.items.storage;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
@@ -40,18 +33,17 @@ import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.MergedPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.Collection;
 
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
-
-    private final IStorageChannel<?> channel;
-
-    public ViewCellItem(Properties properties, IStorageChannel<?> channel) {
+    public ViewCellItem(Properties properties) {
         super(properties);
-        this.channel = channel;
     }
 
-    public static <T extends AEKey> IPartitionList createFilter(IStorageChannel<T> channel,
-            Collection<ItemStack> list) {
+    public static IPartitionList createFilter(AEKeySpace channel,
+                                              Collection<ItemStack> list) {
         IPartitionList myPartitionList = null;
 
         final MergedPriorityList myMergedList = new MergedPriorityList();
@@ -109,18 +101,18 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(ItemStack is) {
         return true;
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public ConfigInventory getConfigInventory(final ItemStack is) {
-        return CellConfig.create(channel, is);
+    public ConfigInventory getConfigInventory(ItemStack is) {
+        return CellConfig.create(is);
     }
 
     @Override
@@ -136,11 +128,5 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     @Override
     public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
-    }
-
-    @Nonnull
-    @Override
-    public IStorageChannel<?> getChannel() {
-        return StorageChannels.items();
     }
 }

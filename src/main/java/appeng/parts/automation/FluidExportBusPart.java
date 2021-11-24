@@ -33,8 +33,7 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEKey;
 import appeng.core.AppEng;
@@ -56,12 +55,12 @@ public class FluidExportBusPart extends ExportBusPart<AEFluidKey, Storage<FluidV
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_has_channel"));
 
     public FluidExportBusPart(ItemStack is) {
-        super(TickRates.FluidExportBus, is, FluidStorage.SIDED);
+        super(TickRates.FluidExportBus, is, FluidStorage.SIDED, AEFluidKey.filter());
     }
 
     @Override
-    protected IStorageChannel<AEFluidKey> getChannel() {
-        return StorageChannels.fluids();
+    protected AEKeySpace getChannel() {
+        return AEKeySpace.fluids();
     }
 
     @Override

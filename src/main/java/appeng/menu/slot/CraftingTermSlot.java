@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import appeng.api.networking.storage.IStorageService;
+import appeng.api.storage.AEKeySpace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -37,7 +37,6 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEMonitorStorage;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.helpers.IMenuCraftingPacket;
@@ -216,7 +215,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 is = r.assemble(ic);
 
                 if (inv != null) {
-                    var filter = ViewCellItem.createFilter(StorageChannels.items(), this.menu.getViewCells());
+                    var filter = ViewCellItem.createFilter(AEKeySpace.items(), this.menu.getViewCells());
                     for (var x = 0; x < this.getPattern().size(); x++) {
                         if (!this.getPattern().getStackInSlot(x).isEmpty()) {
                             set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,

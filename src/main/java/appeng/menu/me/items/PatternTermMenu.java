@@ -18,6 +18,7 @@
 
 package appeng.menu.me.items;
 
+import appeng.api.storage.AEKeySpace;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Mth;
@@ -41,7 +42,6 @@ import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.definitions.AEItems;
@@ -394,7 +394,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
         final ItemStack is = r.assemble(ic);
 
-        var partitionFilter = ViewCellItem.createFilter(StorageChannels.items(), this.getViewCells());
+        var partitionFilter = ViewCellItem.createFilter(AEKeySpace.items(), this.getViewCells());
         for (int x = 0; x < ic.getContainerSize(); x++) {
             if (!ic.getItem(x).isEmpty()) {
                 var pulled = Platform.extractItemsByRecipe(this.powerSource,

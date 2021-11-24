@@ -30,6 +30,8 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeyFilter;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.world.level.Level;
@@ -70,7 +72,7 @@ public interface ICraftingService extends IGridService {
      * @return another fuzzy equals stack that can be crafted and matches the filter, or null if none exists
      */
     @Nullable
-    AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter);
+    AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter);
 
     /**
      * Begin calculating a crafting job.

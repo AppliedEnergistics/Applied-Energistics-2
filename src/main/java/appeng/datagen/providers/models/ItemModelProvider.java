@@ -47,10 +47,10 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.CALCULATION_PROCESSOR_PRESS, "item/calculation_processor_press");
         flatSingleLayer(AEItems.CALCULATION_PROCESSOR_PRINT, "item/printed_calculation_processor");
         flatSingleLayer(AEItems.CAPACITY_CARD, "item/card_capacity");
-        flatSingleLayer(AEItems.CELL1K, "item/1k_item_storage_cell");
-        flatSingleLayer(AEItems.CELL4K, "item/4k_item_storage_cell");
-        flatSingleLayer(AEItems.CELL16K, "item/16k_item_storage_cell");
-        flatSingleLayer(AEItems.CELL64K, "item/64k_item_storage_cell");
+        flatSingleLayer(AEItems.ITEM_CELL_1K, "item/1k_item_storage_cell");
+        flatSingleLayer(AEItems.ITEM_CELL_4K, "item/4k_item_storage_cell");
+        flatSingleLayer(AEItems.ITEM_CELL_16K, "item/16k_item_storage_cell");
+        flatSingleLayer(AEItems.ITEM_CELL_64K, "item/64k_item_storage_cell");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL, "item/certus_quartz_crystal");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, "item/certus_quartz_crystal_charged");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_DUST, "item/certus_quartz_dust");

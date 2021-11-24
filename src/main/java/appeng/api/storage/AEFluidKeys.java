@@ -18,26 +18,23 @@
 
 package appeng.api.storage;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEKey;
+import appeng.core.AppEng;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
-import appeng.core.AppEng;
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
-public final class ItemStorageChannel implements IStorageChannel<AEItemKey> {
-    private static final ResourceLocation ID = AppEng.makeId("item");
+public final class AEFluidKeys implements AEKeySpace {
+    private static final ResourceLocation ID = AppEng.makeId("fluid");
 
-    static final ItemStorageChannel INSTANCE = new ItemStorageChannel();
+    static final AEFluidKeys INSTANCE = new AEFluidKeys();
 
-    private ItemStorageChannel() {
+    private AEFluidKeys() {
     }
 
     @Nonnull
@@ -47,25 +44,36 @@ public final class ItemStorageChannel implements IStorageChannel<AEItemKey> {
     }
 
     @Override
-    public AEItemKey readFromPacket(FriendlyByteBuf input) {
-        Objects.requireNonNull(input);
-
-        return AEItemKey.fromPacket(input);
+    public int transferFactor() {
+        // On Forge this was 125mb (so 125/1000th of a bucket)
+        return AEFluidKey.AMOUNT_BUCKET * 1000 / 125;
     }
 
     @Override
-    public AEItemKey loadKeyFromTag(CompoundTag tag) {
-        return AEItemKey.fromTag(tag);
+    public int getUnitsPerByte() {
+        return 8 * AEFluidKey.AMOUNT_BUCKET;
+    }
+
+    @Override
+    public AEFluidKey readFromPacket(FriendlyByteBuf input) {
+        Objects.requireNonNull(input);
+
+        return AEFluidKey.fromPacket(input);
+    }
+
+    @Override
+    public AEFluidKey loadKeyFromTag(CompoundTag tag) {
+        return AEFluidKey.fromTag(tag);
     }
 
     @Nullable
     @Override
-    public AEItemKey tryCast(AEKey key) {
-        return key instanceof AEItemKey itemKey ? itemKey : null;
+    public AEFluidKey tryCast(AEKey key) {
+        return key instanceof AEFluidKey fluidKey ? fluidKey : null;
     }
 
     @Override
-    public boolean supportsFuzzyRangeSearch() {
-        return false;
+    public Class<? extends AEKey> getKeyClass() {
+        return AEFluidKey.class;
     }
 }

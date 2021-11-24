@@ -26,13 +26,13 @@ package appeng.api.networking.storage;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 
 /**
- * Grid-wide storage services for all {@link IStorageChannel}.
+ * Grid-wide storage services for all {@link AEKeySpace}.
  */
 public interface IStorageService extends IGridService {
 

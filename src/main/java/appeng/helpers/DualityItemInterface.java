@@ -18,19 +18,10 @@
 
 package appeng.helpers;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEMonitorStorage;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
@@ -39,8 +30,14 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.helpers.iface.GenericStackInvStorage;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 
-public class DualityItemInterface extends DualityInterface<AEItemKey> {
+import javax.annotation.Nullable;
+
+public class DualityItemInterface extends DualityInterface {
 
     public static final int NUMBER_OF_SLOTS = 9;
 
@@ -50,10 +47,10 @@ public class DualityItemInterface extends DualityInterface<AEItemKey> {
     /**
      * Used to expose the local storage of this interface to external machines.
      */
-    private final GenericStackInvStorage<ItemVariant, AEItemKey> localStorage;
+    private final GenericStackInvStorage<ItemVariant> localStorage;
 
     public DualityItemInterface(IManagedGridNode gridNode, IItemInterfaceHost ih, ItemStack is) {
-        super(gridNode, ih, is);
+        super(gridNode, ih, is, AEItemKey::is);
         getConfig().setCapacity(Container.LARGE_MAX_STACK_SIZE);
         getStorage().setCapacity(Container.LARGE_MAX_STACK_SIZE);
         this.localStorage = GenericStackInvStorage.items(getStorage());
@@ -73,16 +70,11 @@ public class DualityItemInterface extends DualityInterface<AEItemKey> {
     }
 
     @Override
-    protected IStorageChannel<AEItemKey> getChannel() {
-        return StorageChannels.items();
-    }
-
-    @Override
     protected int getStorageSlots() {
         return NUMBER_OF_SLOTS;
     }
 
-    public GenericStackInvStorage<ItemVariant, AEItemKey> getLocalStorage() {
+    public GenericStackInvStorage<ItemVariant> getLocalStorage() {
         return localStorage;
     }
 

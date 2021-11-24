@@ -25,12 +25,16 @@ package appeng.api.storage.cells;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.data.AEKey;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.util.ConfigInventory;
+
+import java.util.function.Predicate;
 
 public interface ICellWorkbenchItem {
     /**
@@ -70,9 +74,4 @@ public interface ICellWorkbenchItem {
      * sets the setting on the cell.
      */
     void setFuzzyMode(ItemStack is, FuzzyMode fzMode);
-
-    /**
-     * @return the type of channel used to retrieve and store the filter.
-     */
-    IStorageChannel<?> getChannel();
 }

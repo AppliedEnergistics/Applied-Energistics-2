@@ -30,7 +30,6 @@ import com.google.common.base.Preconditions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
 import appeng.me.cells.BasicCellHandler;
 import appeng.util.ConfigInventory;
@@ -78,7 +77,7 @@ public interface IBasicCellItem extends ICellWorkbenchItem {
      * @return true to preventAdditionOfItem
      */
     default boolean isBlackListed(ItemStack cellItem, AEKey requestedAddition) {
-        return getChannel().tryCast(requestedAddition) == null;
+        return false;
     }
 
     /**
@@ -106,11 +105,6 @@ public interface IBasicCellItem extends ICellWorkbenchItem {
      * @return drain in ae/t this storage cell will use.
      */
     double getIdleDrain();
-
-    /**
-     * @return the type of channel your cell should be part of
-     */
-    IStorageChannel<?> getChannel();
 
     ConfigInventory getConfigInventory(ItemStack is);
 

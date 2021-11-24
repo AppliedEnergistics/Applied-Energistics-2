@@ -128,7 +128,7 @@ public class SimulationEnv {
 
             @Nullable
             @Override
-            public AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter) {
+            public AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter) {
                 for (var fuzzy : craftableItemsList.findFuzzy(whatToCraft, FuzzyMode.IGNORE_ALL)) {
                     if (filter.test(fuzzy.getKey())) {
                         return fuzzy.getKey();

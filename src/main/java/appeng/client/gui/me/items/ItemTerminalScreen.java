@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeySpace;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.lwjgl.glfw.GLFW;
@@ -32,7 +33,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -51,7 +51,7 @@ public class ItemTerminalScreen<C extends MEMonitorableMenu>
 
     @Override
     protected IPartitionList createPartitionList(List<ItemStack> viewCells) {
-        return ViewCellItem.createFilter(StorageChannels.items(), viewCells);
+        return ViewCellItem.createFilter(AEKeySpace.items(), viewCells);
     }
 
     @Override

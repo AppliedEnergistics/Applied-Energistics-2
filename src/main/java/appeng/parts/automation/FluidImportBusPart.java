@@ -31,8 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -54,12 +53,12 @@ public class FluidImportBusPart extends ImportBusPart<AEFluidKey, Storage<FluidV
             new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_has_channel"));
 
     public FluidImportBusPart(ItemStack is) {
-        super(TickRates.FluidImportBus, is, FluidStorage.SIDED);
+        super(TickRates.FluidImportBus, is, FluidStorage.SIDED, AEFluidKey.filter());
     }
 
     @Override
-    protected IStorageChannel<AEFluidKey> getChannel() {
-        return StorageChannels.fluids();
+    protected AEKeySpace getChannel() {
+        return AEKeySpace.fluids();
     }
 
     @Override

@@ -38,7 +38,7 @@ import appeng.parts.automation.ItemImportBusPart;
  *
  * @see IOBusScreen
  */
-public class IOBusMenu extends UpgradeableMenu<IOBusPart<?>> {
+public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
 
     public static final MenuType<IOBusMenu> ITEM_EXPORT_TYPE = MenuTypeBuilder
             .create(IOBusMenu::new, ItemExportBusPart.class)
@@ -60,7 +60,7 @@ public class IOBusMenu extends UpgradeableMenu<IOBusPart<?>> {
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_import_bus");
 
-    public IOBusMenu(MenuType<?> menuType, int id, Inventory ip, IOBusPart<?> host) {
+    public IOBusMenu(MenuType<?> menuType, int id, Inventory ip, IOBusPart host) {
         super(menuType, id, ip, host);
     }
 

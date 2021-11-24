@@ -18,24 +18,7 @@
 
 package appeng.core.sync.packets;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
-
-import io.netty.buffer.Unpooled;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.core.AELog;
@@ -45,6 +28,19 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 import appeng.menu.me.common.MEMonitorableMenu;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class MEInventoryUpdatePacket extends BasePacket {
 
@@ -68,13 +64,12 @@ public class MEInventoryUpdatePacket extends BasePacket {
     public MEInventoryUpdatePacket(FriendlyByteBuf data) {
         this.containerId = data.readVarInt();
         this.fullUpdate = data.readBoolean();
-        var channels = readChannelLookupTable(data);
         var count = data.readShort();
         this.entries = new ArrayList<>(count);
 
         // We need to access the current screen to know which storage channel was used to serialize this data
         for (int i = 0; i < count; i++) {
-            this.entries.add(readEntry(data, channels));
+            this.entries.add(readEntry(data));
         }
     }
 
@@ -84,8 +79,6 @@ public class MEInventoryUpdatePacket extends BasePacket {
     }
 
     public static class Builder {
-        private final List<IStorageChannel<?>> channels = new ArrayList<>(StorageChannels.getAll());
-
         private final List<MEInventoryUpdatePacket> packets = new ArrayList<>();
 
         private final int containerId;
@@ -100,7 +93,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
         private int itemCount;
 
         @Nullable
-        private Predicate<AEKey> filter;
+        private AEKeyFilter filter;
 
         public Builder(int containerId, boolean fullUpdate) {
             this.containerId = containerId;
@@ -114,21 +107,21 @@ public class MEInventoryUpdatePacket extends BasePacket {
             }
         }
 
-        public void setFilter(@Nullable Predicate<AEKey> filter) {
+        public void setFilter(@Nullable AEKeyFilter filter) {
             this.filter = filter;
         }
 
         public void addFull(IncrementalUpdateHelper updateHelper,
-                KeyCounter networkStorage,
-                Set<AEKey> craftables,
-                KeyCounter requestables) {
+                            KeyCounter networkStorage,
+                            Set<AEKey> craftables,
+                            KeyCounter requestables) {
             var keys = new HashSet<AEKey>();
             keys.addAll(networkStorage.keySet());
             keys.addAll(craftables);
             keys.addAll(requestables.keySet());
 
             for (var key : keys) {
-                if (this.filter != null && !this.filter.test(key)) {
+                if (this.filter != null && !this.filter.matches(key)) {
                     continue;
                 }
 
@@ -143,11 +136,11 @@ public class MEInventoryUpdatePacket extends BasePacket {
         }
 
         public void addChanges(IncrementalUpdateHelper updateHelper,
-                KeyCounter networkStorage,
-                Set<AEKey> craftables,
-                KeyCounter requestables) {
+                               KeyCounter networkStorage,
+                               Set<AEKey> craftables,
+                               KeyCounter requestables) {
             for (AEKey key : updateHelper) {
-                if (this.filter != null && !this.filter.test(key)) {
+                if (this.filter != null && !this.filter.matches(key)) {
                     continue;
                 }
 
@@ -187,7 +180,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
             // This should only error out if the entire packet exceeds about 2 megabytes of memory,
             // if any item writes that much junk to a share tag, it's acceptable to crash.
             // We'll normaly flush much much earlier (32k)
-            writeEntry(data, channels, entry);
+            writeEntry(data, entry);
 
             ++itemCount;
 
@@ -230,7 +223,6 @@ public class MEInventoryUpdatePacket extends BasePacket {
             data.writeInt(BasePacketHandler.PacketTypes.ME_INVENTORY_UPDATE.getPacketId());
             data.writeVarInt(containerId);
             data.writeBoolean(fullUpdate);
-            writeChannelLookupTable(data, channels);
 
             // This is a placeholder for the item count and will be added at the end,
             // so we need to remember where in the stream we have written it
@@ -257,37 +249,12 @@ public class MEInventoryUpdatePacket extends BasePacket {
         return new Builder(containerId, fullUpdate);
     }
 
-    private static void writeChannelLookupTable(FriendlyByteBuf data, List<IStorageChannel<?>> channels) {
-        // Write channel ID LUT
-        data.writeByte((byte) channels.size());
-        for (var channel : channels) {
-            data.writeResourceLocation(channel.getId());
-        }
-    }
-
-    private static List<IStorageChannel<?>> readChannelLookupTable(FriendlyByteBuf data) {
-        // Write channel ID LUT
-        var count = data.readByte();
-        var channels = new ArrayList<IStorageChannel<?>>(count);
-        for (var i = 0; i < count; i++) {
-            var id = data.readResourceLocation();
-            channels.add(StorageChannels.get(id));
-        }
-        return channels;
-    }
-
     /**
      * Writes this entry to a packet buffer for shipping it to the client.
      */
-    private static void writeEntry(FriendlyByteBuf buffer, List<IStorageChannel<?>> channels,
-            GridInventoryEntry entry) {
+    private static void writeEntry(FriendlyByteBuf buffer, GridInventoryEntry entry) {
         buffer.writeVarLong(entry.getSerial());
-        var what = entry.getWhat();
-        buffer.writeBoolean(what != null);
-        if (what != null) {
-            buffer.writeByte((byte) channels.indexOf(entry.getWhat().getChannel()));
-            what.writeToPacket(buffer);
-        }
+        AEKey.writeOptionalKey(buffer, entry.getWhat());
         buffer.writeVarLong(entry.getStoredAmount());
         buffer.writeVarLong(entry.getRequestableAmount());
         buffer.writeBoolean(entry.isCraftable());
@@ -296,13 +263,9 @@ public class MEInventoryUpdatePacket extends BasePacket {
     /**
      * Reads an inventory entry from a packet.
      */
-    public static GridInventoryEntry readEntry(FriendlyByteBuf buffer, List<IStorageChannel<?>> channels) {
+    public static GridInventoryEntry readEntry(FriendlyByteBuf buffer) {
         long serial = buffer.readVarLong();
-        AEKey what = null;
-        if (buffer.readBoolean()) {
-            var channel = channels.get(buffer.readByte());
-            what = channel.readFromPacket(buffer);
-        }
+        AEKey what = AEKey.readOptionalKey(buffer);
         long storedAmount = buffer.readVarLong();
         long requestableAmount = buffer.readVarLong();
         boolean craftable = buffer.readBoolean();

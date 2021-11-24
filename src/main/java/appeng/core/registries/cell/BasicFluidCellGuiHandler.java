@@ -23,19 +23,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.data.AEKey;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.fluids.FluidTerminalMenu;
 
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
     @Override
-    public <T extends AEKey> boolean isHandlerFor(final IStorageChannel<T> channel) {
-        return channel == StorageChannels.fluids();
+    public boolean isHandlerFor(AEKeySpace channel) {
+        return channel == AEKeySpace.fluids();
     }
 
     @Override

@@ -33,8 +33,6 @@ import appeng.api.storage.data.AEItemKey;
 import appeng.helpers.FluidContainerHelper;
 import appeng.menu.MenuLocator;
 import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.menu.me.interaction.ItemInteractionHandler;
-import appeng.menu.me.interaction.StackInteractionHandler;
 import appeng.util.Platform;
 import appeng.util.fluid.FluidSoundHelper;
 import com.google.common.collect.ImmutableSet;
@@ -63,7 +61,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
@@ -127,7 +125,7 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
 
     public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip,
             final ITerminalHost host, final boolean bindInventory,
-            IStorageChannel<?> storageChannel) {
+            AEKeySpace storageChannel) {
         super(menuType, id, ip, host);
 
         this.host = host;

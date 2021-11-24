@@ -34,7 +34,7 @@ public interface IInterfaceHost extends IConfigurableObject, IUpgradeableObject,
 
     void saveChanges();
 
-    DualityInterface<?> getInterfaceDuality();
+    DualityInterface getInterfaceDuality();
 
     @Override
     default IConfigManager getConfigManager() {

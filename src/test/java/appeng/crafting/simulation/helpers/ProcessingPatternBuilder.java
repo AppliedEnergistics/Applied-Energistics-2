@@ -11,7 +11,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.util.CraftingRemainders;
@@ -54,8 +53,8 @@ public class ProcessingPatternBuilder {
             @Nullable
             @Override
             public AEKey getContainerItem(AEKey template) {
-                if (containerItems && template.getChannel() == StorageChannels.items()) {
-                    return CraftingRemainders.getRemainder(template.cast(StorageChannels.items()));
+                if (containerItems && template instanceof AEItemKey itemKey) {
+                    return CraftingRemainders.getRemainder(itemKey);
                 }
                 return null;
             }

@@ -1,5 +1,6 @@
 package appeng.items.tools.powered;
 
+import appeng.api.storage.AEKeySpace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.stats.Stats;
@@ -18,7 +19,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import appeng.api.config.Actionable;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.helpers.FluidContainerHelper;
 import appeng.menu.me.items.PortableFluidCellMenu;
@@ -26,7 +26,7 @@ import appeng.util.InteractionUtil;
 
 public class PortableFluidCellItem extends PortableCellItem<AEFluidKey> {
     public PortableFluidCellItem(StorageTier tier, Properties props) {
-        super(StorageChannels.fluids(), tier, props);
+        super(AEFluidKey.filter(), tier, props);
     }
 
     /**

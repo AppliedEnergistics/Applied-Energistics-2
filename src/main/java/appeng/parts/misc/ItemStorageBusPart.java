@@ -20,6 +20,7 @@ package appeng.parts.misc;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeySpace;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -28,10 +29,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.ItemStorageChannel;
+import appeng.api.storage.AEItemKeys;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
@@ -40,7 +39,7 @@ import appeng.menu.implementations.StorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.IVariantConversion;
 
-public class ItemStorageBusPart extends AbstractStorageBusPart<AEItemKey, Storage<ItemVariant>> {
+public class ItemStorageBusPart extends AbstractStorageBusPart<Storage<ItemVariant>> {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_storage_bus_base");
 
@@ -61,8 +60,8 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<AEItemKey, Storag
     }
 
     @Override
-    public ItemStorageChannel getChannel() {
-        return StorageChannels.items();
+    public AEItemKeys getChannel() {
+        return AEKeySpace.items();
     }
 
     @Nullable

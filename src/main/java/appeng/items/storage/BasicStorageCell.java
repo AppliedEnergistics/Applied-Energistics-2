@@ -18,8 +18,18 @@
 
 package appeng.items.storage;
 
-import java.util.List;
-
+import appeng.api.config.FuzzyMode;
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.StorageCells;
+import appeng.api.storage.cells.IBasicCellItem;
+import appeng.core.definitions.AEItems;
+import appeng.hooks.AEToolItem;
+import appeng.items.AEBaseItem;
+import appeng.items.contents.CellConfig;
+import appeng.items.contents.CellUpgrades;
+import appeng.parts.automation.UpgradeInventory;
+import appeng.util.ConfigInventory;
+import appeng.util.InteractionUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -35,42 +45,43 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.StorageCells;
-import appeng.api.storage.cells.IBasicCellItem;
-import appeng.api.storage.data.AEKey;
-import appeng.core.definitions.AEItems;
-import appeng.hooks.AEToolItem;
-import appeng.items.AEBaseItem;
-import appeng.items.contents.CellConfig;
-import appeng.items.contents.CellUpgrades;
-import appeng.parts.automation.UpgradeInventory;
-import appeng.util.ConfigInventory;
-import appeng.util.InteractionUtil;
+import javax.annotation.Nullable;
+import java.util.List;
 
-/**
- * @author DrummerMC
- * @version rv6 - 2018-01-17
- * @since rv6 2018-01-17
- */
-public abstract class AbstractStorageCell<T extends AEKey> extends AEBaseItem
-        implements IBasicCellItem, AEToolItem {
+public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AEToolItem {
     /**
      * This can be retrieved when disassembling the storage cell.
      */
     protected final ItemLike coreItem;
+    protected final double idleDrain;
     protected final int totalBytes;
+    protected final int bytesPerType;
+    protected final int totalTypes;
+    @Nullable
+    private final AEKeyFilter keyFilter;
 
-    public AbstractStorageCell(Item.Properties properties, final ItemLike coreItem, final int kilobytes) {
+    public BasicStorageCell(Item.Properties properties,
+                            ItemLike coreItem,
+                            double idleDrain,
+                            int kilobytes,
+                            int bytesPerType,
+                            int totalTypes,
+                            @Nullable AEKeyFilter keyFilter) {
         super(properties);
+        this.idleDrain = idleDrain;
         this.totalBytes = kilobytes * 1024;
         this.coreItem = coreItem;
+        this.bytesPerType = bytesPerType;
+        this.totalTypes = totalTypes;
+        this.keyFilter = keyFilter;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack,
+                                Level level,
+                                List<Component> lines,
+                                TooltipFlag advancedTooltips) {
         addCellInformationToTooltip(stack, lines);
     }
 
@@ -81,7 +92,17 @@ public abstract class AbstractStorageCell<T extends AEKey> extends AEBaseItem
 
     @Override
     public int getTotalTypes(final ItemStack cellItem) {
-        return 63;
+        return totalTypes;
+    }
+
+    @Override
+    public double getIdleDrain() {
+        return idleDrain;
+    }
+
+    @Override
+    public int getBytesPerType(ItemStack cellItem) {
+        return bytesPerType;
     }
 
     @Override
@@ -96,7 +117,7 @@ public abstract class AbstractStorageCell<T extends AEKey> extends AEBaseItem
 
     @Override
     public ConfigInventory getConfigInventory(final ItemStack is) {
-        return CellConfig.create(getChannel(), is);
+        return CellConfig.create(keyFilter, is);
     }
 
     @Override

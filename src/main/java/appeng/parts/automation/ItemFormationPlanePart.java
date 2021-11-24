@@ -23,6 +23,7 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.storage.AEKeySpace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -47,7 +48,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.core.AEConfig;
@@ -56,7 +56,7 @@ import appeng.items.parts.PartModels;
 import appeng.menu.implementations.FormationPlaneMenu;
 import appeng.util.Platform;
 
-public class ItemFormationPlanePart extends AbstractFormationPlanePart {
+public class ItemFormationPlanePart extends FormationPlanePart {
 
     private static final PlaneModels MODELS = new PlaneModels("part/item_formation_plane",
             "part/item_formation_plane_on");
@@ -70,7 +70,7 @@ public class ItemFormationPlanePart extends AbstractFormationPlanePart {
     private boolean blocked = false;
 
     public ItemFormationPlanePart(final ItemStack is) {
-        super(is, StorageChannels.items());
+        super(is, AEItemKey.filter());
 
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.PLACE_BLOCK, YesNo.YES);

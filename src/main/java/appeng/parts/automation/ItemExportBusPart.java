@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import appeng.api.storage.data.AEFluidKey;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -40,9 +41,8 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -73,12 +73,12 @@ public class ItemExportBusPart extends ExportBusPart<AEItemKey, Storage<ItemVari
     private boolean didSomething = false;
 
     public ItemExportBusPart(final ItemStack is) {
-        super(TickRates.ItemExportBus, is, ItemStorage.SIDED);
+        super(TickRates.ItemExportBus, is, ItemStorage.SIDED, AEItemKey.filter());
     }
 
     @Override
-    protected IStorageChannel<AEItemKey> getChannel() {
-        return StorageChannels.items();
+    protected AEKeySpace getChannel() {
+        return AEKeySpace.items();
     }
 
     @Override

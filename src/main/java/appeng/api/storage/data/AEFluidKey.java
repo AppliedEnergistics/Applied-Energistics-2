@@ -1,9 +1,11 @@
 package appeng.api.storage.data;
 
-import java.util.Objects;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.GenericStack;
+import appeng.core.AELog;
+import appeng.items.misc.WrappedGenericStack;
+import appeng.util.Platform;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
@@ -13,13 +15,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
-import appeng.core.AELog;
-import appeng.items.misc.WrappedGenericStack;
-import appeng.util.Platform;
+import java.util.Objects;
 
 public class AEFluidKey extends AEKey {
     public static final int AMOUNT_BUCKET = (int) FluidConstants.BUCKET;
@@ -57,6 +55,14 @@ public class AEFluidKey extends AEKey {
         return what instanceof AEFluidKey fluidKey && fluidKey.matches(fluid);
     }
 
+    public static boolean is(AEKey what) {
+        return what instanceof AEFluidKey;
+    }
+
+    public static AEKeyFilter filter() {
+        return AEFluidKey::is;
+    }
+
     public boolean matches(FluidVariant variant) {
         return !variant.isBlank() && fluid.isSame(variant.getFluid()) && variant.nbtMatches(tag);
     }
@@ -73,8 +79,8 @@ public class AEFluidKey extends AEKey {
     }
 
     @Override
-    public IStorageChannel<?> getChannel() {
-        return StorageChannels.fluids();
+    public AEKeySpace getChannel() {
+        return AEKeySpace.fluids();
     }
 
     @Override

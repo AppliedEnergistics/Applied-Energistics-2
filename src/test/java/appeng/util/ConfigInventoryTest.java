@@ -3,6 +3,7 @@ package appeng.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import appeng.api.storage.AEKeySpace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.helpers.iface.GenericStackInv;
@@ -28,7 +28,7 @@ public class ConfigInventoryTest {
      */
     @Nested
     class ChannelFiltering {
-        ConfigInventory inv = ConfigInventory.configStacks(StorageChannels.items(), 2, null);
+        ConfigInventory inv = ConfigInventory.configStacks(AEKeySpace.items(), 2, null);
 
         @BeforeEach
         void loadMixedStacks() {
@@ -53,7 +53,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class TypesMode {
-        ConfigInventory inv = ConfigInventory.configTypes(StorageChannels.items(), 1, null);
+        ConfigInventory inv = ConfigInventory.configTypes(AEKeySpace.items(), 1, null);
 
         @Test
         void amountZeroIsAllowed() {
@@ -70,7 +70,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class StacksMode {
-        ConfigInventory inv = ConfigInventory.configStacks(StorageChannels.items(), 1, null);
+        ConfigInventory inv = ConfigInventory.configStacks(AEKeySpace.items(), 1, null);
 
         @Test
         void stacksWithAmountZeroAreDropped() {

@@ -58,6 +58,10 @@ public final class AEItemIds {
     ///
     /// STORAGE CELLS
     ///
+    public static final ResourceLocation STORAGE_CELL_1K = id("storage_cell_1k");
+    public static final ResourceLocation STORAGE_CELL_4K = id("storage_cell_4k");
+    public static final ResourceLocation STORAGE_CELL_16K = id("storage_cell_16k");
+    public static final ResourceLocation STORAGE_CELL_64K = id("storage_cell_64k");
     public static final ResourceLocation ITEM_CELL_1K = id("1k_item_storage_cell");
     public static final ResourceLocation ITEM_CELL_4K = id("4k_item_storage_cell");
     public static final ResourceLocation ITEM_CELL_16K = id("16k_item_storage_cell");

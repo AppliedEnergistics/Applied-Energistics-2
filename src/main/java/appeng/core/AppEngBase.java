@@ -23,6 +23,7 @@ import java.util.Collections;
 
 import javax.annotation.Nullable;
 
+import appeng.init.client.InitKeySpaces;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -112,6 +113,8 @@ public abstract class AppEngBase implements AppEng {
         INSTANCE = this;
 
         AEConfig.load(FabricLoader.getInstance().getConfigDir());
+
+        InitKeySpaces.init();
 
         CreativeTab.init();
 

@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import appeng.api.storage.AEKeyFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -35,7 +36,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
@@ -50,7 +51,7 @@ import appeng.menu.MenuOpener;
 import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.IPartitionList;
 
-public abstract class AbstractFormationPlanePart extends UpgradeablePart
+public abstract class FormationPlanePart extends UpgradeablePart
         implements IStorageProvider, IPriorityHost, IConfigInvHost {
 
     private boolean wasActive = false;
@@ -65,10 +66,10 @@ public abstract class AbstractFormationPlanePart extends UpgradeablePart
      */
     private long lastEffect;
 
-    public AbstractFormationPlanePart(ItemStack is, IStorageChannel<?> channel) {
+    public FormationPlanePart(ItemStack is, AEKeyFilter filter) {
         super(is);
         getMainNode().addService(IStorageProvider.class, this);
-        this.config = ConfigInventory.configTypes(channel, 63, this::updateFilter);
+        this.config = ConfigInventory.configTypes(filter, 63, this::updateFilter);
     }
 
     protected final void updateFilter() {

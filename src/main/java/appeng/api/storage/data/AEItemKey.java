@@ -1,9 +1,9 @@
 package appeng.api.storage.data;
 
-import java.util.Objects;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
+import appeng.core.AELog;
+import appeng.util.Platform;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -13,11 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
-import appeng.core.AELog;
-import appeng.util.Platform;
+import java.util.Objects;
 
 public class AEItemKey extends AEKey {
     private final Item item;
@@ -52,9 +50,17 @@ public class AEItemKey extends AEKey {
         return what instanceof AEItemKey itemKey && itemKey.matches(itemStack);
     }
 
+    public static boolean is(AEKey what) {
+        return what instanceof AEItemKey;
+    }
+
+    public static AEKeyFilter filter() {
+        return AEItemKey::is;
+    }
+
     @Override
-    public IStorageChannel<?> getChannel() {
-        return StorageChannels.items();
+    public AEKeySpace getChannel() {
+        return AEKeySpace.items();
     }
 
     @Override

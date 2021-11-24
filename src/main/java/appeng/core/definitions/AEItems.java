@@ -18,21 +18,10 @@
 
 package appeng.core.definitions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
-
 import appeng.api.config.Upgrades;
 import appeng.api.ids.AEItemIds;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -51,18 +40,27 @@ import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
 import appeng.items.materials.StorageComponentItem;
 import appeng.items.materials.UpgradeCardItem;
-import appeng.items.misc.*;
+import appeng.items.misc.CrystalSeedItem;
+import appeng.items.misc.PaintBallItem;
+import appeng.items.misc.WrappedGenericStack;
 import appeng.items.parts.FacadeItem;
-import appeng.items.storage.BasicFluidStorageCell;
-import appeng.items.storage.BasicItemStorageCellItem;
+import appeng.items.storage.BasicStorageCell;
 import appeng.items.storage.CreativeCellItem;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
-import appeng.items.tools.powered.*;
+import appeng.items.tools.powered.ChargedStaffItem;
+import appeng.items.tools.powered.ColorApplicatorItem;
+import appeng.items.tools.powered.EntropyManipulatorItem;
+import appeng.items.tools.powered.MatterCannonItem;
+import appeng.items.tools.powered.PortableCellItem;
 import appeng.items.tools.powered.PortableCellItem.StorageTier;
+import appeng.items.tools.powered.PortableFluidCellItem;
+import appeng.items.tools.powered.PortableItemCellItem;
+import appeng.items.tools.powered.WirelessCraftingTerminalItem;
+import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.items.tools.quartz.QuartzAxeItem;
 import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
 import appeng.items.tools.quartz.QuartzHoeItem;
@@ -71,6 +69,17 @@ import appeng.items.tools.quartz.QuartzSpadeItem;
 import appeng.items.tools.quartz.QuartzSwordItem;
 import appeng.items.tools.quartz.QuartzToolType;
 import appeng.items.tools.quartz.QuartzWrenchItem;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Internal implementation for the API items
@@ -220,19 +229,24 @@ public final class AEItems {
     /// CELLS
     ///
 
-    public static final ItemDefinition<CreativeCellItem> ITEM_CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC), StorageChannels.items()));
-    public static final ItemDefinition<CreativeCellItem> FLUID_CELL_CREATIVE = item(AEItemIds.FLUID_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC), StorageChannels.fluids()));
-    public static final ItemDefinition<ViewCellItem> VIEW_CELL = item(AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1), StorageChannels.items()));
+    public static final ItemDefinition<CreativeCellItem> ITEM_CELL_CREATIVE = item(AEItemIds.ITEM_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
+    public static final ItemDefinition<CreativeCellItem> FLUID_CELL_CREATIVE = item(AEItemIds.FLUID_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
+    public static final ItemDefinition<ViewCellItem> VIEW_CELL = item(AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1)));
 
-    public static final ItemDefinition<BasicItemStorageCellItem> CELL1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 1, 0.5f, 8));
-    public static final ItemDefinition<BasicItemStorageCellItem> CELL4K = item(AEItemIds.ITEM_CELL_4K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_4K_CELL_COMPONENT, 4, 1.0f, 32));
-    public static final ItemDefinition<BasicItemStorageCellItem> CELL16K = item(AEItemIds.ITEM_CELL_16K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_16K_CELL_COMPONENT, 16, 1.5f, 128));
-    public static final ItemDefinition<BasicItemStorageCellItem> CELL64K = item(AEItemIds.ITEM_CELL_64K, p -> new BasicItemStorageCellItem(p.stacksTo(1), ITEM_64K_CELL_COMPONENT, 64, 2.0f, 512));
+    public static final ItemDefinition<BasicStorageCell> CELL_1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 0.5f,1, 8, 63, null));
+    public static final ItemDefinition<BasicStorageCell> CELL_4K = item(AEItemIds.ITEM_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_4K_CELL_COMPONENT, 1.0f,4, 32, 63, null));
+    public static final ItemDefinition<BasicStorageCell> CELL_16K = item(AEItemIds.ITEM_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_16K_CELL_COMPONENT, 1.5f,16, 128, 63, null));
+    public static final ItemDefinition<BasicStorageCell> CELL_64K = item(AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_64K_CELL_COMPONENT, 2.0f,64, 512, 63, null));
 
-    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL1K = item(AEItemIds.FLUID_CELL_1K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_1K_CELL_COMPONENT, 1, 0.5f, 8));
-    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL4K = item(AEItemIds.FLUID_CELL_4K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_4K_CELL_COMPONENT, 4, 1.0f, 32));
-    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL16K = item(AEItemIds.FLUID_CELL_16K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_16K_CELL_COMPONENT, 16, 1.5f, 128));
-    public static final ItemDefinition<BasicFluidStorageCell> FLUID_CELL64K = item(AEItemIds.FLUID_CELL_64K, p -> new BasicFluidStorageCell(p.stacksTo(1), FLUID_64K_CELL_COMPONENT, 64, 2.0f, 512));
+    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_1K = item(AEItemIds.ITEM_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 0.5f,1, 8, 63, AEItemKey::is));
+    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_4K = item(AEItemIds.ITEM_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_4K_CELL_COMPONENT, 1.0f,4, 32, 63, AEItemKey::is));
+    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_16K = item(AEItemIds.ITEM_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_16K_CELL_COMPONENT, 1.5f,16, 128, 63, AEItemKey::is));
+    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_64K = item(AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_64K_CELL_COMPONENT, 2.0f,64, 512, 63, AEItemKey::is));
+
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL1K = item(AEItemIds.FLUID_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), FLUID_1K_CELL_COMPONENT, 0.5f, 1, 8, 5, AEFluidKey::is));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL4K = item(AEItemIds.FLUID_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), FLUID_4K_CELL_COMPONENT, 1.0f, 4, 32, 5, AEFluidKey::is));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL16K = item(AEItemIds.FLUID_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), FLUID_16K_CELL_COMPONENT, 1.5f, 16, 128, 5, AEFluidKey::is));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL64K = item(AEItemIds.FLUID_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), FLUID_64K_CELL_COMPONENT, 2.0f, 64, 512, 5, AEFluidKey::is));
 
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL2 = item(AEItemIds.SPATIAL_CELL_2, p -> new SpatialStorageCellItem(p.stacksTo(1), 2));
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL16 = item(AEItemIds.SPATIAL_CELL_16, p -> new SpatialStorageCellItem(p.stacksTo(1), 16));

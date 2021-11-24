@@ -1,14 +1,14 @@
 package appeng.util;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
 import appeng.helpers.iface.GenericStackInv;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Configuration inventories contain a set of {@link appeng.api.storage.data.AEKey} references that configure how
@@ -18,45 +18,53 @@ import appeng.helpers.iface.GenericStackInv;
  * They can expose an {@link net.minecraft.world.item.ItemStack} based wrapper that can be used as backing for
  * {@link net.minecraft.world.inventory.Slot} in {@link appeng.menu.AEBaseMenu}.
  * <p/>
- * AE differentiates between two modes of filter-configuration for machines. Sometimes only the *type* of stack is
- * relevant. In this mode, amounts are ignored. Other times (i.e. interface stocking), the type and amount are relevant.
+ * Primarily their role beyond their base class {@link GenericStackInv} is enforcing the configured filter
+ * even on returned keys, not just when setting them.
  */
 public class ConfigInventory extends GenericStackInv {
-    @Nullable
-    private final IStorageChannel<?> filterChannel;
-
-    protected ConfigInventory(@Nullable IStorageChannel<?> channel, Mode mode, int size, @Nullable Runnable listener) {
+    protected ConfigInventory(@Nullable AEKeyFilter filter, Mode mode, int size, @Nullable Runnable listener) {
         super(listener, mode, size);
-        this.filterChannel = channel;
+        setFilter(filter);
     }
 
     /**
      * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
      * inventory.
      */
-    public static <T extends AEKey> ConfigInventory configTypes(@Nullable IStorageChannel<?> channel, int size,
-            @Nullable Runnable changeListener) {
-        return new ConfigInventory(channel, Mode.CONFIG_TYPES, size, changeListener);
+    public static ConfigInventory configTypes(int size, @Nullable Runnable changeListener) {
+        return new ConfigInventory(null, Mode.CONFIG_TYPES, size, changeListener);
+    }
+
+    /**
+     * When in types mode, the config inventory will ignore all amounts and always return amount 1 for stacks in the
+     * inventory.
+     */
+    public static ConfigInventory configTypes(@Nullable AEKeyFilter filter, int size,
+                                              @Nullable Runnable changeListener) {
+        return new ConfigInventory(filter, Mode.CONFIG_TYPES, size, changeListener);
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
-    public static <T extends AEKey> ConfigInventory configStacks(@Nullable IStorageChannel<?> channel, int size,
-            @Nullable Runnable changeListener) {
-        return new ConfigInventory(channel, Mode.CONFIG_STACKS, size, changeListener);
+    public static ConfigInventory configStacks(@Nullable AEKeyFilter filter, int size,
+                                               @Nullable Runnable changeListener) {
+        return new ConfigInventory(filter, Mode.CONFIG_STACKS, size, changeListener);
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
-    public static <T extends AEKey> ConfigInventory storage(@Nullable IStorageChannel<?> channel, int size,
-            @Nullable Runnable changeListener) {
-        return new ConfigInventory(channel, Mode.STORAGE, size, changeListener);
+    public static ConfigInventory storage(int size, @Nullable Runnable changeListener) {
+        return new ConfigInventory(null, Mode.STORAGE, size, changeListener);
     }
 
-    private boolean passesFilter(AEKey what) {
-        return filterChannel == null || what.getChannel() == filterChannel;
+    /**
+     * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
+     */
+    public static ConfigInventory storage(@Nullable AEKeyFilter filter, int size,
+                                          @Nullable Runnable changeListener) {
+        return new ConfigInventory(filter, Mode.STORAGE, size, changeListener);
     }
 
     @Nullable
@@ -64,7 +72,7 @@ public class ConfigInventory extends GenericStackInv {
     public GenericStack getStack(int slot) {
         var stack = super.getStack(slot);
         // Filter and clear stacks not supported by the underlying storage channel
-        if (stack != null && !passesFilter(stack.what())) {
+        if (stack != null && !isAllowed(stack.what())) {
             setStack(slot, null);
             stack = null;
         }
@@ -79,7 +87,7 @@ public class ConfigInventory extends GenericStackInv {
             return null;
         }
         // Filter and clear stacks not supported by the underlying storage channel
-        if (!passesFilter(key)) {
+        if (!isAllowed(key)) {
             setStack(slot, null);
             key = null;
         }
@@ -99,7 +107,7 @@ public class ConfigInventory extends GenericStackInv {
 
     @Override
     public void setStack(int slot, @Nullable GenericStack stack) {
-        if (stack != null && !passesFilter(stack.what())) {
+        if (stack != null && !isAllowed(stack.what())) {
             return;
         }
         if (stack != null) {
@@ -117,7 +125,6 @@ public class ConfigInventory extends GenericStackInv {
 
     @Override
     public ConfigMenuInventory createMenuWrapper() {
-        return new ConfigMenuInventory(this, filterChannel);
+        return new ConfigMenuInventory(this);
     }
-
 }

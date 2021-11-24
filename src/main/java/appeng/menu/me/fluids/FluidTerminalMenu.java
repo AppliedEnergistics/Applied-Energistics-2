@@ -18,28 +18,16 @@
 
 package appeng.menu.me.fluids;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.server.level.ServerPlayer;
+import appeng.api.storage.AEKeySpace;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEKey;
-import appeng.core.AELog;
-import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEMonitorableMenu;
-import appeng.util.fluid.FluidSoundHelper;
 
 /**
  * @see appeng.client.gui.me.fluids.FluidTerminalScreen
@@ -58,7 +46,7 @@ public class FluidTerminalMenu extends MEMonitorableMenu {
 
     public FluidTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
             boolean bindInventory) {
-        super(menuType, id, ip, host, bindInventory, StorageChannels.fluids());
+        super(menuType, id, ip, host, bindInventory, AEKeySpace.fluids());
     }
 
     @Override

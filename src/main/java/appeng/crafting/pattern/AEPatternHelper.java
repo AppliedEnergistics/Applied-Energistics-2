@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import appeng.api.storage.AEKeySpace;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -35,7 +36,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.StorageChannels;
 
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
@@ -73,8 +73,8 @@ class AEPatternHelper {
             if (stack == null) {
                 throw new IllegalArgumentException("Pattern references missing stack: " + entry);
             }
-            if (stack.what().getChannel() != StorageChannels.items()
-                    && stack.what().getChannel() != StorageChannels.fluids()) {
+            if (stack.what().getChannel() != AEKeySpace.items()
+                    && stack.what().getChannel() != AEKeySpace.fluids()) {
                 throw new IllegalArgumentException("Only items and fluids are supported in AE2 patterns.");
             }
             result[x] = stack;

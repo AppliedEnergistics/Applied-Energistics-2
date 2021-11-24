@@ -19,7 +19,9 @@
 package appeng.items.tools.powered;
 
 import java.util.List;
+import java.util.function.Predicate;
 
+import appeng.api.storage.AEKeyFilter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -37,7 +39,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.AEKey;
@@ -63,12 +65,12 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
 
     private final StorageTier tier;
 
-    private final IStorageChannel<T> channel;
+    private final AEKeyFilter filter;
 
-    public PortableCellItem(IStorageChannel<T> channel, StorageTier tier, Item.Properties props) {
+    public PortableCellItem(AEKeyFilter filter, StorageTier tier, Item.Properties props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
         this.tier = tier;
-        this.channel = channel;
+        this.filter = filter;
     }
 
     @Override
@@ -128,11 +130,6 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     }
 
     @Override
-    public IStorageChannel<T> getChannel() {
-        return channel;
-    }
-
-    @Override
     public boolean isEditable(final ItemStack is) {
         return true;
     }
@@ -144,7 +141,7 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
 
     @Override
     public ConfigInventory getConfigInventory(final ItemStack is) {
-        return CellConfig.create(getChannel(), is);
+        return CellConfig.create(filter, is);
     }
 
     @Override
@@ -179,8 +176,7 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
      * @return Amount inserted.
      */
     public long insert(Player player, ItemStack itemStack, AEKey what, long amount, Actionable mode) {
-        var typedWhat = getChannel().tryCast(what);
-        if (typedWhat == null) {
+        if (!filter.matches(what)) {
             return 0;
         }
 
@@ -194,7 +190,7 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
             return StorageHelper.poweredInsert(
                     host,
                     inv,
-                    typedWhat,
+                    what,
                     amount,
                     new PlayerSource(player),
                     mode);

@@ -62,13 +62,11 @@ public class BasicCellInventory implements StorageCell {
     private Object2LongMap<AEKey> storedAmounts;
     private final ItemStack i;
     private final IBasicCellItem cellType;
-    private final int itemsPerByte;
     private boolean isPersisted = true;
 
     private BasicCellInventory(IBasicCellItem cellType, ItemStack o, ISaveProvider container) {
         this.i = o;
         this.cellType = cellType;
-        this.itemsPerByte = this.cellType.getChannel().getUnitsPerByte();
         this.maxItemTypes = this.cellType.getTotalTypes(this.i);
 
         if (this.maxItemTypes > MAX_ITEM_TYPES) {
@@ -260,7 +258,7 @@ public class BasicCellInventory implements StorageCell {
                     amounts.length, tags.size());
         }
 
-        for (int i = 0; i < Math.min(amounts.length, tags.size()); i++) {
+        for (int i = 0; i < amounts.length; i++) {
             var amount = amounts[i];
             AEKey key = AEKey.fromTagGeneric(tags.getCompound(i));
 
@@ -338,7 +336,7 @@ public class BasicCellInventory implements StorageCell {
     }
 
     public long getUsedBytes() {
-        final long bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / this.itemsPerByte;
+        var bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / this.itemsPerByte;
         return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
     }
 

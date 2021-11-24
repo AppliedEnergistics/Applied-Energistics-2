@@ -123,8 +123,8 @@ public final class StorageHelper {
      * @param src    Action source.
      * @return items not inserted or {@code null} if everything was inserted.
      */
-    public static <T extends AEKey> long poweredInsert(final IEnergySource energy, final MEStorage inv,
-            final T input, long amount, final IActionSource src) {
+    public static long poweredInsert(final IEnergySource energy, final MEStorage inv,
+            AEKey input, long amount, final IActionSource src) {
         return poweredInsert(energy, inv, input, amount, src, Actionable.MODULATE);
     }
 
@@ -138,7 +138,7 @@ public final class StorageHelper {
      * @param mode   Simulate or modulate
      * @return items not inserted or {@code null} if everything was inserted.
      */
-    public static <T extends AEKey> long poweredInsert(IEnergySource energy, MEStorage inv, T input, long amount,
+    public static long poweredInsert(IEnergySource energy, MEStorage inv, AEKey input, long amount,
             IActionSource src, Actionable mode) {
         Objects.requireNonNull(energy);
         Objects.requireNonNull(inv);

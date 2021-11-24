@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeySpace;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -52,9 +53,8 @@ import net.minecraft.world.level.block.state.properties.Property;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
-import appeng.api.storage.ItemStorageChannel;
+import appeng.api.storage.AEItemKeys;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -385,11 +385,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public ItemStorageChannel getChannel() {
-        return StorageChannels.items();
-    }
-
-    @Override
     public boolean isEditable(final ItemStack is) {
         return true;
     }
@@ -401,7 +396,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public ConfigInventory getConfigInventory(ItemStack is) {
-        return CellConfig.create(getChannel(), is);
+        return CellConfig.create(AEItemKey.filter(), is);
     }
 
     @Override

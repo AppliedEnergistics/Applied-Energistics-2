@@ -23,8 +23,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.LevelEmitterMenu;
@@ -59,8 +58,8 @@ public class ItemLevelEmitterPart extends AbstractStorageLevelEmitterPart {
     }
 
     @Override
-    protected IStorageChannel<?> getChannel() {
-        return StorageChannels.items();
+    protected AEKeySpace getChannel() {
+        return AEKeySpace.items();
     }
 
     @Override

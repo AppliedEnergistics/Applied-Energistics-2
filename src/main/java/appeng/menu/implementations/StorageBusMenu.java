@@ -49,7 +49,7 @@ import appeng.parts.misc.ItemStorageBusPart;
  * @see StorageBusScreen
  * @see appeng.client.gui.implementations.StorageBusScreen
  */
-public class StorageBusMenu extends UpgradeableMenu<AbstractStorageBusPart<?, ?>> {
+public class StorageBusMenu extends UpgradeableMenu<AbstractStorageBusPart<?>> {
 
     private static final String ACTION_CLEAR = "clear";
     private static final String ACTION_PARTITION = "partition";
@@ -73,7 +73,7 @@ public class StorageBusMenu extends UpgradeableMenu<AbstractStorageBusPart<?, ?>
     @GuiSync(7)
     public YesNo filterOnExtract = YesNo.YES;
 
-    public StorageBusMenu(MenuType<StorageBusMenu> menuType, int id, Inventory ip, AbstractStorageBusPart<?, ?> te) {
+    public StorageBusMenu(MenuType<StorageBusMenu> menuType, int id, Inventory ip, AbstractStorageBusPart<?> te) {
         super(menuType, id, ip, te);
 
         registerClientAction(ACTION_CLEAR, this::clear);

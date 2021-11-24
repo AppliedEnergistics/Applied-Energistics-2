@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeyFilter;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;

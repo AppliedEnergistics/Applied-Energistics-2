@@ -21,10 +21,12 @@ package appeng.helpers;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeyFilter;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.nbt.CompoundTag;
@@ -49,7 +51,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.MEMonitorStorage;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
@@ -69,7 +71,7 @@ import appeng.util.inv.InternalInventoryHost;
 /**
  * Contains behavior for interface blocks and parts, which is independent of the storage channel.
  */
-public abstract class DualityInterface<T extends AEKey> implements ICraftingRequester, IUpgradeableObject,
+public abstract class DualityInterface implements ICraftingRequester, IUpgradeableObject,
         IConfigurableObject, InternalInventoryHost {
 
     protected final MEMonitorPassThrough networkStorage = new MEMonitorPassThrough();
@@ -84,6 +86,8 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
     private final ConfigManager cm = new ConfigManager((manager, setting) -> {
         onConfigChanged();
     });
+    @Nullable
+    private final AEKeyFilter configFilter;
     /**
      * Work planned by {@link #updatePlan()} to be performed by {@link #usePlan}. Positive amounts mean restocking from
      * the network is required while negative amounts mean moving to the network is required.
@@ -93,17 +97,18 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
     /**
      * Configures what and how much to stock in this inventory.
      */
-    private final ConfigInventory config = ConfigInventory.configStacks(getChannel(), getStorageSlots(),
-            this::readConfig);
+    private final ConfigInventory config;
     /**
      * True if the interface is configured to stock certain types of resources.
      */
     private boolean hasConfig = false;
-    private final ConfigInventory storage = ConfigInventory.storage(getChannel(), getStorageSlots(),
-            this::updatePlan);
+    private final ConfigInventory storage;
 
-    public DualityInterface(IManagedGridNode gridNode, IInterfaceHost host, ItemStack is) {
+    public DualityInterface(IManagedGridNode gridNode, IInterfaceHost host, ItemStack is, @Nullable AEKeyFilter configFilter) {
         this.host = host;
+        this.configFilter = configFilter;
+        this.config = ConfigInventory.configStacks(configFilter, getStorageSlots(), this::readConfig);
+        this.storage = ConfigInventory.storage(configFilter, getStorageSlots(), this::updatePlan);
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
@@ -116,9 +121,8 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
         gridNode.addService(ICraftingRequester.class, this);
         this.upgrades = new StackUpgradeInventory(is, this, 1);
         this.craftingTracker = new MultiCraftingTracker(this, 9);
-    }
 
-    protected abstract IStorageChannel<T> getChannel();
+    }
 
     protected abstract int getStorageSlots();
 
@@ -295,10 +299,9 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
         for (int x = 0; x < plannedWork.length; x++) {
             var work = plannedWork[x];
             if (work != null) {
-                var what = getChannel().tryCast(work.what());
-                if (what != null) {
+                if (configFilter != null && configFilter.matches(work.what())) {
                     var amount = (int) work.amount();
-                    didSomething = this.usePlan(x, what, amount) || didSomething;
+                    didSomething = this.usePlan(x, work.what(), amount) || didSomething;
                 } else {
                     plannedWork[x] = null;
                 }
@@ -308,7 +311,7 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
         return didSomething;
     }
 
-    private boolean usePlan(final int x, T what, int amount) {
+    private boolean usePlan(int x, AEKey what, int amount) {
         boolean changed = tryUsePlan(x, what, amount);
 
         if (changed) {
@@ -402,7 +405,7 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
     /**
      * Execute on plan made in {@link #updatePlan(int)}
      */
-    private boolean tryUsePlan(int slot, T what, int amount) {
+    private boolean tryUsePlan(int slot, AEKey what, int amount) {
         var grid = mainNode.getGrid();
         if (grid == null) {
             return false;
@@ -457,7 +460,7 @@ public abstract class DualityInterface<T extends AEKey> implements ICraftingRequ
         return false;
     }
 
-    private boolean handleCrafting(int x, T key, long amount) {
+    private boolean handleCrafting(int x, AEKey key, long amount) {
         var grid = mainNode.getGrid();
         if (grid != null && upgrades.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && key != null) {
             return this.craftingTracker.handleCrafting(x, key, amount,

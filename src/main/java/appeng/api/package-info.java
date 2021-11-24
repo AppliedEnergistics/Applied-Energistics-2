@@ -31,7 +31,7 @@
  * For registering your content with AE2, see the following classes, which are thread-safe and can be used within your
  * mods constructor:
  * <ul>
- * <li>{@link appeng.api.storage.StorageChannels}</li>
+ * <li>{@link appeng.api.storage.AEKeySpaces}</li>
  * <li>{@link appeng.api.networking.GridServices}</li>
  * <li>{@link appeng.api.features.AEWorldGen}</li>
  * <li>{@link appeng.api.movable.BlockEntityMoveStrategies}</li>

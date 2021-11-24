@@ -48,7 +48,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -79,12 +79,11 @@ import appeng.util.prioritylist.IPartitionList;
 /**
  * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
  */
-public abstract class AbstractStorageBusPart<T extends AEKey, A> extends UpgradeablePart
+public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
         implements IGridTickable, IStorageProvider, IPriorityHost, IConfigInvHost {
     protected final IActionSource source;
     private final TickRates tickRates;
-    private final ConfigInventory config = ConfigInventory.configTypes(getChannel(), 63,
-            this::onConfigurationChanged);
+    private final ConfigInventory config = ConfigInventory.configTypes(63, this::onConfigurationChanged);
     /**
      * This is the virtual inventory this storage bus exposes to the network it belongs to. To avoid continuous
      * cell-change notifications, we instead use a handler that will exist as long as this storage bus exists, while
@@ -121,7 +120,7 @@ public abstract class AbstractStorageBusPart<T extends AEKey, A> extends Upgrade
                 .addService(IGridTickable.class, this);
     }
 
-    public abstract IStorageChannel<T> getChannel();
+    public abstract AEKeySpace getChannel();
 
     protected abstract MEStorage adaptExternalApi(A handler, boolean extractableOnly, Runnable alertDevice);
 

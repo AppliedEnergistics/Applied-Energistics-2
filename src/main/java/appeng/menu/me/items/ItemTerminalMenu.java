@@ -18,26 +18,14 @@
 
 package appeng.menu.me.items;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.server.level.ServerPlayer;
+import appeng.api.storage.AEKeySpace;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.Actionable;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
-import appeng.core.AELog;
-import appeng.helpers.InventoryAction;
-import appeng.menu.MenuLocator;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEMonitorableMenu;
-import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.util.Platform;
 
 /**
  * @see appeng.client.gui.me.items.ItemTerminalScreen
@@ -55,7 +43,7 @@ public class ItemTerminalMenu extends MEMonitorableMenu {
     public ItemTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
             boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory,
-                StorageChannels.items());
+                AEKeySpace.items());
     }
 
     @Override

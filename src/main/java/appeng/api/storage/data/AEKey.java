@@ -2,6 +2,8 @@ package appeng.api.storage.data;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeySpaces;
+import appeng.api.storage.AEKeySpacesInternal;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,8 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.core.AELog;
 
 /**
@@ -39,9 +40,9 @@ public abstract class AEKey {
         }
 
         // Handle tags where the mod that provided the channel has been uninstalled
-        IStorageChannel<?> channel;
+        AEKeySpace channel;
         try {
-            channel = StorageChannels.get(new ResourceLocation(channelId));
+            channel = AEKeySpaces.get(new ResourceLocation(channelId));
         } catch (IllegalArgumentException | ResourceLocationException e) {
             AELog.warn("Cannot deserialize generic key from %s because channel '%s' is missing.", tag, channelId);
             return null;
@@ -50,6 +51,9 @@ public abstract class AEKey {
         return channel.loadKeyFromTag(tag);
     }
 
+    /**
+     * Writes a generic, nullable key to the given buffer.
+     */
     public static void writeOptionalKey(FriendlyByteBuf buffer, @Nullable AEKey key) {
         buffer.writeBoolean(key != null);
         if (key != null) {
@@ -57,6 +61,15 @@ public abstract class AEKey {
         }
     }
 
+    public static void writeKey(FriendlyByteBuf buffer, AEKey key) {
+        var id = key.getChannel().getRawId();
+        buffer.writeVarInt(id);
+        key.writeToPacket(buffer);
+    }
+
+    /**
+     * Tries reading a key written using {@link #writeOptionalKey}.
+     */
     @Nullable
     public static AEKey readOptionalKey(FriendlyByteBuf buffer) {
         if (!buffer.readBoolean()) {
@@ -65,14 +78,14 @@ public abstract class AEKey {
         return readKey(buffer);
     }
 
-    public static void writeKey(FriendlyByteBuf buffer, AEKey key) {
-        buffer.writeResourceLocation(key.getChannel().getId());
-        key.writeToPacket(buffer);
-    }
-
     @Nullable
     public static AEKey readKey(FriendlyByteBuf buffer) {
-        var channel = StorageChannels.get(buffer.readResourceLocation());
+        var id = buffer.readVarInt();
+        var channel = AEKeySpace.fromRawId(id);
+        if (channel == null) {
+            AELog.error("Received unknown key space id %d", id);
+            return null;
+        }
         return channel.readFromPacket(buffer);
     }
 
@@ -109,7 +122,7 @@ public abstract class AEKey {
     /**
      * The storage channel this type of resource key is used for.
      */
-    public abstract IStorageChannel<?> getChannel();
+    public abstract AEKeySpace getChannel();
 
     /**
      * @return This object if it has no secondary component, otherwise a copy of this resource key with the secondary
@@ -143,14 +156,6 @@ public abstract class AEKey {
 
     public boolean matches(@Nullable GenericStack stack) {
         return stack != null && stack.what().equals(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends AEKey> T cast(IStorageChannel<T> channel) {
-        if (getChannel() == channel) {
-            return (T) this;
-        }
-        return null;
     }
 
     public abstract String getModId();

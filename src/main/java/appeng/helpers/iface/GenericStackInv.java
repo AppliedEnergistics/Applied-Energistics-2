@@ -19,9 +19,12 @@
 package appeng.helpers.iface;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +43,8 @@ public class GenericStackInv {
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
     private long capacity = Long.MAX_VALUE;
+    @org.jetbrains.annotations.Nullable
+    private AEKeyFilter filter;
     protected final Mode mode;
 
     public enum Mode {
@@ -56,6 +61,23 @@ public class GenericStackInv {
         this.stacks = new GenericStack[size];
         this.listener = listener;
         this.mode = mode;
+    }
+
+    protected void setFilter(@Nullable AEKeyFilter filter) {
+        this.filter = filter;
+    }
+
+    @Nullable
+    public AEKeyFilter getFilter() {
+        return filter;
+    }
+
+    public boolean isAllowed(AEKey what) {
+        return filter == null || filter.matches(what);
+    }
+
+    public boolean isAllowed(@Nullable GenericStack stack) {
+        return stack == null || isAllowed(stack.what());
     }
 
     public int size() {
@@ -95,6 +117,10 @@ public class GenericStackInv {
     public long insert(int slot, AEKey what, long amount, Actionable mode) {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
+
+        if (!isAllowed(what)) {
+            return 0;
+        }
 
         var currentWhat = getKey(slot);
         var currentAmount = getAmount(slot);
@@ -288,7 +314,7 @@ public class GenericStackInv {
      * Creates a wrapper around this config inventory for use with {@link appeng.menu.slot.FakeSlot} in menus.
      */
     public ConfigMenuInventory createMenuWrapper() {
-        return new ConfigMenuInventory(this, null);
+        return new ConfigMenuInventory(this);
     }
 
 }

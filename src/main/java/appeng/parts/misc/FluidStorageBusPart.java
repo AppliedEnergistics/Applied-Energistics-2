@@ -21,6 +21,7 @@ package appeng.parts.misc;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeySpace;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -29,10 +30,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.FluidStorageChannel;
+import appeng.api.storage.AEFluidKeys;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
@@ -41,7 +40,7 @@ import appeng.menu.implementations.StorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.IVariantConversion;
 
-public class FluidStorageBusPart extends AbstractStorageBusPart<AEFluidKey, Storage<FluidVariant>> {
+public class FluidStorageBusPart extends AbstractStorageBusPart<Storage<FluidVariant>> {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/fluid_storage_bus_base");
     @PartModels
@@ -59,8 +58,8 @@ public class FluidStorageBusPart extends AbstractStorageBusPart<AEFluidKey, Stor
     }
 
     @Override
-    public FluidStorageChannel getChannel() {
-        return StorageChannels.fluids();
+    public AEFluidKeys getChannel() {
+        return AEKeySpace.fluids();
     }
 
     @Nullable

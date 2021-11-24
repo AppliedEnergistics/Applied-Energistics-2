@@ -18,18 +18,23 @@
 
 package appeng.items.contents;
 
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.data.AEKey;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.util.ConfigInventory;
+
+import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
 public final class CellConfig {
     private CellConfig() {
     }
 
-    public static ConfigInventory create(IStorageChannel<?> channel, ItemStack is) {
+    public static ConfigInventory create(@Nullable AEKeyFilter filter, ItemStack is) {
         var holder = new Holder(is);
-        holder.inv = ConfigInventory.configTypes(channel, 63, holder::save);
+        holder.inv = ConfigInventory.configTypes(filter, 63, holder::save);
         holder.load();
         return holder.inv;
     }

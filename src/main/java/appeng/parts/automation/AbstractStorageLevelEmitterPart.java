@@ -42,22 +42,30 @@ import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.helpers.IConfigInvHost;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.util.ConfigInventory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
+import javax.annotation.Nullable;
 
 /**
  * Abstract level emitter logic for storage-based level emitters (item and fluid).
  */
 public abstract class AbstractStorageLevelEmitterPart extends AbstractLevelEmitterPart
         implements IConfigInvHost, ICraftingProvider {
-    private final ConfigInventory config = ConfigInventory.configTypes(getChannel(), 1, this::configureWatchers);
+    private final ConfigInventory config = ConfigInventory.configTypes(1, this::configureWatchers);
     private IStackWatcher stackWatcher;
     private ICraftingWatcher craftingWatcher;
 
@@ -125,7 +133,7 @@ public abstract class AbstractStorageLevelEmitterPart extends AbstractLevelEmitt
         return config.getKey(0);
     }
 
-    protected abstract IStorageChannel<?> getChannel();
+    protected abstract AEKeySpace getChannel();
 
     protected abstract MenuType<?> getMenuType();
 

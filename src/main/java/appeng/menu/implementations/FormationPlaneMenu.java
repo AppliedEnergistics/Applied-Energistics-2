@@ -32,22 +32,22 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalFakeSlot;
-import appeng.parts.automation.AbstractFormationPlanePart;
+import appeng.parts.automation.FormationPlanePart;
 
 /**
  * This is used by both fluid and item formation planes.
  *
  * @see FormationPlaneScreen
  */
-public class FormationPlaneMenu extends UpgradeableMenu<AbstractFormationPlanePart> {
+public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
 
     public static final MenuType<FormationPlaneMenu> ITEM_TYPE = MenuTypeBuilder
-            .create(FormationPlaneMenu::new, AbstractFormationPlanePart.class)
+            .create(FormationPlaneMenu::new, FormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("item_formationplane");
 
     public static final MenuType<FormationPlaneMenu> FLUID_TYPE = MenuTypeBuilder
-            .create(FormationPlaneMenu::new, AbstractFormationPlanePart.class)
+            .create(FormationPlaneMenu::new, FormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("fluid_formationplane");
 
@@ -55,7 +55,7 @@ public class FormationPlaneMenu extends UpgradeableMenu<AbstractFormationPlanePa
     public YesNo placeMode;
 
     public FormationPlaneMenu(MenuType<FormationPlaneMenu> type, int id, Inventory ip,
-            AbstractFormationPlanePart host) {
+            FormationPlanePart host) {
         super(type, id, ip, host);
     }
 

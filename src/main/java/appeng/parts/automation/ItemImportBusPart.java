@@ -38,8 +38,7 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.MEMonitorStorage;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
@@ -68,12 +67,12 @@ public class ItemImportBusPart extends ImportBusPart<AEItemKey, Storage<ItemVari
     private final Predicate<ItemStack> insertionPredicate = this::canInsert;
 
     public ItemImportBusPart(final ItemStack is) {
-        super(TickRates.ItemExportBus, is, ItemStorage.SIDED);
+        super(TickRates.ItemExportBus, is, ItemStorage.SIDED, AEItemKey.filter());
     }
 
     @Override
-    protected IStorageChannel<AEItemKey> getChannel() {
-        return StorageChannels.items();
+    protected AEKeySpace getChannel() {
+        return AEKeySpace.items();
     }
 
     @Override

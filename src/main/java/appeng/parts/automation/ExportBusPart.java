@@ -1,5 +1,6 @@
 package appeng.parts.automation;
 
+import appeng.api.storage.AEKeyFilter;
 import com.google.common.collect.ImmutableSet;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
@@ -24,13 +25,13 @@ import appeng.util.Platform;
  * Generalized base class for export buses that move stacks from network storage to an adjacent block using a non-AE
  * API.
  */
-public abstract class ExportBusPart<T extends AEKey, A> extends IOBusPart<T> implements ICraftingRequester {
+public abstract class ExportBusPart<T extends AEKey, A> extends IOBusPart implements ICraftingRequester {
     protected final PartAdjacentApi<A> adjacentExternalApi;
     private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker(this, 9);
     private int nextSlot = 0;
 
-    public ExportBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup) {
-        super(tickRates, is);
+    public ExportBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup, AEKeyFilter configFilter) {
+        super(tickRates, is, configFilter);
         this.adjacentExternalApi = new PartAdjacentApi<>(this, apiLookup);
         getMainNode().addService(ICraftingRequester.class, this);
 

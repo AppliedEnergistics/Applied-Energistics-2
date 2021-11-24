@@ -79,17 +79,17 @@ public final class InitUpgrades {
         Upgrades.CRAFTING.registerItem(AEParts.FLUID_EXPORT_BUS, 1, fluidIoBusGroup);
 
         // Storage Cells
-        Upgrades.FUZZY.registerItem(AEItems.CELL1K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.CELL1K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_1K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.ITEM_CELL_1K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(AEItems.CELL4K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.CELL4K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_4K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.ITEM_CELL_4K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(AEItems.CELL16K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.CELL16K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_16K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.ITEM_CELL_16K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(AEItems.CELL64K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.CELL64K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_64K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.ITEM_CELL_64K, 1, storageCellGroup);
 
         Upgrades.FUZZY.registerItem(AEItems.PORTABLE_ITEM_CELL1K, 1, storageCellGroup);
         Upgrades.FUZZY.registerItem(AEItems.PORTABLE_ITEM_CELL4k, 1, storageCellGroup);

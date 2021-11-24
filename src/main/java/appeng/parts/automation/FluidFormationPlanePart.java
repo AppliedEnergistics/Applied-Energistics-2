@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.storage.AEKeySpace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
@@ -44,13 +45,12 @@ import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEKey;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.FormationPlaneMenu;
 
-public class FluidFormationPlanePart extends AbstractFormationPlanePart {
+public class FluidFormationPlanePart extends FormationPlanePart {
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
             "part/fluid_formation_plane_on");
 
@@ -65,7 +65,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart {
     }
 
     public FluidFormationPlanePart(ItemStack is) {
-        super(is, StorageChannels.fluids());
+        super(is, AEFluidKey.filter());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package appeng.parts.automation;
 
+import appeng.api.storage.AEKeyFilter;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -9,11 +10,11 @@ import appeng.api.storage.data.AEKey;
 import appeng.core.settings.TickRates;
 import appeng.parts.PartAdjacentApi;
 
-public abstract class ImportBusPart<T extends AEKey, A> extends IOBusPart<T> {
+public abstract class ImportBusPart<T extends AEKey, A> extends IOBusPart {
     protected final PartAdjacentApi<A> adjacentExternalApi;
 
-    public ImportBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup) {
-        super(tickRates, is);
+    public ImportBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup, AEKeyFilter configFilter) {
+        super(tickRates, is, configFilter);
         this.adjacentExternalApi = new PartAdjacentApi<>(this, apiLookup);
     }
 

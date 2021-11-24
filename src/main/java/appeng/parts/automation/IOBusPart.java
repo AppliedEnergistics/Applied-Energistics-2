@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import appeng.api.storage.AEKeyFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +37,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.AECableType;
 import appeng.core.settings.TickRates;
@@ -47,9 +48,9 @@ import appeng.menu.MenuOpener;
 import appeng.util.ConfigInventory;
 import appeng.util.Platform;
 
-public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart implements IGridTickable, IConfigInvHost {
+public abstract class IOBusPart extends UpgradeablePart implements IGridTickable, IConfigInvHost {
 
-    private final ConfigInventory config = ConfigInventory.configTypes(getChannel(), 9, this::updateState);
+    private final ConfigInventory config;
 
     private final TickRates tickRates;
 
@@ -57,10 +58,11 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
 
     private boolean lastRedstone = false;
 
-    public IOBusPart(TickRates tickRates, ItemStack is) {
+    public IOBusPart(TickRates tickRates, ItemStack is, AEKeyFilter configFilter) {
         super(is);
         this.tickRates = tickRates;
         this.source = new MachineSource(this);
+        this.config = ConfigInventory.configTypes(configFilter, 9, this::updateState);
         getMainNode().addService(IGridTickable.class, this);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -77,7 +79,7 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
         return 5;
     }
 
-    protected abstract IStorageChannel<T> getChannel();
+    protected abstract AEKeySpace getChannel();
 
     /**
      * All export and import bus parts have a configuration ui.

@@ -74,10 +74,10 @@ public final class InitStorageCells {
         StorageCells.addCellGuiHandler(new BasicItemCellGuiHandler());
         StorageCells.addCellGuiHandler(new BasicFluidCellGuiHandler());
 
-        StorageCellModels.registerModel(AEItems.CELL1K, MODEL_CELL_ITEMS_1K);
-        StorageCellModels.registerModel(AEItems.CELL4K, MODEL_CELL_ITEMS_4K);
-        StorageCellModels.registerModel(AEItems.CELL16K, MODEL_CELL_ITEMS_16K);
-        StorageCellModels.registerModel(AEItems.CELL64K, MODEL_CELL_ITEMS_64K);
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_1K, MODEL_CELL_ITEMS_1K);
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_4K, MODEL_CELL_ITEMS_4K);
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_16K, MODEL_CELL_ITEMS_16K);
+        StorageCellModels.registerModel(AEItems.ITEM_CELL_64K, MODEL_CELL_ITEMS_64K);
         StorageCellModels.registerModel(AEItems.FLUID_CELL1K, MODEL_CELL_FLUIDS_1K);
         StorageCellModels.registerModel(AEItems.FLUID_CELL4K, MODEL_CELL_FLUIDS_4K);
         StorageCellModels.registerModel(AEItems.FLUID_CELL16K, MODEL_CELL_FLUIDS_16K);

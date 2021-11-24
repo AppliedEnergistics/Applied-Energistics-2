@@ -216,7 +216,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var storageCell = Advancement.Builder.advancement()
                 .display(
-                        AEItems.CELL64K,
+                        AEItems.ITEM_CELL_64K,
                         new TranslatableComponent("achievement.ae2.StorageCell"),
                         new TranslatableComponent("achievement.ae2.StorageCell.desc"),
                         null /* background */,
@@ -225,10 +225,10 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false,
                         false)
                 .parent(controller)
-                .addCriterion("c1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL1K))
-                .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL4K))
-                .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL16K))
-                .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL64K))
+                .addCriterion("c1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_1K))
+                .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_4K))
+                .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_16K))
+                .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_64K))
                 .requirements(RequirementsStrategy.OR)
                 .save(consumer, "ae2:main/storage_cell");
 

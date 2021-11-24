@@ -23,21 +23,72 @@
 
 package appeng.api.storage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.api.storage.data.AEKey;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.storage.data.AEKey;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public interface IStorageChannel<T extends AEKey> {
+/**
+ * Defines a space of compatible {@link AEKey} objects which is modeled by a specific {@link AEKey} subclass.
+ * I.e. for {@link appeng.api.storage.data.AEItemKey}, there is {@link AEItemKeys}.
+ */
+public abstract class AEKeySpace {
+    private final ResourceLocation id;
+    private final Class<? extends AEKey> keyClass;
+
+    public AEKeySpace(ResourceLocation id, Class<? extends AEKey> keyClass) {
+        this.id = id;
+        this.keyClass = keyClass;
+    }
+
+    /**
+     * @return AE2's key space for {@link appeng.api.storage.data.AEItemKey}.
+     */
+    @Nonnull
+    public static AEItemKeys items() {
+        return AEItemKeys.INSTANCE;
+    }
+
+    /**
+     * @return See {@link #getRawId()}
+     */
+    @Nullable
+    public static AEKeySpace fromRawId(int id) {
+        Preconditions.checkArgument(id >= 0 && id <= Byte.MAX_VALUE, "id out of range: %d", id);
+        return AEKeySpacesInternal.getRegistry().byId(id);
+    }
+
+    /**
+     * @return AE2's key space for {@link appeng.api.storage.data.AEFluidKey}.
+     */
+    @Nonnull
+    public static AEFluidKeys fluids() {
+        return AEFluidKeys.INSTANCE;
+    }
+
     /**
      * @return The unique ID of this storage channel.
      */
-    @Nonnull
-    ResourceLocation getId();
+    public final ResourceLocation getId() {
+        return id;
+    }
+
+    public final Class<? extends AEKey> getKeyClass() {
+        return keyClass;
+    }
+
+    public final byte getRawId() {
+        var id = AEKeySpacesInternal.getRegistry().getId(this);
+        if (id < 0 || id > 127) {
+            throw new IllegalStateException("Keyspace " + this + " has an invalid numeric id: " + id);
+        }
+        return (byte) id;
+    }
 
     /**
      * Can be used as factor for transferring stacks of a channel.
@@ -45,7 +96,7 @@ public interface IStorageChannel<T extends AEKey> {
      * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel transferring a full bucket per
      * operation.
      */
-    default int transferFactor() {
+    public int transferFactor() {
         return 1;
     }
 
@@ -55,21 +106,21 @@ public interface IStorageChannel<T extends AEKey> {
      *
      * @return number of units
      */
-    default int getUnitsPerByte() {
+    public int getUnitsPerByte() {
         return 8;
     }
 
     @Nullable
-    T readFromPacket(FriendlyByteBuf input);
+    public abstract AEKey readFromPacket(FriendlyByteBuf input);
 
     @Nullable
-    T loadKeyFromTag(CompoundTag tag);
+    public abstract AEKey loadKeyFromTag(CompoundTag tag);
 
     /**
      * Does this key belong to this storage channel.
      */
     @Nullable
-    T tryCast(AEKey key);
+    public abstract AEKey tryCast(AEKey key);
 
     /**
      * True to indicate that the {@link AEKey} class used by this storage channel supports range-based fuzzy search
@@ -77,7 +128,12 @@ public interface IStorageChannel<T extends AEKey> {
      * <p/>
      * For items this is used for damage-based search and filtering.
      */
-    default boolean supportsFuzzyRangeSearch() {
+    public boolean supportsFuzzyRangeSearch() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return id.toString();
     }
 }

@@ -1099,7 +1099,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_16k_item_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_components_cell_64k_part"));
 
-        ShapedRecipeBuilder.shaped(AEItems.CELL1K)
+        ShapedRecipeBuilder.shaped(AEItems.ITEM_CELL_1K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
@@ -1109,14 +1109,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_1k_item_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_1k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CELL1K)
+        ShapelessRecipeBuilder.shapeless(AEItems.ITEM_CELL_1K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
                 .requires(AEItems.ITEM_1K_CELL_COMPONENT)
                 .unlockedBy("has_1k_item_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
                 .unlockedBy("has_empty_storage_cell", has(AEItems.EMPTY_STORAGE_CELL))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_1k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.CELL4K)
+        ShapedRecipeBuilder.shaped(AEItems.ITEM_CELL_4K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
@@ -1126,13 +1126,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_4k_item_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_4k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CELL4K)
+        ShapelessRecipeBuilder.shapeless(AEItems.ITEM_CELL_4K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
                 .requires(AEItems.ITEM_4K_CELL_COMPONENT)
                 .unlockedBy("has_4k_item_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_4k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.CELL16K)
+        ShapedRecipeBuilder.shaped(AEItems.ITEM_CELL_16K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
@@ -1142,13 +1142,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_16k_item_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_16k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CELL16K)
+        ShapelessRecipeBuilder.shapeless(AEItems.ITEM_CELL_16K)
                 .requires(AEItems.ITEM_16K_CELL_COMPONENT)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
                 .unlockedBy("has_16k_item_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_16k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.CELL64K)
+        ShapedRecipeBuilder.shaped(AEItems.ITEM_CELL_64K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
@@ -1158,7 +1158,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_64k_item_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_64k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CELL64K)
+        ShapelessRecipeBuilder.shapeless(AEItems.ITEM_CELL_64K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
                 .requires(AEItems.ITEM_64K_CELL_COMPONENT)
                 .unlockedBy("has_64k_item_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
