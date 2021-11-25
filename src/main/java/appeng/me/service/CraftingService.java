@@ -48,7 +48,6 @@ import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
-import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.GenericStack;
@@ -63,7 +62,7 @@ import appeng.crafting.CraftingWatcher;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.InterestManager;
 import appeng.me.service.helpers.CraftingServiceStorage;
-import appeng.me.service.helpers.NetworkCraftingMethods;
+import appeng.me.service.helpers.NetworkCraftingProviders;
 
 public class CraftingService implements ICraftingService, IGridServiceProvider {
 
@@ -78,10 +77,6 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         CRAFTING_POOL = Executors.newCachedThreadPool(factory);
 
-        GridHelper.addGridServiceEventHandler(GridCraftingPatternChange.class, ICraftingService.class,
-                (service, event) -> {
-                    ((CraftingService) service).updatePatterns();
-                });
         GridHelper.addGridServiceEventHandler(GridCraftingCpuChange.class, ICraftingService.class,
                 (service, event) -> {
                     ((CraftingService) service).updateList = true;
@@ -89,10 +84,9 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     private final Set<CraftingCPUCluster> craftingCPUClusters = new HashSet<>();
-    private final Set<ICraftingProvider> craftingProviders = new HashSet<>();
     private final Map<IGridNode, ICraftingWatcher> craftingWatchers = new HashMap<>();
     private final IGrid grid;
-    private final NetworkCraftingMethods networkCraftingMethods = new NetworkCraftingMethods();
+    private final NetworkCraftingProviders craftingProviders = new NetworkCraftingProviders();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<AEKey, CraftingWatcher> interests = HashMultimap.create();
     private final InterestManager<CraftingWatcher> interestManager = new InterestManager<>((Multimap) this.interests);
@@ -121,7 +115,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode) {
+    public void removeNode(IGridNode gridNode) {
 
         var craftingWatcher = this.craftingWatchers.remove(gridNode);
         if (craftingWatcher != null) {
@@ -137,11 +131,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             }
         }
 
-        var provider = gridNode.getService(ICraftingProvider.class);
-        if (provider != null) {
-            this.craftingProviders.remove(provider);
-            this.updatePatterns();
-        }
+        this.craftingProviders.removeProvider(gridNode);
 
         if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;
@@ -167,11 +157,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             }
         }
 
-        var craftingProvider = gridNode.getService(ICraftingProvider.class);
-        if (craftingProvider != null) {
-            this.craftingProviders.add(craftingProvider);
-            this.updatePatterns();
-        }
+        this.craftingProviders.addProvider(gridNode);
 
         if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;
@@ -180,11 +166,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Override
     public <T extends AEKey> Set<T> getCraftables(IStorageChannel<T> channel) {
-        return networkCraftingMethods.getCraftables(channel);
-    }
-
-    private void updatePatterns() {
-        this.networkCraftingMethods.rebuild(this.craftingProviders);
+        return craftingProviders.getCraftables(channel);
     }
 
     private void updateCPUClusters() {
@@ -228,13 +210,19 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Override
     public Collection<IPatternDetails> getCraftingFor(AEKey whatToCraft) {
-        return this.networkCraftingMethods.getCraftingFor(whatToCraft);
+        return this.craftingProviders.getCraftingFor(whatToCraft);
+    }
+
+    @Override
+    public void refreshNodeCraftingProvider(IGridNode node) {
+        this.craftingProviders.removeProvider(node);
+        this.craftingProviders.addProvider(node);
     }
 
     @Nullable
     @Override
     public AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter) {
-        return this.networkCraftingMethods.getFuzzyCraftable(whatToCraft, filter);
+        return this.craftingProviders.getFuzzyCraftable(whatToCraft, filter);
     }
 
     @Override
@@ -312,7 +300,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Override
     public boolean canEmitFor(AEKey someItem) {
-        return this.networkCraftingMethods.canEmitFor(someItem);
+        return this.craftingProviders.canEmitFor(someItem);
     }
 
     @Override
@@ -331,8 +319,8 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         return requested;
     }
 
-    public Iterable<ICraftingMedium> getMediums(IPatternDetails key) {
-        return networkCraftingMethods.getMediums(key);
+    public Iterable<ICraftingProvider> getProviders(IPatternDetails key) {
+        return craftingProviders.getMediums(key);
     }
 
     public boolean hasCpu(final ICraftingCPU cpu) {

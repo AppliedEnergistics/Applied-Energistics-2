@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageChannel;
@@ -55,6 +56,14 @@ public interface ICraftingService extends IGridService {
     default boolean isCraftable(AEKey whatToCraft) {
         return !getCraftingFor(whatToCraft).isEmpty();
     }
+
+    /**
+     * Refreshes the crafting mounts provided by a {@link IGridNode node} through its {@link ICraftingProvider}.
+     *
+     * @throws IllegalArgumentException If the given node is not part of this grid, or did not provide
+     *                                  {@link ICraftingProvider}.
+     */
+    void refreshNodeCraftingProvider(IGridNode node);
 
     /**
      * Important: Never mutate the passed or returned stacks.

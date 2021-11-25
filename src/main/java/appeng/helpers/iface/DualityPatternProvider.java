@@ -56,10 +56,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -79,7 +76,7 @@ import appeng.util.inv.InternalInventoryHost;
 /**
  * Shared code between the pattern provider block and part.
  */
-public class DualityPatternProvider implements InternalInventoryHost, ICraftingProvider, ICraftingMedium {
+public class DualityPatternProvider implements InternalInventoryHost, ICraftingProvider {
 
     public static final int NUMBER_OF_PATTERN_SLOTS = 9;
 
@@ -191,14 +188,12 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
             }
         }
 
-        mainNode.ifPresent(grid -> grid.postEvent(new GridCraftingPatternChange(this, mainNode.getNode())));
+        ICraftingProvider.requestUpdate(mainNode);
     }
 
     @Override
-    public void provideCrafting(ICraftingProviderHelper craftingTracker) {
-        for (var details : this.patterns) {
-            craftingTracker.addCraftingOption(this, details);
-        }
+    public List<IPatternDetails> getAvailablePatterns() {
+        return this.patterns;
     }
 
     @Override
@@ -346,8 +341,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     }
 
     public void onMainNodeStateChanged() {
+        ICraftingProvider.requestUpdate(this.mainNode);
         this.mainNode.ifPresent((grid, node) -> {
-            grid.postEvent(new GridCraftingPatternChange(this, node));
             grid.getTickManager().alertDevice(node);
         });
     }
