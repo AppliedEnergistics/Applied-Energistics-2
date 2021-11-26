@@ -100,10 +100,10 @@ public final class InitUpgrades {
         Upgrades.INVERTER.registerItem(AEItems.PORTABLE_ITEM_CELL16K, 1, storageCellGroup);
         Upgrades.INVERTER.registerItem(AEItems.PORTABLE_ITEM_CELL64K, 1, storageCellGroup);
 
-        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL1K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL4K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL16K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL64K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL_1K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL_4K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL_16K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL_64K, 1, storageCellGroup);
 
         Upgrades.FUZZY.registerItem(AEItems.VIEW_CELL, 1);
         Upgrades.INVERTER.registerItem(AEItems.VIEW_CELL, 1);

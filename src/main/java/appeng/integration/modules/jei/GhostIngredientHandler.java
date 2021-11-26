@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
+import me.shedaniel.rei.api.client.gui.drag.DraggedAcceptorResult;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -67,19 +68,19 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
     }
 
     @Override
-    public boolean acceptDraggedStack(DraggingContext<AEBaseScreen> context, DraggableStack stack) {
+    public DraggedAcceptorResult acceptDraggedStack(DraggingContext<AEBaseScreen> context, DraggableStack stack) {
         var targets = getTargets(context, stack);
         var pos = context.getCurrentPosition();
 
         for (var target : targets) {
             if (target.getArea().contains(pos)) {
                 if (target.accept(stack)) {
-                    return true;
+                    return DraggedAcceptorResult.ACCEPTED;
                 }
             }
         }
 
-        return false;
+        return DraggedAcceptorResult.PASS;
     }
 
     @Nullable

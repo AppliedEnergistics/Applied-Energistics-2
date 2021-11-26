@@ -84,7 +84,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
 
     @Override
     public MEMonitorStorage getInventory() {
-        return this.sg.getInventory();
+        return this.sg != null ? this.sg.getInventory() : null;
     }
 
     @Override

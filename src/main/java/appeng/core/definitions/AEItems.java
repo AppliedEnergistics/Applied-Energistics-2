@@ -200,6 +200,7 @@ public final class AEItems {
     public static final ItemDefinition<StorageComponentItem> ITEM_16K_CELL_COMPONENT = item(AEItemIds.ITEM_CELL_COMPONENT_16K, p -> new StorageComponentItem(p, 16));
     public static final ItemDefinition<StorageComponentItem> ITEM_64K_CELL_COMPONENT = item(AEItemIds.ITEM_CELL_COMPONENT_64K, p -> new StorageComponentItem(p, 64));
     public static final ItemDefinition<MaterialItem> EMPTY_STORAGE_CELL = item(AEItemIds.EMPTY_STORAGE_CELL, MaterialItem::new);
+    public static final ItemDefinition<MaterialItem> FLUID_CELL_HOUSING = item(AEItemIds.FLUID_CELL_HOUSING, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> WIRELESS_RECEIVER = item(AEItemIds.WIRELESS_RECEIVER, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> WIRELESS_BOOSTER = item(AEItemIds.WIRELESS_BOOSTER, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> FORMATION_CORE = item(AEItemIds.FORMATION_CORE, MaterialItem::new);
@@ -208,10 +209,6 @@ public final class AEItems {
     public static final ItemDefinition<CustomEntityItem> ENDER_DUST = item(AEItemIds.ENDER_DUST, p -> new CustomEntityItem(p, SingularityEntity::new));
     public static final ItemDefinition<CustomEntityItem> SINGULARITY = item(AEItemIds.SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
     public static final ItemDefinition<CustomEntityItem> QUANTUM_ENTANGLED_SINGULARITY = item(AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
-    public static final ItemDefinition<MaterialItem> FLUID_1K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_1K, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> FLUID_4K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_4K, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> FLUID_16K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_16K, MaterialItem::new);
-    public static final ItemDefinition<MaterialItem> FLUID_64K_CELL_COMPONENT = item(AEItemIds.FLUID_CELL_COMPONENT_64K, MaterialItem::new);
 
     ///
     /// SEEDS
@@ -237,10 +234,10 @@ public final class AEItems {
     public static final ItemDefinition<BasicStorageCell> ITEM_CELL_16K = item(AEItemIds.ITEM_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_16K_CELL_COMPONENT, 1.5f,16, 128, 63, AEKeySpace.items()));
     public static final ItemDefinition<BasicStorageCell> ITEM_CELL_64K = item(AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_64K_CELL_COMPONENT, 2.0f,64, 512, 63, AEKeySpace.items()));
 
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL1K = item(AEItemIds.FLUID_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), FLUID_1K_CELL_COMPONENT, 0.5f, 1, 8, 5, AEKeySpace.fluids()));
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL4K = item(AEItemIds.FLUID_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), FLUID_4K_CELL_COMPONENT, 1.0f, 4, 32, 5, AEKeySpace.fluids()));
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL16K = item(AEItemIds.FLUID_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), FLUID_16K_CELL_COMPONENT, 1.5f, 16, 128, 5, AEKeySpace.fluids()));
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL64K = item(AEItemIds.FLUID_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), FLUID_64K_CELL_COMPONENT, 2.0f, 64, 512, 5, AEKeySpace.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_1K = item(AEItemIds.FLUID_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_1K_CELL_COMPONENT, 0.5f, 1, 8, 5, AEKeySpace.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_4K = item(AEItemIds.FLUID_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_4K_CELL_COMPONENT, 1.0f, 4, 32, 5, AEKeySpace.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_16K = item(AEItemIds.FLUID_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_16K_CELL_COMPONENT, 1.5f, 16, 128, 5, AEKeySpace.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_64K = item(AEItemIds.FLUID_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), ITEM_64K_CELL_COMPONENT, 2.0f, 64, 512, 5, AEKeySpace.fluids()));
 
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL2 = item(AEItemIds.SPATIAL_CELL_2, p -> new SpatialStorageCellItem(p.stacksTo(1), 2));
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL16 = item(AEItemIds.SPATIAL_CELL_16, p -> new SpatialStorageCellItem(p.stacksTo(1), 16));

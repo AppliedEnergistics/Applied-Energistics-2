@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
+import me.shedaniel.rei.api.common.plugins.PluginManager;
+import me.shedaniel.rei.api.common.registry.ReloadStage;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -69,6 +71,10 @@ public class ReiPlugin implements REIClientPlugin {
     private List<Predicate<ItemStack>> developerItems;
     // Will be hidden if colored cables are hidden
     private List<Predicate<ItemStack>> coloredCables;
+
+    public ReiPlugin() {
+        JEIFacade.setInstance(new ReiRuntimeAdapter());
+    }
 
     @Override
     public String getPluginProviderName() {
@@ -186,11 +192,6 @@ public class ReiPlugin implements REIClientPlugin {
         coloredCables = ImmutableList.copyOf(predicates);
 
         registry.removeEntryIf(this::shouldEntryBeHidden);
-    }
-
-    @Override
-    public void postRegister() {
-        JEIFacade.setInstance(new ReiRuntimeAdapter());
     }
 
     @Override

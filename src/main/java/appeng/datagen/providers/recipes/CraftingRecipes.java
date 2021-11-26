@@ -531,6 +531,15 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_dusts/redstone", has(ConventionTags.REDSTONE))
                 .save(consumer, AppEng.makeId("network/cells/empty_storage_cell"));
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_HOUSING)
+                .pattern("aba")
+                .pattern("b b")
+                .pattern("ccc")
+                .define('a', AEBlocks.QUARTZ_GLASS)
+                .define('b', ConventionTags.REDSTONE)
+                .define('c', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_dusts/redstone", has(ConventionTags.REDSTONE))
+                .save(consumer, AppEng.makeId("network/cells/fluid_cell_housing"));
 
         addFluidCells(consumer);
         addItemCells(consumer);
@@ -916,14 +925,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_engineering_processor", has(AEItems.ENGINEERING_PROCESSOR))
                 .save(consumer, AppEng.makeId("tools/misctools_entropy_manipulator"));
 
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL1K, AEItems.ITEM_1K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4k, AEItems.ITEM_4K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL16K, AEItems.ITEM_16K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL64K, AEItems.ITEM_64K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL1K, AEItems.FLUID_1K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4k, AEItems.FLUID_4K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL16K, AEItems.FLUID_16K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K, AEItems.FLUID_64K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL1K, AEItems.ITEM_CELL_1K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4k, AEItems.ITEM_CELL_4K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL16K, AEItems.ITEM_CELL_16K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL64K, AEItems.ITEM_CELL_64K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL1K, AEItems.FLUID_CELL_1K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4k, AEItems.FLUID_CELL_4K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL16K, AEItems.FLUID_CELL_16K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K, AEItems.FLUID_CELL_64K);
 
         ShapedRecipeBuilder.shaped(AEItems.BIOMETRIC_CARD)
                 .pattern("abb")
@@ -1166,109 +1175,69 @@ public class CraftingRecipes extends AE2RecipeProvider {
     }
 
     private void addFluidCells(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_1K_CELL_COMPONENT)
-                .pattern("aba")
-                .pattern("bcb")
-                .pattern("aba")
-                .define('a', ConventionTags.dye(DyeColor.GREEN))
-                .define('b', ConventionTags.ALL_CERTUS_QUARTZ)
-                .define('c', AEItems.LOGIC_PROCESSOR)
-                .unlockedBy("has_logic_processor", has(AEItems.LOGIC_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/cells/fluid_storage_components_cell_1k_part"));
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_4K_CELL_COMPONENT)
-                .pattern("aba")
-                .pattern("cdc")
-                .pattern("aca")
-                .define('a', ConventionTags.dye(DyeColor.GREEN))
-                .define('b', AEItems.CALCULATION_PROCESSOR)
-                .define('c', AEItems.FLUID_1K_CELL_COMPONENT)
-                .define('d', AEBlocks.QUARTZ_GLASS)
-                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.FLUID_1K_CELL_COMPONENT))
-                .save(consumer, AppEng.makeId("network/cells/fluid_storage_components_cell_4k_part"));
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_16K_CELL_COMPONENT)
-                .pattern("aba")
-                .pattern("cdc")
-                .pattern("aca")
-                .define('a', ConventionTags.dye(DyeColor.GREEN))
-                .define('b', AEItems.CALCULATION_PROCESSOR)
-                .define('c', AEItems.FLUID_4K_CELL_COMPONENT)
-                .define('d', AEBlocks.QUARTZ_GLASS)
-                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.FLUID_4K_CELL_COMPONENT))
-                .save(consumer, AppEng.makeId("network/cells/fluid_storage_components_cell_16k_part"));
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_64K_CELL_COMPONENT)
-                .pattern("aba")
-                .pattern("cdc")
-                .pattern("aca")
-                .define('a', ConventionTags.dye(DyeColor.GREEN))
-                .define('b', AEItems.CALCULATION_PROCESSOR)
-                .define('c', AEItems.FLUID_16K_CELL_COMPONENT)
-                .define('d', AEBlocks.QUARTZ_GLASS)
-                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.FLUID_16K_CELL_COMPONENT))
-                .save(consumer, AppEng.makeId("network/cells/fluid_storage_components_cell_64k_part"));
-
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL1K)
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_1K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
                 .define('a', AEBlocks.QUARTZ_GLASS)
                 .define('b', ConventionTags.REDSTONE)
-                .define('c', AEItems.FLUID_1K_CELL_COMPONENT)
-                .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.FLUID_1K_CELL_COMPONENT))
+                .define('c', AEItems.ITEM_1K_CELL_COMPONENT)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_1k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL1K)
+        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL_1K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
-                .requires(AEItems.FLUID_1K_CELL_COMPONENT)
+                .requires(AEItems.ITEM_1K_CELL_COMPONENT)
                 .unlockedBy("has_empty_storage_cell", has(AEItems.EMPTY_STORAGE_CELL))
-                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.FLUID_1K_CELL_COMPONENT))
+                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_1k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL4K)
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_4K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
                 .define('a', AEBlocks.QUARTZ_GLASS)
                 .define('b', ConventionTags.REDSTONE)
-                .define('c', AEItems.FLUID_4K_CELL_COMPONENT)
-                .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.FLUID_4K_CELL_COMPONENT))
+                .define('c', AEItems.ITEM_4K_CELL_COMPONENT)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_4k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL4K)
+        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL_4K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
-                .requires(AEItems.FLUID_4K_CELL_COMPONENT)
-                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.FLUID_4K_CELL_COMPONENT))
+                .requires(AEItems.ITEM_4K_CELL_COMPONENT)
+                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_4k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL16K)
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_16K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
                 .define('a', AEBlocks.QUARTZ_GLASS)
                 .define('b', ConventionTags.REDSTONE)
-                .define('c', AEItems.FLUID_16K_CELL_COMPONENT)
-                .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.FLUID_16K_CELL_COMPONENT))
+                .define('c', AEItems.ITEM_16K_CELL_COMPONENT)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_16k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL16K)
+        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL_16K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
-                .requires(AEItems.FLUID_16K_CELL_COMPONENT)
-                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.FLUID_16K_CELL_COMPONENT))
+                .requires(AEItems.ITEM_16K_CELL_COMPONENT)
+                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_16k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL64K)
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_64K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
                 .define('a', AEBlocks.QUARTZ_GLASS)
                 .define('b', ConventionTags.REDSTONE)
-                .define('c', AEItems.FLUID_64K_CELL_COMPONENT)
-                .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_64k_fluid_cell_component", has(AEItems.FLUID_64K_CELL_COMPONENT))
+                .define('c', AEItems.ITEM_64K_CELL_COMPONENT)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_64k_fluid_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_64k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL64K)
+        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL_64K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
-                .requires(AEItems.FLUID_64K_CELL_COMPONENT)
-                .unlockedBy("has_64k_fluid_cell_component", has(AEItems.FLUID_64K_CELL_COMPONENT))
+                .requires(AEItems.ITEM_64K_CELL_COMPONENT)
+                .unlockedBy("has_64k_fluid_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_64k_storage"));
     }
 
