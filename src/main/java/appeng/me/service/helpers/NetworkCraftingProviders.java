@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -103,21 +104,31 @@ public class NetworkCraftingProviders {
 
     public Iterable<ICraftingProvider> getMediums(IPatternDetails key) {
         var mediumList = this.craftingMethods.get(key);
-        if (mediumList != null) {
-            return mediumList.cycleIterable;
-        } else {
-            return Collections.emptyList();
-        }
+        return Objects.requireNonNullElse(mediumList, Collections.emptyList());
     }
 
-    private static class CraftingProviderList {
+    private static class CraftingProviderList implements Iterable<ICraftingProvider> {
         private final List<ICraftingProvider> providers = new ArrayList<>();
         /**
-         * Cycling iterator for round-robin.
+         * Cycling iterator for round-robin. Has to be refreshed after every addition or removal to providers to prevent
+         * CMEs.
          */
-        private final Iterator<ICraftingProvider> cycleIterator = Iterators.cycle(providers);
-        private final Iterable<ICraftingProvider> cycleIterable = () -> Iterators.limit(cycleIterator,
-                providers.size());
+        private Iterator<ICraftingProvider> cycleIterator = Iterators.cycle(providers);
+
+        private void add(ICraftingProvider provider) {
+            providers.add(provider);
+            cycleIterator = Iterators.cycle(providers);
+        }
+
+        private void remove(ICraftingProvider provider) {
+            providers.remove(provider);
+            cycleIterator = Iterators.cycle(providers);
+        }
+
+        @Override
+        public Iterator<ICraftingProvider> iterator() {
+            return Iterators.limit(cycleIterator, providers.size());
+        }
     }
 
     private static class ProviderState {
@@ -145,8 +156,7 @@ public class NetworkCraftingProviders {
                 patternMap.merge(pattern, 1, Integer::sum);
 
                 // pattern -> method (for execution)
-                methods.craftingMethods.computeIfAbsent(pattern, d -> new CraftingProviderList()).providers
-                        .add(provider);
+                methods.craftingMethods.computeIfAbsent(pattern, d -> new CraftingProviderList()).add(provider);
             }
         }
 
@@ -163,7 +173,7 @@ public class NetworkCraftingProviders {
                 var patternMap = methods.craftableItems.get(primaryOutput.what());
                 patternMap.merge(pattern, -1, Integer::sum);
 
-                methods.craftingMethods.get(pattern).providers.remove(provider);
+                methods.craftingMethods.get(pattern).remove(provider);
             }
         }
     }
