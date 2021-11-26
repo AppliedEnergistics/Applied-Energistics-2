@@ -23,19 +23,56 @@
 
 package appeng.api.networking.crafting;
 
+import java.util.List;
+import java.util.Set;
+
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNodeService;
-import appeng.api.networking.events.GridCraftingPatternChange;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 
 /**
- * Allows a IGridHost to provide crafting patterns to the network, post a {@link GridCraftingPatternChange} to tell AE2
- * to update.
+ * Allows a node to provide crafting patterns and emitable items to the network.
  */
 public interface ICraftingProvider extends IGridNodeService {
+    /**
+     * Return the patterns offered by this provider. {@link #pushPattern} will be called if they need to be crafted.
+     */
+    List<IPatternDetails> getAvailablePatterns();
 
     /**
-     * called when the network is looking for possible crafting jobs.
+     * Instruct a provider to craft one of the patterns.
      *
-     * @param craftingTracker crafting helper
+     * @param patternDetails details
+     * @param inputHolder    the requested stacks, for each input slot of the pattern
+     *
+     * @return if the pattern was successfully pushed.
      */
-    void provideCrafting(ICraftingProviderHelper craftingTracker);
+    boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputHolder);
+
+    /**
+     * @return if this is false, the crafting engine will refuse to send patterns to this provider.
+     */
+    boolean isBusy();
+
+    /**
+     * Return the emitable items offered by this provider. They should be crafted and inserted into the network when
+     * {@link ICraftingService#isRequesting} is true.
+     */
+    default Set<AEKey> getEmitableItems() {
+        return Set.of();
+    }
+
+    /**
+     * This convenience method can be used when the crafting options or emitable items have changed to request an update
+     * of the crafting service's cache.This only works if the given managed grid node provides this service.
+     */
+    static void requestUpdate(IManagedGridNode managedNode) {
+        var node = managedNode.getNode();
+        if (node != null) {
+            var grid = node.getGrid();
+            grid.getCraftingService().refreshNodeCraftingProvider(node);
+        }
+    }
 }

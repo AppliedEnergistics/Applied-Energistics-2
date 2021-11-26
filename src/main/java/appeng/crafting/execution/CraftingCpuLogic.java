@@ -174,14 +174,14 @@ public class CraftingCpuLogic {
             var craftingContainer = CraftingCpuHelper.extractPatternInputs(
                     details, inventory, energyService, level, expectedOutputs);
 
-            // Try to push to each medium.
-            for (var medium : craftingService.getMediums(details)) {
+            // Try to push to each provider.
+            for (var provider : craftingService.getProviders(details)) {
                 if (craftingContainer == null)
                     break;
-                if (medium.isBusy())
+                if (provider.isBusy())
                     continue;
 
-                if (medium.pushPattern(details, craftingContainer)) {
+                if (provider.pushPattern(details, craftingContainer)) {
                     CraftingCpuHelper.extractPatternPower(details, energyService, Actionable.MODULATE);
                     pushedPatterns++;
 

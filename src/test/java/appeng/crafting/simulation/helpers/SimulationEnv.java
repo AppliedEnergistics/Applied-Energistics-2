@@ -179,6 +179,11 @@ public class SimulationEnv {
             public long requesting(AEKey what) {
                 throw new UnsupportedOperationException();
             }
+
+            @Override
+            public void refreshNodeCraftingProvider(IGridNode node) {
+                throw new UnsupportedOperationException();
+            }
         };
     }
 

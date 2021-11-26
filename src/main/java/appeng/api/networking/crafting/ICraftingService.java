@@ -23,18 +23,19 @@
 
 package appeng.api.networking.crafting;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageChannel;
@@ -45,9 +46,9 @@ public interface ICraftingService extends IGridService {
     /**
      * @param whatToCraft requested craft
      *
-     * @return a collection of crafting patterns for the item in question.
+     * @return an unmodifiable collection of crafting patterns for the item in question.
      */
-    ImmutableCollection<IPatternDetails> getCraftingFor(AEKey whatToCraft);
+    Collection<IPatternDetails> getCraftingFor(AEKey whatToCraft);
 
     /**
      * @return true if the grid knows how to craft the given key
@@ -55,6 +56,14 @@ public interface ICraftingService extends IGridService {
     default boolean isCraftable(AEKey whatToCraft) {
         return !getCraftingFor(whatToCraft).isEmpty();
     }
+
+    /**
+     * Refreshes the crafting mounts provided by a {@link IGridNode node} through its {@link ICraftingProvider}.
+     *
+     * @throws IllegalArgumentException If the given node is not part of this grid, or did not provide
+     *                                  {@link ICraftingProvider}.
+     */
+    void refreshNodeCraftingProvider(IGridNode node);
 
     /**
      * Important: Never mutate the passed or returned stacks.

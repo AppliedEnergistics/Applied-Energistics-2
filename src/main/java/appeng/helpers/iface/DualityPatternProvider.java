@@ -56,10 +56,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -79,7 +76,7 @@ import appeng.util.inv.InternalInventoryHost;
 /**
  * Shared code between the pattern provider block and part.
  */
-public class DualityPatternProvider implements InternalInventoryHost, ICraftingProvider, ICraftingMedium {
+public class DualityPatternProvider implements InternalInventoryHost, ICraftingProvider {
 
     public static final int NUMBER_OF_PATTERN_SLOTS = 9;
 
@@ -96,7 +93,6 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
      * target, the pattern won't be pushed. Always contains keys with the secondary component dropped.
      */
     private final Set<AEKey> patternInputs = new HashSet<>();
-    private int priority;
     // Pattern sending logic
     private final List<GenericStack> sendList = new ArrayList<>();
     private Direction sendDirection;
@@ -119,19 +115,9 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         });
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-        this.host.saveChanges();
-    }
-
     public void writeToNBT(CompoundTag tag) {
         this.configManager.writeToNBT(tag);
         this.patternInventory.writeToNBT(tag, "patterns");
-        tag.putInt("priority", this.priority);
 
         ListTag sendListTag = new ListTag();
         for (var toSend : sendList) {
@@ -148,7 +134,6 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     public void readFromNBT(CompoundTag tag) {
         this.configManager.readFromNBT(tag);
         this.patternInventory.readFromNBT(tag, "patterns");
-        this.priority = tag.getInt("priority");
 
         ListTag sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
         for (int i = 0; i < sendListTag.size(); ++i) {
@@ -175,6 +160,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack, ItemStack newStack) {
+        this.saveChanges();
         this.updatePatterns();
     }
 
@@ -202,14 +188,12 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
             }
         }
 
-        mainNode.ifPresent(grid -> grid.postEvent(new GridCraftingPatternChange(this, mainNode.getNode())));
+        ICraftingProvider.requestUpdate(mainNode);
     }
 
     @Override
-    public void provideCrafting(ICraftingProviderHelper craftingTracker) {
-        for (var details : this.patterns) {
-            craftingTracker.addCraftingOption(this, details, this.priority);
-        }
+    public List<IPatternDetails> getAvailablePatterns() {
+        return this.patterns;
     }
 
     @Override
@@ -357,8 +341,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     }
 
     public void onMainNodeStateChanged() {
+        ICraftingProvider.requestUpdate(this.mainNode);
         this.mainNode.ifPresent((grid, node) -> {
-            grid.postEvent(new GridCraftingPatternChange(this, node));
             grid.getTickManager().alertDevice(node);
         });
     }

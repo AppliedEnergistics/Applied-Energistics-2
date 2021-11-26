@@ -43,8 +43,6 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        widgets.addOpenPriorityButton();
-
         this.blockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
         this.addToLeftToolbar(this.blockingModeButton);
 

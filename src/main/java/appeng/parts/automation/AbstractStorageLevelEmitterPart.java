@@ -18,6 +18,9 @@
 
 package appeng.parts.automation;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -31,11 +34,11 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
-import appeng.api.networking.events.GridCraftingPatternChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
@@ -43,6 +46,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.KeyCounter;
 import appeng.helpers.IConfigInvHost;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -52,7 +56,7 @@ import appeng.util.ConfigInventory;
  * Abstract level emitter logic for storage-based level emitters (item and fluid).
  */
 public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends AbstractLevelEmitterPart
-        implements IConfigInvHost {
+        implements IConfigInvHost, ICraftingProvider {
     private final ConfigInventory<T> config = ConfigInventory.configTypes(getChannel(), 1, this::configureWatchers);
     private IStackWatcher stackWatcher;
     private ICraftingWatcher craftingWatcher;
@@ -103,21 +107,12 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
         }
     };
 
-    private final ICraftingProvider craftingProvider = craftingTracker -> {
-        if (getInstalledUpgrades(Upgrades.CRAFTING) > 0
-                && getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE) == YesNo.YES) {
-            if (getConfiguredKey() != null) {
-                craftingTracker.setEmitable(getConfiguredKey());
-            }
-        }
-    };
-
     public AbstractStorageLevelEmitterPart(ItemStack is, boolean allowFuzzy) {
         super(is);
 
         getMainNode().addService(IStackWatcherNode.class, stackWatcherNode);
         getMainNode().addService(ICraftingWatcherNode.class, craftingWatcherNode);
-        getMainNode().addService(ICraftingProvider.class, craftingProvider);
+        getMainNode().addService(ICraftingProvider.class, this);
 
         this.getConfigManager().registerSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
         if (allowFuzzy) {
@@ -160,6 +155,32 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
     }
 
     @Override
+    public List<IPatternDetails> getAvailablePatterns() {
+        return List.of();
+    }
+
+    @Override
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputHolder) {
+        return false;
+    }
+
+    @Override
+    public boolean isBusy() {
+        return true;
+    }
+
+    @Override
+    public Set<AEKey> getEmitableItems() {
+        if (getInstalledUpgrades(Upgrades.CRAFTING) > 0
+                && getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE) == YesNo.YES) {
+            if (getConfiguredKey() != null) {
+                return Set.of(getConfiguredKey());
+            }
+        }
+        return Set.of();
+    }
+
+    @Override
     protected void configureWatchers() {
         var myStack = getConfiguredKey();
 
@@ -171,9 +192,7 @@ public abstract class AbstractStorageLevelEmitterPart<T extends AEKey> extends A
             this.craftingWatcher.reset();
         }
 
-        getMainNode().ifPresent((grid, node) -> {
-            grid.postEvent(new GridCraftingPatternChange(craftingProvider, node));
-        });
+        ICraftingProvider.requestUpdate(getMainNode());
 
         if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
             if (this.craftingWatcher != null && myStack != null) {
