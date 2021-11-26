@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -20,7 +19,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
@@ -34,7 +33,7 @@ public class NetworkCraftingProviders {
     /**
      * Used for looking up craftable alternatives using fuzzy search (i.e. ignore NBT).
      */
-    private final KeyCounter<AEKey> craftableItemsList = new KeyCounter<>();
+    private final KeyCounter craftableItemsList = new KeyCounter();
     private final Map<AEKey, Integer> emitableItems = new HashMap<>();
 
     public void addProvider(IGridNode node) {
@@ -61,19 +60,19 @@ public class NetworkCraftingProviders {
         }
     }
 
-    public <T extends AEKey> Set<T> getCraftables(IStorageChannel<T> channel) {
-        var result = new HashSet<T>();
+    public Set<AEKey> getCraftables(AEKeyFilter filter) {
+        var result = new HashSet<AEKey>();
 
         // add craftable items!
         for (var stack : this.craftableItems.keySet()) {
-            if (stack.getChannel() == channel) {
-                result.add(stack.cast(channel));
+            if (filter.matches(stack)) {
+                result.add(stack);
             }
         }
 
         for (var stack : this.emitableItems.keySet()) {
-            if (stack.getChannel() == channel) {
-                result.add(stack.cast(channel));
+            if (filter.matches(stack)) {
+                result.add(stack);
             }
         }
 
@@ -89,9 +88,9 @@ public class NetworkCraftingProviders {
     }
 
     @Nullable
-    public AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter) {
+    public AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter) {
         for (var fuzzy : craftableItemsList.findFuzzy(whatToCraft, FuzzyMode.IGNORE_ALL)) {
-            if (filter.test(fuzzy.getKey())) {
+            if (filter.matches(fuzzy.getKey())) {
                 return fuzzy.getKey();
             }
         }

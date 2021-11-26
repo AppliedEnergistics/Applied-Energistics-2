@@ -291,10 +291,7 @@ public class MEMonitorableMenu extends AEBaseMenu
 
     private Set<AEKey> getCraftablesFromGrid() {
         if (networkNode != null && networkNode.isActive()) {
-            return networkNode.getGrid().getCraftingService().getCraftables()
-                    .stream()
-                    .filter(this::isKeyVisible)
-                    .collect(Collectors.toSet());
+            return networkNode.getGrid().getCraftingService().getCraftables(this::isKeyVisible);
         }
         return Collections.emptySet();
     }

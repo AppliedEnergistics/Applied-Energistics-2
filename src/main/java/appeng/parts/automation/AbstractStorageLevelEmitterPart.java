@@ -160,7 +160,7 @@ public abstract class AbstractStorageLevelEmitterPart extends AbstractLevelEmitt
     }
 
     @Override
-    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputHolder) {
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
         return false;
     }
 

@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -155,8 +156,8 @@ public class SimulationEnv {
             }
 
             @Override
-            public Set<AEKey> getCraftables() {
-                return new HashSet<>(craftableItemsList.keySet());
+            public Set<AEKey> getCraftables(AEKeyFilter filter) {
+                return craftableItemsList.keySet().stream().filter(filter::matches).collect(Collectors.toSet());
             }
 
             @Override

@@ -164,8 +164,8 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     @Override
-    public <T extends AEKey> Set<T> getCraftables(IStorageChannel<T> channel) {
-        return craftingProviders.getCraftables(channel);
+    public Set<AEKey> getCraftables(AEKeyFilter filter) {
+        return craftingProviders.getCraftables(filter);
     }
 
     private void updateCPUClusters() {
@@ -220,7 +220,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Nullable
     @Override
-    public AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter) {
+    public AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter) {
         return this.craftingProviders.getFuzzyCraftable(whatToCraft, filter);
     }
 

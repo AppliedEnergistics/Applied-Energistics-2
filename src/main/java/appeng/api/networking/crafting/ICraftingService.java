@@ -29,7 +29,6 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.world.level.Level;
@@ -120,7 +119,7 @@ public interface ICraftingService extends IGridService {
     /**
      * Get the set of things that can be crafted for a given storage channel.
      */
-    Set<AEKey> getCraftables();
+    Set<AEKey> getCraftables(AEKeyFilter filter);
 
     /**
      * is this item being crafted?
