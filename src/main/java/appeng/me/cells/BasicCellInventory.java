@@ -35,6 +35,7 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ISaveProvider;
@@ -54,6 +55,7 @@ public class BasicCellInventory implements StorageCell {
     private static final String STACK_AMOUNTS = "amts";
 
     private final ISaveProvider container;
+    private final AEKeySpace keySpace;
     private IPartitionList partitionList;
     private IncludeExclude partitionListMode;
     private int maxItemTypes;
@@ -80,6 +82,7 @@ public class BasicCellInventory implements StorageCell {
         this.storedItems = (short) getTag().getLongArray(STACK_AMOUNTS).length;
         this.storedItemCount = getTag().getLong(ITEM_COUNT_TAG);
         this.storedAmounts = null;
+        this.keySpace = cellType.getKeySpace();
 
         updateFilter();
     }
@@ -336,12 +339,12 @@ public class BasicCellInventory implements StorageCell {
     }
 
     public long getUsedBytes() {
-        var bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / this.itemsPerByte;
+        var bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / keySpace.getUnitsPerByte();
         return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
     }
 
     public long getRemainingItemCount() {
-        final long remaining = this.getFreeBytes() * this.itemsPerByte + this.getUnusedItemCount();
+        final long remaining = this.getFreeBytes() * keySpace.getUnitsPerByte() + this.getUnusedItemCount();
         return remaining > 0 ? remaining : 0;
     }
 
@@ -352,7 +355,7 @@ public class BasicCellInventory implements StorageCell {
             return 0;
         }
 
-        return this.itemsPerByte - div;
+        return keySpace.getUnitsPerByte() - div;
     }
 
     @Override
@@ -371,7 +374,7 @@ public class BasicCellInventory implements StorageCell {
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-        if (amount == 0) {
+        if (amount == 0 || !keySpace.contains(what)) {
             return 0;
         }
 
@@ -396,7 +399,7 @@ public class BasicCellInventory implements StorageCell {
 
         // Deduct the required storage for a new type if the type is new
         if (currentAmount <= 0) {
-            remainingItemCount -= (long) this.getBytesPerType() * this.itemsPerByte;
+            remainingItemCount -= (long) this.getBytesPerType() * keySpace.getUnitsPerByte();
             if (remainingItemCount <= 0) {
                 return 0;
             }

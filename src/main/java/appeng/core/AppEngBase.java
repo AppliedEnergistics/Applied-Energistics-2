@@ -23,7 +23,6 @@ import java.util.Collections;
 
 import javax.annotation.Nullable;
 
-import appeng.init.client.InitKeySpaces;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -69,6 +68,7 @@ import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
+import appeng.init.client.InitKeySpaces;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitP2PAttunements;

@@ -51,14 +51,6 @@ import appeng.helpers.IConfigInvHost;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.util.ConfigInventory;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
-
-import javax.annotation.Nullable;
 
 /**
  * Abstract level emitter logic for storage-based level emitters (item and fluid).

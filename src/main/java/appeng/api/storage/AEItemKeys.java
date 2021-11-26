@@ -18,29 +18,22 @@
 
 package appeng.api.storage;
 
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
-import appeng.core.AppEng;
+import java.util.Objects;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import java.util.Objects;
+import appeng.api.storage.data.AEItemKey;
+import appeng.core.AppEng;
 
-public final class AEItemKeys implements AEKeySpace {
-    private static final ResourceLocation ID = AppEng.makeId("item");
+public final class AEItemKeys extends AEKeySpace {
+    private static final ResourceLocation ID = AppEng.makeId("i");
 
     static final AEItemKeys INSTANCE = new AEItemKeys();
 
     private AEItemKeys() {
-    }
-
-    @Nonnull
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+        super(ID, AEItemKey.class);
     }
 
     @Override
@@ -55,19 +48,8 @@ public final class AEItemKeys implements AEKeySpace {
         return AEItemKey.fromTag(tag);
     }
 
-    @Nullable
-    @Override
-    public AEItemKey tryCast(AEKey key) {
-        return key instanceof AEItemKey itemKey ? itemKey : null;
-    }
-
     @Override
     public boolean supportsFuzzyRangeSearch() {
         return false;
-    }
-
-    @Override
-    public Class<? extends AEKey> getKeyClass() {
-        return AEItemKey.class;
     }
 }

@@ -18,29 +18,22 @@
 
 package appeng.api.storage;
 
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEKey;
-import appeng.core.AppEng;
+import java.util.Objects;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import java.util.Objects;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.core.AppEng;
 
-public final class AEFluidKeys implements AEKeySpace {
-    private static final ResourceLocation ID = AppEng.makeId("fluid");
+public final class AEFluidKeys extends AEKeySpace {
+    private static final ResourceLocation ID = AppEng.makeId("f");
 
     static final AEFluidKeys INSTANCE = new AEFluidKeys();
 
     private AEFluidKeys() {
-    }
-
-    @Nonnull
-    @Override
-    public ResourceLocation getId() {
-        return ID;
+        super(ID, AEFluidKey.class);
     }
 
     @Override
@@ -64,16 +57,5 @@ public final class AEFluidKeys implements AEKeySpace {
     @Override
     public AEFluidKey loadKeyFromTag(CompoundTag tag) {
         return AEFluidKey.fromTag(tag);
-    }
-
-    @Nullable
-    @Override
-    public AEFluidKey tryCast(AEKey key) {
-        return key instanceof AEFluidKey fluidKey ? fluidKey : null;
-    }
-
-    @Override
-    public Class<? extends AEKey> getKeyClass() {
-        return AEFluidKey.class;
     }
 }

@@ -18,16 +18,18 @@
 
 package appeng.crafting.inv;
 
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+import com.google.common.collect.Iterables;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
-import com.google.common.collect.Iterables;
-
-import javax.annotation.Nullable;
-import java.util.Map;
 
 /**
  * Currently, extracts the whole network contents when the job starts. Lazily extracting is unfortunately not possible

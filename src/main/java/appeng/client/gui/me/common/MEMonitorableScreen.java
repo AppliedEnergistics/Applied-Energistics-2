@@ -26,7 +26,6 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import appeng.menu.me.interaction.StackInteractions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -54,15 +53,14 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
-import appeng.client.gui.me.items.RepoSlot;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.TerminalStyle;
@@ -83,15 +81,17 @@ import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
 import appeng.integration.abstraction.JEIFacade;
+import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantic;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorableMenu>
+public class MEMonitorableScreen<C extends MEMonitorableMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
     private static final int MIN_ROWS = 3;
@@ -176,10 +176,89 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
     }
 
     @Nullable
-    protected abstract IPartitionList createPartitionList(List<ItemStack> viewCells);
+    protected IPartitionList createPartitionList(List<ItemStack> viewCells) {
+        return ViewCellItem.createFilter(AEKeyFilter.none(), viewCells);
+    }
 
-    protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry, int mouseButton,
-            ClickType clickType);
+    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry,
+            int mouseButton,
+            ClickType clickType) {
+        if (entry != null) {
+            AELog.debug("Clicked on grid inventory entry serial=%s, key=%s", entry.getSerial(), entry.getWhat());
+        }
+
+        // Is there an emptying action? If so, send it to the server
+        if (mouseButton == 1 && clickType == ClickType.PICKUP && !menu.getCarried().isEmpty()) {
+            var emptyingAction = StackInteractions.getEmptyingAction(menu.getCarried());
+            if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
+                menu.handleInteraction(-1, InventoryAction.EMPTY_ITEM);
+                return;
+            }
+        }
+
+        if (entry == null) {
+            // The only interaction allowed on an empty virtual slot is putting down the currently held item
+            if (clickType == ClickType.PICKUP && !getMenu().getCarried().isEmpty()) {
+                InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                        : InventoryAction.PICKUP_OR_SET_DOWN;
+                menu.handleInteraction(-1, action);
+            }
+            return;
+        }
+
+        long serial = entry.getSerial();
+
+        // Move as many items of a single type as possible
+        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
+        } else {
+            InventoryAction action = null;
+
+            switch (clickType) {
+                case PICKUP: // pickup / set-down.
+                    action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                            : InventoryAction.PICKUP_OR_SET_DOWN;
+
+                    if (action == InventoryAction.PICKUP_OR_SET_DOWN
+                            && shouldCraftOnClick(entry)
+                            && getMenu().getCarried().isEmpty()) {
+                        menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
+                        return;
+                    }
+
+                    break;
+                case QUICK_MOVE:
+                    action = mouseButton == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+                    break;
+
+                case CLONE: // creative dupe:
+                    if (entry.isCraftable()) {
+                        menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
+                        return;
+                    } else if (getMenu().getPlayer().getAbilities().instabuild) {
+                        action = InventoryAction.CREATIVE_DUPLICATE;
+                    }
+                    break;
+
+                default:
+                case THROW: // drop item:
+            }
+
+            if (action != null) {
+                menu.handleInteraction(serial, action);
+            }
+        }
+    }
+
+    private boolean shouldCraftOnClick(GridInventoryEntry entry) {
+        // Always auto-craft when viewing only craftable items
+        if (isViewOnlyCraftable()) {
+            return true;
+        }
+
+        // Otherwise only craft if there are no stored items
+        return entry.getStoredAmount() == 0 && entry.isCraftable();
+    }
 
     private void updateScrollbar() {
         scrollbar.setHeight(this.rows * style.getRow().getSrcHeight() - 2);
@@ -393,8 +472,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
                                 s.x,
                                 s.y,
                                 getBlitOffset(),
-                                entry.getWhat()
-                        );
+                                entry.getWhat());
                     } catch (final Exception err) {
                         AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
@@ -410,8 +488,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
                     } else {
                         var text = AEStackRendering.formatAmount(entry.getWhat(), storedAmount,
-                                useLargeFonts ?  AmountFormat.PREVIEW_LARGE_FONT : AmountFormat.PREVIEW_REGULAR
-                        );
+                                useLargeFonts ? AmountFormat.PREVIEW_LARGE_FONT : AmountFormat.PREVIEW_REGULAR);
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
                     }
                 }
@@ -436,11 +513,13 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
             var carried = menu.getCarried();
             if (!carried.isEmpty()) {
                 var emptyingAction = StackInteractions.getEmptyingAction(carried);
-                if (emptyingAction != null) {
+                if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
                     renderTooltip(poseStack, List.of(
-                            new TextComponent("Left-Click: Store ").append(carried.getHoverName()).withStyle(ChatFormatting.GRAY).getVisualOrderText(),
-                            new TextComponent("Right-Click: ").append(emptyingAction.description()).withStyle(ChatFormatting.GRAY).getVisualOrderText()
-                    ), x, y);
+                            new TextComponent("Left-Click: Store ").append(carried.getHoverName())
+                                    .withStyle(ChatFormatting.GRAY).getVisualOrderText(),
+                            new TextComponent("Right-Click: ").append(emptyingAction.description())
+                                    .withStyle(ChatFormatting.GRAY).getVisualOrderText()),
+                            x, y);
                     return;
                 }
 

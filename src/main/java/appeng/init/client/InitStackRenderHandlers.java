@@ -20,7 +20,6 @@ package appeng.init.client;
 
 import java.util.List;
 
-import appeng.api.storage.AEKeySpace;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -34,10 +33,11 @@ import net.minecraft.world.item.TooltipFlag;
 import appeng.api.client.AEStackRendering;
 import appeng.api.client.AmountFormat;
 import appeng.api.client.IAEStackRenderHandler;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
+import appeng.client.gui.me.common.FluidStackSizeRenderer;
 import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
 import appeng.client.gui.style.FluidBlitter;
 import appeng.util.Platform;
 

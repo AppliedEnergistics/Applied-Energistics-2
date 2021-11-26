@@ -23,27 +23,30 @@
 
 package appeng.api.storage;
 
-import appeng.api.storage.data.AEKey;
-import com.google.common.base.Objects;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import appeng.api.storage.data.AEKey;
 
 /**
- * Defines a space of compatible {@link AEKey} objects which is modeled by a specific {@link AEKey} subclass.
- * I.e. for {@link appeng.api.storage.data.AEItemKey}, there is {@link AEItemKeys}.
+ * Defines a space of compatible {@link AEKey} objects which is modeled by a specific {@link AEKey} subclass. I.e. for
+ * {@link appeng.api.storage.data.AEItemKey}, there is {@link AEItemKeys}.
  */
 public abstract class AEKeySpace {
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
+    private final AEKeyFilter filter;
 
     public AEKeySpace(ResourceLocation id, Class<? extends AEKey> keyClass) {
         this.id = id;
         this.keyClass = keyClass;
+        this.filter = what -> what.getChannel() == this;
     }
 
     /**
@@ -120,7 +123,16 @@ public abstract class AEKeySpace {
      * Does this key belong to this storage channel.
      */
     @Nullable
-    public abstract AEKey tryCast(AEKey key);
+    public final AEKey tryCast(AEKey key) {
+        return keyClass.isInstance(key) ? keyClass.cast(key) : null;
+    }
+
+    /**
+     * {@return whether the key is part of this key space}
+     */
+    public final boolean contains(AEKey key) {
+        return keyClass.isInstance(key);
+    }
 
     /**
      * True to indicate that the {@link AEKey} class used by this storage channel supports range-based fuzzy search
@@ -130,6 +142,10 @@ public abstract class AEKeySpace {
      */
     public boolean supportsFuzzyRangeSearch() {
         return false;
+    }
+
+    public final AEKeyFilter filter() {
+        return filter;
     }
 
     @Override

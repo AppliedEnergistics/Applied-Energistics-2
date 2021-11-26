@@ -30,6 +30,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEKey;
 import appeng.me.cells.BasicCellHandler;
 import appeng.util.ConfigInventory;
@@ -42,6 +43,11 @@ import appeng.util.ConfigInventory;
  * The standard AE implementation also only provides 1-63 Types.
  */
 public interface IBasicCellItem extends ICellWorkbenchItem {
+    /**
+     * Basic cell items are limited to a single {@link AEKeySpace}.
+     */
+    AEKeySpace getKeySpace();
+
     /**
      * The number of bytes that can be stored on this type of storage cell.
      * <p/>

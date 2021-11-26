@@ -37,8 +37,8 @@ import appeng.api.inventories.ItemTransfer;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
@@ -160,7 +160,7 @@ public class ItemImportBusPart extends ImportBusPart<AEItemKey, Storage<ItemVari
     }
 
     private boolean importStuff(ItemTransfer srcInv, AEItemKey whatToImport,
-                                final MEMonitorStorage inv, final IEnergySource energy, final FuzzyMode fzMode) {
+            final MEMonitorStorage inv, final IEnergySource energy, final FuzzyMode fzMode) {
         final int toSend = this.calculateMaximumAmountToImport(srcInv, whatToImport, inv, fzMode);
         final ItemStack newItems;
 
@@ -197,7 +197,7 @@ public class ItemImportBusPart extends ImportBusPart<AEItemKey, Storage<ItemVari
     }
 
     private int calculateMaximumAmountToImport(ItemTransfer srcInv, AEItemKey whatToImport,
-                                               MEMonitorStorage inv, FuzzyMode fzMode) {
+            MEMonitorStorage inv, FuzzyMode fzMode) {
         int toSend = Math.min(this.itemsToSend, 64);
         ItemStack itemStackToImport;
 

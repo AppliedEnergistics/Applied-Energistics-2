@@ -41,6 +41,7 @@ import appeng.helpers.InventoryAction;
 import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.parts.reporting.CraftingTerminalPart;
@@ -51,7 +52,7 @@ import appeng.parts.reporting.CraftingTerminalPart;
  *
  * @see appeng.client.gui.me.items.CraftingTermScreen
  */
-public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingPacket {
+public class CraftingTermMenu extends MEMonitorableMenu implements IMenuCraftingPacket {
 
     public static final MenuType<CraftingTermMenu> TYPE = MenuTypeBuilder
             .create(CraftingTermMenu::new, ITerminalHost.class)
@@ -81,7 +82,8 @@ public class CraftingTermMenu extends ItemTerminalMenu implements IMenuCraftingP
         }
 
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
-                this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this), SlotSemantic.CRAFTING_RESULT);
+                this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this),
+                SlotSemantic.CRAFTING_RESULT);
 
         this.slotsChanged(craftingGridInv.toContainer());
     }

@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeySpace;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 
@@ -154,7 +153,7 @@ public class JEIRecipePacket extends BasePacket {
         var craftMatrix = cct.getCraftingMatrix();
 
         var storage = inv.getInventory();
-        var filter = ViewCellItem.createFilter(AEKeySpace.items(), cct.getViewCells());
+        var filter = ViewCellItem.createItemFilter(cct.getViewCells());
         var ingredients = this.ensure3by3CraftingMatrix(recipe);
 
         // Handle each slot
@@ -286,7 +285,7 @@ public class JEIRecipePacket extends BasePacket {
      * Finds the first matching itemstack with the highest stored amount.
      */
     private AEItemKey findBestMatchingItemStack(Ingredient ingredients, IPartitionList filter,
-                                                MEMonitorStorage storage, IMenuCraftingPacket cct) {
+            MEMonitorStorage storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of) //
                 .filter(r -> r != null && (filter == null || filter.isListed(r)));
@@ -299,7 +298,7 @@ public class JEIRecipePacket extends BasePacket {
      * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
     private AEItemKey findBestMatchingPattern(Ingredient ingredients, IPartitionList filter,
-                                              ICraftingService crafting, MEMonitorStorage storage, IMenuCraftingPacket cct) {
+            ICraftingService crafting, MEMonitorStorage storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//

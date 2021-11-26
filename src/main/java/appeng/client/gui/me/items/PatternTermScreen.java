@@ -40,7 +40,7 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.menu.slot.PatternTermSlot;
 
-public class PatternTermScreen<C extends PatternTermMenu> extends ItemTerminalScreen<C> {
+public class PatternTermScreen<C extends PatternTermMenu> extends appeng.client.gui.me.common.MEMonitorableScreen<C> {
 
     private static final String MODES_TEXTURE = "guis/pattern_modes.png";
 

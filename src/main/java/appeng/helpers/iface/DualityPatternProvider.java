@@ -333,7 +333,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
 
     private boolean doWork() {
         // Note: bitwise OR to avoid short-circuiting.
-        return returnInv.injectIntoNetwork(mainNode.getGrid().getStorageService().getInventory(), actionSource) | sendStacksOut();
+        return returnInv.injectIntoNetwork(mainNode.getGrid().getStorageService().getInventory(), actionSource)
+                | sendStacksOut();
     }
 
     public InternalInventory getPatternInv() {

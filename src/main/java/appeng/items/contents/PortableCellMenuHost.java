@@ -32,12 +32,11 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.menuobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.items.tools.powered.PortableCellItem;
 import appeng.me.helpers.MEMonitorHandler;
@@ -47,12 +46,12 @@ import appeng.util.ConfigManager;
 /**
  * Hosts the terminal interface for a {@link appeng.items.tools.powered.PortableCellItem}.
  */
-public class PortableCellMenuHost<T extends AEKey> extends ItemMenuHost implements IPortableCell {
+public class PortableCellMenuHost extends ItemMenuHost implements IPortableTerminal {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEMonitorHandler cellMonitor;
-    private final PortableCellItem<T> item;
+    private final PortableCellItem item;
 
-    public PortableCellMenuHost(Player player, int slot, PortableCellItem<T> item, ItemStack itemStack,
+    public PortableCellMenuHost(Player player, int slot, PortableCellItem item, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(player, slot, itemStack);
         Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");

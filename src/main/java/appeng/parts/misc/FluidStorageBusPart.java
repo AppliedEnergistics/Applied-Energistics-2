@@ -21,7 +21,6 @@ package appeng.parts.misc;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeySpace;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -31,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.AEFluidKeys;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.MEStorage;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;

@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import appeng.api.storage.AEKeySpace;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +46,7 @@ class GenericStackInvTest {
      */
     @Test
     void testSaveLargeAndLoadIntoSmallerInventory() {
-        var large = ConfigInventory.configStacks(AEKeySpace.items(), 2, null);
+        var large = ConfigInventory.configStacks(AEItemKey.filter(), 2, null);
         large.setStack(0, ONE_STICK);
         large.setStack(1, ONE_STICK);
 

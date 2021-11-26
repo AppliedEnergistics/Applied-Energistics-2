@@ -5,10 +5,10 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeySpace;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.AELog;

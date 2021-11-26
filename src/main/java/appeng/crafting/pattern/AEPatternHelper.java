@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import appeng.api.storage.AEKeySpace;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -35,6 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.GenericStack;
 
 /**

@@ -1,6 +1,5 @@
 package appeng.parts.automation;
 
-import appeng.api.storage.AEKeyFilter;
 import com.google.common.collect.ImmutableSet;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
@@ -15,6 +14,7 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.data.AEKey;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
@@ -30,7 +30,8 @@ public abstract class ExportBusPart<T extends AEKey, A> extends IOBusPart implem
     private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker(this, 9);
     private int nextSlot = 0;
 
-    public ExportBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup, AEKeyFilter configFilter) {
+    public ExportBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup,
+            AEKeyFilter configFilter) {
         super(tickRates, is, configFilter);
         this.adjacentExternalApi = new PartAdjacentApi<>(this, apiLookup);
         getMainNode().addService(ICraftingRequester.class, this);

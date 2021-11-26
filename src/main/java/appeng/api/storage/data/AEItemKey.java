@@ -1,9 +1,9 @@
 package appeng.api.storage.data;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
-import appeng.core.AELog;
-import appeng.util.Platform;
+import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -13,9 +13,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
+import appeng.core.AELog;
+import appeng.util.Platform;
 
 public class AEItemKey extends AEKey {
     private final Item item;

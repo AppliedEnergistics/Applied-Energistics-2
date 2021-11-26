@@ -3,7 +3,6 @@ package appeng.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import appeng.api.storage.AEKeySpace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ public class ConfigInventoryTest {
      */
     @Nested
     class ChannelFiltering {
-        ConfigInventory inv = ConfigInventory.configStacks(AEKeySpace.items(), 2, null);
+        ConfigInventory inv = ConfigInventory.configStacks(AEItemKey.filter(), 2, null);
 
         @BeforeEach
         void loadMixedStacks() {
@@ -53,7 +52,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class TypesMode {
-        ConfigInventory inv = ConfigInventory.configTypes(AEKeySpace.items(), 1, null);
+        ConfigInventory inv = ConfigInventory.configTypes(AEItemKey.filter(), 1, null);
 
         @Test
         void amountZeroIsAllowed() {
@@ -70,7 +69,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class StacksMode {
-        ConfigInventory inv = ConfigInventory.configStacks(AEKeySpace.items(), 1, null);
+        ConfigInventory inv = ConfigInventory.configStacks(AEItemKey.filter(), 1, null);
 
         @Test
         void stacksWithAmountZeroAreDropped() {

@@ -57,14 +57,13 @@ import appeng.client.gui.implementations.SpatialIOPortScreen;
 import appeng.client.gui.implementations.StorageBusScreen;
 import appeng.client.gui.implementations.VibrationChamberScreen;
 import appeng.client.gui.implementations.WirelessScreen;
+import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.crafting.CraftAmountScreen;
 import appeng.client.gui.me.crafting.CraftConfirmScreen;
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.client.gui.me.crafting.CraftingStatusScreen;
-import appeng.client.gui.me.fluids.FluidTerminalScreen;
 import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.client.gui.me.items.CraftingTermScreen;
-import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.me.items.PatternTermScreen;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.client.gui.me.networktool.NetworkToolScreen;
@@ -95,11 +94,11 @@ import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.menu.implementations.WirelessMenu;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.menu.me.items.*;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
@@ -159,21 +158,25 @@ public final class InitScreens {
         register(SpatialAnchorMenu.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
 
         // Terminals
-        InitScreens.<ItemTerminalMenu, ItemTerminalScreen<ItemTerminalMenu>>register(
-                ItemTerminalMenu.TYPE,
-                ItemTerminalScreen::new,
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.ITEM_TYPE,
+                MEMonitorableScreen::new,
                 "/screens/terminals/item_terminal.json");
-        InitScreens.<PortableItemCellMenu, ItemTerminalScreen<PortableItemCellMenu>>register(
-                PortableItemCellMenu.TYPE,
-                ItemTerminalScreen::new,
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.FLUID_TYPE,
+                MEMonitorableScreen::new,
+                "/screens/terminals/fluid_terminal.json");
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE,
+                MEMonitorableScreen::new,
                 "/screens/terminals/portable_item_cell.json");
-        InitScreens.<PortableFluidCellMenu, FluidTerminalScreen<PortableFluidCellMenu>>register(
-                PortableFluidCellMenu.TYPE,
-                FluidTerminalScreen::new,
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.PORTABLE_FLUID_CELL_TYPE,
+                MEMonitorableScreen::new,
                 "/screens/terminals/portable_fluid_cell.json");
-        InitScreens.<WirelessTermMenu, ItemTerminalScreen<WirelessTermMenu>>register(
-                WirelessTermMenu.TYPE,
-                ItemTerminalScreen::new,
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.WIRELESS_TYPE,
+                MEMonitorableScreen::new,
                 "/screens/terminals/wireless_terminal.json");
         register(SecurityStationMenu.TYPE,
                 SecurityStationScreen::new,
@@ -190,10 +193,6 @@ public final class InitScreens {
                 PatternTermMenu.TYPE,
                 PatternTermScreen::new,
                 "/screens/terminals/pattern_terminal.json");
-        InitScreens.<FluidTerminalMenu, FluidTerminalScreen<FluidTerminalMenu>>register(
-                FluidTerminalMenu.TYPE,
-                FluidTerminalScreen::new,
-                "/screens/terminals/fluid_terminal.json");
     }
 
     /**

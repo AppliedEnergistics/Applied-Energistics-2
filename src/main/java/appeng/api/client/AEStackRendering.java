@@ -23,22 +23,25 @@
 
 package appeng.api.client;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.data.AEKey;
-import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+
+import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
+import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.data.AEKey;
 
 /**
  * Registry for {@link IAEStackRenderHandler}. Also contains convenience functions to render a stack without having to
@@ -50,8 +53,8 @@ public class AEStackRendering {
     private static volatile Map<AEKeySpace, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
 
     public static synchronized <T extends AEKey> void register(AEKeySpace channel,
-                                                               Class<T> keyClass,
-                                                               IAEStackRenderHandler<T> handler) {
+            Class<T> keyClass,
+            IAEStackRenderHandler<T> handler) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(handler, "handler");
         Objects.requireNonNull(keyClass, "keyClass");

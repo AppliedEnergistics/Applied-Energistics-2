@@ -1,14 +1,14 @@
 package appeng.util;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEKey;
 import appeng.helpers.iface.GenericStackInv;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * Configuration inventories contain a set of {@link appeng.api.storage.data.AEKey} references that configure how
@@ -18,8 +18,8 @@ import java.util.function.Predicate;
  * They can expose an {@link net.minecraft.world.item.ItemStack} based wrapper that can be used as backing for
  * {@link net.minecraft.world.inventory.Slot} in {@link appeng.menu.AEBaseMenu}.
  * <p/>
- * Primarily their role beyond their base class {@link GenericStackInv} is enforcing the configured filter
- * even on returned keys, not just when setting them.
+ * Primarily their role beyond their base class {@link GenericStackInv} is enforcing the configured filter even on
+ * returned keys, not just when setting them.
  */
 public class ConfigInventory extends GenericStackInv {
     protected ConfigInventory(@Nullable AEKeyFilter filter, Mode mode, int size, @Nullable Runnable listener) {
@@ -40,7 +40,7 @@ public class ConfigInventory extends GenericStackInv {
      * inventory.
      */
     public static ConfigInventory configTypes(@Nullable AEKeyFilter filter, int size,
-                                              @Nullable Runnable changeListener) {
+            @Nullable Runnable changeListener) {
         return new ConfigInventory(filter, Mode.CONFIG_TYPES, size, changeListener);
     }
 
@@ -48,7 +48,7 @@ public class ConfigInventory extends GenericStackInv {
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
     public static ConfigInventory configStacks(@Nullable AEKeyFilter filter, int size,
-                                               @Nullable Runnable changeListener) {
+            @Nullable Runnable changeListener) {
         return new ConfigInventory(filter, Mode.CONFIG_STACKS, size, changeListener);
     }
 
@@ -63,7 +63,7 @@ public class ConfigInventory extends GenericStackInv {
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
     public static ConfigInventory storage(@Nullable AEKeyFilter filter, int size,
-                                          @Nullable Runnable changeListener) {
+            @Nullable Runnable changeListener) {
         return new ConfigInventory(filter, Mode.STORAGE, size, changeListener);
     }
 

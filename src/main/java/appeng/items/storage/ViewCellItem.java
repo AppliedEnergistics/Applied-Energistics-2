@@ -18,11 +18,15 @@
 
 package appeng.items.storage;
 
+import java.util.Collection;
+
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.cells.ICellWorkbenchItem;
-import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
@@ -33,17 +37,22 @@ import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.MergedPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.Collection;
 
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     public ViewCellItem(Properties properties) {
         super(properties);
     }
 
-    public static IPartitionList createFilter(AEKeySpace channel,
-                                              Collection<ItemStack> list) {
+    /**
+     * Creates a filter from the given list of {@link ViewCellItem view cells}. Only item keys will be considered to be
+     * part of the filter.
+     */
+    public static IPartitionList createItemFilter(Collection<ItemStack> list) {
+        return createFilter(AEItemKey.filter(), list);
+    }
+
+    public static IPartitionList createFilter(AEKeyFilter filter,
+            Collection<ItemStack> list) {
         IPartitionList myPartitionList = null;
 
         final MergedPriorityList myMergedList = new MergedPriorityList();
@@ -79,8 +88,8 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 }
 
                 for (int i = 0; i < config.size(); i++) {
-                    var what = channel.tryCast(config.getKey(i));
-                    if (what != null) {
+                    var what = config.getKey(i);
+                    if (what != null && filter.matches(what)) {
                         priorityList.add(what, 1);
                     }
                 }

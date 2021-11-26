@@ -23,8 +23,6 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
-import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
 
 /**
  * Describes the appearance of terminal screens.

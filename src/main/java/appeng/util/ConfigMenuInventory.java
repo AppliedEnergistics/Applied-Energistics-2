@@ -1,23 +1,18 @@
 package appeng.util;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.data.AEKey;
+import java.util.Objects;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.AEFluidKeys;
-import appeng.api.storage.GenericStack;
 import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEItemKey;
 import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.iface.GenericStackInv;
-
-import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * Wraps this configuration inventory as an {@link net.minecraft.world.item.ItemStack} based inventory for use in a

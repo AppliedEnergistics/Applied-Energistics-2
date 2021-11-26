@@ -29,11 +29,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeyFilter;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -51,6 +49,7 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEKey;
 import appeng.blockentity.crafting.CraftingBlockEntity;

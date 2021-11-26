@@ -1,9 +1,9 @@
 package appeng.menu.me.interaction;
 
-import appeng.helpers.FluidContainerHelper;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.helpers.FluidContainerHelper;
 
 public class FluidInteractionHandler implements StackInteractionHandler {
     @Override
@@ -14,6 +14,6 @@ public class FluidInteractionHandler implements StackInteractionHandler {
         }
 
         var description = new TextComponent("Store ").append(fluidStack.what().getDisplayName());
-        return new EmptyingAction(description);
+        return new EmptyingAction(description, fluidStack.what());
     }
 }

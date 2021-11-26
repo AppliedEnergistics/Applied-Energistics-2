@@ -27,14 +27,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEItemKey;
-import appeng.helpers.FluidContainerHelper;
-import appeng.menu.MenuLocator;
-import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.util.Platform;
-import appeng.util.fluid.FluidSoundHelper;
 import com.google.common.collect.ImmutableSet;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -47,10 +39,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.*;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Setting;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.implementations.blockentities.IViewCellStorage;
-import appeng.api.implementations.menuobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.IPortableTerminal;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -59,10 +59,13 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.StorageHelper;
+import appeng.api.storage.cells.IBasicCellItem;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.IConfigManager;
@@ -73,21 +76,46 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
+import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuLocator;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
+import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
+import appeng.util.Platform;
+import appeng.util.fluid.FluidSoundHelper;
 
 /**
  * @see MEMonitorableScreen
  */
-public abstract class MEMonitorableMenu extends AEBaseMenu
+public class MEMonitorableMenu extends AEBaseMenu
         implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener, IMEInteractionHandler {
+
+    public static final MenuType<MEMonitorableMenu> PORTABLE_ITEM_CELL_TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+            .build("portable_item_cell");
+    public static final MenuType<MEMonitorableMenu> PORTABLE_FLUID_CELL_TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+            .build("portable_fluid_cell");
+
+    public static final MenuType<MEMonitorableMenu> WIRELESS_TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+            .build("wirelessterm");
+
+    public static final MenuType<MEMonitorableMenu> FLUID_TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, ITerminalHost>create(MEMonitorableMenu::new, ITerminalHost.class)
+            .build("fluid_terminal");
+
+    public static final MenuType<MEMonitorableMenu> ITEM_TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, ITerminalHost>create(MEMonitorableMenu::new, ITerminalHost.class)
+            .build("item_terminal");
 
     private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;
@@ -123,9 +151,11 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
      */
     private Set<AEKey> previousCraftables = Collections.emptySet();
 
-    public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip,
-            final ITerminalHost host, final boolean bindInventory,
-            AEKeySpace storageChannel) {
+    public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
+        this(menuType, id, ip, host, true);
+    }
+
+    protected MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, boolean bindInventory) {
         super(menuType, id, ip, host);
 
         this.host = host;
@@ -143,7 +173,7 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
 
-                if (host instanceof IPortableCell || host instanceof IMEChest) {
+                if (host instanceof IPortableTerminal || host instanceof IMEChest) {
                     powerSource = (IEnergySource) host;
                 } else if (host instanceof IActionHost actionHost) {
                     var node = actionHost.getActionableNode();
@@ -191,7 +221,14 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
         return this.networkNode;
     }
 
-    protected boolean isKeyVisible(AEKey key) {
+    public boolean isKeyVisible(AEKey key) {
+        // If the host is a basic item cell with a limited key space, account for this
+        if (host instanceof ItemMenuHost itemMenuHost) {
+            if (itemMenuHost.getItemStack().getItem() instanceof IBasicCellItem basicCellItem) {
+                return basicCellItem.getKeySpace().contains(key);
+            }
+        }
+
         return true;
     }
 
@@ -420,7 +457,7 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
 
     protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey, InventoryAction action) {
 
-        if (action == InventoryAction.PICKUP_OR_SET_DOWN && clickedKey instanceof AEFluidKey fluidKey) {
+        if (action == InventoryAction.PICKUP_OR_SET_DOWN && AEFluidKey.is(clickedKey)) {
             action = InventoryAction.FILL_ITEM;
         }
 
@@ -552,7 +589,7 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
                     }
                 }
             }
-            break;
+                break;
             case ROLL_UP:
             case PICKUP_SINGLE: {
                 // Extract 1 of the hovered stack from the network (or at least try to), and add it to the carried item
@@ -578,7 +615,7 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
                     }
                 }
             }
-            break;
+                break;
             case PICKUP_OR_SET_DOWN: {
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(false);
@@ -596,7 +633,7 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
                     }
                 }
             }
-            break;
+                break;
             case SPLIT_OR_PLACE_SINGLE:
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(true);
@@ -747,8 +784,8 @@ public abstract class MEMonitorableMenu extends AEBaseMenu
     }
 
     /**
-     * Checks if the terminal has a given amount of the requested item. Used to determine for REI/JEI if a
-     * recipe is potentially craftable based on the available items.
+     * Checks if the terminal has a given amount of the requested item. Used to determine for REI/JEI if a recipe is
+     * potentially craftable based on the available items.
      */
     public boolean hasItemType(ItemStack itemStack, int amount) {
         var clientRepo = getClientRepo();

@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -30,10 +29,11 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageProvider;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.crafting.CraftingCalculation;
@@ -130,7 +130,7 @@ public class SimulationEnv {
             @Override
             public AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter) {
                 for (var fuzzy : craftableItemsList.findFuzzy(whatToCraft, FuzzyMode.IGNORE_ALL)) {
-                    if (filter.test(fuzzy.getKey())) {
+                    if (filter.matches(fuzzy.getKey())) {
                         return fuzzy.getKey();
                     }
                 }

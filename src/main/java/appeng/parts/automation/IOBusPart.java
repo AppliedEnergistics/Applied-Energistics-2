@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import appeng.api.storage.AEKeyFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -37,8 +36,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.data.AEKey;
 import appeng.api.util.AECableType;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigInvHost;

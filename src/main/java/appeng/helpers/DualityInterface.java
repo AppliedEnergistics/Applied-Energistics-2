@@ -21,12 +21,10 @@ package appeng.helpers;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeyFilter;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.nbt.CompoundTag;
@@ -49,10 +47,10 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.MEMonitorStorage;
-import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -104,7 +102,8 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
     private boolean hasConfig = false;
     private final ConfigInventory storage;
 
-    public DualityInterface(IManagedGridNode gridNode, IInterfaceHost host, ItemStack is, @Nullable AEKeyFilter configFilter) {
+    public DualityInterface(IManagedGridNode gridNode, IInterfaceHost host, ItemStack is,
+            @Nullable AEKeyFilter configFilter) {
         this.host = host;
         this.configFilter = configFilter;
         this.config = ConfigInventory.configStacks(configFilter, getStorageSlots(), this::readConfig);

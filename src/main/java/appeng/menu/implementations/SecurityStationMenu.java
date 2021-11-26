@@ -31,7 +31,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.me.items.ItemTerminalMenu;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.inv.AppEngInternalInventory;
@@ -40,7 +40,7 @@ import appeng.util.inv.InternalInventoryHost;
 /**
  * @see appeng.client.gui.implementations.SecurityStationScreen
  */
-public class SecurityStationMenu extends ItemTerminalMenu implements InternalInventoryHost {
+public class SecurityStationMenu extends MEMonitorableMenu implements InternalInventoryHost {
 
     private static final String ACTION_TOGGLE_PERMISSION = "togglePermission";
 

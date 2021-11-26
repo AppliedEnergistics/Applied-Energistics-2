@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import appeng.api.storage.data.AEFluidKey;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;

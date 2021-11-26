@@ -19,12 +19,9 @@
 package appeng.helpers.iface;
 
 import java.util.Objects;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +29,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import appeng.api.config.Actionable;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;

@@ -19,9 +19,7 @@
 package appeng.items.tools.powered;
 
 import java.util.List;
-import java.util.function.Predicate;
 
-import appeng.api.storage.AEKeyFilter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -31,7 +29,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -55,7 +52,7 @@ import appeng.menu.MenuOpener;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 
-public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredItem
+public class PortableCellItem extends AEBasePoweredItem
         implements IBasicCellItem, IMenuItem, ICustomReequipAnimation {
 
     public static final StorageTier SIZE_1K = new StorageTier(512, 54, 8);
@@ -64,13 +61,14 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     public static final StorageTier SIZE_64K = new StorageTier(16834, 27, 512);
 
     private final StorageTier tier;
+    private final AEKeySpace keySpace;
+    private final MenuType<?> menuType;
 
-    private final AEKeyFilter filter;
-
-    public PortableCellItem(AEKeyFilter filter, StorageTier tier, Item.Properties props) {
+    public PortableCellItem(AEKeySpace keySpace, MenuType<?> menuType, StorageTier tier, Properties props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
+        this.menuType = menuType;
         this.tier = tier;
-        this.filter = filter;
+        this.keySpace = keySpace;
     }
 
     @Override
@@ -141,7 +139,7 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
 
     @Override
     public ConfigInventory getConfigInventory(final ItemStack is) {
-        return CellConfig.create(filter, is);
+        return CellConfig.create(keySpace.filter(), is);
     }
 
     @Override
@@ -160,8 +158,8 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     }
 
     @Override
-    public PortableCellMenuHost<T> getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
-        return new PortableCellMenuHost<>(player, inventorySlot, this, stack,
+    public PortableCellMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
+        return new PortableCellMenuHost(player, inventorySlot, this, stack,
                 (p, sm) -> openFromInventory(p, inventorySlot));
     }
 
@@ -176,7 +174,7 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
      * @return Amount inserted.
      */
     public long insert(Player player, ItemStack itemStack, AEKey what, long amount, Actionable mode) {
-        if (!filter.matches(what)) {
+        if (keySpace.tryCast(what) == null) {
             return 0;
         }
 
@@ -201,5 +199,12 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     public record StorageTier(int bytes, int types, int bytesPerType) {
     }
 
-    protected abstract MenuType<?> getMenuType();
+    @Override
+    public AEKeySpace getKeySpace() {
+        return keySpace;
+    }
+
+    public MenuType<?> getMenuType() {
+        return menuType;
+    }
 }

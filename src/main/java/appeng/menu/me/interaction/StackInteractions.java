@@ -1,9 +1,10 @@
 package appeng.menu.me.interaction;
 
-import net.minecraft.world.item.ItemStack;
+import java.util.List;
 
 import javax.annotation.Nullable;
-import java.util.List;
+
+import net.minecraft.world.item.ItemStack;
 
 /**
  * TODO: Use approach from {@link appeng.api.client.AEStackRendering} or generalize as AEStackClientFeatures
@@ -11,8 +12,7 @@ import java.util.List;
 public final class StackInteractions {
     private static final List<StackInteractionHandler> HANDLERS = List.of(
             new FluidInteractionHandler(),
-            new ItemInteractionHandler()
-    );
+            new ItemInteractionHandler());
 
     @Nullable
     public static EmptyingAction getEmptyingAction(ItemStack stack) {

@@ -18,7 +18,6 @@
 
 package appeng.menu.me.items;
 
-import appeng.api.storage.AEKeySpace;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Mth;
@@ -56,6 +55,7 @@ import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.slot.FakeCraftingMatrixSlot;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
@@ -71,7 +71,7 @@ import appeng.util.inv.PlayerInternalInventory;
  *
  * @see appeng.client.gui.me.items.PatternTermScreen
  */
-public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHost, IMenuCraftingPacket {
+public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotHost, IMenuCraftingPacket {
 
     private static final String ACTION_SET_CRAFT_MODE = "setCraftMode";
     private static final String ACTION_ENCODE = "encode";
@@ -394,7 +394,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
         final ItemStack is = r.assemble(ic);
 
-        var partitionFilter = ViewCellItem.createFilter(AEKeySpace.items(), this.getViewCells());
+        var partitionFilter = ViewCellItem.createItemFilter(this.getViewCells());
         for (int x = 0; x < ic.getContainerSize(); x++) {
             if (!ic.getItem(x).isEmpty()) {
                 var pulled = Platform.extractItemsByRecipe(this.powerSource,

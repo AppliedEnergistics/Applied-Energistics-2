@@ -20,7 +20,6 @@ package appeng.parts.misc;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeySpace;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -30,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.AEItemKeys;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.MEStorage;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;

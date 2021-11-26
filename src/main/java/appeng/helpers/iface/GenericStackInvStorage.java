@@ -14,8 +14,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.world.item.Items;
 
-import appeng.api.storage.GenericStack;
 import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEItemKey;
 import appeng.util.IVariantConversion;
 

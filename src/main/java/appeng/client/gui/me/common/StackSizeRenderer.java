@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 
 import appeng.core.AEConfig;
-import appeng.core.localization.GuiText;
 import appeng.util.ISlimReadableNumberConverter;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;

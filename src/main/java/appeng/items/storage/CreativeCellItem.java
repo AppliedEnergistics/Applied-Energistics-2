@@ -20,8 +20,6 @@ package appeng.items.storage;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -31,7 +29,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.items.AEBaseItem;

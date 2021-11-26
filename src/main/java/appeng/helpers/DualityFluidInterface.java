@@ -18,6 +18,12 @@
 
 package appeng.helpers;
 
+import javax.annotation.Nullable;
+
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
@@ -32,11 +38,6 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.helpers.iface.GenericStackInvStorage;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 public class DualityFluidInterface extends DualityInterface {
     public static final int NUMBER_OF_TANKS = 6;

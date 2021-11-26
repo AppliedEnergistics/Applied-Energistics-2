@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEItemKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -454,5 +453,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     @Override
     public double getIdleDrain() {
         return 0.5;
+    }
+
+    @Override
+    public AEKeySpace getKeySpace() {
+        return AEKeySpace.items();
     }
 }

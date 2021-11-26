@@ -18,15 +18,12 @@
 
 package appeng.items.contents;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.data.AEKey;
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.AEKeyFilter;
 import appeng.util.ConfigInventory;
-
-import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 public final class CellConfig {
     private CellConfig() {

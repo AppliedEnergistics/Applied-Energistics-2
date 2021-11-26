@@ -2,8 +2,6 @@ package appeng.api.storage.data;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeySpaces;
-import appeng.api.storage.AEKeySpacesInternal;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,8 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.GenericStack;
 import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.AEKeySpaces;
+import appeng.api.storage.GenericStack;
 import appeng.core.AELog;
 
 /**

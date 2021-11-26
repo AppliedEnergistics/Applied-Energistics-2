@@ -1,12 +1,13 @@
 package appeng.init.client;
 
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.AEKeySpaces;
 import appeng.api.storage.AEKeySpacesInternal;
 import appeng.core.AppEng;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.minecraft.resources.ResourceLocation;
 
 public final class InitKeySpaces {
     private static final ResourceLocation REGISTRY_ID = AppEng.makeId("keyspaces");

@@ -18,6 +18,13 @@
 
 package appeng.helpers;
 
+import javax.annotation.Nullable;
+
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
@@ -30,12 +37,6 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.helpers.iface.GenericStackInvStorage;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 public class DualityItemInterface extends DualityInterface {
 

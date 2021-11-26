@@ -29,7 +29,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
-import appeng.api.implementations.menuobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -43,7 +43,7 @@ import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.menu.ISubMenu;
 
-public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableCell, IActionHost {
+public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableTerminal, IActionHost {
 
     private final WirelessTerminalItem terminal;
     private final BiConsumer<Player, ISubMenu> returnToMainMenu;

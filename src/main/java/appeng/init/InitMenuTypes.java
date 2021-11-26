@@ -45,11 +45,11 @@ import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.menu.implementations.WirelessMenu;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.menu.me.items.*;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
@@ -83,9 +83,11 @@ public final class InitMenuTypes {
                 EnergyLevelEmitterMenu.TYPE,
                 PatternProviderMenu.TYPE,
                 MolecularAssemblerMenu.TYPE,
-                ItemTerminalMenu.TYPE,
-                PortableItemCellMenu.TYPE,
-                PortableFluidCellMenu.TYPE,
+                MEMonitorableMenu.ITEM_TYPE,
+                MEMonitorableMenu.FLUID_TYPE,
+                MEMonitorableMenu.WIRELESS_TYPE,
+                MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE,
+                MEMonitorableMenu.PORTABLE_FLUID_CELL_TYPE,
                 NetworkStatusMenu.TYPE,
                 NetworkToolMenu.TYPE,
                 PatternTermMenu.TYPE,
@@ -103,9 +105,7 @@ public final class InitMenuTypes {
                 IOBusMenu.FLUID_EXPORT_TYPE,
                 IOBusMenu.FLUID_IMPORT_TYPE,
                 VibrationChamberMenu.TYPE,
-                WirelessMenu.TYPE,
-                WirelessTermMenu.TYPE,
-                FluidTerminalMenu.TYPE);
+                WirelessMenu.TYPE);
     }
 
     private static void registerAll(Registry<MenuType<?>> registry, MenuType<?>... types) {

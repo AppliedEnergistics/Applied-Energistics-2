@@ -23,18 +23,20 @@
 
 package appeng.api.storage;
 
-import appeng.api.storage.data.AEKey;
-import net.minecraft.resources.ResourceLocation;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.Objects;
+
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.api.storage.data.AEKey;
 
 /**
  * AE2's registry of all known {@link AEKeySpace storage channels}.
  * <p/>
- * AE2 has built-in {@link AEKeySpace#items() item} and {@link AEKeySpace#fluids() fluid} storage channels. Addons can register additional
- * storage channels during initialization using {@link #register(AEKeySpace)}.
+ * AE2 has built-in {@link AEKeySpace#items() item} and {@link AEKeySpace#fluids() fluid} storage channels. Addons can
+ * register additional storage channels during initialization using {@link #register(AEKeySpace)}.
  */
 @ThreadSafe
 public final class AEKeySpaces {
@@ -44,7 +46,8 @@ public final class AEKeySpaces {
     /**
      * Register a new storage channel.
      * <p>
-     * AE2 already provides native channels for {@link appeng.api.storage.data.AEItemKey} and {@link appeng.api.storage.data.AEFluidKey}.
+     * AE2 already provides native channels for {@link appeng.api.storage.data.AEItemKey} and
+     * {@link appeng.api.storage.data.AEFluidKey}.
      * <p>
      * Each {@link AEKey} subtype can only have a single factory instance. Overwriting is not intended. Each subtype
      * should be a direct one, this might be enforced at any time.

@@ -1,11 +1,9 @@
 package appeng.api.storage.data;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.GenericStack;
-import appeng.core.AELog;
-import appeng.items.misc.WrappedGenericStack;
-import appeng.util.Platform;
+import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
@@ -15,9 +13,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.GenericStack;
+import appeng.core.AELog;
+import appeng.items.misc.WrappedGenericStack;
+import appeng.util.Platform;
 
 public class AEFluidKey extends AEKey {
     public static final int AMOUNT_BUCKET = (int) FluidConstants.BUCKET;

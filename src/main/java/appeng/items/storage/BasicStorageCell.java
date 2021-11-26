@@ -18,18 +18,8 @@
 
 package appeng.items.storage;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.StorageCells;
-import appeng.api.storage.cells.IBasicCellItem;
-import appeng.core.definitions.AEItems;
-import appeng.hooks.AEToolItem;
-import appeng.items.AEBaseItem;
-import appeng.items.contents.CellConfig;
-import appeng.items.contents.CellUpgrades;
-import appeng.parts.automation.UpgradeInventory;
-import appeng.util.ConfigInventory;
-import appeng.util.InteractionUtil;
+import java.util.List;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -45,8 +35,18 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import appeng.api.config.FuzzyMode;
+import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.StorageCells;
+import appeng.api.storage.cells.IBasicCellItem;
+import appeng.core.definitions.AEItems;
+import appeng.hooks.AEToolItem;
+import appeng.items.AEBaseItem;
+import appeng.items.contents.CellConfig;
+import appeng.items.contents.CellUpgrades;
+import appeng.parts.automation.UpgradeInventory;
+import appeng.util.ConfigInventory;
+import appeng.util.InteractionUtil;
 
 public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AEToolItem {
     /**
@@ -57,32 +57,36 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     protected final int totalBytes;
     protected final int bytesPerType;
     protected final int totalTypes;
-    @Nullable
-    private final AEKeyFilter keyFilter;
+    private final AEKeySpace keySpace;
 
     public BasicStorageCell(Item.Properties properties,
-                            ItemLike coreItem,
-                            double idleDrain,
-                            int kilobytes,
-                            int bytesPerType,
-                            int totalTypes,
-                            @Nullable AEKeyFilter keyFilter) {
+            ItemLike coreItem,
+            double idleDrain,
+            int kilobytes,
+            int bytesPerType,
+            int totalTypes,
+            AEKeySpace keySpace) {
         super(properties);
         this.idleDrain = idleDrain;
         this.totalBytes = kilobytes * 1024;
         this.coreItem = coreItem;
         this.bytesPerType = bytesPerType;
         this.totalTypes = totalTypes;
-        this.keyFilter = keyFilter;
+        this.keySpace = keySpace;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack,
-                                Level level,
-                                List<Component> lines,
-                                TooltipFlag advancedTooltips) {
+            Level level,
+            List<Component> lines,
+            TooltipFlag advancedTooltips) {
         addCellInformationToTooltip(stack, lines);
+    }
+
+    @Override
+    public AEKeySpace getKeySpace() {
+        return this.keySpace;
     }
 
     @Override
@@ -117,7 +121,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public ConfigInventory getConfigInventory(final ItemStack is) {
-        return CellConfig.create(keyFilter, is);
+        return CellConfig.create(keySpace.filter(), is);
     }
 
     @Override

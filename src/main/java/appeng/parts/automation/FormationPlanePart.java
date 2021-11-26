@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import appeng.api.storage.AEKeyFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +35,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;

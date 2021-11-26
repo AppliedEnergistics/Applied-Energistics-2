@@ -15,8 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
-import appeng.api.storage.GenericStack;
 import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 
@@ -57,7 +57,7 @@ class ConfigMenuInventoryTest {
 
     @Test
     void testFluidConfigReadsAsWrappedStackOfCount1() {
-        var inv = ConfigInventory.configTypes(AEKeySpace.fluids(), 1, null);
+        var inv = ConfigInventory.configTypes(AEFluidKey.filter(), 1, null);
         inv.setStack(0, WATER);
         var wrappedStack = inv.createMenuWrapper().getStackInSlot(0);
         assertEquals(1, wrappedStack.getCount());
@@ -71,7 +71,7 @@ class ConfigMenuInventoryTest {
      */
     @Test
     void testItemTypeConfigReadsAsItemWithAmount1() {
-        var inv = ConfigInventory.configTypes(AEKeySpace.items(), 1, null);
+        var inv = ConfigInventory.configTypes(AEItemKey.filter(), 1, null);
         inv.setStack(0, ZERO_STICK);
         var fakeStack = inv.createMenuWrapper().getStackInSlot(0);
         assertEquals(Items.STICK, fakeStack.getItem());
@@ -90,11 +90,11 @@ class ConfigMenuInventoryTest {
     }
 
     private DynamicTest test(String displayName, AEKeySpace channel, ItemStack inserted,
-                             @Nullable GenericStack expectedStack, @Nullable GenericStack initialStack) {
+            @Nullable GenericStack expectedStack, @Nullable GenericStack initialStack) {
         return DynamicTest.dynamicTest(
                 displayName,
                 () -> {
-                    var inv = ConfigInventory.configStacks(channel, 64, null);
+                    var inv = ConfigInventory.configStacks(channel.filter(), 64, null);
                     if (initialStack != null) {
                         inv.setStack(0, initialStack);
                     }

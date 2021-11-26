@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import appeng.api.storage.AEKeySpace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -215,7 +214,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 is = r.assemble(ic);
 
                 if (inv != null) {
-                    var filter = ViewCellItem.createFilter(AEKeySpace.items(), this.menu.getViewCells());
+                    var filter = ViewCellItem.createItemFilter(this.menu.getViewCells());
                     for (var x = 0; x < this.getPattern().size(); x++) {
                         if (!this.getPattern().getStackInSlot(x).isEmpty()) {
                             set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,
@@ -242,7 +241,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     private boolean preCraft(final Player p, final MEMonitorStorage inv, final ItemStack[] set,
-                             final ItemStack result) {
+            final ItemStack result) {
         return true;
     }
 
@@ -251,7 +250,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     private void postCraft(final Player p, final MEMonitorStorage inv, final ItemStack[] set,
-                           final ItemStack result) {
+            final ItemStack result) {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...

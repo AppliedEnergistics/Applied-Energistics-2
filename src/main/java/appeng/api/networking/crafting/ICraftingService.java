@@ -26,11 +26,9 @@ package appeng.api.networking.crafting;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeyFilter;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
@@ -40,6 +38,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.data.AEKey;
 
 public interface ICraftingService extends IGridService {

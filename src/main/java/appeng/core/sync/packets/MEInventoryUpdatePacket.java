@@ -18,6 +18,21 @@
 
 package appeng.core.sync.packets;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
+
+import io.netty.buffer.Unpooled;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
@@ -28,19 +43,6 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 import appeng.menu.me.common.MEMonitorableMenu;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class MEInventoryUpdatePacket extends BasePacket {
 
@@ -112,9 +114,9 @@ public class MEInventoryUpdatePacket extends BasePacket {
         }
 
         public void addFull(IncrementalUpdateHelper updateHelper,
-                            KeyCounter networkStorage,
-                            Set<AEKey> craftables,
-                            KeyCounter requestables) {
+                KeyCounter networkStorage,
+                Set<AEKey> craftables,
+                KeyCounter requestables) {
             var keys = new HashSet<AEKey>();
             keys.addAll(networkStorage.keySet());
             keys.addAll(craftables);
@@ -136,9 +138,9 @@ public class MEInventoryUpdatePacket extends BasePacket {
         }
 
         public void addChanges(IncrementalUpdateHelper updateHelper,
-                               KeyCounter networkStorage,
-                               Set<AEKey> craftables,
-                               KeyCounter requestables) {
+                KeyCounter networkStorage,
+                Set<AEKey> craftables,
+                KeyCounter requestables) {
             for (AEKey key : updateHelper) {
                 if (this.filter != null && !this.filter.matches(key)) {
                     continue;

@@ -1,8 +1,8 @@
 package appeng.menu.me.interaction;
 
-import net.minecraft.world.item.ItemStack;
-
 import javax.annotation.Nullable;
+
+import net.minecraft.world.item.ItemStack;
 
 public interface StackInteractionHandler {
 

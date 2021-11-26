@@ -16,14 +16,13 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.me.fluids;
+package appeng.client.gui.me.common;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 import appeng.api.storage.data.AEFluidKey;
-import appeng.client.gui.me.common.StackSizeRenderer;
 
 /**
  * @author AlgorithmX2

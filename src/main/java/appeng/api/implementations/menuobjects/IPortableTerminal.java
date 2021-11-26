@@ -29,6 +29,6 @@ import appeng.api.storage.ITerminalHost;
 /**
  * Obtained via {@link IMenuItem} getMenuHost
  */
-public interface IPortableCell extends ITerminalHost, IEnergySource {
+public interface IPortableTerminal extends ITerminalHost, IEnergySource {
 
 }

@@ -16,12 +16,10 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.me.items;
+package appeng.client.gui.me.common;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.client.gui.me.common.ClientReadOnlySlot;
-import appeng.client.gui.me.common.Repo;
 import appeng.menu.me.common.GridInventoryEntry;
 
 /**
