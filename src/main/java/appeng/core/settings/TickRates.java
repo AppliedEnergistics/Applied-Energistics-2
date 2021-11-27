@@ -24,9 +24,7 @@ public enum TickRates {
 
     ImportBus(5, 40),
 
-    ItemExportBus(5, 60),
-
-    FluidExportBus(5, 60),
+    ExportBus(5, 60),
 
     AnnihilationPlane(2, 120),
 

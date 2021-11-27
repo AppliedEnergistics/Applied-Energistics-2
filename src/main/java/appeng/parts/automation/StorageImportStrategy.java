@@ -16,6 +16,9 @@ import appeng.api.storage.data.AEKey;
 import appeng.core.AELog;
 import appeng.util.IVariantConversion;
 
+/**
+ * Strategy for importing stacks from external storage into an internal {@link appeng.api.storage.MEStorage}.
+ */
 class StorageImportStrategy<V extends TransferVariant<?>> implements StackImportStrategy {
     private final BlockApiCache<Storage<V>, Direction> apiCache;
     private final Direction fromSide;
@@ -32,7 +35,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
     }
 
     @Override
-    public boolean move(StackTransferContext context) {
+    public boolean transfer(StackTransferContext context) {
         if (!context.isKeySpaceEnabled(conversion.getKeySpace())) {
             return false;
         }

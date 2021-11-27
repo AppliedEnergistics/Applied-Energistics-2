@@ -46,7 +46,6 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.parts.automation.ItemExportBusPart;
 
 public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBaseMenu implements IOptionalSlotHost {
 
@@ -145,8 +144,10 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
     protected void loadSettingsFromHost(final IConfigManager cm) {
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_CONTROLLED));
-        if (this.getHost() instanceof ItemExportBusPart) {
+        if (cm.hasSetting(Settings.CRAFT_ONLY)) {
             this.setCraftingMode(cm.getSetting(Settings.CRAFT_ONLY));
+        }
+        if (cm.hasSetting(Settings.SCHEDULING_MODE)) {
             this.setSchedulingMode(cm.getSetting(Settings.SCHEDULING_MODE));
         }
     }

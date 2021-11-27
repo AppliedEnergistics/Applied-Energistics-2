@@ -663,15 +663,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.dye(DyeColor.GREEN))
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/fluid_annihilation_plane_alt"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_EXPORT_BUS)
-                .pattern("aba")
-                .pattern("lcl")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', AEItems.FORMATION_CORE)
-                .define('c', Items.PISTON)
-                .define('l', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_export_bus"));
         ShapedRecipeBuilder.shaped(AEParts.FLUID_FORMATION_PLANE)
                 .pattern("adb")
                 .pattern("cdb")
@@ -729,7 +720,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', AEItems.FORMATION_CORE)
                 .define('c', Items.PISTON)
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_export_bus"));
+                .save(consumer, AppEng.makeId("network/parts/export_bus"));
         ShapedRecipeBuilder.shaped(AEParts.FORMATION_PLANE)
                 .pattern("aaa")
                 .pattern("bcb")

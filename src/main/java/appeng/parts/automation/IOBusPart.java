@@ -18,6 +18,8 @@
 
 package appeng.parts.automation;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -50,6 +52,7 @@ import appeng.menu.MenuOpener;
 import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 import appeng.util.Platform;
+import appeng.util.prioritylist.IPartitionList;
 
 public abstract class IOBusPart extends UpgradeablePart implements IGridTickable, IConfigInvHost {
 
@@ -65,6 +68,9 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
             new ResourceLocation(AppEng.MOD_ID, "part/import_bus_has_channel"));
 
     private final ConfigInventory config;
+    // Filter derived from the config
+    @Nullable
+    private IPartitionList filter;
     private final TickRates tickRates;
     protected final IActionSource source;
     private boolean lastRedstone = false;
@@ -73,7 +79,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         super(is);
         this.tickRates = tickRates;
         this.source = new MachineSource(this);
-        this.config = ConfigInventory.configTypes(StackWorldBehaviors.supportedFilter(), 9, this::updateState);
+        this.config = ConfigInventory.configTypes(StackWorldBehaviors.hasImportStrategyFilter(), 9, this::updateState);
         getMainNode().addService(IGridTickable.class, this);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -104,6 +110,8 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         config.readFromChildTag(extra, "config");
+        // Ensure the filter is rebuilt
+        filter = null;
     }
 
     @Override
@@ -115,6 +123,18 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     @Override
     public ConfigInventory getConfig() {
         return config;
+    }
+
+    protected final IPartitionList getFilter() {
+        if (filter == null) {
+            var filterBuilder = IPartitionList.builder();
+            filterBuilder.addAll(getConfig().keySet());
+            if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+                filterBuilder.fuzzyMode(this.getConfigManager().getSetting(Settings.FUZZY_MODE));
+            }
+            filter = filterBuilder.build();
+        }
+        return filter;
     }
 
     @Override
@@ -167,6 +187,8 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     private void updateState() {
+        filter = null; // rebuild the filter
+
         getMainNode().ifPresent((grid, node) -> {
             if (!this.isSleeping()) {
                 grid.getTickManager().wakeDevice(node);

@@ -4,19 +4,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
 import appeng.menu.implementations.IOBusMenu;
-import appeng.util.prioritylist.IPartitionList;
 
 public class ImportBusPart extends IOBusPart {
-    private StackImportStrategy importStrategies;
+    private StackImportStrategy importStrategy;
 
     public ImportBusPart(ItemStack is) {
         super(TickRates.ImportBus, is);
@@ -35,29 +31,21 @@ public class ImportBusPart extends IOBusPart {
             return TickRateModulation.IDLE;
         }
 
-        if (importStrategies == null) {
+        if (importStrategy == null) {
             var self = this.getHost().getBlockEntity();
             var fromPos = self.getBlockPos().relative(this.getSide());
             var fromSide = getSide().getOpposite();
-            importStrategies = StackWorldBehaviors.createImportFacade((ServerLevel) getLevel(), fromPos, fromSide);
+            importStrategy = StackWorldBehaviors.createImportFacade((ServerLevel) getLevel(), fromPos, fromSide);
         }
-
-        var filterBuilder = IPartitionList.builder();
-        filterBuilder.addAll(getConfig().keySet());
-        FuzzyMode fuzzyMode = null;
-        if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            filterBuilder.fuzzyMode(this.getConfigManager().getSetting(Settings.FUZZY_MODE));
-        }
-        var filter = filterBuilder.build();
 
         var context = new StackTransferContext(
                 grid.getStorageService().getInventory(),
                 grid.getEnergyService(),
                 this.source,
                 getOperationsPerTick(),
-                filter);
+                getFilter());
 
-        importStrategies.move(context);
+        importStrategy.transfer(context);
 
         return context.hasDoneWork() ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
     }

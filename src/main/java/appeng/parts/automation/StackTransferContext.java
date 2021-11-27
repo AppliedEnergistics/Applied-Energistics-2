@@ -75,6 +75,10 @@ class StackTransferContext {
         return filter.isEmpty() || filter.isListed(key);
     }
 
+    public IPartitionList getFilter() {
+        return filter;
+    }
+
     public boolean canInsert(AEItemKey what, long amount) {
         return internalStorage.insert(
                 what,

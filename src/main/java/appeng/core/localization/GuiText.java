@@ -32,12 +32,11 @@ public enum GuiText {
     VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
     TerminalViewCellsTooltip,
 
-    Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ImportBusFluids, ExportBus,
-    ExportBusFluids,
+    Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ExportBus,
 
     CompatibleUpgrades, CompatibleUpgrade, UpgradeToolbelt,
 
-    CellWorkbench, NetworkDetails, StorageCells, Interfaces, IOBuses, IOBusesFluids,
+    CellWorkbench, NetworkDetails, StorageCells, Interfaces, IOBuses,
 
     IOPort, BytesUsed, Types, QuantumLinkChamber, PortableCell,
 

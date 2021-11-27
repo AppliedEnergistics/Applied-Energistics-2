@@ -34,7 +34,6 @@ public final class InitUpgrades {
         // same upgrades
         String interfaceGroup = GuiText.Interface.getTranslationKey();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
-        String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
 
         // Interface
@@ -66,12 +65,6 @@ public final class InitUpgrades {
         Upgrades.CAPACITY.registerItem(AEParts.EXPORT_BUS, 2, itemIoBusGroup);
         Upgrades.SPEED.registerItem(AEParts.EXPORT_BUS, 4, itemIoBusGroup);
         Upgrades.CRAFTING.registerItem(AEParts.EXPORT_BUS, 1, itemIoBusGroup);
-
-        // Fluid Export Bus
-        Upgrades.CAPACITY.registerItem(AEParts.FLUID_EXPORT_BUS, 2, fluidIoBusGroup);
-        Upgrades.REDSTONE.registerItem(AEParts.FLUID_EXPORT_BUS, 1, fluidIoBusGroup);
-        Upgrades.SPEED.registerItem(AEParts.FLUID_EXPORT_BUS, 4, fluidIoBusGroup);
-        Upgrades.CRAFTING.registerItem(AEParts.FLUID_EXPORT_BUS, 1, fluidIoBusGroup);
 
         // Storage Cells
         Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_1K, 1, storageCellGroup);

@@ -14,9 +14,9 @@ public class StackImportFacade implements StackImportStrategy {
     }
 
     @Override
-    public boolean move(StackTransferContext context) {
+    public boolean transfer(StackTransferContext context) {
         for (var strategy : strategies) {
-            if (strategy.move(context)) {
+            if (strategy.transfer(context)) {
                 return true;
             }
         }
