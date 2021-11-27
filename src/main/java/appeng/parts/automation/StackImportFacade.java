@@ -3,8 +3,8 @@ package appeng.parts.automation;
 import java.util.List;
 
 /**
- * Simply iterates over a list of {@link StackImportStrategy} and exposes them as a single strategy.
- * First come, first serve.
+ * Simply iterates over a list of {@link StackImportStrategy} and exposes them as a single strategy. First come, first
+ * serve.
  */
 public class StackImportFacade implements StackImportStrategy {
     private final List<StackImportStrategy> strategies;

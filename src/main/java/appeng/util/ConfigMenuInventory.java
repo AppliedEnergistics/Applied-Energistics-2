@@ -11,7 +11,6 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEItemKey;
-import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.iface.GenericStackInv;
 
 /**

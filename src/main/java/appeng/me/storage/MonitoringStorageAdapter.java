@@ -1,5 +1,13 @@
 package appeng.me.storage;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitorListener;
@@ -7,13 +15,6 @@ import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.util.IVariantConversion;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public abstract class MonitoringStorageAdapter<V extends TransferVariant<?>>
         extends StorageAdapter<V> implements MEMonitorStorage, ITickingMonitor, IHandlerAdapter<Storage<V>> {

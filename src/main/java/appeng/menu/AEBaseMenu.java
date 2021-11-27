@@ -29,8 +29,6 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import appeng.api.storage.GenericStack;
-import appeng.menu.me.interaction.StackInteractions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
@@ -52,6 +50,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPart;
+import appeng.api.storage.GenericStack;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
@@ -59,6 +58,7 @@ import appeng.core.sync.packets.GuiDataSyncPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
@@ -533,7 +533,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                     fakeSlot.set(GenericStack.wrapInItemStack(emptyingAction.what(), emptyingAction.maxAmount()));
                 }
             }
-            break;
+                break;
             default:
                 break;
         }

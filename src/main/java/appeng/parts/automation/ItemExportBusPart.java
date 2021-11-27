@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-import appeng.api.networking.IGrid;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -36,12 +35,12 @@ import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.inventories.ItemTransfer;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;

@@ -1,19 +1,19 @@
 package appeng.parts.automation;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
+import appeng.core.settings.TickRates;
 import appeng.menu.implementations.IOBusMenu;
 import appeng.util.prioritylist.IPartitionList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.core.settings.TickRates;
 
 public class ImportBusPart extends IOBusPart {
     private StackImportStrategy importStrategies;
@@ -55,8 +55,7 @@ public class ImportBusPart extends IOBusPart {
                 grid.getEnergyService(),
                 this.source,
                 getOperationsPerTick(),
-                filter
-        );
+                filter);
 
         importStrategies.move(context);
 

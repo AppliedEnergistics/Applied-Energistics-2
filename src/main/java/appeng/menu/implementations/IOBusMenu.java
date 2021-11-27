@@ -18,7 +18,6 @@
 
 package appeng.menu.implementations;
 
-import appeng.parts.automation.ImportBusPart;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
@@ -29,6 +28,7 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalFakeSlot;
 import appeng.parts.automation.FluidExportBusPart;
 import appeng.parts.automation.IOBusPart;
+import appeng.parts.automation.ImportBusPart;
 import appeng.parts.automation.ItemExportBusPart;
 
 /**

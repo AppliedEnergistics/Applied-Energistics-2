@@ -18,11 +18,6 @@
 
 package appeng.parts.automation;
 
-import appeng.api.networking.IGrid;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
-import appeng.parts.PartModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -37,34 +32,37 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
+import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigInvHost;
+import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 import appeng.util.Platform;
 
 public abstract class IOBusPart extends UpgradeablePart implements IGridTickable, IConfigInvHost {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_has_channel"));
 
     private final ConfigInventory config;
     private final TickRates tickRates;

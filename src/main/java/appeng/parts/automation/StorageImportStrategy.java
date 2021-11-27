@@ -1,15 +1,9 @@
 package appeng.parts.automation;
 
-import appeng.api.config.Actionable;
-import appeng.api.storage.data.AEKey;
-import appeng.core.AELog;
-import appeng.util.IVariantConversion;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -17,16 +11,21 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
+import appeng.api.config.Actionable;
+import appeng.api.storage.data.AEKey;
+import appeng.core.AELog;
+import appeng.util.IVariantConversion;
+
 class StorageImportStrategy<V extends TransferVariant<?>> implements StackImportStrategy {
     private final BlockApiCache<Storage<V>, Direction> apiCache;
     private final Direction fromSide;
     private final IVariantConversion<V> conversion;
 
     public StorageImportStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
-                                 IVariantConversion<V> conversion,
-                                 ServerLevel level,
-                                 BlockPos fromPos,
-                                 Direction fromSide) {
+            IVariantConversion<V> conversion,
+            ServerLevel level,
+            BlockPos fromPos,
+            Direction fromSide) {
         this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
         this.fromSide = fromSide;
         this.conversion = conversion;
@@ -43,7 +42,8 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
             return false;
         }
 
-        long remainingTransferAmount = context.getOperationsRemaining() * (long) conversion.getKeySpace().transferFactor();
+        long remainingTransferAmount = context.getOperationsRemaining()
+                * (long) conversion.getKeySpace().transferFactor();
 
         var inv = context.getInternalStorage();
         try (var tx = Transaction.openOuter()) {
@@ -114,8 +114,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
                 IVariantConversion.ITEM,
                 level,
                 fromPos,
-                fromSide
-        );
+                fromSide);
     }
 
     public static StackImportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
@@ -124,7 +123,6 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
                 IVariantConversion.FLUID,
                 level,
                 fromPos,
-                fromSide
-        );
+                fromSide);
     }
 }

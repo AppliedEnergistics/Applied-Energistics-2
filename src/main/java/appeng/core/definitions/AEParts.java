@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import appeng.parts.automation.ImportBusPart;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -43,6 +42,7 @@ import appeng.parts.automation.FluidExportBusPart;
 import appeng.parts.automation.FluidFormationPlanePart;
 import appeng.parts.automation.FluidLevelEmitterPart;
 import appeng.parts.automation.IdentityAnnihilationPlanePart;
+import appeng.parts.automation.ImportBusPart;
 import appeng.parts.automation.ItemExportBusPart;
 import appeng.parts.automation.ItemFormationPlanePart;
 import appeng.parts.automation.ItemLevelEmitterPart;

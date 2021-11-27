@@ -1,14 +1,15 @@
 package appeng.parts.automation;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
 
 public final class StackWorldBehaviors {
     private static final Map<AEKeySpace, ImportStrategyFactory> importStrategies = new IdentityHashMap<>();

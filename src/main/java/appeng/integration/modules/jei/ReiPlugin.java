@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
-import me.shedaniel.rei.api.common.plugins.PluginManager;
-import me.shedaniel.rei.api.common.registry.ReloadStage;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;

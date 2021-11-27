@@ -759,7 +759,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.IRON_INGOT)
                 .define('c', Items.STICKY_PISTON)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_import_bus"));
+                .save(consumer, AppEng.makeId("network/parts/import_bus"));
         ShapelessRecipeBuilder.shapeless(AEParts.ITEM_LEVEL_EMITTER)
                 .requires(Items.REDSTONE_TORCH)
                 .requires(AEItems.CALCULATION_PROCESSOR)

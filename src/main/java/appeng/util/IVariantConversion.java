@@ -2,12 +2,11 @@ package appeng.util;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.AEKeySpaces;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;

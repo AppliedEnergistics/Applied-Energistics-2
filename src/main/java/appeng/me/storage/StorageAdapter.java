@@ -1,18 +1,18 @@
 package appeng.me.storage;
 
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+
 import appeng.api.config.Actionable;
-import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.util.IVariantConversion;
 import appeng.util.Platform;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-
-import javax.annotation.Nullable;
-import java.util.Objects;
 
 /**
  * Adapts platform storage to {@link MEStorage} without monitoring capabilities.

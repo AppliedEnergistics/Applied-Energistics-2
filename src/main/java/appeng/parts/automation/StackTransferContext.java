@@ -1,17 +1,16 @@
 package appeng.parts.automation;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.AEKeySpaces;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.util.prioritylist.IPartitionList;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Context for stack transfer operations, regardless of whether they occur in or out of the network.
@@ -25,8 +24,9 @@ class StackTransferContext {
     private final int initialOperations;
     private int operationsRemaining;
 
-    public StackTransferContext(MEStorage internalStorage, IEnergySource energySource, IActionSource actionSource, int operationsRemaining,
-                                IPartitionList filter) {
+    public StackTransferContext(MEStorage internalStorage, IEnergySource energySource, IActionSource actionSource,
+            int operationsRemaining,
+            IPartitionList filter) {
         this.internalStorage = internalStorage;
         this.energySource = energySource;
         this.actionSource = actionSource;
@@ -87,4 +87,3 @@ class StackTransferContext {
         operationsRemaining -= inserted;
     }
 }
-

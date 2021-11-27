@@ -23,9 +23,9 @@
 
 package appeng.api.storage;
 
-import appeng.api.util.IConfigurableObject;
-
 import javax.annotation.Nullable;
+
+import appeng.api.util.IConfigurableObject;
 
 public interface ITerminalHost extends IConfigurableObject, ISubMenuHost {
     @Nullable
