@@ -60,11 +60,6 @@ public final class InitUpgrades {
         Upgrades.CAPACITY.registerItem(AEParts.IMPORT_BUS, 2, itemIoBusGroup);
         Upgrades.SPEED.registerItem(AEParts.IMPORT_BUS, 4, itemIoBusGroup);
 
-        // Fluid Import Bus
-        Upgrades.CAPACITY.registerItem(AEParts.FLUID_IMPORT_BUS, 2, fluidIoBusGroup);
-        Upgrades.REDSTONE.registerItem(AEParts.FLUID_IMPORT_BUS, 1, fluidIoBusGroup);
-        Upgrades.SPEED.registerItem(AEParts.FLUID_IMPORT_BUS, 4, fluidIoBusGroup);
-
         // Export Bus
         Upgrades.FUZZY.registerItem(AEParts.EXPORT_BUS, 1, itemIoBusGroup);
         Upgrades.REDSTONE.registerItem(AEParts.EXPORT_BUS, 1, itemIoBusGroup);

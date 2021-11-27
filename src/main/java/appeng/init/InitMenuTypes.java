@@ -101,9 +101,8 @@ public final class InitMenuTypes {
                 StorageBusMenu.ITEM_TYPE,
                 StorageBusMenu.FLUID_TYPE,
                 IOBusMenu.ITEM_EXPORT_TYPE,
-                IOBusMenu.ITEM_IMPORT_TYPE,
+                IOBusMenu.IMPORT_TYPE,
                 IOBusMenu.FLUID_EXPORT_TYPE,
-                IOBusMenu.FLUID_IMPORT_TYPE,
                 VibrationChamberMenu.TYPE,
                 WirelessMenu.TYPE);
     }

@@ -81,10 +81,14 @@ public record GenericStack(AEKey what, long amount) {
 
     public static ItemStack wrapInItemStack(@Nullable GenericStack stack) {
         if (stack != null) {
-            return WrappedGenericStack.wrap(stack.what(), stack.amount());
+            return wrapInItemStack(stack.what(), stack.amount());
         } else {
             return ItemStack.EMPTY;
         }
+    }
+
+    public static ItemStack wrapInItemStack(AEKey what, long amount) {
+        return WrappedGenericStack.wrap(what, amount);
     }
 
     public static boolean isWrapped(ItemStack stack) {

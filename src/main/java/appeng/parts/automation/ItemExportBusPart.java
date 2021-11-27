@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import appeng.api.networking.IGrid;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -52,7 +53,7 @@ import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
 
-public class ItemExportBusPart extends ExportBusPart<AEItemKey, Storage<ItemVariant>> {
+public class ItemExportBusPart extends ExportBusPart<Storage<ItemVariant>> {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_export_bus_base");
 
@@ -76,11 +77,6 @@ public class ItemExportBusPart extends ExportBusPart<AEItemKey, Storage<ItemVari
     }
 
     @Override
-    protected AEKeySpace getChannel() {
-        return AEKeySpace.items();
-    }
-
-    @Override
     protected MenuType<?> getMenuType() {
         return IOBusMenu.ITEM_EXPORT_TYPE;
     }
@@ -94,65 +90,62 @@ public class ItemExportBusPart extends ExportBusPart<AEItemKey, Storage<ItemVari
     }
 
     @Override
-    protected TickRateModulation doBusWork() {
+    protected TickRateModulation doBusWork(IGrid grid) {
         if (!this.canDoBusWork()) {
             return TickRateModulation.IDLE;
         }
 
-        this.itemToSend = this.calculateAmountPerTick();
+        this.itemToSend = this.getOperationsPerTick();
         this.didSomething = false;
 
-        var grid = getMainNode().getGrid();
-        if (grid != null) {
-            var destination = this.getHandler();
-            var inv = grid.getStorageService().getInventory();
-            var energy = grid.getEnergyService();
-            var cg = grid.getCraftingService();
-            var fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
-            var schedulingMode = this.getConfigManager().getSetting(Settings.SCHEDULING_MODE);
+        var destination = this.getHandler();
+        var inv = grid.getStorageService().getInventory();
+        var energy = grid.getEnergyService();
+        var cg = grid.getCraftingService();
+        var fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
+        var schedulingMode = this.getConfigManager().getSetting(Settings.SCHEDULING_MODE);
 
-            if (destination != null) {
-                int x = 0;
+        if (destination != null) {
+            int x = 0;
 
-                for (x = 0; x < this.availableSlots() && this.itemToSend > 0; x++) {
-                    final int slotToExport = this.getStartingSlot(schedulingMode, x);
+            for (x = 0; x < this.availableSlots() && this.itemToSend > 0; x++) {
+                final int slotToExport = this.getStartingSlot(schedulingMode, x);
 
-                    if (!(this.getConfig().getKey(slotToExport) instanceof AEItemKey what)) {
-                        continue;
-                    }
-
-                    if (this.itemToSend <= 0 || this.craftOnly()) {
-                        if (this.isCraftingEnabled()) {
-                            requestCrafting(cg, slotToExport, what);
-                        }
-                        continue;
-                    }
-
-                    final long before = this.itemToSend;
-
-                    if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-                        for (var o : ImmutableList
-                                .copyOf(inv.getCachedAvailableStacks().findFuzzy(what, fzMode))) {
-                            if (o.getKey() instanceof AEItemKey itemKey) {
-                                this.pushItemIntoTarget(destination, energy, inv, itemKey);
-                            }
-                            if (this.itemToSend <= 0) {
-                                break;
-                            }
-                        }
-                    } else {
-                        this.pushItemIntoTarget(destination, energy, inv, what);
-                    }
-
-                    if (this.itemToSend == before && this.isCraftingEnabled()) {
-                        requestCrafting(cg, slotToExport, what);
-                    }
+                if (!(this.getConfig().getKey(slotToExport) instanceof AEItemKey what)) {
+                    continue;
                 }
 
-                this.updateSchedulingMode(schedulingMode, x);
-            } else {
-                return TickRateModulation.SLEEP;
+                if (this.itemToSend <= 0 || this.craftOnly()) {
+                    if (this.isCraftingEnabled()) {
+                        requestCrafting(cg, slotToExport, what);
+                    }
+                    continue;
+                }
+
+                final long before = this.itemToSend;
+
+                if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+                    for (var o : ImmutableList
+                            .copyOf(inv.getCachedAvailableStacks().findFuzzy(what, fzMode))) {
+                        if (o.getKey() instanceof AEItemKey itemKey) {
+                            this.pushItemIntoTarget(destination, energy, inv, itemKey);
+                        }
+                        if (this.itemToSend <= 0) {
+                            break;
+                        }
+                    }
+                } else {
+                    this.pushItemIntoTarget(destination, energy, inv, what);
+                }
+
+                if (this.itemToSend == before && this.isCraftingEnabled()) {
+                    requestCrafting(cg, slotToExport, what);
+                }
             }
+
+            this.updateSchedulingMode(schedulingMode, x);
+        } else {
+            return TickRateModulation.SLEEP;
         }
 
         return this.didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;

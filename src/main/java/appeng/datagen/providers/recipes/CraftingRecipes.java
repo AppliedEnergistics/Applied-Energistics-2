@@ -692,15 +692,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.dye(DyeColor.GREEN))
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/fluid_formation_plane_alt"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_IMPORT_BUS)
-                .pattern("lal")
-                .pattern("bcb")
-                .define('a', AEItems.ANNIHILATION_CORE)
-                .define('b', ConventionTags.IRON_INGOT)
-                .define('c', Items.STICKY_PISTON)
-                .define('l', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_import_bus"));
         ShapelessRecipeBuilder.shapeless(AEParts.FLUID_LEVEL_EMITTER)
                 .requires(Items.REDSTONE_TORCH)
                 .requires(ConventionTags.dye(DyeColor.GREEN))

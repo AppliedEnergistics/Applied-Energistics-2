@@ -25,14 +25,14 @@ import appeng.util.Platform;
  * Generalized base class for export buses that move stacks from network storage to an adjacent block using a non-AE
  * API.
  */
-public abstract class ExportBusPart<T extends AEKey, A> extends IOBusPart implements ICraftingRequester {
+public abstract class ExportBusPart<A> extends IOBusPart implements ICraftingRequester {
     protected final PartAdjacentApi<A> adjacentExternalApi;
     private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker(this, 9);
     private int nextSlot = 0;
 
     public ExportBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup,
             AEKeyFilter configFilter) {
-        super(tickRates, is, configFilter);
+        super(tickRates, is);
         this.adjacentExternalApi = new PartAdjacentApi<>(this, apiLookup);
         getMainNode().addService(ICraftingRequester.class, this);
 
@@ -54,7 +54,7 @@ public abstract class ExportBusPart<T extends AEKey, A> extends IOBusPart implem
         extra.putInt("nextSlot", this.nextSlot);
     }
 
-    protected final boolean requestCrafting(ICraftingService cg, int configSlot, T what, long amount) {
+    protected final boolean requestCrafting(ICraftingService cg, int configSlot, AEKey what, long amount) {
         return this.craftingTracker.handleCrafting(configSlot, what, amount,
                 this.getBlockEntity().getLevel(), cg, this.source);
     }

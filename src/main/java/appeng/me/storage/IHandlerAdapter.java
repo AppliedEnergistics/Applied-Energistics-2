@@ -1,5 +1,5 @@
 package appeng.me.storage;
 
 public interface IHandlerAdapter<A> {
-    void setHandler(A newHandler);
+    void setStorage(A newHandler);
 }

@@ -35,7 +35,7 @@ import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.helpers.iface.GenericStackInvStorage;
-import appeng.me.storage.StorageAdapter;
+import appeng.me.storage.MonitoringStorageAdapter;
 import appeng.util.IVariantConversion;
 
 public class DualityItemInterface extends DualityInterface {
@@ -93,7 +93,7 @@ public class DualityItemInterface extends DualityInterface {
     /**
      * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
      */
-    private class InterfaceInventory extends StorageAdapter<ItemVariant>
+    private class InterfaceInventory extends MonitoringStorageAdapter<ItemVariant>
             implements MEMonitorStorage {
 
         InterfaceInventory() {

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import appeng.parts.automation.ImportBusPart;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -40,12 +41,10 @@ import appeng.parts.automation.EnergyLevelEmitterPart;
 import appeng.parts.automation.FluidAnnihilationPlanePart;
 import appeng.parts.automation.FluidExportBusPart;
 import appeng.parts.automation.FluidFormationPlanePart;
-import appeng.parts.automation.FluidImportBusPart;
 import appeng.parts.automation.FluidLevelEmitterPart;
 import appeng.parts.automation.IdentityAnnihilationPlanePart;
 import appeng.parts.automation.ItemExportBusPart;
 import appeng.parts.automation.ItemFormationPlanePart;
-import appeng.parts.automation.ItemImportBusPart;
 import appeng.parts.automation.ItemLevelEmitterPart;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.misc.CableAnchorPart;
@@ -101,8 +100,7 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<DarkPanelPart>> DARK_MONITOR = createPart(AEPartIds.DARK_MONITOR, DarkPanelPart.class, DarkPanelPart::new);
     public static final ItemDefinition<PartItem<ItemStorageBusPart>> ITEM_STORAGE_BUS = createPart(AEPartIds.ITEM_STORAGE_BUS, ItemStorageBusPart.class, ItemStorageBusPart::new);
     public static final ItemDefinition<PartItem<FluidStorageBusPart>> FLUID_STORAGE_BUS = createPart(AEPartIds.FLUID_STORAGE_BUS, FluidStorageBusPart.class, FluidStorageBusPart::new);
-    public static final ItemDefinition<PartItem<ItemImportBusPart>> IMPORT_BUS = createPart(AEPartIds.ITEM_IMPORT_BUS, ItemImportBusPart.class, ItemImportBusPart::new);
-    public static final ItemDefinition<PartItem<FluidImportBusPart>> FLUID_IMPORT_BUS = createPart(AEPartIds.FLUID_IMPORT_BUS, FluidImportBusPart.class, FluidImportBusPart::new);
+    public static final ItemDefinition<PartItem<ImportBusPart>> IMPORT_BUS = createPart(AEPartIds.IMPORT_BUS, ImportBusPart.class, ImportBusPart::new);
     public static final ItemDefinition<PartItem<ItemExportBusPart>> EXPORT_BUS = createPart(AEPartIds.ITEM_EXPORT_BUS, ItemExportBusPart.class, ItemExportBusPart::new);
     public static final ItemDefinition<PartItem<FluidExportBusPart>> FLUID_EXPORT_BUS = createPart(AEPartIds.FLUID_EXPORT_BUS, FluidExportBusPart.class, FluidExportBusPart::new);
     public static final ItemDefinition<PartItem<ItemLevelEmitterPart>> ITEM_LEVEL_EMITTER = createPart(AEPartIds.ITEM_LEVEL_EMITTER, ItemLevelEmitterPart.class, ItemLevelEmitterPart::new);

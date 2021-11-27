@@ -22,9 +22,7 @@ public enum TickRates {
 
     Interface(5, 120),
 
-    ItemImportBus(5, 40),
-
-    FluidImportBus(5, 40),
+    ImportBus(5, 40),
 
     ItemExportBus(5, 60),
 

@@ -2,6 +2,8 @@ package appeng.util;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.AEKeySpaces;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -15,6 +17,8 @@ public interface IVariantConversion<V extends TransferVariant<?>> {
     IVariantConversion<ItemVariant> ITEM = new Item();
     IVariantConversion<FluidVariant> FLUID = new Fluid();
 
+    AEKeySpace getKeySpace();
+
     V getVariant(@Nullable AEKey key);
 
     @Nullable
@@ -27,6 +31,11 @@ public interface IVariantConversion<V extends TransferVariant<?>> {
     long getBaseSlotSize(V variant);
 
     class Fluid implements IVariantConversion<FluidVariant> {
+        @Override
+        public AEKeySpace getKeySpace() {
+            return AEKeySpace.fluids();
+        }
+
         @Override
         public FluidVariant getVariant(AEKey key) {
             return key instanceof AEFluidKey fluidKey ? fluidKey.toVariant() : FluidVariant.blank();
@@ -44,6 +53,11 @@ public interface IVariantConversion<V extends TransferVariant<?>> {
     }
 
     class Item implements IVariantConversion<ItemVariant> {
+        @Override
+        public AEKeySpace getKeySpace() {
+            return AEKeySpace.items();
+        }
+
         @Override
         public ItemVariant getVariant(AEKey key) {
             return key instanceof AEItemKey itemKey ? itemKey.toVariant() : ItemVariant.blank();

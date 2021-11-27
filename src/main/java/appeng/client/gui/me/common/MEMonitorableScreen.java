@@ -517,7 +517,7 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
                     renderTooltip(poseStack, List.of(
                             new TextComponent("Left-Click: Store ").append(carried.getHoverName())
                                     .withStyle(ChatFormatting.GRAY).getVisualOrderText(),
-                            new TextComponent("Right-Click: ").append(emptyingAction.description())
+                            new TextComponent("Right-Click: Store ").append(emptyingAction.description())
                                     .withStyle(ChatFormatting.GRAY).getVisualOrderText()),
                             x, y);
                     return;

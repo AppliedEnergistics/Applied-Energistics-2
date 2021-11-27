@@ -36,7 +36,7 @@ import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.helpers.iface.GenericStackInvStorage;
-import appeng.me.storage.StorageAdapter;
+import appeng.me.storage.MonitoringStorageAdapter;
 import appeng.util.IVariantConversion;
 
 public class DualityFluidInterface extends DualityInterface {
@@ -83,7 +83,7 @@ public class DualityFluidInterface extends DualityInterface {
         return localStorage;
     }
 
-    private class InterfaceInventory extends StorageAdapter<FluidVariant> implements MEMonitorStorage {
+    private class InterfaceInventory extends MonitoringStorageAdapter<FluidVariant> {
 
         InterfaceInventory() {
             super(IVariantConversion.FLUID,

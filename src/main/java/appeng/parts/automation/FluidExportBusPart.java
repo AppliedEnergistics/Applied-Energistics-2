@@ -20,6 +20,7 @@ package appeng.parts.automation;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.networking.IGrid;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -42,7 +43,7 @@ import appeng.items.parts.PartModels;
 import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
 
-public class FluidExportBusPart extends ExportBusPart<AEFluidKey, Storage<FluidVariant>> {
+public class FluidExportBusPart extends ExportBusPart<Storage<FluidVariant>> {
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_export_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
@@ -59,24 +60,18 @@ public class FluidExportBusPart extends ExportBusPart<AEFluidKey, Storage<FluidV
     }
 
     @Override
-    protected AEKeySpace getChannel() {
-        return AEKeySpace.fluids();
-    }
-
-    @Override
     protected MenuType<?> getMenuType() {
         return IOBusMenu.FLUID_EXPORT_TYPE;
     }
 
     @Override
-    protected TickRateModulation doBusWork() {
+    protected TickRateModulation doBusWork(IGrid grid) {
         if (!this.canDoBusWork()) {
             return TickRateModulation.IDLE;
         }
 
         var fh = adjacentExternalApi.find();
-        var grid = getMainNode().getGrid();
-        if (fh == null || grid == null) {
+        if (fh == null) {
             return TickRateModulation.SLEEP;
         }
 
@@ -85,7 +80,7 @@ public class FluidExportBusPart extends ExportBusPart<AEFluidKey, Storage<FluidV
         for (int i = 0; i < this.getConfig().size(); i++) {
             var what = this.getConfig().getKey(i);
             if (what instanceof AEFluidKey fluidKey) {
-                var amount = this.calculateAmountPerTick();
+                var amount = this.getOperationsPerTick();
 
                 var extracted = inv.extract(what, amount, Actionable.SIMULATE, this.source);
                 if (extracted > 0) {

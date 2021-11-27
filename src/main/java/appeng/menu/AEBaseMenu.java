@@ -29,6 +29,8 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
+import appeng.api.storage.GenericStack;
+import appeng.menu.me.interaction.StackInteractions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
@@ -525,6 +527,13 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 }
 
                 break;
+            case EMPTY_ITEM: {
+                var emptyingAction = StackInteractions.getEmptyingAction(hand);
+                if (emptyingAction != null) {
+                    fakeSlot.set(GenericStack.wrapInItemStack(emptyingAction.what(), emptyingAction.maxAmount()));
+                }
+            }
+            break;
             default:
                 break;
         }

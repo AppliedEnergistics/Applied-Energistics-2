@@ -133,8 +133,7 @@ public final class InitScreens {
         register(InterfaceMenu.ITEM_TYPE, InterfaceScreen::new, "/screens/item_interface.json");
         register(InterfaceMenu.FLUID_TYPE, InterfaceScreen::new, "/screens/fluid_interface.json");
         register(IOBusMenu.ITEM_EXPORT_TYPE, IOBusScreen::new, "/screens/item_export_bus.json");
-        register(IOBusMenu.ITEM_IMPORT_TYPE, IOBusScreen::new, "/screens/item_import_bus.json");
-        register(IOBusMenu.FLUID_IMPORT_TYPE, IOBusScreen::new, "/screens/fluid_import_bus.json");
+        register(IOBusMenu.IMPORT_TYPE, IOBusScreen::new, "/screens/import_bus.json");
         register(IOBusMenu.FLUID_EXPORT_TYPE, IOBusScreen::new, "/screens/fluid_export_bus.json");
         register(IOPortMenu.TYPE, IOPortScreen::new, "/screens/io_port.json");
         register(StorageBusMenu.ITEM_TYPE, StorageBusScreen::new, "/screens/item_storage_bus.json");

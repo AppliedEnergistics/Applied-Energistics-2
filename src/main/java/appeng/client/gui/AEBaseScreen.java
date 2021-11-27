@@ -18,48 +18,6 @@
 
 package appeng.client.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.ArrayListMultimap;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.InputConstants.Key;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ComponentRenderUtils;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.client.AEStackRendering;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEFluidKey;
@@ -83,6 +41,8 @@ import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
+import appeng.menu.me.interaction.EmptyingAction;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
@@ -90,6 +50,45 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.FluidTankSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.ArrayListMultimap;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.InputConstants.Key;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.lwjgl.glfw.GLFW;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
 
@@ -262,11 +261,43 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     /**
+     * Get the potential result of emptying an item for the purposes of setting a filter.
+     * Null even if the item could be emptied, but the filter doesn't support the resulting key.
+     */
+    private EmptyingAction getEmptyActionForFilter(FakeSlot fakeSlot, ItemStack carried) {
+        if (carried.isEmpty()) {
+            return null;
+        }
+
+        // See if we should offer the left-/right-click differentiation for setting a different filter
+        var emptyingAction = StackInteractions.getEmptyingAction(menu.getCarried());
+        if (emptyingAction != null) {
+            if (fakeSlot.canSetFilterTo(GenericStack.wrapInItemStack(new GenericStack(emptyingAction.what(), 1)))) {
+                return emptyingAction;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Renders a potential tooltip (from one of the possible tooltip sources)
      */
     private void renderTooltips(PoseStack poseStack, int mouseX, int mouseY) {
         // For fluid tanks, we want custom tooltips that show amount/capacity
-        if (this.hoveredSlot instanceof AppEngSlot appEngSlot) {
+        if (this.hoveredSlot instanceof FakeSlot fakeSlot) {
+            // See if we should offer the left-/right-click differentiation for setting a different filter
+            var emptyingAction = getEmptyActionForFilter(fakeSlot, menu.getCarried());
+            if (emptyingAction != null) {
+                renderTooltip(poseStack, List.of(
+                                new TextComponent("Left-Click: Set ").append(menu.getCarried().getHoverName())
+                                        .withStyle(ChatFormatting.GRAY).getVisualOrderText(),
+                                new TextComponent("Right-Click: Set ").append(emptyingAction.description())
+                                        .withStyle(ChatFormatting.GRAY).getVisualOrderText()),
+                        mouseX, mouseY);
+                return;
+            }
+        } else if (this.hoveredSlot instanceof AppEngSlot appEngSlot) {
             var customTooltip = appEngSlot.getCustomTooltip(this::getTooltipFromItem, menu.getCarried());
             if (customTooltip != null) {
                 this.renderTooltip(poseStack, customTooltip, Optional.empty(), mouseX, mouseY);
@@ -298,7 +329,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     protected void drawGuiSlot(PoseStack poseStack, CustomSlotWidget slot, int mouseX, int mouseY,
-            float partialTicks) {
+                               float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.getTooltipAreaX();
             final int top = slot.getTooltipAreaY();
@@ -398,7 +429,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     protected final void renderBg(PoseStack poseStack, final float f, final int x,
-            final int y) {
+                                  final int y) {
 
         this.drawBG(poseStack, leftPos, topPos, x, y, f);
 
@@ -514,19 +545,23 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     protected void slotClicked(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-            final ClickType clickType) {
+                               final ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
             return;
         }
 
-        if (slot instanceof FakeSlot) {
+        if (slot instanceof FakeSlot fakeSlot) {
+            if (this.drag_click.size() > 1) {
+                return;
+            }
+
             var action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                     : InventoryAction.PICKUP_OR_SET_DOWN;
 
-            if (this.drag_click.size() > 1) {
-                return;
+            if (mouseButton == 1 && getEmptyActionForFilter(fakeSlot, menu.getCarried()) != null) {
+                action = InventoryAction.EMPTY_ITEM;
             }
 
             var p = new InventoryActionPacket(action, slotIdx, 0);
@@ -665,7 +700,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks) {
+                       float partialTicks) {
         if (style.getBackground() != null) {
             style.getBackground().dest(offsetX, offsetY).blit(poseStack, getBlitOffset());
         }
@@ -721,9 +756,9 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         int iconHeightRemainder = filledHeight % stepHeight;
         for (int i = 0; i < filledHeight / stepHeight; i++) {
             blitter.dest(slot.x,
-                    slot.y + slot.getHeight() - iconHeightRemainder - (i + 1) * stepHeight,
-                    stepHeight,
-                    stepHeight)
+                            slot.y + slot.getHeight() - iconHeightRemainder - (i + 1) * stepHeight,
+                            stepHeight,
+                            stepHeight)
                     .blit(poseStack, getBlitOffset());
         }
         // Draw the remainder last because it modifies the blitter

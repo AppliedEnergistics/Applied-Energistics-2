@@ -34,7 +34,7 @@ import appeng.api.storage.MEStorage;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
-import appeng.me.storage.StorageAdapter;
+import appeng.me.storage.MonitoringStorageAdapter;
 import appeng.menu.implementations.StorageBusMenu;
 import appeng.parts.PartModel;
 import appeng.util.IVariantConversion;
@@ -68,7 +68,7 @@ public class ItemStorageBusPart extends AbstractStorageBusPart<Storage<ItemVaria
     @Override
     protected MEStorage adaptExternalApi(Storage<ItemVariant> handler, boolean extractableOnly,
             Runnable alertDevice) {
-        return new StorageAdapter<>(IVariantConversion.ITEM, handler, extractableOnly) {
+        return new MonitoringStorageAdapter<>(IVariantConversion.ITEM, handler, extractableOnly) {
             @Override
             protected void onInjectOrExtract() {
                 alertDevice.run();

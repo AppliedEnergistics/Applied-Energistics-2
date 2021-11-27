@@ -102,16 +102,6 @@ public class ConfigMenuInventory implements InternalInventory {
             }
         }
 
-        // Give the storage channel a chance to modify the player's cursor item into a suitable filter/config item
-        // Automatic conversion of the player's cursor is only allowed in configuration inventories, because
-        // this would otherwise void the container item
-        if (inv.getMode() != ConfigInventory.Mode.STORAGE) {
-            var containedStack = FluidContainerHelper.getContainedStack(stack);
-            if (containedStack != null && inv.isAllowed(containedStack.what())) {
-                return containedStack;
-            }
-        }
-
         // Try items last
         var what = AEItemKey.of(stack);
         if (inv.isAllowed(what)) {

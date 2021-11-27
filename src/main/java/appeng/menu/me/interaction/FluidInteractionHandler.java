@@ -13,7 +13,7 @@ public class FluidInteractionHandler implements StackInteractionHandler {
             return null;
         }
 
-        var description = new TextComponent("Store ").append(fluidStack.what().getDisplayName());
-        return new EmptyingAction(description, fluidStack.what());
+        var description = fluidStack.what().getDisplayName();
+        return new EmptyingAction(description, fluidStack.what(), fluidStack.amount());
     }
 }

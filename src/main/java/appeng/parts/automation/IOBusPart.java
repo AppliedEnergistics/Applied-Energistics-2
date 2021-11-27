@@ -18,8 +18,14 @@
 
 package appeng.parts.automation;
 
+import appeng.api.networking.IGrid;
+import appeng.api.parts.IPartModel;
+import appeng.core.AppEng;
+import appeng.items.parts.PartModels;
+import appeng.parts.PartModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -49,19 +55,27 @@ import appeng.util.Platform;
 
 public abstract class IOBusPart extends UpgradeablePart implements IGridTickable, IConfigInvHost {
 
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_base");
+    @PartModels
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_off"));
+    @PartModels
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_on"));
+    @PartModels
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/item_import_bus_has_channel"));
+
     private final ConfigInventory config;
-
     private final TickRates tickRates;
-
     protected final IActionSource source;
-
     private boolean lastRedstone = false;
 
-    public IOBusPart(TickRates tickRates, ItemStack is, AEKeyFilter configFilter) {
+    public IOBusPart(TickRates tickRates, ItemStack is) {
         super(is);
         this.tickRates = tickRates;
         this.source = new MachineSource(this);
-        this.config = ConfigInventory.configTypes(configFilter, 9, this::updateState);
+        this.config = ConfigInventory.configTypes(StackWorldBehaviors.supportedFilter(), 9, this::updateState);
         getMainNode().addService(IGridTickable.class, this);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -77,8 +91,6 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     public float getCableConnectionLength(AECableType cable) {
         return 5;
     }
-
-    protected abstract AEKeySpace getChannel();
 
     /**
      * All export and import bus parts have a configuration ui.
@@ -113,7 +125,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
             if (this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE) {
-                this.doBusWork();
+                getMainNode().ifPresent(this::doBusWork);
             }
         }
     }
@@ -122,20 +134,19 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         return Math.min(1 + getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().size());
     }
 
-    protected int calculateAmountPerTick() {
-        var multiplier = switch (getInstalledUpgrades(Upgrades.SPEED)) {
+    protected int getOperationsPerTick() {
+        return switch (getInstalledUpgrades(Upgrades.SPEED)) {
             default -> 1;
             case 1 -> 8;
             case 2 -> 32;
             case 3 -> 64;
             case 4 -> 96;
         };
-        return multiplier * getChannel().transferFactor();
     }
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.doBusWork();
+        return this.doBusWork(node.getGrid());
     }
 
     /**
@@ -180,6 +191,6 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         return new TickingRequest(tickRates.getMin(), tickRates.getMax(), isSleeping(), false);
     }
 
-    protected abstract TickRateModulation doBusWork();
+    protected abstract TickRateModulation doBusWork(IGrid grid);
 
 }

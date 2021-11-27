@@ -289,7 +289,7 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
 
         if (!forceFullUpdate && wasInventory && foundExternalApi != null) {
             // Just update the inventory reference, the ticking monitor will take care of the rest.
-            ((IHandlerAdapter<A>) this.handler.getDelegate()).setHandler(foundExternalApi);
+            ((IHandlerAdapter<A>) this.handler.getDelegate()).setStorage(foundExternalApi);
         } else if (!forceFullUpdate && foundMonitor == this.handler.getDelegate()) {
             // Monitor didn't change, nothing to do!
         } else {
