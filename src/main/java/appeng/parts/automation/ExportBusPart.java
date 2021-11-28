@@ -56,7 +56,7 @@ import javax.annotation.Nullable;
  * Generalized base class for export buses that move stacks from network storage to an adjacent block using a non-AE
  * API.
  */
-public class ExportBusPart<A> extends IOBusPart implements ICraftingRequester {
+public class ExportBusPart extends IOBusPart implements ICraftingRequester {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/export_bus_base");
 

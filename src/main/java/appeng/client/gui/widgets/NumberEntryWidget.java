@@ -24,6 +24,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
@@ -57,7 +58,9 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     private static final int TEXT_COLOR_NORMAL = 0xFFFFFF;
 
     private final ConfirmableTextField textField;
-    private final NumberEntryType type;
+    private NumberEntryType type;
+    private Button[] minusButtons;
+    private Button[] plusButtons;
     private List<Button> buttons;
     private long minValue;
     private ValidationIcon validationIcon;
@@ -155,11 +158,13 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         int top = bounds.getY() + this.bounds.getY();
 
         List<Button> buttons = new ArrayList<>(9);
+        this.plusButtons = new Button[4];
+        this.minusButtons = new Button[4];
 
-        buttons.add(new Button(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(a)));
-        buttons.add(new Button(left + 28, top, 28, 20, makeLabel(PLUS, b), btn -> addQty(b)));
-        buttons.add(new Button(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(c)));
-        buttons.add(new Button(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(d)));
+        buttons.add(plusButtons[0] = new Button(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(1)));
+        buttons.add(plusButtons[1] = new Button(left + 28, top, 28, 20, makeLabel(PLUS, b), btn -> addQty(2)));
+        buttons.add(plusButtons[2] = new Button(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(3)));
+        buttons.add(plusButtons[3] = new Button(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(4)));
 
         // Need to add these now for sensible tab-order
         buttons.forEach(addWidget);
@@ -170,10 +175,10 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         screen.setInitialFocus(this.textField);
         addWidget.accept(this.textField);
 
-        buttons.add(new Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-a)));
-        buttons.add(new Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-b)));
-        buttons.add(new Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, c), btn -> addQty(-c)));
-        buttons.add(new Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, d), btn -> addQty(-d)));
+        buttons.add(minusButtons[0] = new Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-1)));
+        buttons.add(minusButtons[1] = new Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-2)));
+        buttons.add(minusButtons[2] = new Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, c), btn -> addQty(-3)));
+        buttons.add(minusButtons[3] = new Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, d), btn -> addQty(-4)));
 
         // This element is not focusable
         if (!hideValidationIcon) {
@@ -236,8 +241,13 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         validate();
     }
 
-    private void addQty(final long i) {
-        getLongValue().ifPresent(currentValue -> setValue(currentValue + i));
+    private void addQty(int i) {
+        Preconditions.checkArgument(Math.abs(i) >= 1 && Math.abs(i) <= 4);
+
+        var steps = AEConfig.instance().getNumberEntrySteps(type);
+        var step = steps[Math.absExact(i) - 1];
+        var delta = i < 0 ? - step : step;
+        getLongValue().ifPresent(currentValue -> setValue(currentValue + delta));
     }
 
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
@@ -273,4 +283,20 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         this.hideValidationIcon = hideValidationIcon;
     }
 
+    public NumberEntryType getType() {
+        return type;
+    }
+
+    public void setType(NumberEntryType type) {
+        if (this.type == type) {
+            return;
+        }
+        this.type = type;
+
+        var steps = AEConfig.instance().getNumberEntrySteps(type);
+        for (int i = 0; i < steps.length; i++) {
+            minusButtons[i].setMessage(makeLabel(MINUS, steps[i]));
+            plusButtons[i].setMessage(makeLabel(PLUS, steps[i]));
+        }
+    }
 }

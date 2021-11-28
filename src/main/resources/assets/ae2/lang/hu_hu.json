@@ -186,7 +186,7 @@
   "gui.ae2.InterfaceTerminal": "Interfész Terminál",
   "gui.ae2.InterfaceTerminalHint": "Az interfész terminál megjelenítése, elrejtése.",
   "gui.ae2.InvalidPattern": "Érvénytelen Minta",
-  "gui.ae2.ItemLevelEmitter": "ME Szint Kibocsátó",
+  "gui.ae2.LevelEmitter": "ME Szint Kibocsátó",
   "gui.ae2.ItemTunnel": "Tárgy Csatorna",
   "gui.ae2.LargeFontCraft": "+",
   "gui.ae2.LightBlue": "Világoskék",

@@ -18,50 +18,47 @@
 
 package appeng.menu.implementations;
 
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
+import appeng.client.gui.implementations.StorageLevelEmitterScreen;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.FakeSlot;
-import appeng.parts.automation.AbstractStorageLevelEmitterPart;
-import appeng.parts.automation.FluidLevelEmitterPart;
-import appeng.parts.automation.ItemLevelEmitterPart;
+import appeng.parts.automation.StorageLevelEmitterPart;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
-public class LevelEmitterMenu extends UpgradeableMenu<AbstractStorageLevelEmitterPart> {
+import javax.annotation.Nullable;
+
+/**
+ * @see StorageLevelEmitterScreen
+ */
+public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitterPart> {
 
     private static final String ACTION_SET_REPORTING_VALUE = "setReportingValue";
 
-    public static final MenuType<LevelEmitterMenu> ITEM_TYPE = MenuTypeBuilder
-            .create(LevelEmitterMenu::new, ItemLevelEmitterPart.class)
+    public static final MenuType<StorageLevelEmitterMenu> TYPE = MenuTypeBuilder
+            .create(StorageLevelEmitterMenu::new, StorageLevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarLong(host.getReportingValue());
             }, (host, menu, buffer) -> {
                 menu.reportingValue = buffer.readVarLong();
             })
-            .build("item_level_emitter");
-
-    public static final MenuType<LevelEmitterMenu> FLUID_TYPE = MenuTypeBuilder
-            .create(LevelEmitterMenu::new, FluidLevelEmitterPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
-            .withInitialData((host, buffer) -> {
-                // Convert stack size to millibuckets
-                buffer.writeVarLong(host.getReportingValue() * 1000 / AEFluidKey.AMOUNT_BUCKET);
-            }, (host, menu, buffer) -> {
-                menu.reportingValue = buffer.readVarLong();
-            })
-            .build("fluid_level_emitter");
+            .build("storage_level_emitter");
 
     // Only synced once on menu-open, and only used on client
     private long reportingValue;
 
-    public LevelEmitterMenu(MenuType<LevelEmitterMenu> menuType, int id, Inventory ip,
-            AbstractStorageLevelEmitterPart te) {
+    private FakeSlot configSlot;
+
+    public StorageLevelEmitterMenu(MenuType<StorageLevelEmitterMenu> menuType, int id, Inventory ip,
+                                   StorageLevelEmitterPart te) {
         super(menuType, id, ip, te);
 
         registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setReportingValue);
@@ -78,11 +75,7 @@ public class LevelEmitterMenu extends UpgradeableMenu<AbstractStorageLevelEmitte
                 sendClientAction(ACTION_SET_REPORTING_VALUE, reportingValue);
             }
         } else {
-            if (getType() == FLUID_TYPE) {
-                getHost().setReportingValue(reportingValue * AEFluidKey.AMOUNT_BUCKET / 1000);
-            } else {
-                getHost().setReportingValue(reportingValue);
-            }
+            getHost().setReportingValue(reportingValue);
         }
     }
 
@@ -91,7 +84,13 @@ public class LevelEmitterMenu extends UpgradeableMenu<AbstractStorageLevelEmitte
         this.setupUpgrades();
 
         var inv = getHost().getConfig().createMenuWrapper();
-        this.addSlot(new FakeSlot(inv, 0), SlotSemantic.CONFIG);
+        configSlot = new FakeSlot(inv, 0);
+        this.addSlot(configSlot, SlotSemantic.CONFIG);
+    }
+
+    @Override
+    public void onSlotChange(Slot s) {
+        super.onSlotChange(s);
     }
 
     @Override
@@ -110,5 +109,11 @@ public class LevelEmitterMenu extends UpgradeableMenu<AbstractStorageLevelEmitte
 
     public boolean supportsFuzzySearch() {
         return getHost().getConfigManager().hasSetting(Settings.FUZZY_MODE) && hasUpgrade(Upgrades.FUZZY);
+    }
+
+    @Nullable
+    public AEKey getConfiguredFilter() {
+        var stack = GenericStack.unwrapItemStack(configSlot.getItem());
+        return stack != null ? stack.what() : null;
     }
 }

@@ -46,12 +46,9 @@ public final class InitUpgrades {
         Upgrades.SPEED.registerItem(AEBlocks.IO_PORT, 3);
         Upgrades.REDSTONE.registerItem(AEBlocks.IO_PORT, 1);
 
-        // Item Level Emitter!
-        Upgrades.FUZZY.registerItem(AEParts.ITEM_LEVEL_EMITTER, 1);
-        Upgrades.CRAFTING.registerItem(AEParts.ITEM_LEVEL_EMITTER, 1);
-
-        // Fluid Level Emitter!
-        Upgrades.CRAFTING.registerItem(AEParts.FLUID_LEVEL_EMITTER, 1);
+        // Level Emitter!
+        Upgrades.FUZZY.registerItem(AEParts.level_emitter, 1);
+        Upgrades.CRAFTING.registerItem(AEParts.level_emitter, 1);
 
         // Import Bus
         Upgrades.FUZZY.registerItem(AEParts.IMPORT_BUS, 1, itemIoBusGroup);

@@ -1,7 +1,7 @@
 {
   "parent": "ae2:item/part_base",
   "textures": {
-    "emitter": "ae2:part/item_level_emitter_off"
+    "emitter": "ae2:part/level_emitter_off"
   },
   "elements": [
     {

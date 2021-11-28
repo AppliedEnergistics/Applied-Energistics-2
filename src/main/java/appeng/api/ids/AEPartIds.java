@@ -237,8 +237,7 @@ public final class AEPartIds {
     public static final ResourceLocation FLUID_STORAGE_BUS = id("fluid_storage_bus");
     public static final ResourceLocation IMPORT_BUS = id("import_bus");
     public static final ResourceLocation EXPORT_BUS = id("export_bus");
-    public static final ResourceLocation ITEM_LEVEL_EMITTER = id("item_level_emitter");
-    public static final ResourceLocation FLUID_LEVEL_EMITTER = id("fluid_level_emitter");
+    public static final ResourceLocation LEVEL_EMITTER = id("level_emitter");
     public static final ResourceLocation ENERGY_LEVEL_EMITTER = id("energy_level_emitter");
     public static final ResourceLocation PATTERN_PROVIDER = id("cable_pattern_provider");
     public static final ResourceLocation FLUID_INTERFACE = id("cable_fluid_interface");

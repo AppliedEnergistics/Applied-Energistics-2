@@ -51,12 +51,10 @@ public class NetworkCraftingProviders {
     public void removeProvider(IGridNode node) {
         var provider = node.getService(ICraftingProvider.class);
         if (provider != null) {
-            if (!craftingProviders.containsKey(node)) {
-                throw new IllegalArgumentException(
-                        "Attempted to remove nonexisting crafting provider for node " + node);
-            }
             var state = craftingProviders.remove(node);
-            state.unmount(this);
+            if (state  != null) {
+                state.unmount(this);
+            }
         }
     }
 

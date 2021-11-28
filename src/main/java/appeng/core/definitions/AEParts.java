@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import appeng.parts.automation.StorageLevelEmitterPart;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -40,11 +41,9 @@ import appeng.parts.automation.EnergyLevelEmitterPart;
 import appeng.parts.automation.ExportBusPart;
 import appeng.parts.automation.FluidAnnihilationPlanePart;
 import appeng.parts.automation.FluidFormationPlanePart;
-import appeng.parts.automation.FluidLevelEmitterPart;
 import appeng.parts.automation.IdentityAnnihilationPlanePart;
 import appeng.parts.automation.ImportBusPart;
 import appeng.parts.automation.ItemFormationPlanePart;
-import appeng.parts.automation.ItemLevelEmitterPart;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.misc.CableAnchorPart;
 import appeng.parts.misc.FluidInterfacePart;
@@ -101,9 +100,8 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<FluidStorageBusPart>> FLUID_STORAGE_BUS = createPart(AEPartIds.FLUID_STORAGE_BUS, FluidStorageBusPart.class, FluidStorageBusPart::new);
     public static final ItemDefinition<PartItem<ImportBusPart>> IMPORT_BUS = createPart(AEPartIds.IMPORT_BUS, ImportBusPart.class, ImportBusPart::new);
     public static final ItemDefinition<PartItem<ExportBusPart>> EXPORT_BUS = createPart(AEPartIds.EXPORT_BUS, ExportBusPart.class, ExportBusPart::new);
-    public static final ItemDefinition<PartItem<ItemLevelEmitterPart>> ITEM_LEVEL_EMITTER = createPart(AEPartIds.ITEM_LEVEL_EMITTER, ItemLevelEmitterPart.class, ItemLevelEmitterPart::new);
+    public static final ItemDefinition<PartItem<StorageLevelEmitterPart>> level_emitter = createPart(AEPartIds.LEVEL_EMITTER, StorageLevelEmitterPart.class, StorageLevelEmitterPart::new);
     public static final ItemDefinition<PartItem<EnergyLevelEmitterPart>> ENERGY_LEVEL_EMITTER = createPart(AEPartIds.ENERGY_LEVEL_EMITTER, EnergyLevelEmitterPart.class, EnergyLevelEmitterPart::new);
-    public static final ItemDefinition<PartItem<FluidLevelEmitterPart>> FLUID_LEVEL_EMITTER = createPart(AEPartIds.FLUID_LEVEL_EMITTER, FluidLevelEmitterPart.class, FluidLevelEmitterPart::new);
     public static final ItemDefinition<PartItem<AnnihilationPlanePart>> ANNIHILATION_PLANE = createPart(AEPartIds.ITEM_ANNIHILATION_PLANE, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
     public static final ItemDefinition<PartItem<IdentityAnnihilationPlanePart>> IDENTITY_ANNIHILATION_PLANE = createPart(AEPartIds.ITEM_IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart.class, IdentityAnnihilationPlanePart::new);
     public static final ItemDefinition<PartItem<FluidAnnihilationPlanePart>> FLUID_ANNIHILATION_PLANE = createPart(AEPartIds.FLUID_ANNIHILATION_PLANE, FluidAnnihilationPlanePart.class, FluidAnnihilationPlanePart::new);

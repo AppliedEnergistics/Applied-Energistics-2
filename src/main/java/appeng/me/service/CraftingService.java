@@ -140,6 +140,11 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     @Override
     public void addNode(IGridNode gridNode) {
 
+        // The provider can already be added because it gets callback from the storage service,
+        // in which it might already register itself before coming to this point.
+        this.craftingProviders.removeProvider(gridNode);
+        this.craftingProviders.addProvider(gridNode);
+
         var watchingNode = gridNode.getService(ICraftingWatcherNode.class);
         if (watchingNode != null) {
             final CraftingWatcher watcher = new CraftingWatcher(this, watchingNode);
@@ -155,8 +160,6 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
                 }
             }
         }
-
-        this.craftingProviders.addProvider(gridNode);
 
         if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;

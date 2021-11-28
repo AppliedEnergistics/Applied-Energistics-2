@@ -660,7 +660,7 @@ public class Platform {
     }
 
     public static void notifyBlocksOfNeighbors(final Level level, final BlockPos pos) {
-        if (!level.isClientSide) {
+        if (level != null && !level.isClientSide) {
             TickHandler.instance().addCallable(level, new BlockUpdate(pos));
         }
     }

@@ -14,7 +14,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.ae2.ItemLevelEmitter"
+        "translate": "gui.ae2.LevelEmitter"
       },
       "position": {
         "left": 8,

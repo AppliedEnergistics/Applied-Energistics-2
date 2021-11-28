@@ -198,7 +198,7 @@
   "gui.ae2.InterfaceTerminal": "インターフェースターミナル",
   "gui.ae2.InterfaceTerminalHint": "インターフェースターミナルで表示または隠す。",
   "gui.ae2.InvalidPattern": "無効なパターン",
-  "gui.ae2.ItemLevelEmitter": "MEレベルエミッター",
+  "gui.ae2.LevelEmitter": "MEレベルエミッター",
   "gui.ae2.ItemTunnel": "アイテム",
   "gui.ae2.LargeFontCraft": "+",
   "gui.ae2.LightBlue": "水色",

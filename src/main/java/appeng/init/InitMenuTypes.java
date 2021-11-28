@@ -32,7 +32,7 @@ import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.implementations.InterfaceMenu;
 import appeng.menu.implementations.InterfaceTerminalMenu;
-import appeng.menu.implementations.LevelEmitterMenu;
+import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.PriorityMenu;
@@ -78,8 +78,7 @@ public final class InitMenuTypes {
                 InterfaceMenu.FLUID_TYPE,
                 InterfaceTerminalMenu.TYPE,
                 IOPortMenu.TYPE,
-                LevelEmitterMenu.ITEM_TYPE,
-                LevelEmitterMenu.FLUID_TYPE,
+                StorageLevelEmitterMenu.TYPE,
                 EnergyLevelEmitterMenu.TYPE,
                 PatternProviderMenu.TYPE,
                 MolecularAssemblerMenu.TYPE,

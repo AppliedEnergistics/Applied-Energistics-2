@@ -683,12 +683,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.dye(DyeColor.GREEN))
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/fluid_formation_plane_alt"));
-        ShapelessRecipeBuilder.shapeless(AEParts.FLUID_LEVEL_EMITTER)
-                .requires(Items.REDSTONE_TORCH)
-                .requires(ConventionTags.dye(DyeColor.GREEN))
-                .requires(AEItems.CALCULATION_PROCESSOR)
-                .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/parts/fluid_level_emitter"));
         ShapelessRecipeBuilder.shapeless(AEParts.FLUID_STORAGE_BUS)
                 .requires(Items.STICKY_PISTON)
                 .requires(ConventionTags.FLUID_INTERFACE)
@@ -751,11 +745,11 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', Items.STICKY_PISTON)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/import_bus"));
-        ShapelessRecipeBuilder.shapeless(AEParts.ITEM_LEVEL_EMITTER)
+        ShapelessRecipeBuilder.shapeless(AEParts.level_emitter)
                 .requires(Items.REDSTONE_TORCH)
                 .requires(AEItems.CALCULATION_PROCESSOR)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/parts/item_level_emitter"));
+                .save(consumer, AppEng.makeId("network/parts/level_emitter"));
         ShapelessRecipeBuilder.shapeless(AEParts.ENERGY_LEVEL_EMITTER)
                 .requires(Items.REDSTONE_TORCH)
                 .requires(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
@@ -775,10 +769,10 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_storage_monitor", has(AEParts.STORAGE_MONITOR))
                 .save(consumer, AppEng.makeId("network/parts/monitors_conversion"));
         ShapelessRecipeBuilder.shapeless(AEParts.STORAGE_MONITOR)
-                .requires(AEParts.ITEM_LEVEL_EMITTER)
+                .requires(AEParts.level_emitter)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .unlockedBy("has_illuminated_panel", has(ConventionTags.ILLUMINATED_PANEL))
-                .unlockedBy("has_item_level_emitter", has(AEParts.ITEM_LEVEL_EMITTER))
+                .unlockedBy("has_level_emitter", has(AEParts.level_emitter))
                 .save(consumer, AppEng.makeId("network/parts/monitors_storage"));
         ShapelessRecipeBuilder.shapeless(AEParts.DARK_MONITOR)
                 .requires(AEParts.MONITOR)
