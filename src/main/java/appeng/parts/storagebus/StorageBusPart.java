@@ -16,12 +16,19 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.misc;
+package appeng.parts.storagebus;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -46,6 +53,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageMonitorableAccessor;
@@ -57,30 +65,48 @@ import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
+import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
-import appeng.me.storage.IHandlerAdapter;
+import appeng.me.storage.CompositeStorage;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.NullInventory;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.implementations.StorageBusMenu;
 import appeng.parts.PartAdjacentApi;
+import appeng.parts.PartModel;
+import appeng.parts.automation.ExternalStorageStrategy;
+import appeng.parts.automation.StackWorldBehaviors;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.ConfigInventory;
 import appeng.util.SettingsFrom;
 import appeng.util.prioritylist.IPartitionList;
 
-/**
- * @param <A> "API class" of the handler, i.e. IItemHandler or IFluidHandler.
- */
-public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
+public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, IStorageProvider, IPriorityHost, IConfigInvHost {
+
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_base");
+
+    @PartModels
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_off"));
+
+    @PartModels
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_on"));
+
+    @PartModels
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_has_channel"));
+
     protected final IActionSource source;
     private final TickRates tickRates;
     private final ConfigInventory config = ConfigInventory.configTypes(63, this::onConfigurationChanged);
@@ -90,12 +116,15 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
      * changing the underlying inventory.
      */
     private final StorageBusInventory handler = new StorageBusInventory(NullInventory.of());
+    @Nullable
+    private Component handlerDescription;
     /**
      * Listener for listening to changes in an {@link MEMonitorStorage} if this storage bus is attached to an interface.
      */
     private final Listener listener = new Listener();
     private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
-    private final PartAdjacentApi<A> adjacentExternalApi;
+    @Nullable
+    private Map<AEKeySpace, ExternalStorageStrategy> externalStorageStrategies;
     private boolean wasActive = false;
     private int priority = 0;
     /**
@@ -105,11 +134,10 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
     private boolean shouldUpdateTarget = true;
     private ITickingMonitor monitor = null;
 
-    public AbstractStorageBusPart(TickRates tickRates, ItemStack is, BlockApiLookup<A, Direction> apiLookup) {
+    public StorageBusPart(ItemStack is) {
         super(is);
         this.adjacentStorageAccessor = new PartAdjacentApi<>(this, IStorageMonitorableAccessor.SIDED);
-        this.adjacentExternalApi = new PartAdjacentApi<>(this, apiLookup);
-        this.tickRates = tickRates;
+        this.tickRates = TickRates.StorageBus;
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
@@ -119,10 +147,6 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
                 .addService(IStorageProvider.class, this)
                 .addService(IGridTickable.class, this);
     }
-
-    public abstract AEKeySpace getChannel();
-
-    protected abstract MEStorage adaptExternalApi(A handler, boolean extractableOnly, Runnable alertDevice);
 
     @Override
     protected final void onMainNodeStateChanged(IGridNodeListener.State reason) {
@@ -200,7 +224,9 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
         return getItemStack();
     }
 
-    protected abstract MenuType<?> getMenuType();
+    public MenuType<?> getMenuType() {
+        return StorageBusMenu.TYPE;
+    }
 
     @Override
     public final void getBoxes(final IPartCollisionHelper bch) {
@@ -242,6 +268,7 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
     public final TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
         if (this.shouldUpdateTarget) {
             this.updateTarget(false);
+            this.shouldUpdateTarget = false;
         }
 
         if (this.monitor != null) {
@@ -262,14 +289,21 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
         return this.isActive() && !(this.handler.getDelegate() instanceof NullInventory);
     }
 
+    public Component getConnectedToDescription() {
+        return handlerDescription;
+    }
+
     protected void onConfigurationChanged() {
         updateTarget(true);
     }
 
     private void updateTarget(boolean forceFullUpdate) {
-        boolean wasInventory = this.handler.getDelegate() instanceof IHandlerAdapter;
+        if (isClientSide()) {
+            return; // Part is not part of level yet or its client-side
+        }
+
         MEMonitorStorage foundMonitor = null;
-        A foundExternalApi = null;
+        Map<AEKeySpace, MEStorage> foundExternalApi = Collections.emptyMap();
 
         // Prioritize a handler to directly link to another ME network
         var accessor = adjacentStorageAccessor.find();
@@ -284,92 +318,122 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
             // but it does not return an inventory for the action source, we do NOT fall back to using the external
             // API, as that might circumvent the security settings, and might also cause performance issues.
         } else {
-            foundExternalApi = adjacentExternalApi.find();
+            // Query all available external APIs
+            // TODO: If a filter is configured, we might want to only query external APIs for compatible key spaces
+            foundExternalApi = new IdentityHashMap<>(2);
+            findExternalStorages(foundExternalApi);
         }
 
-        if (!forceFullUpdate && wasInventory && foundExternalApi != null) {
+        if (!forceFullUpdate && this.handler.getDelegate() instanceof CompositeStorage compositeStorage
+                && !foundExternalApi.isEmpty()) {
             // Just update the inventory reference, the ticking monitor will take care of the rest.
-            ((IHandlerAdapter<A>) this.handler.getDelegate()).setStorage(foundExternalApi);
+            compositeStorage.setStorages(foundExternalApi);
+            handlerDescription = compositeStorage.getDescription();
+            return;
         } else if (!forceFullUpdate && foundMonitor == this.handler.getDelegate()) {
             // Monitor didn't change, nothing to do!
+            return;
+        }
+
+        var wasSleeping = this.monitor == null;
+        var wasRegistered = this.hasRegisteredCellToNetwork();
+        var before = wasRegistered ? this.handler.getAvailableStacks() : null;
+
+        // Update inventory
+        MEStorage newInventory;
+        if (foundMonitor != null) {
+            newInventory = foundMonitor;
+            this.checkStorageBusOnInterface();
+            handlerDescription = newInventory.getDescription();
+        } else if (!foundExternalApi.isEmpty()) {
+            newInventory = new CompositeStorage(foundExternalApi);
+            handlerDescription = newInventory.getDescription();
         } else {
-            var wasSleeping = this.monitor == null;
-            var wasRegistered = this.hasRegisteredCellToNetwork();
-            var before = wasRegistered ? this.handler.getAvailableStacks() : null;
+            newInventory = NullInventory.of();
+            handlerDescription = null;
+        }
+        this.handler.setDelegate(newInventory);
 
-            // Update inventory
-            boolean extractableOnly = this.getConfigManager()
-                    .getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY;
-            MEStorage newInventory;
-            if (foundMonitor != null) {
-                newInventory = foundMonitor;
-                this.checkStorageBusOnInterface();
-            } else if (foundExternalApi != null) {
-                newInventory = adaptExternalApi(foundExternalApi, extractableOnly, () -> {
-                    getMainNode().ifPresent((grid, node) -> {
-                        grid.getTickManager().alertDevice(node);
-                    });
-                });
-            } else {
-                newInventory = NullInventory.of();
-            }
-            this.handler.setDelegate(newInventory);
+        // Apply other settings.
+        this.handler.setAccessRestriction(this.getConfigManager().getSetting(Settings.ACCESS));
+        this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
+                : IncludeExclude.WHITELIST);
 
-            // Apply other settings.
-            this.handler.setAccessRestriction(this.getConfigManager().getSetting(Settings.ACCESS));
-            this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
-                    : IncludeExclude.WHITELIST);
+        this.handler.setPartitionList(createFilter());
 
-            var filterBuilder = IPartitionList.builder();
-            if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-                filterBuilder.fuzzyMode(this.getConfigManager().getSetting(Settings.FUZZY_MODE));
-            }
+        // Ensure we apply the partition list to the available items.
+        boolean filterOnExtract = this.getConfigManager().getSetting(Settings.FILTER_ON_EXTRACT) == YesNo.YES;
+        this.handler.setExtractFiltering(filterOnExtract, isExtractableOnly() && filterOnExtract);
 
-            var slotsToUse = 18 + getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-            for (var x = 0; x < config.size() && x < slotsToUse; x++) {
-                filterBuilder.add(config.getKey(x));
-            }
-            this.handler.setPartitionList(filterBuilder.build());
+        // First, post the change.
+        if (wasRegistered) {
+            var after = this.handler.getAvailableStacks();
+            StorageHelper.postListChanges(before, after, listener, this.source);
+        }
 
-            // Ensure we apply the partition list to the available items.
-            boolean filterOnExtract = this.getConfigManager().getSetting(Settings.FILTER_ON_EXTRACT) == YesNo.YES;
-            this.handler.setExtractFiltering(filterOnExtract, extractableOnly && filterOnExtract);
+        // Let the new inventory react to us ticking.
+        if (newInventory instanceof ITickingMonitor tickingMonitor) {
+            this.monitor = tickingMonitor;
+            tickingMonitor.setActionSource(this.source);
+        } else {
+            this.monitor = null;
+        }
 
-            // First, post the change.
-            if (wasRegistered) {
-                var after = this.handler.getAvailableStacks();
-                StorageHelper.postListChanges(before, after, listener, this.source);
-            }
+        // Notify the network of any external change to the inventory.
+        if (newInventory instanceof MEMonitorStorage monitor) {
+            monitor.addListener(listener, newInventory);
+        }
 
-            // Let the new inventory react to us ticking.
-            if (newInventory instanceof ITickingMonitor tickingMonitor) {
-                this.monitor = tickingMonitor;
-                tickingMonitor.setActionSource(this.source);
-            } else {
-                this.monitor = null;
-            }
+        // Update sleeping state.
+        if (wasSleeping != (this.monitor == null)) {
+            getMainNode().ifPresent((grid, node) -> {
+                var tm = grid.getTickManager();
+                if (this.monitor == null) {
+                    tm.sleepDevice(node);
+                } else {
+                    tm.wakeDevice(node);
+                }
+            });
+        }
 
-            // Notify the network of any external change to the inventory.
-            if (newInventory instanceof MEMonitorStorage monitor) {
-                monitor.addListener(listener, newInventory);
-            }
+        if (wasRegistered != this.hasRegisteredCellToNetwork()) {
+            remountStorage();
+        }
+    }
 
-            // Update sleeping state.
-            if (wasSleeping != (this.monitor == null)) {
-                getMainNode().ifPresent((grid, node) -> {
-                    var tm = grid.getTickManager();
-                    if (this.monitor == null) {
-                        tm.sleepDevice(node);
-                    } else {
-                        tm.wakeDevice(node);
-                    }
-                });
-            }
+    private boolean isExtractableOnly() {
+        return this.getConfigManager().getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY;
+    }
 
-            if (wasRegistered != this.hasRegisteredCellToNetwork()) {
-                remountStorage();
+    private IPartitionList createFilter() {
+        var filterBuilder = IPartitionList.builder();
+        if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+            filterBuilder.fuzzyMode(this.getConfigManager().getSetting(Settings.FUZZY_MODE));
+        }
+
+        var slotsToUse = 18 + getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+        for (var x = 0; x < config.size() && x < slotsToUse; x++) {
+            filterBuilder.add(config.getKey(x));
+        }
+        return filterBuilder.build();
+    }
+
+    private void findExternalStorages(Map<AEKeySpace, MEStorage> storages) {
+        var extractableOnly = isExtractableOnly();
+        for (var entry : getExternalStorageStrategies().entrySet()) {
+            var wrapper = entry.getValue().createWrapper(
+                    extractableOnly,
+                    this::invalidateOnExternalStorageChange);
+            if (wrapper != null) {
+                storages.put(entry.getKey(), wrapper);
             }
         }
+    }
+
+    private void invalidateOnExternalStorageChange() {
+        getMainNode().ifPresent((grid, node) -> {
+            grid.getTickManager().alertDevice(node);
+        });
     }
 
     private void checkStorageBusOnInterface() {
@@ -470,5 +534,27 @@ public abstract class AbstractStorageBusPart<A> extends UpgradeablePart
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
         super.exportSettings(mode, output);
         config.writeToChildTag(output, "config");
+    }
+
+    @Override
+    public IPartModel getStaticModels() {
+        if (this.isActive() && this.isPowered()) {
+            return MODELS_HAS_CHANNEL;
+        } else if (this.isPowered()) {
+            return MODELS_ON;
+        } else {
+            return MODELS_OFF;
+        }
+    }
+
+    private Map<AEKeySpace, ExternalStorageStrategy> getExternalStorageStrategies() {
+        if (externalStorageStrategies == null) {
+            var host = getHost().getBlockEntity();
+            this.externalStorageStrategies = StackWorldBehaviors.createExternalStorageStrategies(
+                    (ServerLevel) host.getLevel(),
+                    host.getBlockPos().relative(getSide()),
+                    getSide().getOpposite());
+        }
+        return externalStorageStrategies;
     }
 }

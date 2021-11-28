@@ -18,6 +18,9 @@
 
 package appeng.me.service.helpers;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageMounts;
@@ -45,6 +48,11 @@ public class CraftingServiceStorage implements IStorageProvider {
         public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
             // Item interception logic
             return craftingService.insertIntoCpus(what, amount, mode);
+        }
+
+        @Override
+        public Component getDescription() {
+            return new TextComponent("Auto-Crafting");
         }
     };
 

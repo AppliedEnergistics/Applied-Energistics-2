@@ -26,12 +26,15 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import net.minecraft.network.chat.Component;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
+import appeng.core.localization.GuiText;
 import appeng.me.service.SecurityService;
 
 /**
@@ -221,5 +224,10 @@ public class NetworkStorage implements MEStorage {
 
         cDepth.push(this);
         return false;
+    }
+
+    @Override
+    public Component getDescription() {
+        return GuiText.MENetworkStorage.text();
     }
 }

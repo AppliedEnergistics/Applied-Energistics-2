@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.storage.data.AEFluidKey;
 import appeng.core.AppEng;
+import appeng.core.localization.GuiText;
 
 public final class AEFluidKeys extends AEKeySpace {
     private static final ResourceLocation ID = AppEng.makeId("f");
@@ -33,7 +34,7 @@ public final class AEFluidKeys extends AEKeySpace {
     static final AEFluidKeys INSTANCE = new AEFluidKeys();
 
     private AEFluidKeys() {
-        super(ID, AEFluidKey.class);
+        super(ID, AEFluidKey.class, GuiText.Fluids.text());
     }
 
     @Override

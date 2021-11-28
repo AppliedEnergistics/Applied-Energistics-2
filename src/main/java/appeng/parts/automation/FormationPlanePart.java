@@ -20,6 +20,7 @@ package appeng.parts.automation;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -230,6 +231,11 @@ public abstract class FormationPlanePart extends UpgradeablePart
             }
 
             return placeInWorld(what, amount, mode);
+        }
+
+        @Override
+        public Component getDescription() {
+            return getItemStack().getHoverName();
         }
     }
 

@@ -2,33 +2,77 @@ package appeng.me.storage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
+import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
-import appeng.util.IVariantConversion;
+import appeng.core.localization.GuiText;
 
-public abstract class MonitoringStorageAdapter<V extends TransferVariant<?>>
-        extends StorageAdapter<V> implements MEMonitorStorage, ITickingMonitor, IHandlerAdapter<Storage<V>> {
-    /**
-     * Clamp reported values to avoid overflows when amounts get too close to Long.MAX_VALUE.
-     */
-    private static final long MAX_REPORTED_AMOUNT = 1L << 42;
+/**
+ * Combines several ME storages that each handle only a given key-space.
+ */
+public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
     private final Map<IMEMonitorListener, Object> listeners = new HashMap<>();
     private IActionSource source;
     private final InventoryCache cache;
 
-    public MonitoringStorageAdapter(IVariantConversion<V> conversion, Storage<V> storage, boolean showExtractableOnly) {
-        super(conversion, storage);
-        this.cache = new InventoryCache(showExtractableOnly);
+    private Map<AEKeySpace, MEStorage> storages;
+
+    public CompositeStorage(Map<AEKeySpace, MEStorage> storages) {
+        this.storages = storages;
+        this.cache = new InventoryCache();
+    }
+
+    public void setStorages(Map<AEKeySpace, MEStorage> storages) {
+        this.storages = Objects.requireNonNull(storages);
+    }
+
+    @Override
+    public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
+        var storage = storages.get(what.getChannel());
+        return storage != null && storage.isPreferredStorageFor(what, source);
+    }
+
+    @Override
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        var storage = storages.get(what.getChannel());
+        return storage != null ? storage.insert(what, amount, mode, source) : 0;
+    }
+
+    @Override
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        var storage = storages.get(what.getChannel());
+        return storage != null ? storage.extract(what, amount, mode, source) : 0;
+    }
+
+    /**
+     * Describes the types of storage represented by this object.
+     */
+    @Override
+    public Component getDescription() {
+        var types = new TextComponent("");
+        boolean first = true;
+        for (var keySpace : storages.keySet()) {
+            if (!first) {
+                types.append(", ");
+            } else {
+                first = false;
+            }
+            types.append(keySpace.getDescription());
+        }
+
+        return GuiText.ExternalStorage.text(types);
     }
 
     @Override
@@ -78,11 +122,6 @@ public abstract class MonitoringStorageAdapter<V extends TransferVariant<?>>
     private class InventoryCache {
         private KeyCounter frontBuffer = new KeyCounter();
         private KeyCounter backBuffer = new KeyCounter();
-        private final boolean extractableOnly;
-
-        public InventoryCache(boolean extractableOnly) {
-            this.extractableOnly = extractableOnly;
-        }
 
         public Set<AEKey> update() {
             // Flip back & front buffer and start building a new list
@@ -92,36 +131,8 @@ public abstract class MonitoringStorageAdapter<V extends TransferVariant<?>>
             frontBuffer.reset();
 
             // Rebuild the front buffer
-            var storage = getStorage();
-            if (storage != null) {
-                try (var tx = Transaction.openOuter()) {
-                    for (var view : storage.iterable(tx)) {
-                        if (view.isResourceBlank()) {
-                            continue;
-                        }
-
-                        // Skip resources that cannot be extracted if that filter was enabled
-                        if (extractableOnly) {
-                            // Use an inner TX to prevent two tanks that can be extracted from only mutually exclusively
-                            // from not being influenced by our extraction test here.
-                            try (var innerTx = tx.openNested()) {
-                                var extracted = view.extract(view.getResource(), 1, innerTx);
-                                // If somehow extracting the minimal amount doesn't work, check if everything could be
-                                // extracted because the tank might have a minimum (or fixed) allowed extraction amount.
-                                if (extracted == 0) {
-                                    extracted = view.extract(view.getResource(), view.getAmount(), innerTx);
-                                }
-                                if (extracted == 0) {
-                                    // We weren't able to simulate extraction of any fluid, so skip this one
-                                    continue;
-                                }
-                            }
-                        }
-
-                        long amount = Math.min(view.getAmount(), MAX_REPORTED_AMOUNT);
-                        frontBuffer.add(getConversion().getKey(view.getResource()), amount);
-                    }
-                }
+            for (var storage : storages.values()) {
+                storage.getAvailableStacks(frontBuffer);
             }
 
             // Diff the front-buffer against the backbuffer

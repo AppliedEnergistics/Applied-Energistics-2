@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
+import appeng.core.localization.GuiText;
 
 public final class AEItemKeys extends AEKeySpace {
     private static final ResourceLocation ID = AppEng.makeId("i");
@@ -33,7 +34,7 @@ public final class AEItemKeys extends AEKeySpace {
     static final AEItemKeys INSTANCE = new AEItemKeys();
 
     private AEItemKeys() {
-        super(ID, AEItemKey.class);
+        super(ID, AEItemKey.class, GuiText.Items.text());
     }
 
     @Override

@@ -233,8 +233,7 @@ public final class AEPartIds {
     public static final ResourceLocation TOGGLE_BUS = id("toggle_bus");
     public static final ResourceLocation INVERTED_TOGGLE_BUS = id("inverted_toggle_bus");
     public static final ResourceLocation CABLE_ANCHOR = id("cable_anchor");
-    public static final ResourceLocation ITEM_STORAGE_BUS = id("item_storage_bus");
-    public static final ResourceLocation FLUID_STORAGE_BUS = id("fluid_storage_bus");
+    public static final ResourceLocation STORAGE_BUS = id("storage_bus");
     public static final ResourceLocation IMPORT_BUS = id("import_bus");
     public static final ResourceLocation EXPORT_BUS = id("export_bus");
     public static final ResourceLocation LEVEL_EMITTER = id("level_emitter");

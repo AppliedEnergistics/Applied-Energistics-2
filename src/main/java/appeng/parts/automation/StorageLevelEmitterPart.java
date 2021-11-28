@@ -23,11 +23,6 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
-import appeng.menu.implementations.StorageLevelEmitterMenu;
-import appeng.parts.PartModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -47,13 +42,18 @@ import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
+import appeng.core.AppEng;
 import appeng.helpers.IConfigInvHost;
+import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.implementations.StorageLevelEmitterMenu;
+import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 
 /**

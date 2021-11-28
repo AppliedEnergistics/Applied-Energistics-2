@@ -88,6 +88,9 @@ public enum GuiText {
     // Used in a terminal to indicate that an item is craftable
     SmallFontCraft, LargeFontCraft,
 
+    // Used by storage bus for attached storage types
+    AttachedTo, Unattached, MENetworkStorage, ExternalStorage, Items, Fluids,
+
     // Used in a ME Interface when no appropriate block entity was detected near it
     Nothing;
 

@@ -497,7 +497,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var storageBus = Advancement.Builder.advancement()
                 .display(
-                        AEParts.ITEM_STORAGE_BUS,
+                        AEParts.STORAGE_BUS,
                         new TranslatableComponent("achievement.ae2.StorageBus"),
                         new TranslatableComponent("achievement.ae2.StorageBus.desc"),
                         null /* background */,
@@ -507,7 +507,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(glassCable)
-                .addCriterion("part", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.ITEM_STORAGE_BUS))
+                .addCriterion("part", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.STORAGE_BUS))
                 .save(consumer, "ae2:main/storage_bus");
 
         var storageBusOnInterface = Advancement.Builder.advancement()

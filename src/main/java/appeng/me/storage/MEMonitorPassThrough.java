@@ -25,6 +25,9 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitorListener;
@@ -137,5 +140,14 @@ public class MEMonitorPassThrough implements MEMonitorStorage, IMEMonitorListene
             return new KeyCounter();
         }
         return this.monitor.getCachedAvailableStacks();
+    }
+
+    @Override
+    public Component getDescription() {
+        if (this.monitor != null) {
+            return this.monitor.getDescription();
+        } else {
+            return TextComponent.EMPTY;
+        }
     }
 }

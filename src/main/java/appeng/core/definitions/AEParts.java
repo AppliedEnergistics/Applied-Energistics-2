@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import appeng.parts.automation.StorageLevelEmitterPart;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -44,13 +43,12 @@ import appeng.parts.automation.FluidFormationPlanePart;
 import appeng.parts.automation.IdentityAnnihilationPlanePart;
 import appeng.parts.automation.ImportBusPart;
 import appeng.parts.automation.ItemFormationPlanePart;
+import appeng.parts.automation.StorageLevelEmitterPart;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.misc.CableAnchorPart;
 import appeng.parts.misc.FluidInterfacePart;
-import appeng.parts.misc.FluidStorageBusPart;
 import appeng.parts.misc.InvertedToggleBusPart;
 import appeng.parts.misc.ItemInterfacePart;
-import appeng.parts.misc.ItemStorageBusPart;
 import appeng.parts.misc.ToggleBusPart;
 import appeng.parts.networking.CoveredCablePart;
 import appeng.parts.networking.CoveredDenseCablePart;
@@ -75,6 +73,7 @@ import appeng.parts.reporting.PanelPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.SemiDarkPanelPart;
 import appeng.parts.reporting.StorageMonitorPart;
+import appeng.parts.storagebus.StorageBusPart;
 
 /**
  * Internal implementation for the API parts
@@ -96,8 +95,7 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<PanelPart>> MONITOR = createPart(AEPartIds.MONITOR, PanelPart.class, PanelPart::new);
     public static final ItemDefinition<PartItem<SemiDarkPanelPart>> SEMI_DARK_MONITOR = createPart(AEPartIds.SEMI_DARK_MONITOR, SemiDarkPanelPart.class, SemiDarkPanelPart::new);
     public static final ItemDefinition<PartItem<DarkPanelPart>> DARK_MONITOR = createPart(AEPartIds.DARK_MONITOR, DarkPanelPart.class, DarkPanelPart::new);
-    public static final ItemDefinition<PartItem<ItemStorageBusPart>> ITEM_STORAGE_BUS = createPart(AEPartIds.ITEM_STORAGE_BUS, ItemStorageBusPart.class, ItemStorageBusPart::new);
-    public static final ItemDefinition<PartItem<FluidStorageBusPart>> FLUID_STORAGE_BUS = createPart(AEPartIds.FLUID_STORAGE_BUS, FluidStorageBusPart.class, FluidStorageBusPart::new);
+    public static final ItemDefinition<PartItem<StorageBusPart>> STORAGE_BUS = createPart(AEPartIds.STORAGE_BUS, StorageBusPart.class, StorageBusPart::new);
     public static final ItemDefinition<PartItem<ImportBusPart>> IMPORT_BUS = createPart(AEPartIds.IMPORT_BUS, ImportBusPart.class, ImportBusPart::new);
     public static final ItemDefinition<PartItem<ExportBusPart>> EXPORT_BUS = createPart(AEPartIds.EXPORT_BUS, ExportBusPart.class, ExportBusPart::new);
     public static final ItemDefinition<PartItem<StorageLevelEmitterPart>> level_emitter = createPart(AEPartIds.LEVEL_EMITTER, StorageLevelEmitterPart.class, StorageLevelEmitterPart::new);

@@ -21,6 +21,7 @@ package appeng.me.cells;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -33,9 +34,11 @@ import appeng.items.contents.CellConfig;
 
 class CreativeCellInventory implements StorageCell {
     private final Set<AEKey> configured;
+    private final ItemStack stack;
 
     protected CreativeCellInventory(ItemStack o) {
         this.configured = new HashSet<>();
+        this.stack = o;
 
         var cc = CellConfig.create(o);
         configured.addAll(cc.keySet());
@@ -71,6 +74,11 @@ class CreativeCellInventory implements StorageCell {
     @Override
     public double getIdleDrain() {
         return 0;
+    }
+
+    @Override
+    public Component getDescription() {
+        return stack.getHoverName();
     }
 
     @Override

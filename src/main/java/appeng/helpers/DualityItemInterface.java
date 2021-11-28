@@ -18,24 +18,28 @@
 
 package appeng.helpers;
 
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.helpers.iface.GenericStackInvStorage;
-import appeng.me.storage.MonitoringStorageAdapter;
+import appeng.me.storage.CompositeStorage;
+import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
 
 public class DualityItemInterface extends DualityInterface {
@@ -93,11 +97,11 @@ public class DualityItemInterface extends DualityInterface {
     /**
      * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
      */
-    private class InterfaceInventory extends MonitoringStorageAdapter<ItemVariant>
-            implements MEMonitorStorage {
+    private class InterfaceInventory extends CompositeStorage {
 
         InterfaceInventory() {
-            super(IVariantConversion.ITEM, localStorage, false);
+            super(Map.of(
+                    AEKeySpace.items(), new StorageAdapter<>(IVariantConversion.ITEM, localStorage)));
             this.setActionSource(actionSource);
         }
 
@@ -110,7 +114,9 @@ public class DualityItemInterface extends DualityInterface {
                 return 0;
             }
 
-            return super.insert(what, amount, mode, source);
+            var inserted = super.insert(what, amount, mode, source);
+            onTick(); // Immediately clear cache
+            return inserted;
         }
 
         @Override
@@ -123,18 +129,14 @@ public class DualityItemInterface extends DualityInterface {
                 return 0;
             }
 
-            return super.extract(what, amount, mode, source);
+            var extracted = super.extract(what, amount, mode, source);
+            onTick(); // Immediately clear cache
+            return extracted;
         }
 
         @Override
-        protected void onInjectOrExtract() {
-            // Rebuild cache immediately
-            this.onTick();
-        }
-
-        @Override
-        public KeyCounter getCachedAvailableStacks() {
-            return getAvailableStacks();
+        public Component getDescription() {
+            return host.getMainMenuIcon().getHoverName();
         }
     }
 

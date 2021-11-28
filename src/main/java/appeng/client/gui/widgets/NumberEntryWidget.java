@@ -246,7 +246,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
         var steps = AEConfig.instance().getNumberEntrySteps(type);
         var step = steps[Math.absExact(i) - 1];
-        var delta = i < 0 ? - step : step;
+        var delta = i < 0 ? -step : step;
         getLongValue().ifPresent(currentValue -> setValue(currentValue + delta));
     }
 

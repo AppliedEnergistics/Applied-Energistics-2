@@ -17,7 +17,8 @@ import appeng.core.AELog;
 import appeng.util.IVariantConversion;
 
 /**
- * Strategy for efficiently importing stacks from external storage into an internal {@link appeng.api.storage.MEStorage}.
+ * Strategy for efficiently importing stacks from external storage into an internal
+ * {@link appeng.api.storage.MEStorage}.
  */
 class StorageImportStrategy<V extends TransferVariant<?>> implements StackImportStrategy {
     private final BlockApiCache<Storage<V>, Direction> apiCache;

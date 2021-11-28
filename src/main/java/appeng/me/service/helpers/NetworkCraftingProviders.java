@@ -52,7 +52,7 @@ public class NetworkCraftingProviders {
         var provider = node.getService(ICraftingProvider.class);
         if (provider != null) {
             var state = craftingProviders.remove(node);
-            if (state  != null) {
+            if (state != null) {
                 state.unmount(this);
             }
         }

@@ -18,8 +18,10 @@
 
 package appeng.me.storage;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 
 /**
@@ -28,11 +30,16 @@ import appeng.api.storage.data.KeyCounter;
 public class NullInventory implements MEStorage {
     private static final NullInventory NULL_INVENTORY = new NullInventory();
 
-    public static <T extends AEKey> MEStorage of() {
+    public static MEStorage of() {
         return NULL_INVENTORY;
     }
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
+    }
+
+    @Override
+    public Component getDescription() {
+        return TextComponent.EMPTY;
     }
 }

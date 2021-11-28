@@ -18,6 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -30,9 +35,6 @@ import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 
 public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmitterMenu> {
 
@@ -42,7 +44,7 @@ public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmi
     private final NumberEntryWidget level;
 
     public StorageLevelEmitterScreen(StorageLevelEmitterMenu menu, Inventory playerInventory, Component title,
-                                     ScreenStyle style) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.redstoneMode = new ServerSettingToggleButton<>(Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
@@ -54,8 +56,7 @@ public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmi
 
         this.level = new NumberEntryWidget(
                 AEFluidKey.is(menu.getConfiguredFilter()) ? NumberEntryType.LEVEL_FLUID_VOLUME
-                        : NumberEntryType.LEVEL_ITEM_COUNT
-        );
+                        : NumberEntryType.LEVEL_ITEM_COUNT);
         this.level.setTextFieldBounds(25, 44, 75);
         setInputValueFromHost();
         this.level.setOnChange(this::saveReportingValue);
@@ -108,7 +109,7 @@ public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmi
 
     @Override
     public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-                       final int mouseY, float partialTicks) {
+            final int mouseY, float partialTicks) {
         super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(poseStack, mouseX, mouseY, partialTicks);
     }

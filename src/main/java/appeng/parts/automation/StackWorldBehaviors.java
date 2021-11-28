@@ -14,12 +14,15 @@ import appeng.api.storage.AEKeySpace;
 public final class StackWorldBehaviors {
     private static final Map<AEKeySpace, ImportStrategyFactory> importStrategies = new IdentityHashMap<>();
     private static final Map<AEKeySpace, ExportStrategyFactory> exportStrategies = new IdentityHashMap<>();
+    private static final Map<AEKeySpace, ExternalStorageStrategyFactory> externalStorageStrategies = new IdentityHashMap<>();
 
     static {
         importStrategies.put(AEKeySpace.items(), StorageImportStrategy::createItem);
         importStrategies.put(AEKeySpace.fluids(), StorageImportStrategy::createFluid);
         exportStrategies.put(AEKeySpace.items(), StorageExportStrategy::createItem);
         exportStrategies.put(AEKeySpace.fluids(), StorageExportStrategy::createFluid);
+        externalStorageStrategies.put(AEKeySpace.items(), FabricExternalStorageStrategy::createItem);
+        externalStorageStrategies.put(AEKeySpace.fluids(), FabricExternalStorageStrategy::createFluid);
     }
 
     private StackWorldBehaviors() {
@@ -55,6 +58,15 @@ public final class StackWorldBehaviors {
         return new StackExportFacade(strategies);
     }
 
+    public static Map<AEKeySpace, ExternalStorageStrategy> createExternalStorageStrategies(ServerLevel level,
+            BlockPos fromPos, Direction fromSide) {
+        var strategies = new IdentityHashMap<AEKeySpace, ExternalStorageStrategy>(externalStorageStrategies.size());
+        for (var entry : externalStorageStrategies.entrySet()) {
+            strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide));
+        }
+        return strategies;
+    }
+
     @FunctionalInterface
     interface ImportStrategyFactory {
         StackImportStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
@@ -63,6 +75,11 @@ public final class StackWorldBehaviors {
     @FunctionalInterface
     interface ExportStrategyFactory {
         StackExportStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
+    }
+
+    @FunctionalInterface
+    interface ExternalStorageStrategyFactory {
+        ExternalStorageStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
     }
 
 }

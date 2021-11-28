@@ -94,13 +94,9 @@ public final class InitUpgrades {
         Upgrades.INVERTER.registerItem(AEItems.VIEW_CELL, 1);
 
         // Storage Bus
-        Upgrades.FUZZY.registerItem(AEParts.ITEM_STORAGE_BUS, 1);
-        Upgrades.INVERTER.registerItem(AEParts.ITEM_STORAGE_BUS, 1);
-        Upgrades.CAPACITY.registerItem(AEParts.ITEM_STORAGE_BUS, 5);
-
-        // Storage Bus Fluids
-        Upgrades.INVERTER.registerItem(AEParts.FLUID_STORAGE_BUS, 1);
-        Upgrades.CAPACITY.registerItem(AEParts.FLUID_STORAGE_BUS, 5);
+        Upgrades.FUZZY.registerItem(AEParts.STORAGE_BUS, 1);
+        Upgrades.INVERTER.registerItem(AEParts.STORAGE_BUS, 1);
+        Upgrades.CAPACITY.registerItem(AEParts.STORAGE_BUS, 5);
 
         // Formation Plane
         Upgrades.FUZZY.registerItem(AEParts.FORMATION_PLANE, 1);

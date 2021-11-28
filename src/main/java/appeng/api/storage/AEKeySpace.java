@@ -30,6 +30,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.storage.data.AEKey;
@@ -42,11 +43,13 @@ public abstract class AEKeySpace {
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
+    private final Component description;
 
-    public AEKeySpace(ResourceLocation id, Class<? extends AEKey> keyClass) {
+    public AEKeySpace(ResourceLocation id, Class<? extends AEKey> keyClass, Component description) {
         this.id = id;
         this.keyClass = keyClass;
         this.filter = what -> what.getChannel() == this;
+        this.description = description;
     }
 
     /**
@@ -151,5 +154,12 @@ public abstract class AEKeySpace {
     @Override
     public String toString() {
         return id.toString();
+    }
+
+    /**
+     * Get the translated name of this key space.
+     */
+    public Component getDescription() {
+        return description;
     }
 }

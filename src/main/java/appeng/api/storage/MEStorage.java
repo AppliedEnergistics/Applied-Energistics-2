@@ -27,6 +27,7 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -89,6 +90,11 @@ public interface MEStorage {
      */
     default void getAvailableStacks(KeyCounter out) {
     }
+
+    /**
+     * @return The type of storage represented by this object.
+     */
+    Component getDescription();
 
     /**
      * request a full report of all available items, storage.

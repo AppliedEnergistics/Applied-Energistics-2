@@ -22,8 +22,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Iterators;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
@@ -41,28 +44,21 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalFakeSlot;
-import appeng.parts.misc.AbstractStorageBusPart;
-import appeng.parts.misc.FluidStorageBusPart;
-import appeng.parts.misc.ItemStorageBusPart;
+import appeng.parts.storagebus.StorageBusPart;
 
 /**
  * @see StorageBusScreen
  * @see appeng.client.gui.implementations.StorageBusScreen
  */
-public class StorageBusMenu extends UpgradeableMenu<AbstractStorageBusPart<?>> {
+public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
 
     private static final String ACTION_CLEAR = "clear";
     private static final String ACTION_PARTITION = "partition";
 
-    public static final MenuType<StorageBusMenu> ITEM_TYPE = MenuTypeBuilder
-            .create(StorageBusMenu::new, ItemStorageBusPart.class)
+    public static final MenuType<StorageBusMenu> TYPE = MenuTypeBuilder
+            .create(StorageBusMenu::new, StorageBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("item_storagebus");
-
-    public static final MenuType<StorageBusMenu> FLUID_TYPE = MenuTypeBuilder
-            .create(StorageBusMenu::new, FluidStorageBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
-            .build("fluid_storagebus");
+            .build("storagebus");
 
     @GuiSync(3)
     public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
@@ -73,11 +69,17 @@ public class StorageBusMenu extends UpgradeableMenu<AbstractStorageBusPart<?>> {
     @GuiSync(7)
     public YesNo filterOnExtract = YesNo.YES;
 
-    public StorageBusMenu(MenuType<StorageBusMenu> menuType, int id, Inventory ip, AbstractStorageBusPart<?> te) {
+    @GuiSync(8)
+    @Nullable
+    public Component connectedTo;
+
+    public StorageBusMenu(MenuType<StorageBusMenu> menuType, int id, Inventory ip, StorageBusPart te) {
         super(menuType, id, ip, te);
 
         registerClientAction(ACTION_CLEAR, this::clear);
         registerClientAction(ACTION_PARTITION, this::partition);
+
+        this.connectedTo = te.getConnectedToDescription();
     }
 
     @Override
@@ -95,6 +97,13 @@ public class StorageBusMenu extends UpgradeableMenu<AbstractStorageBusPart<?>> {
         }
 
         this.setupUpgrades();
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+
+        this.connectedTo = getHost().getConnectedToDescription();
     }
 
     @Override
@@ -182,6 +191,11 @@ public class StorageBusMenu extends UpgradeableMenu<AbstractStorageBusPart<?>> {
     }
 
     public boolean supportsFuzzySearch() {
-        return hasUpgrade(Upgrades.FUZZY) && getHost().getChannel().supportsFuzzyRangeSearch();
+        return hasUpgrade(Upgrades.FUZZY);
+    }
+
+    @Nullable
+    public Component getConnectedTo() {
+        return connectedTo;
     }
 }

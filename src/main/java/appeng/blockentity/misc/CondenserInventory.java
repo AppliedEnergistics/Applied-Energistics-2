@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -77,6 +78,11 @@ class CondenserInventory implements MEMonitorStorage, ITickingMonitor {
         if (!stack.isEmpty()) {
             out.add(AEItemKey.of(stack), stack.getCount());
         }
+    }
+
+    @Override
+    public Component getDescription() {
+        return target.getBlockState().getBlock().getName();
     }
 
     @Override

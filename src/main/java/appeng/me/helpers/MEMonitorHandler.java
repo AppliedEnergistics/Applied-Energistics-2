@@ -29,6 +29,8 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.network.chat.Component;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitorListener;
@@ -131,6 +133,11 @@ public class MEMonitorHandler implements MEMonitorStorage {
     @Override
     public void getAvailableStacks(final KeyCounter out) {
         this.getHandler().getAvailableStacks(out);
+    }
+
+    @Override
+    public Component getDescription() {
+        return getHandler().getDescription();
     }
 
 }

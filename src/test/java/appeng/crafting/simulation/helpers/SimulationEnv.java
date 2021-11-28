@@ -20,6 +20,8 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -217,11 +219,16 @@ public class SimulationEnv {
         };
     }
 
-    private <T extends AEKey> MEMonitorStorage createMonitorMock() {
+    private MEMonitorStorage createMonitorMock() {
         return new MEMonitorStorage() {
             @Override
             public void getAvailableStacks(KeyCounter out) {
                 throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public Component getDescription() {
+                return TextComponent.EMPTY;
             }
 
             @Override

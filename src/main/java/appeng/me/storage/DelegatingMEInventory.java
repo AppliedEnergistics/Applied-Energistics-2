@@ -2,6 +2,8 @@ package appeng.me.storage;
 
 import java.util.Objects;
 
+import net.minecraft.network.chat.Component;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEStorage;
@@ -52,5 +54,10 @@ public class DelegatingMEInventory implements MEStorage {
     @Override
     public KeyCounter getAvailableStacks() {
         return delegate.getAvailableStacks();
+    }
+
+    @Override
+    public Component getDescription() {
+        return delegate.getDescription();
     }
 }

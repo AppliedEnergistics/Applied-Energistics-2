@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.network.chat.Component;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
@@ -32,6 +34,7 @@ import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.GuiText;
 import appeng.items.tools.BiometricCardItem;
 
 /**
@@ -139,5 +142,10 @@ public class SecurityStationInventory implements MEStorage {
 
     public Collection<AEItemKey> getStoredItems() {
         return this.storedItems;
+    }
+
+    @Override
+    public Component getDescription() {
+        return GuiText.Security.text();
     }
 }

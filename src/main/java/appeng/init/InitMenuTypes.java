@@ -32,7 +32,6 @@ import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.implementations.InterfaceMenu;
 import appeng.menu.implementations.InterfaceTerminalMenu;
-import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.PriorityMenu;
@@ -43,6 +42,7 @@ import appeng.menu.implementations.SkyChestMenu;
 import appeng.menu.implementations.SpatialAnchorMenu;
 import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.implementations.StorageBusMenu;
+import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.menu.implementations.WirelessMenu;
 import appeng.menu.me.common.MEMonitorableMenu;
@@ -97,8 +97,7 @@ public final class InitMenuTypes {
                 SkyChestMenu.TYPE,
                 SpatialIOPortMenu.TYPE,
                 SpatialAnchorMenu.TYPE,
-                StorageBusMenu.ITEM_TYPE,
-                StorageBusMenu.FLUID_TYPE,
+                StorageBusMenu.TYPE,
                 IOBusMenu.EXPORT_TYPE,
                 IOBusMenu.IMPORT_TYPE,
                 VibrationChamberMenu.TYPE,

@@ -42,7 +42,7 @@ import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
-import appeng.me.storage.MonitoringStorageAdapter;
+import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
 
 public interface IInterfaceTarget {
@@ -100,16 +100,8 @@ public interface IInterfaceTarget {
 
     private static IInterfaceTarget wrapHandlers(Storage<ItemVariant> itemHandler, Storage<FluidVariant> fluidHandler,
             IActionSource src) {
-        var itemAdapter = new MonitoringStorageAdapter<>(IVariantConversion.ITEM, itemHandler, false) {
-            @Override
-            protected void onInjectOrExtract() {
-            }
-        };
-        var fluidAdapter = new MonitoringStorageAdapter<>(IVariantConversion.FLUID, fluidHandler, false) {
-            @Override
-            protected void onInjectOrExtract() {
-            }
-        };
+        var itemAdapter = new StorageAdapter<>(IVariantConversion.ITEM, itemHandler);
+        var fluidAdapter = new StorageAdapter<>(IVariantConversion.FLUID, fluidHandler);
         return new IInterfaceTarget() {
             @Override
             public long insert(AEKey what, long amount, Actionable type) {

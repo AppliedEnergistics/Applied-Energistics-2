@@ -683,13 +683,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.dye(DyeColor.GREEN))
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/fluid_formation_plane_alt"));
-        ShapelessRecipeBuilder.shapeless(AEParts.FLUID_STORAGE_BUS)
-                .requires(Items.STICKY_PISTON)
-                .requires(ConventionTags.FLUID_INTERFACE)
-                .requires(Items.PISTON)
-                .requires(ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_fluid_interface", has(ConventionTags.FLUID_INTERFACE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_storage_bus"));
         ShapedRecipeBuilder.shaped(AEParts.ANNIHILATION_PLANE)
                 .pattern("aaa")
                 .pattern("bcb")
@@ -756,12 +749,12 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(AEItems.CALCULATION_PROCESSOR)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/parts/energy_level_emitter"));
-        ShapelessRecipeBuilder.shapeless(AEParts.ITEM_STORAGE_BUS)
+        ShapelessRecipeBuilder.shapeless(AEParts.STORAGE_BUS)
                 .requires(Items.STICKY_PISTON)
                 .requires(ConventionTags.ITEM_INTERFACE)
                 .requires(Items.PISTON)
                 .unlockedBy("has_item_interface", has(ConventionTags.ITEM_INTERFACE))
-                .save(consumer, AppEng.makeId("network/parts/item_storage_bus"));
+                .save(consumer, AppEng.makeId("network/parts/storage_bus"));
         ShapelessRecipeBuilder.shapeless(AEParts.CONVERSION_MONITOR)
                 .requires(AEItems.FORMATION_CORE)
                 .requires(AEParts.STORAGE_MONITOR)

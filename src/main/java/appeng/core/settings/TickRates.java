@@ -38,17 +38,11 @@ public enum TickRates {
 
     VibrationChamber(10, 40),
 
-    ItemStorageBus(5, 60),
-
-    FluidStorageBus(5, 60),
+    StorageBus(5, 60),
 
     ItemTunnel(5, 60),
 
-    LightTunnel(5, 60),
-
-    OpenComputersTunnel(1, 5),
-
-    PressureTunnel(1, 120);
+    LightTunnel(5, 60);
 
     private final int defaultMin;
     private final int defaultMax;

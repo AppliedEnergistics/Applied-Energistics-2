@@ -18,14 +18,23 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.config.*;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.ActionItems;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
+import appeng.api.config.YesNo;
+import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.core.localization.GuiText;
 import appeng.menu.implementations.StorageBusMenu;
 
 public class StorageBusScreen extends UpgradeableScreen<StorageBusMenu> {
@@ -65,4 +74,19 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusMenu> {
         this.fuzzyMode.setVisibility(menu.supportsFuzzySearch());
     }
 
+    @Override
+    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+        super.drawFG(poseStack, offsetX, offsetY, mouseX, mouseY);
+
+        poseStack.pushPose();
+        poseStack.translate(10, 17, 0);
+        poseStack.scale(0.6f, 0.6f, 1);
+        var color = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR);
+        if (menu.getConnectedTo() != null) {
+            font.draw(poseStack, GuiText.AttachedTo.text(menu.getConnectedTo()), 0, 0, color.toARGB());
+        } else {
+            font.draw(poseStack, GuiText.Unattached.text(), 0, 0, color.toARGB());
+        }
+        poseStack.popPose();
+    }
 }

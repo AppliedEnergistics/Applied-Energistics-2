@@ -18,25 +18,27 @@
 
 package appeng.helpers;
 
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.helpers.iface.GenericStackInvStorage;
-import appeng.me.storage.MonitoringStorageAdapter;
+import appeng.me.storage.CompositeStorage;
+import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
 
 public class DualityFluidInterface extends DualityInterface {
@@ -83,12 +85,10 @@ public class DualityFluidInterface extends DualityInterface {
         return localStorage;
     }
 
-    private class InterfaceInventory extends MonitoringStorageAdapter<FluidVariant> {
-
-        InterfaceInventory() {
-            super(IVariantConversion.FLUID,
-                    localStorage,
-                    getConfigManager().getSetting(Settings.STORAGE_FILTER) == StorageFilter.EXTRACTABLE_ONLY);
+    private class InterfaceInventory extends CompositeStorage {
+        public InterfaceInventory() {
+            super(Map.of(
+                    AEKeySpace.fluids(), new StorageAdapter<>(IVariantConversion.FLUID, localStorage)));
             this.setActionSource(actionSource);
         }
 
@@ -98,7 +98,9 @@ public class DualityFluidInterface extends DualityInterface {
                 return 0;
             }
 
-            return super.insert(what, amount, mode, source);
+            var inserted = super.insert(what, amount, mode, source);
+            onTick(); // Immediately clear cache
+            return inserted;
         }
 
         @Override
@@ -108,18 +110,14 @@ public class DualityFluidInterface extends DualityInterface {
                 return 0;
             }
 
-            return super.extract(what, amount, mode, source);
+            var extracted = super.extract(what, amount, mode, source);
+            onTick(); // Immediately clear cache
+            return extracted;
         }
 
         @Override
-        protected void onInjectOrExtract() {
-            // Rebuild cache immediately
-            this.onTick();
-        }
-
-        @Override
-        public KeyCounter getCachedAvailableStacks() {
-            return getAvailableStacks();
+        public Component getDescription() {
+            return host.getMainMenuIcon().getHoverName();
         }
     }
 

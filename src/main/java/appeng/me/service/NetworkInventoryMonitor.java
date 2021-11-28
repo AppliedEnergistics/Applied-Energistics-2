@@ -31,6 +31,9 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Queues;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitorListener;
@@ -96,6 +99,15 @@ public class NetworkInventoryMonitor implements MEMonitorStorage {
     public void getAvailableStacks(KeyCounter out) {
         if (storage != null) {
             storage.getAvailableStacks(out);
+        }
+    }
+
+    @Override
+    public Component getDescription() {
+        if (storage != null) {
+            return storage.getDescription();
+        } else {
+            return TextComponent.EMPTY;
         }
     }
 

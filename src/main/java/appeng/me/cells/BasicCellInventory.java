@@ -23,6 +23,7 @@ import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -442,5 +443,10 @@ public class BasicCellInventory implements StorageCell {
         }
 
         return 0;
+    }
+
+    @Override
+    public Component getDescription() {
+        return i.getHoverName();
     }
 }
