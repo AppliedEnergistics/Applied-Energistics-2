@@ -18,6 +18,7 @@
 
 package appeng.helpers;
 
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.IUpgradeInventory;
@@ -25,8 +26,15 @@ import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.helpers.iface.GenericStackInv;
+import appeng.menu.ISubMenu;
+import appeng.menu.MenuLocator;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.InterfaceMenu;
 
-public interface IInterfaceHost extends IConfigurableObject, IUpgradeableObject, IPriorityHost, IConfigInvHost {
+/**
+ * Interface that must be implemented by machines hosting {@link InterfaceLogic}.
+ */
+public interface InterfaceLogicHost extends IConfigurableObject, IUpgradeableObject, IPriorityHost, IConfigInvHost {
     /**
      * @return The block entity that is in-world and hosts the interface.
      */
@@ -34,30 +42,39 @@ public interface IInterfaceHost extends IConfigurableObject, IUpgradeableObject,
 
     void saveChanges();
 
-    DualityInterface getInterfaceDuality();
+    InterfaceLogic getInterfaceLogic();
 
     @Override
     default IConfigManager getConfigManager() {
-        return getInterfaceDuality().getConfigManager();
+        return getInterfaceLogic().getConfigManager();
     }
 
     @Override
     default IUpgradeInventory getUpgrades() {
-        return getInterfaceDuality().getUpgrades();
+        return getInterfaceLogic().getUpgrades();
     }
 
     @Override
     default int getPriority() {
-        return getInterfaceDuality().getPriority();
+        return getInterfaceLogic().getPriority();
     }
 
     @Override
     default void setPriority(final int newValue) {
-        getInterfaceDuality().setPriority(newValue);
+        getInterfaceLogic().setPriority(newValue);
     }
 
     @Override
     default GenericStackInv getConfig() {
-        return getInterfaceDuality().getConfig();
+        return getInterfaceLogic().getConfig();
+    }
+
+    default void openMenu(Player player, MenuLocator locator) {
+        MenuOpener.open(InterfaceMenu.TYPE, player, locator);
+    }
+
+    @Override
+    default void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openMenu(player, subMenu.getLocator());
     }
 }

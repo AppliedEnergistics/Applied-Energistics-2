@@ -39,43 +39,43 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
-import appeng.helpers.DualityItemInterface;
-import appeng.helpers.IItemInterfaceHost;
+import appeng.helpers.InterfaceLogic;
+import appeng.helpers.InterfaceLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceHost {
+public class InterfacePart extends BasicStatePart implements InterfaceLogicHost {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/item_interface_base");
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
 
-    private static final IGridNodeListener<ItemInterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
+    private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new AEBasePart.NodeListener<>() {
         @Override
-        public void onGridChanged(ItemInterfacePart nodeOwner, IGridNode node) {
+        public void onGridChanged(InterfacePart nodeOwner, IGridNode node) {
             super.onGridChanged(nodeOwner, node);
-            nodeOwner.getInterfaceDuality().gridChanged();
+            nodeOwner.getInterfaceLogic().gridChanged();
         }
     };
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_off"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_on"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/item_interface_has_channel"));
+            new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
-    private final DualityItemInterface duality;
+    private final InterfaceLogic logic;
 
-    public ItemInterfacePart(final ItemStack is) {
+    public InterfacePart(final ItemStack is) {
         super(is);
-        this.duality = new DualityItemInterface(this.getMainNode(), this, is);
+        this.logic = new InterfaceLogic(this.getMainNode(), this, is);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     @Override
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
-        this.duality.notifyNeighbors();
+        this.logic.notifyNeighbors();
     }
 
     @Override
@@ -103,18 +103,18 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     @Override
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
-        this.duality.readFromNBT(data);
+        this.logic.readFromNBT(data);
     }
 
     @Override
     public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
-        this.duality.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
-        this.duality.addDrops(drops);
+        this.logic.addDrops(drops);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
 
     @Override
     public IConfigManager getConfigManager() {
-        return this.duality.getConfigManager();
+        return this.logic.getConfigManager();
     }
 
     @Override
@@ -136,18 +136,18 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     }
 
     @Override
-    public DualityItemInterface getInterfaceDuality() {
-        return this.duality;
+    public InterfaceLogic getInterfaceLogic() {
+        return this.logic;
     }
 
     @Override
     public int getPriority() {
-        return this.duality.getPriority();
+        return this.logic.getPriority();
     }
 
     @Override
     public void setPriority(final int newValue) {
-        this.duality.setPriority(newValue);
+        this.logic.setPriority(newValue);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class ItemInterfacePart extends BasicStatePart implements IItemInterfaceH
     @Override
     public InternalInventory getSubInventory(ResourceLocation id) {
         if (id.equals(UPGRADES)) {
-            return duality.getUpgrades();
+            return logic.getUpgrades();
         }
         return super.getSubInventory(id);
     }

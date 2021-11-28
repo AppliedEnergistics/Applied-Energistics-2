@@ -37,10 +37,8 @@ public final class InitUpgrades {
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
 
         // Interface
-        Upgrades.CRAFTING.registerItem(AEParts.ITEM_INTERFACE, 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(AEBlocks.ITEM_INTERFACE, 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(AEParts.FLUID_INTERFACE, 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(AEBlocks.FLUID_INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(AEParts.INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(AEBlocks.INTERFACE, 1, interfaceGroup);
 
         // IO Port!
         Upgrades.SPEED.registerItem(AEBlocks.IO_PORT, 3);

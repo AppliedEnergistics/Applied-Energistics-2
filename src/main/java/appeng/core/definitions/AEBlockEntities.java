@@ -45,9 +45,8 @@ import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.CondenserBlockEntity;
-import appeng.blockentity.misc.FluidInterfaceBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
-import appeng.blockentity.misc.ItemInterfaceBlockEntity;
+import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
@@ -107,11 +106,8 @@ public final class AEBlockEntities {
             DriveBlockEntity::new, AEBlocks.DRIVE);
     public static final BlockEntityType<ChestBlockEntity> CHEST = create("chest", ChestBlockEntity.class,
             ChestBlockEntity::new, AEBlocks.CHEST);
-    public static final BlockEntityType<ItemInterfaceBlockEntity> INTERFACE = create("interface",
-            ItemInterfaceBlockEntity.class,
-            ItemInterfaceBlockEntity::new, AEBlocks.ITEM_INTERFACE);
-    public static final BlockEntityType<FluidInterfaceBlockEntity> FLUID_INTERFACE = create("fluid_interface",
-            FluidInterfaceBlockEntity.class, FluidInterfaceBlockEntity::new, AEBlocks.FLUID_INTERFACE);
+    public static final BlockEntityType<InterfaceBlockEntity> INTERFACE = create("interface",
+            InterfaceBlockEntity.class, InterfaceBlockEntity::new, AEBlocks.INTERFACE);
     public static final BlockEntityType<CellWorkbenchBlockEntity> CELL_WORKBENCH = create("cell_workbench",
             CellWorkbenchBlockEntity.class, CellWorkbenchBlockEntity::new, AEBlocks.CELL_WORKBENCH);
     public static final BlockEntityType<IOPortBlockEntity> IO_PORT = create("io_port", IOPortBlockEntity.class,

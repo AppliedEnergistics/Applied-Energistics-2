@@ -69,7 +69,7 @@ public enum GuiText {
 
     NoSecondOutput, OfSecondOutput, MultipleOutputs,
 
-    Stores, Next, SelectAmount, Lumen, Empty,
+    Stores, Next, Set, SelectAmount, Lumen, Empty,
 
     ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel, ETA, ETAFormat,
 

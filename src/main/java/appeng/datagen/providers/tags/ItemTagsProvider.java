@@ -99,12 +99,9 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .addOptionalTag(new ResourceLocation("c:nickel_ingots"))
                 .addOptionalTag(new ResourceLocation("c:aluminium_ingots"));
 
-        tag(ConventionTags.ITEM_INTERFACE)
-                .add(AEParts.ITEM_INTERFACE.asItem())
-                .add(AEBlocks.ITEM_INTERFACE.asItem());
-        tag(ConventionTags.FLUID_INTERFACE)
-                .add(AEParts.FLUID_INTERFACE.asItem())
-                .add(AEBlocks.FLUID_INTERFACE.asItem());
+        tag(ConventionTags.INTERFACE)
+                .add(AEParts.INTERFACE.asItem())
+                .add(AEBlocks.INTERFACE.asItem());
 
         tag(ConventionTags.ILLUMINATED_PANEL)
                 .add(AEParts.MONITOR.asItem())

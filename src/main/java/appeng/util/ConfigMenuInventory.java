@@ -45,7 +45,7 @@ public class ConfigMenuInventory implements InternalInventory {
 
     @Override
     public int getSlotLimit(int slot) {
-        return (int) Math.min(Integer.MAX_VALUE, inv.getCapacity());
+        return (int) Math.min(Integer.MAX_VALUE, inv.getCapacity(AEKeySpace.items()));
     }
 
     @Override

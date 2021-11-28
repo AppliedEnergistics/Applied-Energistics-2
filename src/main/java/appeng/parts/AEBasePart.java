@@ -316,10 +316,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
             ItemStack is = this.getItemStack(PartItemStack.NETWORK);
 
             // Blocks and parts share the same soul!
-            if (AEParts.ITEM_INTERFACE.isSameAs(is)) {
-                is = AEBlocks.ITEM_INTERFACE.stack();
-            } else if (AEParts.FLUID_INTERFACE.isSameAs(is)) {
-                is = AEBlocks.FLUID_INTERFACE.stack();
+            if (AEParts.INTERFACE.isSameAs(is)) {
+                is = AEBlocks.INTERFACE.stack();
             }
 
             final String name = is.getDescriptionId();

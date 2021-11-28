@@ -56,8 +56,7 @@ public final class AEBlockIds {
     public static final ResourceLocation CONTROLLER = id("controller");
     public static final ResourceLocation DRIVE = id("drive");
     public static final ResourceLocation CHEST = id("chest");
-    public static final ResourceLocation ITEM_INTERFACE = id("item_interface");
-    public static final ResourceLocation FLUID_INTERFACE = id("fluid_interface");
+    public static final ResourceLocation INTERFACE = id("interface");
     public static final ResourceLocation CELL_WORKBENCH = id("cell_workbench");
     public static final ResourceLocation IO_PORT = id("io_port");
     public static final ResourceLocation CONDENSER = id("condenser");

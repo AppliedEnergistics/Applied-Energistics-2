@@ -1,5 +1,5 @@
 {
-  "parent": "ae2:item/cable_item_interface",
+  "parent": "ae2:item/cable_interface",
   "textures": {
     "sides": "ae2:part/monitor_sides",
     "back": "ae2:part/monitor_back",

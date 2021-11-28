@@ -18,7 +18,6 @@
 
 package appeng.client.gui.me.crafting;
 
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -28,55 +27,47 @@ import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.core.localization.GuiText;
-import appeng.menu.me.crafting.CraftAmountMenu;
+import appeng.menu.implementations.SetStockAmountMenu;
 
 /**
- * When requesting to auto-craft, this dialog allows the player to enter the desired number of items to craft.
+ * Allows precisely setting the amount to stock for an interface slot.
  */
-public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
+public class SetStockAmountScreen extends AEBaseScreen<SetStockAmountMenu> {
 
-    private final Button next;
-
-    private final NumberEntryWidget amountToCraft;
+    private final NumberEntryWidget amount;
 
     private boolean initialAmountInitialized;
 
-    public CraftAmountScreen(CraftAmountMenu menu, Inventory playerInventory, Component title,
+    public SetStockAmountScreen(SetStockAmountMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        this.next = widgets.addButton("next", GuiText.Next.text(), this::confirm);
+        widgets.addButton("save", GuiText.Set.text(), this::confirm);
 
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        this.amountToCraft = new NumberEntryWidget(NumberEntryType.CRAFT_ITEM_COUNT);
-        this.amountToCraft.setValue(1);
-        this.amountToCraft.setTextFieldBounds(62, 57, 50);
-        this.amountToCraft.setMinValue(1);
-        this.amountToCraft.setHideValidationIcon(true);
-        this.amountToCraft.setOnConfirm(this::confirm);
-        widgets.add("amountToCraft", this.amountToCraft);
+        this.amount = new NumberEntryWidget(NumberEntryType.CRAFT_ITEM_COUNT);
+        this.amount.setValue(1);
+        this.amount.setTextFieldBounds(62, 57, 50);
+        this.amount.setMinValue(1);
+        this.amount.setHideValidationIcon(true);
+        this.amount.setOnConfirm(this::confirm);
+        widgets.add("amountToCraft", this.amount);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
+        this.amount.setMaxValue(menu.getMaxAmount());
+
         if (this.menu.getInitialAmount() != -1 && !this.initialAmountInitialized) {
-            this.amountToCraft.setValue(this.menu.getInitialAmount());
+            this.amount.setValue(this.menu.getInitialAmount());
             this.initialAmountInitialized = true;
         }
-
-        this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
-        this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
     }
 
     private void confirm() {
-        int amount = this.amountToCraft.getIntValue().orElse(0);
-        if (amount <= 0) {
-            return;
-        }
-        menu.confirm(amount, hasShiftDown());
+        menu.confirm(this.amount.getIntValue().orElse(0));
     }
-
 }

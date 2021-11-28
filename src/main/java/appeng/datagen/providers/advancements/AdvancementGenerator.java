@@ -512,7 +512,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var storageBusOnInterface = Advancement.Builder.advancement()
                 .display(
-                        AEBlocks.ITEM_INTERFACE,
+                        AEBlocks.INTERFACE,
                         new TranslatableComponent("achievement.ae2.Recursive"),
                         new TranslatableComponent("achievement.ae2.Recursive.desc"),
                         null /* background */,

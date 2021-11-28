@@ -19,6 +19,7 @@
 package appeng.helpers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -27,7 +28,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,34 +53,46 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageHelper;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
+import appeng.api.util.AECableType;
+import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.settings.TickRates;
+import appeng.helpers.iface.GenericStackInvStorage;
 import appeng.me.helpers.MachineSource;
+import appeng.me.storage.CompositeStorage;
 import appeng.me.storage.MEMonitorPassThrough;
+import appeng.me.storage.StorageAdapter;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
+import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 import appeng.util.inv.InternalInventoryHost;
 
 /**
  * Contains behavior for interface blocks and parts, which is independent of the storage channel.
  */
-public abstract class DualityInterface implements ICraftingRequester, IUpgradeableObject,
-        IConfigurableObject, InternalInventoryHost {
+public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, IConfigurableObject,
+        InternalInventoryHost {
+
+    public static final int NUMBER_OF_SLOTS = 9;
+
+    @Nullable
+    private InterfaceInventory localInvHandler;
 
     protected final MEMonitorPassThrough networkStorage = new MEMonitorPassThrough();
 
-    protected final IInterfaceHost host;
+    protected final InterfaceLogicHost host;
     protected final IManagedGridNode mainNode;
     protected final IActionSource actionSource;
     protected final IActionSource interfaceRequestSource;
@@ -84,13 +102,11 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
     private final ConfigManager cm = new ConfigManager((manager, setting) -> {
         onConfigChanged();
     });
-    @Nullable
-    private final AEKeyFilter configFilter;
     /**
      * Work planned by {@link #updatePlan()} to be performed by {@link #usePlan}. Positive amounts mean restocking from
      * the network is required while negative amounts mean moving to the network is required.
      */
-    private final GenericStack[] plannedWork = new GenericStack[getStorageSlots()];
+    private final GenericStack[] plannedWork = new GenericStack[NUMBER_OF_SLOTS];
     private int priority;
     /**
      * Configures what and how much to stock in this inventory.
@@ -102,12 +118,20 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
     private boolean hasConfig = false;
     private final ConfigInventory storage;
 
-    public DualityInterface(IManagedGridNode gridNode, IInterfaceHost host, ItemStack is,
-            @Nullable AEKeyFilter configFilter) {
+    /**
+     * Used to expose items in the local storage of this interface to external machines.
+     */
+    private final GenericStackInvStorage<ItemVariant> localItemStorage;
+
+    /**
+     * Used to expose fluids in the local storage of this interface to external machines.
+     */
+    private final GenericStackInvStorage<FluidVariant> localFluidStorage;
+
+    public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, ItemStack is) {
         this.host = host;
-        this.configFilter = configFilter;
-        this.config = ConfigInventory.configStacks(configFilter, getStorageSlots(), this::readConfig);
-        this.storage = ConfigInventory.storage(configFilter, getStorageSlots(), this::updatePlan);
+        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::readConfig);
+        this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::updatePlan);
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
@@ -121,9 +145,13 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
         this.upgrades = new StackUpgradeInventory(is, this, 1);
         this.craftingTracker = new MultiCraftingTracker(this, 9);
 
+        getConfig().setCapacity(AEKeySpace.items(), Container.LARGE_MAX_STACK_SIZE);
+        getStorage().setCapacity(AEKeySpace.items(), Container.LARGE_MAX_STACK_SIZE);
+        getConfig().setCapacity(AEKeySpace.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
+        getStorage().setCapacity(AEKeySpace.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
+        this.localItemStorage = GenericStackInvStorage.items(getStorage());
+        this.localFluidStorage = GenericStackInvStorage.fluids(getStorage());
     }
-
-    protected abstract int getStorageSlots();
 
     public int getPriority() {
         return priority;
@@ -153,7 +181,7 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
         this.craftingTracker.readFromNBT(tag);
         this.upgrades.readFromNBT(tag, "upgrades");
         this.config.readFromChildTag(tag, "config");
-        this.storage.writeToChildTag(tag, "storage");
+        this.storage.readFromChildTag(tag, "storage");
         this.cm.readFromNBT(tag);
         this.readConfig();
         this.priority = tag.getInt("priority");
@@ -238,6 +266,14 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
         return config;
     }
 
+    public GenericStackInvStorage<ItemVariant> getLocalItemStorage() {
+        return localItemStorage;
+    }
+
+    public GenericStackInvStorage<FluidVariant> getLocalFluidStorage() {
+        return localFluidStorage;
+    }
+
     private MEMonitorStorage getMonitorable(IActionSource src) {
         // If the given action source can access the grid, return the real inventory
         if (Platform.canAccess(mainNode, src)) {
@@ -264,9 +300,14 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
     }
 
     /**
-     * Returns an ME compatible monitor for the interface's local storage for a given storage channel.
+     * Returns an ME compatible monitor for the interfaces local storage.
      */
-    protected abstract MEMonitorStorage getLocalInventory();
+    private MEMonitorStorage getLocalInventory() {
+        if (localInvHandler == null) {
+            localInvHandler = new InterfaceInventory();
+        }
+        return localInvHandler;
+    }
 
     private class InterfaceRequestSource extends MachineSource {
         private final InterfaceRequestContext context;
@@ -298,12 +339,8 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
         for (int x = 0; x < plannedWork.length; x++) {
             var work = plannedWork[x];
             if (work != null) {
-                if (configFilter != null && configFilter.matches(work.what())) {
-                    var amount = (int) work.amount();
-                    didSomething = this.usePlan(x, work.what(), amount) || didSomething;
-                } else {
-                    plannedWork[x] = null;
-                }
+                var amount = (int) work.amount();
+                didSomething = this.usePlan(x, work.what(), amount) || didSomething;
             }
         }
 
@@ -479,6 +516,7 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
         this.host.saveChanges();
     }
 
+    @Override
     public void saveChanges() {
         this.host.saveChanges();
     }
@@ -509,6 +547,61 @@ public abstract class DualityInterface implements ICraftingRequester, IUpgradeab
             if (stack != null && stack.what() instanceof AEItemKey itemKey) {
                 drops.add(itemKey.toStack((int) stack.amount()));
             }
+        }
+    }
+
+    public AECableType getCableConnectionType(Direction dir) {
+        return AECableType.SMART;
+    }
+
+    public DimensionalBlockPos getLocation() {
+        return new DimensionalBlockPos(this.host.getBlockEntity());
+    }
+
+    /**
+     * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
+     */
+    private class InterfaceInventory extends CompositeStorage {
+
+        InterfaceInventory() {
+            super(Map.of(
+                    AEKeySpace.items(), new StorageAdapter<>(IVariantConversion.ITEM, localItemStorage),
+                    AEKeySpace.fluids(), new StorageAdapter<>(IVariantConversion.FLUID, localFluidStorage)));
+            this.setActionSource(actionSource);
+        }
+
+        @Override
+        public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+            // Prevents other interfaces from injecting their items into this interface when they push
+            // their local inventory into the network. This prevents items from bouncing back and forth
+            // between interfaces.
+            if (getRequestInterfacePriority(source).isPresent()) {
+                return 0;
+            }
+
+            var inserted = super.insert(what, amount, mode, source);
+            onTick(); // Immediately clear cache
+            return inserted;
+        }
+
+        @Override
+        public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+            // Prevents interfaces of lower priority fullfilling their item stocking requests from this interface
+            // Otherwise we'd see a "ping-pong" effect where two interfaces could start pulling items back and
+            // forth of they wanted to stock the same item and happened to have storage buses on them.
+            var requestPriority = getRequestInterfacePriority(source);
+            if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority()) {
+                return 0;
+            }
+
+            var extracted = super.extract(what, amount, mode, source);
+            onTick(); // Immediately clear cache
+            return extracted;
+        }
+
+        @Override
+        public Component getDescription() {
+            return host.getMainMenuIcon().getHoverName();
         }
     }
 

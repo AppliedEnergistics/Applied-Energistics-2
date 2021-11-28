@@ -18,6 +18,7 @@
 
 package appeng.menu.implementations;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -25,31 +26,29 @@ import net.minecraft.world.inventory.Slot;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.InterfaceScreen;
-import appeng.helpers.IInterfaceHost;
+import appeng.helpers.InterfaceLogicHost;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.FluidTankSlot;
 
 /**
  * @see InterfaceScreen
  */
-public class InterfaceMenu extends UpgradeableMenu<IInterfaceHost> {
+public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
 
-    public static final MenuType<InterfaceMenu> ITEM_TYPE = MenuTypeBuilder
-            .create(InterfaceMenu::new, IInterfaceHost.class)
+    public static final String ACTION_OPEN_SET_AMOUNT = "setAmount";
+
+    public static final MenuType<InterfaceMenu> TYPE = MenuTypeBuilder
+            .create(InterfaceMenu::new, InterfaceLogicHost.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("item_interface");
+            .build("interface");
 
-    public static final MenuType<InterfaceMenu> FLUID_TYPE = MenuTypeBuilder
-            .create(InterfaceMenu::new, IInterfaceHost.class)
-            .requirePermission(SecurityPermissions.BUILD)
-            .build("fluid_interface");
-
-    public InterfaceMenu(MenuType<InterfaceMenu> menuType, int id, Inventory ip, IInterfaceHost host) {
+    public InterfaceMenu(MenuType<InterfaceMenu> menuType, int id, Inventory ip, InterfaceLogicHost host) {
         super(menuType, id, ip, host);
 
-        var duality = host.getInterfaceDuality();
+        registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);
+
+        var duality = host.getInterfaceLogic();
 
         var config = duality.getConfig().createMenuWrapper();
         for (int x = 0; x < config.size(); x++) {
@@ -59,13 +58,13 @@ public class InterfaceMenu extends UpgradeableMenu<IInterfaceHost> {
         var storage = duality.getStorage().createMenuWrapper();
         for (int x = 0; x < storage.size(); x++) {
             Slot slot;
-            if (menuType == FLUID_TYPE) {
-                // Special case for fluids -> Show as nice tank widget instead of slot
-                slot = new FluidTankSlot(storage, x, duality.getStorage().getCapacity(), "tank" + (1 + x),
-                        ip::placeItemBackInInventory);
-            } else {
-                slot = new AppEngSlot(storage, x);
-            }
+//            if (menuType == FLUID_TYPE) {
+//                // Special case for fluids -> Show as nice tank widget instead of slot
+//                slot = new FluidTankSlot(storage, x, duality.getStorage().getCapacity(), "tank" + (1 + x),
+//                        ip::placeItemBackInInventory);
+//            } else {
+            slot = new AppEngSlot(storage, x);
+//            }
             this.addSlot(slot, SlotSemantic.STORAGE);
         }
     }
@@ -77,5 +76,22 @@ public class InterfaceMenu extends UpgradeableMenu<IInterfaceHost> {
     @Override
     protected void setupConfig() {
         this.setupUpgrades();
+    }
+
+    /**
+     * Opens a sub-menu to enter the amount for a config-slot
+     *
+     * @param configSlot The config slot to enter the amount for.
+     */
+    public void openSetAmountMenu(int configSlot) {
+        if (isClientSide()) {
+            sendClientAction(ACTION_OPEN_SET_AMOUNT, configSlot);
+        } else {
+            var stack = getHost().getConfig().getStack(configSlot);
+            if (stack != null) {
+                SetStockAmountMenu.open((ServerPlayer) getPlayer(), getLocator(), configSlot,
+                        stack.what(), (int) stack.amount());
+            }
+        }
     }
 }

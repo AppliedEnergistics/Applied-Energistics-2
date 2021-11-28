@@ -3,7 +3,7 @@
     "sides": "ae2:part/export_bus_sides",
     "sidesStatus": "ae2:part/monitor_sides_status",
     "back": "ae2:part/monitor_back",
-    "front": "ae2:part/item_interface",
+    "front": "ae2:part/interface",
     "particle": "ae2:part/monitor_back"
   },
   "elements": [

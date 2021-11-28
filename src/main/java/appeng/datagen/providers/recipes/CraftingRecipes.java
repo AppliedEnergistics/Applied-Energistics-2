@@ -339,25 +339,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', AEBlocks.ENERGY_ACCEPTOR)
                 .unlockedBy("has_energy_acceptor", has(AEBlocks.ENERGY_ACCEPTOR))
                 .save(consumer, AppEng.makeId("network/blocks/energy_vibration_chamber"));
-        ShapedRecipeBuilder.shaped(AEBlocks.FLUID_INTERFACE)
-                .pattern("aba")
-                .pattern("c d")
-                .pattern("aba")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', ConventionTags.dye(DyeColor.GREEN))
-                .define('c', AEItems.ANNIHILATION_CORE)
-                .define('d', AEItems.FORMATION_CORE)
-                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/blocks/fluid_interfaces_interface"));
-        ShapelessRecipeBuilder.shapeless(AEBlocks.FLUID_INTERFACE)
-                .requires(AEParts.FLUID_INTERFACE)
-                .unlockedBy("has_cable_fluid_interface", has(AEParts.FLUID_INTERFACE))
-                .save(consumer, AppEng.makeId("network/blocks/fluid_interfaces_interface_alt"));
-        ShapelessRecipeBuilder.shapeless(AEParts.FLUID_INTERFACE)
-                .requires(AEBlocks.FLUID_INTERFACE)
-                .unlockedBy("has_fluid_interface", has(AEBlocks.FLUID_INTERFACE))
-                .save(consumer, AppEng.makeId("network/blocks/fluid_interfaces_interface_part"));
         ShapedRecipeBuilder.shaped(AEBlocks.INSCRIBER)
                 .pattern("aba")
                 .pattern("c a")
@@ -406,7 +387,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(AEBlocks.PATTERN_PROVIDER)
                 .unlockedBy("has_pattern_provider", has(AEBlocks.PATTERN_PROVIDER))
                 .save(consumer, AppEng.makeId("network/blocks/pattern_providers_interface_part"));
-        ShapedRecipeBuilder.shaped(AEBlocks.ITEM_INTERFACE)
+        ShapedRecipeBuilder.shaped(AEBlocks.INTERFACE)
                 .pattern("aba")
                 .pattern("c d")
                 .pattern("aba")
@@ -416,15 +397,15 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', AEItems.FORMATION_CORE)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface"));
-        ShapelessRecipeBuilder.shapeless(AEBlocks.ITEM_INTERFACE)
-                .requires(AEParts.ITEM_INTERFACE)
-                .unlockedBy("has_cable_item_interface", has(AEParts.ITEM_INTERFACE))
-                .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface_alt"));
-        ShapelessRecipeBuilder.shapeless(AEParts.ITEM_INTERFACE)
-                .requires(AEBlocks.ITEM_INTERFACE)
-                .unlockedBy("has_item_interface", has(AEBlocks.ITEM_INTERFACE))
-                .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface_part"));
+                .save(consumer, AppEng.makeId("network/blocks/interfaces_interface"));
+        ShapelessRecipeBuilder.shapeless(AEBlocks.INTERFACE)
+                .requires(AEParts.INTERFACE)
+                .unlockedBy("has_cable_interface", has(AEParts.INTERFACE))
+                .save(consumer, AppEng.makeId("network/blocks/interfaces_interface_alt"));
+        ShapelessRecipeBuilder.shapeless(AEParts.INTERFACE)
+                .requires(AEBlocks.INTERFACE)
+                .unlockedBy("has_interface", has(AEBlocks.INTERFACE))
+                .save(consumer, AppEng.makeId("network/blocks/interfaces_interface_part"));
         ShapedRecipeBuilder.shaped(AEBlocks.QUANTUM_LINK)
                 .pattern("aba")
                 .pattern("b b")
@@ -751,9 +732,9 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/parts/energy_level_emitter"));
         ShapelessRecipeBuilder.shapeless(AEParts.STORAGE_BUS)
                 .requires(Items.STICKY_PISTON)
-                .requires(ConventionTags.ITEM_INTERFACE)
+                .requires(ConventionTags.INTERFACE)
                 .requires(Items.PISTON)
-                .unlockedBy("has_item_interface", has(ConventionTags.ITEM_INTERFACE))
+                .unlockedBy("has_interface", has(ConventionTags.INTERFACE))
                 .save(consumer, AppEng.makeId("network/parts/storage_bus"));
         ShapelessRecipeBuilder.shapeless(AEParts.CONVERSION_MONITOR)
                 .requires(AEItems.FORMATION_CORE)
@@ -824,8 +805,8 @@ public class CraftingRecipes extends AE2RecipeProvider {
         ShapelessRecipeBuilder.shapeless(AEParts.INTERFACE_TERMINAL)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
-                .requires(ConventionTags.ITEM_INTERFACE)
-                .unlockedBy("has_item_interface", has(ConventionTags.ITEM_INTERFACE))
+                .requires(ConventionTags.INTERFACE)
+                .unlockedBy("has_interface", has(ConventionTags.INTERFACE))
                 .save(consumer, AppEng.makeId("network/parts/terminals_interface"));
         ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_TERMINAL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)

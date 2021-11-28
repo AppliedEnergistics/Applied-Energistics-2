@@ -177,7 +177,7 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
 
         @Override
         public long getCapacity() {
-            return isSupportedSlot() ? inv.getCapacity() : 0;
+            return isSupportedSlot() ? inv.getCapacity(conversion.getKeySpace()) : 0;
         }
 
         @Override

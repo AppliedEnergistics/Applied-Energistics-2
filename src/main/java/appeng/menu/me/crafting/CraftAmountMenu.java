@@ -34,7 +34,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
@@ -149,7 +148,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
             Future<ICraftingPlan> futureJob = null;
             try {
-                final ICraftingService cg = g.getCraftingService();
+                var cg = g.getCraftingService();
                 var actionSource = getActionSrc();
                 futureJob = cg.beginCraftingCalculation(getLevel(), () -> actionSource, whatToCraft, amount);
 

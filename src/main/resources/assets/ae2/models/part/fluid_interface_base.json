@@ -1,5 +1,5 @@
 {
-  "parent": "ae2:part/item_interface_base",
+  "parent": "ae2:part/interface_base",
   "textures": {
     "sides": "ae2:part/export_bus_sides",
     "sidesStatus": "ae2:part/monitor_sides_status",

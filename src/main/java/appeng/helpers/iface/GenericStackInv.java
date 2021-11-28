@@ -28,8 +28,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+
 import appeng.api.config.Actionable;
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -40,7 +44,7 @@ public class GenericStackInv {
     private final Runnable listener;
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
-    private long capacity = Long.MAX_VALUE;
+    private Reference2LongMap<AEKeySpace> capacities = new Reference2LongArrayMap<>();
     @org.jetbrains.annotations.Nullable
     private AEKeyFilter filter;
     protected final Mode mode;
@@ -164,19 +168,19 @@ public class GenericStackInv {
         return canExtract;
     }
 
-    public long getCapacity() {
-        return capacity;
+    public long getCapacity(AEKeySpace space) {
+        return capacities.getOrDefault(space, Long.MAX_VALUE);
     }
 
-    public void setCapacity(long capacity) {
-        this.capacity = capacity;
+    public void setCapacity(AEKeySpace space, long capacity) {
+        this.capacities.put(space, capacity);
     }
 
     public long getMaxAmount(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
-            return Math.min(itemKey.getItem().getMaxStackSize(), capacity);
+            return Math.min(itemKey.getItem().getMaxStackSize(), getCapacity(key.getChannel()));
         }
-        return capacity;
+        return getCapacity(key.getChannel());
     }
 
     final void onChange() {

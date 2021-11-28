@@ -69,8 +69,8 @@ import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.helpers.IConfigInvHost;
-import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
+import appeng.helpers.InterfaceLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.CompositeStorage;
@@ -446,7 +446,7 @@ public class StorageBusPart extends UpgradeablePart
             targetHost = partHost.getPart(oppositeSide);
         }
 
-        if (targetHost instanceof IInterfaceHost) {
+        if (targetHost instanceof InterfaceLogicHost) {
             var server = getLevel().getServer();
             var player = IPlayerRegistry.getConnected(server, this.getActionableNode().getOwningPlayerId());
             if (player != null) {

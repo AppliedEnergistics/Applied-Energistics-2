@@ -38,6 +38,7 @@ import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.menu.implementations.SecurityStationMenu;
+import appeng.menu.implementations.SetStockAmountMenu;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.menu.implementations.SpatialAnchorMenu;
 import appeng.menu.implementations.SpatialIOPortMenu;
@@ -69,38 +70,38 @@ public final class InitMenuTypes {
                 CraftingCPUMenu.TYPE,
                 CraftingStatusMenu.TYPE,
                 CraftingTermMenu.TYPE,
-                WirelessCraftingTermMenu.TYPE,
                 DriveMenu.TYPE,
-                FormationPlaneMenu.ITEM_TYPE,
-                FormationPlaneMenu.FLUID_TYPE,
-                InscriberMenu.TYPE,
-                InterfaceMenu.ITEM_TYPE,
-                InterfaceMenu.FLUID_TYPE,
-                InterfaceTerminalMenu.TYPE,
-                IOPortMenu.TYPE,
-                StorageLevelEmitterMenu.TYPE,
                 EnergyLevelEmitterMenu.TYPE,
-                PatternProviderMenu.TYPE,
-                MolecularAssemblerMenu.TYPE,
-                MEMonitorableMenu.ITEM_TYPE,
+                FormationPlaneMenu.FLUID_TYPE,
+                FormationPlaneMenu.ITEM_TYPE,
+                IOBusMenu.EXPORT_TYPE,
+                IOBusMenu.IMPORT_TYPE,
+                IOPortMenu.TYPE,
+                InscriberMenu.TYPE,
+                InterfaceMenu.TYPE,
+                InterfaceTerminalMenu.TYPE,
                 MEMonitorableMenu.FLUID_TYPE,
-                MEMonitorableMenu.WIRELESS_TYPE,
-                MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE,
+                MEMonitorableMenu.ITEM_TYPE,
                 MEMonitorableMenu.PORTABLE_FLUID_CELL_TYPE,
+                MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE,
+                MEMonitorableMenu.WIRELESS_TYPE,
+                MolecularAssemblerMenu.TYPE,
                 NetworkStatusMenu.TYPE,
                 NetworkToolMenu.TYPE,
+                PatternProviderMenu.TYPE,
                 PatternTermMenu.TYPE,
                 PriorityMenu.TYPE,
                 QNBMenu.TYPE,
                 QuartzKnifeMenu.TYPE,
                 SecurityStationMenu.TYPE,
+                SetStockAmountMenu.TYPE,
                 SkyChestMenu.TYPE,
-                SpatialIOPortMenu.TYPE,
                 SpatialAnchorMenu.TYPE,
+                SpatialIOPortMenu.TYPE,
                 StorageBusMenu.TYPE,
-                IOBusMenu.EXPORT_TYPE,
-                IOBusMenu.IMPORT_TYPE,
+                StorageLevelEmitterMenu.TYPE,
                 VibrationChamberMenu.TYPE,
+                WirelessCraftingTermMenu.TYPE,
                 WirelessMenu.TYPE);
     }
 

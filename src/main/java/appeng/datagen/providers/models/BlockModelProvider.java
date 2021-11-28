@@ -41,8 +41,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
         simpleBlockAndItem(AEBlocks.CONDENSER);
         simpleBlockAndItem(AEBlocks.ENERGY_ACCEPTOR);
-        simpleBlockAndItem(AEBlocks.FLUID_INTERFACE);
-        simpleBlockAndItem(AEBlocks.ITEM_INTERFACE);
+        simpleBlockAndItem(AEBlocks.INTERFACE);
         simpleBlockAndItem(AEBlocks.PATTERN_PROVIDER);
 
         simpleBlockAndItem(AEBlocks.DEBUG_ITEM_GEN, "block/debug/item_gen");

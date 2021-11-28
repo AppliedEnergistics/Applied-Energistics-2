@@ -52,6 +52,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     private static final Component INVALID_NUMBER = new TranslatableComponent(
             "gui.ae2.validation.InvalidNumber");
     private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.ae2.validation.NumberLessThanMinValue";
+    private static final String NUMBER_GREATER_THAN_MAX_VALUE = "gui.ae2.validation.NumberGreaterThanMaxValue";
     private static final Component PLUS = new TextComponent("+");
     private static final Component MINUS = new TextComponent("-");
     private static final int TEXT_COLOR_ERROR = 0xFF1900;
@@ -63,6 +64,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     private Button[] plusButtons;
     private List<Button> buttons;
     private long minValue;
+    private long maxValue = Long.MAX_VALUE;
     private ValidationIcon validationIcon;
 
     // Called when the value changes
@@ -128,6 +130,11 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
     public void setMinValue(long minValue) {
         this.minValue = minValue;
+        validate();
+    }
+
+    public void setMaxValue(long maxValue) {
+        this.maxValue = maxValue;
         validate();
     }
 
@@ -262,6 +269,8 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
             long value = Long.parseLong(text, 10);
             if (value < minValue) {
                 validationErrors.add(new TranslatableComponent(NUMBER_LESS_THAN_MIN_VALUE, minValue));
+            } else if (value > maxValue) {
+                validationErrors.add(new TranslatableComponent(NUMBER_GREATER_THAN_MAX_VALUE, maxValue));
             }
         } catch (NumberFormatException ignored) {
             validationErrors.add(INVALID_NUMBER);

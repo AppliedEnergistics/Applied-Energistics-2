@@ -30,12 +30,12 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.misc.ItemInterfaceBlockEntity;
+import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.menu.MenuLocator;
 import appeng.util.InteractionUtil;
 
-public class ItemInterfaceBlock extends AEBaseEntityBlock<ItemInterfaceBlockEntity> {
-    public ItemInterfaceBlock() {
+public class InterfaceBlock extends AEBaseEntityBlock<InterfaceBlockEntity> {
+    public InterfaceBlock() {
         super(defaultProps(Material.METAL));
     }
 

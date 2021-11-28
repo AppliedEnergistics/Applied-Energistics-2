@@ -1,0 +1,111 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/interface.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "slots": {
+    "CONFIG": {
+      "left": 8,
+      "top": 53,
+      "grid": "HORIZONTAL"
+    },
+    "STORAGE": {
+      "left": 8,
+      "top": 71,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.ItemInterface"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "interface_config": {
+      "text": {
+        "translate": "gui.ae2.Config"
+      },
+      "position": {
+        "left": 8,
+        "top": 24
+      }
+    },
+    "interface_stored_items": {
+      "text": {
+        "translate": "gui.ae2.StoredItems"
+      },
+      "position": {
+        "left": 8,
+        "top": 91
+      }
+    }
+  },
+  "widgets": {
+    "openPriority": {
+      "left": 154,
+      "top": 0,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton1": {
+      "left": 8,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton2": {
+      "left": 26,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton3": {
+      "left": 44,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton4": {
+      "left": 62,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton5": {
+      "left": 80,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton6": {
+      "left": 98,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton7": {
+      "left": 116,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton8": {
+      "left": 134,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    },
+    "amtButton9": {
+      "left": 152,
+      "top": 35,
+      "width": 18,
+      "height": 18
+    }
+  }
+}
