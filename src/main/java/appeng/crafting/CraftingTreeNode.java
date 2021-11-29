@@ -238,7 +238,7 @@ public class CraftingTreeNode
 
 				if( available != null )
 				{
-					//this.bytes += available.getStackSize();
+					this.bytes += available.getStackSize();
 					l -= available.getStackSize();
 
 					if( l <= 0 )
