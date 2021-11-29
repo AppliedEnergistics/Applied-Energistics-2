@@ -49,7 +49,7 @@ import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.IPatternProviderHost;
 import appeng.menu.AEBaseMenu;
 import appeng.parts.crafting.PatternProviderPart;
-import appeng.parts.reporting.InterfaceTerminalPart;
+import appeng.parts.reporting.PatternAccessTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -60,7 +60,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class InterfaceTerminalMenu extends AEBaseMenu {
 
     public static final MenuType<InterfaceTerminalMenu> TYPE = MenuTypeBuilder
-            .create(InterfaceTerminalMenu::new, InterfaceTerminalPart.class)
+            .create(InterfaceTerminalMenu::new, PatternAccessTerminalPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("interfaceterminal");
 
@@ -74,7 +74,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
     private final Map<IPatternProviderHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
 
-    public InterfaceTerminalMenu(int id, final Inventory ip, final InterfaceTerminalPart anchor) {
+    public InterfaceTerminalMenu(int id, final Inventory ip, final PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
     }
 
@@ -132,7 +132,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             var dual = ih.getDuality();
-            if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.NO) {
+            if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.NO) {
                 continue;
             }
 
@@ -247,14 +247,14 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         for (var ih : grid.getActiveMachines(PatternProviderBlockEntity.class)) {
             var dual = ih.getDuality();
-            if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
+            if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
 
         for (var ih : grid.getActiveMachines(PatternProviderPart.class)) {
             var dual = ih.getDuality();
-            if (dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
+            if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }

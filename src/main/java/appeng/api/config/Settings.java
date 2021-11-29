@@ -74,7 +74,8 @@ public final class Settings {
     public static final Setting<TerminalStyle> TERMINAL_STYLE = register("terminal_style", TerminalStyle.TALL,
             TerminalStyle.SMALL);
     public static final Setting<CopyMode> COPY_MODE = register("copy_mode", CopyMode.class);
-    public static final Setting<YesNo> INTERFACE_TERMINAL = register("interface_terminal", YesNo.YES, YesNo.NO);
+    public static final Setting<YesNo> PATTERN_ACCESS_TERMINAL = register("pattern_access_terminal", YesNo.YES,
+            YesNo.NO);
     public static final Setting<YesNo> CRAFT_VIA_REDSTONE = register("craft_via_redstone", YesNo.YES, YesNo.NO);
     public static final Setting<StorageFilter> STORAGE_FILTER = register("storage_filter", StorageFilter.class);
     public static final Setting<YesNo> PLACE_BLOCK = register("place_block", YesNo.YES, YesNo.NO);

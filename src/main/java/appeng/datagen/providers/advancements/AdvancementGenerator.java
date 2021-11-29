@@ -264,7 +264,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var patternTerminal = Advancement.Builder.advancement()
                 .display(
-                        AEParts.PATTERN_TERMINAL,
+                        AEParts.PATTERN_ENCODING_TERMINAL,
                         new TranslatableComponent("achievement.ae2.PatternTerminal"),
                         new TranslatableComponent("achievement.ae2.PatternTerminal.desc"),
                         null /* background */,
@@ -274,8 +274,9 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(craftingTerminal)
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.PATTERN_TERMINAL))
-                .save(consumer, "ae2:main/pattern_terminal");
+                .addCriterion("certus",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.PATTERN_ENCODING_TERMINAL))
+                .save(consumer, "ae2:main/pattern_encoding_terminal");
 
         var craftingCpu = Advancement.Builder.advancement()
                 .display(

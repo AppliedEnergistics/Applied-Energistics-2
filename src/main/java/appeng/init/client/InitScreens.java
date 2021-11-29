@@ -151,7 +151,7 @@ public final class InitScreens {
         register(CraftAmountMenu.TYPE, CraftAmountScreen::new, "/screens/craft_amount.json");
         register(CraftConfirmMenu.TYPE, CraftConfirmScreen::new, "/screens/craft_confirm.json");
         InitScreens.<InterfaceTerminalMenu, InterfaceTerminalScreen<InterfaceTerminalMenu>>register(
-                InterfaceTerminalMenu.TYPE, InterfaceTerminalScreen::new, "/screens/interface_terminal.json");
+                InterfaceTerminalMenu.TYPE, InterfaceTerminalScreen::new, "/screens/pattern_access_terminal.json");
         register(CraftingStatusMenu.TYPE, CraftingStatusScreen::new, "/screens/crafting_status.json");
         register(SpatialAnchorMenu.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
 
@@ -190,7 +190,7 @@ public final class InitScreens {
         InitScreens.<PatternTermMenu, PatternTermScreen<PatternTermMenu>>register(
                 PatternTermMenu.TYPE,
                 PatternTermScreen::new,
-                "/screens/terminals/pattern_terminal.json");
+                "/screens/terminals/pattern_encoding_terminal.json");
     }
 
     /**

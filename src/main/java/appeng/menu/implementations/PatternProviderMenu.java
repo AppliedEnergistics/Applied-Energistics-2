@@ -49,7 +49,7 @@ public class PatternProviderMenu extends AEBaseMenu {
     @GuiSync(3)
     public YesNo blockingMode = YesNo.NO;
     @GuiSync(4)
-    public YesNo showInInterfaceTerminal = YesNo.YES;
+    public YesNo showInAccessTerminal = YesNo.YES;
 
     public PatternProviderMenu(int id, Inventory playerInventory, IPatternProviderHost host) {
         super(TYPE, id, playerInventory, host);
@@ -80,7 +80,7 @@ public class PatternProviderMenu extends AEBaseMenu {
 
         if (isServer()) {
             blockingMode = duality.getConfigManager().getSetting(Settings.BLOCKING_MODE);
-            showInInterfaceTerminal = duality.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL);
+            showInAccessTerminal = duality.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);
         }
 
         super.broadcastChanges();
@@ -94,7 +94,7 @@ public class PatternProviderMenu extends AEBaseMenu {
         return blockingMode;
     }
 
-    public YesNo getShowInInterfaceTerminal() {
-        return showInInterfaceTerminal;
+    public YesNo getShowInAccessTerminal() {
+        return showInAccessTerminal;
     }
 }

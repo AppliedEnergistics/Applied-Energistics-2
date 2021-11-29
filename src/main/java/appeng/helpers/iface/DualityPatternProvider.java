@@ -108,7 +108,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         this.actionSource = new MachineSource(mainNode::getNode);
 
         this.configManager.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
-        this.configManager.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
+        this.configManager.registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES);
 
         this.returnInv = new PatternProviderReturnInventory(() -> {
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));

@@ -608,7 +608,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.GLOWSTONE)
                 .define('c', ConventionTags.ALL_CERTUS_QUARTZ)
                 .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_pattern_terminal", has(AEParts.PATTERN_TERMINAL))
+                .unlockedBy("has_pattern_encoding_terminal", has(AEParts.PATTERN_ENCODING_TERMINAL))
                 .save(consumer, AppEng.makeId("network/crafting/patterns_blank"));
 
         // ====================================================
@@ -802,13 +802,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_terminal", has(AEParts.TERMINAL))
                 .unlockedBy("has_logic_processor", has(AEItems.LOGIC_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/parts/terminals_fluid"));
-        ShapelessRecipeBuilder.shapeless(AEParts.INTERFACE_TERMINAL)
+        ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ACCESS_TERMINAL)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
                 .requires(ConventionTags.INTERFACE)
                 .unlockedBy("has_interface", has(ConventionTags.INTERFACE))
                 .save(consumer, AppEng.makeId("network/parts/terminals_interface"));
-        ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_TERMINAL)
+        ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ENCODING_TERMINAL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
                 .requires(AEParts.CRAFTING_TERMINAL)
                 .unlockedBy("has_crafting_terminal", has(AEParts.CRAFTING_TERMINAL))
