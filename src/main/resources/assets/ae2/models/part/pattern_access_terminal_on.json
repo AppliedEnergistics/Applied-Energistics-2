@@ -1,8 +1,8 @@
 {
   "textures": {
-    "lightsBright": "ae2:part/pattern_access_bright",
-    "lightsMedium": "ae2:part/pattern_access_medium",
-    "lightsDark": "ae2:part/pattern_access_dark"
+    "lightsBright": "ae2:part/pattern_access_terminal_bright",
+    "lightsMedium": "ae2:part/pattern_access_terminal_medium",
+    "lightsDark": "ae2:part/pattern_access_terminal_dark"
   },
   "elements": [
     {
