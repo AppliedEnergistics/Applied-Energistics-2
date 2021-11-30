@@ -138,8 +138,7 @@ public final class InitScreens {
         register(IOPortMenu.TYPE, IOPortScreen::new, "/screens/io_port.json");
         register(StorageBusMenu.TYPE, StorageBusScreen::new, "/screens/storage_bus.json");
         register(SetStockAmountMenu.TYPE, SetStockAmountScreen::new, "/screens/set_stock_amount.json");
-        register(FormationPlaneMenu.ITEM_TYPE, FormationPlaneScreen::new, "/screens/item_formation_plane.json");
-        register(FormationPlaneMenu.FLUID_TYPE, FormationPlaneScreen::new, "/screens/fluid_formation_plane.json");
+        register(FormationPlaneMenu.TYPE, FormationPlaneScreen::new, "/screens/formation_plane.json");
         register(PriorityMenu.TYPE, PriorityScreen::new, "/screens/priority.json");
         register(StorageLevelEmitterMenu.TYPE, StorageLevelEmitterScreen::new, "/screens/level_emitter.json");
         register(EnergyLevelEmitterMenu.TYPE, EnergyLevelEmitterScreen::new, "/screens/energy_level_emitter.json");

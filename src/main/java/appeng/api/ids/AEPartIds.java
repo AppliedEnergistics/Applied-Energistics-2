@@ -259,10 +259,9 @@ public final class AEPartIds {
     ///
     /// Planes
     ///
-    public static final ResourceLocation ITEM_FORMATION_PLANE = id("item_formation_plane");
+    public static final ResourceLocation FORMATION_PLANE = id("formation_plane");
     public static final ResourceLocation ITEM_ANNIHILATION_PLANE = id("item_annihilation_plane");
     public static final ResourceLocation ITEM_IDENTITY_ANNIHILATION_PLANE = id("item_identity_annihilation_plane");
-    public static final ResourceLocation FLUID_FORMATION_PLANE = id("fluid_formation_plane");
     public static final ResourceLocation FLUID_ANNIHILATION_PLANE = id("fluid_annihilation_plane");
 
     ///

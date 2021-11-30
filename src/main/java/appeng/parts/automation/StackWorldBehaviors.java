@@ -7,6 +7,7 @@ import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.AEKeySpace;
@@ -15,6 +16,7 @@ public final class StackWorldBehaviors {
     private static final Map<AEKeySpace, ImportStrategyFactory> importStrategies = new IdentityHashMap<>();
     private static final Map<AEKeySpace, ExportStrategyFactory> exportStrategies = new IdentityHashMap<>();
     private static final Map<AEKeySpace, ExternalStorageStrategyFactory> externalStorageStrategies = new IdentityHashMap<>();
+    private static final Map<AEKeySpace, PlacementStrategyFactory> placementStrategies = new IdentityHashMap<>();
 
     static {
         importStrategies.put(AEKeySpace.items(), StorageImportStrategy::createItem);
@@ -23,6 +25,8 @@ public final class StackWorldBehaviors {
         exportStrategies.put(AEKeySpace.fluids(), StorageExportStrategy::createFluid);
         externalStorageStrategies.put(AEKeySpace.items(), FabricExternalStorageStrategy::createItem);
         externalStorageStrategies.put(AEKeySpace.fluids(), FabricExternalStorageStrategy::createFluid);
+        placementStrategies.put(AEKeySpace.fluids(), FluidPlacementStrategy::new);
+        placementStrategies.put(AEKeySpace.items(), ItemPlacementStrategy::new);
     }
 
     private StackWorldBehaviors() {
@@ -40,6 +44,13 @@ public final class StackWorldBehaviors {
      */
     public static AEKeyFilter hasExportStrategyFilter() {
         return what -> exportStrategies.containsKey(what.getChannel());
+    }
+
+    /**
+     * {@return filter matching any key for which there is an export strategy}
+     */
+    public static AEKeyFilter hasPlacementStrategy() {
+        return what -> placementStrategies.containsKey(what.getChannel());
     }
 
     public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide) {
@@ -67,6 +78,15 @@ public final class StackWorldBehaviors {
         return strategies;
     }
 
+    public static PlacementStrategy createPlacementStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
+            BlockEntity host) {
+        var strategies = new IdentityHashMap<AEKeySpace, PlacementStrategy>(placementStrategies.size());
+        for (var entry : placementStrategies.entrySet()) {
+            strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide, host));
+        }
+        return new PlacementStrategyFacade(strategies);
+    }
+
     @FunctionalInterface
     interface ImportStrategyFactory {
         StackImportStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
@@ -80,6 +100,11 @@ public final class StackWorldBehaviors {
     @FunctionalInterface
     interface ExternalStorageStrategyFactory {
         ExternalStorageStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
+    }
+
+    @FunctionalInterface
+    interface PlacementStrategyFactory {
+        PlacementStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host);
     }
 
 }

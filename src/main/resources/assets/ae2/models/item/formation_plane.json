@@ -1,6 +1,6 @@
 {
   "parent": "ae2:item/item_annihilation_plane",
   "textures": {
-    "plane": "ae2:part/fluid_formation_plane"
+    "plane": "ae2:part/formation_plane"
   }
 }

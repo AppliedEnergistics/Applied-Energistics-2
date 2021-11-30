@@ -35,21 +35,14 @@ import appeng.menu.slot.OptionalFakeSlot;
 import appeng.parts.automation.FormationPlanePart;
 
 /**
- * This is used by both fluid and item formation planes.
- *
  * @see FormationPlaneScreen
  */
 public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
 
-    public static final MenuType<FormationPlaneMenu> ITEM_TYPE = MenuTypeBuilder
+    public static final MenuType<FormationPlaneMenu> TYPE = MenuTypeBuilder
             .create(FormationPlaneMenu::new, FormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("item_formationplane");
-
-    public static final MenuType<FormationPlaneMenu> FLUID_TYPE = MenuTypeBuilder
-            .create(FormationPlaneMenu::new, FormationPlanePart.class)
-            .requirePermission(SecurityPermissions.BUILD)
-            .build("fluid_formationplane");
+            .build("formationplane");
 
     @GuiSync(7)
     public YesNo placeMode;

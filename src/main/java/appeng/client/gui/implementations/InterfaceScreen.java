@@ -78,5 +78,4 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
             return isHoveredOrFocused() ? Icon.PERMISSION_BUILD : Icon.PERMISSION_BUILD_DISABLED;
         }
     }
-
 }

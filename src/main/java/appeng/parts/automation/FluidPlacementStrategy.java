@@ -1,41 +1,20 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
-
 package appeng.parts.automation;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -43,39 +22,37 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
-import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEKey;
-import appeng.items.parts.PartModels;
-import appeng.menu.implementations.FormationPlaneMenu;
 
-public class FluidFormationPlanePart extends FormationPlanePart {
-    private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
-            "part/fluid_formation_plane_on");
-
+public class FluidPlacementStrategy implements PlacementStrategy {
+    private final ServerLevel level;
+    private final BlockPos pos;
+    private final Direction side;
     /**
      * The fluids that we tried to place unsuccessfully.
      */
     private final Set<Fluid> blocked = new HashSet<>();
+    /**
+     * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
+     */
+    private long lastEffect;
 
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
-    public FluidFormationPlanePart(ItemStack is) {
-        super(is, AEFluidKey.filter());
+    public FluidPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host) {
+        this.level = level;
+        this.pos = pos;
+        this.side = side;
     }
 
     @Override
-    protected void clearBlocked(BlockGetter level, BlockPos pos) {
+    public void clearBlocked() {
         blocked.clear();
     }
 
     @Override
-    protected final long placeInWorld(AEKey what, long amount, Actionable type) {
-        if (!(what instanceof AEFluidKey fluidKey)) {
-            return 0;
+    public long placeInWorld(AEKey f, long amount, Actionable type, boolean placeAsEntity) {
+        if (placeAsEntity || !(f instanceof AEFluidKey fluidKey)) {
+            return 0; // Not supported
         }
 
         if (amount < AEFluidKey.AMOUNT_BLOCK) {
@@ -95,10 +72,6 @@ public class FluidFormationPlanePart extends FormationPlanePart {
             return 0;
         }
 
-        var te = this.getHost().getBlockEntity();
-        var level = te.getLevel();
-        var side = this.getSide();
-        var pos = te.getBlockPos().relative(side);
         var state = level.getBlockState(pos);
 
         if (!this.canPlace(level, state, pos, fluid)) {
@@ -130,11 +103,6 @@ public class FluidFormationPlanePart extends FormationPlanePart {
         }
 
         return AEFluidKey.AMOUNT_BLOCK;
-    }
-
-    @Override
-    public boolean supportsEntityPlacement() {
-        return false;
     }
 
     private void playEmptySound(Level level, BlockPos pos, Fluid fluid) {
@@ -187,19 +155,16 @@ public class FluidFormationPlanePart extends FormationPlanePart {
                         && liquidBlockContainer.canPlaceLiquid(level, pos, state, fluid);
     }
 
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
+    /**
+     * Only play the effect every 250ms.
+     */
+    protected final boolean throttleEffect() {
+        long now = System.currentTimeMillis();
+        if (now < lastEffect + 250) {
+            return true;
+        }
+        lastEffect = now;
+        return false;
     }
 
-    @Nonnull
-    @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
-    }
-
-    @Override
-    public MenuType<?> getMenuType() {
-        return FormationPlaneMenu.FLUID_TYPE;
-    }
 }

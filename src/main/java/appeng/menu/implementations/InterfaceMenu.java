@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.util.IConfigManager;
@@ -57,15 +56,7 @@ public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
 
         var storage = duality.getStorage().createMenuWrapper();
         for (int x = 0; x < storage.size(); x++) {
-            Slot slot;
-//            if (menuType == FLUID_TYPE) {
-//                // Special case for fluids -> Show as nice tank widget instead of slot
-//                slot = new FluidTankSlot(storage, x, duality.getStorage().getCapacity(), "tank" + (1 + x),
-//                        ip::placeItemBackInInventory);
-//            } else {
-            slot = new AppEngSlot(storage, x);
-//            }
-            this.addSlot(slot, SlotSemantic.STORAGE);
+            this.addSlot(new AppEngSlot(storage, x), SlotSemantic.STORAGE);
         }
     }
 

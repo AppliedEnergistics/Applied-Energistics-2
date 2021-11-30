@@ -644,26 +644,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.dye(DyeColor.GREEN))
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/fluid_annihilation_plane_alt"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_FORMATION_PLANE)
-                .pattern("adb")
-                .pattern("cdb")
-                .pattern("adb")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', ConventionTags.ALL_FLUIX)
-                .define('c', AEItems.FORMATION_CORE)
-                .define('d', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_formation_plane"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_FORMATION_PLANE)
-                .pattern("aaa")
-                .pattern("ddd")
-                .pattern("bcb")
-                .define('a', ConventionTags.ALL_FLUIX)
-                .define('b', ConventionTags.IRON_INGOT)
-                .define('c', AEItems.FORMATION_CORE)
-                .define('d', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_formation_plane_alt"));
         ShapedRecipeBuilder.shaped(AEParts.ANNIHILATION_PLANE)
                 .pattern("aaa")
                 .pattern("bcb")
@@ -696,7 +676,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.IRON_INGOT)
                 .define('c', AEItems.FORMATION_CORE)
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_formation_plane"));
+                .save(consumer, AppEng.makeId("network/parts/formation_plane"));
         ShapedRecipeBuilder.shaped(AEParts.FORMATION_PLANE)
                 .pattern("ab")
                 .pattern("cb")
@@ -705,7 +685,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.ALL_FLUIX)
                 .define('c', AEItems.FORMATION_CORE)
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_formation_plane_alt"));
+                .save(consumer, AppEng.makeId("network/parts/formation_plane_alt"));
         ShapelessRecipeBuilder.shapeless(AEParts.IDENTITY_ANNIHILATION_PLANE)
                 .requires(AEParts.ANNIHILATION_PLANE)
                 .requires(AEItems.FLUIX_PEARL)

@@ -18,9 +18,15 @@
 
 package appeng.parts.automation;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -29,47 +35,67 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.storage.AEKeyFilter;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
+import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.implementations.FormationPlaneMenu;
 import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.IPartitionList;
 
-public abstract class FormationPlanePart extends UpgradeablePart
-        implements IStorageProvider, IPriorityHost, IConfigInvHost {
+public class FormationPlanePart extends UpgradeablePart implements IStorageProvider, IPriorityHost, IConfigInvHost {
+
+    private static final PlaneModels MODELS = new PlaneModels("part/formation_plane",
+            "part/formation_plane_on");
 
     private boolean wasActive = false;
     private int priority = 0;
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
     private final MEStorage inventory = new InWorldStorage();
     private final ConfigInventory config;
+    @Nullable
+    private PlacementStrategy placementStrategies;
     private IncludeExclude filterMode = IncludeExclude.WHITELIST;
     private IPartitionList filter;
-    /**
-     * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
-     */
-    private long lastEffect;
 
-    public FormationPlanePart(ItemStack is, AEKeyFilter filter) {
+    public FormationPlanePart(ItemStack is) {
         super(is);
         getMainNode().addService(IStorageProvider.class, this);
-        this.config = ConfigInventory.configTypes(filter, 63, this::updateFilter);
+        this.config = ConfigInventory.configTypes(StackWorldBehaviors.hasPlacementStrategy(),
+                63, this::updateFilter);
+
+        this.getConfigManager().registerSetting(Settings.PLACE_BLOCK, YesNo.YES);
+        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+    }
+
+    protected final PlacementStrategy getPlacementStrategies() {
+        if (placementStrategies == null) {
+            var self = this.getHost().getBlockEntity();
+            var pos = self.getBlockPos().relative(this.getSide());
+            var side = getSide().getOpposite();
+            placementStrategies = StackWorldBehaviors.createPlacementStrategies(
+                    (ServerLevel) self.getLevel(), pos, side, self);
+        }
+        return placementStrategies;
     }
 
     protected final void updateFilter() {
@@ -125,13 +151,13 @@ public abstract class FormationPlanePart extends UpgradeablePart
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         if (pos.relative(this.getSide()).equals(neighbor)) {
             // The neighbor this plane is facing has changed
-            clearBlocked(level, neighbor);
+            if (!isClientSide()) {
+                getPlacementStrategies().clearBlocked();
+            }
         } else {
             connectionHelper.updateConnections();
         }
     }
-
-    protected abstract void clearBlocked(BlockGetter level, BlockPos pos);
 
     /**
      * Places the given stacks in-world and returns what couldn't be placed.
@@ -139,12 +165,23 @@ public abstract class FormationPlanePart extends UpgradeablePart
      * @return The amount that was placed.
      * @see MEStorage#insert
      */
-    protected abstract long placeInWorld(AEKey input, long amount, Actionable type);
+    protected long placeInWorld(AEKey what, long amount, Actionable type) {
+        var placeBlock = this.getConfigManager().getSetting(Settings.PLACE_BLOCK);
+
+        return getPlacementStrategies().placeInWorld(what, amount, type, placeBlock != YesNo.YES);
+    }
 
     /**
      * Indicates whether this formation plane supports placement of injected stacks as entities into the world.
      */
-    public abstract boolean supportsEntityPlacement();
+    public boolean supportsEntityPlacement() {
+        for (int i = 0; i < config.size(); i++) {
+            if (AEItemKey.is(config.getKey(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public float getCableConnectionLength(AECableType cable) {
@@ -201,7 +238,9 @@ public abstract class FormationPlanePart extends UpgradeablePart
         MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
     }
 
-    protected abstract MenuType<?> getMenuType();
+    protected MenuType<?> getMenuType() {
+        return FormationPlaneMenu.TYPE;
+    }
 
     /**
      * Creates a partition list to filter stacks being injected into the plane against. If an inverter card is present,
@@ -239,18 +278,6 @@ public abstract class FormationPlanePart extends UpgradeablePart
         }
     }
 
-    /**
-     * Only play the effect every 250ms.
-     */
-    protected final boolean throttleEffect() {
-        long now = System.currentTimeMillis();
-        if (now < lastEffect + 250) {
-            return true;
-        }
-        lastEffect = now;
-        return false;
-    }
-
     @Override
     public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
         if (!isClientSide()) {
@@ -262,6 +289,22 @@ public abstract class FormationPlanePart extends UpgradeablePart
     @Override
     public ConfigInventory getConfig() {
         return config;
+    }
+
+    @PartModels
+    public static List<IPartModel> getModels() {
+        return MODELS.getModels();
+    }
+
+    @Override
+    public IPartModel getStaticModels() {
+        return MODELS.getModel(this.isPowered(), this.isActive());
+    }
+
+    @Nonnull
+    @Override
+    public Object getRenderAttachmentData() {
+        return getConnections();
     }
 
 }

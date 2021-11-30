@@ -70,10 +70,8 @@ public final class InitBuiltInModels {
         addPlaneModel("part/item_identity_annihilation_plane_on", "part/item_identity_annihilation_plane_on");
         addPlaneModel("part/fluid_annihilation_plane", "part/fluid_annihilation_plane");
         addPlaneModel("part/fluid_annihilation_plane_on", "part/fluid_annihilation_plane_on");
-        addPlaneModel("part/fluid_formation_plane", "part/fluid_formation_plane");
-        addPlaneModel("part/fluid_formation_plane_on", "part/fluid_formation_plane_on");
-        addPlaneModel("part/item_formation_plane", "part/item_formation_plane");
-        addPlaneModel("part/item_formation_plane_on", "part/item_formation_plane_on");
+        addPlaneModel("part/formation_plane", "part/formation_plane");
+        addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
 
         addBuiltInModel("block/crafting/1k_storage_formed",
                 () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_1K));

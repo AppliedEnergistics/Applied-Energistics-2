@@ -66,8 +66,8 @@ public final class StorageHelper {
      * @param src     Action source.
      * @return extracted items or {@code null} of nothing was extracted.
      */
-    public static <T extends AEKey> long poweredExtraction(IEnergySource energy, MEStorage inv,
-            T request, long amount, IActionSource src) {
+    public static long poweredExtraction(IEnergySource energy, MEStorage inv,
+            AEKey request, long amount, IActionSource src) {
         return poweredExtraction(energy, inv, request, amount, src, Actionable.MODULATE);
     }
 
@@ -81,8 +81,8 @@ public final class StorageHelper {
      * @param mode    Simulate or modulate
      * @return extracted items or {@code null} of nothing was extracted.
      */
-    public static <T extends AEKey> long poweredExtraction(IEnergySource energy, MEStorage inv,
-            T request, long amount, IActionSource src, Actionable mode) {
+    public static long poweredExtraction(IEnergySource energy, MEStorage inv,
+            AEKey request, long amount, IActionSource src, Actionable mode) {
         Objects.requireNonNull(energy, "energy");
         Objects.requireNonNull(inv, "inv");
         Objects.requireNonNull(request, "request");

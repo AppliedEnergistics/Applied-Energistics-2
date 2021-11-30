@@ -1,41 +1,17 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
-
 package appeng.parts.automation;
 
-import java.util.List;
 import java.util.Random;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
@@ -43,71 +19,50 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
-import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.core.AEConfig;
 import appeng.hooks.AECustomEntityItem;
-import appeng.items.parts.PartModels;
-import appeng.menu.implementations.FormationPlaneMenu;
 import appeng.util.Platform;
 
-public class ItemFormationPlanePart extends FormationPlanePart {
-
-    private static final PlaneModels MODELS = new PlaneModels("part/item_formation_plane",
-            "part/item_formation_plane_on");
+public class ItemPlacementStrategy implements PlacementStrategy {
     private static final Random RANDOM_OFFSET = new Random();
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
+    private final ServerLevel level;
+    private final BlockPos pos;
+    private final Direction side;
+    private final BlockEntity host;
     private boolean blocked = false;
 
-    public ItemFormationPlanePart(final ItemStack is) {
-        super(is, AEItemKey.filter());
-
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
-        this.getConfigManager().registerSetting(Settings.PLACE_BLOCK, YesNo.YES);
+    public ItemPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host) {
+        this.level = level;
+        this.pos = pos;
+        this.side = side;
+        this.host = host;
     }
 
-    protected void clearBlocked(BlockGetter level, BlockPos pos) {
+    public void clearBlocked() {
         this.blocked = !level.getBlockState(pos).getMaterial().isReplaceable();
     }
 
-    @Override
-    public boolean supportsEntityPlacement() {
-        return true;
-    }
-
-    @Override
-    protected final long placeInWorld(AEKey what, long amount, Actionable type) {
-        if (this.blocked || !(what instanceof AEItemKey whatItem) || amount <= 0) {
+    public final long placeInWorld(AEKey what, long amount, Actionable type, boolean placeAsEntity) {
+        if (this.blocked || !(what instanceof AEItemKey itemKey) || amount <= 0) {
             return 0;
         }
 
-        var placeBlock = this.getConfigManager().getSetting(Settings.PLACE_BLOCK);
-
-        var i = whatItem.getItem();
+        var i = itemKey.getItem();
 
         var maxStorage = (int) Math.min(amount, i.getMaxStackSize());
-        var is = whatItem.toStack(maxStorage);
+        var is = itemKey.toStack(maxStorage);
         var worked = false;
 
-        var te = this.getHost().getBlockEntity();
-        var level = te.getLevel();
-        var side = this.getSide();
+        var side = this.side.getOpposite();
 
-        final var placePos = te.getBlockPos().relative(side);
+        final var placePos = pos;
 
         if (level.getBlockState(placePos).getMaterial().isReplaceable()) {
-            if (placeBlock == YesNo.YES) {
-                final var player = Platform.getPlayer((ServerLevel) level);
-                Platform.configurePlayer(player, side, this.getBlockEntity());
+            if (placeAsEntity) {
+                final var player = Platform.getPlayer(level);
+                Platform.configurePlayer(player, side, host);
 
                 maxStorage = is.getCount();
                 worked = true;
@@ -135,8 +90,8 @@ public class ItemFormationPlanePart extends FormationPlanePart {
                     worked = true;
 
                     if (type == Actionable.MODULATE) {
-                        is.setCount((int) maxStorage);
-                        if (!spawnItemEntity(level, te, side, is)) {
+                        is.setCount(maxStorage);
+                        if (!spawnItemEntity(level, host, side, is)) {
                             // revert in case something prevents spawning.
                             worked = false;
                         }
@@ -217,22 +172,6 @@ public class ItemFormationPlanePart extends FormationPlanePart {
         return true;
     }
 
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
-    }
-
-    @Nonnull
-    @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
-    }
-
-    @Override
-    public MenuType<?> getMenuType() {
-        return FormationPlaneMenu.ITEM_TYPE;
-    }
-
     private int countEntitesAround(Level level, BlockPos pos) {
         final var t = new AABB(pos).inflate(8);
         final var list = level.getEntitiesOfClass(Entity.class, t);
@@ -291,7 +230,7 @@ public class ItemFormationPlanePart extends FormationPlanePart {
 
         @Override
         public Direction getHorizontalDirection() {
-            return this.lookDirection.getAxis() == Axis.Y ? Direction.NORTH : this.lookDirection;
+            return this.lookDirection.getAxis() == Direction.Axis.Y ? Direction.NORTH : this.lookDirection;
         }
 
         @Override

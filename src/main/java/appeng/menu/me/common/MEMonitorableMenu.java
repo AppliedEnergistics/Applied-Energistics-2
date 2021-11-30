@@ -29,10 +29,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -90,7 +86,6 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
-import appeng.util.fluid.FluidSoundHelper;
 
 /**
  * @see MEMonitorableScreen
@@ -464,88 +459,14 @@ public class MEMonitorableMenu extends AEBaseMenu
             }
         }
 
-        if (action == InventoryAction.FILL_ITEM || action == InventoryAction.EMPTY_ITEM) {
-            var fh = ContainerItemContext.ofPlayerCursor(player, this).find(FluidStorage.ITEM);
-            if (fh == null) {
-                return;
-            }
-
-            if (action == InventoryAction.FILL_ITEM && clickedKey instanceof AEFluidKey clickedFluid) {
-                // Check how much we can store in the item
-                long amountAllowed;
-                try (var tx = Transaction.openOuter()) {
-                    amountAllowed = fh.insert(clickedFluid.toVariant(), Long.MAX_VALUE, tx);
-                    if (amountAllowed == 0) {
-                        return; // Nothing.
-                    }
-                }
-
-                // Check if we can pull out of the system
-                var canPull = StorageHelper.poweredExtraction(this.powerSource, this.monitor, clickedKey, amountAllowed,
-                        this.getActionSource(), Actionable.SIMULATE);
-                if (canPull <= 0) {
-                    return;
-                }
-
-                // How much could fit into the carried container
-                try (var tx = Transaction.openOuter()) {
-                    long canFill = fh.insert(clickedFluid.toVariant(), canPull, tx);
-                    if (canFill == 0) {
-                        return;
-                    }
-
-                    // Now actually pull out of the system
-                    var inserted = StorageHelper.poweredExtraction(this.powerSource, this.monitor, clickedKey, canFill,
-                            this.getActionSource());
-                    if (inserted <= 0) {
-                        // Something went wrong
-                        AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
-                        return;
-                    }
-
-                    tx.commit();
-                }
-
-                FluidSoundHelper.playFillSound(player, clickedFluid.toVariant());
-            } else if (action == InventoryAction.EMPTY_ITEM) {
-                // See how much we can drain from the item
-                var content = StorageUtil.findExtractableContent(fh, null);
-                if (content == null) {
-                    return;
-                }
-
-                var what = AEFluidKey.of(content.resource());
-                var amount = content.amount();
-
-                // Check if we can push into the system
-                var canInsert = StorageHelper.poweredInsert(this.powerSource, this.monitor, what, amount,
-                        this.getActionSource(), Actionable.SIMULATE);
-                if (canInsert <= 0) {
-                    return;
-                }
-
-                // Actually drain
-                try (var tx = Transaction.openOuter()) {
-                    var extracted = fh.extract(what.toVariant(), canInsert, tx);
-                    if (extracted != canInsert) {
-                        AELog.error(
-                                "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                                getCarried());
-                        return;
-                    }
-
-                    if (StorageHelper.poweredInsert(this.powerSource, this.monitor, what,
-                            extracted, this.getActionSource()) != extracted) {
-                        AELog.error("Failed to insert previously simulated %s into ME system", what);
-                        return;
-                    }
-
-                    tx.commit();
-                }
-
-                FluidSoundHelper.playEmptySound(player, what.toVariant());
-                return;
-            }
+        if (action == InventoryAction.FILL_ITEM) {
+            handleFillingHeldItem(
+                    (amount, mode) -> StorageHelper.poweredExtraction(powerSource, monitor, clickedKey, amount,
+                            getActionSource(), mode),
+                    clickedKey);
+        } else if (action == InventoryAction.EMPTY_ITEM) {
+            handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(powerSource, monitor, what, amount,
+                    getActionSource(), mode));
         }
 
         // Handle interactions where the player wants to put something into the network
