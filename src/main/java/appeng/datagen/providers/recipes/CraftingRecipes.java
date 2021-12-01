@@ -8,7 +8,6 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 
 import appeng.api.ids.AETags;
@@ -624,26 +623,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(AEBlocks.ENERGY_ACCEPTOR)
                 .unlockedBy("has_energy_acceptor", has(AEBlocks.ENERGY_ACCEPTOR))
                 .save(consumer, AppEng.makeId("network/parts/energy_acceptor"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_ANNIHILATION_PLANE)
-                .pattern("aaa")
-                .pattern("ddd")
-                .pattern("bcb")
-                .define('a', ConventionTags.ALL_FLUIX)
-                .define('b', ConventionTags.IRON_INGOT)
-                .define('c', AEItems.ANNIHILATION_CORE)
-                .define('d', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_annihilation_plane"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_ANNIHILATION_PLANE)
-                .pattern("adb")
-                .pattern("cdb")
-                .pattern("adb")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', ConventionTags.ALL_FLUIX)
-                .define('c', AEItems.ANNIHILATION_CORE)
-                .define('d', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_annihilation_plane_alt"));
         ShapedRecipeBuilder.shaped(AEParts.ANNIHILATION_PLANE)
                 .pattern("aaa")
                 .pattern("bcb")
@@ -651,7 +630,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.IRON_INGOT)
                 .define('c', AEItems.ANNIHILATION_CORE)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_annihilation_plane_alt"));
+                .save(consumer, AppEng.makeId("network/parts/annihilation_plane_alt"));
         ShapedRecipeBuilder.shaped(AEParts.ANNIHILATION_PLANE)
                 .pattern("ab")
                 .pattern("cb")
@@ -660,7 +639,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.ALL_FLUIX)
                 .define('c', AEItems.ANNIHILATION_CORE)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_annihilation_plane_alt2"));
+                .save(consumer, AppEng.makeId("network/parts/annihilation_plane_alt2"));
         ShapedRecipeBuilder.shaped(AEParts.EXPORT_BUS)
                 .pattern("aba")
                 .pattern(" c ")
@@ -689,7 +668,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
         ShapelessRecipeBuilder.shapeless(AEParts.IDENTITY_ANNIHILATION_PLANE)
                 .requires(AEParts.ANNIHILATION_PLANE)
                 .requires(AEItems.FLUIX_PEARL)
-                .unlockedBy("has_item_annihilation_plane", has(AEParts.ANNIHILATION_PLANE))
+                .unlockedBy("has_annihilation_plane", has(AEParts.ANNIHILATION_PLANE))
                 .save(consumer, AppEng.makeId("network/parts/item_identity_annihilatition_plane"));
         ShapedRecipeBuilder.shaped(AEParts.IMPORT_BUS)
                 .pattern(" a ")
@@ -775,13 +754,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_terminal", has(AEParts.TERMINAL))
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/parts/terminals_crafting"));
-        ShapelessRecipeBuilder.shapeless(AEParts.FLUID_TERMINAL)
-                .requires(AEParts.TERMINAL)
-                .requires(ConventionTags.dye(DyeColor.GREEN))
-                .requires(AEItems.LOGIC_PROCESSOR)
-                .unlockedBy("has_terminal", has(AEParts.TERMINAL))
-                .unlockedBy("has_logic_processor", has(AEItems.LOGIC_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/parts/terminals_fluid"));
         ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ACCESS_TERMINAL)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)

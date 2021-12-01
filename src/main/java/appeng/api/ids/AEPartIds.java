@@ -240,7 +240,7 @@ public final class AEPartIds {
     public static final ResourceLocation ENERGY_LEVEL_EMITTER = id("energy_level_emitter");
     public static final ResourceLocation PATTERN_PROVIDER = id("cable_pattern_provider");
     public static final ResourceLocation INTERFACE = id("cable_interface");
-    public static final ResourceLocation ITEM_CONVERSION_MONITOR = id("item_conversion_monitor");
+    public static final ResourceLocation CONVERSION_MONITOR = id("conversion_monitor");
     public static final ResourceLocation ENERGY_ACCEPTOR = id("cable_energy_acceptor");
 
     ///
@@ -253,16 +253,14 @@ public final class AEPartIds {
     public static final ResourceLocation CRAFTING_TERMINAL = id("crafting_terminal");
     public static final ResourceLocation PATTERN_ENCODING_TERMINAL = id("pattern_encoding_terminal");
     public static final ResourceLocation PATTERN_ACCESS_TERMINAL = id("pattern_access_terminal");
-    public static final ResourceLocation FLUID_TERMINAL = id("fluid_terminal");
     public static final ResourceLocation STORAGE_MONITOR = id("storage_monitor");
 
     ///
     /// Planes
     ///
     public static final ResourceLocation FORMATION_PLANE = id("formation_plane");
-    public static final ResourceLocation ITEM_ANNIHILATION_PLANE = id("item_annihilation_plane");
-    public static final ResourceLocation ITEM_IDENTITY_ANNIHILATION_PLANE = id("item_identity_annihilation_plane");
-    public static final ResourceLocation FLUID_ANNIHILATION_PLANE = id("fluid_annihilation_plane");
+    public static final ResourceLocation ANNIHILATION_PLANE = id("annihilation_plane");
+    public static final ResourceLocation IDENTITY_ANNIHILATION_PLANE = id("identity_annihilation_plane");
 
     ///
     /// P2P

@@ -2,6 +2,7 @@ package appeng.parts.automation;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,7 @@ public final class StackWorldBehaviors {
     private static final Map<AEKeySpace, ExportStrategyFactory> exportStrategies = new IdentityHashMap<>();
     private static final Map<AEKeySpace, ExternalStorageStrategyFactory> externalStorageStrategies = new IdentityHashMap<>();
     private static final Map<AEKeySpace, PlacementStrategyFactory> placementStrategies = new IdentityHashMap<>();
+    private static final Map<AEKeySpace, PickupStrategyFactory> pickupStrategies = new IdentityHashMap<>();
 
     static {
         importStrategies.put(AEKeySpace.items(), StorageImportStrategy::createItem);
@@ -27,6 +29,8 @@ public final class StackWorldBehaviors {
         externalStorageStrategies.put(AEKeySpace.fluids(), FabricExternalStorageStrategy::createFluid);
         placementStrategies.put(AEKeySpace.fluids(), FluidPlacementStrategy::new);
         placementStrategies.put(AEKeySpace.items(), ItemPlacementStrategy::new);
+        pickupStrategies.put(AEKeySpace.fluids(), FluidPickupStrategy::new);
+        pickupStrategies.put(AEKeySpace.items(), ItemPickupStrategy::new);
     }
 
     private StackWorldBehaviors() {
@@ -87,6 +91,14 @@ public final class StackWorldBehaviors {
         return new PlacementStrategyFacade(strategies);
     }
 
+    public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
+            BlockEntity host, boolean allowSilkTouch) {
+        return pickupStrategies.values()
+                .stream()
+                .map(f -> f.create(level, fromPos, fromSide, host, allowSilkTouch))
+                .toList();
+    }
+
     @FunctionalInterface
     interface ImportStrategyFactory {
         StackImportStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
@@ -105,6 +117,12 @@ public final class StackWorldBehaviors {
     @FunctionalInterface
     interface PlacementStrategyFactory {
         PlacementStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host);
+    }
+
+    @FunctionalInterface
+    interface PickupStrategyFactory {
+        PickupStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host,
+                boolean allowSilkTouch);
     }
 
 }

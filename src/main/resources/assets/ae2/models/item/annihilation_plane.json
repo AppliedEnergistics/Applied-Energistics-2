@@ -2,7 +2,7 @@
   "parent": "ae2:item/part_base",
   "textures": {
     "sides": "ae2:part/plane_sides",
-    "plane": "ae2:part/item_annihilation_plane"
+    "plane": "ae2:part/annihilation_plane"
   },
   "elements": [
     {
