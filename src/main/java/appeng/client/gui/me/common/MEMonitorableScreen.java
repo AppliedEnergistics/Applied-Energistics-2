@@ -482,7 +482,7 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
                     long storedAmount = entry.getStoredAmount();
                     boolean craftable = entry.isCraftable();
                     var useLargeFonts = AEConfig.instance().isUseLargeFonts();
-                    if (isViewOnlyCraftable() && craftable) {
+                    if (craftable && (isViewOnlyCraftable() || storedAmount <= 0)) {
                         var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
                                 : GuiText.SmallFontCraft.getLocal();
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
