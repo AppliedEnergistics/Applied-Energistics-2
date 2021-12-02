@@ -280,7 +280,15 @@ public class MEMonitorableMenu extends AEBaseMenu
 
     }
 
+    protected boolean showsCraftables() {
+        return true;
+    }
+
     private Set<AEKey> getCraftablesFromGrid() {
+        if (!showsCraftables()) {
+            return Collections.emptySet();
+        }
+
         if (networkNode != null && networkNode.isActive()) {
             return networkNode.getGrid().getCraftingService().getCraftables(this::isKeyVisible);
         }

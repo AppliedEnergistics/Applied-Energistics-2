@@ -153,4 +153,8 @@ public class SecurityStationMenu extends MEMonitorableMenu implements InternalIn
         this.permissionMode = permissionMode;
     }
 
+    @Override
+    protected boolean showsCraftables() {
+        return false;
+    }
 }
