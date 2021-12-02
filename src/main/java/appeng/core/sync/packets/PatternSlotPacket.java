@@ -22,9 +22,9 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.data.AEItemKey;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.items.PatternTermMenu;
@@ -35,11 +35,8 @@ import appeng.menu.me.items.PatternTermMenu;
  * composed of fake slots.
  */
 public class PatternSlotPacket extends BasePacket {
-    public final AEItemKey what;
-
-    public final int amount;
-
-    public final AEItemKey[] pattern = new AEItemKey[9];
+    public final ItemStack what;
+    public final ItemStack[] pattern = new ItemStack[9];
 
     /**
      * Move/Craft into player inventory rather than cursor.
@@ -49,22 +46,17 @@ public class PatternSlotPacket extends BasePacket {
     public PatternSlotPacket(FriendlyByteBuf stream) {
 
         this.intoPlayerInv = stream.readBoolean();
-
-        this.what = AEItemKey.fromPacket(stream);
-        this.amount = stream.readInt();
+        this.what = stream.readItem();
 
         for (int x = 0; x < 9; x++) {
-            if (stream.readBoolean()) {
-                this.pattern[x] = AEItemKey.fromPacket(stream);
-            }
+            this.pattern[x] = stream.readItem();
         }
     }
 
     // api
-    public PatternSlotPacket(InternalInventory pat, AEItemKey what, int amount, boolean intoPlayerInv) {
+    public PatternSlotPacket(InternalInventory pat, ItemStack what, boolean intoPlayerInv) {
 
         this.what = what;
-        this.amount = amount;
         this.intoPlayerInv = intoPlayerInv;
 
         var data = new FriendlyByteBuf(Unpooled.buffer());
@@ -73,15 +65,10 @@ public class PatternSlotPacket extends BasePacket {
 
         data.writeBoolean(intoPlayerInv);
 
-        what.writeToPacket(data);
-        data.writeVarInt(amount);
+        data.writeItem(this.what);
 
         for (int x = 0; x < 9; x++) {
-            var key = AEItemKey.of(pat.getStackInSlot(x));
-            data.writeBoolean(key != null);
-            if (key != null) {
-                key.writeToPacket(data);
-            }
+            data.writeItem(pat.getStackInSlot(x));
         }
 
         this.configureWrite(data);

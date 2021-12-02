@@ -28,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.config.ActionItems;
-import appeng.api.storage.data.AEItemKey;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
@@ -185,10 +184,9 @@ public class PatternTermScreen<C extends PatternTermMenu> extends appeng.client.
     @Override
     protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
         if (slot instanceof PatternTermSlot) {
-            var what = AEItemKey.of(slot.getItem());
-            if (what != null) {
+            if (!slot.getItem().isEmpty()) {
                 var amount = slot.getItem().getCount();
-                var packet = new PatternSlotPacket(menu.getCraftingMatrix(), what, amount, hasShiftDown());
+                var packet = new PatternSlotPacket(menu.getCraftingMatrix(), slot.getItem(), hasShiftDown());
                 NetworkHandler.instance().sendToServer(packet);
             }
             return;

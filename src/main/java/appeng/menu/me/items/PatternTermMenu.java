@@ -172,13 +172,23 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
         var level = this.getPlayerInventory().player.level;
         var ic = new CraftingContainer(this, 3, 3);
 
+        boolean invalidIngredients = false;
         for (int x = 0; x < ic.getContainerSize(); x++) {
-            ic.setItem(x, this.craftingGridInv.getStackInSlot(x));
+            var stack = unwrapCraftingIngredient(this.craftingGridInv.getStackInSlot(x));
+            if (stack != null) {
+                ic.setItem(x, stack);
+            } else {
+                invalidIngredients = true;
+            }
         }
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, level)) {
-            this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
-            this.currentRecipeCraftingMode = this.isCraftingMode();
+            if (invalidIngredients) {
+                this.currentRecipe = null;
+            } else {
+                this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
+            }
+            this.currentRecipeCraftingMode = isCraftingMode();
             checkFluidSubstitutionSupport();
         }
 
@@ -225,8 +235,10 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
         if (encodedPattern != null) {
             var encodeOutput = this.encodedPatternSlot.getItem();
 
-            // first check the output slots, should either be null, or a pattern
-            if (!encodeOutput.isEmpty() && !PatternDetailsHelper.isEncodedPattern(encodeOutput)) {
+            // first check the output slots, should either be null, or a pattern (encoded or otherwise)
+            if (!encodeOutput.isEmpty()
+                    && !PatternDetailsHelper.isEncodedPattern(encodeOutput)
+                    && !AEItems.BLANK_PATTERN.isSameAs(encodeOutput)) {
                 return;
             } // if nothing is there we should snag a new pattern.
             else if (encodeOutput.isEmpty()) {
@@ -243,76 +255,96 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
             }
 
             this.encodedPatternSlot.set(encodedPattern);
+        } else {
+            clearPattern();
+        }
+    }
+
+    /**
+     * Clears the pattern in the encoded pattern slot.
+     */
+    private void clearPattern() {
+        var encodedPattern = this.encodedPatternSlot.getItem();
+        if (PatternDetailsHelper.isEncodedPattern(encodedPattern)) {
+            this.encodedPatternSlot.set(
+                    AEItems.BLANK_PATTERN.stack(encodedPattern.getCount()));
         }
     }
 
     @Nullable
     private ItemStack encodePattern() {
-        var in = this.getValidatedInputs();
-        var out = this.getValidatedOutputs();
-
-        // if there is no input, this would be silly.
-        if (in == null || out == null || isCraftingMode() && currentRecipe == null) {
-            return null;
-        }
-
         if (this.isCraftingMode()) {
-            return PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, in, out[0], isSubstitute(),
-                    isSubstituteFluids());
+            return encodeCraftingPattern();
         } else {
-            return PatternDetailsHelper.encodeProcessingPattern(toAeStacks(in), toAeStacks(out));
+            return encodeProcessingPattern();
         }
     }
 
-    private static GenericStack[] toAeStacks(ItemStack... stacks) {
-        GenericStack[] out = new GenericStack[stacks.length];
-        for (int i = 0; i < stacks.length; ++i) {
-            out[i] = GenericStack.unwrapItemStack(stacks[i]);
-            if (out[i] == null) {
-                out[i] = GenericStack.fromItemStack(stacks[i]);
-            }
-        }
-        return out;
-    }
-
-    private ItemStack[] getValidatedInputs() {
-        var input = new ItemStack[9];
-        var valid = false;
-
+    @Nullable
+    private ItemStack encodeCraftingPattern() {
+        var ingredients = new ItemStack[this.craftingGridSlots.length];
+        boolean valid = false;
         for (int x = 0; x < this.craftingGridSlots.length; x++) {
-            input[x] = this.craftingGridSlots[x].getItem();
-            if (!input[x].isEmpty()) {
+            ingredients[x] = unwrapCraftingIngredient(this.craftingGridSlots[x].getItem());
+            if (ingredients[x] == null) {
+                return null; // Invalid item
+            } else if (!ingredients[x].isEmpty()) {
                 // At least one input must be set, but it doesn't matter which one
                 valid = true;
             }
         }
-
-        return valid ? input : null;
-    }
-
-    private ItemStack[] getValidatedOutputs() {
-        if (this.isCraftingMode()) {
-            var out = this.getAndUpdateOutput();
-
-            if (!out.isEmpty() && out.getCount() > 0) {
-                return new ItemStack[] { out };
-            }
-        } else {
-            var list = new ItemStack[3];
-
-            for (int i = 0; i < this.processingOutputSlots.length; i++) {
-                list[i] = this.processingOutputSlots[i].getItem();
-
-            }
-            if (list[0].isEmpty()) {
-                // The first output slot is required
-                return null;
-            } else {
-                return list;
-            }
+        if (!valid) {
+            return null;
         }
 
-        return null;
+        var result = this.getAndUpdateOutput();
+        if (result.isEmpty() || currentRecipe == null) {
+            return null;
+        }
+
+        return PatternDetailsHelper.encodeCraftingPattern(this.currentRecipe, ingredients, result, isSubstitute(),
+                isSubstituteFluids());
+    }
+
+    @Nullable
+    private ItemStack encodeProcessingPattern() {
+        var inputs = new GenericStack[this.craftingGridSlots.length];
+        boolean valid = false;
+        for (int x = 0; x < this.craftingGridSlots.length; x++) {
+            inputs[x] = GenericStack.fromItemStack(this.craftingGridSlots[x].getItem());
+            if (inputs[x] != null) {
+                // At least one input must be set, but it doesn't matter which one
+                valid = true;
+            }
+        }
+        if (!valid) {
+            return null;
+        }
+
+        var outputs = new GenericStack[3];
+        for (int i = 0; i < this.processingOutputSlots.length; i++) {
+            outputs[i] = GenericStack.fromItemStack(this.processingOutputSlots[i].getItem());
+        }
+        if (outputs[0] == null) {
+            // The first output slot is required
+            return null;
+        }
+
+        return PatternDetailsHelper.encodeProcessingPattern(inputs, outputs);
+    }
+
+    @Nullable
+    private ItemStack unwrapCraftingIngredient(ItemStack ingredient) {
+        var unwrapped = GenericStack.unwrapItemStack(ingredient);
+        if (unwrapped != null) {
+            if (unwrapped.what() instanceof AEItemKey itemKey) {
+                return itemKey.toStack(1);
+            } else {
+                return null; // There's something in this slot that's not an item
+            }
+        } else {
+            return ingredient;
+        }
     }
 
     private boolean isPattern(final ItemStack output) {
@@ -339,8 +371,8 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
      * inventory or craft it.
      */
     public void craftOrGetItem(PatternSlotPacket packetPatternSlot) {
-        AEItemKey what = packetPatternSlot.what;
-        if (what == null || this.monitor == null || !isPowered()) {
+        var what = packetPatternSlot.what;
+        if (what.isEmpty() || this.monitor == null || !isPowered()) {
             return;
         }
 
@@ -352,19 +384,21 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
         }
 
         // If the target inv hold at least 1 of the crafted/extracted item, don't bother
-        if (!inv.simulateAdd(what.toStack()).isEmpty()) {
+        if (!inv.simulateAdd(what).isEmpty()) {
             return;
         }
 
         // Clamp the amount to a reasonable amount
-        var amount = Mth.clamp(packetPatternSlot.amount, 1, what.getItem().getMaxStackSize());
+        var itemKey = AEItemKey.of(what);
+        var amount = Mth.clamp(what.getCount(), 1, what.getItem().getMaxStackSize());
 
         var extracted = StorageHelper.poweredExtraction(this.powerSource, this.monitor,
-                what, amount, this.getActionSource());
+                itemKey, amount, this.getActionSource());
         var p = this.getPlayerInventory().player;
 
         if (extracted > 0) {
-            inv.addItems(what.toStack(amount));
+            what.setCount(amount);
+            inv.addItems(what);
             this.broadcastChanges();
             return;
         }
@@ -377,8 +411,7 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
         var real = new CraftingContainer(new NullMenu(), 3, 3);
 
         for (int x = 0; x < 9; x++) {
-            ic.setItem(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY
-                    : packetPatternSlot.pattern[x].toStack());
+            ic.setItem(x, packetPatternSlot.pattern[x]);
         }
 
         var r = p.level.getRecipeManager()

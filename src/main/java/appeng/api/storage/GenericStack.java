@@ -66,9 +66,18 @@ public record GenericStack(AEKey what, long amount) {
         return tag;
     }
 
+    /**
+     * Converts a given item stack into a generic stack, accounting for a {@link GenericStack} already wrapped in an
+     * {@link ItemStack}, unwrapping it automatically. If the item stack is empty, null is returned.
+     */
     @Nullable
     public static GenericStack fromItemStack(ItemStack stack) {
-        AEItemKey key = AEItemKey.of(stack);
+        var genericStack = GenericStack.unwrapItemStack(stack);
+        if (genericStack != null) {
+            return genericStack;
+        }
+
+        var key = AEItemKey.of(stack);
         if (key == null) {
             return null;
         }
