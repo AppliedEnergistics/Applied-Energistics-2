@@ -102,7 +102,7 @@ public class AECraftingPattern implements IAEPatternDetails {
             var condensedInput = condensedInputs[j];
 
             for (int i = 0; i < 9; ++i) {
-                if (sparseInputs[i] != null && sparseInputs[i].equals(condensedInput)) {
+                if (sparseInputs[i] != null && sparseInputs[i].what().equals(condensedInput.what())) {
                     if (inputs[j] == null) {
                         inputs[j] = new Input(i, condensedInput);
                     }
@@ -227,7 +227,8 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     public boolean isItemValid(int slot, AEItemKey key, Level level) {
         if (!canSubstitute) {
-            return sparseInputs[slot] != null && sparseInputs[slot].what().equals(key);
+            return sparseInputs[slot] == null && key == null
+                    || sparseInputs[slot] != null && sparseInputs[slot].what().equals(key);
         }
 
         var result = getTestResult(slot, key);

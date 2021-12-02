@@ -182,6 +182,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
         // Sanity check
         for (KeyCounter list : table) {
+            list.removeZeros();
             if (!list.isEmpty()) {
                 throw new RuntimeException("Could not fill grid with some items, including " + list.iterator().next());
             }

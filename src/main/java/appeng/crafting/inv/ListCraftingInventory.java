@@ -56,6 +56,7 @@ public class ListCraftingInventory implements ICraftingInventory {
         var extracted = Math.min(list.get(what), amount);
         if (mode == Actionable.MODULATE) {
             list.remove(what, extracted);
+            list.removeZeros();
             listener.onChange(what, extracted);
         }
         return extracted;

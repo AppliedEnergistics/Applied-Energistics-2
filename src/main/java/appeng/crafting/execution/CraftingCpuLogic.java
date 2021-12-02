@@ -264,7 +264,7 @@ public class CraftingCpuLogic {
             if (type == Actionable.MODULATE) {
                 // Update count and displayed CPU stack, and finish the job if possible.
                 postChange(what);
-                job.finalOutput = new GenericStack(what, job.finalOutput.amount() - inserted);
+                job.finalOutput = new GenericStack(what, job.finalOutput.amount() - amount);
 
                 if (job.finalOutput.amount() <= 0) {
                     finishJob(true);
@@ -348,6 +348,7 @@ public class CraftingCpuLogic {
             // The network was unable to receive all of the items, i.e. no or not enough storage space left
             entry.setValue(entry.getLongValue() - inserted);
         }
+        this.inventory.list.removeZeros();
 
         cluster.markDirty();
     }
