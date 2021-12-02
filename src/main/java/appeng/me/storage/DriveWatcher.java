@@ -24,7 +24,7 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.storage.data.AEKey;
 
-public class DriveWatcher<T extends AEKey> extends MEInventoryHandler {
+public class DriveWatcher extends MEInventoryHandler {
 
     private CellState oldStatus = CellState.EMPTY;
     private final Runnable activityCallback;

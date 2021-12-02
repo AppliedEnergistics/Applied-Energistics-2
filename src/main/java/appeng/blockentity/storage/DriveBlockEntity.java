@@ -72,7 +72,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     private static final int BIT_CELL_STATE_BITS = 3;
 
     private final AppEngCellInventory inv = new AppEngCellInventory(this, SLOT_COUNT);
-    private final DriveWatcher<?>[] invBySlot = new DriveWatcher[SLOT_COUNT];
+    private final DriveWatcher[] invBySlot = new DriveWatcher[SLOT_COUNT];
     private boolean isCached = false;
     private int priority = 0;
     private boolean wasActive = false;
@@ -329,7 +329,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
             if (cell != null) {
                 this.inv.setHandler(slot, cell);
 
-                var driveWatcher = new DriveWatcher<>(cell, () -> blinkCell(slot));
+                var driveWatcher = new DriveWatcher(cell, () -> blinkCell(slot));
                 this.invBySlot[slot] = driveWatcher;
 
                 return cell.getIdleDrain();

@@ -167,10 +167,10 @@ public final class AEBlocks {
 
     public static final BlockDefinition<CraftingUnitBlock> CRAFTING_UNIT = block(AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.UNIT));
     public static final BlockDefinition<CraftingUnitBlock> CRAFTING_ACCELERATOR = craftingBlock(AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.ACCELERATOR), () -> AEItems.ENGINEERING_PROCESSOR);
-    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_1K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_1K), () -> AEItems.ITEM_1K_CELL_COMPONENT);
-    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_4K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_4K), () -> AEItems.ITEM_4K_CELL_COMPONENT);
-    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_16K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_16K), () -> AEItems.ITEM_16K_CELL_COMPONENT);
-    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_64K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_64K), () -> AEItems.ITEM_64K_CELL_COMPONENT);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_1K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_1K), () -> AEItems.CELL_COMPONENT_1K);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_4K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_4K), () -> AEItems.CELL_COMPONENT_4K);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_16K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_16K), () -> AEItems.CELL_COMPONENT_16K);
+    public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_64K = craftingBlock(AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_64K), () -> AEItems.CELL_COMPONENT_64K);
     public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock(AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL)), () -> AEParts.STORAGE_MONITOR);
 
     private static <T extends Block> BlockDefinition<T> craftingBlock(ResourceLocation id, Supplier<T> blockSupplier, Supplier<ItemLike> disassemblyExtra) {

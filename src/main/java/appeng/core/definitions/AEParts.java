@@ -66,7 +66,7 @@ import appeng.parts.reporting.DarkPanelPart;
 import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PanelPart;
 import appeng.parts.reporting.PatternAccessTerminalPart;
-import appeng.parts.reporting.PatternTerminalPart;
+import appeng.parts.reporting.PatternEncodingTerminalPart;
 import appeng.parts.reporting.SemiDarkPanelPart;
 import appeng.parts.reporting.StorageMonitorPart;
 import appeng.parts.storagebus.StorageBusPart;
@@ -99,7 +99,7 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<AnnihilationPlanePart>> ANNIHILATION_PLANE = createPart(AEPartIds.ANNIHILATION_PLANE, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
     public static final ItemDefinition<PartItem<IdentityAnnihilationPlanePart>> IDENTITY_ANNIHILATION_PLANE = createPart(AEPartIds.IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart.class, IdentityAnnihilationPlanePart::new);
     public static final ItemDefinition<PartItem<FormationPlanePart>> FORMATION_PLANE = createPart(AEPartIds.FORMATION_PLANE, FormationPlanePart.class, FormationPlanePart::new);
-    public static final ItemDefinition<PartItem<PatternTerminalPart>> PATTERN_ENCODING_TERMINAL = createPart(AEPartIds.PATTERN_ENCODING_TERMINAL, PatternTerminalPart.class, PatternTerminalPart::new);
+    public static final ItemDefinition<PartItem<PatternEncodingTerminalPart>> PATTERN_ENCODING_TERMINAL = createPart(AEPartIds.PATTERN_ENCODING_TERMINAL, PatternEncodingTerminalPart.class, PatternEncodingTerminalPart::new);
     public static final ItemDefinition<PartItem<CraftingTerminalPart>> CRAFTING_TERMINAL = createPart(AEPartIds.CRAFTING_TERMINAL, CraftingTerminalPart.class, CraftingTerminalPart::new);
     public static final ItemDefinition<PartItem<ItemTerminalPart>> TERMINAL = createPart(AEPartIds.TERMINAL, ItemTerminalPart.class, ItemTerminalPart::new);
     public static final ItemDefinition<PartItem<StorageMonitorPart>> STORAGE_MONITOR = createPart(AEPartIds.STORAGE_MONITOR, StorageMonitorPart.class, StorageMonitorPart::new);

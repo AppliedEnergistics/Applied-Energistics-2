@@ -43,7 +43,7 @@ import appeng.parts.PartModel;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 
-public class PatternTerminalPart extends AbstractTerminalPart implements IPatternTerminalHost {
+public class PatternEncodingTerminalPart extends AbstractTerminalPart implements IPatternTerminalHost {
 
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
@@ -64,7 +64,7 @@ public class PatternTerminalPart extends AbstractTerminalPart implements IPatter
     private boolean substitute = false;
     private boolean substituteFluids = true;
 
-    public PatternTerminalPart(final ItemStack is) {
+    public PatternEncodingTerminalPart(final ItemStack is) {
         super(is);
     }
 

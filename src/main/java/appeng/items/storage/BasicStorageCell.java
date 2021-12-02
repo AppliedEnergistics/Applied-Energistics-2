@@ -171,7 +171,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
                     }
 
                     // drop empty storage cell case
-                    playerInventory.placeItemBackInInventory(AEItems.EMPTY_STORAGE_CELL.stack());
+                    playerInventory.placeItemBackInInventory(AEItems.ITEM_CELL_HOUSING.stack());
 
                     return true;
                 }

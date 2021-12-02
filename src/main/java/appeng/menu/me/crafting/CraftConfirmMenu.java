@@ -55,7 +55,7 @@ import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.ItemTerminalPart;
-import appeng.parts.reporting.PatternTerminalPart;
+import appeng.parts.reporting.PatternEncodingTerminalPart;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
@@ -194,7 +194,7 @@ public class CraftConfirmMenu extends AEBaseMenu {
             originalGui = CraftingTermMenu.TYPE;
         }
 
-        if (ah instanceof PatternTerminalPart) {
+        if (ah instanceof PatternEncodingTerminalPart) {
             originalGui = PatternTermMenu.TYPE;
         }
 

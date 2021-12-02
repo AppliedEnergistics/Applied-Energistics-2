@@ -400,6 +400,11 @@ public class BasicCellInventory implements StorageCell {
 
         // Deduct the required storage for a new type if the type is new
         if (currentAmount <= 0) {
+            if (!canHoldNewItem()) {
+                // No space for more types
+                return 0;
+            }
+
             remainingItemCount -= (long) this.getBytesPerType() * keySpace.getUnitsPerByte();
             if (remainingItemCount <= 0) {
                 return 0;

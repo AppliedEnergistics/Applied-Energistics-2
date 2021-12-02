@@ -32,7 +32,7 @@ class CondenserInventoryTest {
         assertThat(inv.getAvailableStacks()).isEmpty();
 
         be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY);
-        be.getInternalInventory().setItemDirect(2, AEItems.ITEM_64K_CELL_COMPONENT.stack());
+        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.stack());
         be.addPower(99999999999.0);
 
         var singularity = AEItemKey.of(AEItems.SINGULARITY.asItem());
