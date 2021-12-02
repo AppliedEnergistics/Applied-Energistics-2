@@ -810,7 +810,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         // Makes it so the first call to s.getStack will return getDisplayStack instead, the finally is there
-        // just for making absolutly sure the flag gets reset (it should be reset inside of getStack)
+        // just for making absolutely sure the flag gets reset (it should be reset inside of getStack)
         s.setRendering(true);
         try {
             super.renderSlot(poseStack, s);
