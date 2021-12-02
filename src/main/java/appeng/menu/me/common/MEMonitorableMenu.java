@@ -93,6 +93,10 @@ import appeng.util.Platform;
 public class MEMonitorableMenu extends AEBaseMenu
         implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener, IMEInteractionHandler {
 
+    public static final MenuType<MEMonitorableMenu> TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, ITerminalHost>create(MEMonitorableMenu::new, ITerminalHost.class)
+            .build("item_terminal");
+
     public static final MenuType<MEMonitorableMenu> PORTABLE_ITEM_CELL_TYPE = MenuTypeBuilder
             .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
             .build("portable_item_cell");
@@ -103,14 +107,6 @@ public class MEMonitorableMenu extends AEBaseMenu
     public static final MenuType<MEMonitorableMenu> WIRELESS_TYPE = MenuTypeBuilder
             .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
             .build("wirelessterm");
-
-    public static final MenuType<MEMonitorableMenu> FLUID_TYPE = MenuTypeBuilder
-            .<MEMonitorableMenu, ITerminalHost>create(MEMonitorableMenu::new, ITerminalHost.class)
-            .build("fluid_terminal");
-
-    public static final MenuType<MEMonitorableMenu> ITEM_TYPE = MenuTypeBuilder
-            .<MEMonitorableMenu, ITerminalHost>create(MEMonitorableMenu::new, ITerminalHost.class)
-            .build("item_terminal");
 
     private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;

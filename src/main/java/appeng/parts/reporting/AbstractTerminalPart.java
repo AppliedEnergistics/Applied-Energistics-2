@@ -123,7 +123,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     public MenuType<?> getMenuType(final Player player) {
-        return MEMonitorableMenu.ITEM_TYPE;
+        return MEMonitorableMenu.TYPE;
     }
 
     @Override

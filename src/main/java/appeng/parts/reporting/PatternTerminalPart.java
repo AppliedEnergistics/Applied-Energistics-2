@@ -104,7 +104,7 @@ public class PatternTerminalPart extends AbstractTerminalPart implements IPatter
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return PatternTermMenu.TYPE;
         }
-        return MEMonitorableMenu.ITEM_TYPE;
+        return MEMonitorableMenu.TYPE;
     }
 
     @Override

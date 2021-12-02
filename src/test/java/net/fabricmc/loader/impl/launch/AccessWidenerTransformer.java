@@ -37,7 +37,7 @@ class AccessWidenerTransformer implements ClassFileTransformer {
             classfileBuffer = classWriter.toByteArray();
         }
 
-        if (className.startsWith("net/minecraft")) {
+        if (className.startsWith("net/minecraft") || className.contains("mixin")) {
             className = className.replace('/', '.');
             return mixinTransformer.transformClassBytes(className, className, classfileBuffer);
         }

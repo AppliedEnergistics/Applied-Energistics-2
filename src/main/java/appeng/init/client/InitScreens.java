@@ -156,13 +156,9 @@ public final class InitScreens {
 
         // Terminals
         InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
-                MEMonitorableMenu.ITEM_TYPE,
+                MEMonitorableMenu.TYPE,
                 MEMonitorableScreen::new,
-                "/screens/terminals/item_terminal.json");
-        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
-                MEMonitorableMenu.FLUID_TYPE,
-                MEMonitorableScreen::new,
-                "/screens/terminals/fluid_terminal.json");
+                "/screens/terminals/terminal.json");
         InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
                 MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE,
                 MEMonitorableScreen::new,

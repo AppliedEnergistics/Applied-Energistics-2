@@ -187,7 +187,7 @@ public class CraftConfirmMenu extends AEBaseMenu {
         }
 
         if (ah instanceof ItemTerminalPart) {
-            originalGui = MEMonitorableMenu.ITEM_TYPE;
+            originalGui = MEMonitorableMenu.TYPE;
         }
 
         if (ah instanceof CraftingTerminalPart) {

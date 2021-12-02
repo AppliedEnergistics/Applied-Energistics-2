@@ -50,7 +50,7 @@ class ConfigMenuInventoryTest {
                 fluidTest("Insert empty changes nothing", ItemStack.EMPTY, null, null),
                 fluidTest("Insert empty clears existing filter", ItemStack.EMPTY, null, WATER),
                 fluidTest("Stick gets rejected", new ItemStack(Items.STICK), WATER, WATER),
-                fluidTest("Water bucket is converted into fluid", new ItemStack(Items.WATER_BUCKET), WATER, null),
+                fluidTest("Water bucket is not converted into fluid", new ItemStack(Items.WATER_BUCKET), null, null),
                 fluidTest("Wrapped item will be rejected", GenericStack.wrapInItemStack(STICK), WATER, WATER),
                 fluidTest("Wrapped fluid will be unwrapped", GenericStack.wrapInItemStack(WATER), WATER, null));
     }

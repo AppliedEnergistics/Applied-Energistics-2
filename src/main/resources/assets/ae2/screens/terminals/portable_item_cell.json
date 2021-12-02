@@ -1,6 +1,6 @@
 {
   "$schema": "../schema.json",
-  "includes": ["item_terminal.json"],
+  "includes": ["terminal.json"],
   "text": {
     "dialog_title": {
       "text": {

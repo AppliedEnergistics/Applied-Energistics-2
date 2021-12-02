@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.menu.MenuLocator;
@@ -32,13 +33,14 @@ import appeng.menu.me.common.MEMonitorableMenu;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
-    public boolean isHandlerFor(AEKeySpace channel) {
-        return channel == AEKeySpace.items();
+    public boolean isSpecializedFor(ItemStack cell) {
+        return cell.getItem() instanceof IBasicCellItem basicCellItem
+                && basicCellItem.getKeySpace() == AEKeySpace.items();
     }
 
     @Override
     public void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler, ItemStack cell) {
-        MenuOpener.open(MEMonitorableMenu.ITEM_TYPE, player,
+        MenuOpener.open(MEMonitorableMenu.TYPE, player,
                 MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

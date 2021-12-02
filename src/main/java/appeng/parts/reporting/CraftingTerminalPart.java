@@ -87,7 +87,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return CraftingTermMenu.TYPE;
         }
-        return MEMonitorableMenu.ITEM_TYPE;
+        return MEMonitorableMenu.TYPE;
     }
 
     @Override
