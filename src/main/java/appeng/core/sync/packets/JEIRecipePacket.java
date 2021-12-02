@@ -42,8 +42,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.sync.BasePacket;
@@ -153,8 +152,8 @@ public class JEIRecipePacket extends BasePacket {
         var crafting = grid.getCraftingService();
         var craftMatrix = cct.getCraftingMatrix();
 
-        var storage = inv.getInventory(StorageChannels.items());
-        var filter = ViewCellItem.createFilter(StorageChannels.items(), cct.getViewCells());
+        var storage = inv.getInventory();
+        var filter = ViewCellItem.createItemFilter(cct.getViewCells());
         var ingredients = this.ensure3by3CraftingMatrix(recipe);
 
         // Handle each slot
@@ -285,8 +284,8 @@ public class JEIRecipePacket extends BasePacket {
     /**
      * Finds the first matching itemstack with the highest stored amount.
      */
-    private AEItemKey findBestMatchingItemStack(Ingredient ingredients, IPartitionList<AEItemKey> filter,
-            IMEMonitor<AEItemKey> storage, IMenuCraftingPacket cct) {
+    private AEItemKey findBestMatchingItemStack(Ingredient ingredients, IPartitionList filter,
+            MEMonitorStorage storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of) //
                 .filter(r -> r != null && (filter == null || filter.isListed(r)));
@@ -298,8 +297,8 @@ public class JEIRecipePacket extends BasePacket {
      * <p>
      * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
-    private AEItemKey findBestMatchingPattern(Ingredient ingredients, IPartitionList<AEItemKey> filter,
-            ICraftingService crafting, IMEMonitor<AEItemKey> storage, IMenuCraftingPacket cct) {
+    private AEItemKey findBestMatchingPattern(Ingredient ingredients, IPartitionList filter,
+            ICraftingService crafting, MEMonitorStorage storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
@@ -312,7 +311,7 @@ public class JEIRecipePacket extends BasePacket {
      * the stream is empty.
      */
     @Nullable
-    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, IMEMonitor<AEItemKey> storage,
+    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, MEMonitorStorage storage,
             IMenuCraftingPacket cct) {
         return stacks//
                 .map(s -> {

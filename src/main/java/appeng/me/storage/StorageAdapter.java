@@ -1,55 +1,78 @@
 package appeng.me.storage;
 
-import java.util.*;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
+import appeng.core.localization.GuiText;
 import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 
-public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEKey>
-        implements IMEMonitor<T>, ITickingMonitor, IHandlerAdapter<Storage<V>> {
+/**
+ * Adapts platform storage to {@link MEStorage} without monitoring capabilities.
+ */
+public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
     /**
      * Clamp reported values to avoid overflows when amounts get too close to Long.MAX_VALUE.
      */
     private static final long MAX_REPORTED_AMOUNT = 1L << 42;
-    private final Map<IMEMonitorListener<T>, Object> listeners = new HashMap<>();
-    private IActionSource source;
-    private final IVariantConversion<V, T> conversion;
+    private final IVariantConversion<V> conversion;
+    private boolean extractableOnly;
+    @Nullable
     private Storage<V> storage;
-    private final InventoryCache cache;
 
-    public StorageAdapter(IVariantConversion<V, T> conversion, Storage<V> storage, boolean showExtractableOnly) {
+    public StorageAdapter(IVariantConversion<V> conversion, @Nullable Storage<V> storage) {
         this.conversion = conversion;
         this.storage = storage;
-        this.cache = new InventoryCache(showExtractableOnly);
     }
 
-    @Override
-    public void setHandler(Storage<V> newHandler) {
-        this.storage = newHandler;
+    @Nullable
+    public Storage<V> getStorage() {
+        return storage;
+    }
+
+    public IVariantConversion<V> getConversion() {
+        return conversion;
+    }
+
+    public void setStorage(Storage<V> newHandler) {
+        this.storage = Objects.requireNonNull(newHandler);
+    }
+
+    public void setExtractableOnly(boolean extractableOnly) {
+        this.extractableOnly = extractableOnly;
     }
 
     /**
      * Called after successful inject or extract, use to schedule a cache rebuild (storage bus), or rebuild it directly
      * (interface).
      */
-    protected abstract void onInjectOrExtract();
+    protected void onInjectOrExtract() {
+    }
 
     @Override
-    public long insert(T what, long amount, Actionable type, IActionSource src) {
+    public long insert(AEKey what, long amount, Actionable type, IActionSource src) {
+        if (this.storage == null) {
+            return 0;
+        }
+
+        var variant = conversion.getVariant(what);
+        if (variant.isBlank()) {
+            return 0;
+        }
+
         try (var tx = Platform.openOrJoinTx()) {
-            var inserted = this.storage.insert(conversion.getVariant(what), amount, tx);
+            var inserted = this.storage.insert(variant, amount, tx);
 
             if (inserted > 0 && type == Actionable.MODULATE) {
                 tx.commit();
@@ -61,9 +84,18 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (this.storage == null) {
+            return 0;
+        }
+
+        var variant = conversion.getVariant(what);
+        if (variant.isBlank()) {
+            return 0;
+        }
+
         try (var tx = Platform.openOrJoinTx()) {
-            var extracted = this.storage.extract(conversion.getVariant(what), amount, tx);
+            var extracted = this.storage.extract(variant, amount, tx);
 
             if (extracted > 0 && mode == Actionable.MODULATE) {
                 tx.commit();
@@ -75,71 +107,8 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
     }
 
     @Override
-    public TickRateModulation onTick() {
-        var changes = this.cache.update();
-        if (!changes.isEmpty()) {
-            this.postDifference(changes);
-            return TickRateModulation.URGENT;
-        } else {
-            return TickRateModulation.SLOWER;
-        }
-    }
-
-    @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
-        this.cache.getAvailableKeys(out);
-    }
-
-    @Override
-    public IStorageChannel<T> getChannel() {
-        return conversion.getChannel();
-    }
-
-    @Override
-    public void setActionSource(IActionSource source) {
-        this.source = source;
-    }
-
-    @Override
-    public void addListener(final IMEMonitorListener<T> l, final Object verificationToken) {
-        this.listeners.put(l, verificationToken);
-    }
-
-    @Override
-    public void removeListener(final IMEMonitorListener<T> l) {
-        this.listeners.remove(l);
-    }
-
-    private void postDifference(Set<T> a) {
-        var i = this.listeners.entrySet().iterator();
-        while (i.hasNext()) {
-            var l = i.next();
-            var key = l.getKey();
-            if (key.isValid(l.getValue())) {
-                key.postChange(this, a, this.source);
-            } else {
-                i.remove();
-            }
-        }
-    }
-
-    private class InventoryCache {
-        private KeyCounter<T> frontBuffer = new KeyCounter<>();
-        private KeyCounter<T> backBuffer = new KeyCounter<>();
-        private final boolean extractableOnly;
-
-        public InventoryCache(boolean extractableOnly) {
-            this.extractableOnly = extractableOnly;
-        }
-
-        public Set<T> update() {
-            // Flip back & front buffer and start building a new list
-            var tmp = backBuffer;
-            backBuffer = frontBuffer;
-            frontBuffer = tmp;
-            frontBuffer.reset();
-
-            // Rebuild the front buffer
+    public void getAvailableStacks(KeyCounter out) {
+        if (storage != null) {
             try (var tx = Transaction.openOuter()) {
                 for (var view : storage.iterable(tx)) {
                     if (view.isResourceBlank()) {
@@ -165,30 +134,14 @@ public abstract class StorageAdapter<V extends TransferVariant<?>, T extends AEK
                     }
 
                     long amount = Math.min(view.getAmount(), MAX_REPORTED_AMOUNT);
-                    frontBuffer.add(conversion.getKey(view.getResource()), amount);
+                    out.add(conversion.getKey(view.getResource()), amount);
                 }
             }
-
-            // Diff the front-buffer against the backbuffer
-            var changes = new KeyCounter<T>();
-            for (var entry : frontBuffer) {
-                var old = backBuffer.get(entry.getKey());
-                if (old == 0 || old != entry.getLongValue()) {
-                    changes.add(entry.getKey(), entry.getLongValue()); // new or changed entry
-                }
-            }
-            // Account for removals
-            for (var oldEntry : backBuffer) {
-                if (frontBuffer.get(oldEntry.getKey()) == 0) {
-                    changes.add(oldEntry.getKey(), -oldEntry.getLongValue());
-                }
-            }
-
-            return changes.keySet();
         }
+    }
 
-        public void getAvailableKeys(KeyCounter<T> out) {
-            out.addAll(frontBuffer);
-        }
+    @Override
+    public Component getDescription() {
+        return GuiText.ExternalStorage.text(conversion.getKeySpace().getDescription());
     }
 }

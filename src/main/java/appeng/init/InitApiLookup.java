@@ -15,8 +15,7 @@ import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.items.tools.powered.powersink.PoweredItemCapabilities;
 import appeng.parts.crafting.PatternProviderPart;
-import appeng.parts.misc.FluidInterfacePart;
-import appeng.parts.misc.ItemInterfacePart;
+import appeng.parts.misc.InterfacePart;
 import appeng.parts.networking.EnergyAcceptorPart;
 import appeng.parts.p2p.FEP2PTunnelPart;
 import appeng.parts.p2p.FluidP2PTunnelPart;
@@ -34,7 +33,6 @@ public final class InitApiLookup {
 
         // Forward to interfaces
         initItemInterface();
-        initFluidInterface();
         initPatternProvider();
         initCondenser();
         initMEChest();
@@ -72,29 +70,21 @@ public final class InitApiLookup {
 
     private static void initItemInterface() {
         PartApiLookup.register(ItemStorage.SIDED,
-                (part, context) -> part.getInterfaceDuality().getLocalStorage(),
-                ItemInterfacePart.class);
+                (part, context) -> part.getInterfaceLogic().getLocalItemStorage(),
+                InterfacePart.class);
+        PartApiLookup.register(FluidStorage.SIDED, (part, context) -> part.getInterfaceLogic().getLocalFluidStorage(),
+                InterfacePart.class);
         ItemStorage.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getInterfaceDuality().getLocalStorage();
+            return blockEntity.getInterfaceLogic().getLocalItemStorage();
         }, AEBlockEntities.INTERFACE);
-        PartApiLookup.register(IStorageMonitorableAccessor.SIDED,
-                (part, context) -> part.getInterfaceDuality().getGridStorageAccessor(), ItemInterfacePart.class);
-        IStorageMonitorableAccessor.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getInterfaceDuality().getGridStorageAccessor();
-        }, AEBlockEntities.INTERFACE);
-    }
-
-    private static void initFluidInterface() {
-        PartApiLookup.register(FluidStorage.SIDED, (part, context) -> part.getInterfaceDuality().getLocalStorage(),
-                FluidInterfacePart.class);
         FluidStorage.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getInterfaceDuality().getLocalStorage();
-        }, AEBlockEntities.FLUID_INTERFACE);
+            return blockEntity.getInterfaceLogic().getLocalFluidStorage();
+        }, AEBlockEntities.INTERFACE);
         PartApiLookup.register(IStorageMonitorableAccessor.SIDED,
-                (part, context) -> part.getInterfaceDuality().getGridStorageAccessor(), FluidInterfacePart.class);
+                (part, context) -> part.getInterfaceLogic().getGridStorageAccessor(), InterfacePart.class);
         IStorageMonitorableAccessor.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getInterfaceDuality().getGridStorageAccessor();
-        }, AEBlockEntities.FLUID_INTERFACE);
+            return blockEntity.getInterfaceLogic().getGridStorageAccessor();
+        }, AEBlockEntities.INTERFACE);
     }
 
     private static void initPatternProvider() {

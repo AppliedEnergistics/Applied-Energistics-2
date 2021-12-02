@@ -26,41 +26,28 @@ import appeng.client.gui.implementations.IOBusScreen;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalFakeSlot;
-import appeng.parts.automation.FluidExportBusPart;
-import appeng.parts.automation.FluidImportBusPart;
+import appeng.parts.automation.ExportBusPart;
 import appeng.parts.automation.IOBusPart;
-import appeng.parts.automation.ItemExportBusPart;
-import appeng.parts.automation.ItemImportBusPart;
+import appeng.parts.automation.ImportBusPart;
 
 /**
- * Used for {@link ItemImportBusPart}, {@link ItemExportBusPart}, {@link appeng.parts.automation.FluidImportBusPart},
- * and {@link appeng.parts.automation.FluidExportBusPart}.
+ * Used for {@link ImportBusPart}, {@link appeng.parts.automation.ExportBusPart}.
  *
  * @see IOBusScreen
  */
-public class IOBusMenu extends UpgradeableMenu<IOBusPart<?>> {
+public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
 
-    public static final MenuType<IOBusMenu> ITEM_EXPORT_TYPE = MenuTypeBuilder
-            .create(IOBusMenu::new, ItemExportBusPart.class)
+    public static final MenuType<IOBusMenu> EXPORT_TYPE = MenuTypeBuilder
+            .create(IOBusMenu::new, ExportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("item_export_bus");
+            .build("export_bus");
 
-    public static final MenuType<IOBusMenu> ITEM_IMPORT_TYPE = MenuTypeBuilder
-            .create(IOBusMenu::new, ItemImportBusPart.class)
+    public static final MenuType<IOBusMenu> IMPORT_TYPE = MenuTypeBuilder
+            .create(IOBusMenu::new, ImportBusPart.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("item_import_bus");
+            .build("import_bus");
 
-    public static final MenuType<IOBusMenu> FLUID_EXPORT_TYPE = MenuTypeBuilder
-            .create(IOBusMenu::new, FluidExportBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
-            .build("fluid_export_bus");
-
-    public static final MenuType<IOBusMenu> FLUID_IMPORT_TYPE = MenuTypeBuilder
-            .create(IOBusMenu::new, FluidImportBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
-            .build("fluid_import_bus");
-
-    public IOBusMenu(MenuType<?> menuType, int id, Inventory ip, IOBusPart<?> host) {
+    public IOBusMenu(MenuType<?> menuType, int id, Inventory ip, IOBusPart host) {
         super(menuType, id, ip, host);
     }
 

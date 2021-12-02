@@ -34,36 +34,25 @@ public final class InitUpgrades {
         // same upgrades
         String interfaceGroup = GuiText.Interface.getTranslationKey();
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
-        String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
 
         // Interface
-        Upgrades.CRAFTING.registerItem(AEParts.ITEM_INTERFACE, 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(AEBlocks.ITEM_INTERFACE, 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(AEParts.FLUID_INTERFACE, 1, interfaceGroup);
-        Upgrades.CRAFTING.registerItem(AEBlocks.FLUID_INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(AEParts.INTERFACE, 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(AEBlocks.INTERFACE, 1, interfaceGroup);
 
         // IO Port!
         Upgrades.SPEED.registerItem(AEBlocks.IO_PORT, 3);
         Upgrades.REDSTONE.registerItem(AEBlocks.IO_PORT, 1);
 
-        // Item Level Emitter!
-        Upgrades.FUZZY.registerItem(AEParts.ITEM_LEVEL_EMITTER, 1);
-        Upgrades.CRAFTING.registerItem(AEParts.ITEM_LEVEL_EMITTER, 1);
-
-        // Fluid Level Emitter!
-        Upgrades.CRAFTING.registerItem(AEParts.FLUID_LEVEL_EMITTER, 1);
+        // Level Emitter!
+        Upgrades.FUZZY.registerItem(AEParts.level_emitter, 1);
+        Upgrades.CRAFTING.registerItem(AEParts.level_emitter, 1);
 
         // Import Bus
         Upgrades.FUZZY.registerItem(AEParts.IMPORT_BUS, 1, itemIoBusGroup);
         Upgrades.REDSTONE.registerItem(AEParts.IMPORT_BUS, 1, itemIoBusGroup);
         Upgrades.CAPACITY.registerItem(AEParts.IMPORT_BUS, 2, itemIoBusGroup);
         Upgrades.SPEED.registerItem(AEParts.IMPORT_BUS, 4, itemIoBusGroup);
-
-        // Fluid Import Bus
-        Upgrades.CAPACITY.registerItem(AEParts.FLUID_IMPORT_BUS, 2, fluidIoBusGroup);
-        Upgrades.REDSTONE.registerItem(AEParts.FLUID_IMPORT_BUS, 1, fluidIoBusGroup);
-        Upgrades.SPEED.registerItem(AEParts.FLUID_IMPORT_BUS, 4, fluidIoBusGroup);
 
         // Export Bus
         Upgrades.FUZZY.registerItem(AEParts.EXPORT_BUS, 1, itemIoBusGroup);
@@ -72,24 +61,18 @@ public final class InitUpgrades {
         Upgrades.SPEED.registerItem(AEParts.EXPORT_BUS, 4, itemIoBusGroup);
         Upgrades.CRAFTING.registerItem(AEParts.EXPORT_BUS, 1, itemIoBusGroup);
 
-        // Fluid Export Bus
-        Upgrades.CAPACITY.registerItem(AEParts.FLUID_EXPORT_BUS, 2, fluidIoBusGroup);
-        Upgrades.REDSTONE.registerItem(AEParts.FLUID_EXPORT_BUS, 1, fluidIoBusGroup);
-        Upgrades.SPEED.registerItem(AEParts.FLUID_EXPORT_BUS, 4, fluidIoBusGroup);
-        Upgrades.CRAFTING.registerItem(AEParts.FLUID_EXPORT_BUS, 1, fluidIoBusGroup);
-
         // Storage Cells
-        Upgrades.FUZZY.registerItem(AEItems.CELL1K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.CELL1K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_1K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.ITEM_CELL_1K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(AEItems.CELL4K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.CELL4K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_4K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.ITEM_CELL_4K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(AEItems.CELL16K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.CELL16K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_16K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.ITEM_CELL_16K, 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(AEItems.CELL64K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.CELL64K, 1, storageCellGroup);
+        Upgrades.FUZZY.registerItem(AEItems.ITEM_CELL_64K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.ITEM_CELL_64K, 1, storageCellGroup);
 
         Upgrades.FUZZY.registerItem(AEItems.PORTABLE_ITEM_CELL1K, 1, storageCellGroup);
         Upgrades.FUZZY.registerItem(AEItems.PORTABLE_ITEM_CELL4k, 1, storageCellGroup);
@@ -100,22 +83,18 @@ public final class InitUpgrades {
         Upgrades.INVERTER.registerItem(AEItems.PORTABLE_ITEM_CELL16K, 1, storageCellGroup);
         Upgrades.INVERTER.registerItem(AEItems.PORTABLE_ITEM_CELL64K, 1, storageCellGroup);
 
-        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL1K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL4K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL16K, 1, storageCellGroup);
-        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL64K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL_1K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL_4K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL_16K, 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(AEItems.FLUID_CELL_64K, 1, storageCellGroup);
 
         Upgrades.FUZZY.registerItem(AEItems.VIEW_CELL, 1);
         Upgrades.INVERTER.registerItem(AEItems.VIEW_CELL, 1);
 
         // Storage Bus
-        Upgrades.FUZZY.registerItem(AEParts.ITEM_STORAGE_BUS, 1);
-        Upgrades.INVERTER.registerItem(AEParts.ITEM_STORAGE_BUS, 1);
-        Upgrades.CAPACITY.registerItem(AEParts.ITEM_STORAGE_BUS, 5);
-
-        // Storage Bus Fluids
-        Upgrades.INVERTER.registerItem(AEParts.FLUID_STORAGE_BUS, 1);
-        Upgrades.CAPACITY.registerItem(AEParts.FLUID_STORAGE_BUS, 5);
+        Upgrades.FUZZY.registerItem(AEParts.STORAGE_BUS, 1);
+        Upgrades.INVERTER.registerItem(AEParts.STORAGE_BUS, 1);
+        Upgrades.CAPACITY.registerItem(AEParts.STORAGE_BUS, 5);
 
         // Formation Plane
         Upgrades.FUZZY.registerItem(AEParts.FORMATION_PLANE, 1);

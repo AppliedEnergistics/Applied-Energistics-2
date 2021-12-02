@@ -23,7 +23,7 @@
 
 package appeng.api.networking.events;
 
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 
 /**
  * posted by the network when the networks Storage Changes, you can use the currentItems list to check levels, and
@@ -34,9 +34,9 @@ import appeng.api.storage.IMEMonitor;
  * Do not modify the list or its contents in any way.
  */
 public class GridStorageEvent extends GridEvent {
-    public final IMEMonitor<?> monitor;
+    public final MEMonitorStorage monitor;
 
-    public GridStorageEvent(IMEMonitor<?> o) {
+    public GridStorageEvent(MEMonitorStorage o) {
         this.monitor = o;
     }
 }

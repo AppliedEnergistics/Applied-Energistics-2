@@ -21,7 +21,10 @@
   "depends": {
     "fabricloader": ">=0.12.5",
     "fabric": ">=0.42.4",
-    "minecraft": "1.18-beta.5"
+    "minecraft": "1.18"
+  },
+  "conflicts": {
+    "appliedenergistics2": "*"
   },
   "suggests": {},
   "accessWidener": "ae2.accesswidener",

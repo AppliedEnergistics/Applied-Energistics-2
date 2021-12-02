@@ -28,7 +28,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+
 import appeng.api.config.Actionable;
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -39,7 +44,9 @@ public class GenericStackInv {
     private final Runnable listener;
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
-    private long capacity = Long.MAX_VALUE;
+    private Reference2LongMap<AEKeySpace> capacities = new Reference2LongArrayMap<>();
+    @org.jetbrains.annotations.Nullable
+    private AEKeyFilter filter;
     protected final Mode mode;
 
     public enum Mode {
@@ -56,6 +63,23 @@ public class GenericStackInv {
         this.stacks = new GenericStack[size];
         this.listener = listener;
         this.mode = mode;
+    }
+
+    protected void setFilter(@Nullable AEKeyFilter filter) {
+        this.filter = filter;
+    }
+
+    @Nullable
+    public AEKeyFilter getFilter() {
+        return filter;
+    }
+
+    public boolean isAllowed(AEKey what) {
+        return filter == null || filter.matches(what);
+    }
+
+    public boolean isAllowed(@Nullable GenericStack stack) {
+        return stack == null || isAllowed(stack.what());
     }
 
     public int size() {
@@ -95,6 +119,10 @@ public class GenericStackInv {
     public long insert(int slot, AEKey what, long amount, Actionable mode) {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
+
+        if (!isAllowed(what)) {
+            return 0;
+        }
 
         var currentWhat = getKey(slot);
         var currentAmount = getAmount(slot);
@@ -140,19 +168,19 @@ public class GenericStackInv {
         return canExtract;
     }
 
-    public long getCapacity() {
-        return capacity;
+    public long getCapacity(AEKeySpace space) {
+        return capacities.getOrDefault(space, Long.MAX_VALUE);
     }
 
-    public void setCapacity(long capacity) {
-        this.capacity = capacity;
+    public void setCapacity(AEKeySpace space, long capacity) {
+        this.capacities.put(space, capacity);
     }
 
     public long getMaxAmount(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
-            return Math.min(itemKey.getItem().getMaxStackSize(), capacity);
+            return Math.min(itemKey.getItem().getMaxStackSize(), getCapacity(key.getChannel()));
         }
-        return capacity;
+        return getCapacity(key.getChannel());
     }
 
     final void onChange() {
@@ -288,7 +316,7 @@ public class GenericStackInv {
      * Creates a wrapper around this config inventory for use with {@link appeng.menu.slot.FakeSlot} in menus.
      */
     public ConfigMenuInventory createMenuWrapper() {
-        return new ConfigMenuInventory(this, null);
+        return new ConfigMenuInventory(this);
     }
 
 }

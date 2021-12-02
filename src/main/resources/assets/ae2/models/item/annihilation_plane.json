@@ -1,0 +1,56 @@
+{
+  "parent": "ae2:item/part_base",
+  "textures": {
+    "sides": "ae2:part/plane_sides",
+    "plane": "ae2:part/annihilation_plane"
+  },
+  "elements": [
+    {
+      "name": "Front",
+      "from": [1, 1, 8],
+      "to": [15, 15, 9],
+      "faces": {
+        "north": {
+          "texture": "plane"
+        },
+        "south": {
+          "texture": "sides"
+        },
+        "east": {
+          "texture": "sides"
+        },
+        "west": {
+          "texture": "sides"
+        },
+        "up": {
+          "texture": "sides"
+        },
+        "down": {
+          "texture": "sides"
+        }
+      }
+    },
+    {
+      "name": "Back",
+      "from": [5, 5, 9],
+      "to": [11, 11, 10],
+      "faces": {
+        "east": {
+          "texture": "sides"
+        },
+        "south": {
+          "texture": "sides"
+        },
+        "west": {
+          "texture": "sides"
+        },
+        "up": {
+          "texture": "sides"
+        },
+        "down": {
+          "texture": "sides"
+        }
+      }
+    }
+  ]
+}

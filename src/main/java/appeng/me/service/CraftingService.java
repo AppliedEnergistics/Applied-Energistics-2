@@ -29,7 +29,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -50,8 +49,8 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.AEKey;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingStorageBlockEntity;
@@ -141,6 +140,11 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     @Override
     public void addNode(IGridNode gridNode) {
 
+        // The provider can already be added because it gets callback from the storage service,
+        // in which it might already register itself before coming to this point.
+        this.craftingProviders.removeProvider(gridNode);
+        this.craftingProviders.addProvider(gridNode);
+
         var watchingNode = gridNode.getService(ICraftingWatcherNode.class);
         if (watchingNode != null) {
             final CraftingWatcher watcher = new CraftingWatcher(this, watchingNode);
@@ -157,16 +161,14 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             }
         }
 
-        this.craftingProviders.addProvider(gridNode);
-
         if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;
         }
     }
 
     @Override
-    public <T extends AEKey> Set<T> getCraftables(IStorageChannel<T> channel) {
-        return craftingProviders.getCraftables(channel);
+    public Set<AEKey> getCraftables(AEKeyFilter filter) {
+        return craftingProviders.getCraftables(filter);
     }
 
     private void updateCPUClusters() {
@@ -221,7 +223,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Nullable
     @Override
-    public AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter) {
+    public AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter) {
         return this.craftingProviders.getFuzzyCraftable(whatToCraft, filter);
     }
 

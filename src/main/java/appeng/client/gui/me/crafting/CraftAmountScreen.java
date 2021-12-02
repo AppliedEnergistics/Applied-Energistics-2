@@ -18,8 +18,6 @@
 
 package appeng.client.gui.me.crafting;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -79,14 +77,6 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
             return;
         }
         menu.confirm(amount, hasShiftDown());
-    }
-
-    @Override
-    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-            float partialTicks) {
-        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
-
-        this.amountToCraft.render(poseStack, offsetX, offsetY, partialTicks);
     }
 
 }

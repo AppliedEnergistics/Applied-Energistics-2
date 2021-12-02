@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -21,6 +20,8 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -31,11 +32,11 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageProvider;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.crafting.CraftingCalculation;
@@ -44,9 +45,9 @@ import appeng.me.helpers.BaseActionSource;
 
 public class SimulationEnv {
     private final Map<AEKey, List<IPatternDetails>> patterns = new HashMap<>();
-    private final KeyCounter<AEKey> craftableItemsList = new KeyCounter<>();
+    private final KeyCounter craftableItemsList = new KeyCounter();
     private final Set<AEKey> emitableItems = new HashSet<>();
-    private final KeyCounter<AEKey> networkStorage = new KeyCounter<>();
+    private final KeyCounter networkStorage = new KeyCounter();
 
     public IPatternDetails addPattern(IPatternDetails pattern) {
         var output = pattern.getPrimaryOutput();
@@ -130,9 +131,9 @@ public class SimulationEnv {
 
             @Nullable
             @Override
-            public AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter) {
+            public AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter) {
                 for (var fuzzy : craftableItemsList.findFuzzy(whatToCraft, FuzzyMode.IGNORE_ALL)) {
-                    if (filter.test(fuzzy.getKey())) {
+                    if (filter.matches(fuzzy.getKey())) {
                         return fuzzy.getKey();
                     }
                 }
@@ -157,12 +158,8 @@ public class SimulationEnv {
             }
 
             @Override
-            public <T extends AEKey> Set<T> getCraftables(IStorageChannel<T> channel) {
-                return craftableItemsList.keySet()
-                        .stream()
-                        .filter(k -> k.getChannel() == channel)
-                        .map(k -> k.cast(channel))
-                        .collect(Collectors.toSet());
+            public Set<AEKey> getCraftables(AEKeyFilter filter) {
+                return craftableItemsList.keySet().stream().filter(filter::matches).collect(Collectors.toSet());
             }
 
             @Override
@@ -188,11 +185,10 @@ public class SimulationEnv {
     }
 
     private IStorageService createStorageServiceMock() {
-        Map<IStorageChannel<?>, IMEMonitor<?>> monitors = new HashMap<>();
+        MEMonitorStorage monitor = createMonitorMock();
         return new IStorageService() {
             @Override
-            public <T extends AEKey> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-                    Iterable<T> input, IActionSource src) {
+            public void postAlterationOfStoredItems(Iterable<AEKey> input, IActionSource src) {
                 throw new UnsupportedOperationException();
             }
 
@@ -207,8 +203,8 @@ public class SimulationEnv {
             }
 
             @Override
-            public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-                return monitors.computeIfAbsent(channel, chan -> createMonitorMock(chan)).cast(channel);
+            public MEMonitorStorage getInventory() {
+                return monitor;
             }
 
             @Override
@@ -223,52 +219,50 @@ public class SimulationEnv {
         };
     }
 
-    private <T extends AEKey> IMEMonitor<T> createMonitorMock(IStorageChannel<T> channel) {
-        return new IMEMonitor<>() {
+    private MEMonitorStorage createMonitorMock() {
+        return new MEMonitorStorage() {
             @Override
-            public void getAvailableStacks(KeyCounter<T> out) {
+            public void getAvailableStacks(KeyCounter out) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public KeyCounter<T> getCachedAvailableStacks() {
-                var result = new KeyCounter<T>();
+            public Component getDescription() {
+                return TextComponent.EMPTY;
+            }
+
+            @Override
+            public KeyCounter getCachedAvailableStacks() {
+                var result = new KeyCounter();
                 for (var entry : networkStorage) {
-                    if (entry.getKey().getChannel() == channel) {
-                        result.add(entry.getKey().cast(channel), entry.getLongValue());
-                    }
+                    result.add(entry.getKey(), entry.getLongValue());
                 }
                 return result;
             }
 
             @Override
-            public void addListener(IMEMonitorListener<T> l, Object verificationToken) {
+            public void addListener(IMEMonitorListener l, Object verificationToken) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void removeListener(IMEMonitorListener<T> l) {
+            public void removeListener(IMEMonitorListener l) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public long insert(T what, long amount, Actionable mode, IActionSource source) {
+            public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public long extract(T what, long amount, Actionable mode, IActionSource source) {
+            public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
                 if (mode == Actionable.SIMULATE) {
                     var stored = networkStorage.get(what);
                     return Math.min(amount, stored);
                 } else {
                     throw new UnsupportedOperationException();
                 }
-            }
-
-            @Override
-            public IStorageChannel<T> getChannel() {
-                return channel;
             }
         };
     }

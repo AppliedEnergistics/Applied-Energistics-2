@@ -14,25 +14,22 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.world.item.Items;
 
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
-import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
 import appeng.util.IVariantConversion;
 
 /**
  * Adapts a {@link GenericStackInv} as {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage} of the appropriate
  * type.
  */
-public class GenericStackInvStorage<V extends TransferVariant<?>, T extends AEKey> implements Storage<V> {
-    private final IVariantConversion<V, T> conversion;
+public class GenericStackInvStorage<V extends TransferVariant<?>> implements Storage<V> {
+    private final IVariantConversion<V> conversion;
     private final GenericStackInv inv;
-    private final IStorageChannel<T> channel;
+    private final AEKeySpace channel;
     private final List<View> storageViews;
 
-    public GenericStackInvStorage(IVariantConversion<V, T> conversion, IStorageChannel<T> channel,
+    public GenericStackInvStorage(IVariantConversion<V> conversion, AEKeySpace channel,
             GenericStackInv inv) {
         this.conversion = conversion;
         this.channel = channel;
@@ -91,15 +88,15 @@ public class GenericStackInvStorage<V extends TransferVariant<?>, T extends AEKe
     /**
      * Exports the item content of the given inventory as storage.
      */
-    public static GenericStackInvStorage<ItemVariant, AEItemKey> items(GenericStackInv inv) {
-        return new GenericStackInvStorage<>(IVariantConversion.ITEM, StorageChannels.items(), inv);
+    public static GenericStackInvStorage<ItemVariant> items(GenericStackInv inv) {
+        return new GenericStackInvStorage<>(IVariantConversion.ITEM, AEKeySpace.items(), inv);
     }
 
     /**
      * Exports the fluid content of the given inventory as storage.
      */
-    public static GenericStackInvStorage<FluidVariant, AEFluidKey> fluids(GenericStackInv inv) {
-        return new GenericStackInvStorage<>(IVariantConversion.FLUID, StorageChannels.fluids(), inv);
+    public static GenericStackInvStorage<FluidVariant> fluids(GenericStackInv inv) {
+        return new GenericStackInvStorage<>(IVariantConversion.FLUID, AEKeySpace.fluids(), inv);
     }
 
     private class View extends SnapshotParticipant<GenericStack> implements StorageView<V> {
@@ -180,7 +177,7 @@ public class GenericStackInvStorage<V extends TransferVariant<?>, T extends AEKe
 
         @Override
         public long getCapacity() {
-            return isSupportedSlot() ? inv.getCapacity() : 0;
+            return isSupportedSlot() ? inv.getCapacity(conversion.getKeySpace()) : 0;
         }
 
         @Override

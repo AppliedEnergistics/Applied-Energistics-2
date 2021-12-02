@@ -11,7 +11,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.helpers.iface.GenericStackInv;
@@ -28,7 +27,7 @@ public class ConfigInventoryTest {
      */
     @Nested
     class ChannelFiltering {
-        ConfigInventory<AEItemKey> inv = ConfigInventory.configStacks(StorageChannels.items(), 2, null);
+        ConfigInventory inv = ConfigInventory.configStacks(AEItemKey.filter(), 2, null);
 
         @BeforeEach
         void loadMixedStacks() {
@@ -53,7 +52,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class TypesMode {
-        ConfigInventory<AEItemKey> inv = ConfigInventory.configTypes(StorageChannels.items(), 1, null);
+        ConfigInventory inv = ConfigInventory.configTypes(AEItemKey.filter(), 1, null);
 
         @Test
         void amountZeroIsAllowed() {
@@ -70,7 +69,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class StacksMode {
-        ConfigInventory<AEItemKey> inv = ConfigInventory.configStacks(StorageChannels.items(), 1, null);
+        ConfigInventory inv = ConfigInventory.configStacks(AEItemKey.filter(), 1, null);
 
         @Test
         void stacksWithAmountZeroAreDropped() {

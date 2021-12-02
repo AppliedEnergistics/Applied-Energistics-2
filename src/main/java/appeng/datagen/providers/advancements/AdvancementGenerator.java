@@ -216,7 +216,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var storageCell = Advancement.Builder.advancement()
                 .display(
-                        AEItems.CELL64K,
+                        AEItems.ITEM_CELL_64K,
                         new TranslatableComponent("achievement.ae2.StorageCell"),
                         new TranslatableComponent("achievement.ae2.StorageCell.desc"),
                         null /* background */,
@@ -225,10 +225,10 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false,
                         false)
                 .parent(controller)
-                .addCriterion("c1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL1K))
-                .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL4K))
-                .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL16K))
-                .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CELL64K))
+                .addCriterion("c1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_1K))
+                .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_4K))
+                .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_16K))
+                .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_64K))
                 .requirements(RequirementsStrategy.OR)
                 .save(consumer, "ae2:main/storage_cell");
 
@@ -264,7 +264,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var patternTerminal = Advancement.Builder.advancement()
                 .display(
-                        AEParts.PATTERN_TERMINAL,
+                        AEParts.PATTERN_ENCODING_TERMINAL,
                         new TranslatableComponent("achievement.ae2.PatternTerminal"),
                         new TranslatableComponent("achievement.ae2.PatternTerminal.desc"),
                         null /* background */,
@@ -274,8 +274,9 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(craftingTerminal)
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.PATTERN_TERMINAL))
-                .save(consumer, "ae2:main/pattern_terminal");
+                .addCriterion("certus",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.PATTERN_ENCODING_TERMINAL))
+                .save(consumer, "ae2:main/pattern_encoding_terminal");
 
         var craftingCpu = Advancement.Builder.advancement()
                 .display(
@@ -497,7 +498,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var storageBus = Advancement.Builder.advancement()
                 .display(
-                        AEParts.ITEM_STORAGE_BUS,
+                        AEParts.STORAGE_BUS,
                         new TranslatableComponent("achievement.ae2.StorageBus"),
                         new TranslatableComponent("achievement.ae2.StorageBus.desc"),
                         null /* background */,
@@ -507,12 +508,12 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(glassCable)
-                .addCriterion("part", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.ITEM_STORAGE_BUS))
+                .addCriterion("part", InventoryChangeTrigger.TriggerInstance.hasItems(AEParts.STORAGE_BUS))
                 .save(consumer, "ae2:main/storage_bus");
 
         var storageBusOnInterface = Advancement.Builder.advancement()
                 .display(
-                        AEBlocks.ITEM_INTERFACE,
+                        AEBlocks.INTERFACE,
                         new TranslatableComponent("achievement.ae2.Recursive"),
                         new TranslatableComponent("achievement.ae2.Recursive.desc"),
                         null /* background */,

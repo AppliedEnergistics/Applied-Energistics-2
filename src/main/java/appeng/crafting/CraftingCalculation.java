@@ -41,7 +41,7 @@ public class CraftingCalculation {
 
     private final NetworkCraftingSimulationState networkInv;
     private final Level level;
-    private final KeyCounter<AEKey> missing = new KeyCounter<>();
+    private final KeyCounter missing = new KeyCounter();
     private final Object monitor = new Object();
     private final Stopwatch watch = Stopwatch.createUnstarted();
     private final CraftingTreeNode tree;
@@ -59,9 +59,9 @@ public class CraftingCalculation {
         this.output = output;
         this.simRequester = simRequester;
 
-        var storageService = grid.getStorageService();
+        var storage = grid.getStorageService().getInventory();
         var craftingService = grid.getCraftingService();
-        this.networkInv = new NetworkCraftingSimulationState(storageService, simRequester.getActionSource());
+        this.networkInv = new NetworkCraftingSimulationState(storage, simRequester.getActionSource());
 
         this.tree = new CraftingTreeNode(craftingService, this, output.what(), 1, null, -1);
     }
@@ -156,7 +156,7 @@ public class CraftingCalculation {
         return this.output;
     }
 
-    public KeyCounter<AEKey> getMissingItems() {
+    public KeyCounter getMissingItems() {
         return missing;
     }
 

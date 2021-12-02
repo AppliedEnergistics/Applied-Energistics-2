@@ -22,10 +22,11 @@ import java.util.Collections;
 
 import appeng.api.storage.data.AEKey;
 
-public class DefaultPriorityList<T extends AEKey> implements IPartitionList<T> {
+public class DefaultPriorityList implements IPartitionList {
+    public static final DefaultPriorityList INSTANCE = new DefaultPriorityList();
 
     @Override
-    public boolean isListed(final T input) {
+    public boolean isListed(final AEKey input) {
         return false;
     }
 
@@ -35,7 +36,7 @@ public class DefaultPriorityList<T extends AEKey> implements IPartitionList<T> {
     }
 
     @Override
-    public Iterable<T> getItems() {
+    public Iterable<AEKey> getItems() {
         return Collections.emptyList();
     }
 }

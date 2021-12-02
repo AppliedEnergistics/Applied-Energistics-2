@@ -29,15 +29,13 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
-import appeng.api.implementations.menuobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.AEKey;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.core.AEConfig;
@@ -45,7 +43,7 @@ import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.menu.ISubMenu;
 
-public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableCell, IActionHost {
+public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableTerminal, IActionHost {
 
     private final WirelessTerminalItem terminal;
     private final BiConsumer<Player, ISubMenu> returnToMainMenu;
@@ -85,8 +83,8 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableC
     }
 
     @Override
-    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        return this.sg.getInventory(channel);
+    public MEMonitorStorage getInventory() {
+        return this.sg != null ? this.sg.getInventory() : null;
     }
 
     @Override

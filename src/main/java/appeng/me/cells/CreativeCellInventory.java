@@ -21,53 +21,48 @@ package appeng.me.cells;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellInventory;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.items.contents.CellConfig;
 
-class CreativeCellInventory<T extends AEKey> implements ICellInventory<T> {
-    private final Set<T> configured;
-    private final IStorageChannel<T> channel;
+class CreativeCellInventory implements StorageCell {
+    private final Set<AEKey> configured;
+    private final ItemStack stack;
 
-    protected CreativeCellInventory(IStorageChannel<T> channel, ItemStack o) {
-        this.channel = channel;
+    protected CreativeCellInventory(ItemStack o) {
         this.configured = new HashSet<>();
+        this.stack = o;
 
-        var cc = CellConfig.create(channel, o);
+        var cc = CellConfig.create(o);
         configured.addAll(cc.keySet());
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         return configured.contains(what) ? amount : 0;
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         return configured.contains(what) ? amount : 0;
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
-        for (var key : this.configured) {
+    public void getAvailableStacks(KeyCounter out) {
+        for (AEKey key : this.configured) {
             out.add(key, Integer.MAX_VALUE);
         }
     }
 
     @Override
-    public IStorageChannel<T> getChannel() {
-        return channel;
-    }
-
-    @Override
-    public boolean isPreferredStorageFor(T input, IActionSource source) {
+    public boolean isPreferredStorageFor(AEKey input, IActionSource source) {
         return this.configured.contains(input);
     }
 
@@ -79,6 +74,11 @@ class CreativeCellInventory<T extends AEKey> implements ICellInventory<T> {
     @Override
     public double getIdleDrain() {
         return 0;
+    }
+
+    @Override
+    public Component getDescription() {
+        return stack.getHoverName();
     }
 
     @Override

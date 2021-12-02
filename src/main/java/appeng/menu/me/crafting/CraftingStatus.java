@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.api.storage.data.AEKey;
 import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.crafting.execution.ElapsedTimeTracker;
 import appeng.menu.me.common.IncrementalUpdateHelper;
@@ -119,7 +118,7 @@ public class CraftingStatus {
         return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build());
     }
 
-    public static CraftingStatus create(IncrementalUpdateHelper<AEKey> changes, CraftingCpuLogic logic) {
+    public static CraftingStatus create(IncrementalUpdateHelper changes, CraftingCpuLogic logic) {
 
         boolean full = changes.isFullUpdate();
 

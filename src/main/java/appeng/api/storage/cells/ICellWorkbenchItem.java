@@ -29,7 +29,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.storage.IStorageChannel;
 import appeng.util.ConfigInventory;
 
 public interface ICellWorkbenchItem {
@@ -59,7 +58,7 @@ public interface ICellWorkbenchItem {
      * <p>
      * onInventoryChange will be called when saving is needed.
      */
-    ConfigInventory<?> getConfigInventory(ItemStack is);
+    ConfigInventory getConfigInventory(ItemStack is);
 
     /**
      * @return the current fuzzy status.
@@ -70,9 +69,4 @@ public interface ICellWorkbenchItem {
      * sets the setting on the cell.
      */
     void setFuzzyMode(ItemStack is, FuzzyMode fzMode);
-
-    /**
-     * @return the type of channel used to retrieve and store the filter.
-     */
-    IStorageChannel<?> getChannel();
 }

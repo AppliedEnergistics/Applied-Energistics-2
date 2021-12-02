@@ -49,7 +49,7 @@ public interface ICraftingProvider extends IGridNodeService {
      *
      * @return if the pattern was successfully pushed.
      */
-    boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputHolder);
+    boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder);
 
     /**
      * @return if this is false, the crafting engine will refuse to send patterns to this provider.

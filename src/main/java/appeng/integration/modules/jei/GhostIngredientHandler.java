@@ -33,6 +33,7 @@ import dev.architectury.fluid.FluidStack;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStack;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStackVisitor;
+import me.shedaniel.rei.api.client.gui.drag.DraggedAcceptorResult;
 import me.shedaniel.rei.api.client.gui.drag.DraggingContext;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
@@ -67,19 +68,19 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
     }
 
     @Override
-    public boolean acceptDraggedStack(DraggingContext<AEBaseScreen> context, DraggableStack stack) {
+    public DraggedAcceptorResult acceptDraggedStack(DraggingContext<AEBaseScreen> context, DraggableStack stack) {
         var targets = getTargets(context, stack);
         var pos = context.getCurrentPosition();
 
         for (var target : targets) {
             if (target.getArea().contains(pos)) {
                 if (target.accept(stack)) {
-                    return true;
+                    return DraggedAcceptorResult.ACCEPTED;
                 }
             }
         }
 
-        return false;
+        return DraggedAcceptorResult.PASS;
     }
 
     @Nullable

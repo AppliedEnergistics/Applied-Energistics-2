@@ -29,7 +29,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -37,7 +36,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.data.AEKey;
@@ -53,8 +52,8 @@ import appeng.menu.MenuOpener;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 
-public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredItem
-        implements IBasicCellItem<T>, IMenuItem, ICustomReequipAnimation {
+public class PortableCellItem extends AEBasePoweredItem
+        implements IBasicCellItem, IMenuItem, ICustomReequipAnimation {
 
     public static final StorageTier SIZE_1K = new StorageTier(512, 54, 8);
     public static final StorageTier SIZE_4K = new StorageTier(2048, 45, 32);
@@ -62,13 +61,14 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     public static final StorageTier SIZE_64K = new StorageTier(16834, 27, 512);
 
     private final StorageTier tier;
+    private final AEKeySpace keySpace;
+    private final MenuType<?> menuType;
 
-    private final IStorageChannel<T> channel;
-
-    public PortableCellItem(IStorageChannel<T> channel, StorageTier tier, Item.Properties props) {
+    public PortableCellItem(AEKeySpace keySpace, MenuType<?> menuType, StorageTier tier, Properties props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
+        this.menuType = menuType;
         this.tier = tier;
-        this.channel = channel;
+        this.keySpace = keySpace;
     }
 
     @Override
@@ -128,11 +128,6 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     }
 
     @Override
-    public IStorageChannel<T> getChannel() {
-        return channel;
-    }
-
-    @Override
     public boolean isEditable(final ItemStack is) {
         return true;
     }
@@ -143,8 +138,8 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     }
 
     @Override
-    public ConfigInventory<T> getConfigInventory(final ItemStack is) {
-        return CellConfig.create(getChannel(), is);
+    public ConfigInventory getConfigInventory(final ItemStack is) {
+        return CellConfig.create(keySpace.filter(), is);
     }
 
     @Override
@@ -163,8 +158,8 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     }
 
     @Override
-    public PortableCellMenuHost<T> getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
-        return new PortableCellMenuHost<>(player, inventorySlot, this, stack,
+    public PortableCellMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
+        return new PortableCellMenuHost(player, inventorySlot, this, stack,
                 (p, sm) -> openFromInventory(p, inventorySlot));
     }
 
@@ -179,8 +174,7 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
      * @return Amount inserted.
      */
     public long insert(Player player, ItemStack itemStack, AEKey what, long amount, Actionable mode) {
-        var typedWhat = getChannel().tryCast(what);
-        if (typedWhat == null) {
+        if (keySpace.tryCast(what) == null) {
             return 0;
         }
 
@@ -189,18 +183,15 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
             return 0;
         }
 
-        var inv = host.getInventory(getChannel());
+        var inv = host.getInventory();
         if (inv != null) {
-            var typedInv = inv.cast(getChannel());
-            if (typedInv != null) {
-                return StorageHelper.poweredInsert(
-                        host,
-                        typedInv,
-                        typedWhat,
-                        amount,
-                        new PlayerSource(player),
-                        mode);
-            }
+            return StorageHelper.poweredInsert(
+                    host,
+                    inv,
+                    what,
+                    amount,
+                    new PlayerSource(player),
+                    mode);
         }
         return 0;
     }
@@ -208,5 +199,12 @@ public abstract class PortableCellItem<T extends AEKey> extends AEBasePoweredIte
     public record StorageTier(int bytes, int types, int bytesPerType) {
     }
 
-    protected abstract MenuType<?> getMenuType();
+    @Override
+    public AEKeySpace getKeySpace() {
+        return keySpace;
+    }
+
+    public MenuType<?> getMenuType() {
+        return menuType;
+    }
 }

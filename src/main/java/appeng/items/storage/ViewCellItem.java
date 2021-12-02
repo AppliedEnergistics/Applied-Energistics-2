@@ -20,16 +20,13 @@ package appeng.items.storage;
 
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.cells.ICellWorkbenchItem;
-import appeng.api.storage.data.AEKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
@@ -42,27 +39,31 @@ import appeng.util.prioritylist.MergedPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
-
-    private final IStorageChannel<?> channel;
-
-    public ViewCellItem(Properties properties, IStorageChannel<?> channel) {
+    public ViewCellItem(Properties properties) {
         super(properties);
-        this.channel = channel;
     }
 
-    public static <T extends AEKey> IPartitionList<T> createFilter(IStorageChannel<T> channel,
+    /**
+     * Creates a filter from the given list of {@link ViewCellItem view cells}. Only item keys will be considered to be
+     * part of the filter.
+     */
+    public static IPartitionList createItemFilter(Collection<ItemStack> list) {
+        return createFilter(AEItemKey.filter(), list);
+    }
+
+    public static IPartitionList createFilter(AEKeyFilter filter,
             Collection<ItemStack> list) {
-        IPartitionList<T> myPartitionList = null;
+        IPartitionList myPartitionList = null;
 
-        final MergedPriorityList<T> myMergedList = new MergedPriorityList<>();
+        final MergedPriorityList myMergedList = new MergedPriorityList();
 
-        for (final ItemStack currentViewCell : list) {
+        for (var currentViewCell : list) {
             if (currentViewCell == null) {
                 continue;
             }
 
             if (currentViewCell.getItem() instanceof ViewCellItem) {
-                var priorityList = new KeyCounter<T>();
+                var priorityList = new KeyCounter();
 
                 var vc = (ICellWorkbenchItem) currentViewCell.getItem();
                 var upgrades = vc.getUpgradesInventory(currentViewCell);
@@ -87,17 +88,17 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 }
 
                 for (int i = 0; i < config.size(); i++) {
-                    var what = channel.tryCast(config.getKey(i));
-                    if (what != null) {
+                    var what = config.getKey(i);
+                    if (what != null && filter.matches(what)) {
                         priorityList.add(what, 1);
                     }
                 }
 
                 if (!priorityList.isEmpty()) {
                     if (hasFuzzy) {
-                        myMergedList.addNewList(new FuzzyPriorityList<>(priorityList, fzMode), !hasInverter);
+                        myMergedList.addNewList(new FuzzyPriorityList(priorityList, fzMode), !hasInverter);
                     } else {
-                        myMergedList.addNewList(new PrecisePriorityList<>(priorityList), !hasInverter);
+                        myMergedList.addNewList(new PrecisePriorityList(priorityList), !hasInverter);
                     }
 
                     myPartitionList = myMergedList;
@@ -109,18 +110,18 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(ItemStack is) {
         return true;
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public ConfigInventory<?> getConfigInventory(final ItemStack is) {
-        return CellConfig.create(channel, is);
+    public ConfigInventory getConfigInventory(ItemStack is) {
+        return CellConfig.create(is);
     }
 
     @Override
@@ -136,11 +137,5 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     @Override
     public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
-    }
-
-    @Nonnull
-    @Override
-    public IStorageChannel<?> getChannel() {
-        return StorageChannels.items();
     }
 }

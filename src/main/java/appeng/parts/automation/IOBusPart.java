@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,8 +18,11 @@
 
 package appeng.parts.automation;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -31,36 +34,52 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.AEKey;
+import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
+import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigInvHost;
+import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 import appeng.util.Platform;
+import appeng.util.prioritylist.IPartitionList;
 
-public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart implements IGridTickable, IConfigInvHost {
+public abstract class IOBusPart extends UpgradeablePart implements IGridTickable, IConfigInvHost {
 
-    private final ConfigInventory<T> config = ConfigInventory.configTypes(getChannel(), 9, this::updateState);
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/import_bus_base");
+    @PartModels
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_off"));
+    @PartModels
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_on"));
+    @PartModels
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
+            new ResourceLocation(AppEng.MOD_ID, "part/import_bus_has_channel"));
 
+    private final ConfigInventory config;
+    // Filter derived from the config
+    @Nullable
+    private IPartitionList filter;
     private final TickRates tickRates;
-
     protected final IActionSource source;
-
     private boolean lastRedstone = false;
 
     public IOBusPart(TickRates tickRates, ItemStack is) {
         super(is);
         this.tickRates = tickRates;
         this.source = new MachineSource(this);
+        this.config = ConfigInventory.configTypes(StackWorldBehaviors.hasImportStrategyFilter(), 9, this::updateState);
         getMainNode().addService(IGridTickable.class, this);
 
         this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -77,8 +96,6 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
         return 5;
     }
 
-    protected abstract IStorageChannel<T> getChannel();
-
     /**
      * All export and import bus parts have a configuration ui.
      */
@@ -93,6 +110,8 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
     public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         config.readFromChildTag(extra, "config");
+        // Ensure the filter is rebuilt
+        filter = null;
     }
 
     @Override
@@ -102,8 +121,20 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
     }
 
     @Override
-    public ConfigInventory<T> getConfig() {
+    public ConfigInventory getConfig() {
         return config;
+    }
+
+    protected final IPartitionList getFilter() {
+        if (filter == null) {
+            var filterBuilder = IPartitionList.builder();
+            filterBuilder.addAll(getConfig().keySet());
+            if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+                filterBuilder.fuzzyMode(this.getConfigManager().getSetting(Settings.FUZZY_MODE));
+            }
+            filter = filterBuilder.build();
+        }
+        return filter;
     }
 
     @Override
@@ -112,7 +143,7 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
             if (this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE) {
-                this.doBusWork();
+                getMainNode().ifPresent(this::doBusWork);
             }
         }
     }
@@ -121,20 +152,19 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
         return Math.min(1 + getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().size());
     }
 
-    protected int calculateAmountPerTick() {
-        var multiplier = switch (getInstalledUpgrades(Upgrades.SPEED)) {
+    protected int getOperationsPerTick() {
+        return switch (getInstalledUpgrades(Upgrades.SPEED)) {
             default -> 1;
             case 1 -> 8;
             case 2 -> 32;
             case 3 -> 64;
             case 4 -> 96;
         };
-        return multiplier * getChannel().transferFactor();
     }
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
-        return this.doBusWork();
+        return this.doBusWork(node.getGrid());
     }
 
     /**
@@ -145,7 +175,7 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
      *
      * @return true, if the the bus should do its work.
      */
-    protected boolean canDoBusWork() {
+    protected final boolean canDoBusWork() {
         if (!getMainNode().isActive()) {
             return false;
         }
@@ -157,6 +187,8 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
     }
 
     private void updateState() {
+        filter = null; // rebuild the filter
+
         getMainNode().ifPresent((grid, node) -> {
             if (!this.isSleeping()) {
                 grid.getTickManager().wakeDevice(node);
@@ -179,6 +211,6 @@ public abstract class IOBusPart<T extends AEKey> extends UpgradeablePart impleme
         return new TickingRequest(tickRates.getMin(), tickRates.getMax(), isSleeping(), false);
     }
 
-    protected abstract TickRateModulation doBusWork();
+    protected abstract TickRateModulation doBusWork(IGrid grid);
 
 }

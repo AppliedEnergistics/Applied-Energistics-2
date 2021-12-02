@@ -32,12 +32,11 @@ public enum GuiText {
     VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
     TerminalViewCellsTooltip,
 
-    Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ImportBusFluids, ExportBus,
-    ExportBusFluids,
+    Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ExportBus,
 
     CompatibleUpgrades, CompatibleUpgrade, UpgradeToolbelt,
 
-    CellWorkbench, NetworkDetails, StorageCells, Interfaces, IOBuses, IOBusesFluids,
+    CellWorkbench, NetworkDetails, StorageCells, Interfaces, IOBuses,
 
     IOPort, BytesUsed, Types, QuantumLinkChamber, PortableCell,
 
@@ -70,7 +69,7 @@ public enum GuiText {
 
     NoSecondOutput, OfSecondOutput, MultipleOutputs,
 
-    Stores, Next, SelectAmount, Lumen, Empty,
+    Stores, Next, Set, SelectAmount, Lumen, Empty,
 
     ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel, ETA, ETAFormat,
 
@@ -88,6 +87,9 @@ public enum GuiText {
 
     // Used in a terminal to indicate that an item is craftable
     SmallFontCraft, LargeFontCraft,
+
+    // Used by storage bus for attached storage types
+    AttachedTo, Unattached, MENetworkStorage, ExternalStorage, Items, Fluids,
 
     // Used in a ME Interface when no appropriate block entity was detected near it
     Nothing;

@@ -52,6 +52,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -83,6 +84,8 @@ import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
+import appeng.menu.me.interaction.EmptyingAction;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
@@ -90,6 +93,7 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.FluidTankSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
+import appeng.util.ConfigMenuInventory;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
 
@@ -262,11 +266,53 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     /**
+     * Get the potential result of emptying an item for the purposes of setting a filter. Null even if the item could be
+     * emptied, but the filter doesn't support the resulting key.
+     */
+    private EmptyingAction getEmptyingAction(Slot slot, ItemStack carried) {
+        if (!(slot instanceof AppEngSlot appEngSlot) || carried.isEmpty()) {
+            return null;
+        }
+
+        if (!(appEngSlot.getInventory() instanceof ConfigMenuInventory configInv)) {
+            return null;
+        }
+
+        // See if we should offer the left-/right-click differentiation for setting a different filter
+        var emptyingAction = StackInteractions.getEmptyingAction(menu.getCarried());
+        if (emptyingAction != null) {
+            var wrappedStack = GenericStack.wrapInItemStack(new GenericStack(emptyingAction.what(), 1));
+            if (configInv.isItemValid(slot.slot, wrappedStack)) {
+                return emptyingAction;
+            }
+        }
+
+        return null;
+    }
+
+    private boolean renderEmptyingTooltip(PoseStack poseStack, int mouseX, int mouseY) {
+        // See if we should offer the left-/right-click differentiation for setting a different filter
+        var emptyingAction = getEmptyingAction(this.hoveredSlot, menu.getCarried());
+        if (emptyingAction != null) {
+            renderTooltip(poseStack, List.of(
+                    new TextComponent("Left-Click: Set ").append(menu.getCarried().getHoverName())
+                            .withStyle(ChatFormatting.GRAY).getVisualOrderText(),
+                    new TextComponent("Right-Click: Set ").append(emptyingAction.description())
+                            .withStyle(ChatFormatting.GRAY).getVisualOrderText()),
+                    mouseX, mouseY);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Renders a potential tooltip (from one of the possible tooltip sources)
      */
     private void renderTooltips(PoseStack poseStack, int mouseX, int mouseY) {
-        // For fluid tanks, we want custom tooltips that show amount/capacity
-        if (this.hoveredSlot instanceof AppEngSlot appEngSlot) {
+        if (renderEmptyingTooltip(poseStack, mouseX, mouseY)) {
+            return;
+        } else if (this.hoveredSlot instanceof AppEngSlot appEngSlot) {
             var customTooltip = appEngSlot.getCustomTooltip(this::getTooltipFromItem, menu.getCarried());
             if (customTooltip != null) {
                 this.renderTooltip(poseStack, customTooltip, Optional.empty(), mouseX, mouseY);
@@ -521,17 +567,23 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        if (slot instanceof FakeSlot) {
-            var action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
-                    : InventoryAction.PICKUP_OR_SET_DOWN;
+        if (this.drag_click.size() <= 1
+                && mouseButton == 1
+                && getEmptyingAction(slot, menu.getCarried()) != null) {
+            var p = new InventoryActionPacket(InventoryAction.EMPTY_ITEM, slotIdx, 0);
+            NetworkHandler.instance().sendToServer(p);
+            return;
+        }
 
+        if (slot instanceof FakeSlot) {
             if (this.drag_click.size() > 1) {
                 return;
             }
 
+            var action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                    : InventoryAction.PICKUP_OR_SET_DOWN;
             var p = new InventoryActionPacket(action, slotIdx, 0);
             NetworkHandler.instance().sendToServer(p);
-
             return;
         }
 

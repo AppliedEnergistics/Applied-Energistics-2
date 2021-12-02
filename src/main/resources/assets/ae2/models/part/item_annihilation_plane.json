@@ -1,6 +1,0 @@
-{
-  "loader": "ae2:part_plane",
-  "front": "ae2:part/item_annihilation_plane",
-  "sides": "ae2:part/plane_sides",
-  "back": "ae2:part/transition_plane_back"
-}

@@ -9,15 +9,17 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
 import appeng.core.AELog;
 import appeng.items.misc.WrappedGenericStack;
+import appeng.util.Platform;
 
 public class AEFluidKey extends AEKey {
     public static final int AMOUNT_BUCKET = (int) FluidConstants.BUCKET;
@@ -51,13 +53,36 @@ public class AEFluidKey extends AEKey {
         return of(fluidVariant.getFluid(), fluidVariant.getNbt());
     }
 
+    public static boolean matches(AEKey what, FluidVariant fluid) {
+        return what instanceof AEFluidKey fluidKey && fluidKey.matches(fluid);
+    }
+
+    public static boolean is(AEKey what) {
+        return what instanceof AEFluidKey;
+    }
+
+    public static AEKeyFilter filter() {
+        return AEFluidKey::is;
+    }
+
     public boolean matches(FluidVariant variant) {
         return !variant.isBlank() && fluid.isSame(variant.getFluid()) && variant.nbtMatches(tag);
     }
 
     @Override
-    public IStorageChannel<?> getChannel() {
-        return StorageChannels.fluids();
+    public int transferFactor() {
+        // On Forge this was 125mb (so 125/1000th of a bucket)
+        return AMOUNT_BUCKET * 1000 / 125;
+    }
+
+    @Override
+    public int getUnitsPerByte() {
+        return 8 * AMOUNT_BUCKET;
+    }
+
+    @Override
+    public AEKeySpace getChannel() {
+        return AEKeySpace.fluids();
     }
 
     @Override
@@ -123,6 +148,11 @@ public class AEFluidKey extends AEKey {
     @Override
     public ItemStack wrap(int amount) {
         return WrappedGenericStack.wrap(this, amount);
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Platform.getFluidDisplayName(this);
     }
 
     public FluidVariant toVariant() {

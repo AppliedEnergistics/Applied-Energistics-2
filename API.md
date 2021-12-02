@@ -5,7 +5,7 @@ relevant during mod initialization:
 
 | Class | Purpose |
 | ------------- | ------------- |
-| `appeng.api.storage.StorageChannels`  | Access to AE2's built-in item and fluid storage channels, as well as storage channels registered by addons. Addons also register their storage channels here.  |
+| `appeng.api.storage.AEKeySpaces`  | Access to AE2's built-in item and fluid storage channels, as well as storage channels registered by addons. Addons also register their storage channels here.  |
 | `appeng.api.networking.GridServices`  | Addons can register their own grid-wide services here. |
 | `appeng.api.features.AEWorldGen`  | Offers limited control over AE2's world generation. |
 | `appeng.api.movable.BlockEntityMoveStrategies` | Allows mods to register custom strategies for moving block entities in and out of spatial storage. |

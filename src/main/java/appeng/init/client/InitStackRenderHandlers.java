@@ -33,11 +33,11 @@ import net.minecraft.world.item.TooltipFlag;
 import appeng.api.client.AEStackRendering;
 import appeng.api.client.AmountFormat;
 import appeng.api.client.IAEStackRenderHandler;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
+import appeng.client.gui.me.common.FluidStackSizeRenderer;
 import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
 import appeng.client.gui.style.FluidBlitter;
 import appeng.util.Platform;
 
@@ -47,7 +47,7 @@ public class InitStackRenderHandlers {
 
     public static void init() {
         var itemSSRenderer = new StackSizeRenderer();
-        AEStackRendering.register(StorageChannels.items(), new IAEStackRenderHandler<>() {
+        AEStackRendering.register(AEKeySpace.items(), AEItemKey.class, new IAEStackRenderHandler<>() {
             @Override
             public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
                     AEItemKey stack) {
@@ -88,7 +88,7 @@ public class InitStackRenderHandlers {
             }
         });
         var fluidSSRenderer = new FluidStackSizeRenderer();
-        AEStackRendering.register(StorageChannels.fluids(), new IAEStackRenderHandler<>() {
+        AEStackRendering.register(AEKeySpace.fluids(), AEFluidKey.class, new IAEStackRenderHandler<>() {
             @Override
             public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
                     AEFluidKey stack) {

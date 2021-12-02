@@ -50,10 +50,9 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.me.items.ItemTerminalMenu;
 import appeng.menu.me.items.PatternTermMenu;
-import appeng.menu.me.items.WirelessTermMenu;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.ItemTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
@@ -184,11 +183,11 @@ public class CraftConfirmMenu extends AEBaseMenu {
 
         final IActionHost ah = this.getActionHost();
         if (ah instanceof WirelessTerminalMenuHost) {
-            originalGui = WirelessTermMenu.TYPE;
+            originalGui = MEMonitorableMenu.WIRELESS_TYPE;
         }
 
         if (ah instanceof ItemTerminalPart) {
-            originalGui = ItemTerminalMenu.TYPE;
+            originalGui = MEMonitorableMenu.TYPE;
         }
 
         if (ah instanceof CraftingTerminalPart) {

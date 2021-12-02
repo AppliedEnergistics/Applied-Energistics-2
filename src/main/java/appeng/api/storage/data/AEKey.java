@@ -5,12 +5,13 @@ import javax.annotation.Nullable;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.AEKeySpaces;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
 import appeng.core.AELog;
 
 /**
@@ -38,9 +39,9 @@ public abstract class AEKey {
         }
 
         // Handle tags where the mod that provided the channel has been uninstalled
-        IStorageChannel<?> channel;
+        AEKeySpace channel;
         try {
-            channel = StorageChannels.get(new ResourceLocation(channelId));
+            channel = AEKeySpaces.get(new ResourceLocation(channelId));
         } catch (IllegalArgumentException | ResourceLocationException e) {
             AELog.warn("Cannot deserialize generic key from %s because channel '%s' is missing.", tag, channelId);
             return null;
@@ -49,6 +50,9 @@ public abstract class AEKey {
         return channel.loadKeyFromTag(tag);
     }
 
+    /**
+     * Writes a generic, nullable key to the given buffer.
+     */
     public static void writeOptionalKey(FriendlyByteBuf buffer, @Nullable AEKey key) {
         buffer.writeBoolean(key != null);
         if (key != null) {
@@ -56,6 +60,15 @@ public abstract class AEKey {
         }
     }
 
+    public static void writeKey(FriendlyByteBuf buffer, AEKey key) {
+        var id = key.getChannel().getRawId();
+        buffer.writeVarInt(id);
+        key.writeToPacket(buffer);
+    }
+
+    /**
+     * Tries reading a key written using {@link #writeOptionalKey}.
+     */
     @Nullable
     public static AEKey readOptionalKey(FriendlyByteBuf buffer) {
         if (!buffer.readBoolean()) {
@@ -64,14 +77,14 @@ public abstract class AEKey {
         return readKey(buffer);
     }
 
-    public static void writeKey(FriendlyByteBuf buffer, AEKey key) {
-        buffer.writeResourceLocation(key.getChannel().getId());
-        key.writeToPacket(buffer);
-    }
-
     @Nullable
     public static AEKey readKey(FriendlyByteBuf buffer) {
-        var channel = StorageChannels.get(buffer.readResourceLocation());
+        var id = buffer.readVarInt();
+        var channel = AEKeySpace.fromRawId(id);
+        if (channel == null) {
+            AELog.error("Received unknown key space id %d", id);
+            return null;
+        }
         return channel.readFromPacket(buffer);
     }
 
@@ -86,9 +99,29 @@ public abstract class AEKey {
     }
 
     /**
+     * Can be used as factor for transferring stacks of a channel.
+     * <p>
+     * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel transferring a full bucket per
+     * operation.
+     */
+    public int transferFactor() {
+        return 1;
+    }
+
+    /**
+     * The number of units (eg item count, or millibuckets) that can be stored per byte in a storage cell. Standard
+     * value for items is 8, and for fluids it's 8000
+     *
+     * @return number of units
+     */
+    public int getUnitsPerByte() {
+        return 8;
+    }
+
+    /**
      * The storage channel this type of resource key is used for.
      */
-    public abstract IStorageChannel<?> getChannel();
+    public abstract AEKeySpace getChannel();
 
     /**
      * @return This object if it has no secondary component, otherwise a copy of this resource key with the secondary
@@ -124,14 +157,6 @@ public abstract class AEKey {
         return stack != null && stack.what().equals(this);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends AEKey> T cast(IStorageChannel<T> channel) {
-        if (getChannel() == channel) {
-            return (T) this;
-        }
-        return null;
-    }
-
     public abstract String getModId();
 
     public abstract void writeToPacket(FriendlyByteBuf data);
@@ -145,4 +170,16 @@ public abstract class AEKey {
      * Wraps a key in an ItemStack that can be unwrapped into a key later.
      */
     public abstract ItemStack wrap(int amount);
+
+    /**
+     * True to indicate that this type of {@link AEKey} supports range-based fuzzy search using
+     * {@link AEKey#getFuzzySearchValue()} and {@link AEKey#getFuzzySearchMaxValue()}.
+     * <p/>
+     * For items this is used for damage-based search and filtering.
+     */
+    public boolean supportsFuzzyRangeSearch() {
+        return false;
+    }
+
+    public abstract Component getDisplayName();
 }

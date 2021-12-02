@@ -21,15 +21,15 @@ package appeng.me.storage;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 
-public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T> {
+public class MEInventoryHandler extends DelegatingMEInventory {
 
-    private IPartitionList<T> partitionList = new DefaultPriorityList<>();
+    private IPartitionList partitionList = DefaultPriorityList.INSTANCE;
     private IncludeExclude partitionListMode = IncludeExclude.WHITELIST;
     private boolean filterOnExtraction;
     private boolean filterAvailableContents;
@@ -38,7 +38,7 @@ public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T
 
     private boolean gettingAvailableContent = false;
 
-    public MEInventoryHandler(IMEInventory<T> inventory) {
+    public MEInventoryHandler(MEStorage inventory) {
         super(inventory);
     }
 
@@ -58,11 +58,11 @@ public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T
         this.partitionListMode = myWhitelist;
     }
 
-    protected IPartitionList<T> getPartitionList() {
+    protected IPartitionList getPartitionList() {
         return this.partitionList;
     }
 
-    public void setPartitionList(final IPartitionList<T> myPartitionList) {
+    public void setPartitionList(final IPartitionList myPartitionList) {
         this.partitionList = myPartitionList;
     }
 
@@ -72,7 +72,7 @@ public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (!this.allowInsertion || !passesBlackOrWhitelist(what)) {
             return 0;
         }
@@ -81,7 +81,7 @@ public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (this.filterOnExtraction && !canExtract(what)) {
             return 0;
         }
@@ -90,7 +90,7 @@ public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
+    public void getAvailableStacks(KeyCounter out) {
         if (this.gettingAvailableContent) {
             // Prevent recursion in case the internal inventory somehow calls this when the available items are queried.
             // This is handled by the NetworkInventoryHandler when the initial query is coming from the network.
@@ -120,7 +120,7 @@ public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T
     }
 
     @Override
-    public boolean isPreferredStorageFor(T input, IActionSource source) {
+    public boolean isPreferredStorageFor(AEKey input, IActionSource source) {
         if (this.partitionListMode == IncludeExclude.WHITELIST) {
             if (this.partitionList.isListed(input)) {
                 return true;
@@ -136,12 +136,12 @@ public class MEInventoryHandler<T extends AEKey> extends DelegatingMEInventory<T
         return super.isPreferredStorageFor(input, source);
     }
 
-    protected boolean canExtract(T request) {
+    protected boolean canExtract(AEKey request) {
         return allowExtraction && passesBlackOrWhitelist(request);
     }
 
     // Applies the black/whitelist, but only if any item is listed at all
-    private boolean passesBlackOrWhitelist(T input) {
+    private boolean passesBlackOrWhitelist(AEKey input) {
         if (!this.partitionList.isEmpty()) {
             switch (this.partitionListMode) {
                 case WHITELIST -> {

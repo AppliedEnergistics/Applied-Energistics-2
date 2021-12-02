@@ -23,8 +23,11 @@
 
 package appeng.api.storage;
 
+import javax.annotation.Nullable;
+
 import appeng.api.util.IConfigurableObject;
 
-public interface ITerminalHost extends IStorageMonitorable, IConfigurableObject, ISubMenuHost {
-
+public interface ITerminalHost extends IConfigurableObject, ISubMenuHost {
+    @Nullable
+    MEMonitorStorage getInventory();
 }

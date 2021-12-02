@@ -38,16 +38,16 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     /**
      * Partial cache of the parent's items, never modified.
      */
-    private final KeyCounter<AEKey> unmodifiedCache;
+    private final KeyCounter unmodifiedCache;
     /**
      * Partial cache of the parent's items, but modifiable. The different between this cache and the unmodified cache is
      * the items that were injected/extracted.
      */
-    private final KeyCounter<AEKey> modifiableCache;
+    private final KeyCounter modifiableCache;
     /**
      * List of items to emit.
      */
-    private final KeyCounter<AEKey> emittedItems;
+    private final KeyCounter emittedItems;
     /**
      * Byte count.
      */
@@ -57,13 +57,13 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
      * Minimum amount of each item that needs to be extracted from the network. This is the maximum of (unmodified -
      * modifiable).
      */
-    private final KeyCounter<AEKey> requiredExtract;
+    private final KeyCounter requiredExtract;
 
     protected CraftingSimulationState() {
-        this.unmodifiedCache = new KeyCounter<>();
-        this.modifiableCache = new KeyCounter<>();
-        this.emittedItems = new KeyCounter<>();
-        this.requiredExtract = new KeyCounter<>();
+        this.unmodifiedCache = new KeyCounter();
+        this.modifiableCache = new KeyCounter();
+        this.emittedItems = new KeyCounter();
+        this.requiredExtract = new KeyCounter();
     }
 
     protected abstract long simulateExtractParent(AEKey what, long amount);

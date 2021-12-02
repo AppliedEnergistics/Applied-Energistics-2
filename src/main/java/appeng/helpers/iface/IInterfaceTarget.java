@@ -37,8 +37,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.AEKeySpaces;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
@@ -73,20 +73,20 @@ public interface IInterfaceTarget {
     }
 
     private static IInterfaceTarget wrapStorageMonitorable(IStorageMonitorableAccessor accessor, IActionSource src) {
-        var monitorable = accessor.getInventory(src);
-        if (monitorable == null) {
+        var storage = accessor.getInventory(src);
+        if (storage == null) {
             return null;
         } else {
             return new IInterfaceTarget() {
                 @Override
                 public long insert(AEKey what, long amount, Actionable type) {
-                    return monitorable.insert(what, amount, type, src);
+                    return storage.insert(what, amount, type, src);
                 }
 
                 @Override
                 public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                    for (var channel : StorageChannels.getAll()) {
-                        for (var stack : monitorable.getInventory(channel).getCachedAvailableStacks()) {
+                    for (var channel : AEKeySpaces.getAll()) {
+                        for (var stack : storage.getCachedAvailableStacks()) {
                             if (patternInputs.contains(stack.getKey().dropSecondary())) {
                                 return true;
                             }
@@ -100,16 +100,8 @@ public interface IInterfaceTarget {
 
     private static IInterfaceTarget wrapHandlers(Storage<ItemVariant> itemHandler, Storage<FluidVariant> fluidHandler,
             IActionSource src) {
-        var itemAdapter = new StorageAdapter<>(IVariantConversion.ITEM, itemHandler, false) {
-            @Override
-            protected void onInjectOrExtract() {
-            }
-        };
-        var fluidAdapter = new StorageAdapter<>(IVariantConversion.FLUID, fluidHandler, false) {
-            @Override
-            protected void onInjectOrExtract() {
-            }
-        };
+        var itemAdapter = new StorageAdapter<>(IVariantConversion.ITEM, itemHandler);
+        var fluidAdapter = new StorageAdapter<>(IVariantConversion.FLUID, fluidHandler);
         return new IInterfaceTarget() {
             @Override
             public long insert(AEKey what, long amount, Actionable type) {
@@ -131,7 +123,7 @@ public interface IInterfaceTarget {
     }
 
     private static <V extends TransferVariant<?>, T extends AEKey> boolean canRemove(
-            IVariantConversion<V, T> conversion, Storage<V> storage, Set<AEKey> patternInputs) {
+            IVariantConversion<V> conversion, Storage<V> storage, Set<AEKey> patternInputs) {
         try (Transaction tx = Transaction.openOuter()) {
             for (var view : storage.iterable(tx)) {
                 if (!view.isResourceBlank() && view.getAmount() > 0) {

@@ -23,24 +23,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.AEKeySpace;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.data.AEKey;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.me.items.ItemTerminalMenu;
+import appeng.menu.me.common.MEMonitorableMenu;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
-    public <T extends AEKey> boolean isHandlerFor(final IStorageChannel<T> channel) {
-        return channel == StorageChannels.items();
+    public boolean isSpecializedFor(ItemStack cell) {
+        return cell.getItem() instanceof IBasicCellItem basicCellItem
+                && basicCellItem.getKeySpace() == AEKeySpace.items();
     }
 
     @Override
     public void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler, ItemStack cell) {
-        MenuOpener.open(ItemTerminalMenu.TYPE, player,
+        MenuOpener.open(MEMonitorableMenu.TYPE, player,
                 MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

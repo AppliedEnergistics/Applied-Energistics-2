@@ -108,7 +108,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         this.actionSource = new MachineSource(mainNode::getNode);
 
         this.configManager.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
-        this.configManager.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
+        this.configManager.registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES);
 
         this.returnInv = new PatternProviderReturnInventory(() -> {
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
@@ -197,7 +197,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     }
 
     @Override
-    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputHolder) {
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
         if (!sendList.isEmpty() || !this.mainNode.isActive() || !this.patterns.contains(patternDetails)) {
             return false;
         }
@@ -260,7 +260,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
-    private boolean adapterAcceptsAll(IInterfaceTarget target, KeyCounter<AEKey>[] inputHolder) {
+    private boolean adapterAcceptsAll(IInterfaceTarget target, KeyCounter[] inputHolder) {
         for (var inputList : inputHolder) {
             for (var input : inputList) {
                 var inserted = target.insert(input.getKey(), input.getLongValue(), Actionable.SIMULATE);
@@ -333,7 +333,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
 
     private boolean doWork() {
         // Note: bitwise OR to avoid short-circuiting.
-        return returnInv.injectIntoNetwork(mainNode.getGrid().getStorageService(), actionSource) | sendStacksOut();
+        return returnInv.injectIntoNetwork(mainNode.getGrid().getStorageService().getInventory(), actionSource)
+                | sendStacksOut();
     }
 
     public InternalInventory getPatternInv() {

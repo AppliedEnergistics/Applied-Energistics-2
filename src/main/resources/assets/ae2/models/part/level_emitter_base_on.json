@@ -1,0 +1,84 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "emitter": "ae2:part/level_emitter_on",
+    "particle": "ae2:part/level_emitter_on"
+  },
+  "elements": [
+    {
+      "from": [7, 7, 3],
+      "to": [9, 9, 4],
+      "faces": {
+        "up": {
+          "texture": "#emitter",
+          "uv": [9, 7, 10, 9],
+          "rotation": 90
+        },
+        "down": {
+          "texture": "#emitter",
+          "uv": [9, 7, 10, 9],
+          "rotation": 270
+        },
+        "east": {
+          "texture": "#emitter",
+          "uv": [9, 7, 10, 9],
+          "rotation": 180
+        },
+        "west": {
+          "texture": "#emitter",
+          "uv": [9, 7, 10, 9]
+        }
+      }
+    },
+    {
+      "from": [7, 7, 0],
+      "to": [9, 9, 3],
+      "shade": false,
+      "faces": {
+        "north": {
+          "texture": "#emitter",
+          "uv": [6, 7, 8, 9],
+          "rotation": 270,
+          "unlit": true
+        }
+      }
+    },
+    {
+      "from": [6, 7, -1],
+      "to": [10, 9, 3],
+      "shade": false,
+      "faces": {
+        "up": {
+          "texture": "#emitter",
+          "uv": [5, 6, 9, 10],
+          "rotation": 90,
+          "unlit": true
+        },
+        "down": {
+          "texture": "#emitter",
+          "uv": [5, 6, 9, 10],
+          "rotation": 270,
+          "unlit": true
+        }
+      }
+    },
+    {
+      "from": [7, 6, -1],
+      "to": [9, 10, 3],
+      "shade": false,
+      "faces": {
+        "west": {
+          "texture": "#emitter",
+          "uv": [5, 6, 9, 10],
+          "unlit": true
+        },
+        "east": {
+          "texture": "#emitter",
+          "uv": [5, 6, 9, 10],
+          "rotation": 180,
+          "unlit": true
+        }
+      }
+    }
+  ]
+}

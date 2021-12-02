@@ -155,7 +155,7 @@ public class CraftingTreeNode {
      * @throws CraftBranchFailure If the request failed.
      */
     void request(final CraftingSimulationState inv, long requestedAmount,
-            @Nullable KeyCounter<AEKey> containerItems)
+            @Nullable KeyCounter containerItems)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
@@ -264,7 +264,7 @@ public class CraftingTreeNode {
 
     // Only item stacks are supported.
     private void addContainerItems(AEKey template, long multiplier,
-            @Nullable KeyCounter<AEKey> outputList) {
+            @Nullable KeyCounter outputList) {
         if (outputList != null) {
             var containerItem = parentInput.getContainerItem(template);
             if (containerItem != null) {

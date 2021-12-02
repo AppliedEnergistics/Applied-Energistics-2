@@ -197,7 +197,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private void updateReportingValue(IStorageService storageService) {
         this.lastHumanReadableText = null;
         if (this.configuredItem != null) {
-            this.amount = storageService.getStoredAmountCached(this.configuredItem);
+            this.amount = storageService.getInventory().getCachedAvailableStacks().get(this.configuredItem);
         } else {
             this.amount = 0;
         }
@@ -264,7 +264,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public <T extends AEKey> void onStackChange(T what, long amount) {
+    public void onStackChange(AEKey what, long amount) {
         if (what.equals(this.configuredItem)) {
             this.amount = amount;
 

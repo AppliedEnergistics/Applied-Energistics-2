@@ -23,8 +23,6 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
-import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.client.gui.me.fluids.FluidStackSizeRenderer;
 
 /**
  * Describes the appearance of terminal screens.
@@ -71,8 +69,6 @@ public class TerminalStyle {
     private boolean sortable = true;
 
     private boolean supportsAutoCrafting = false;
-
-    private StackSizeStyle stackSizeStyle = StackSizeStyle.ITEMS;
 
     /**
      * Should the terminal show item tooltips for the network inventory even if the player has an item in their hand?
@@ -219,21 +215,6 @@ public class TerminalStyle {
         this.showTooltipsWithItemInHand = showTooltipsWithItemInHand;
     }
 
-    public StackSizeStyle getStackSizeStyle() {
-        return stackSizeStyle;
-    }
-
-    public void setStackSizeStyle(StackSizeStyle stackSizeStyle) {
-        this.stackSizeStyle = stackSizeStyle;
-    }
-
-    public StackSizeRenderer getStackSizeRenderer() {
-        return switch (stackSizeStyle) {
-            case ITEMS -> new StackSizeRenderer();
-            case FLUIDS -> new FluidStackSizeRenderer();
-        };
-    }
-
     public void validate() {
         if (header == null) {
             throw new RuntimeException("terminalStyle.header is missing");
@@ -252,9 +233,6 @@ public class TerminalStyle {
         }
         if (searchFieldRect == null) {
             throw new RuntimeException("terminalStyle.searchFieldRect is missing");
-        }
-        if (stackSizeStyle == null) {
-            throw new RuntimeException("terminalStyle.stackSizeStyle is missing");
         }
     }
 }

@@ -23,6 +23,7 @@ import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -35,44 +36,40 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.core.AELog;
 import appeng.util.ConfigInventory;
-import appeng.util.prioritylist.DefaultPriorityList;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
-import appeng.util.prioritylist.PrecisePriorityList;
 
-public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
+public class BasicCellInventory implements StorageCell {
     private static final int MAX_ITEM_TYPES = 63;
     private static final String ITEM_COUNT_TAG = "ic";
     private static final String STACK_KEYS = "keys";
     private static final String STACK_AMOUNTS = "amts";
 
-    private final IStorageChannel<T> channel;
     private final ISaveProvider container;
-    private IPartitionList<T> partitionList;
+    private final AEKeySpace keySpace;
+    private IPartitionList partitionList;
     private IncludeExclude partitionListMode;
     private int maxItemTypes;
     private short storedItems;
     private long storedItemCount;
-    private Object2LongMap<T> storedAmounts;
+    private Object2LongMap<AEKey> storedAmounts;
     private final ItemStack i;
-    private final IBasicCellItem<T> cellType;
-    private final int itemsPerByte;
+    private final IBasicCellItem cellType;
     private boolean isPersisted = true;
 
-    private BasicCellInventory(IBasicCellItem<T> cellType, ItemStack o, ISaveProvider container) {
+    private BasicCellInventory(IBasicCellItem cellType, ItemStack o, ISaveProvider container) {
         this.i = o;
         this.cellType = cellType;
-        this.itemsPerByte = this.cellType.getChannel().getUnitsPerByte();
         this.maxItemTypes = this.cellType.getTotalTypes(this.i);
 
         if (this.maxItemTypes > MAX_ITEM_TYPES) {
@@ -86,7 +83,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
         this.storedItems = (short) getTag().getLongArray(STACK_AMOUNTS).length;
         this.storedItemCount = getTag().getLong(ITEM_COUNT_TAG);
         this.storedAmounts = null;
-        this.channel = cellType.getChannel();
+        this.keySpace = cellType.getKeySpace();
 
         updateFilter();
     }
@@ -95,20 +92,18 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
      * Updates the partition list and mode based on installed upgrades and the configured filter.
      */
     private void updateFilter() {
-        var priorityList = new KeyCounter<T>();
+        var builder = IPartitionList.builder();
 
         var upgrades = getUpgradesInventory();
         var config = getConfigInventory();
-        var fzMode = getFuzzyMode();
 
         boolean hasInverter = false;
-        boolean hasFuzzy = false;
 
         for (var upgrade : upgrades) {
             var u = IUpgradeModule.getTypeFromStack(upgrade);
             if (u != null) {
                 switch (u) {
-                    case FUZZY -> hasFuzzy = true;
+                    case FUZZY -> builder.fuzzyMode(getFuzzyMode());
                     case INVERTER -> hasInverter = true;
                     default -> {
                     }
@@ -116,21 +111,10 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
             }
         }
 
-        for (T what : config.keySet()) {
-            priorityList.add(what, 1);
-        }
+        builder.addAll(config.keySet());
 
         partitionListMode = (hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
-
-        if (!priorityList.isEmpty()) {
-            if (hasFuzzy) {
-                partitionList = new FuzzyPriorityList<>(priorityList, fzMode);
-            } else {
-                partitionList = new PrecisePriorityList<>(priorityList);
-            }
-        } else {
-            partitionList = new DefaultPriorityList<>();
-        }
+        partitionList = builder.build();
     }
 
     public IncludeExclude getPartitionListMode() {
@@ -152,10 +136,10 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
         return this.i.getOrCreateTag();
     }
 
-    public static BasicCellInventory<?> createInventory(ItemStack o, ISaveProvider container) {
+    public static BasicCellInventory createInventory(ItemStack o, ISaveProvider container) {
         Objects.requireNonNull(o, "Cannot create cell inventory for null itemstack");
 
-        if (!(o.getItem() instanceof IBasicCellItem<?>cellType)) {
+        if (!(o.getItem() instanceof IBasicCellItem cellType)) {
             return null;
         }
 
@@ -165,7 +149,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
         }
 
         // The cell type's channel matches, so this cast is safe
-        return new BasicCellInventory<>(cellType, o, container);
+        return new BasicCellInventory(cellType, o, container);
     }
 
     public static boolean isCell(ItemStack input) {
@@ -177,7 +161,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
         return type != null && !type.storableInStorageCell();
     }
 
-    private static IBasicCellItem<?> getStorageCell(ItemStack input) {
+    private static IBasicCellItem getStorageCell(ItemStack input) {
         if (input != null && input.getItem() instanceof IBasicCellItem basicCellItem) {
             return basicCellItem;
         }
@@ -185,7 +169,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
         return null;
     }
 
-    private static IBasicCellItem<?> getStorageCell(AEItemKey itemKey) {
+    private static IBasicCellItem getStorageCell(AEItemKey itemKey) {
         if (itemKey.getItem() instanceof IBasicCellItem basicCellItem) {
             return basicCellItem;
         }
@@ -193,14 +177,14 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
         return null;
     }
 
-    private static boolean isCellEmpty(BasicCellInventory<?> inv) {
+    private static boolean isCellEmpty(BasicCellInventory inv) {
         if (inv != null) {
             return inv.getAvailableStacks().isEmpty();
         }
         return true;
     }
 
-    protected Object2LongMap<T> getCellItems() {
+    protected Object2LongMap<AEKey> getCellItems() {
         if (this.storedAmounts == null) {
             this.storedAmounts = new Object2LongOpenHashMap<>();
             this.loadCellItems();
@@ -226,7 +210,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
 
             if (amount > 0) {
                 itemCount += amount;
-                keys.add(entry.getKey().toTag());
+                keys.add(entry.getKey().toTagGeneric());
                 amounts.add(amount);
             }
         }
@@ -278,9 +262,9 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
                     amounts.length, tags.size());
         }
 
-        for (int i = 0; i < Math.min(amounts.length, tags.size()); i++) {
+        for (int i = 0; i < amounts.length; i++) {
             var amount = amounts[i];
-            var key = channel.loadKeyFromTag(tags.getCompound(i));
+            AEKey key = AEKey.fromTagGeneric(tags.getCompound(i));
 
             if (amount <= 0 || key == null) {
                 corruptedTag = true;
@@ -295,7 +279,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
     }
 
     @Override
-    public void getAvailableStacks(KeyCounter<T> out) {
+    public void getAvailableStacks(KeyCounter out) {
         for (var entry : this.getCellItems().object2LongEntrySet()) {
             out.add(entry.getKey(), entry.getLongValue());
         }
@@ -310,7 +294,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
         return this.cellType.getFuzzyMode(this.i);
     }
 
-    public ConfigInventory<T> getConfigInventory() {
+    public ConfigInventory getConfigInventory() {
         return this.cellType.getConfigInventory(this.i);
     }
 
@@ -356,12 +340,12 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
     }
 
     public long getUsedBytes() {
-        final long bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / this.itemsPerByte;
+        var bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / keySpace.getUnitsPerByte();
         return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
     }
 
     public long getRemainingItemCount() {
-        final long remaining = this.getFreeBytes() * this.itemsPerByte + this.getUnusedItemCount();
+        final long remaining = this.getFreeBytes() * keySpace.getUnitsPerByte() + this.getUnusedItemCount();
         return remaining > 0 ? remaining : 0;
     }
 
@@ -372,7 +356,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
             return 0;
         }
 
-        return this.itemsPerByte - div;
+        return keySpace.getUnitsPerByte() - div;
     }
 
     @Override
@@ -390,8 +374,8 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
     }
 
     @Override
-    public long insert(T what, long amount, Actionable mode, IActionSource source) {
-        if (amount == 0) {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (amount == 0 || !keySpace.contains(what)) {
             return 0;
         }
 
@@ -416,7 +400,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
 
         // Deduct the required storage for a new type if the type is new
         if (currentAmount <= 0) {
-            remainingItemCount -= (long) this.getBytesPerType() * this.itemsPerByte;
+            remainingItemCount -= (long) this.getBytesPerType() * keySpace.getUnitsPerByte();
             if (remainingItemCount <= 0) {
                 return 0;
             }
@@ -435,7 +419,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
     }
 
     @Override
-    public long extract(T what, long amount, Actionable mode, IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         // To avoid long-overflow on the extracting callers side
         var extractAmount = Math.min(Integer.MAX_VALUE, amount);
 
@@ -462,8 +446,7 @@ public class BasicCellInventory<T extends AEKey> implements ICellInventory<T> {
     }
 
     @Override
-    public IStorageChannel<T> getChannel() {
-        return this.channel;
+    public Component getDescription() {
+        return i.getHoverName();
     }
-
 }

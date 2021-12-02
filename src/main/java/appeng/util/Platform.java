@@ -79,9 +79,10 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
@@ -302,6 +303,15 @@ public class Platform {
     @Environment(EnvType.CLIENT)
     public static List<Component> getTooltip(AEItemKey item) {
         return getTooltip(item.toStack());
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static List<Component> getTooltip(AEKey what) {
+        if (what instanceof AEItemKey itemKey) {
+            return getTooltip(itemKey);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -599,16 +609,16 @@ public class Platform {
 
     public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
             IActionSource mySrc,
-            IMEMonitor<AEItemKey> src,
+            MEMonitorStorage src,
             Level level,
             Recipe<CraftingContainer> r,
             ItemStack output,
             CraftingContainer ci,
             ItemStack providedTemplate,
             int slot,
-            KeyCounter<AEItemKey> items,
+            KeyCounter items,
             Actionable realForFake,
-            IPartitionList<AEItemKey> filter) {
+            IPartitionList filter) {
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {
                 return ItemStack.EMPTY;
@@ -628,19 +638,20 @@ public class Platform {
 
             if (items != null && checkFuzzy) {
                 for (var x : items) {
-                    var availableKey = x.getKey();
-                    if (providedTemplate.getItem() == availableKey.getItem() && !availableKey.matches(output)) {
-                        ci.setItem(slot, availableKey.toStack());
-                        if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
-                            if (filter == null || filter.isListed(availableKey)) {
-                                var ex = src.extract(availableKey, 1, realForFake, mySrc);
-                                if (ex > 0) {
-                                    energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
-                                    return availableKey.toStack();
+                    if (x instanceof AEItemKey itemKey) {
+                        if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
+                            ci.setItem(slot, itemKey.toStack());
+                            if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
+                                if (filter == null || filter.isListed(itemKey)) {
+                                    var ex = src.extract(itemKey, 1, realForFake, mySrc);
+                                    if (ex > 0) {
+                                        energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
+                                        return itemKey.toStack();
+                                    }
                                 }
                             }
+                            ci.setItem(slot, providedTemplate);
                         }
-                        ci.setItem(slot, providedTemplate);
                     }
                 }
             }
@@ -649,7 +660,7 @@ public class Platform {
     }
 
     public static void notifyBlocksOfNeighbors(final Level level, final BlockPos pos) {
-        if (!level.isClientSide) {
+        if (level != null && !level.isClientSide) {
             TickHandler.instance().addCallable(level, new BlockUpdate(pos));
         }
     }

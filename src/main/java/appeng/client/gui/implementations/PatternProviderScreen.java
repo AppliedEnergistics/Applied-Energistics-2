@@ -46,8 +46,8 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
         this.blockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
         this.addToLeftToolbar(this.blockingModeButton);
 
-        this.showInInterfaceTerminalButton = new ToggleButton(Icon.INTERFACE_TERMINAL_SHOW,
-                Icon.INTERFACE_TERMINAL_HIDE,
+        this.showInInterfaceTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,
+                Icon.PATTERN_ACCESS_HIDE,
                 GuiText.InterfaceTerminal.text(), GuiText.InterfaceTerminalHint.text(),
                 btn -> selectNextInterfaceMode());
         this.addToLeftToolbar(this.showInInterfaceTerminalButton);
@@ -58,11 +58,11 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
         super.updateBeforeRender();
 
         this.blockingModeButton.set(this.menu.getBlockingMode());
-        this.showInInterfaceTerminalButton.setState(this.menu.getShowInInterfaceTerminal() == YesNo.YES);
+        this.showInInterfaceTerminalButton.setState(this.menu.getShowInAccessTerminal() == YesNo.YES);
     }
 
     private void selectNextInterfaceMode() {
         final boolean backwards = isHandlingRightClick();
-        NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.INTERFACE_TERMINAL, backwards));
+        NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards));
     }
 }

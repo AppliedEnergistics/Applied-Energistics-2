@@ -22,13 +22,9 @@ public enum TickRates {
 
     Interface(5, 120),
 
-    ItemImportBus(5, 40),
+    ImportBus(5, 40),
 
-    FluidImportBus(5, 40),
-
-    ItemExportBus(5, 60),
-
-    FluidExportBus(5, 60),
+    ExportBus(5, 60),
 
     AnnihilationPlane(2, 120),
 
@@ -42,17 +38,11 @@ public enum TickRates {
 
     VibrationChamber(10, 40),
 
-    ItemStorageBus(5, 60),
-
-    FluidStorageBus(5, 60),
+    StorageBus(5, 60),
 
     ItemTunnel(5, 60),
 
-    LightTunnel(5, 60),
-
-    OpenComputersTunnel(1, 5),
-
-    PressureTunnel(1, 120);
+    LightTunnel(5, 60);
 
     private final int defaultMin;
     private final int defaultMax;

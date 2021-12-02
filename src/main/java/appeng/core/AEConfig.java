@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
@@ -114,9 +113,10 @@ public final class AEConfig {
     private int craftingCalculationTimePerTick;
 
     // GUI Buttons
-    private final int[] craftByStacks = new int[4];
-    private final int[] priorityByStacks = new int[4];
-    private final int[] levelByStacks = new int[4];
+    private final int[] craftByStacks = { 1, 10, 100, 1000 };
+    // GUI Buttons
+    private final int[] priorityByStacks = { 1, 10, 100, 1000 };
+    private final int[] levelByStacks = { 1, 10, 100, 1000 };
     private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
 
     // Spatial IO/Dimension
@@ -148,12 +148,6 @@ public final class AEConfig {
         this.enableEffects = CLIENT.enableEffects.get();
         this.useLargeFonts = CLIENT.useLargeFonts.get();
         this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
-
-        for (int btnNum = 0; btnNum < 4; btnNum++) {
-            this.craftByStacks[btnNum] = CLIENT.craftByStacks.get(btnNum).get();
-            this.priorityByStacks[btnNum] = CLIENT.priorityByStacks.get(btnNum).get();
-            this.levelByStacks[btnNum] = CLIENT.levelByStacks.get(btnNum).get();
-        }
     }
 
     private void syncCommonConfig() {
@@ -423,12 +417,6 @@ public final class AEConfig {
         public final EnumOption<PowerUnits> selectedPowerUnit;
         public final BooleanOption debugGuiOverlays;
 
-        // GUI Buttons
-        private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
-        public final List<IntegerOption> craftByStacks;
-        public final List<IntegerOption> priorityByStacks;
-        public final List<IntegerOption> levelByStacks;
-
         // Terminal Settings
         public final EnumOption<YesNo> searchTooltips;
         public final EnumOption<TerminalStyle> terminalStyle;
@@ -442,22 +430,6 @@ public final class AEConfig {
             this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
             this.selectedPowerUnit = client.addEnum("PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
             this.debugGuiOverlays = client.addBoolean("showDebugGuiOverlays", false, "Show debugging GUI overlays");
-
-            this.craftByStacks = new ArrayList<>(4);
-            this.priorityByStacks = new ArrayList<>(4);
-            this.levelByStacks = new ArrayList<>(4);
-            // load buttons..
-            for (int btnNum = 0; btnNum < 4; btnNum++) {
-                int defaultValue = BTN_BY_STACK_DEFAULTS[btnNum];
-                final int buttonCap = (int) (Math.pow(10, btnNum + 1) - 1);
-
-                this.craftByStacks.add(client.addInt("craftByStacks" + btnNum, defaultValue, 1, buttonCap,
-                        "Controls buttons on Crafting Screen"));
-                this.priorityByStacks.add(client.addInt("priorityByStacks" + btnNum, defaultValue, 1, buttonCap,
-                        "Controls buttons on Priority Screen"));
-                this.levelByStacks.add(client.addInt("levelByStacks" + btnNum, defaultValue, 1, buttonCap,
-                        "Controls buttons on Level Emitter Screen"));
-            }
 
             ConfigSection terminals = root.subsection("terminals");
             this.searchTooltips = terminals.addEnum("searchTooltips", YesNo.YES,

@@ -120,13 +120,13 @@ public class CraftingPlanSummary {
 
         var entries = ImmutableList.<CraftingPlanSummaryEntry>builder();
 
-        var sg = grid.getStorageService();
+        var storage = grid.getStorageService().getInventory();
 
         for (var out : plan) {
             long missingAmount;
             long storedAmount;
             if (job.simulation()) {
-                storedAmount = sg.extract(out.getKey(), out.getValue().stored, Actionable.SIMULATE, actionSource);
+                storedAmount = storage.extract(out.getKey(), out.getValue().stored, Actionable.SIMULATE, actionSource);
                 missingAmount = out.getValue().stored - storedAmount;
             } else {
                 storedAmount = out.getValue().stored;

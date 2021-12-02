@@ -70,6 +70,10 @@ public class ReiPlugin implements REIClientPlugin {
     // Will be hidden if colored cables are hidden
     private List<Predicate<ItemStack>> coloredCables;
 
+    public ReiPlugin() {
+        JEIFacade.setInstance(new ReiRuntimeAdapter());
+    }
+
     @Override
     public String getPluginProviderName() {
         return "AE2";
@@ -186,11 +190,6 @@ public class ReiPlugin implements REIClientPlugin {
         coloredCables = ImmutableList.copyOf(predicates);
 
         registry.removeEntryIf(this::shouldEntryBeHidden);
-    }
-
-    @Override
-    public void postRegister() {
-        JEIFacade.setInstance(new ReiRuntimeAdapter());
     }
 
     @Override

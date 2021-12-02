@@ -43,13 +43,10 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -246,7 +243,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
             // We allow up to a bucket per insert
             var amount = Math.min(AEFluidKey.AMOUNT_BUCKET, maxAmount);
             updateSnapshots(transaction);
-            pendingEnergy += amount / (double) AEFluidKey.AMOUNT_BUCKET / StorageChannels.fluids().transferFactor();
+            pendingEnergy += amount / (double) AEFluidKey.AMOUNT_BUCKET / AEKeySpace.fluids().transferFactor();
             return amount;
         }
 
@@ -274,11 +271,11 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     /**
      * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
-     * enable the condenser to override the {@link IConfigurableMEInventory#validForPass(int)} method to make sure a
-     * condenser is only ever used if an item can't go anywhere else.
+     * enable the condenser to override the {@link appeng.api.storage.MEStorage#isPreferredStorageFor} method to make
+     * sure a condenser is only ever used if an item can't go anywhere else.
      */
-    private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable {
-        private final CondenserItemInventory itemInventory = new CondenserItemInventory(CondenserBlockEntity.this);
+    private class MEHandler implements IStorageMonitorableAccessor {
+        private final CondenserInventory itemInventory = new CondenserInventory(CondenserBlockEntity.this);
 
         void outputChanged(ItemStack added, ItemStack removed) {
             this.itemInventory.updateOutput(added, removed);
@@ -286,17 +283,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
         @Nullable
         @Override
-        public IStorageMonitorable getInventory(IActionSource src) {
-            return this;
-        }
-
-        @Override
-        public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-            if (channel == StorageChannels.items()) {
-                return (IMEMonitor<T>) this.itemInventory;
-            } else {
-                return new CondenserVoidInventory<>(CondenserBlockEntity.this, channel);
-            }
+        public MEMonitorStorage getInventory(IActionSource src) {
+            return this.itemInventory;
         }
     }
 }

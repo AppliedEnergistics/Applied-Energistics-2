@@ -18,7 +18,6 @@ import net.minecraft.world.item.Items;
 
 import appeng.api.config.Actionable;
 import appeng.api.storage.GenericStack;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.data.AEItemKey;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.ConfigInventory;
@@ -47,7 +46,7 @@ class GenericStackInvTest {
      */
     @Test
     void testSaveLargeAndLoadIntoSmallerInventory() {
-        var large = ConfigInventory.configStacks(StorageChannels.items(), 2, null);
+        var large = ConfigInventory.configStacks(AEItemKey.filter(), 2, null);
         large.setStack(0, ONE_STICK);
         large.setStack(1, ONE_STICK);
 

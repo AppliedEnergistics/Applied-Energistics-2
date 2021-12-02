@@ -33,15 +33,13 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.data.AEKey;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.util.IConfigManager;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.me.items.ItemTerminalMenu;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
@@ -125,14 +123,14 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     public MenuType<?> getMenuType(final Player player) {
-        return ItemTerminalMenu.TYPE;
+        return MEMonitorableMenu.TYPE;
     }
 
     @Override
-    public <T extends AEKey> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+    public MEMonitorStorage getInventory() {
         var grid = getMainNode().getGrid();
         if (grid != null) {
-            return grid.getStorageService().getInventory(channel);
+            return grid.getStorageService().getInventory();
         }
         return null;
     }

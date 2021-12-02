@@ -58,7 +58,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
             })
             .build("craftingcpu");
 
-    private final IncrementalUpdateHelper<AEKey> incrementalUpdateHelper = new IncrementalUpdateHelper<>();
+    private final IncrementalUpdateHelper incrementalUpdateHelper = new IncrementalUpdateHelper();
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
     private final Consumer<AEKey> cpuChangeListener = incrementalUpdateHelper::addChange;
@@ -99,7 +99,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
             this.cpu = (CraftingCPUCluster) c;
 
             // Initially send all items as a full-update to the client when the CPU changes
-            var allItems = new KeyCounter<>();
+            var allItems = new KeyCounter();
             cpu.craftingLogic.getAllItems(allItems);
             for (var entry : allItems) {
                 incrementalUpdateHelper.addChange(entry.getKey());

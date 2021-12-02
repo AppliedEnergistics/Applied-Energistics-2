@@ -8,9 +8,9 @@ import appeng.api.storage.data.AEKey;
 public interface IStorageMounts {
     int DEFAULT_PRIORITY = 0;
 
-    default <T extends AEKey> void mount(IMEInventory<T> inventory) {
+    default <T extends AEKey> void mount(MEStorage inventory) {
         mount(inventory, DEFAULT_PRIORITY);
     }
 
-    <T extends AEKey> void mount(IMEInventory<T> inventory, int priority);
+    <T extends AEKey> void mount(MEStorage inventory, int priority);
 }

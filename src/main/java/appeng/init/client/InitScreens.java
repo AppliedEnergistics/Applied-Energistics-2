@@ -44,7 +44,6 @@ import appeng.client.gui.implementations.IOBusScreen;
 import appeng.client.gui.implementations.IOPortScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.client.gui.implementations.InterfaceScreen;
-import appeng.client.gui.implementations.LevelEmitterScreen;
 import appeng.client.gui.implementations.MolecularAssemblerScreen;
 import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.implementations.PriorityScreen;
@@ -55,16 +54,17 @@ import appeng.client.gui.implementations.SkyChestScreen;
 import appeng.client.gui.implementations.SpatialAnchorScreen;
 import appeng.client.gui.implementations.SpatialIOPortScreen;
 import appeng.client.gui.implementations.StorageBusScreen;
+import appeng.client.gui.implementations.StorageLevelEmitterScreen;
 import appeng.client.gui.implementations.VibrationChamberScreen;
 import appeng.client.gui.implementations.WirelessScreen;
+import appeng.client.gui.me.common.MEMonitorableScreen;
 import appeng.client.gui.me.crafting.CraftAmountScreen;
 import appeng.client.gui.me.crafting.CraftConfirmScreen;
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.client.gui.me.crafting.CraftingStatusScreen;
-import appeng.client.gui.me.fluids.FluidTerminalScreen;
+import appeng.client.gui.me.crafting.SetStockAmountScreen;
 import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.client.gui.me.items.CraftingTermScreen;
-import appeng.client.gui.me.items.ItemTerminalScreen;
 import appeng.client.gui.me.items.PatternTermScreen;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.client.gui.me.networktool.NetworkToolScreen;
@@ -82,24 +82,25 @@ import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.implementations.InterfaceMenu;
 import appeng.menu.implementations.InterfaceTerminalMenu;
-import appeng.menu.implementations.LevelEmitterMenu;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.menu.implementations.SecurityStationMenu;
+import appeng.menu.implementations.SetStockAmountMenu;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.menu.implementations.SpatialAnchorMenu;
 import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.implementations.StorageBusMenu;
+import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.menu.implementations.WirelessMenu;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.menu.me.fluids.FluidTerminalMenu;
 import appeng.menu.me.items.*;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
@@ -131,20 +132,15 @@ public final class InitScreens {
         register(DriveMenu.TYPE, DriveScreen::new, "/screens/drive.json");
         register(VibrationChamberMenu.TYPE, VibrationChamberScreen::new, "/screens/vibration_chamber.json");
         register(CondenserMenu.TYPE, CondenserScreen::new, "/screens/condenser.json");
-        register(InterfaceMenu.ITEM_TYPE, InterfaceScreen::new, "/screens/item_interface.json");
-        register(InterfaceMenu.FLUID_TYPE, InterfaceScreen::new, "/screens/fluid_interface.json");
-        register(IOBusMenu.ITEM_EXPORT_TYPE, IOBusScreen::new, "/screens/item_export_bus.json");
-        register(IOBusMenu.ITEM_IMPORT_TYPE, IOBusScreen::new, "/screens/item_import_bus.json");
-        register(IOBusMenu.FLUID_IMPORT_TYPE, IOBusScreen::new, "/screens/fluid_import_bus.json");
-        register(IOBusMenu.FLUID_EXPORT_TYPE, IOBusScreen::new, "/screens/fluid_export_bus.json");
+        register(InterfaceMenu.TYPE, InterfaceScreen::new, "/screens/interface.json");
+        register(IOBusMenu.EXPORT_TYPE, IOBusScreen::new, "/screens/export_bus.json");
+        register(IOBusMenu.IMPORT_TYPE, IOBusScreen::new, "/screens/import_bus.json");
         register(IOPortMenu.TYPE, IOPortScreen::new, "/screens/io_port.json");
-        register(StorageBusMenu.ITEM_TYPE, StorageBusScreen::new, "/screens/item_storage_bus.json");
-        register(StorageBusMenu.FLUID_TYPE, StorageBusScreen::new, "/screens/fluid_storage_bus.json");
-        register(FormationPlaneMenu.ITEM_TYPE, FormationPlaneScreen::new, "/screens/item_formation_plane.json");
-        register(FormationPlaneMenu.FLUID_TYPE, FormationPlaneScreen::new, "/screens/fluid_formation_plane.json");
+        register(StorageBusMenu.TYPE, StorageBusScreen::new, "/screens/storage_bus.json");
+        register(SetStockAmountMenu.TYPE, SetStockAmountScreen::new, "/screens/set_stock_amount.json");
+        register(FormationPlaneMenu.TYPE, FormationPlaneScreen::new, "/screens/formation_plane.json");
         register(PriorityMenu.TYPE, PriorityScreen::new, "/screens/priority.json");
-        register(LevelEmitterMenu.ITEM_TYPE, LevelEmitterScreen::new, "/screens/item_level_emitter.json");
-        register(LevelEmitterMenu.FLUID_TYPE, LevelEmitterScreen::new, "/screens/fluid_level_emitter.json");
+        register(StorageLevelEmitterMenu.TYPE, StorageLevelEmitterScreen::new, "/screens/level_emitter.json");
         register(EnergyLevelEmitterMenu.TYPE, EnergyLevelEmitterScreen::new, "/screens/energy_level_emitter.json");
         register(SpatialIOPortMenu.TYPE, SpatialIOPortScreen::new, "/screens/spatial_io_port.json");
         register(InscriberMenu.TYPE, InscriberScreen::new, "/screens/inscriber.json");
@@ -154,26 +150,26 @@ public final class InitScreens {
         register(CraftAmountMenu.TYPE, CraftAmountScreen::new, "/screens/craft_amount.json");
         register(CraftConfirmMenu.TYPE, CraftConfirmScreen::new, "/screens/craft_confirm.json");
         InitScreens.<InterfaceTerminalMenu, InterfaceTerminalScreen<InterfaceTerminalMenu>>register(
-                InterfaceTerminalMenu.TYPE, InterfaceTerminalScreen::new, "/screens/interface_terminal.json");
+                InterfaceTerminalMenu.TYPE, InterfaceTerminalScreen::new, "/screens/pattern_access_terminal.json");
         register(CraftingStatusMenu.TYPE, CraftingStatusScreen::new, "/screens/crafting_status.json");
         register(SpatialAnchorMenu.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
 
         // Terminals
-        InitScreens.<ItemTerminalMenu, ItemTerminalScreen<ItemTerminalMenu>>register(
-                ItemTerminalMenu.TYPE,
-                ItemTerminalScreen::new,
-                "/screens/terminals/item_terminal.json");
-        InitScreens.<PortableItemCellMenu, ItemTerminalScreen<PortableItemCellMenu>>register(
-                PortableItemCellMenu.TYPE,
-                ItemTerminalScreen::new,
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.TYPE,
+                MEMonitorableScreen::new,
+                "/screens/terminals/terminal.json");
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE,
+                MEMonitorableScreen::new,
                 "/screens/terminals/portable_item_cell.json");
-        InitScreens.<PortableFluidCellMenu, FluidTerminalScreen<PortableFluidCellMenu>>register(
-                PortableFluidCellMenu.TYPE,
-                FluidTerminalScreen::new,
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.PORTABLE_FLUID_CELL_TYPE,
+                MEMonitorableScreen::new,
                 "/screens/terminals/portable_fluid_cell.json");
-        InitScreens.<WirelessTermMenu, ItemTerminalScreen<WirelessTermMenu>>register(
-                WirelessTermMenu.TYPE,
-                ItemTerminalScreen::new,
+        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
+                MEMonitorableMenu.WIRELESS_TYPE,
+                MEMonitorableScreen::new,
                 "/screens/terminals/wireless_terminal.json");
         register(SecurityStationMenu.TYPE,
                 SecurityStationScreen::new,
@@ -189,11 +185,7 @@ public final class InitScreens {
         InitScreens.<PatternTermMenu, PatternTermScreen<PatternTermMenu>>register(
                 PatternTermMenu.TYPE,
                 PatternTermScreen::new,
-                "/screens/terminals/pattern_terminal.json");
-        InitScreens.<FluidTerminalMenu, FluidTerminalScreen<FluidTerminalMenu>>register(
-                FluidTerminalMenu.TYPE,
-                FluidTerminalScreen::new,
-                "/screens/terminals/fluid_terminal.json");
+                "/screens/terminals/pattern_encoding_terminal.json");
     }
 
     /**

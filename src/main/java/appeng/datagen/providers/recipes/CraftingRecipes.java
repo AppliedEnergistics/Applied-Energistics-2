@@ -8,7 +8,6 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 
 import appeng.api.ids.AETags;
@@ -339,25 +338,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', AEBlocks.ENERGY_ACCEPTOR)
                 .unlockedBy("has_energy_acceptor", has(AEBlocks.ENERGY_ACCEPTOR))
                 .save(consumer, AppEng.makeId("network/blocks/energy_vibration_chamber"));
-        ShapedRecipeBuilder.shaped(AEBlocks.FLUID_INTERFACE)
-                .pattern("aba")
-                .pattern("c d")
-                .pattern("aba")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', ConventionTags.dye(DyeColor.GREEN))
-                .define('c', AEItems.ANNIHILATION_CORE)
-                .define('d', AEItems.FORMATION_CORE)
-                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/blocks/fluid_interfaces_interface"));
-        ShapelessRecipeBuilder.shapeless(AEBlocks.FLUID_INTERFACE)
-                .requires(AEParts.FLUID_INTERFACE)
-                .unlockedBy("has_cable_fluid_interface", has(AEParts.FLUID_INTERFACE))
-                .save(consumer, AppEng.makeId("network/blocks/fluid_interfaces_interface_alt"));
-        ShapelessRecipeBuilder.shapeless(AEParts.FLUID_INTERFACE)
-                .requires(AEBlocks.FLUID_INTERFACE)
-                .unlockedBy("has_fluid_interface", has(AEBlocks.FLUID_INTERFACE))
-                .save(consumer, AppEng.makeId("network/blocks/fluid_interfaces_interface_part"));
         ShapedRecipeBuilder.shaped(AEBlocks.INSCRIBER)
                 .pattern("aba")
                 .pattern("c a")
@@ -406,7 +386,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(AEBlocks.PATTERN_PROVIDER)
                 .unlockedBy("has_pattern_provider", has(AEBlocks.PATTERN_PROVIDER))
                 .save(consumer, AppEng.makeId("network/blocks/pattern_providers_interface_part"));
-        ShapedRecipeBuilder.shaped(AEBlocks.ITEM_INTERFACE)
+        ShapedRecipeBuilder.shaped(AEBlocks.INTERFACE)
                 .pattern("aba")
                 .pattern("c d")
                 .pattern("aba")
@@ -416,15 +396,15 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', AEItems.FORMATION_CORE)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface"));
-        ShapelessRecipeBuilder.shapeless(AEBlocks.ITEM_INTERFACE)
-                .requires(AEParts.ITEM_INTERFACE)
-                .unlockedBy("has_cable_item_interface", has(AEParts.ITEM_INTERFACE))
-                .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface_alt"));
-        ShapelessRecipeBuilder.shapeless(AEParts.ITEM_INTERFACE)
-                .requires(AEBlocks.ITEM_INTERFACE)
-                .unlockedBy("has_item_interface", has(AEBlocks.ITEM_INTERFACE))
-                .save(consumer, AppEng.makeId("network/blocks/item_interfaces_interface_part"));
+                .save(consumer, AppEng.makeId("network/blocks/interfaces_interface"));
+        ShapelessRecipeBuilder.shapeless(AEBlocks.INTERFACE)
+                .requires(AEParts.INTERFACE)
+                .unlockedBy("has_cable_interface", has(AEParts.INTERFACE))
+                .save(consumer, AppEng.makeId("network/blocks/interfaces_interface_alt"));
+        ShapelessRecipeBuilder.shapeless(AEParts.INTERFACE)
+                .requires(AEBlocks.INTERFACE)
+                .unlockedBy("has_interface", has(AEBlocks.INTERFACE))
+                .save(consumer, AppEng.makeId("network/blocks/interfaces_interface_part"));
         ShapedRecipeBuilder.shaped(AEBlocks.QUANTUM_LINK)
                 .pattern("aba")
                 .pattern("b b")
@@ -531,6 +511,15 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_dusts/redstone", has(ConventionTags.REDSTONE))
                 .save(consumer, AppEng.makeId("network/cells/empty_storage_cell"));
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_HOUSING)
+                .pattern("aba")
+                .pattern("b b")
+                .pattern("ccc")
+                .define('a', AEBlocks.QUARTZ_GLASS)
+                .define('b', ConventionTags.REDSTONE)
+                .define('c', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_dusts/redstone", has(ConventionTags.REDSTONE))
+                .save(consumer, AppEng.makeId("network/cells/fluid_cell_housing"));
 
         addFluidCells(consumer);
         addItemCells(consumer);
@@ -618,7 +607,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.GLOWSTONE)
                 .define('c', ConventionTags.ALL_CERTUS_QUARTZ)
                 .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_pattern_terminal", has(AEParts.PATTERN_TERMINAL))
+                .unlockedBy("has_pattern_encoding_terminal", has(AEParts.PATTERN_ENCODING_TERMINAL))
                 .save(consumer, AppEng.makeId("network/crafting/patterns_blank"));
 
         // ====================================================
@@ -634,77 +623,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(AEBlocks.ENERGY_ACCEPTOR)
                 .unlockedBy("has_energy_acceptor", has(AEBlocks.ENERGY_ACCEPTOR))
                 .save(consumer, AppEng.makeId("network/parts/energy_acceptor"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_ANNIHILATION_PLANE)
-                .pattern("aaa")
-                .pattern("ddd")
-                .pattern("bcb")
-                .define('a', ConventionTags.ALL_FLUIX)
-                .define('b', ConventionTags.IRON_INGOT)
-                .define('c', AEItems.ANNIHILATION_CORE)
-                .define('d', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_annihilation_plane"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_ANNIHILATION_PLANE)
-                .pattern("adb")
-                .pattern("cdb")
-                .pattern("adb")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', ConventionTags.ALL_FLUIX)
-                .define('c', AEItems.ANNIHILATION_CORE)
-                .define('d', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_annihilation_plane_alt"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_EXPORT_BUS)
-                .pattern("aba")
-                .pattern("lcl")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', AEItems.FORMATION_CORE)
-                .define('c', Items.PISTON)
-                .define('l', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_export_bus"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_FORMATION_PLANE)
-                .pattern("adb")
-                .pattern("cdb")
-                .pattern("adb")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', ConventionTags.ALL_FLUIX)
-                .define('c', AEItems.FORMATION_CORE)
-                .define('d', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_formation_plane"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_FORMATION_PLANE)
-                .pattern("aaa")
-                .pattern("ddd")
-                .pattern("bcb")
-                .define('a', ConventionTags.ALL_FLUIX)
-                .define('b', ConventionTags.IRON_INGOT)
-                .define('c', AEItems.FORMATION_CORE)
-                .define('d', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_formation_plane_alt"));
-        ShapedRecipeBuilder.shaped(AEParts.FLUID_IMPORT_BUS)
-                .pattern("lal")
-                .pattern("bcb")
-                .define('a', AEItems.ANNIHILATION_CORE)
-                .define('b', ConventionTags.IRON_INGOT)
-                .define('c', Items.STICKY_PISTON)
-                .define('l', ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_import_bus"));
-        ShapelessRecipeBuilder.shapeless(AEParts.FLUID_LEVEL_EMITTER)
-                .requires(Items.REDSTONE_TORCH)
-                .requires(ConventionTags.dye(DyeColor.GREEN))
-                .requires(AEItems.CALCULATION_PROCESSOR)
-                .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/parts/fluid_level_emitter"));
-        ShapelessRecipeBuilder.shapeless(AEParts.FLUID_STORAGE_BUS)
-                .requires(Items.STICKY_PISTON)
-                .requires(ConventionTags.FLUID_INTERFACE)
-                .requires(Items.PISTON)
-                .requires(ConventionTags.dye(DyeColor.GREEN))
-                .unlockedBy("has_fluid_interface", has(ConventionTags.FLUID_INTERFACE))
-                .save(consumer, AppEng.makeId("network/parts/fluid_storage_bus"));
         ShapedRecipeBuilder.shaped(AEParts.ANNIHILATION_PLANE)
                 .pattern("aaa")
                 .pattern("bcb")
@@ -712,7 +630,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.IRON_INGOT)
                 .define('c', AEItems.ANNIHILATION_CORE)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_annihilation_plane_alt"));
+                .save(consumer, AppEng.makeId("network/parts/annihilation_plane_alt"));
         ShapedRecipeBuilder.shaped(AEParts.ANNIHILATION_PLANE)
                 .pattern("ab")
                 .pattern("cb")
@@ -721,7 +639,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.ALL_FLUIX)
                 .define('c', AEItems.ANNIHILATION_CORE)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_annihilation_plane_alt2"));
+                .save(consumer, AppEng.makeId("network/parts/annihilation_plane_alt2"));
         ShapedRecipeBuilder.shaped(AEParts.EXPORT_BUS)
                 .pattern("aba")
                 .pattern(" c ")
@@ -729,7 +647,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', AEItems.FORMATION_CORE)
                 .define('c', Items.PISTON)
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_export_bus"));
+                .save(consumer, AppEng.makeId("network/parts/export_bus"));
         ShapedRecipeBuilder.shaped(AEParts.FORMATION_PLANE)
                 .pattern("aaa")
                 .pattern("bcb")
@@ -737,7 +655,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.IRON_INGOT)
                 .define('c', AEItems.FORMATION_CORE)
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_formation_plane"));
+                .save(consumer, AppEng.makeId("network/parts/formation_plane"));
         ShapedRecipeBuilder.shaped(AEParts.FORMATION_PLANE)
                 .pattern("ab")
                 .pattern("cb")
@@ -746,11 +664,11 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.ALL_FLUIX)
                 .define('c', AEItems.FORMATION_CORE)
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_formation_plane_alt"));
+                .save(consumer, AppEng.makeId("network/parts/formation_plane_alt"));
         ShapelessRecipeBuilder.shapeless(AEParts.IDENTITY_ANNIHILATION_PLANE)
                 .requires(AEParts.ANNIHILATION_PLANE)
                 .requires(AEItems.FLUIX_PEARL)
-                .unlockedBy("has_item_annihilation_plane", has(AEParts.ANNIHILATION_PLANE))
+                .unlockedBy("has_annihilation_plane", has(AEParts.ANNIHILATION_PLANE))
                 .save(consumer, AppEng.makeId("network/parts/item_identity_annihilatition_plane"));
         ShapedRecipeBuilder.shaped(AEParts.IMPORT_BUS)
                 .pattern(" a ")
@@ -759,24 +677,24 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.IRON_INGOT)
                 .define('c', Items.STICKY_PISTON)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
-                .save(consumer, AppEng.makeId("network/parts/item_import_bus"));
-        ShapelessRecipeBuilder.shapeless(AEParts.ITEM_LEVEL_EMITTER)
+                .save(consumer, AppEng.makeId("network/parts/import_bus"));
+        ShapelessRecipeBuilder.shapeless(AEParts.level_emitter)
                 .requires(Items.REDSTONE_TORCH)
                 .requires(AEItems.CALCULATION_PROCESSOR)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/parts/item_level_emitter"));
+                .save(consumer, AppEng.makeId("network/parts/level_emitter"));
         ShapelessRecipeBuilder.shapeless(AEParts.ENERGY_LEVEL_EMITTER)
                 .requires(Items.REDSTONE_TORCH)
                 .requires(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
                 .requires(AEItems.CALCULATION_PROCESSOR)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/parts/energy_level_emitter"));
-        ShapelessRecipeBuilder.shapeless(AEParts.ITEM_STORAGE_BUS)
+        ShapelessRecipeBuilder.shapeless(AEParts.STORAGE_BUS)
                 .requires(Items.STICKY_PISTON)
-                .requires(ConventionTags.ITEM_INTERFACE)
+                .requires(ConventionTags.INTERFACE)
                 .requires(Items.PISTON)
-                .unlockedBy("has_item_interface", has(ConventionTags.ITEM_INTERFACE))
-                .save(consumer, AppEng.makeId("network/parts/item_storage_bus"));
+                .unlockedBy("has_interface", has(ConventionTags.INTERFACE))
+                .save(consumer, AppEng.makeId("network/parts/storage_bus"));
         ShapelessRecipeBuilder.shapeless(AEParts.CONVERSION_MONITOR)
                 .requires(AEItems.FORMATION_CORE)
                 .requires(AEParts.STORAGE_MONITOR)
@@ -784,10 +702,10 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_storage_monitor", has(AEParts.STORAGE_MONITOR))
                 .save(consumer, AppEng.makeId("network/parts/monitors_conversion"));
         ShapelessRecipeBuilder.shapeless(AEParts.STORAGE_MONITOR)
-                .requires(AEParts.ITEM_LEVEL_EMITTER)
+                .requires(AEParts.level_emitter)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .unlockedBy("has_illuminated_panel", has(ConventionTags.ILLUMINATED_PANEL))
-                .unlockedBy("has_item_level_emitter", has(AEParts.ITEM_LEVEL_EMITTER))
+                .unlockedBy("has_level_emitter", has(AEParts.level_emitter))
                 .save(consumer, AppEng.makeId("network/parts/monitors_storage"));
         ShapelessRecipeBuilder.shapeless(AEParts.DARK_MONITOR)
                 .requires(AEParts.MONITOR)
@@ -836,20 +754,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_terminal", has(AEParts.TERMINAL))
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/parts/terminals_crafting"));
-        ShapelessRecipeBuilder.shapeless(AEParts.FLUID_TERMINAL)
-                .requires(AEParts.TERMINAL)
-                .requires(ConventionTags.dye(DyeColor.GREEN))
-                .requires(AEItems.LOGIC_PROCESSOR)
-                .unlockedBy("has_terminal", has(AEParts.TERMINAL))
-                .unlockedBy("has_logic_processor", has(AEItems.LOGIC_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/parts/terminals_fluid"));
-        ShapelessRecipeBuilder.shapeless(AEParts.INTERFACE_TERMINAL)
+        ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ACCESS_TERMINAL)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
-                .requires(ConventionTags.ITEM_INTERFACE)
-                .unlockedBy("has_item_interface", has(ConventionTags.ITEM_INTERFACE))
+                .requires(ConventionTags.INTERFACE)
+                .unlockedBy("has_interface", has(ConventionTags.INTERFACE))
                 .save(consumer, AppEng.makeId("network/parts/terminals_interface"));
-        ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_TERMINAL)
+        ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ENCODING_TERMINAL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
                 .requires(AEParts.CRAFTING_TERMINAL)
                 .unlockedBy("has_crafting_terminal", has(AEParts.CRAFTING_TERMINAL))
@@ -916,14 +827,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_engineering_processor", has(AEItems.ENGINEERING_PROCESSOR))
                 .save(consumer, AppEng.makeId("tools/misctools_entropy_manipulator"));
 
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL1K, AEItems.ITEM_1K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4k, AEItems.ITEM_4K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL16K, AEItems.ITEM_16K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL64K, AEItems.ITEM_64K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL1K, AEItems.FLUID_1K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4k, AEItems.FLUID_4K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL16K, AEItems.FLUID_16K_CELL_COMPONENT);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K, AEItems.FLUID_64K_CELL_COMPONENT);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL1K, AEItems.ITEM_CELL_1K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4k, AEItems.ITEM_CELL_4K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL16K, AEItems.ITEM_CELL_16K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL64K, AEItems.ITEM_CELL_64K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL1K, AEItems.FLUID_CELL_1K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4k, AEItems.FLUID_CELL_4K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL16K, AEItems.FLUID_CELL_16K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K, AEItems.FLUID_CELL_64K);
 
         ShapedRecipeBuilder.shaped(AEItems.BIOMETRIC_CARD)
                 .pattern("abb")
@@ -1099,7 +1010,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_16k_item_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_components_cell_64k_part"));
 
-        ShapedRecipeBuilder.shaped(AEItems.CELL1K)
+        ShapedRecipeBuilder.shaped(AEItems.ITEM_CELL_1K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
@@ -1109,14 +1020,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_1k_item_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_1k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CELL1K)
+        ShapelessRecipeBuilder.shapeless(AEItems.ITEM_CELL_1K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
                 .requires(AEItems.ITEM_1K_CELL_COMPONENT)
                 .unlockedBy("has_1k_item_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
                 .unlockedBy("has_empty_storage_cell", has(AEItems.EMPTY_STORAGE_CELL))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_1k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.CELL4K)
+        ShapedRecipeBuilder.shaped(AEItems.ITEM_CELL_4K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
@@ -1126,13 +1037,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_4k_item_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_4k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CELL4K)
+        ShapelessRecipeBuilder.shapeless(AEItems.ITEM_CELL_4K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
                 .requires(AEItems.ITEM_4K_CELL_COMPONENT)
                 .unlockedBy("has_4k_item_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_4k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.CELL16K)
+        ShapedRecipeBuilder.shaped(AEItems.ITEM_CELL_16K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
@@ -1142,13 +1053,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_16k_item_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_16k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CELL16K)
+        ShapelessRecipeBuilder.shapeless(AEItems.ITEM_CELL_16K)
                 .requires(AEItems.ITEM_16K_CELL_COMPONENT)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
                 .unlockedBy("has_16k_item_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_16k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.CELL64K)
+        ShapedRecipeBuilder.shaped(AEItems.ITEM_CELL_64K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
@@ -1158,7 +1069,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.IRON_INGOT)
                 .unlockedBy("has_64k_item_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_64k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CELL64K)
+        ShapelessRecipeBuilder.shapeless(AEItems.ITEM_CELL_64K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
                 .requires(AEItems.ITEM_64K_CELL_COMPONENT)
                 .unlockedBy("has_64k_item_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
@@ -1166,109 +1077,69 @@ public class CraftingRecipes extends AE2RecipeProvider {
     }
 
     private void addFluidCells(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_1K_CELL_COMPONENT)
-                .pattern("aba")
-                .pattern("bcb")
-                .pattern("aba")
-                .define('a', ConventionTags.dye(DyeColor.GREEN))
-                .define('b', ConventionTags.ALL_CERTUS_QUARTZ)
-                .define('c', AEItems.LOGIC_PROCESSOR)
-                .unlockedBy("has_logic_processor", has(AEItems.LOGIC_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/cells/fluid_storage_components_cell_1k_part"));
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_4K_CELL_COMPONENT)
-                .pattern("aba")
-                .pattern("cdc")
-                .pattern("aca")
-                .define('a', ConventionTags.dye(DyeColor.GREEN))
-                .define('b', AEItems.CALCULATION_PROCESSOR)
-                .define('c', AEItems.FLUID_1K_CELL_COMPONENT)
-                .define('d', AEBlocks.QUARTZ_GLASS)
-                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.FLUID_1K_CELL_COMPONENT))
-                .save(consumer, AppEng.makeId("network/cells/fluid_storage_components_cell_4k_part"));
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_16K_CELL_COMPONENT)
-                .pattern("aba")
-                .pattern("cdc")
-                .pattern("aca")
-                .define('a', ConventionTags.dye(DyeColor.GREEN))
-                .define('b', AEItems.CALCULATION_PROCESSOR)
-                .define('c', AEItems.FLUID_4K_CELL_COMPONENT)
-                .define('d', AEBlocks.QUARTZ_GLASS)
-                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.FLUID_4K_CELL_COMPONENT))
-                .save(consumer, AppEng.makeId("network/cells/fluid_storage_components_cell_16k_part"));
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_64K_CELL_COMPONENT)
-                .pattern("aba")
-                .pattern("cdc")
-                .pattern("aca")
-                .define('a', ConventionTags.dye(DyeColor.GREEN))
-                .define('b', AEItems.CALCULATION_PROCESSOR)
-                .define('c', AEItems.FLUID_16K_CELL_COMPONENT)
-                .define('d', AEBlocks.QUARTZ_GLASS)
-                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.FLUID_16K_CELL_COMPONENT))
-                .save(consumer, AppEng.makeId("network/cells/fluid_storage_components_cell_64k_part"));
-
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL1K)
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_1K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
                 .define('a', AEBlocks.QUARTZ_GLASS)
                 .define('b', ConventionTags.REDSTONE)
-                .define('c', AEItems.FLUID_1K_CELL_COMPONENT)
-                .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.FLUID_1K_CELL_COMPONENT))
+                .define('c', AEItems.ITEM_1K_CELL_COMPONENT)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_1k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL1K)
+        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL_1K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
-                .requires(AEItems.FLUID_1K_CELL_COMPONENT)
+                .requires(AEItems.ITEM_1K_CELL_COMPONENT)
                 .unlockedBy("has_empty_storage_cell", has(AEItems.EMPTY_STORAGE_CELL))
-                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.FLUID_1K_CELL_COMPONENT))
+                .unlockedBy("has_1k_fluid_cell_component", has(AEItems.ITEM_1K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_1k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL4K)
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_4K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
                 .define('a', AEBlocks.QUARTZ_GLASS)
                 .define('b', ConventionTags.REDSTONE)
-                .define('c', AEItems.FLUID_4K_CELL_COMPONENT)
-                .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.FLUID_4K_CELL_COMPONENT))
+                .define('c', AEItems.ITEM_4K_CELL_COMPONENT)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_4k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL4K)
+        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL_4K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
-                .requires(AEItems.FLUID_4K_CELL_COMPONENT)
-                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.FLUID_4K_CELL_COMPONENT))
+                .requires(AEItems.ITEM_4K_CELL_COMPONENT)
+                .unlockedBy("has_4k_fluid_cell_component", has(AEItems.ITEM_4K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_4k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL16K)
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_16K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
                 .define('a', AEBlocks.QUARTZ_GLASS)
                 .define('b', ConventionTags.REDSTONE)
-                .define('c', AEItems.FLUID_16K_CELL_COMPONENT)
-                .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.FLUID_16K_CELL_COMPONENT))
+                .define('c', AEItems.ITEM_16K_CELL_COMPONENT)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_16k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL16K)
+        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL_16K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
-                .requires(AEItems.FLUID_16K_CELL_COMPONENT)
-                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.FLUID_16K_CELL_COMPONENT))
+                .requires(AEItems.ITEM_16K_CELL_COMPONENT)
+                .unlockedBy("has_16k_fluid_cell_component", has(AEItems.ITEM_16K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_16k_storage"));
 
-        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL64K)
+        ShapedRecipeBuilder.shaped(AEItems.FLUID_CELL_64K)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
                 .define('a', AEBlocks.QUARTZ_GLASS)
                 .define('b', ConventionTags.REDSTONE)
-                .define('c', AEItems.FLUID_64K_CELL_COMPONENT)
-                .define('d', ConventionTags.IRON_INGOT)
-                .unlockedBy("has_64k_fluid_cell_component", has(AEItems.FLUID_64K_CELL_COMPONENT))
+                .define('c', AEItems.ITEM_64K_CELL_COMPONENT)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .unlockedBy("has_64k_fluid_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_64k"));
-        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL64K)
+        ShapelessRecipeBuilder.shapeless(AEItems.FLUID_CELL_64K)
                 .requires(AEItems.EMPTY_STORAGE_CELL)
-                .requires(AEItems.FLUID_64K_CELL_COMPONENT)
-                .unlockedBy("has_64k_fluid_cell_component", has(AEItems.FLUID_64K_CELL_COMPONENT))
+                .requires(AEItems.ITEM_64K_CELL_COMPONENT)
+                .unlockedBy("has_64k_fluid_cell_component", has(AEItems.ITEM_64K_CELL_COMPONENT))
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_64k_storage"));
     }
 

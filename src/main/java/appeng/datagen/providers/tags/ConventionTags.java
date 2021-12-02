@@ -99,8 +99,7 @@ public final class ConventionTags {
     public static Tag.Named<Item> COVERED_DENSE_CABLE = tag("ae2:covered_dense_cable");
     public static Tag.Named<Item> SMART_DENSE_CABLE = tag("ae2:smart_dense_cable");
     public static Tag.Named<Item> ILLUMINATED_PANEL = tag("ae2:illuminated_panel");
-    public static Tag.Named<Item> ITEM_INTERFACE = tag("ae2:item_interface");
-    public static Tag.Named<Item> FLUID_INTERFACE = tag("ae2:fluid_interface");
+    public static Tag.Named<Item> INTERFACE = tag("ae2:interface");
     public static Tag.Named<Item> QUARTZ_WRENCH = tag("ae2:quartz_wrench");
     public static Tag.Named<Item> QUARTZ_KNIFE = tag("ae2:knife");
     public static Tag.Named<Item> PAINT_BALLS = tag("ae2:paint_balls");

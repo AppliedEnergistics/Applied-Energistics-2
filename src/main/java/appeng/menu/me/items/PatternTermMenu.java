@@ -41,7 +41,6 @@ import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.GenericStack;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.StorageChannels;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.data.AEItemKey;
 import appeng.core.definitions.AEItems;
@@ -56,6 +55,7 @@ import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.slot.FakeCraftingMatrixSlot;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
@@ -71,7 +71,7 @@ import appeng.util.inv.PlayerInternalInventory;
  *
  * @see appeng.client.gui.me.items.PatternTermScreen
  */
-public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHost, IMenuCraftingPacket {
+public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotHost, IMenuCraftingPacket {
 
     private static final String ACTION_SET_CRAFT_MODE = "setCraftMode";
     private static final String ACTION_ENCODE = "encode";
@@ -112,10 +112,10 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
         this(TYPE, id, ip, monitorable, true);
     }
 
-    public PatternTermMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost monitorable,
+    public PatternTermMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
             boolean bindInventory) {
-        super(menuType, id, ip, monitorable, bindInventory);
-        this.patternTerminal = (IPatternTerminalHost) monitorable;
+        super(menuType, id, ip, host, bindInventory);
+        this.patternTerminal = (IPatternTerminalHost) host;
 
         var patternInv = this.getPatternTerminal().getSubInventory(ISegmentedInventory.PATTERNS);
         var output = this.getPatternTerminal().getSubInventory(IPatternTerminalHost.INV_OUTPUT);
@@ -129,7 +129,7 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
 
         // Create the output slot used for crafting mode patterns
         this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
-                monitorable, this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
+                host.getInventory(), this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
         this.craftOutputSlot.setIcon(null);
 
         // Create slots for the outputs of processing-mode patterns. Unrolled as each as a different semantic
@@ -389,12 +389,12 @@ public class PatternTermMenu extends ItemTerminalMenu implements IOptionalSlotHo
             return;
         }
 
-        var storage = this.getPatternTerminal().getInventory(StorageChannels.items());
+        var storage = this.getPatternTerminal().getInventory();
         var all = storage.getCachedAvailableStacks();
 
         final ItemStack is = r.assemble(ic);
 
-        var partitionFilter = ViewCellItem.createFilter(StorageChannels.items(), this.getViewCells());
+        var partitionFilter = ViewCellItem.createItemFilter(this.getViewCells());
         for (int x = 0; x < ic.getContainerSize(); x++) {
             if (!ic.getItem(x).isEmpty()) {
                 var pulled = Platform.extractItemsByRecipe(this.powerSource,

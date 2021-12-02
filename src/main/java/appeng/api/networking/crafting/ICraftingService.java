@@ -26,7 +26,6 @@ package appeng.api.networking.crafting;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -38,7 +37,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.data.AEKey;
 
 public interface ICraftingService extends IGridService {
@@ -71,7 +70,7 @@ public interface ICraftingService extends IGridService {
      * @return another fuzzy equals stack that can be crafted and matches the filter, or null if none exists
      */
     @Nullable
-    AEKey getFuzzyCraftable(AEKey whatToCraft, Predicate<AEKey> filter);
+    AEKey getFuzzyCraftable(AEKey whatToCraft, AEKeyFilter filter);
 
     /**
      * Begin calculating a crafting job.
@@ -120,7 +119,7 @@ public interface ICraftingService extends IGridService {
     /**
      * Get the set of things that can be crafted for a given storage channel.
      */
-    <T extends AEKey> Set<T> getCraftables(IStorageChannel<T> channel);
+    Set<AEKey> getCraftables(AEKeyFilter filter);
 
     /**
      * is this item being crafted?

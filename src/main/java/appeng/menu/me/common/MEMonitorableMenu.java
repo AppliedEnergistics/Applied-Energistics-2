@@ -35,10 +35,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.*;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Setting;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.implementations.blockentities.IViewCellStorage;
-import appeng.api.implementations.menuobjects.IPortableCell;
+import appeng.api.implementations.menuobjects.IPortableTerminal;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -47,10 +55,13 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.StorageHelper;
+import appeng.api.storage.cells.IBasicCellItem;
+import appeng.api.storage.data.AEFluidKey;
+import appeng.api.storage.data.AEItemKey;
 import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.IConfigManager;
@@ -61,21 +72,41 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
+import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuLocator;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
+import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
+import appeng.util.Platform;
 
 /**
  * @see MEMonitorableScreen
  */
-public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
-        implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener<T>, IMEInteractionHandler {
+public class MEMonitorableMenu extends AEBaseMenu
+        implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener, IMEInteractionHandler {
+
+    public static final MenuType<MEMonitorableMenu> TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, ITerminalHost>create(MEMonitorableMenu::new, ITerminalHost.class)
+            .build("item_terminal");
+
+    public static final MenuType<MEMonitorableMenu> PORTABLE_ITEM_CELL_TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+            .build("portable_item_cell");
+    public static final MenuType<MEMonitorableMenu> PORTABLE_FLUID_CELL_TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+            .build("portable_fluid_cell");
+
+    public static final MenuType<MEMonitorableMenu> WIRELESS_TYPE = MenuTypeBuilder
+            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+            .build("wirelessterm");
 
     private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;
@@ -95,30 +126,28 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
     private IGridNode networkNode;
 
     protected final IEnergySource powerSource;
-    protected final IMEMonitor<T> monitor;
+    protected final MEMonitorStorage monitor;
 
-    private final IncrementalUpdateHelper<T> updateHelper = new IncrementalUpdateHelper<>();
-
-    private final IStorageChannel<T> storageChannel;
+    private final IncrementalUpdateHelper updateHelper = new IncrementalUpdateHelper();
 
     /**
      * The repository of entries currently known on the client-side. This is maintained by the screen associated with
      * this menu and will only be non-null on the client-side.
      */
     @Nullable
-    private IClientRepo<T> clientRepo;
+    private IClientRepo clientRepo;
 
     /**
      * The last set of craftables sent to the client.
      */
-    private Set<T> previousCraftables = Collections.emptySet();
+    private Set<AEKey> previousCraftables = Collections.emptySet();
 
-    public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip,
-            final ITerminalHost host, final boolean bindInventory,
-            IStorageChannel<T> storageChannel) {
+    public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
+        this(menuType, id, ip, host, true);
+    }
+
+    protected MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, boolean bindInventory) {
         super(menuType, id, ip, host);
-
-        this.storageChannel = storageChannel;
 
         this.host = host;
         this.clientCM = new ConfigManager(this);
@@ -131,11 +160,11 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         if (isServer()) {
             this.serverCM = host.getConfigManager();
 
-            this.monitor = host.getInventory(storageChannel);
+            this.monitor = host.getInventory();
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
 
-                if (host instanceof IPortableCell || host instanceof IMEChest) {
+                if (host instanceof IPortableTerminal || host instanceof IMEChest) {
                     powerSource = (IEnergySource) host;
                 } else if (host instanceof IActionHost actionHost) {
                     var node = actionHost.getActionableNode();
@@ -183,11 +212,22 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         return this.networkNode;
     }
 
+    public boolean isKeyVisible(AEKey key) {
+        // If the host is a basic item cell with a limited key space, account for this
+        if (host instanceof ItemMenuHost itemMenuHost) {
+            if (itemMenuHost.getItemStack().getItem() instanceof IBasicCellItem basicCellItem) {
+                return basicCellItem.getKeySpace().contains(key);
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public void broadcastChanges() {
         if (isServer()) {
             // Close the screen if the backing network inventory has changed
-            if (this.monitor != this.host.getInventory(storageChannel)) {
+            if (this.monitor != this.host.getInventory()) {
                 this.setValidMenu(false);
                 return;
             }
@@ -206,12 +246,13 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
 
             var craftables = getCraftablesFromGrid();
             // This is currently not supported/backed by any network service
-            var requestables = new KeyCounter<T>();
+            var requestables = new KeyCounter();
 
             if (this.updateHelper.hasChanges() || !previousCraftables.equals(craftables)) {
                 try {
                     var builder = MEInventoryUpdatePacket
-                            .builder(getStorageChannel(), containerId, updateHelper.isFullUpdate());
+                            .builder(containerId, updateHelper.isFullUpdate());
+                    builder.setFilter(this::isKeyVisible);
 
                     var storageList = monitor.getCachedAvailableStacks();
                     if (this.updateHelper.isFullUpdate()) {
@@ -239,9 +280,9 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
 
     }
 
-    private Set<T> getCraftablesFromGrid() {
+    private Set<AEKey> getCraftablesFromGrid() {
         if (networkNode != null && networkNode.isActive()) {
-            return networkNode.getGrid().getCraftingService().getCraftables(storageChannel);
+            return networkNode.getGrid().getCraftingService().getCraftables(this::isKeyVisible);
         }
         return Collections.emptySet();
     }
@@ -328,8 +369,8 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
     }
 
     @Override
-    public void postChange(IMEMonitor<T> monitor, Iterable<T> change, IActionSource source) {
-        for (var key : change) {
+    public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource source) {
+        for (AEKey key : change) {
             this.updateHelper.addChange(key);
         }
     }
@@ -392,7 +433,7 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
             return;
         }
 
-        T stack = getStackBySerial(serial);
+        AEKey stack = getStackBySerial(serial);
         if (stack == null) {
             // This can happen if the client sent the request after we removed the item, but before
             // the client knows about it (-> network delay).
@@ -402,11 +443,211 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         handleNetworkInteraction(player, stack, action);
     }
 
-    protected abstract void handleNetworkInteraction(ServerPlayer player, @Nullable T clickedKey,
-            InventoryAction action);
+    protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey, InventoryAction action) {
+
+        if (action == InventoryAction.PICKUP_OR_SET_DOWN && AEFluidKey.is(clickedKey)) {
+            action = InventoryAction.FILL_ITEM;
+        }
+
+        if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE) {
+            if (FluidContainerHelper.getContainedStack(getCarried()) != null) {
+                action = InventoryAction.EMPTY_ITEM;
+            }
+        }
+
+        if (action == InventoryAction.FILL_ITEM) {
+            handleFillingHeldItem(
+                    (amount, mode) -> StorageHelper.poweredExtraction(powerSource, monitor, clickedKey, amount,
+                            getActionSource(), mode),
+                    clickedKey);
+        } else if (action == InventoryAction.EMPTY_ITEM) {
+            handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(powerSource, monitor, what, amount,
+                    getActionSource(), mode));
+        }
+
+        // Handle interactions where the player wants to put something into the network
+        if (clickedKey == null) {
+            if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE || action == InventoryAction.ROLL_DOWN) {
+                putCarriedItemIntoNetwork(true);
+            } else if (action == InventoryAction.PICKUP_OR_SET_DOWN) {
+                putCarriedItemIntoNetwork(false);
+            }
+            return;
+        }
+
+        if (!(clickedKey instanceof AEItemKey clickedItem)) {
+            return;
+        }
+
+        switch (action) {
+            case AUTO_CRAFT:
+                final MenuLocator locator = getLocator();
+                if (locator != null) {
+                    CraftAmountMenu.open(player, locator, clickedKey, 1);
+                }
+                break;
+
+            case SHIFT_CLICK:
+                moveOneStackToPlayer(clickedItem);
+                break;
+
+            case ROLL_DOWN: {
+                // Insert 1 of the carried stack into the network (or at least try to), regardless of what we're
+                // hovering in the network inventory.
+                var carried = getCarried();
+                if (!carried.isEmpty()) {
+                    var what = AEItemKey.of(carried);
+                    var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, 1, this.getActionSource());
+                    if (inserted > 0) {
+                        getCarried().shrink(1);
+                    }
+                }
+            }
+                break;
+            case ROLL_UP:
+            case PICKUP_SINGLE: {
+                // Extract 1 of the hovered stack from the network (or at least try to), and add it to the carried item
+                var item = getCarried();
+
+                if (!item.isEmpty()) {
+                    if (item.getCount() >= item.getMaxStackSize()) {
+                        return; // Max stack size reached
+                    }
+                    if (!clickedItem.matches(item)) {
+                        return; // Not stackable
+                    }
+                }
+
+                var extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedItem, 1,
+                        this.getActionSource());
+                if (extracted > 0) {
+                    if (item.isEmpty()) {
+                        setCarried(clickedItem.toStack());
+                    } else {
+                        // we checked beforehand that max stack size was not reached
+                        item.grow(1);
+                    }
+                }
+            }
+                break;
+            case PICKUP_OR_SET_DOWN: {
+                if (!getCarried().isEmpty()) {
+                    putCarriedItemIntoNetwork(false);
+                } else {
+                    var extracted = StorageHelper.poweredExtraction(
+                            powerSource,
+                            monitor,
+                            clickedItem,
+                            clickedItem.getItem().getMaxStackSize(),
+                            this.getActionSource());
+                    if (extracted > 0) {
+                        setCarried(clickedItem.toStack((int) extracted));
+                    } else {
+                        setCarried(ItemStack.EMPTY);
+                    }
+                }
+            }
+                break;
+            case SPLIT_OR_PLACE_SINGLE:
+                if (!getCarried().isEmpty()) {
+                    putCarriedItemIntoNetwork(true);
+                } else {
+                    var extracted = monitor.extract(
+                            clickedItem,
+                            clickedItem.getItem().getMaxStackSize(),
+                            Actionable.SIMULATE,
+                            this.getActionSource());
+
+                    if (extracted > 0) {
+                        // Half
+                        extracted = extracted + 1 >> 1;
+                        extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedItem, extracted,
+                                this.getActionSource());
+                    }
+
+                    if (extracted > 0) {
+                        setCarried(clickedItem.toStack((int) extracted));
+                    } else {
+                        setCarried(ItemStack.EMPTY);
+                    }
+                }
+
+                break;
+            case CREATIVE_DUPLICATE:
+                if (player.getAbilities().instabuild) {
+                    var is = clickedItem.toStack();
+                    is.setCount(is.getMaxStackSize());
+                    setCarried(is);
+                }
+                break;
+            case MOVE_REGION:
+                final int playerInv = player.getInventory().items.size();
+                for (int slotNum = 0; slotNum < playerInv; slotNum++) {
+                    if (!moveOneStackToPlayer(clickedItem)) {
+                        break;
+                    }
+                }
+                break;
+            default:
+                AELog.warn("Received unhandled inventory action %s from client in %s", action, getClass());
+                break;
+        }
+    }
+
+    protected void putCarriedItemIntoNetwork(boolean singleItem) {
+        var heldStack = getCarried();
+
+        var what = AEItemKey.of(heldStack);
+        if (what == null) {
+            return;
+        }
+
+        var amount = heldStack.getCount();
+        if (singleItem) {
+            amount = 1;
+        }
+
+        var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, amount,
+                this.getActionSource());
+        setCarried(Platform.getInsertionRemainder(heldStack, inserted));
+    }
+
+    private boolean moveOneStackToPlayer(AEItemKey stack) {
+        ItemStack myItem = stack.toStack();
+
+        var playerInv = getPlayerInventory();
+        var slot = playerInv.getSlotWithRemainingSpace(myItem);
+        int toExtract;
+        if (slot != -1) {
+            // Try to fill up existing slot with item
+            toExtract = myItem.getMaxStackSize() - playerInv.getItem(slot).getCount();
+        } else {
+            slot = playerInv.getFreeSlot();
+            if (slot == -1) {
+                return false; // No more free space
+            }
+            toExtract = myItem.getMaxStackSize();
+        }
+        if (toExtract <= 0) {
+            return false;
+        }
+
+        var extracted = StorageHelper.poweredExtraction(powerSource, monitor, stack, toExtract, getActionSource());
+        if (extracted == 0) {
+            return false; // No items available
+        }
+
+        var itemInSlot = playerInv.getItem(slot);
+        if (itemInSlot.isEmpty()) {
+            playerInv.setItem(slot, stack.toStack((int) extracted));
+        } else {
+            itemInSlot.grow((int) extracted);
+        }
+        return true;
+    }
 
     @Nullable
-    protected final T getStackBySerial(long serial) {
+    protected final AEKey getStackBySerial(long serial) {
         return updateHelper.getBySerial(serial);
     }
 
@@ -426,17 +667,55 @@ public abstract class MEMonitorableMenu<T extends AEKey> extends AEBaseMenu
         this.gui = gui;
     }
 
-    public IStorageChannel<T> getStorageChannel() {
-        return this.storageChannel;
-    }
-
     @Nullable
-    public IClientRepo<T> getClientRepo() {
+    public IClientRepo getClientRepo() {
         return clientRepo;
     }
 
-    public void setClientRepo(@Nullable IClientRepo<T> clientRepo) {
+    public void setClientRepo(@Nullable IClientRepo clientRepo) {
         this.clientRepo = clientRepo;
+    }
+
+    /**
+     * Try to transfer an item stack into the grid.
+     */
+    @Override
+    protected ItemStack transferStackToMenu(ItemStack input) {
+        if (!canInteractWithGrid()) {
+            // Allow non-grid slots to be use
+            return super.transferStackToMenu(input);
+        }
+
+        var key = AEItemKey.of(input);
+        if (key == null || !isKeyVisible(key)) {
+            return input;
+        }
+
+        var inserted = StorageHelper.poweredInsert(powerSource, monitor,
+                key, input.getCount(),
+                this.getActionSource());
+        return Platform.getInsertionRemainder(input, inserted);
+    }
+
+    /**
+     * Checks if the terminal has a given amount of the requested item. Used to determine for REI/JEI if a recipe is
+     * potentially craftable based on the available items.
+     */
+    public boolean hasItemType(ItemStack itemStack, int amount) {
+        var clientRepo = getClientRepo();
+
+        if (clientRepo != null) {
+            for (var stack : clientRepo.getAllEntries()) {
+                if (AEItemKey.matches(stack.getWhat(), itemStack)) {
+                    if (stack.getStoredAmount() >= amount) {
+                        return true;
+                    }
+                    amount -= stack.getStoredAmount();
+                }
+            }
+        }
+
+        return false;
     }
 
 }

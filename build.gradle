@@ -54,12 +54,11 @@ dependencies {
     mappings loom.layered() {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-1.17.1:2021.09.05@zip")
-        signatureFix("net.fabricmc:yarn:${project.minecraft_version}+${project.yarn_version}:v2")
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 

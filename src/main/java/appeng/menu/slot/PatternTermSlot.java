@@ -24,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.helpers.IMenuCraftingPacket;
 
 /**
@@ -36,7 +36,7 @@ public class PatternTermSlot extends CraftingTermSlot {
     private final IOptionalSlotHost host;
 
     public PatternTermSlot(Player player, IActionSource mySrc, IEnergySource energySrc,
-            IStorageMonitorable storage, InternalInventory cMatrix, InternalInventory secondMatrix,
+            MEMonitorStorage storage, InternalInventory cMatrix, InternalInventory secondMatrix,
             IOptionalSlotHost h, int groupNumber,
             IMenuCraftingPacket c) {
         super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, c);

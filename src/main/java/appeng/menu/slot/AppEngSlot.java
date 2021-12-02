@@ -115,7 +115,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public void set(final ItemStack stack) {
+    public void set(ItemStack stack) {
         if (this.isSlotEnabled()) {
             this.inventory.setItemDirect(this.invSlot, stack);
             this.setChanged();

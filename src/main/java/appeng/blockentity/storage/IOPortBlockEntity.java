@@ -51,12 +51,11 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.data.AEKey;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.storage.data.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
@@ -282,7 +281,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     /**
      * Work is complete when the inventory has reached the desired end-state.
      */
-    public boolean matchesFullnessMode(ICellInventory<?> inv) {
+    public boolean matchesFullnessMode(StorageCell inv) {
         return switch (manager.getSetting(Settings.FULLNESS_MODE)) {
             // In this mode, work completes as soon as no more items are moved within one operation,
             // independent of the actual inventory state
@@ -292,15 +291,12 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         };
     }
 
-    private <T extends AEKey> long transferContents(IGrid grid,
-            ICellInventory<T> cellInv,
-            long itemsToMove) {
+    private long transferContents(IGrid grid, StorageCell cellInv, long itemsToMove) {
 
-        var channel = cellInv.getChannel();
-        var networkInv = grid.getStorageService().getInventory(channel);
+        var networkInv = grid.getStorageService().getInventory();
 
-        KeyCounter<T> srcList;
-        IMEInventory<T> src, destination;
+        KeyCounter srcList;
+        MEStorage src, destination;
         if (this.manager.getSetting(Settings.OPERATION_MODE) == OperationMode.EMPTY) {
             src = cellInv;
             srcList = cellInv.getAvailableStacks();
@@ -310,8 +306,6 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             srcList = networkInv.getCachedAvailableStacks();
             destination = cellInv;
         }
-
-        itemsToMove *= channel.transferFactor();
 
         var energy = grid.getEnergyService();
         boolean didStuff;
@@ -326,7 +320,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                     var possible = destination.insert(what, totalStackSize, Actionable.SIMULATE, this.mySrc);
 
                     if (possible > 0) {
-                        possible = Math.min(possible, itemsToMove);
+                        possible = Math.min(possible, itemsToMove * what.transferFactor());
 
                         possible = src.extract(what, possible, Actionable.MODULATE, this.mySrc);
                         if (possible > 0) {
@@ -337,7 +331,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                             }
 
                             if (inserted > 0) {
-                                itemsToMove -= inserted;
+                                itemsToMove -= Math.max(1, inserted / what.transferFactor());
                                 didStuff = true;
                             }
 
@@ -348,7 +342,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             }
         } while (itemsToMove > 0 && didStuff);
 
-        return itemsToMove / channel.transferFactor();
+        return itemsToMove;
     }
 
     private boolean moveSlot(final int x) {

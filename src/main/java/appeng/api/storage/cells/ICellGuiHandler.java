@@ -27,8 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.data.AEKey;
 
 /**
  * This interface is used by the ME Chest to open the appropriate GUI when a storage cell is inserted into the chest,
@@ -40,22 +38,12 @@ import appeng.api.storage.data.AEKey;
  */
 public interface ICellGuiHandler {
     /**
-     * Return true if this handler can show GUI for this channel.
-     *
-     * @param channel Storage channel
-     * @return True if handled, else false.
-     */
-    <T extends AEKey> boolean isHandlerFor(IStorageChannel<T> channel);
-
-    /**
      * Return true to prioritize this handler for the provided {@link ItemStack}.
      *
      * @param cell Cell ItemStack
      * @return True, if specialized else false.
      */
-    default boolean isSpecializedFor(ItemStack cell) {
-        return false;
-    }
+    boolean isSpecializedFor(ItemStack cell);
 
     /**
      * Called when the storage cell is placed in an ME Chest and the user tries to open the terminal side, if your item

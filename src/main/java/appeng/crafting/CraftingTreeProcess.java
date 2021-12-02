@@ -106,7 +106,7 @@ public class CraftingTreeProcess {
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 
-        var containerItems = this.containerItems ? new KeyCounter<>() : null;
+        var containerItems = this.containerItems ? new KeyCounter() : null;
 
         // request and remove inputs...
         for (var entry : this.nodes.entrySet()) {

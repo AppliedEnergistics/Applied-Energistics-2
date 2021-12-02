@@ -21,8 +21,8 @@ package appeng.me.cells;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ISaveProvider;
+import appeng.api.storage.cells.StorageCell;
 import appeng.items.storage.CreativeCellItem;
 
 /**
@@ -35,9 +35,9 @@ public class CreativeCellHandler implements ICellHandler {
     }
 
     @Override
-    public ICellInventory<?> getCellInventory(ItemStack is, ISaveProvider container) {
-        if (!is.isEmpty() && is.getItem() instanceof CreativeCellItem creativeCellItem) {
-            return new CreativeCellInventory<>(creativeCellItem.getChannel(), is);
+    public StorageCell getCellInventory(ItemStack is, ISaveProvider container) {
+        if (!is.isEmpty() && is.getItem() instanceof CreativeCellItem) {
+            return new CreativeCellInventory(is);
         }
         return null;
     }

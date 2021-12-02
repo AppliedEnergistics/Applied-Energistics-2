@@ -40,15 +40,15 @@ import appeng.api.storage.data.AEKey;
  * using it's {@link ItemStack#getShareTag() share tag}, which would not match the server-side stack if it's sent back,
  * or that would group distinct server-side entries together on the client-side if their share tag was equal.
  */
-public class IncrementalUpdateHelper<T extends AEKey> implements Iterable<T> {
+public class IncrementalUpdateHelper implements Iterable<AEKey> {
 
     /**
      * Maps stacks to serial numbers. This relies on the fact that these stacks are equal iff their type is equal, and
      * two stacks with different counts are still equal.
      */
-    private final BiMap<T, Long> mapping;
+    private final BiMap<AEKey, Long> mapping;
 
-    private final Set<T> changes = new HashSet<>();
+    private final Set<AEKey> changes = new HashSet<>();
 
     private long serial;
 
@@ -62,15 +62,15 @@ public class IncrementalUpdateHelper<T extends AEKey> implements Iterable<T> {
     }
 
     @Nullable
-    public Long getSerial(T stack) {
+    public Long getSerial(AEKey stack) {
         return mapping.get(stack);
     }
 
-    public long getOrAssignSerial(T key) {
+    public long getOrAssignSerial(AEKey key) {
         return mapping.computeIfAbsent(key, k -> ++this.serial);
     }
 
-    public T getBySerial(long serial) {
+    public AEKey getBySerial(long serial) {
         return mapping.inverse().get(serial);
     }
 
@@ -94,7 +94,7 @@ public class IncrementalUpdateHelper<T extends AEKey> implements Iterable<T> {
         this.mapping.clear();
     }
 
-    public void addChange(T entry) {
+    public void addChange(AEKey entry) {
         if (!changes.add(entry)) {
             changes.remove(entry);
             changes.add(entry);
@@ -105,7 +105,7 @@ public class IncrementalUpdateHelper<T extends AEKey> implements Iterable<T> {
      * Removes the serial mapping for the given key. Will lead to a new serial being generated the next time this
      * particular key is used.
      */
-    public void removeSerial(T what) {
+    public void removeSerial(AEKey what) {
         mapping.remove(what);
     }
 
@@ -123,17 +123,17 @@ public class IncrementalUpdateHelper<T extends AEKey> implements Iterable<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<AEKey> iterator() {
         return changes.iterator();
     }
 
     @Override
-    public void forEach(Consumer<? super T> action) {
+    public void forEach(Consumer<? super AEKey> action) {
         changes.forEach(action);
     }
 
     @Override
-    public Spliterator<T> spliterator() {
+    public Spliterator<AEKey> spliterator() {
         return changes.spliterator();
     }
 }

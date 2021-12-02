@@ -1,8 +1,0 @@
-{
-  "parent": "ae2:part/display_off",
-  "textures": {
-    "lightsBright": "ae2:part/pattern_terminal_bright",
-    "lightsMedium": "ae2:part/pattern_terminal_medium",
-    "lightsDark": "ae2:part/pattern_terminal_dark"
-  }
-}

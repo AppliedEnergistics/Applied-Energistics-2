@@ -20,8 +20,6 @@ package appeng.items.storage;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -31,7 +29,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.items.AEBaseItem;
@@ -39,12 +36,8 @@ import appeng.items.contents.CellConfig;
 import appeng.util.ConfigInventory;
 
 public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
-
-    private final IStorageChannel<?> storageChannel;
-
-    public CreativeCellItem(Properties props, IStorageChannel<?> storageChannel) {
+    public CreativeCellItem(Properties props) {
         super(props);
-        this.storageChannel = storageChannel;
     }
 
     @Override
@@ -53,8 +46,8 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public ConfigInventory<?> getConfigInventory(final ItemStack is) {
-        return CellConfig.create(this.storageChannel, is);
+    public ConfigInventory getConfigInventory(ItemStack is) {
+        return CellConfig.create(is);
     }
 
     @Override
@@ -64,12 +57,6 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
     @Override
     public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
-    }
-
-    @Nonnull
-    @Override
-    public IStorageChannel<?> getChannel() {
-        return this.storageChannel;
     }
 
     @Environment(EnvType.CLIENT)

@@ -37,7 +37,7 @@ import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.IPatternTerminalHost;
 import appeng.items.parts.PartModels;
-import appeng.menu.me.items.ItemTerminalMenu;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
@@ -46,9 +46,11 @@ import appeng.util.inv.AppEngInternalInventory;
 public class PatternTerminalPart extends AbstractTerminalPart implements IPatternTerminalHost {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/pattern_terminal_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/pattern_encoding_terminal_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/pattern_terminal_on");
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/pattern_encoding_terminal_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
@@ -102,7 +104,7 @@ public class PatternTerminalPart extends AbstractTerminalPart implements IPatter
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return PatternTermMenu.TYPE;
         }
-        return ItemTerminalMenu.TYPE;
+        return MEMonitorableMenu.TYPE;
     }
 
     @Override

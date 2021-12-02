@@ -42,13 +42,14 @@ import net.minecraft.world.item.Items;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.AEItemKey;
+import appeng.api.storage.data.AEKey;
 import appeng.api.storage.data.KeyCounter;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 public class KeyCounterTest {
 
-    KeyCounter<AEItemKey> itemList = new KeyCounter<>();
+    KeyCounter itemList = new KeyCounter();
 
     /**
      * add should merge item stacks by adding stored/requestable counts, and setting craftable if it wasn't set before.
@@ -265,9 +266,13 @@ public class KeyCounterTest {
             assertEquals(expectedDurabilities, durabilities);
         }
 
-        private int getDurabilityPercent(AEItemKey stack) {
-            var is = stack.toStack();
-            return (int) ((1.0f - is.getDamageValue() / (float) is.getMaxDamage()) * 100);
+        private int getDurabilityPercent(AEKey stack) {
+            if (stack instanceof AEItemKey itemKey) {
+                var is = itemKey.toStack();
+                return (int) ((1.0f - is.getDamageValue() / (float) is.getMaxDamage()) * 100);
+            } else {
+                return 100;
+            }
         }
     }
 

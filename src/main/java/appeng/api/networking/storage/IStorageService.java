@@ -26,15 +26,20 @@ package appeng.api.networking.storage;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.IStorageProvider;
+import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.data.AEKey;
 
 /**
- * Grid-wide storage services for all {@link IStorageChannel}.
+ * Grid-wide storage services for all {@link AEKeySpace}.
  */
-public interface IStorageService extends IGridService, IStorageMonitorable {
+public interface IStorageService extends IGridService {
+
+    /**
+     * @return The network inventory.
+     */
+    MEMonitorStorage getInventory();
 
     /**
      * Used to inform the network of alterations to the storage system that fall outside of the standard Network
@@ -46,9 +51,7 @@ public interface IStorageService extends IGridService, IStorageMonitorable {
      *
      * @param input injected items
      */
-    <T extends AEKey> void postAlterationOfStoredItems(IStorageChannel<T> chan,
-            Iterable<T> input,
-            IActionSource src);
+    void postAlterationOfStoredItems(Iterable<AEKey> input, IActionSource src);
 
     /**
      * Adds a {@link IStorageProvider} that is not associated with a specific {@link appeng.api.networking.IGridNode }.

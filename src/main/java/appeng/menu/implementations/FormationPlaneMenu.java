@@ -25,36 +25,30 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.api.storage.data.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.FormationPlaneScreen;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalFakeSlot;
-import appeng.parts.automation.AbstractFormationPlanePart;
+import appeng.parts.automation.FormationPlanePart;
 
 /**
- * This is used by both fluid and item formation planes.
- *
  * @see FormationPlaneScreen
  */
-public class FormationPlaneMenu extends UpgradeableMenu<AbstractFormationPlanePart<?>> {
+public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
 
-    public static final MenuType<FormationPlaneMenu> ITEM_TYPE = MenuTypeBuilder
-            .create(FormationPlaneMenu::new, AbstractFormationPlanePart.class)
+    public static final MenuType<FormationPlaneMenu> TYPE = MenuTypeBuilder
+            .create(FormationPlaneMenu::new, FormationPlanePart.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("item_formationplane");
-
-    public static final MenuType<FormationPlaneMenu> FLUID_TYPE = MenuTypeBuilder
-            .create(FormationPlaneMenu::new, AbstractFormationPlanePart.class)
-            .requirePermission(SecurityPermissions.BUILD)
-            .build("fluid_formationplane");
+            .build("formationplane");
 
     @GuiSync(7)
     public YesNo placeMode;
 
     public FormationPlaneMenu(MenuType<FormationPlaneMenu> type, int id, Inventory ip,
-            AbstractFormationPlanePart<?> host) {
+            FormationPlanePart host) {
         super(type, id, ip, host);
     }
 
@@ -82,7 +76,7 @@ public class FormationPlaneMenu extends UpgradeableMenu<AbstractFormationPlanePa
 
     @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
-        if (getHost().getChannel().supportsFuzzyRangeSearch()) {
+        if (supportsFuzzyRangeSearch()) {
             this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         }
         if (getHost().supportsEntityPlacement()) {
@@ -109,6 +103,15 @@ public class FormationPlaneMenu extends UpgradeableMenu<AbstractFormationPlanePa
     }
 
     public boolean supportsFuzzyMode() {
-        return hasUpgrade(Upgrades.FUZZY) && getHost().getChannel().supportsFuzzyRangeSearch();
+        return hasUpgrade(Upgrades.FUZZY) && supportsFuzzyRangeSearch();
+    }
+
+    private boolean supportsFuzzyRangeSearch() {
+        for (AEKey key : this.getHost().getConfig().keySet()) {
+            if (key.supportsFuzzyRangeSearch()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

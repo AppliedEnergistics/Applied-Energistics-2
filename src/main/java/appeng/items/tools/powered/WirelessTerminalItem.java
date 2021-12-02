@@ -54,7 +54,7 @@ import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.me.items.WirelessTermMenu;
+import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.util.ConfigManager;
 
 public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomReequipAnimation, IMenuItem {
@@ -134,7 +134,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
      * Allows other wireless terminals to override which menu is shown when it is opened.
      */
     public MenuType<?> getMenuType() {
-        return WirelessTermMenu.TYPE;
+        return MEMonitorableMenu.WIRELESS_TYPE;
     }
 
     @Override

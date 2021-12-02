@@ -31,7 +31,6 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.menu.implementations.IOBusMenu;
-import appeng.parts.automation.ItemExportBusPart;
 
 public class IOBusScreen extends UpgradeableScreen<IOBusMenu> {
 
@@ -50,17 +49,17 @@ public class IOBusScreen extends UpgradeableScreen<IOBusMenu> {
                 FuzzyMode.IGNORE_ALL);
         addToLeftToolbar(this.fuzzyMode);
 
-        // Craft & Scheduling mode is only supported by export bus
-        if (menu.getHost() instanceof ItemExportBusPart) {
-            this.craftMode = new ServerSettingToggleButton<>(Settings.CRAFT_ONLY,
-                    YesNo.NO);
+        if (menu.getHost().getConfigManager().hasSetting(Settings.CRAFT_ONLY)) {
+            this.craftMode = new ServerSettingToggleButton<>(Settings.CRAFT_ONLY, YesNo.NO);
             addToLeftToolbar(this.craftMode);
-
-            this.schedulingMode = new ServerSettingToggleButton<>(
-                    Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
-            addToLeftToolbar(this.schedulingMode);
         } else {
             this.craftMode = null;
+        }
+
+        if (menu.getHost().getConfigManager().hasSetting(Settings.SCHEDULING_MODE)) {
+            this.schedulingMode = new ServerSettingToggleButton<>(Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
+            addToLeftToolbar(this.schedulingMode);
+        } else {
             this.schedulingMode = null;
         }
     }

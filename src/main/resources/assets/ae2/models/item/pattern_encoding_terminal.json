@@ -1,0 +1,9 @@
+{
+  "parent": "ae2:item/display_base",
+  "textures": {
+    "front": "ae2:part/pattern_encoding_terminal",
+    "front_bright": "ae2:part/pattern_encoding_terminal_bright",
+    "front_medium": "ae2:part/pattern_encoding_terminal_medium",
+    "front_dark": "ae2:part/pattern_encoding_terminal_dark"
+  }
+}

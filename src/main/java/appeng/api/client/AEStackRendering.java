@@ -23,11 +23,16 @@
 
 package appeng.api.client;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
@@ -35,7 +40,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.AEKeySpace;
 import appeng.api.storage.data.AEKey;
 
 /**
@@ -45,12 +50,16 @@ import appeng.api.storage.data.AEKey;
 @Environment(EnvType.CLIENT)
 @ThreadSafe
 public class AEStackRendering {
-    private static volatile Map<IStorageChannel<?>, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
+    private static volatile Map<AEKeySpace, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
 
-    public static synchronized <T extends AEKey> void register(IStorageChannel<T> channel,
+    public static synchronized <T extends AEKey> void register(AEKeySpace channel,
+            Class<T> keyClass,
             IAEStackRenderHandler<T> handler) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(handler, "handler");
+        Objects.requireNonNull(keyClass, "keyClass");
+        Preconditions.checkArgument(channel.getKeyClass() == keyClass, "%s != %s",
+                channel.getKeyClass(), keyClass);
 
         var renderersCopy = new IdentityHashMap<>(renderers);
         if (renderersCopy.put(channel, handler) != null) {
@@ -59,13 +68,12 @@ public class AEStackRendering {
         renderers = renderersCopy;
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
-    public static <T extends AEKey> IAEStackRenderHandler<T> get(IStorageChannel<T> channel) {
-        return (IAEStackRenderHandler<T>) renderers.get(channel);
+    public static IAEStackRenderHandler<?> get(AEKeySpace channel) {
+        return renderers.get(channel);
     }
 
-    public static <T extends AEKey> IAEStackRenderHandler<T> getOrThrow(IStorageChannel<T> channel) {
+    public static IAEStackRenderHandler<?> getOrThrow(AEKeySpace channel) {
         var renderHandler = get(channel);
 
         if (renderHandler == null) {

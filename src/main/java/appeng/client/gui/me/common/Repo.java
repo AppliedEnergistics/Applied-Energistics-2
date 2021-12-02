@@ -44,27 +44,28 @@ import appeng.core.AELog;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
+import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 /**
  * For showing the network content of a storage channel, this class will maintain a client-side copy of the current
  * server-side storage, which is continuously synchronized to the client while it is open.
  */
-public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
+public class Repo implements IClientRepo {
 
-    public static final Comparator<GridInventoryEntry<?>> AMOUNT_ASC = Comparator
+    public static final Comparator<GridInventoryEntry> AMOUNT_ASC = Comparator
             .comparingLong(GridInventoryEntry::getStoredAmount);
 
-    public static final Comparator<GridInventoryEntry<?>> AMOUNT_DESC = AMOUNT_ASC.reversed();
+    public static final Comparator<GridInventoryEntry> AMOUNT_DESC = AMOUNT_ASC.reversed();
 
     private int rowSize = 9;
 
     private String searchString = "";
     private boolean hasPower;
 
-    private final BiMap<Long, GridInventoryEntry<T>> entries = HashBiMap.create();
-    private final ArrayList<GridInventoryEntry<T>> view = new ArrayList<>();
-    private IPartitionList<T> partitionList;
+    private final BiMap<Long, GridInventoryEntry> entries = HashBiMap.create();
+    private final ArrayList<GridInventoryEntry> view = new ArrayList<>();
+    private IPartitionList partitionList;
     private Runnable updateViewListener;
 
     private final IScrollSource src;
@@ -74,9 +75,10 @@ public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
     public Repo(IScrollSource src, ISortSource sortSrc) {
         this.src = src;
         this.sortSrc = sortSrc;
+        setSynchronizeWithJEI(true);
     }
 
-    public void setPartitionList(IPartitionList<T> partitionList) {
+    public void setPartitionList(IPartitionList partitionList) {
         if (partitionList != this.partitionList) {
             this.partitionList = partitionList;
             this.updateView();
@@ -84,21 +86,21 @@ public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
     }
 
     @Override
-    public final void handleUpdate(boolean fullUpdate, List<GridInventoryEntry<T>> entries) {
+    public final void handleUpdate(boolean fullUpdate, List<GridInventoryEntry> entries) {
         if (fullUpdate) {
             clear();
         }
 
-        for (GridInventoryEntry<T> entry : entries) {
+        for (GridInventoryEntry entry : entries) {
             handleUpdate(entry);
         }
 
         updateView();
     }
 
-    private void handleUpdate(GridInventoryEntry<T> serverEntry) {
+    private void handleUpdate(GridInventoryEntry serverEntry) {
 
-        GridInventoryEntry<T> localEntry = entries.get(serverEntry.getSerial());
+        GridInventoryEntry localEntry = entries.get(serverEntry.getSerial());
         if (localEntry == null) {
             // First time we're seeing this serial -> create new entry
             if (serverEntry.getWhat() == null) {
@@ -115,7 +117,7 @@ public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
         if (!serverEntry.isMeaningful()) {
             entries.remove(serverEntry.getSerial());
         } else if (serverEntry.getWhat() == null) {
-            entries.put(serverEntry.getSerial(), new GridInventoryEntry<>(
+            entries.put(serverEntry.getSerial(), new GridInventoryEntry(
                     serverEntry.getSerial(),
                     localEntry.getWhat(),
                     serverEntry.getStoredAmount(),
@@ -155,7 +157,7 @@ public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
 
         ViewItems viewMode = this.sortSrc.getSortDisplay();
 
-        for (GridInventoryEntry<T> entry : this.entries.values()) {
+        for (GridInventoryEntry entry : this.entries.values()) {
             if (this.partitionList != null && !this.partitionList.isListed(entry.getWhat())) {
                 continue;
             }
@@ -183,7 +185,7 @@ public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
         }
     }
 
-    private Comparator<? super GridInventoryEntry<T>> getComparator(SortOrder sortOrder, SortDir sortDir) {
+    private Comparator<? super GridInventoryEntry> getComparator(SortOrder sortOrder, SortDir sortDir) {
         if (sortOrder == SortOrder.AMOUNT) {
             return sortDir == SortDir.ASCENDING ? AMOUNT_ASC : AMOUNT_DESC;
         }
@@ -192,7 +194,7 @@ public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
     }
 
     @Nullable
-    public final GridInventoryEntry<T> get(int idx) {
+    public final GridInventoryEntry get(int idx) {
         idx += this.src.getCurrentScroll() * this.rowSize;
 
         if (idx >= this.view.size()) {
@@ -245,12 +247,35 @@ public abstract class Repo<T extends AEKey> implements IClientRepo<T> {
         this.synchronizeWithJEI = enable;
     }
 
-    protected abstract boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, T stack);
+    protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, AEKey what) {
+        if (searchMode == SearchMode.MOD) {
+            return searchPattern.matcher(what.getModId()).find();
+        }
 
-    protected abstract Comparator<? super T> getKeyComparator(SortOrder sortBy, SortDir sortDir);
+        String displayName = what.getDisplayName().getString();
+        if (searchPattern.matcher(displayName).find()) {
+            return true;
+        }
+
+        if (searchMode == SearchMode.NAME_OR_TOOLTIP) {
+            var tooltip = Platform.getTooltip(what);
+
+            for (var line : tooltip) {
+                if (searchPattern.matcher(line.getString()).find()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private Comparator<AEKey> getKeyComparator(SortOrder sortBy, SortDir sortDir) {
+        return KeySorters.getComparator(sortBy, sortDir);
+    }
 
     @Override
-    public Set<GridInventoryEntry<T>> getAllEntries() {
+    public Set<GridInventoryEntry> getAllEntries() {
         return entries.values();
     }
 

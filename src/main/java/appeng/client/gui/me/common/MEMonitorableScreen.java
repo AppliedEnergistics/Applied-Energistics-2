@@ -32,6 +32,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.lwjgl.glfw.GLFW;
 
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
@@ -43,6 +44,8 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.client.AEStackRendering;
+import appeng.api.client.AmountFormat;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -50,19 +53,18 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
-import appeng.api.storage.data.AEKey;
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.data.AEFluidKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
-import appeng.client.gui.me.items.RepoSlot;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
-import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -79,22 +81,24 @@ import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
 import appeng.integration.abstraction.JEIFacade;
+import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantic;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEMonitorableMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorableMenu<T>>
+public class MEMonitorableScreen<C extends MEMonitorableMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
     private static final int MIN_ROWS = 3;
 
     private static String memoryText = "";
     private final TerminalStyle style;
-    protected final Repo<T> repo;
+    protected final Repo repo;
     private final List<ItemStack> currentViewCells = new ArrayList<>();
     private final IConfigManager configSrc;
     private final boolean supportsViewCells;
@@ -120,7 +124,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
         }
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
-        this.repo = createRepo(scrollbar);
+        this.repo = new Repo(scrollbar, this);
         menu.setClientRepo(this.repo);
         this.repo.setUpdateViewListener(this::updateScrollbar);
         updateScrollbar();
@@ -171,15 +175,90 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
         }
     }
 
-    protected abstract Repo<T> createRepo(IScrollSource scrollSource);
-
     @Nullable
-    protected abstract IPartitionList<T> createPartitionList(List<ItemStack> viewCells);
+    protected IPartitionList createPartitionList(List<ItemStack> viewCells) {
+        return ViewCellItem.createFilter(AEKeyFilter.none(), viewCells);
+    }
 
-    protected abstract void renderGridInventoryEntry(PoseStack poseStack, int x, int y, GridInventoryEntry<T> entry);
+    protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry,
+            int mouseButton,
+            ClickType clickType) {
+        if (entry != null) {
+            AELog.debug("Clicked on grid inventory entry serial=%s, key=%s", entry.getSerial(), entry.getWhat());
+        }
 
-    protected abstract void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry<T> entry, int mouseButton,
-            ClickType clickType);
+        // Is there an emptying action? If so, send it to the server
+        if (mouseButton == 1 && clickType == ClickType.PICKUP && !menu.getCarried().isEmpty()) {
+            var emptyingAction = StackInteractions.getEmptyingAction(menu.getCarried());
+            if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
+                menu.handleInteraction(-1, InventoryAction.EMPTY_ITEM);
+                return;
+            }
+        }
+
+        if (entry == null) {
+            // The only interaction allowed on an empty virtual slot is putting down the currently held item
+            if (clickType == ClickType.PICKUP && !getMenu().getCarried().isEmpty()) {
+                InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                        : InventoryAction.PICKUP_OR_SET_DOWN;
+                menu.handleInteraction(-1, action);
+            }
+            return;
+        }
+
+        long serial = entry.getSerial();
+
+        // Move as many items of a single type as possible
+        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
+        } else {
+            InventoryAction action = null;
+
+            switch (clickType) {
+                case PICKUP: // pickup / set-down.
+                    action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
+                            : InventoryAction.PICKUP_OR_SET_DOWN;
+
+                    if (action == InventoryAction.PICKUP_OR_SET_DOWN
+                            && shouldCraftOnClick(entry)
+                            && getMenu().getCarried().isEmpty()) {
+                        menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
+                        return;
+                    }
+
+                    break;
+                case QUICK_MOVE:
+                    action = mouseButton == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+                    break;
+
+                case CLONE: // creative dupe:
+                    if (entry.isCraftable()) {
+                        menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
+                        return;
+                    } else if (getMenu().getPlayer().getAbilities().instabuild) {
+                        action = InventoryAction.CREATIVE_DUPLICATE;
+                    }
+                    break;
+
+                default:
+                case THROW: // drop item:
+            }
+
+            if (action != null) {
+                menu.handleInteraction(serial, action);
+            }
+        }
+    }
+
+    private boolean shouldCraftOnClick(GridInventoryEntry entry) {
+        // Always auto-craft when viewing only craftable items
+        if (isViewOnlyCraftable()) {
+            return true;
+        }
+
+        // Otherwise only craft if there are no stored items
+        return entry.getStoredAmount() == 0 && entry.isCraftable();
+    }
 
     private void updateScrollbar() {
         scrollbar.setHeight(this.rows * style.getRow().getSrcHeight() - 2);
@@ -213,7 +292,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
             for (int col = 0; col < style.getSlotsPerRow(); col++) {
                 Point pos = style.getSlotPos(row, col);
 
-                slots.add(new RepoSlot<>(this.repo, repoIndex++, pos.getX(), pos.getY()));
+                slots.add(new RepoSlot(this.repo, repoIndex++, pos.getX(), pos.getY()));
             }
         }
 
@@ -285,7 +364,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
             int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
-            style.getStackSizeRenderer().renderSizeLabel(font, x - this.leftPos, y - this.topPos,
+            StackSizeRenderer.renderSizeLabel(font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
         }
     }
@@ -311,10 +390,8 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
         if (wheelDelta != 0 && hasShiftDown()) {
-            final Slot slot = this.getSlot((int) x, (int) y);
-            RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
-            if (repoSlot != null) {
-                GridInventoryEntry<T> entry = repoSlot.getEntry();
+            if (this.getSlot((int) x, (int) y) instanceof RepoSlot repoSlot) {
+                GridInventoryEntry entry = repoSlot.getEntry();
                 long serial = entry != null ? entry.getSerial() : -1;
                 final InventoryAction direction = wheelDelta > 0 ? InventoryAction.ROLL_DOWN
                         : InventoryAction.ROLL_UP;
@@ -332,8 +409,7 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
 
     @Override
     protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
-        RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, slot);
-        if (repoSlot != null) {
+        if (slot instanceof RepoSlot repoSlot) {
             handleGridInventoryEntryMouseClick(repoSlot.getEntry(), mouseButton, clickType);
             return;
         }
@@ -383,15 +459,20 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
 
     @Override
     public void renderSlot(PoseStack poseStack, Slot s) {
-        RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, s);
-        if (repoSlot != null) {
+        if (s instanceof RepoSlot repoSlot) {
             if (!this.repo.hasPower()) {
                 fill(poseStack, s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
             } else {
-                GridInventoryEntry<T> entry = repoSlot.getEntry();
+                GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
-                        renderGridInventoryEntry(poseStack, s.x, s.y, entry);
+                        AEStackRendering.drawRepresentation(
+                                minecraft,
+                                poseStack,
+                                s.x,
+                                s.y,
+                                getBlitOffset(),
+                                entry.getWhat());
                     } catch (final Exception err) {
                         AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
@@ -400,11 +481,15 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
                     // regardless of stack size
                     long storedAmount = entry.getStoredAmount();
                     boolean craftable = entry.isCraftable();
+                    var useLargeFonts = AEConfig.instance().isUseLargeFonts();
                     if (isViewOnlyCraftable() && craftable) {
-                        style.getStackSizeRenderer().renderStackSize(this.font, 0, true, s.x, s.y);
+                        var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
+                                : GuiText.SmallFontCraft.getLocal();
+                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
                     } else {
-                        style.getStackSizeRenderer().renderStackSize(this.font, storedAmount, craftable, s.x,
-                                s.y);
+                        var text = AEStackRendering.formatAmount(entry.getWhat(), storedAmount,
+                                useLargeFonts ? AmountFormat.PREVIEW_LARGE_FONT : AmountFormat.PREVIEW_REGULAR);
+                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
                     }
                 }
             }
@@ -424,23 +509,52 @@ public abstract class MEMonitorableScreen<T extends AEKey, C extends MEMonitorab
 
     @Override
     protected void renderTooltip(PoseStack poseStack, int x, int y) {
-        // Vanilla doesn't show item tooltips when the player have something in their hand
-        if (style.isShowTooltipsWithItemInHand() || getMenu().getCarried().isEmpty()) {
-            RepoSlot<T> repoSlot = RepoSlot.tryCast(repo, this.hoveredSlot);
-
-            if (repoSlot != null) {
-                GridInventoryEntry<T> entry = repoSlot.getEntry();
-                if (entry != null) {
-                    this.renderGridInventoryEntryTooltip(poseStack, entry, x, y);
+        if (this.hoveredSlot instanceof RepoSlot repoSlot) {
+            var carried = menu.getCarried();
+            if (!carried.isEmpty()) {
+                var emptyingAction = StackInteractions.getEmptyingAction(carried);
+                if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
+                    renderTooltip(poseStack, List.of(
+                            new TextComponent("Left-Click: Store ").append(carried.getHoverName())
+                                    .withStyle(ChatFormatting.GRAY).getVisualOrderText(),
+                            new TextComponent("Right-Click: Store ").append(emptyingAction.description())
+                                    .withStyle(ChatFormatting.GRAY).getVisualOrderText()),
+                            x, y);
+                    return;
                 }
-                return;
+
+                // TODO: Fill action same way
             }
+
+            // Vanilla doesn't show item tooltips when the player have something in their hand
+            if (carried.isEmpty()) {
+                GridInventoryEntry entry = repoSlot.getEntry();
+                if (entry != null) {
+                    renderGridInventoryEntryTooltip(poseStack, entry, x, y);
+                }
+            }
+            return;
         }
 
         super.renderTooltip(poseStack, x, y);
     }
 
-    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry<T> entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry entry, int x, int y) {
+        if (entry.getWhat() instanceof AEFluidKey fluidKey) {
+            var what = entry.getWhat();
+            String formattedAmount = AEStackRendering.formatAmount(what, entry.getStoredAmount(), AmountFormat.FULL);
+
+            String modName = Platform.formatModName(what.getModId());
+
+            List<Component> list = new ArrayList<>();
+            list.add(FluidVariantRendering.getName(fluidKey.toVariant()));
+            list.add(new TextComponent(formattedAmount));
+            list.add(new TextComponent(modName));
+
+            this.renderComponentTooltip(poseStack, list, x, y);
+            return;
+        }
+
         final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
 
         ItemStack stack = entry.getWhat().wrapForDisplayOrFilter();

@@ -1,0 +1,98 @@
+{
+  "textures": {
+    "sides": "ae2:part/storage_bus_sides",
+    "sidesStatus": "ae2:part/monitor_sides_status",
+    "back": "ae2:part/storage_bus_back",
+    "front": "ae2:part/storage_bus",
+    "particle": "ae2:part/storage_bus_back"
+  },
+  "elements": [
+    {
+      "from": [3, 3, 0],
+      "to": [13, 13, 1],
+      "faces": {
+        "down": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "north": {
+          "texture": "#front"
+        },
+        "west": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [2, 2, 1],
+      "to": [14, 14, 2],
+      "faces": {
+        "down": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "north": {
+          "texture": "#front"
+        },
+        "west": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 3],
+      "to": [11, 11, 4],
+      "faces": {
+        "down": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        }
+      }
+    },
+    {
+      "from": [5, 5, 2],
+      "to": [11, 11, 3],
+      "faces": {
+        "down": {
+          "texture": "#sides"
+        },
+        "up": {
+          "texture": "#sides"
+        },
+        "east": {
+          "texture": "#sides"
+        },
+        "west": {
+          "texture": "#sides"
+        }
+      }
+    }
+  ]
+}

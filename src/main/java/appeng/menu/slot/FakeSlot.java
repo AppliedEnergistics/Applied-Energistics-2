@@ -27,21 +27,21 @@ import appeng.util.ConfigInventory;
 import appeng.util.ConfigMenuInventory;
 
 public class FakeSlot extends AppEngSlot {
-    public FakeSlot(InternalInventory inv, final int invSlot) {
+    public FakeSlot(InternalInventory inv, int invSlot) {
         super(inv, invSlot);
     }
 
     @Override
-    public void onTake(final Player player, final ItemStack stack) {
+    public void onTake(Player player, ItemStack stack) {
     }
 
     @Override
-    public ItemStack remove(final int par1) {
+    public ItemStack remove(int amount) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         return false;
     }
 
@@ -55,7 +55,7 @@ public class FakeSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPickup(final Player player) {
+    public boolean mayPickup(Player player) {
         return false;
     }
 

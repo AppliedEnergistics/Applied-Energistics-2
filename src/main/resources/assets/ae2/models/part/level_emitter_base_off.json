@@ -1,0 +1,47 @@
+{
+  "textures": {
+    "emitter": "ae2:part/level_emitter_off",
+    "sides": "ae2:part/monitor_sides",
+    "particle": "ae2:part/level_emitter_off"
+  },
+  "elements": [
+    {
+      "from": [7, 7, 0],
+      "to": [9, 9, 4],
+      "faces": {
+        "up": {
+          "texture": "#emitter",
+          "uv": [6, 7, 10, 9],
+          "rotation": 90
+        },
+        "down": {
+          "texture": "#emitter",
+          "uv": [6, 7, 10, 9],
+          "rotation": 270
+        },
+        "east": {
+          "texture": "#emitter",
+          "uv": [6, 7, 10, 9],
+          "rotation": 180
+        },
+        "north": {
+          "texture": "#emitter",
+          "uv": [6, 7, 8, 9]
+        },
+        "west": {
+          "texture": "#emitter",
+          "uv": [6, 7, 10, 9]
+        }
+      }
+    },
+    {
+      "from": [7, 7, 4],
+      "to": [9, 9, 5],
+      "faces": {
+        "south": {
+          "texture": "#sides"
+        }
+      }
+    }
+  ]
+}

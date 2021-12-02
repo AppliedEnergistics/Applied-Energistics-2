@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.CopyMode;
@@ -71,12 +70,8 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     @GuiSync(2)
     public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
 
-    private ConfigMenuInventory configInv;
-
     public CellWorkbenchMenu(int id, Inventory ip, CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
-
-        updateAutomaticConversionChannel();
 
         registerClientAction(ACTION_NEXT_COPYMODE, this::nextWorkBenchCopyMode);
         registerClientAction(ACTION_PARTITION, this::partition);
@@ -109,18 +104,12 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     @Override
-    public void onSlotChange(Slot s) {
-        super.onSlotChange(s);
-        updateAutomaticConversionChannel();
-    }
-
-    @Override
     protected void setupConfig() {
         var cell = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
                 SlotSemantic.STORAGE_CELL);
 
-        configInv = getConfigInventory().createMenuWrapper();
+        ConfigMenuInventory configInv = getConfigInventory().createMenuWrapper();
 
         for (int i = 0; i < 7 * 9; i++) {
             this.addSlot(new FakeSlot(configInv, i), SlotSemantic.CONFIG);
@@ -140,21 +129,6 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     public ItemStack getWorkbenchItem() {
         var cells = Objects.requireNonNull(getHost().getSubInventory(ISegmentedInventory.CELLS));
         return cells.getStackInSlot(0);
-    }
-
-    /**
-     * Updates the channel on the cell config inventory wrapper. This is necessary to make it auto-convert buckets into
-     * fluids when a fluid-cell is inserted.
-     */
-    private void updateAutomaticConversionChannel() {
-        if (configInv != null) {
-            var cell = getHost().getCell();
-            if (cell != null) {
-                configInv.setChannel(cell.getChannel());
-            } else {
-                configInv.setChannel(null);
-            }
-        }
     }
 
     @Override

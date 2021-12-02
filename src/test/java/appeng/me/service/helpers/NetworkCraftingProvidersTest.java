@@ -35,7 +35,7 @@ class NetworkCraftingProvidersTest {
             }
 
             @Override
-            public boolean pushPattern(IPatternDetails patternDetails, KeyCounter<AEKey>[] inputHolder) {
+            public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
                 return false;
             }
 

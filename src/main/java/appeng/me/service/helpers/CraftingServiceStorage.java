@@ -18,16 +18,14 @@
 
 package appeng.me.service.helpers;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.StorageChannels;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.data.AEKey;
 import appeng.me.service.CraftingService;
 
@@ -40,27 +38,23 @@ import appeng.me.service.CraftingService;
  */
 public class CraftingServiceStorage implements IStorageProvider {
     private final CraftingService craftingService;
-    private final Map<IStorageChannel<?>, IMEInventory<?>> inventories = new HashMap<>();
+    private final MEStorage inventory = new MEStorage() {
+        @Override
+        public boolean isPreferredStorageFor(AEKey key, IActionSource source) {
+            return true;
+        }
 
-    private <T extends AEKey> IMEInventory<T> getOrComputeInventory(IStorageChannel<T> channel) {
-        return inventories.computeIfAbsent(channel, ignored -> new IMEInventory<T>() {
-            @Override
-            public boolean isPreferredStorageFor(T key, IActionSource source) {
-                return true;
-            }
+        @Override
+        public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+            // Item interception logic
+            return craftingService.insertIntoCpus(what, amount, mode);
+        }
 
-            @Override
-            public long insert(T what, long amount, Actionable mode, IActionSource source) {
-                // Item interception logic
-                return craftingService.insertIntoCpus(what, amount, mode);
-            }
-
-            @Override
-            public IStorageChannel<T> getChannel() {
-                return channel;
-            }
-        }).cast(channel);
-    }
+        @Override
+        public Component getDescription() {
+            return new TextComponent("Auto-Crafting");
+        }
+    };
 
     public CraftingServiceStorage(CraftingService craftingService) {
         this.craftingService = craftingService;
@@ -68,13 +62,6 @@ public class CraftingServiceStorage implements IStorageProvider {
 
     @Override
     public void mountInventories(IStorageMounts mounts) {
-        for (IStorageChannel<?> channel : StorageChannels.getAll()) {
-            mount(mounts, channel);
-        }
-    }
-
-    private <T extends AEKey> void mount(IStorageMounts mounts, IStorageChannel<T> channel) {
-        var inventory = getOrComputeInventory(channel);
         mounts.mount(inventory, Integer.MAX_VALUE);
     }
 }
