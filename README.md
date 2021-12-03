@@ -24,10 +24,9 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## Contacts
 
-* [Website](http://ae-mod.info/)
+* [Website](https://appliedenergistics.github.io/)
 * [Discord](https://discord.gg/GygKjjm)
 * [GitHub](https://github.com/AppliedEnergistics/Applied-Energistics-2)
-* [IRC #appliedenergistics on esper.net](http://webchat.esper.net/?channels=appliedenergistics&prompt=1)
 
 ## License
 
@@ -45,7 +44,7 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## Downloads
 
-Downloads can be found on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2) or on the [official website](http://ae-mod.info/Downloads/).
+Downloads can be found on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2) or on the [official website](https://appliedenergistics.github.io/download).
 
 ## Installation
 
@@ -127,7 +126,7 @@ Here are a few things to keep in mind that will help get your PR approved.
 
 * A PR should be focused on content. Any PRs where the changes are only syntax will be rejected.
 * Use the file you are editing as a style guide.
-* Consider your feature. [Suggestion Guidelines](http://ae-mod.info/Suggestion-Guidelines/)
+* Consider your feature.
   - Is your suggestion already possible using Vanilla + AE2?
   - Make sure your feature isn't already in the works, or hasn't been rejected previously.
   - Does your feature simplify another feature of AE2? These changes will not be accepted.
