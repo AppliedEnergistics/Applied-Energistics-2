@@ -101,7 +101,7 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
     private static LootTable.Builder createQuartzOreLootTable(Block b) {
         return createSilkTouchDispatchTable(b,
                 LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 5.0F)))
                         .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
                         .apply(ApplyExplosionDecay.explosionDecay())).withPool(
                                 /*
