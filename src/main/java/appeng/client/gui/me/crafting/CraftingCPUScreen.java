@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -35,9 +33,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.GenericStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
@@ -115,16 +111,14 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         }
     }
 
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     @Override
-    public Object getIngredientUnderMouse(double mouseX, double mouseY) {
-        IAEStack hovered = table.getHoveredStack();
-        if (hovered instanceof IAEItemStack) {
-            return ((IAEItemStack) hovered).getDefinition();
-        } else if (hovered instanceof IAEFluidStack) {
-            return ((IAEFluidStack) hovered).getFluidStack();
+    public GenericStack getStackUnderMouse(double mouseX, double mouseY) {
+        var hovered = table.getHoveredStack();
+        if (hovered != null) {
+            return hovered;
         }
-        return null;
+        return super.getStackUnderMouse(mouseX, mouseY);
     }
 
     public void postUpdate(CraftingStatus status) {
