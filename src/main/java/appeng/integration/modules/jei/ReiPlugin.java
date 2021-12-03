@@ -52,6 +52,7 @@ import appeng.api.storage.data.AEFluidKey;
 import appeng.api.storage.data.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -156,6 +157,10 @@ public class ReiPlugin implements REIClientPlugin {
 
             return CompoundEventResult.pass();
         });
+        registry.registerContainerClickArea(
+                new Rectangle(82, 39, 26, 16),
+                InscriberScreen.class,
+                InscriberRecipeCategory.ID);
     }
 
     @Override
