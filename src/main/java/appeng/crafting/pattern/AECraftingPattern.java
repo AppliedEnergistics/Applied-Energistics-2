@@ -63,12 +63,12 @@ public class AECraftingPattern implements IAEPatternDetails {
         this.definition = definition;
         var tag = Objects.requireNonNull(definition.getTag());
 
-        this.canSubstitute = AEPatternHelper.canSubstitute(tag);
-        this.canSubstituteFluids = AEPatternHelper.canSubstituteFluids(tag);
-        this.sparseInputs = AEPatternHelper.getCraftingInputs(tag);
+        this.canSubstitute = CraftingPatternEncoding.canSubstitute(tag);
+        this.canSubstituteFluids = CraftingPatternEncoding.canSubstituteFluids(tag);
+        this.sparseInputs = CraftingPatternEncoding.getCraftingInputs(tag);
 
         // Find recipe
-        var recipeId = AEPatternHelper.getRecipeId(tag);
+        var recipeId = CraftingPatternEncoding.getRecipeId(tag);
         var recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
         if (!(recipe instanceof CraftingRecipe craftingRecipe)) {
             throw new IllegalStateException("recipe id '" + recipeId + "' is not a valid crafting recipe");
@@ -86,11 +86,13 @@ public class AECraftingPattern implements IAEPatternDetails {
         if (!this.recipe.matches(testFrame, level)) {
             throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
         }
-        this.output = AEItemKey.of(this.recipe.assemble(testFrame));
-        if (this.output == null) {
+
+        var result = GenericStack.fromItemStack(this.recipe.assemble(testFrame));
+        if (result == null || !(result.what() instanceof AEItemKey itemKey)) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
-        this.outputsArray = new GenericStack[] { new GenericStack(this.output, 1) };
+        this.output = itemKey;
+        this.outputsArray = new GenericStack[] { result };
 
         // Compress inputs
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);

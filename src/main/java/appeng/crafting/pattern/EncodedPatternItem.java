@@ -121,15 +121,15 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final Component label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Produces.text())
+            var label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Produces.text())
                     .copy().append(": ");
-            final Component and = new TextComponent(" ").copy().append(GuiText.And.text())
+            var and = new TextComponent(" ").copy().append(GuiText.And.text())
                     .copy()
                     .append(" ");
-            final Component with = GuiText.With.text().copy().append(": ");
+            var with = GuiText.With.text().copy().append(": ");
 
             boolean first = true;
-            for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
+            for (var output : invalid.getOutputs()) {
                 lines.add((first ? label : and).copy().append(output.getFormattedToolTip()));
                 first = false;
             }
@@ -141,8 +141,8 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
             }
 
             if (invalid.isCraftable()) {
-                final Component substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-                final Component canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
+                var substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+                var canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
 
                 lines.add(substitutionLabel.copy().append(canSubstitute));
             }

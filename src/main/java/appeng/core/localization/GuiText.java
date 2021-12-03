@@ -56,7 +56,7 @@ public enum GuiText {
     SpatialAnchorUsedPower, SpatialAnchorLoadedChunks,
     SpatialAnchorStatistics, SpatialAnchorAll, SpatialAnchorAllLoaded,
 
-    CopyMode, CopyModeDesc, PatternTerminal, FluidTerminal,
+    CopyMode, CopyModeDesc, PatternEncoding,
 
     // Pattern tooltips
     CraftingPattern, ProcessingPattern, Crafts, Produces, And, With, Substitute, Yes, No,

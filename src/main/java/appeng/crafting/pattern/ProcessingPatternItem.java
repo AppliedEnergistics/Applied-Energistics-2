@@ -51,7 +51,7 @@ public class ProcessingPatternItem extends EncodedPatternItem {
         checkItemsOrFluids(sparseOutputs);
 
         var stack = new ItemStack(this);
-        AEPatternHelper.encodeProcessingPattern(stack.getOrCreateTag(), sparseInputs, sparseOutputs);
+        ProcessingPatternEncoding.encodeProcessingPattern(stack.getOrCreateTag(), sparseInputs, sparseOutputs);
         return stack;
     }
 

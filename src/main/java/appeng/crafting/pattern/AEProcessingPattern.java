@@ -40,8 +40,8 @@ public class AEProcessingPattern implements IAEPatternDetails {
         this.definition = definition;
         var tag = Objects.requireNonNull(definition.getTag());
 
-        this.sparseInputs = AEPatternHelper.getProcessingInputs(tag);
-        this.sparseOutputs = AEPatternHelper.getProcessingOutputs(tag);
+        this.sparseInputs = ProcessingPatternEncoding.getProcessingInputs(tag);
+        this.sparseOutputs = ProcessingPatternEncoding.getProcessingOutputs(tag);
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
         this.inputs = new Input[condensedInputs.length];
         for (int i = 0; i < inputs.length; ++i) {

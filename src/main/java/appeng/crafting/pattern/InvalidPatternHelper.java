@@ -23,7 +23,6 @@ import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -46,8 +45,8 @@ class InvalidPatternHelper {
             throw new IllegalArgumentException("No pattern here!");
         }
 
-        final ListTag inTag = encodedValue.getList("in", Tag.TAG_COMPOUND);
-        final ListTag outTag = encodedValue.getList("out", Tag.TAG_COMPOUND);
+        var inTag = encodedValue.getList("in", Tag.TAG_COMPOUND);
+        var outTag = encodedValue.getList("out", Tag.TAG_COMPOUND);
         this.isCrafting = encodedValue.getBoolean("crafting");
 
         this.canSubstitute = this.isCrafting && encodedValue.getBoolean("substitute");

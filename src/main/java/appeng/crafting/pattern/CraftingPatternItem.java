@@ -61,7 +61,7 @@ public class CraftingPatternItem extends EncodedPatternItem {
     public ItemStack encode(CraftingRecipe recipe, ItemStack[] in, ItemStack out, boolean allowSubstitutes,
             boolean allowFluidSubstitutes) {
         var stack = new ItemStack(this);
-        AEPatternHelper.encodeCraftingPattern(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes,
+        CraftingPatternEncoding.encodeCraftingPattern(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes,
                 allowFluidSubstitutes);
         return stack;
     }
@@ -69,13 +69,13 @@ public class CraftingPatternItem extends EncodedPatternItem {
     private boolean attemptRecovery(CompoundTag tag, Level level) {
         RecipeManager recipeManager = level.getRecipeManager();
 
-        var ingredients = AEPatternHelper.getCraftingInputs(tag);
-        var product = AEPatternHelper.getCraftingResult(tag);
+        var ingredients = CraftingPatternEncoding.getCraftingInputs(tag);
+        var product = CraftingPatternEncoding.getCraftingResult(tag);
         if (product.isEmpty()) {
             return false;
         }
 
-        ResourceLocation currentRecipeId = AEPatternHelper.getRecipeId(tag);
+        ResourceLocation currentRecipeId = CraftingPatternEncoding.getRecipeId(tag);
 
         // Fill a crafting inventory with the ingredients to find a suitable recipe
         CraftingContainer testInventory = new CraftingContainer(new NullMenu(), 3, 3);
@@ -96,8 +96,8 @@ public class CraftingPatternItem extends EncodedPatternItem {
             ItemStack[] in = Arrays.stream(ingredients)
                     .map(stack -> stack.what() instanceof AEItemKey itemKey ? itemKey.toStack() : ItemStack.EMPTY)
                     .toArray(ItemStack[]::new);
-            AEPatternHelper.encodeCraftingPattern(tag, potentialRecipe, in, product,
-                    AEPatternHelper.canSubstitute(tag), AEPatternHelper.canSubstituteFluids(tag));
+            CraftingPatternEncoding.encodeCraftingPattern(tag, potentialRecipe, in, product,
+                    CraftingPatternEncoding.canSubstitute(tag), CraftingPatternEncoding.canSubstituteFluids(tag));
         }
 
         AELog.debug("Failed to recover encoded crafting pattern for recipe %s", currentRecipeId);

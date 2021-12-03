@@ -471,6 +471,7 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();
+
         if (isServer()) {
             if (this.isCraftingMode() != this.getPatternTerminal().isCraftingRecipe()) {
                 this.setCraftingMode(this.getPatternTerminal().isCraftingRecipe());
@@ -484,6 +485,10 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
     @Override
     public void onServerDataSync() {
         super.onServerDataSync();
+
+        for (var slot : craftingGridSlots) {
+            slot.setHideAmount(craftingMode);
+        }
 
         if (this.currentRecipeCraftingMode != this.isCraftingMode()) {
             this.getAndUpdateOutput();

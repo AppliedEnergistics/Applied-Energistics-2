@@ -23,10 +23,13 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.storage.GenericStack;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigMenuInventory;
 
 public class FakeSlot extends AppEngSlot {
+    private boolean hideAmount;
+
     public FakeSlot(InternalInventory inv, int invSlot) {
         super(inv, invSlot);
     }
@@ -43,6 +46,21 @@ public class FakeSlot extends AppEngSlot {
     @Override
     public boolean mayPlace(ItemStack stack) {
         return false;
+    }
+
+    @Override
+    public ItemStack getDisplayStack() {
+        var is = super.getDisplayStack();
+        if (hideAmount) {
+            var unwrapped = GenericStack.unwrapItemStack(is);
+            if (unwrapped != null) {
+                return GenericStack.wrapInItemStack(unwrapped.what(), 0);
+            } else {
+                is = is.copy();
+                is.setCount(1);
+            }
+        }
+        return is;
     }
 
     @Override
@@ -94,15 +112,25 @@ public class FakeSlot extends AppEngSlot {
             }
         }
 
-        is = is.copy();
+        var current = getItem();
         if (is.isEmpty()) {
-            is.setCount(Math.max(1, is.getCount() - 1));
-        } else if (is.sameItem(is)) {
-            is.setCount(Math.min(is.getMaxStackSize(), is.getCount() + 1));
+            // Decrease when holding nothing in hand
+            current.shrink(1);
+        } else if (current.sameItem(is)) {
+            // Increase when holding same item
+            current.grow(1);
         } else {
+            is = is.copy();
             is.setCount(1);
+            set(is);
         }
+    }
 
-        set(is);
+    public boolean isHideAmount() {
+        return hideAmount;
+    }
+
+    public void setHideAmount(boolean hideAmount) {
+        this.hideAmount = hideAmount;
     }
 }
