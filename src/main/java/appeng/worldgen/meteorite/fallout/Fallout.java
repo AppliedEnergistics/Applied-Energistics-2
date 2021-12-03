@@ -22,6 +22,7 @@ import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -36,6 +37,15 @@ public class Fallout {
         this.putter = putter;
         this.skyStone = skyStone;
         this.random = random;
+    }
+
+    public static FalloutMode fromBiome(Biome biome) {
+        return switch (biome.getBiomeCategory()) {
+            case MESA -> FalloutMode.TERRACOTTA;
+            case DESERT, BEACH -> FalloutMode.SAND;
+            case ICY -> FalloutMode.ICE_SNOW;
+            default -> FalloutMode.DEFAULT;
+        };
     }
 
     public int adjustCrater() {

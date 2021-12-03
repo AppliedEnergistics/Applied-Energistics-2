@@ -39,9 +39,14 @@ public class FalloutCopy extends Fallout {
             BlockState skyStone, Random random) {
         super(putter, skyStone, random);
         this.putter = putter;
-        // TODO 1.18 its no longer possible to get a biome specific surface builder top material
-        // this.block = level.getBiome(pos).getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial();
-        this.block = Blocks.DIRT.defaultBlockState();
+        var biome = level.getBiome(pos);
+        this.block = switch (biome.getBiomeCategory()) {
+            case MESA -> Blocks.TERRACOTTA.defaultBlockState();
+            case ICY -> Blocks.SNOW_BLOCK.defaultBlockState();
+            case BEACH, DESERT -> Blocks.SAND.defaultBlockState();
+            case PLAINS, FOREST -> Blocks.DIRT.defaultBlockState();
+            default -> Blocks.COBBLESTONE.defaultBlockState();
+        };
     }
 
     @Override
