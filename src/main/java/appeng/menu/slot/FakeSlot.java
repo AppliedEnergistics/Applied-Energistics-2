@@ -115,10 +115,14 @@ public class FakeSlot extends AppEngSlot {
         var current = getItem();
         if (is.isEmpty()) {
             // Decrease when holding nothing in hand
+            current = current.copy();
             current.shrink(1);
+            set(current);
         } else if (current.sameItem(is)) {
             // Increase when holding same item
+            current = current.copy();
             current.grow(1);
+            set(current);
         } else {
             is = is.copy();
             is.setCount(1);
