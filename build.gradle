@@ -284,7 +284,7 @@ publishing {
         }
         maven {
             credentials {
-                username System.getenv("MODMaAVEN_USER")
+                username System.getenv("MODMAVEN_USER")
                 password System.getenv("MODMAVEN_PASSWORD")
             }
             name = "modmaven"
