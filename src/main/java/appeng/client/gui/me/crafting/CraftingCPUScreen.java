@@ -33,6 +33,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.storage.GenericStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
@@ -108,6 +109,16 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         if (status != null) {
             this.table.render(poseStack, mouseX, mouseY, status.getEntries(), scrollbar.getCurrentScroll());
         }
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public GenericStack getStackUnderMouse(double mouseX, double mouseY) {
+        var hovered = table.getHoveredStack();
+        if (hovered != null) {
+            return hovered;
+        }
+        return super.getStackUnderMouse(mouseX, mouseY);
     }
 
     public void postUpdate(CraftingStatus status) {

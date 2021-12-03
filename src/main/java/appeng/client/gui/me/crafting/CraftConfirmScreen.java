@@ -30,6 +30,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.storage.GenericStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
@@ -125,6 +126,16 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
             this.table.render(poseStack, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
         }
 
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public GenericStack getStackUnderMouse(double mouseX, double mouseY) {
+        var hovered = table.getHoveredStack();
+        if (hovered != null) {
+            return hovered;
+        }
+        return super.getStackUnderMouse(mouseX, mouseY);
     }
 
     // Allow players to confirm a craft via the enter key

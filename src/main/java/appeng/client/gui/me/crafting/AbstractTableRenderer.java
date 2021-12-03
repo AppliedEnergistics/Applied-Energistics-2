@@ -28,6 +28,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.client.AEStackRendering;
+import appeng.api.storage.GenericStack;
 import appeng.api.storage.data.AEKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
@@ -56,6 +57,7 @@ public abstract class AbstractTableRenderer<T> {
     private final float lineHeight;
     private final int x;
     private final int y;
+    private GenericStack hoveredStack;
 
     public AbstractTableRenderer(AEBaseScreen<?> screen, int x, int y) {
         this.screen = screen;
@@ -71,6 +73,7 @@ public abstract class AbstractTableRenderer<T> {
 
         final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
         List<Component> tooltipLines = null;
+        GenericStack hovered = null;
 
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
@@ -126,13 +129,19 @@ public abstract class AbstractTableRenderer<T> {
                 if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH
                         && mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
                     tooltipLines = getEntryTooltip(entry);
+                    hovered = new GenericStack(entryStack, 0);
                 }
             }
         }
+        hoveredStack = hovered;
 
         if (tooltipLines != null) {
             screen.drawTooltip(poseStack, mouseX, mouseY, tooltipLines);
         }
+    }
+
+    public GenericStack getHoveredStack() {
+        return hoveredStack;
     }
 
     /**
