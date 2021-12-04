@@ -18,7 +18,7 @@ import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
 import appeng.util.Platform;
 
-public class AEItemKey extends AEKey {
+public final class AEItemKey extends AEKey {
     private final Item item;
     @Nullable
     private final CompoundTag tag;

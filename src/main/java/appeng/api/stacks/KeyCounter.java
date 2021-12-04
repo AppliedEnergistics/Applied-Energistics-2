@@ -42,7 +42,7 @@ import appeng.api.config.FuzzyMode;
 /**
  * Associates a generic value of type T with AE keys and makes key/value pairs searchable with fuzzy mode semantics.
  */
-public class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
+public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     // First map contains a mapping from AEKey#primaryKey
     private final Map<Object, VariantCounter> lists = new IdentityHashMap<>();
 

@@ -36,7 +36,7 @@ import appeng.api.config.FuzzyMode;
 /**
  * Associates a generic value of type T with AE keys and makes key/value pairs searchable with fuzzy mode semantics.
  */
-public class KeyMap<K extends AEKey, V> implements Iterable<Map.Entry<K, V>> {
+public final class KeyMap<K extends AEKey, V> implements Iterable<Map.Entry<K, V>> {
     private final V defaultValue;
     private final Supplier<V> defaultValueFactory;
 

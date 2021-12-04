@@ -638,7 +638,7 @@ public class Platform {
 
             if (items != null && checkFuzzy) {
                 for (var x : items) {
-                    if (x instanceof AEItemKey itemKey) {
+                    if (x.getKey() instanceof AEItemKey itemKey) {
                         if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
                             ci.setItem(slot, itemKey.toStack());
                             if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {

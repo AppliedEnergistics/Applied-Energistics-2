@@ -19,7 +19,7 @@ import appeng.core.AELog;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.Platform;
 
-public class AEFluidKey extends AEKey {
+public final class AEFluidKey extends AEKey {
     public static final int AMOUNT_BUCKET = (int) FluidConstants.BUCKET;
     public static final int AMOUNT_BLOCK = (int) FluidConstants.BLOCK;
 
