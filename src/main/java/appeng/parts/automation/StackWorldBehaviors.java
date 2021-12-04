@@ -11,26 +11,26 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 
 public final class StackWorldBehaviors {
-    private static final Map<AEKeySpace, ImportStrategyFactory> importStrategies = new IdentityHashMap<>();
-    private static final Map<AEKeySpace, ExportStrategyFactory> exportStrategies = new IdentityHashMap<>();
-    private static final Map<AEKeySpace, ExternalStorageStrategyFactory> externalStorageStrategies = new IdentityHashMap<>();
-    private static final Map<AEKeySpace, PlacementStrategyFactory> placementStrategies = new IdentityHashMap<>();
-    private static final Map<AEKeySpace, PickupStrategyFactory> pickupStrategies = new IdentityHashMap<>();
+    private static final Map<AEKeyType, ImportStrategyFactory> importStrategies = new IdentityHashMap<>();
+    private static final Map<AEKeyType, ExportStrategyFactory> exportStrategies = new IdentityHashMap<>();
+    private static final Map<AEKeyType, ExternalStorageStrategyFactory> externalStorageStrategies = new IdentityHashMap<>();
+    private static final Map<AEKeyType, PlacementStrategyFactory> placementStrategies = new IdentityHashMap<>();
+    private static final Map<AEKeyType, PickupStrategyFactory> pickupStrategies = new IdentityHashMap<>();
 
     static {
-        importStrategies.put(AEKeySpace.items(), StorageImportStrategy::createItem);
-        importStrategies.put(AEKeySpace.fluids(), StorageImportStrategy::createFluid);
-        exportStrategies.put(AEKeySpace.items(), StorageExportStrategy::createItem);
-        exportStrategies.put(AEKeySpace.fluids(), StorageExportStrategy::createFluid);
-        externalStorageStrategies.put(AEKeySpace.items(), FabricExternalStorageStrategy::createItem);
-        externalStorageStrategies.put(AEKeySpace.fluids(), FabricExternalStorageStrategy::createFluid);
-        placementStrategies.put(AEKeySpace.fluids(), FluidPlacementStrategy::new);
-        placementStrategies.put(AEKeySpace.items(), ItemPlacementStrategy::new);
-        pickupStrategies.put(AEKeySpace.fluids(), FluidPickupStrategy::new);
-        pickupStrategies.put(AEKeySpace.items(), ItemPickupStrategy::new);
+        importStrategies.put(AEKeyType.items(), StorageImportStrategy::createItem);
+        importStrategies.put(AEKeyType.fluids(), StorageImportStrategy::createFluid);
+        exportStrategies.put(AEKeyType.items(), StorageExportStrategy::createItem);
+        exportStrategies.put(AEKeyType.fluids(), StorageExportStrategy::createFluid);
+        externalStorageStrategies.put(AEKeyType.items(), FabricExternalStorageStrategy::createItem);
+        externalStorageStrategies.put(AEKeyType.fluids(), FabricExternalStorageStrategy::createFluid);
+        placementStrategies.put(AEKeyType.fluids(), FluidPlacementStrategy::new);
+        placementStrategies.put(AEKeyType.items(), ItemPlacementStrategy::new);
+        pickupStrategies.put(AEKeyType.fluids(), FluidPickupStrategy::new);
+        pickupStrategies.put(AEKeyType.items(), ItemPickupStrategy::new);
     }
 
     private StackWorldBehaviors() {
@@ -40,21 +40,21 @@ public final class StackWorldBehaviors {
      * {@return filter matching any key for which there is an import strategy}
      */
     public static AEKeyFilter hasImportStrategyFilter() {
-        return what -> importStrategies.containsKey(what.getChannel());
+        return what -> importStrategies.containsKey(what.getType());
     }
 
     /**
      * {@return filter matching any key for which there is an export strategy}
      */
     public static AEKeyFilter hasExportStrategyFilter() {
-        return what -> exportStrategies.containsKey(what.getChannel());
+        return what -> exportStrategies.containsKey(what.getType());
     }
 
     /**
      * {@return filter matching any key for which there is an export strategy}
      */
     public static AEKeyFilter hasPlacementStrategy() {
-        return what -> placementStrategies.containsKey(what.getChannel());
+        return what -> placementStrategies.containsKey(what.getType());
     }
 
     public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide) {
@@ -73,9 +73,9 @@ public final class StackWorldBehaviors {
         return new StackExportFacade(strategies);
     }
 
-    public static Map<AEKeySpace, ExternalStorageStrategy> createExternalStorageStrategies(ServerLevel level,
-            BlockPos fromPos, Direction fromSide) {
-        var strategies = new IdentityHashMap<AEKeySpace, ExternalStorageStrategy>(externalStorageStrategies.size());
+    public static Map<AEKeyType, ExternalStorageStrategy> createExternalStorageStrategies(ServerLevel level,
+                                                                                          BlockPos fromPos, Direction fromSide) {
+        var strategies = new IdentityHashMap<AEKeyType, ExternalStorageStrategy>(externalStorageStrategies.size());
         for (var entry : externalStorageStrategies.entrySet()) {
             strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide));
         }
@@ -84,7 +84,7 @@ public final class StackWorldBehaviors {
 
     public static PlacementStrategy createPlacementStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
             BlockEntity host) {
-        var strategies = new IdentityHashMap<AEKeySpace, PlacementStrategy>(placementStrategies.size());
+        var strategies = new IdentityHashMap<AEKeyType, PlacementStrategy>(placementStrategies.size());
         for (var entry : placementStrategies.entrySet()) {
             strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide, host));
         }

@@ -19,7 +19,7 @@
 package appeng.crafting.pattern;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.GenericStack;
 
 public interface IAEPatternDetails extends IPatternDetails {
     GenericStack[] getSparseInputs();

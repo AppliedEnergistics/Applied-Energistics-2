@@ -16,24 +16,20 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util.item;
+package appeng.api.stacks;
+
+import appeng.api.config.FuzzyMode;
+import appeng.util.BootstrapMinecraft;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
-import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 public class FuzzySearchTest {
@@ -58,7 +54,7 @@ public class FuzzySearchTest {
         AEItemKey damagedStack = AEItemKey.of(damagedSword);
 
         // Create a list of stacks and sort by their natural order
-        AEItemKey[] stacks = new AEItemKey[] {
+        AEItemKey[] stacks = new AEItemKey[]{
                 damagedStack, undamagedStack, unbreakableStack
         };
         Arrays.sort(stacks, FuzzySearch.COMPARATOR);

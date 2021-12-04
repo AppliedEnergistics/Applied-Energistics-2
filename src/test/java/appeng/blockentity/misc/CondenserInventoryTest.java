@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;

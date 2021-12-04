@@ -1,4 +1,4 @@
-package appeng.api.storage.data;
+package appeng.api.stacks;
 
 import javax.annotation.Nullable;
 
@@ -9,9 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.AEKeySpaces;
-import appeng.api.storage.GenericStack;
 import appeng.core.AELog;
 
 /**
@@ -39,9 +36,9 @@ public abstract class AEKey {
         }
 
         // Handle tags where the mod that provided the channel has been uninstalled
-        AEKeySpace channel;
+        AEKeyType channel;
         try {
-            channel = AEKeySpaces.get(new ResourceLocation(channelId));
+            channel = AEKeyTypes.get(new ResourceLocation(channelId));
         } catch (IllegalArgumentException | ResourceLocationException e) {
             AELog.warn("Cannot deserialize generic key from %s because channel '%s' is missing.", tag, channelId);
             return null;
@@ -61,7 +58,7 @@ public abstract class AEKey {
     }
 
     public static void writeKey(FriendlyByteBuf buffer, AEKey key) {
-        var id = key.getChannel().getRawId();
+        var id = key.getType().getRawId();
         buffer.writeVarInt(id);
         key.writeToPacket(buffer);
     }
@@ -80,7 +77,7 @@ public abstract class AEKey {
     @Nullable
     public static AEKey readKey(FriendlyByteBuf buffer) {
         var id = buffer.readVarInt();
-        var channel = AEKeySpace.fromRawId(id);
+        var channel = AEKeyType.fromRawId(id);
         if (channel == null) {
             AELog.error("Received unknown key space id %d", id);
             return null;
@@ -94,7 +91,7 @@ public abstract class AEKey {
      */
     public final CompoundTag toTagGeneric() {
         var tag = toTag();
-        tag.putString("#c", getChannel().getId().toString());
+        tag.putString("#c", getType().getId().toString());
         return tag;
     }
 
@@ -119,9 +116,9 @@ public abstract class AEKey {
     }
 
     /**
-     * The storage channel this type of resource key is used for.
+     * @return An object giving additional properties about the type of key.
      */
-    public abstract AEKeySpace getChannel();
+    public abstract AEKeyType getType();
 
     /**
      * @return This object if it has no secondary component, otherwise a copy of this resource key with the secondary

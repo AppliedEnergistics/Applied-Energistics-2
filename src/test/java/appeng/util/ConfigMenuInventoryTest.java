@@ -15,10 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
 
 @BootstrapMinecraft
 class ConfigMenuInventoryTest {
@@ -81,16 +81,16 @@ class ConfigMenuInventoryTest {
     // Test when an item-based machine's config inventory is interacted with
     private DynamicTest itemTest(String displayName, ItemStack inserted, @Nullable GenericStack expectedStack,
             @Nullable GenericStack initialStack) {
-        return test(displayName, AEKeySpace.items(), inserted, expectedStack, initialStack);
+        return test(displayName, AEKeyType.items(), inserted, expectedStack, initialStack);
     }
 
     private DynamicTest fluidTest(String displayName, ItemStack inserted, @Nullable GenericStack expectedStack,
             @Nullable GenericStack initialStack) {
-        return test(displayName, AEKeySpace.fluids(), inserted, expectedStack, initialStack);
+        return test(displayName, AEKeyType.fluids(), inserted, expectedStack, initialStack);
     }
 
-    private DynamicTest test(String displayName, AEKeySpace channel, ItemStack inserted,
-            @Nullable GenericStack expectedStack, @Nullable GenericStack initialStack) {
+    private DynamicTest test(String displayName, AEKeyType channel, ItemStack inserted,
+                             @Nullable GenericStack expectedStack, @Nullable GenericStack initialStack) {
         return DynamicTest.dynamicTest(
                 displayName,
                 () -> {

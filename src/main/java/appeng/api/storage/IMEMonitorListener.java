@@ -24,7 +24,7 @@
 package appeng.api.storage;
 
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 public interface IMEMonitorListener {
     /**

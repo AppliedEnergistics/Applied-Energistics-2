@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.GenericStack;
 import appeng.items.misc.WrappedGenericStack;
 
 @Mixin(value = Screen.class, priority = 1001)

@@ -19,7 +19,7 @@
 package appeng.crafting.inv;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Extended version of {@link ICraftingInventory} to keep track of other simulation state that is not directly related
@@ -32,7 +32,7 @@ public interface ICraftingSimulationState extends ICraftingInventory {
 
     default void addStackBytes(AEKey key, long amount, long multiplier) {
         // Crafting storage is 8 times bigger than normal storage, this is intentional.
-        addBytes((double) amount * multiplier / key.getChannel().getUnitsPerByte() * 8);
+        addBytes((double) amount * multiplier / key.getType().getUnitsPerByte() * 8);
     }
 
     void addCrafting(IPatternDetails details, long crafts);

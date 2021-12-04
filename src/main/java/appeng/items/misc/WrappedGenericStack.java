@@ -42,9 +42,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEKey;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;

@@ -20,7 +20,7 @@ package appeng.menu.me.crafting;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Describes an entry in the crafting plan which describes how many items of one type are missing, already stored in the

@@ -14,10 +14,10 @@ import net.minecraft.world.item.Items;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.crafting.simulation.helpers.ProcessingPatternBuilder;
 import appeng.util.BootstrapMinecraft;
 

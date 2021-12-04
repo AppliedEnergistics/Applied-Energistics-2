@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 
 // TODO FABRIC 117: No concept of itemstack-sensitive container items.
 public final class CraftingRemainders {

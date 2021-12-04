@@ -24,7 +24,7 @@ import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 public class InterestManager<T> {
 

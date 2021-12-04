@@ -6,17 +6,17 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 
 // Consider moving to API?
 public interface IVariantConversion<V extends TransferVariant<?>> {
     IVariantConversion<ItemVariant> ITEM = new Item();
     IVariantConversion<FluidVariant> FLUID = new Fluid();
 
-    AEKeySpace getKeySpace();
+    AEKeyType getKeyType();
 
     V getVariant(@Nullable AEKey key);
 
@@ -31,8 +31,8 @@ public interface IVariantConversion<V extends TransferVariant<?>> {
 
     class Fluid implements IVariantConversion<FluidVariant> {
         @Override
-        public AEKeySpace getKeySpace() {
-            return AEKeySpace.fluids();
+        public AEKeyType getKeyType() {
+            return AEKeyType.fluids();
         }
 
         @Override
@@ -53,8 +53,8 @@ public interface IVariantConversion<V extends TransferVariant<?>> {
 
     class Item implements IVariantConversion<ItemVariant> {
         @Override
-        public AEKeySpace getKeySpace() {
-            return AEKeySpace.items();
+        public AEKeyType getKeyType() {
+            return AEKeyType.items();
         }
 
         @Override

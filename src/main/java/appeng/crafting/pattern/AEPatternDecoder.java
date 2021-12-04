@@ -24,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetailsDecoder;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 
 public class AEPatternDecoder implements IPatternDetailsDecoder {
     public static final AEPatternDecoder INSTANCE = new AEPatternDecoder();

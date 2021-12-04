@@ -17,11 +17,11 @@ import net.minecraft.server.Bootstrap;
 
 import appeng.core.AEConfig;
 import appeng.core.AppEngBootstrap;
-import appeng.init.client.InitKeySpaces;
+import appeng.init.client.InitKeyTypes;
 
 public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback, AfterAllCallback {
 
-    private static boolean keySpacesInitialized;
+    private static boolean keyTypesInitialized;
 
     Path configDir;
 
@@ -32,9 +32,9 @@ public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
         AppEngBootstrap.runEarlyStartup();
-        if (!keySpacesInitialized) {
-            InitKeySpaces.init();
-            keySpacesInitialized = true;
+        if (!keyTypesInitialized) {
+            InitKeyTypes.init();
+            keyTypesInitialized = true;
         }
 
         configDir = Files.createTempDirectory("ae2config");

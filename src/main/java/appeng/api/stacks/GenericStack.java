@@ -1,4 +1,4 @@
-package appeng.api.storage;
+package appeng.api.stacks;
 
 import java.util.Objects;
 
@@ -8,8 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
 import appeng.items.misc.WrappedGenericStack;
 
 /**

@@ -12,7 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.config.Actionable;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.core.AELog;
 import appeng.util.IVariantConversion;
 
@@ -37,7 +37,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
 
     @Override
     public boolean transfer(StackTransferContext context) {
-        if (!context.isKeySpaceEnabled(conversion.getKeySpace())) {
+        if (!context.isKeyTypeEnabled(conversion.getKeyType())) {
             return false;
         }
 
@@ -47,7 +47,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
         }
 
         long remainingTransferAmount = context.getOperationsRemaining()
-                * (long) conversion.getKeySpace().transferFactor();
+                * (long) conversion.getKeyType().transferFactor();
 
         var inv = context.getInternalStorage();
         try (var tx = Transaction.openOuter()) {
@@ -104,7 +104,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
                         extractableAmount - inserted, extractable);
             }
 
-            var opsUsed = Math.max(1, inserted / conversion.getKeySpace().transferFactor());
+            var opsUsed = Math.max(1, inserted / conversion.getKeyType().transferFactor());
             context.reduceOperationsRemaining(opsUsed);
 
             tx.commit();

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.api.storage;
+package appeng.api.stacks;
 
 import java.util.Objects;
 
@@ -24,33 +24,38 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.storage.data.AEItemKey;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
-public final class AEItemKeys extends AEKeySpace {
-    private static final ResourceLocation ID = AppEng.makeId("i");
+public final class AEFluidKeys extends AEKeyType {
+    private static final ResourceLocation ID = AppEng.makeId("f");
 
-    static final AEItemKeys INSTANCE = new AEItemKeys();
+    static final AEFluidKeys INSTANCE = new AEFluidKeys();
 
-    private AEItemKeys() {
-        super(ID, AEItemKey.class, GuiText.Items.text());
+    private AEFluidKeys() {
+        super(ID, AEFluidKey.class, GuiText.Fluids.text());
     }
 
     @Override
-    public AEItemKey readFromPacket(FriendlyByteBuf input) {
+    public int transferFactor() {
+        // On Forge this was 125mb (so 125/1000th of a bucket)
+        return AEFluidKey.AMOUNT_BUCKET * 1000 / 125;
+    }
+
+    @Override
+    public int getUnitsPerByte() {
+        return 8 * AEFluidKey.AMOUNT_BUCKET;
+    }
+
+    @Override
+    public AEFluidKey readFromPacket(FriendlyByteBuf input) {
         Objects.requireNonNull(input);
 
-        return AEItemKey.fromPacket(input);
+        return AEFluidKey.fromPacket(input);
     }
 
     @Override
-    public AEItemKey loadKeyFromTag(CompoundTag tag) {
-        return AEItemKey.fromTag(tag);
-    }
-
-    @Override
-    public boolean supportsFuzzyRangeSearch() {
-        return false;
+    public AEFluidKey loadKeyFromTag(CompoundTag tag) {
+        return AEFluidKey.fromTag(tag);
     }
 }

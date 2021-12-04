@@ -24,7 +24,7 @@
 package appeng.api.implementations.parts;
 
 import appeng.api.parts.IPart;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.util.INetworkToolAware;
 
 /**

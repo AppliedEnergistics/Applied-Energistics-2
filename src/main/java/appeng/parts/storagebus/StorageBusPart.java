@@ -54,7 +54,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
@@ -62,7 +62,7 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
@@ -124,7 +124,7 @@ public class StorageBusPart extends UpgradeablePart
     private final Listener listener = new Listener();
     private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
     @Nullable
-    private Map<AEKeySpace, ExternalStorageStrategy> externalStorageStrategies;
+    private Map<AEKeyType, ExternalStorageStrategy> externalStorageStrategies;
     private boolean wasActive = false;
     private int priority = 0;
     /**
@@ -303,7 +303,7 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         MEMonitorStorage foundMonitor = null;
-        Map<AEKeySpace, MEStorage> foundExternalApi = Collections.emptyMap();
+        Map<AEKeyType, MEStorage> foundExternalApi = Collections.emptyMap();
 
         // Prioritize a handler to directly link to another ME network
         var accessor = adjacentStorageAccessor.find();
@@ -418,7 +418,7 @@ public class StorageBusPart extends UpgradeablePart
         return filterBuilder.build();
     }
 
-    private void findExternalStorages(Map<AEKeySpace, MEStorage> storages) {
+    private void findExternalStorages(Map<AEKeyType, MEStorage> storages) {
         var extractableOnly = isExtractableOnly();
         for (var entry : getExternalStorageStrategies().entrySet()) {
             var wrapper = entry.getValue().createWrapper(
@@ -547,7 +547,7 @@ public class StorageBusPart extends UpgradeablePart
         }
     }
 
-    private Map<AEKeySpace, ExternalStorageStrategy> getExternalStorageStrategies() {
+    private Map<AEKeyType, ExternalStorageStrategy> getExternalStorageStrategies() {
         if (externalStorageStrategies == null) {
             var host = getHost().getBlockEntity();
             this.externalStorageStrategies = StackWorldBehaviors.createExternalStorageStrategies(

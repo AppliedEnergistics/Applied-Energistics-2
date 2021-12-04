@@ -6,10 +6,10 @@ import java.util.Set;
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.util.prioritylist.IPartitionList;
 
 /**
@@ -20,7 +20,7 @@ class StackTransferContext {
     private final IEnergySource energySource;
     private final IActionSource actionSource;
     private final IPartitionList filter;
-    private final Set<AEKeySpace> keySpaces;
+    private final Set<AEKeyType> keyTypes;
     private final int initialOperations;
     private int operationsRemaining;
 
@@ -33,9 +33,9 @@ class StackTransferContext {
         this.filter = filter;
         this.initialOperations = operationsRemaining;
         this.operationsRemaining = operationsRemaining;
-        this.keySpaces = new HashSet<>();
+        this.keyTypes = new HashSet<>();
         for (AEKey item : filter.getItems()) {
-            this.keySpaces.add(item.getChannel());
+            this.keyTypes.add(item.getType());
         }
     }
 
@@ -67,8 +67,8 @@ class StackTransferContext {
         return initialOperations > operationsRemaining;
     }
 
-    public boolean isKeySpaceEnabled(AEKeySpace space) {
-        return keySpaces.isEmpty() || keySpaces.contains(space);
+    public boolean isKeyTypeEnabled(AEKeyType space) {
+        return keyTypes.isEmpty() || keyTypes.contains(space);
     }
 
     public boolean isInFilter(AEKey key) {

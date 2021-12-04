@@ -30,8 +30,8 @@ import com.google.common.base.Preconditions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKey;
 import appeng.me.cells.BasicCellHandler;
 import appeng.util.ConfigInventory;
 
@@ -44,9 +44,9 @@ import appeng.util.ConfigInventory;
  */
 public interface IBasicCellItem extends ICellWorkbenchItem {
     /**
-     * Basic cell items are limited to a single {@link AEKeySpace}.
+     * Basic cell items are limited to a single {@link AEKeyType}.
      */
-    AEKeySpace getKeySpace();
+    AEKeyType getKeyType();
 
     /**
      * The number of bytes that can be stored on this type of storage cell.

@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;

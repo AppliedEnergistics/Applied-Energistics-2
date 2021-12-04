@@ -43,10 +43,10 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEMonitorStorage;
-import appeng.api.storage.data.AEFluidKey;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -243,7 +243,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
             // We allow up to a bucket per insert
             var amount = Math.min(AEFluidKey.AMOUNT_BUCKET, maxAmount);
             updateSnapshots(transaction);
-            pendingEnergy += amount / (double) AEFluidKey.AMOUNT_BUCKET / AEKeySpace.fluids().transferFactor();
+            pendingEnergy += amount / (double) AEFluidKey.AMOUNT_BUCKET / AEKeyType.fluids().transferFactor();
             return amount;
         }
 

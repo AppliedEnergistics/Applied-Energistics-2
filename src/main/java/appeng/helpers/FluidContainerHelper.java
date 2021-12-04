@@ -9,8 +9,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEFluidKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEFluidKey;
 
 public final class FluidContainerHelper {
     private FluidContainerHelper() {

@@ -50,7 +50,7 @@ import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;

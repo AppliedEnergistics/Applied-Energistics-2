@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.GenericStack;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigMenuInventory;
 

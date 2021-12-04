@@ -22,8 +22,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEKey;
 
 public class FluidPlacementStrategy implements PlacementStrategy {
     private final ServerLevel level;

@@ -19,8 +19,8 @@
 package appeng.util.prioritylist;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 
 public class FuzzyPriorityList implements IPartitionList {
 

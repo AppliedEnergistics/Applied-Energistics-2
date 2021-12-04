@@ -1,7 +1,7 @@
 package appeng.parts.automation;
 
 import appeng.api.config.Actionable;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Strategy for importing or exporting stacks from adjacent blocks into the grid. Used by the import/export bus.

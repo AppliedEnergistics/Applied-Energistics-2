@@ -39,7 +39,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.util.AECableType;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;

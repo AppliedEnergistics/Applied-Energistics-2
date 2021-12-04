@@ -28,7 +28,7 @@ import net.minecraft.world.phys.AABB;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.core.sync.packets.ItemTransitionEffectPacket;

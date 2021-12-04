@@ -11,12 +11,12 @@ import net.minecraft.network.chat.TextComponent;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.core.localization.GuiText;
 
 /**
@@ -27,32 +27,32 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
     private IActionSource source;
     private final InventoryCache cache;
 
-    private Map<AEKeySpace, MEStorage> storages;
+    private Map<AEKeyType, MEStorage> storages;
 
-    public CompositeStorage(Map<AEKeySpace, MEStorage> storages) {
+    public CompositeStorage(Map<AEKeyType, MEStorage> storages) {
         this.storages = storages;
         this.cache = new InventoryCache();
     }
 
-    public void setStorages(Map<AEKeySpace, MEStorage> storages) {
+    public void setStorages(Map<AEKeyType, MEStorage> storages) {
         this.storages = Objects.requireNonNull(storages);
     }
 
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
-        var storage = storages.get(what.getChannel());
+        var storage = storages.get(what.getType());
         return storage != null && storage.isPreferredStorageFor(what, source);
     }
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-        var storage = storages.get(what.getChannel());
+        var storage = storages.get(what.getType());
         return storage != null ? storage.insert(what, amount, mode, source) : 0;
     }
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-        var storage = storages.get(what.getChannel());
+        var storage = storages.get(what.getType());
         return storage != null ? storage.extract(what, amount, mode, source) : 0;
     }
 
@@ -63,13 +63,13 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
     public Component getDescription() {
         var types = new TextComponent("");
         boolean first = true;
-        for (var keySpace : storages.keySet()) {
+        for (var keyType : storages.keySet()) {
             if (!first) {
                 types.append(", ");
             } else {
                 first = false;
             }
-            types.append(keySpace.getDescription());
+            types.append(keyType.getDescription());
         }
 
         return GuiText.ExternalStorage.text(types);

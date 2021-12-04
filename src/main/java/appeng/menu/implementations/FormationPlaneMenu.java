@@ -25,7 +25,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.FormationPlaneScreen;
 import appeng.menu.SlotSemantic;

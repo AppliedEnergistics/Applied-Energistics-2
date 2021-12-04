@@ -20,8 +20,8 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 
 /**
  * Keeps track of the crafting patterns in the network, and related information.

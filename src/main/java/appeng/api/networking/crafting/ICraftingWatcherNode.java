@@ -24,7 +24,7 @@
 package appeng.api.networking.crafting;
 
 import appeng.api.networking.IGridNodeService;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 public interface ICraftingWatcherNode extends IGridNodeService {
 

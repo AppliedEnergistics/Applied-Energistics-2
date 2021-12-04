@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.GenericStack;
 
 /**
  * Helpers that apply to both processing and crafting patterns.

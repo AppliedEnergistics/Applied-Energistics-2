@@ -8,9 +8,9 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEItemKey;
 import appeng.core.AELog;
 
 /**
@@ -58,9 +58,9 @@ public class ProcessingPatternItem extends EncodedPatternItem {
     private static void checkItemsOrFluids(GenericStack[] stacks) {
         for (var stack : stacks) {
             if (stack != null) {
-                if (stack.what().getChannel() != AEKeySpace.items()
-                        && stack.what().getChannel() != AEKeySpace.fluids()) {
-                    throw new IllegalArgumentException("Unsupported storage channel: " + stack.what().getChannel());
+                if (stack.what().getType() != AEKeyType.items()
+                        && stack.what().getType() != AEKeyType.fluids()) {
+                    throw new IllegalArgumentException("Unsupported storage channel: " + stack.what().getType());
                 }
             }
         }

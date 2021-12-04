@@ -20,7 +20,7 @@ package appeng.crafting.inv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Simplified inventory with unbounded capacity and support for multiple IAEStacks. Used for crafting, both for the

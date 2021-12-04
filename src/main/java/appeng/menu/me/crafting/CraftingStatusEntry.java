@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Describes an entry in a crafting job, which describes how many items of one type are yet to be crafted, or currently

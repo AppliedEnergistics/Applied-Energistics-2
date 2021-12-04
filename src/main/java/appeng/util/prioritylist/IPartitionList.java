@@ -22,8 +22,8 @@ import javax.annotation.Nullable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 
 public interface IPartitionList {
     boolean isListed(AEKey input);

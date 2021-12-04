@@ -29,7 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.GenericStack;
 
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.

@@ -33,7 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.util.Platform;
 
 /**

@@ -36,8 +36,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 
 /**
  * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of

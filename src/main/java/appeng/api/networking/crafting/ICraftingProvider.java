@@ -29,8 +29,8 @@ import java.util.Set;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 
 /**
  * Allows a node to provide crafting patterns and emitable items to the network.

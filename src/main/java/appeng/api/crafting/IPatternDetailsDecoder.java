@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 
 /**
  * Allows mod to decode their {@link IPatternDetails} from their item stacks. This is required for custom patterns,

@@ -22,8 +22,8 @@ import java.util.Map;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
 
 public record CraftingPlan(GenericStack finalOutput,
         long bytes,

@@ -8,15 +8,15 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEItemKey;
 import appeng.helpers.iface.GenericStackInv;
 
 /**
  * Wraps this configuration inventory as an {@link net.minecraft.world.item.ItemStack} based inventory for use in a
  * menu. It will automatically convert appropriately from {@link net.minecraft.world.item.ItemStack}s set by the player
- * to the internal key-based representation with the help of a matching {@link AEKeySpace}.
+ * to the internal key-based representation with the help of a matching {@link AEKeyType}.
  */
 public class ConfigMenuInventory implements InternalInventory {
     private final GenericStackInv inv;
@@ -45,7 +45,7 @@ public class ConfigMenuInventory implements InternalInventory {
 
     @Override
     public int getSlotLimit(int slot) {
-        return (int) Math.min(Integer.MAX_VALUE, inv.getCapacity(AEKeySpace.items()));
+        return (int) Math.min(Integer.MAX_VALUE, inv.getCapacity(AEKeyType.items()));
     }
 
     @Override

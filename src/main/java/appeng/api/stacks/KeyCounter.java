@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage.data;
+package appeng.api.stacks;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,7 +38,6 @@ import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 
 import appeng.api.config.FuzzyMode;
-import appeng.util.item.VariantCounter;
 
 /**
  * Associates a generic value of type T with AE keys and makes key/value pairs searchable with fuzzy mode semantics.

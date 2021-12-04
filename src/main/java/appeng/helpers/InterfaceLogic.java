@@ -53,14 +53,14 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
@@ -145,10 +145,10 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.upgrades = new StackUpgradeInventory(is, this, 1);
         this.craftingTracker = new MultiCraftingTracker(this, 9);
 
-        getConfig().setCapacity(AEKeySpace.items(), Container.LARGE_MAX_STACK_SIZE);
-        getStorage().setCapacity(AEKeySpace.items(), Container.LARGE_MAX_STACK_SIZE);
-        getConfig().setCapacity(AEKeySpace.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
-        getStorage().setCapacity(AEKeySpace.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
+        getConfig().setCapacity(AEKeyType.items(), Container.LARGE_MAX_STACK_SIZE);
+        getStorage().setCapacity(AEKeyType.items(), Container.LARGE_MAX_STACK_SIZE);
+        getConfig().setCapacity(AEKeyType.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
+        getStorage().setCapacity(AEKeyType.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
         this.localItemStorage = GenericStackInvStorage.items(getStorage());
         this.localFluidStorage = GenericStackInvStorage.fluids(getStorage());
     }
@@ -565,8 +565,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
         InterfaceInventory() {
             super(Map.of(
-                    AEKeySpace.items(), new StorageAdapter<>(IVariantConversion.ITEM, localItemStorage),
-                    AEKeySpace.fluids(), new StorageAdapter<>(IVariantConversion.FLUID, localFluidStorage)));
+                    AEKeyType.items(), new StorageAdapter<>(IVariantConversion.ITEM, localItemStorage),
+                    AEKeyType.fluids(), new StorageAdapter<>(IVariantConversion.FLUID, localFluidStorage)));
             this.setActionSource(actionSource);
         }
 

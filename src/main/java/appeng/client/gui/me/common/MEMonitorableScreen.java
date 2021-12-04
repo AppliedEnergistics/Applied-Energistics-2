@@ -54,7 +54,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.data.AEFluidKey;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;

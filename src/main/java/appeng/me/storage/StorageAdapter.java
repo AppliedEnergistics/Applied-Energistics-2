@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.core.localization.GuiText;
 import appeng.util.IVariantConversion;
 import appeng.util.Platform;
@@ -142,6 +142,6 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
 
     @Override
     public Component getDescription() {
-        return GuiText.ExternalStorage.text(conversion.getKeySpace().getDescription());
+        return GuiText.ExternalStorage.text(conversion.getKeyType().getDescription());
     }
 }

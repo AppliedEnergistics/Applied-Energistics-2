@@ -1,6 +1,6 @@
 package appeng.api.storage;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Provides {@link IStorageProvider} with a convenient way to control the storage they provide to the network.

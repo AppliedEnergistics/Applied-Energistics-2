@@ -1,4 +1,4 @@
-package appeng.util.item;
+package appeng.api.stacks;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,13 +11,12 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.AEKey;
 
 /**
  * Stores variants of a single type of {@link net.minecraft.world.item.Item}, i.e. versions with different durability,
  * or different NBT or capabilities.
  */
-public abstract class VariantMap<K extends AEKey, V> {
+abstract class VariantMap<K extends AEKey, V> {
     private final V defaultValue;
     private final Supplier<V> defaultValueFactory;
 

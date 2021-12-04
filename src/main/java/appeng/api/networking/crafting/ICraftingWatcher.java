@@ -25,7 +25,7 @@ package appeng.api.networking.crafting;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * DO NOT IMPLEMENT.

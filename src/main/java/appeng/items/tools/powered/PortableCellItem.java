@@ -36,10 +36,10 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
 import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.contents.CellConfig;
@@ -61,14 +61,14 @@ public class PortableCellItem extends AEBasePoweredItem
     public static final StorageTier SIZE_64K = new StorageTier(16834, 27, 512);
 
     private final StorageTier tier;
-    private final AEKeySpace keySpace;
+    private final AEKeyType keyType;
     private final MenuType<?> menuType;
 
-    public PortableCellItem(AEKeySpace keySpace, MenuType<?> menuType, StorageTier tier, Properties props) {
+    public PortableCellItem(AEKeyType keyType, MenuType<?> menuType, StorageTier tier, Properties props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
         this.menuType = menuType;
         this.tier = tier;
-        this.keySpace = keySpace;
+        this.keyType = keyType;
     }
 
     @Override
@@ -139,7 +139,7 @@ public class PortableCellItem extends AEBasePoweredItem
 
     @Override
     public ConfigInventory getConfigInventory(final ItemStack is) {
-        return CellConfig.create(keySpace.filter(), is);
+        return CellConfig.create(keyType.filter(), is);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class PortableCellItem extends AEBasePoweredItem
      * @return Amount inserted.
      */
     public long insert(Player player, ItemStack itemStack, AEKey what, long amount, Actionable mode) {
-        if (keySpace.tryCast(what) == null) {
+        if (keyType.tryCast(what) == null) {
             return 0;
         }
 
@@ -200,8 +200,8 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public AEKeySpace getKeySpace() {
-        return keySpace;
+    public AEKeyType getKeyType() {
+        return keyType;
     }
 
     public MenuType<?> getMenuType() {

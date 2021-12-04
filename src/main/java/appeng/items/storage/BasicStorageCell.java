@@ -36,7 +36,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.core.definitions.AEItems;
@@ -57,7 +57,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     protected final int totalBytes;
     protected final int bytesPerType;
     protected final int totalTypes;
-    private final AEKeySpace keySpace;
+    private final AEKeyType keyType;
 
     public BasicStorageCell(Item.Properties properties,
             ItemLike coreItem,
@@ -65,14 +65,14 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
             int kilobytes,
             int bytesPerType,
             int totalTypes,
-            AEKeySpace keySpace) {
+            AEKeyType keyType) {
         super(properties);
         this.idleDrain = idleDrain;
         this.totalBytes = kilobytes * 1024;
         this.coreItem = coreItem;
         this.bytesPerType = bytesPerType;
         this.totalTypes = totalTypes;
-        this.keySpace = keySpace;
+        this.keyType = keyType;
     }
 
     @Environment(EnvType.CLIENT)
@@ -85,8 +85,8 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public AEKeySpace getKeySpace() {
-        return this.keySpace;
+    public AEKeyType getKeyType() {
+        return this.keyType;
     }
 
     @Override
@@ -121,7 +121,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     @Override
     public ConfigInventory getConfigInventory(final ItemStack is) {
-        return CellConfig.create(keySpace.filter(), is);
+        return CellConfig.create(keyType.filter(), is);
     }
 
     @Override

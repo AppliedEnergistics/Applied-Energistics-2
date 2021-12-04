@@ -22,7 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.KeyCounter;
 
 /**
  * An immutable inventory that is empty.

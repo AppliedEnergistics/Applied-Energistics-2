@@ -26,8 +26,8 @@ import net.minecraft.nbt.ListTag;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 
 public class ListCraftingInventory implements ICraftingInventory {
     public final KeyCounter list = new KeyCounter();

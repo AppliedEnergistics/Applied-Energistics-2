@@ -43,7 +43,7 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;

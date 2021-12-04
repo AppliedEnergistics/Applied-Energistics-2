@@ -22,7 +22,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import appeng.api.storage.data.AEFluidKey;
+import appeng.api.stacks.AEFluidKey;
 
 /**
  * @author AlgorithmX2

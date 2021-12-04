@@ -1,4 +1,4 @@
-package appeng.util.item;
+package appeng.api.stacks;
 
 import java.util.Comparator;
 import java.util.SortedMap;
@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 final class FuzzySearch {
     @VisibleForTesting

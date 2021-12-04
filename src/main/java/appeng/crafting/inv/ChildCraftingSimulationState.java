@@ -19,7 +19,7 @@
 package appeng.crafting.inv;
 
 import appeng.api.config.Actionable;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 public class ChildCraftingSimulationState extends CraftingSimulationState {
     private final ICraftingInventory parent;

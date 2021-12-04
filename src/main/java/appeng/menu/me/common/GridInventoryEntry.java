@@ -20,7 +20,7 @@ package appeng.menu.me.common;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Contains information about something that is stored inside of the grid inventory. This is used to synchronize the

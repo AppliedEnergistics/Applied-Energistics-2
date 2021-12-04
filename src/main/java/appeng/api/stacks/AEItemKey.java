@@ -1,4 +1,4 @@
-package appeng.api.storage.data;
+package appeng.api.stacks;
 
 import java.util.Objects;
 
@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
 import appeng.core.AELog;
 import appeng.util.Platform;
 
@@ -61,8 +60,8 @@ public class AEItemKey extends AEKey {
     }
 
     @Override
-    public AEKeySpace getChannel() {
-        return AEKeySpace.items();
+    public AEKeyType getType() {
+        return AEKeyType.items();
     }
 
     @Override

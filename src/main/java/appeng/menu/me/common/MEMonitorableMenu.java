@@ -60,10 +60,10 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.me.common.MEMonitorableScreen;
@@ -216,7 +216,7 @@ public class MEMonitorableMenu extends AEBaseMenu
         // If the host is a basic item cell with a limited key space, account for this
         if (host instanceof ItemMenuHost itemMenuHost) {
             if (itemMenuHost.getItemStack().getItem() instanceof IBasicCellItem basicCellItem) {
-                return basicCellItem.getKeySpace().contains(key);
+                return basicCellItem.getKeyType().contains(key);
             }
         }
 

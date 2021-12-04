@@ -33,10 +33,10 @@ import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 
 import appeng.api.config.Actionable;
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.util.ConfigMenuInventory;
 
 public class GenericStackInv {
@@ -44,7 +44,7 @@ public class GenericStackInv {
     private final Runnable listener;
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
-    private Reference2LongMap<AEKeySpace> capacities = new Reference2LongArrayMap<>();
+    private Reference2LongMap<AEKeyType> capacities = new Reference2LongArrayMap<>();
     @org.jetbrains.annotations.Nullable
     private AEKeyFilter filter;
     protected final Mode mode;
@@ -168,19 +168,19 @@ public class GenericStackInv {
         return canExtract;
     }
 
-    public long getCapacity(AEKeySpace space) {
+    public long getCapacity(AEKeyType space) {
         return capacities.getOrDefault(space, Long.MAX_VALUE);
     }
 
-    public void setCapacity(AEKeySpace space, long capacity) {
+    public void setCapacity(AEKeyType space, long capacity) {
         this.capacities.put(space, capacity);
     }
 
     public long getMaxAmount(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
-            return Math.min(itemKey.getItem().getMaxStackSize(), getCapacity(key.getChannel()));
+            return Math.min(itemKey.getItem().getMaxStackSize(), getCapacity(key.getType()));
         }
-        return getCapacity(key.getChannel());
+        return getCapacity(key.getType());
     }
 
     final void onChange() {

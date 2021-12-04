@@ -1,6 +1,6 @@
 package appeng.api.storage;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 class NoOpKeyFilter implements AEKeyFilter {
     static NoOpKeyFilter INSTANCE = new NoOpKeyFilter();
@@ -10,8 +10,4 @@ class NoOpKeyFilter implements AEKeyFilter {
         return true;
     }
 
-    @Override
-    public boolean isEnumerable() {
-        return true;
-    }
 }

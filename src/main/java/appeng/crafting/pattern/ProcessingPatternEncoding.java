@@ -26,8 +26,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
 
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
@@ -60,8 +60,8 @@ class ProcessingPatternEncoding {
             if (stack == null) {
                 throw new IllegalArgumentException("Pattern references missing stack: " + entry);
             }
-            if (stack.what().getChannel() != AEKeySpace.items()
-                    && stack.what().getChannel() != AEKeySpace.fluids()) {
+            if (stack.what().getType() != AEKeyType.items()
+                    && stack.what().getType() != AEKeyType.fluids()) {
                 throw new IllegalArgumentException("Only items and fluids are supported in AE2 patterns.");
             }
             result[x] = stack;

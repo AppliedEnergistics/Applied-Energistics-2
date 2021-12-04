@@ -33,8 +33,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 
 /**
  * Wraps another inventory transparently but allows switching out the underlying inventory implementation. When the

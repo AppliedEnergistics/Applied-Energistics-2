@@ -23,7 +23,7 @@
 
 package appeng.api.storage;
 
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.KeyCounter;
 
 /**
  * A {@link MEStorage} that allows listening for storage changes.

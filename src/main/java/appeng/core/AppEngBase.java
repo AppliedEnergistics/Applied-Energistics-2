@@ -68,7 +68,7 @@ import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
-import appeng.init.client.InitKeySpaces;
+import appeng.init.client.InitKeyTypes;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitP2PAttunements;
@@ -114,7 +114,7 @@ public abstract class AppEngBase implements AppEng {
 
         AEConfig.load(FabricLoader.getInstance().getConfigDir());
 
-        InitKeySpaces.init();
+        InitKeyTypes.init();
 
         CreativeTab.init();
 

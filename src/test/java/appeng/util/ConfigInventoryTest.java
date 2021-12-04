@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEFluidKey;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.helpers.iface.GenericStackInv;
 
 @BootstrapMinecraft

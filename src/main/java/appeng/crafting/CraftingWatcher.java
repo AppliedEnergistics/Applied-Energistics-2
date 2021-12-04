@@ -23,7 +23,7 @@ import java.util.Set;
 
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.me.service.CraftingService;
 
 /**

@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.ids.AEConstants;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.KeyCounter;
 
 /**
  * Provides crafting services to adjacent pattern providers for automatic crafting. Can be provided via capability on

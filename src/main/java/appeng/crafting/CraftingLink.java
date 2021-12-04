@@ -24,7 +24,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 public class CraftingLink implements ICraftingLink {
 

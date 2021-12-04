@@ -40,8 +40,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKey;
 
 /**
  * Registry for {@link IAEStackRenderHandler}. Also contains convenience functions to render a stack without having to
@@ -50,11 +50,11 @@ import appeng.api.storage.data.AEKey;
 @Environment(EnvType.CLIENT)
 @ThreadSafe
 public class AEStackRendering {
-    private static volatile Map<AEKeySpace, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
+    private static volatile Map<AEKeyType, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
 
-    public static synchronized <T extends AEKey> void register(AEKeySpace channel,
-            Class<T> keyClass,
-            IAEStackRenderHandler<T> handler) {
+    public static synchronized <T extends AEKey> void register(AEKeyType channel,
+                                                               Class<T> keyClass,
+                                                               IAEStackRenderHandler<T> handler) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(handler, "handler");
         Objects.requireNonNull(keyClass, "keyClass");
@@ -69,11 +69,11 @@ public class AEStackRendering {
     }
 
     @Nullable
-    public static IAEStackRenderHandler<?> get(AEKeySpace channel) {
+    public static IAEStackRenderHandler<?> get(AEKeyType channel) {
         return renderers.get(channel);
     }
 
-    public static IAEStackRenderHandler<?> getOrThrow(AEKeySpace channel) {
+    public static IAEStackRenderHandler<?> getOrThrow(AEKeyType channel) {
         var renderHandler = get(channel);
 
         if (renderHandler == null) {
@@ -85,7 +85,7 @@ public class AEStackRendering {
 
     @SuppressWarnings("rawtypes")
     private static IAEStackRenderHandler getUnchecked(AEKey stack) {
-        return getOrThrow(stack.getChannel());
+        return getOrThrow(stack.getType());
     }
 
     @SuppressWarnings("unchecked")

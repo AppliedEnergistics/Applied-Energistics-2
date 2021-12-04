@@ -18,7 +18,7 @@
 
 package appeng.crafting;
 
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 public class CraftBranchFailure extends Exception {
     public CraftBranchFailure(AEKey what, final long howMany) {

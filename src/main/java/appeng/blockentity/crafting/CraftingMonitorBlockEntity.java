@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.GenericStack;
 import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 

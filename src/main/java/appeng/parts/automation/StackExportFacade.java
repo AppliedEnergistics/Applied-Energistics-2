@@ -3,7 +3,7 @@ package appeng.parts.automation;
 import java.util.List;
 
 import appeng.api.config.Actionable;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Simply iterates over a list of {@link StackExportStrategy} and exposes them as a single strategy. First come, first

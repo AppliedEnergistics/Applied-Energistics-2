@@ -6,12 +6,12 @@ import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEKey;
 import appeng.helpers.iface.GenericStackInv;
 
 /**
- * Configuration inventories contain a set of {@link appeng.api.storage.data.AEKey} references that configure how
+ * Configuration inventories contain a set of {@link AEKey} references that configure how
  * certain aspects of a machine work. These inventories are never exposed as platform storage (inaccessible to other
  * machines).
  * <p/>

@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.config.Actionable;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.util.IVariantConversion;
 
 class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {

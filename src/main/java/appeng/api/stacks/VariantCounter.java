@@ -1,4 +1,4 @@
-package appeng.util.item;
+package appeng.api.stacks;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,12 +9,11 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.AEKey;
 
 /**
- * Tallies a negative or positive amount for sub-variants of a {@link appeng.api.storage.data.AEKey}.
+ * Tallies a negative or positive amount for sub-variants of a {@link AEKey}.
  */
-public abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
+abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     /**
      * Enable to skip and remove keys that are mapped to zero.
      */

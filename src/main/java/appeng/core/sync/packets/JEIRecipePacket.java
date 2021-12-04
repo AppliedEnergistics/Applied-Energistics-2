@@ -44,7 +44,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;

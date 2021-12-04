@@ -13,8 +13,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEKey;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;

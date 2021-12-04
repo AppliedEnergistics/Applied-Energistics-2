@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.api.stacks;
 
 import java.util.Objects;
 
@@ -30,24 +30,22 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.storage.data.AEKey;
-
 /**
- * AE2's registry of all known {@link AEKeySpace storage channels}.
+ * AE2's registry of all known {@link AEKeyType key types}.
  * <p/>
- * AE2 has built-in {@link AEKeySpace#items() item} and {@link AEKeySpace#fluids() fluid} storage channels. Addons can
- * register additional storage channels during initialization using {@link #register(AEKeySpace)}.
+ * AE2 has built-in {@link AEKeyType#items() item} and {@link AEKeyType#fluids() fluid} key types. Addons can
+ * register additional key types during initialization using {@link #register(AEKeyType)}.
  */
 @ThreadSafe
-public final class AEKeySpaces {
-    private AEKeySpaces() {
+public final class AEKeyTypes {
+    private AEKeyTypes() {
     }
 
     /**
      * Register a new storage channel.
      * <p>
-     * AE2 already provides native channels for {@link appeng.api.storage.data.AEItemKey} and
-     * {@link appeng.api.storage.data.AEFluidKey}.
+     * AE2 already provides native channels for {@link AEItemKey} and
+     * {@link AEFluidKey}.
      * <p>
      * Each {@link AEKey} subtype can only have a single factory instance. Overwriting is not intended. Each subtype
      * should be a direct one, this might be enforced at any time.
@@ -59,34 +57,34 @@ public final class AEKeySpaces {
      * Caching the factory instance in a field or local variable is perfectly for performance reasons. But do not use
      * any AE2 internal field as they can change randomly between releases.
      */
-    public static synchronized void register(@Nonnull AEKeySpace keySpace) {
-        Objects.requireNonNull(keySpace, "channel");
-        AEKeySpacesInternal.register(keySpace);
+    public static synchronized void register(@Nonnull AEKeyType keyType) {
+        Objects.requireNonNull(keyType, "keyType");
+        AEKeyTypesInternal.register(keyType);
     }
 
     /**
-     * Fetch the implementation for a specific storage channel {@link AEKeySpace#getId() id}.
+     * Fetch the implementation for a specific storage channel {@link AEKeyType#getId() id}.
      *
-     * @param id The {@link AEKeySpace#getId() storage channel id}.
+     * @param id The {@link AEKeyType#getId() storage channel id}.
      * @return The storage channel implementation.
      * @throws IllegalArgumentException when fetching an unregistered channel.
      */
     @Nonnull
-    public static AEKeySpace get(@Nonnull ResourceLocation id) {
-        var result = AEKeySpacesInternal.getRegistry().get(id);
+    public static AEKeyType get(@Nonnull ResourceLocation id) {
+        var result = AEKeyTypesInternal.getRegistry().get(id);
         if (result == null) {
-            throw new IllegalArgumentException("No storage channel registered for id " + id);
+            throw new IllegalArgumentException("No key type registered for id " + id);
         }
         return result;
     }
 
     /**
-     * An unmodifiable collection of all registered storage channels.
+     * An unmodifiable collection of all registered key types.
      * <p>
      * This is mainly used as helper to let storage grids construct their internal storage for each type.
      */
     @Nonnull
-    public static Iterable<AEKeySpace> getAll() {
-        return AEKeySpacesInternal.getRegistry();
+    public static Iterable<AEKeyType> getAll() {
+        return AEKeyTypesInternal.getRegistry();
     }
 }

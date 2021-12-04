@@ -1,4 +1,4 @@
-package appeng.api.storage.data;
+package appeng.api.stacks;
 
 import java.util.Objects;
 
@@ -15,8 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.GenericStack;
 import appeng.core.AELog;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.Platform;
@@ -81,8 +79,8 @@ public class AEFluidKey extends AEKey {
     }
 
     @Override
-    public AEKeySpace getChannel() {
-        return AEKeySpace.fluids();
+    public AEKeyType getType() {
+        return AEKeyType.fluids();
     }
 
     @Override

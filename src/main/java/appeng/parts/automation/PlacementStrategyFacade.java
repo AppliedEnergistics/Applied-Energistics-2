@@ -3,13 +3,13 @@ package appeng.parts.automation;
 import java.util.Map;
 
 import appeng.api.config.Actionable;
-import appeng.api.storage.AEKeySpace;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKey;
 
 class PlacementStrategyFacade implements PlacementStrategy {
-    private final Map<AEKeySpace, PlacementStrategy> strategies;
+    private final Map<AEKeyType, PlacementStrategy> strategies;
 
-    public PlacementStrategyFacade(Map<AEKeySpace, PlacementStrategy> strategies) {
+    public PlacementStrategyFacade(Map<AEKeyType, PlacementStrategy> strategies) {
         this.strategies = strategies;
     }
 
@@ -22,7 +22,7 @@ class PlacementStrategyFacade implements PlacementStrategy {
 
     @Override
     public long placeInWorld(AEKey what, long amount, Actionable type, boolean placeAsEntity) {
-        var strategy = strategies.get(what.getChannel());
+        var strategy = strategies.get(what.getType());
         return strategy != null ? strategy.placeInWorld(what, amount, type, placeAsEntity) : 0;
     }
 }

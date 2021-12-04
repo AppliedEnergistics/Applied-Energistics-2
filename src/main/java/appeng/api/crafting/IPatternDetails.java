@@ -28,9 +28,9 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.storage.GenericStack;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 
 /**
  * Information about a pattern for use by the autocrafting system.

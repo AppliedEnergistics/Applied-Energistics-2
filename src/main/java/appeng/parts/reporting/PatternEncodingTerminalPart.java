@@ -32,7 +32,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.GenericStack;
+import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.IPatternTerminalHost;

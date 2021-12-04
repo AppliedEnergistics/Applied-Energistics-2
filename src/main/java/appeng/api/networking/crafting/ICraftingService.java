@@ -38,7 +38,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 public interface ICraftingService extends IGridService {
 

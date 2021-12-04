@@ -28,7 +28,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.data.KeyMap;
+import appeng.api.stacks.KeyMap;
 
 /**
  * A crafting plan intended to be sent to the client.

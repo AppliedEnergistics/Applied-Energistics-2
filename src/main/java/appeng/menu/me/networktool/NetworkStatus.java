@@ -30,7 +30,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
-import appeng.api.storage.data.AEItemKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 
 /**

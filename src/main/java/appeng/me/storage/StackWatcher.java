@@ -24,7 +24,7 @@ import java.util.Set;
 
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.me.service.StorageService;
 
 /**

@@ -36,14 +36,14 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.cells.StorageCell;
-import appeng.api.storage.data.AEItemKey;
-import appeng.api.storage.data.AEKey;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.core.AELog;
 import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.FuzzyPriorityList;
@@ -56,7 +56,7 @@ public class BasicCellInventory implements StorageCell {
     private static final String STACK_AMOUNTS = "amts";
 
     private final ISaveProvider container;
-    private final AEKeySpace keySpace;
+    private final AEKeyType keyType;
     private IPartitionList partitionList;
     private IncludeExclude partitionListMode;
     private int maxItemTypes;
@@ -83,7 +83,7 @@ public class BasicCellInventory implements StorageCell {
         this.storedItems = (short) getTag().getLongArray(STACK_AMOUNTS).length;
         this.storedItemCount = getTag().getLong(ITEM_COUNT_TAG);
         this.storedAmounts = null;
-        this.keySpace = cellType.getKeySpace();
+        this.keyType = cellType.getKeyType();
 
         updateFilter();
     }
@@ -340,12 +340,12 @@ public class BasicCellInventory implements StorageCell {
     }
 
     public long getUsedBytes() {
-        var bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / keySpace.getUnitsPerByte();
+        var bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / keyType.getUnitsPerByte();
         return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
     }
 
     public long getRemainingItemCount() {
-        final long remaining = this.getFreeBytes() * keySpace.getUnitsPerByte() + this.getUnusedItemCount();
+        final long remaining = this.getFreeBytes() * keyType.getUnitsPerByte() + this.getUnusedItemCount();
         return remaining > 0 ? remaining : 0;
     }
 
@@ -356,7 +356,7 @@ public class BasicCellInventory implements StorageCell {
             return 0;
         }
 
-        return keySpace.getUnitsPerByte() - div;
+        return keyType.getUnitsPerByte() - div;
     }
 
     @Override
@@ -375,7 +375,7 @@ public class BasicCellInventory implements StorageCell {
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-        if (amount == 0 || !keySpace.contains(what)) {
+        if (amount == 0 || !keyType.contains(what)) {
             return 0;
         }
 
@@ -405,7 +405,7 @@ public class BasicCellInventory implements StorageCell {
                 return 0;
             }
 
-            remainingItemCount -= (long) this.getBytesPerType() * keySpace.getUnitsPerByte();
+            remainingItemCount -= (long) this.getBytesPerType() * keyType.getUnitsPerByte();
             if (remainingItemCount <= 0) {
                 return 0;
             }

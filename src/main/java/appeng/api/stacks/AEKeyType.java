@@ -21,39 +21,38 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.api.stacks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.api.storage.AEKeyFilter;
 import com.google.common.base.Preconditions;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.storage.data.AEKey;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * Defines a space of compatible {@link AEKey} objects which is modeled by a specific {@link AEKey} subclass. I.e. for
- * {@link appeng.api.storage.data.AEItemKey}, there is {@link AEItemKeys}.
+ * Defines the properties of a specific subclass of {@link AEKey}. I.e. for
+ * {@link AEItemKey}, there is {@link AEItemKeys}.
  */
-public abstract class AEKeySpace {
+public abstract class AEKeyType {
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
     private final Component description;
 
-    public AEKeySpace(ResourceLocation id, Class<? extends AEKey> keyClass, Component description) {
+    public AEKeyType(ResourceLocation id, Class<? extends AEKey> keyClass, Component description) {
+        Preconditions.checkArgument(!keyClass.equals(AEKey.class), "Can't register a key type for AEKey itself");
         this.id = id;
         this.keyClass = keyClass;
-        this.filter = what -> what.getChannel() == this;
+        this.filter = what -> what.getType() == this;
         this.description = description;
     }
 
     /**
-     * @return AE2's key space for {@link appeng.api.storage.data.AEItemKey}.
+     * @return AE2's key space for {@link AEItemKey}.
      */
     @Nonnull
     public static AEItemKeys items() {
@@ -64,13 +63,13 @@ public abstract class AEKeySpace {
      * @return See {@link #getRawId()}
      */
     @Nullable
-    public static AEKeySpace fromRawId(int id) {
+    public static AEKeyType fromRawId(int id) {
         Preconditions.checkArgument(id >= 0 && id <= Byte.MAX_VALUE, "id out of range: %d", id);
-        return AEKeySpacesInternal.getRegistry().byId(id);
+        return AEKeyTypesInternal.getRegistry().byId(id);
     }
 
     /**
-     * @return AE2's key space for {@link appeng.api.storage.data.AEFluidKey}.
+     * @return AE2's key space for {@link AEFluidKey}.
      */
     @Nonnull
     public static AEFluidKeys fluids() {
@@ -89,9 +88,9 @@ public abstract class AEKeySpace {
     }
 
     public final byte getRawId() {
-        var id = AEKeySpacesInternal.getRegistry().getId(this);
+        var id = AEKeyTypesInternal.getRegistry().getId(this);
         if (id < 0 || id > 127) {
-            throw new IllegalStateException("Keyspace " + this + " has an invalid numeric id: " + id);
+            throw new IllegalStateException("Key type " + this + " has an invalid numeric id: " + id);
         }
         return (byte) id;
     }
@@ -116,9 +115,15 @@ public abstract class AEKeySpace {
         return 8;
     }
 
+    /**
+     * Attempts to load a key of this type from the given packet buffer.
+     */
     @Nullable
     public abstract AEKey readFromPacket(FriendlyByteBuf input);
 
+    /**
+     * Attempts to load a key of this type from the given tag.
+     */
     @Nullable
     public abstract AEKey loadKeyFromTag(CompoundTag tag);
 
@@ -147,6 +152,9 @@ public abstract class AEKeySpace {
         return false;
     }
 
+    /**
+     * @return A filter matching all keys of this type.
+     */
     public final AEKeyFilter filter() {
         return filter;
     }

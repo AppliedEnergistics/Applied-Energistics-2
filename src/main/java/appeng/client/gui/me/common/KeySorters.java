@@ -22,7 +22,7 @@ import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 
 final class KeySorters {
 

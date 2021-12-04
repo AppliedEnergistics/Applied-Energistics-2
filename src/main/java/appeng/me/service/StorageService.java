@@ -44,7 +44,7 @@ import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.data.AEKey;
+import appeng.api.stacks.AEKey;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.MachineSource;

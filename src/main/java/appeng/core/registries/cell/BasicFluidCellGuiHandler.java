@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.AEKeySpace;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
@@ -35,7 +35,7 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler {
     @Override
     public boolean isSpecializedFor(ItemStack cell) {
         return cell.getItem() instanceof IBasicCellItem basicCellItem
-                && basicCellItem.getKeySpace() == AEKeySpace.fluids();
+                && basicCellItem.getKeyType() == AEKeyType.fluids();
     }
 
     @Override

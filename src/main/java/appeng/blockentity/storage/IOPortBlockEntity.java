@@ -56,7 +56,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
-import appeng.api.storage.data.KeyCounter;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
