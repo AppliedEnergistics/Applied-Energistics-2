@@ -17,8 +17,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.Items;
 
 import appeng.api.config.Actionable;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.ConfigInventory;
 

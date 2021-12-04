@@ -1,11 +1,11 @@
 package appeng.init.client;
 
-import appeng.api.stacks.AEKeyTypes;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AEKeyTypesInternal;
 import appeng.core.AppEng;
 

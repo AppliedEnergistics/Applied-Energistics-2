@@ -41,9 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.KeyCounter;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft

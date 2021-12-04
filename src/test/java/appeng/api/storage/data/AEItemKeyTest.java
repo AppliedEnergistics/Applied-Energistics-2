@@ -3,14 +3,14 @@ package appeng.api.storage.data;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Items;
 
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft

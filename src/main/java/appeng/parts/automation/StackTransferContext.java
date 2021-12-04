@@ -6,10 +6,10 @@ import java.util.Set;
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.MEStorage;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.storage.MEStorage;
 import appeng.util.prioritylist.IPartitionList;
 
 /**

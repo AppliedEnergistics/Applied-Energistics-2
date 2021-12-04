@@ -19,9 +19,9 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.storage.AEKeyFilter;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.AEKeyFilter;
 
 /**
  * Keeps track of the crafting patterns in the network, and related information.

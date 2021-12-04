@@ -34,11 +34,11 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.stacks.AEKey;
 
 /**
- * This utility class helps menus that need to send a list of information that is grouped by
- * {@link AEKey} to the client and keep it updated, without having to resend the
- * {@link AEKey} everytime. This can be especially important if the item stack is serialized
- * using it's {@link ItemStack#getShareTag() share tag}, which would not match the server-side stack if it's sent back,
- * or that would group distinct server-side entries together on the client-side if their share tag was equal.
+ * This utility class helps menus that need to send a list of information that is grouped by {@link AEKey} to the client
+ * and keep it updated, without having to resend the {@link AEKey} everytime. This can be especially important if the
+ * item stack is serialized using it's {@link ItemStack#getShareTag() share tag}, which would not match the server-side
+ * stack if it's sent back, or that would group distinct server-side entries together on the client-side if their share
+ * tag was equal.
  */
 public class IncrementalUpdateHelper implements Iterable<AEKey> {
 

@@ -28,8 +28,8 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 

@@ -26,9 +26,9 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.level.Level;
 
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 
 public class AEProcessingPattern implements IAEPatternDetails {
     private final AEItemKey definition;

@@ -33,8 +33,8 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * AE2's registry of all known {@link AEKeyType key types}.
  * <p/>
- * AE2 has built-in {@link AEKeyType#items() item} and {@link AEKeyType#fluids() fluid} key types. Addons can
- * register additional key types during initialization using {@link #register(AEKeyType)}.
+ * AE2 has built-in {@link AEKeyType#items() item} and {@link AEKeyType#fluids() fluid} key types. Addons can register
+ * additional key types during initialization using {@link #register(AEKeyType)}.
  */
 @ThreadSafe
 public final class AEKeyTypes {
@@ -44,8 +44,7 @@ public final class AEKeyTypes {
     /**
      * Register a new storage channel.
      * <p>
-     * AE2 already provides native channels for {@link AEItemKey} and
-     * {@link AEFluidKey}.
+     * AE2 already provides native channels for {@link AEItemKey} and {@link AEFluidKey}.
      * <p>
      * Each {@link AEKey} subtype can only have a single factory instance. Overwriting is not intended. Each subtype
      * should be a direct one, this might be enforced at any time.

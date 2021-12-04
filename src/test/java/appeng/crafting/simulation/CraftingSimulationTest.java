@@ -15,9 +15,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.AELog;
 import appeng.crafting.CraftingPlan;

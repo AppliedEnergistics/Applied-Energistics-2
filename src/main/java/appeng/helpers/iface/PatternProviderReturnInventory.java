@@ -35,9 +35,9 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEMonitorStorage;
-import appeng.api.stacks.AEItemKey;
 import appeng.util.IVariantConversion;
 
 public class PatternProviderReturnInventory extends GenericStackInv {

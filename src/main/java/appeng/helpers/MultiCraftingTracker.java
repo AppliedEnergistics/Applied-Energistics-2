@@ -31,8 +31,8 @@ import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.StorageHelper;
 import appeng.api.stacks.AEKey;
+import appeng.api.storage.StorageHelper;
 
 public class MultiCraftingTracker {
 

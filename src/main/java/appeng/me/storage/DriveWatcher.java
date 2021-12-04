@@ -20,9 +20,9 @@ package appeng.me.storage;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEKey;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
-import appeng.api.stacks.AEKey;
 
 public class DriveWatcher extends MEInventoryHandler {
 

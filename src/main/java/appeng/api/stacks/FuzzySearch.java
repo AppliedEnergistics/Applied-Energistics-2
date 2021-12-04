@@ -12,7 +12,6 @@ import it.unimi.dsi.fastutil.objects.Object2LongAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.stacks.AEKey;
 
 final class FuzzySearch {
     @VisibleForTesting

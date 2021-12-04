@@ -15,10 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
-import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
 
 @BootstrapMinecraft
 class ConfigMenuInventoryTest {
@@ -90,7 +90,7 @@ class ConfigMenuInventoryTest {
     }
 
     private DynamicTest test(String displayName, AEKeyType channel, ItemStack inserted,
-                             @Nullable GenericStack expectedStack, @Nullable GenericStack initialStack) {
+            @Nullable GenericStack expectedStack, @Nullable GenericStack initialStack) {
         return DynamicTest.dynamicTest(
                 displayName,
                 () -> {

@@ -23,19 +23,21 @@
 
 package appeng.api.stacks;
 
-import appeng.api.storage.AEKeyFilter;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import appeng.api.storage.AEKeyFilter;
 
 /**
- * Defines the properties of a specific subclass of {@link AEKey}. I.e. for
- * {@link AEItemKey}, there is {@link AEItemKeys}.
+ * Defines the properties of a specific subclass of {@link AEKey}. I.e. for {@link AEItemKey}, there is
+ * {@link AEItemKeys}.
  */
 public abstract class AEKeyType {
     private final ResourceLocation id;

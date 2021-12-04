@@ -11,8 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
 

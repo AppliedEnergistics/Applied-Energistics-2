@@ -1,11 +1,13 @@
 package appeng.api.stacks;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
-import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.Registry;
+
 import org.jetbrains.annotations.ApiStatus;
 
-import javax.annotation.Nullable;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
 
 /**
  * Manages the registry used to synchronize key spaces to the client.

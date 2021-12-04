@@ -10,8 +10,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.storage.AEKeyFilter;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.storage.AEKeyFilter;
 
 public final class StackWorldBehaviors {
     private static final Map<AEKeyType, ImportStrategyFactory> importStrategies = new IdentityHashMap<>();
@@ -74,7 +74,7 @@ public final class StackWorldBehaviors {
     }
 
     public static Map<AEKeyType, ExternalStorageStrategy> createExternalStorageStrategies(ServerLevel level,
-                                                                                          BlockPos fromPos, Direction fromSide) {
+            BlockPos fromPos, Direction fromSide) {
         var strategies = new IdentityHashMap<AEKeyType, ExternalStorageStrategy>(externalStorageStrategies.size());
         for (var entry : externalStorageStrategies.entrySet()) {
             strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide));

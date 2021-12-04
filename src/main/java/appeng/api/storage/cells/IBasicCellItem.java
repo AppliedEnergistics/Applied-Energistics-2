@@ -30,8 +30,8 @@ import com.google.common.base.Preconditions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.me.cells.BasicCellHandler;
 import appeng.util.ConfigInventory;
 

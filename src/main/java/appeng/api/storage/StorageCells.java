@@ -35,12 +35,12 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.stacks.AEKey;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.cells.StorageCell;
-import appeng.api.stacks.AEKey;
 
 /**
  * Storage Cell Registry, used for specially implemented cells, if you just want to make a item act like a cell, or new

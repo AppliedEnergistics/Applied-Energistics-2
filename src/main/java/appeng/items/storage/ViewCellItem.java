@@ -24,10 +24,10 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;

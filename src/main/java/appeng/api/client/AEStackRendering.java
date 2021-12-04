@@ -40,8 +40,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
 
 /**
  * Registry for {@link IAEStackRenderHandler}. Also contains convenience functions to render a stack without having to
@@ -53,8 +53,8 @@ public class AEStackRendering {
     private static volatile Map<AEKeyType, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
 
     public static synchronized <T extends AEKey> void register(AEKeyType channel,
-                                                               Class<T> keyClass,
-                                                               IAEStackRenderHandler<T> handler) {
+            Class<T> keyClass,
+            IAEStackRenderHandler<T> handler) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(handler, "handler");
         Objects.requireNonNull(keyClass, "keyClass");

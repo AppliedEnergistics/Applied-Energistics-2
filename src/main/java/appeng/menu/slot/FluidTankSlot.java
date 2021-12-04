@@ -19,8 +19,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.GenericStack;
 import appeng.core.localization.GuiText;
 import appeng.util.ConfigMenuInventory;
 import appeng.util.Platform;
