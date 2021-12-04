@@ -60,6 +60,7 @@ public class InitStackRenderHandlers {
                 var oldBlitOffset = itemRenderer.blitOffset;
                 itemRenderer.blitOffset = zIndex;
                 itemRenderer.renderGuiItem(displayStack, x, y);
+                itemRenderer.renderGuiItemDecorations(minecraft.font, displayStack, x, y, "");
                 itemRenderer.blitOffset = oldBlitOffset;
                 globalStack.popPose();
                 // Ensure the global state is correctly reset.
