@@ -27,7 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
-public final class AEFluidKeys extends AEKeyType {
+final class AEFluidKeys extends AEKeyType {
     private static final ResourceLocation ID = AppEng.makeId("f");
 
     static final AEFluidKeys INSTANCE = new AEFluidKeys();

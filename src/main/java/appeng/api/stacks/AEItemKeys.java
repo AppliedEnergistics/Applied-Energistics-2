@@ -27,7 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
-public final class AEItemKeys extends AEKeyType {
+final class AEItemKeys extends AEKeyType {
     private static final ResourceLocation ID = AppEng.makeId("i");
 
     static final AEItemKeys INSTANCE = new AEItemKeys();

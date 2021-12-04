@@ -57,7 +57,7 @@ public abstract class AEKeyType {
      * @return AE2's key space for {@link AEItemKey}.
      */
     @Nonnull
-    public static AEItemKeys items() {
+    public static AEKeyType items() {
         return AEItemKeys.INSTANCE;
     }
 
@@ -74,7 +74,7 @@ public abstract class AEKeyType {
      * @return AE2's key space for {@link AEFluidKey}.
      */
     @Nonnull
-    public static AEFluidKeys fluids() {
+    public static AEKeyType fluids() {
         return AEFluidKeys.INSTANCE;
     }
 
