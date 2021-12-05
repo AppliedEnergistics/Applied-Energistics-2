@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -271,16 +270,18 @@ public final class AEItems {
         return colors;
     }
 
-    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<FabricItemSettings, T> factory) {
+    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<Item.Properties, T> factory) {
         return item(id, factory, CreativeTab.INSTANCE);
     }
 
-    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<FabricItemSettings, T> factory,
+    static <T extends Item> ItemDefinition<T> item(ResourceLocation id, Function<Item.Properties, T> factory,
             CreativeModeTab group) {
 
-        FabricItemSettings p = new FabricItemSettings().group(group);
+        Item.Properties p = new Item.Properties().tab(group);
 
         T item = factory.apply(p);
+
+        item.setRegistryName(id);
 
         ItemDefinition<T> definition = new ItemDefinition<>(id, item);
 

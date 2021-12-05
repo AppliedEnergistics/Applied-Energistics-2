@@ -18,9 +18,9 @@
 
 package appeng.init;
 
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
@@ -38,7 +38,7 @@ public final class InitRecipeSerializers {
     private InitRecipeSerializers() {
     }
 
-    public static void init(Registry<RecipeSerializer<?>> registry) {
+    public static void init(IForgeRegistry<RecipeSerializer<?>> registry) {
         FacadeItem facadeItem = AEItems.FACADE.asItem();
         register(registry, InscriberRecipe.TYPE_ID, InscriberRecipeSerializer.INSTANCE);
         register(registry, AppEng.makeId("facade"), FacadeRecipe.getSerializer(facadeItem));
@@ -46,9 +46,10 @@ public final class InitRecipeSerializers {
         register(registry, MatterCannonAmmo.TYPE_ID, MatterCannonAmmoSerializer.INSTANCE);
     }
 
-    private static void register(Registry<RecipeSerializer<?>> registry, ResourceLocation id,
+    private static void register(IForgeRegistry<RecipeSerializer<?>> registry, ResourceLocation id,
             RecipeSerializer<?> serializer) {
-        Registry.register(registry, id, serializer);
+        serializer.setRegistryName(id);
+        registry.register(serializer);
     }
 
 }

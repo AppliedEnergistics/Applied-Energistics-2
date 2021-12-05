@@ -69,7 +69,7 @@ public final class AEKeyTypes {
      */
 
     public static AEKeyType get(ResourceLocation id) {
-        var result = AEKeyTypesInternal.getRegistry().get(id);
+        var result = AEKeyTypesInternal.getRegistry().getValue(id);
         if (result == null) {
             throw new IllegalArgumentException("No key type registered for id " + id);
         }
