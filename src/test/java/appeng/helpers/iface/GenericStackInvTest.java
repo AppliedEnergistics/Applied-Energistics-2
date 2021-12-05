@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import appeng.helpers.externalstorage.GenericStackInv;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +19,7 @@ import net.minecraft.world.item.Items;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.ConfigInventory;
 

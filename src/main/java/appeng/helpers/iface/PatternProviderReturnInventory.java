@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import appeng.helpers.externalstorage.GenericStackInv;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -39,6 +38,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEMonitorStorage;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.IVariantConversion;
 
 public class PatternProviderReturnInventory extends GenericStackInv {

@@ -575,7 +575,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             tx.commit();
         }
 
-        FluidSoundHelper.playFillSound(getPlayer(), clickedFluid.toVariant());
+        FluidSoundHelper.playFillSound(getPlayer(), clickedFluid);
     }
 
     protected interface EmptyingSink {
@@ -621,7 +621,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             tx.commit();
         }
 
-        FluidSoundHelper.playEmptySound(getPlayer(), what.toVariant());
+        FluidSoundHelper.playEmptySound(getPlayer(), what);
     }
 
     private void handleFakeSlotAction(FakeSlot fakeSlot, InventoryAction action) {

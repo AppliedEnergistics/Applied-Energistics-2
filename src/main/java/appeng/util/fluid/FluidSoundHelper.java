@@ -18,6 +18,8 @@
 
 package appeng.util.fluid;
 
+import javax.annotation.Nullable;
+
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.sounds.SoundEvent;
@@ -27,6 +29,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
 
+import appeng.api.stacks.AEFluidKey;
+
 /**
  * Helps with playing fill/empty sounds for fluids to players.
  */
@@ -35,16 +39,16 @@ public final class FluidSoundHelper {
     private FluidSoundHelper() {
     }
 
-    public static void playFillSound(Player player, FluidVariant fluid) {
-        if (fluid.isBlank()) {
+    public static void playFillSound(Player player, @Nullable AEFluidKey fluid) {
+        if (fluid == null) {
             return;
         }
 
         fluid.getFluid().getPickupSound().ifPresent(sound -> playSound(player, sound));
     }
 
-    public static void playEmptySound(Player player, FluidVariant fluid) {
-        if (fluid.isBlank()) {
+    public static void playEmptySound(Player player, @Nullable AEFluidKey fluid) {
+        if (fluid == null) {
             return;
         }
 
