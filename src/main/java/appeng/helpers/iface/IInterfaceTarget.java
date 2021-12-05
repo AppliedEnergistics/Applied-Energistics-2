@@ -40,7 +40,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyTypes;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
@@ -85,11 +84,9 @@ public interface IInterfaceTarget {
 
                 @Override
                 public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                    for (var channel : AEKeyTypes.getAll()) {
-                        for (var stack : storage.getCachedAvailableStacks()) {
-                            if (patternInputs.contains(stack.getKey().dropSecondary())) {
-                                return true;
-                            }
+                    for (var stack : storage.getCachedAvailableStacks()) {
+                        if (patternInputs.contains(stack.getKey().dropSecondary())) {
+                            return true;
                         }
                     }
                     return false;
