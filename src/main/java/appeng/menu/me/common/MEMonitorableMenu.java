@@ -285,12 +285,18 @@ public class MEMonitorableMenu extends AEBaseMenu
     }
 
     private Set<AEKey> getCraftablesFromGrid() {
+        IGridNode hostNode = networkNode;
+        // Wireless terminals do not directly expose the target grid (even though they
+        // have one)
+        if (hostNode == null && host instanceof IActionHost) {
+            hostNode = ((IActionHost) host).getActionableNode();
+        }
         if (!showsCraftables()) {
             return Collections.emptySet();
         }
 
-        if (networkNode != null && networkNode.isActive()) {
-            return networkNode.getGrid().getCraftingService().getCraftables(this::isKeyVisible);
+        if (hostNode != null && hostNode.isActive()) {
+            return hostNode.getGrid().getCraftingService().getCraftables(this::isKeyVisible);
         }
         return Collections.emptySet();
     }
