@@ -29,7 +29,11 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEFluidKey;
@@ -51,7 +55,7 @@ public class AECraftingPattern implements IAEPatternDetails {
     private final GenericStack[] sparseInputs;
     private final int[] sparseToCompressed = new int[9];
     private final Input[] inputs;
-    private final AEItemKey output;
+    private final ItemStack output;
     private final GenericStack[] outputsArray;
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
@@ -87,12 +91,11 @@ public class AECraftingPattern implements IAEPatternDetails {
             throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
         }
 
-        var result = GenericStack.fromItemStack(this.recipe.assemble(testFrame));
-        if (result == null || !(result.what() instanceof AEItemKey itemKey)) {
+        this.output = this.recipe.assemble(testFrame);
+        if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
-        this.output = itemKey;
-        this.outputsArray = new GenericStack[] { result };
+        this.outputsArray = new GenericStack[] { Objects.requireNonNull(GenericStack.fromItemStack(this.output)) };
 
         // Compress inputs
         var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
@@ -242,7 +245,7 @@ public class AECraftingPattern implements IAEPatternDetails {
         var previousStack = testFrame.removeItemNoUpdate(slot);
         testFrame.setItem(slot, key.toStack());
 
-        var newResult = recipe.matches(testFrame, level) && output.matches(recipe.assemble(testFrame));
+        var newResult = recipe.matches(testFrame, level) && ItemStack.matches(output, recipe.assemble(testFrame));
 
         setTestResult(slot, key, newResult);
 
@@ -306,7 +309,7 @@ public class AECraftingPattern implements IAEPatternDetails {
                 return ItemStack.EMPTY;
             }
         }
-        return output.toStack();
+        return output;
     }
 
     private GenericStack getItemOrFluidInput(int slot, GenericStack item) {
