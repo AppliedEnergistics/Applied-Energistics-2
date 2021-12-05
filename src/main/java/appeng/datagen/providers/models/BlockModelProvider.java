@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -29,8 +30,20 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         emptyModel(AEBlocks.MATRIX_FRAME);
 
         // These models will be overwritten in code
-        specialModel(AEBlocks.CABLE_BUS);
-        specialModel(AEBlocks.PAINT);
+        builtInModel(AEBlocks.QUARTZ_GLASS, true);
+        builtInModel(AEBlocks.CABLE_BUS);
+        builtInModel(AEBlocks.PAINT);
+        builtInModel(AEBlocks.SKY_COMPASS, true);
+        builtInBlockModel("drive");
+        builtInBlockModel("spatial_pylon");
+        builtInBlockModel("qnb/qnb_formed");
+        builtInBlockModel("crafting/monitor_formed");
+        builtInBlockModel("crafting/unit_formed");
+        builtInBlockModel("crafting/accelerator_formed");
+        builtInBlockModel("crafting/1k_storage_formed");
+        builtInBlockModel("crafting/4k_storage_formed");
+        builtInBlockModel("crafting/16k_storage_formed");
+        builtInBlockModel("crafting/64k_storage_formed");
 
         // Spatial pylon uses a normal model for the item, special model for block
         simpleBlock(AEBlocks.SPATIAL_PYLON.block(), models().getBuilder(modelPath(AEBlocks.SPATIAL_PYLON)));
@@ -126,12 +139,26 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         simpleBlockAndItem(block, model);
     }
 
-    private void specialModel(BlockDefinition<?> block) {
-        var model = models().getBuilder(block.id().getPath());
+    private void builtInModel(BlockDefinition<?> block) {
+        builtInModel(block, false);
+    }
+
+    private void builtInModel(BlockDefinition<?> block, boolean skipItem) {
+        var model = builtInBlockModel(block.id().getPath());
         getVariantBuilder(block.block()).partialState().setModels(new ConfiguredModel(model));
 
-        // The item model should not reference the block model since that will be replaced in-code
-        itemModels().getBuilder(block.id().getPath());
+        if (!skipItem) {
+            // The item model should not reference the block model since that will be replaced in-code
+            itemModels().getBuilder(block.id().getPath());
+        }
+    }
+
+    private BlockModelBuilder builtInBlockModel(String name) {
+        var model = models().getBuilder("block/" + name);
+        var loaderId = AppEng.makeId("block/" + name);
+        model.customLoader((bmb, efh) -> new CustomLoaderBuilder<>(loaderId, bmb, efh) {
+        });
+        return model;
     }
 
     private void energyCell(

@@ -18,6 +18,14 @@
 
 package appeng.init.client;
 
+import java.util.function.Supplier;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.paint.PaintSplotchesModel;
 import appeng.block.qnb.QnbFormedModel;
@@ -35,13 +43,6 @@ import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.AppEng;
 import appeng.parts.automation.PlaneModel;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
-
-import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public final class InitBuiltInModels {
@@ -68,8 +69,6 @@ public final class InitBuiltInModels {
         addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
         addPlaneModel("part/identity_annihilation_plane", "part/identity_annihilation_plane");
         addPlaneModel("part/identity_annihilation_plane_on", "part/identity_annihilation_plane_on");
-        addPlaneModel("part/fluid_annihilation_plane", "part/fluid_annihilation_plane");
-        addPlaneModel("part/fluid_annihilation_plane_on", "part/fluid_annihilation_plane_on");
         addPlaneModel("part/formation_plane", "part/formation_plane");
         addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
 
