@@ -62,12 +62,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
-import appeng.client.gui.style.Blitter;
-import appeng.client.gui.style.FluidBlitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
@@ -90,7 +87,6 @@ import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.FluidTankSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
 import appeng.util.ConfigMenuInventory;
@@ -738,9 +734,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      */
     @Override
     public void renderSlot(PoseStack poseStack, Slot s) {
-        if (s instanceof FluidTankSlot fluidTankSlot) {
-            renderFluidTank(poseStack, fluidTankSlot);
-        } else if (s instanceof AppEngSlot appEngSlot) {
+        if (s instanceof AppEngSlot appEngSlot) {
             try {
                 renderAppEngSlot(poseStack, appEngSlot);
             } catch (final Exception err) {
@@ -748,47 +742,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
         } else {
             super.renderSlot(poseStack, s);
-        }
-    }
-
-    private void renderFluidTank(PoseStack poseStack, FluidTankSlot slot) {
-        var current = GenericStack.unwrapItemStack(slot.getItem());
-        if (!AEFluidKey.is(current)) {
-            return;
-        }
-
-        var what = (AEFluidKey) current.what();
-        var amount = current.amount();
-
-        Blitter blitter = FluidBlitter.create(what);
-
-        var filledHeight = (int) (slot.getHeight() * ((float) amount / slot.getCapacity()));
-
-        // We assume the sprite has equal width/height, and to maintain that 1:1 aspect ratio,
-        // We draw rectangles of size width by width to fill our entire height
-        var stepHeight = slot.getWidth();
-
-        // We have to draw in multiples of the step height, but it's possible we need
-        // to draw a "partial". This draws "bottom up"
-        int iconHeightRemainder = filledHeight % stepHeight;
-        for (int i = 0; i < filledHeight / stepHeight; i++) {
-            blitter.dest(slot.x,
-                    slot.y + slot.getHeight() - iconHeightRemainder - (i + 1) * stepHeight,
-                    stepHeight,
-                    stepHeight)
-                    .blit(poseStack, getBlitOffset());
-        }
-        // Draw the remainder last because it modifies the blitter
-        if (iconHeightRemainder > 0) {
-            // Compute how much of the src sprite's height will be visible for this last piece
-            int srcHeightRemainder = (int) (blitter.getSrcHeight()
-                    * (iconHeightRemainder / (float) stepHeight));
-            blitter.src(blitter.getSrcX(), blitter.getSrcY(), blitter.getSrcWidth(), srcHeightRemainder)
-                    .dest(slot.x,
-                            slot.y + slot.getHeight() - iconHeightRemainder,
-                            slot.getWidth(),
-                            iconHeightRemainder)
-                    .blit(poseStack, getBlitOffset());
         }
     }
 
