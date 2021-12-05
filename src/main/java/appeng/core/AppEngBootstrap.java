@@ -18,6 +18,9 @@
 
 package appeng.core;
 
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
+
 import appeng.init.InitAdvancementTriggers;
 import appeng.init.InitLootConditions;
 import appeng.init.InitStats;
@@ -25,13 +28,14 @@ import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridServices;
 
 /**
- * This class is just responsible for initializing AE directly after Minecraft's own bootstrap, but before any mods are
- * being loaded.
+ * This class is just responsible for initializing the client or server-side mod class.
  */
-public final class AppEngBootstrap {
+@Mod(AppEng.MOD_ID)
+public class AppEngBootstrap {
     private volatile static boolean bootstrapped;
 
-    private AppEngBootstrap() {
+    public AppEngBootstrap() {
+        DistExecutor.unsafeRunForDist(() -> AppEngClient::new, () -> AppEngServer::new);
     }
 
     /**

@@ -19,16 +19,12 @@
 package appeng.util.inv;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -89,39 +85,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         }
     }
 
-    // Fabric-specific logic to defer notification after a transaction is closed.
-    /**
-     * Stores the "original" stack, i.e. the stack before the first change.
-     */
-    private final Map<Integer, ItemStack> pendingChangeNotifications = new HashMap<>();
-    private boolean outerCallbackRegistered = false;
-    private final TransactionContext.OuterCloseCallback outerCallback = result -> {
-        outerCallbackRegistered = false;
-        if (result.wasCommitted()) {
-            for (var entry : pendingChangeNotifications.entrySet()) {
-                onContentsChanged(entry.getKey(), entry.getValue());
-            }
-        }
-        pendingChangeNotifications.clear();
-    };
-
     private void notifyContentsChanged(int slot, ItemStack previousStack) {
-        if (outerCallbackRegistered) {
-            pendingChangeNotifications.putIfAbsent(slot, previousStack);
-            return;
-        } else {
-            try {
-                var tx = Transaction.getCurrentUnsafe();
-                if (tx != null) {
-                    tx.addOuterCloseCallback(outerCallback);
-                    outerCallbackRegistered = true;
-                    pendingChangeNotifications.putIfAbsent(slot, previousStack);
-                    return;
-                }
-            } catch (IllegalStateException ise) {
-                // Caught from the outer callback, just send the change notification.
-            }
-        }
         onContentsChanged(slot, previousStack);
     }
 

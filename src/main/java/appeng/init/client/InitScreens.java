@@ -24,7 +24,6 @@ import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -195,7 +194,7 @@ public final class InitScreens {
             StyledScreenFactory<M, U> factory,
             String stylePath) {
         MENU_STYLES.put(type, stylePath);
-        ScreenRegistry.<M, U>register(type, (menu, playerInv, title) -> {
+        MenuScreens.<M, U>register(type, (menu, playerInv, title) -> {
             ScreenStyle style;
             try {
                 style = StyleManager.loadStyleDoc(stylePath);

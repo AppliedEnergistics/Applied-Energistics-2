@@ -38,6 +38,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
@@ -47,7 +49,6 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.facade.IFacadeItem;
@@ -135,7 +136,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final BlockDefinition<?> multiPart = AEBlocks.CABLE_BUS;
+        var multiPart = AEBlocks.CABLE_BUS;
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 
@@ -241,7 +242,7 @@ public class PartPlacement {
                 }
 
                 BlockState blockState = level.getBlockState(pos);
-                var ss = multiPart.block().getSoundType(blockState);
+                var ss = multiPart.block().getSoundType(blockState, level, pos, player);
 
                 level.playSound(null, pos, ss.getPlaceSound(), SoundSource.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
                         ss.getPitch() * 0.8F);
@@ -284,24 +285,23 @@ public class PartPlacement {
         return null;
     }
 
-    public static InteractionResult onPlayerUseBlock(Player player, Level level, InteractionHand hand,
-            BlockHitResult hitResult) {
-        if (level.isClientSide() || player.isSpectator()) {
-            return InteractionResult.PASS;
-        }
-
+    @SubscribeEvent
+    public void playerInteract(PlayerInteractEvent.RightClickBlock event) {
         // Only handle the main hand event
-        if (hand != InteractionHand.MAIN_HAND) {
-            return InteractionResult.PASS;
+        if (event.getHand() != InteractionHand.MAIN_HAND) {
+            return;
         }
 
-        final ItemStack held = player.getItemInHand(hand);
-        if (place(held, hitResult.getBlockPos(), hitResult.getDirection(), player, hand,
-                level, PlaceType.INTERACT_FIRST_PASS, 0) == InteractionResult.sidedSuccess(level.isClientSide())) {
-            return InteractionResult.SUCCESS;
+        if (!event.getPlayer().level.isClientSide) {
+            final ItemStack held = event.getPlayer().getItemInHand(event.getHand());
+            Level level = event.getWorld();
+            var placeResult = place(held, event.getPos(), event.getFace(), event.getPlayer(), event.getHand(),
+                    level, PlaceType.INTERACT_FIRST_PASS, 0);
+            if (placeResult.consumesAction()) {
+                event.setCanceled(true);
+                event.setCancellationResult(placeResult);
+            }
         }
-
-        return InteractionResult.PASS;
     }
 
     private static float getEyeHeight() {

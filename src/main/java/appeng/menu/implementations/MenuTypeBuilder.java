@@ -24,8 +24,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,12 +32,16 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.network.NetworkHooks;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.menuobjects.IMenuItem;
@@ -171,52 +173,21 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
         Component title = menuTitleStrategy.apply(accessInterface);
 
-        player.openMenu(new HandlerFactory(locator, title, accessInterface, initialDataSerializer));
-
-        return true;
-    }
-
-    private class HandlerFactory implements ExtendedScreenHandlerFactory {
-
-        private final MenuLocator locator;
-
-        private final I accessInterface;
-
-        private final Component title;
-
-        private final InitialDataSerializer<I> initialDataSerializer;
-
-        public HandlerFactory(MenuLocator locator, Component title, I accessInterface,
-                InitialDataSerializer<I> initialDataSerializer) {
-            this.locator = locator;
-            this.title = title;
-            this.accessInterface = accessInterface;
-            this.initialDataSerializer = initialDataSerializer;
-        }
-
-        @Override
-        public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-            locator.write(buf);
-            if (initialDataSerializer != null) {
-                initialDataSerializer.serializeInitialData(accessInterface, buf);
-            }
-        }
-
-        @Override
-        public Component getDisplayName() {
-            return title;
-        }
-
-        @Nullable
-        @Override
-        public AbstractContainerMenu createMenu(int wnd, Inventory inv, Player p) {
-            M m = factory.create(wnd, inv, accessInterface);
+        MenuProvider menu = new SimpleMenuProvider((wnd, p, pl) -> {
+            M m = factory.create(wnd, p, accessInterface);
             // Set the original locator on the opened server-side menu for it to more
             // easily remember how to re-open after being closed.
             m.setLocator(locator);
             return m;
-        }
+        }, title);
+        NetworkHooks.openGui((ServerPlayer) player, menu, buffer -> {
+            locator.write(buffer);
+            if (initialDataSerializer != null) {
+                initialDataSerializer.serializeInitialData(accessInterface, buffer);
+            }
+        });
 
+        return true;
     }
 
     private I getHostFromLocator(Player player, MenuLocator locator) {
@@ -289,9 +260,8 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         Preconditions.checkState(this.id == null, "id should not be set");
 
         this.id = AppEng.makeId(id);
-        menuType = ScreenHandlerRegistry.registerExtended(
-                this.id,
-                this::fromNetwork);
+        menuType = IForgeMenuType.create(this::fromNetwork);
+        menuType.setRegistryName(id);
         MenuOpener.addOpener(menuType, this::open);
         return menuType;
     }

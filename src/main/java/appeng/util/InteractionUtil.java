@@ -33,8 +33,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.api.features.AEToolActions;
 
 /**
  * Utility functions revolving around using or placing items.
@@ -48,22 +49,20 @@ public final class InteractionUtil {
      * Checks if the given tool is a wrench capable of disassembling.
      */
     public static boolean canWrenchDisassemble(ItemStack tool) {
-        // TODO FABRIC 117 Currently Fabric cannot dynamically distinguish tools / tool actions
-        return ConventionTags.WRENCH.contains(tool.getItem());
+        return tool.canPerformAction(AEToolActions.WRENCH_DISASSEMBLE);
     }
 
     /**
      * Checks if the given tool is a wrench capable of rotating.
      */
     public static boolean canWrenchRotate(ItemStack tool) {
-        // TODO FABRIC 117 Currently Fabric cannot dynamically distinguish tools / tool actions
-        return ConventionTags.WRENCH.contains(tool.getItem());
+        return tool.canPerformAction(AEToolActions.WRENCH_ROTATE);
     }
 
     /**
      * Checks if the given player is in the alternate use mode commonly expressed by "crouching" (holding shift).
      * Although there's also {@link Player#isCrouching()}, this actually is only the visual pose, while
-     * {@link Player#isShiftKeyDown()} signifies that the player is holding shift.
+     * {@link Player#isSneaking()} signifies that the player is holding shift.
      */
     public static boolean isInAlternateUseMode(Player player) {
         return player.isShiftKeyDown();
@@ -76,8 +75,7 @@ public final class InteractionUtil {
     }
 
     public static LookDirection getPlayerRay(final Player playerIn) {
-        // FIXME FABRIC 117 This can currently not be modded in API in Fabric
-        double reachDistance = 36.0D;
+        double reachDistance = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
         return getPlayerRay(playerIn, reachDistance);
     }
 

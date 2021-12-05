@@ -33,6 +33,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -304,8 +305,8 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     @Nonnull
     @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
+    public IModelData getModelData() {
+        return new PlaneModelData(getConnections());
     }
 
 }
