@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.AEKeyFilter;
-import appeng.helpers.iface.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv;
 
 /**
  * Configuration inventories contain a set of {@link AEKey} references that configure how certain aspects of a machine

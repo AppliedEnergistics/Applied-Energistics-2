@@ -11,7 +11,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
-import appeng.helpers.iface.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv;
 
 /**
  * Wraps this configuration inventory as an {@link net.minecraft.world.item.ItemStack} based inventory for use in a

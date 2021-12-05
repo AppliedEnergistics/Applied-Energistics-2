@@ -63,7 +63,7 @@ import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.GuiDataSyncPacket;
 import appeng.helpers.InventoryAction;
-import appeng.helpers.iface.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
 import appeng.menu.me.interaction.StackInteractions;

@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import appeng.helpers.externalstorage.GenericStackInv;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

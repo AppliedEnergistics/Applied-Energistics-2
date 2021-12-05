@@ -41,7 +41,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.helpers.IConfigInvHost;
-import appeng.helpers.iface.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.parts.automation.EmptyUpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;

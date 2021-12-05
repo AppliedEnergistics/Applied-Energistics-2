@@ -13,7 +13,7 @@ import net.minecraft.world.level.material.Fluids;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.helpers.iface.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv;
 
 @BootstrapMinecraft
 public class ConfigInventoryTest {

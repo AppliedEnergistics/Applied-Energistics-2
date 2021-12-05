@@ -25,7 +25,7 @@ import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.helpers.iface.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;

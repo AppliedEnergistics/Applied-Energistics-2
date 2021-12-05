@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.helpers.iface;
+package appeng.helpers.externalstorage;
 
 import java.util.Objects;
 
@@ -27,19 +27,24 @@ import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.MEStorage;
 import appeng.util.ConfigMenuInventory;
 
-public class GenericStackInv {
+public class GenericStackInv implements MEStorage {
     protected final GenericStack[] stacks;
     private final Runnable listener;
     private boolean suppressOnChange;
@@ -48,6 +53,7 @@ public class GenericStackInv {
     @org.jetbrains.annotations.Nullable
     private AEKeyFilter filter;
     protected final Mode mode;
+    private Component description = TextComponent.EMPTY;
 
     public enum Mode {
         CONFIG_TYPES,
@@ -183,7 +189,7 @@ public class GenericStackInv {
         return getCapacity(key.getType());
     }
 
-    final void onChange() {
+    protected final void onChange() {
         if (!suppressOnChange) {
             notifyListener();
         } else {
@@ -319,4 +325,51 @@ public class GenericStackInv {
         return new ConfigMenuInventory(this);
     }
 
+    @Override
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        Objects.requireNonNull(what, "what");
+        Preconditions.checkArgument(amount >= 0, "amount >= 0");
+        if (!isAllowed(what)) {
+            return 0;
+        }
+
+        var inserted = 0L;
+        for (int i = 0; i < stacks.length && inserted < amount; i++) {
+            inserted += insert(i, what, amount, mode);
+        }
+        return inserted;
+    }
+
+    @Override
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        Objects.requireNonNull(what, "what");
+        Preconditions.checkArgument(amount >= 0, "amount >= 0");
+
+        var extracted = 0L;
+        for (int i = 0; i < stacks.length && extracted < amount; i++) {
+            extracted += extract(i, what, amount, mode);
+        }
+        return extracted;
+    }
+
+    @Override
+    public void getAvailableStacks(KeyCounter out) {
+        for (var stack : stacks) {
+            if (stack != null) {
+                out.add(stack.what(), stack.amount());
+            }
+        }
+    }
+
+    @Override
+    public Component getDescription() {
+        return description;
+    }
+
+    /**
+     * Changes how this generic stack inventory is reported to outside sources when used as an {@link MEStorage}.
+     */
+    public void setDescription(Component description) {
+        this.description = description;
+    }
 }

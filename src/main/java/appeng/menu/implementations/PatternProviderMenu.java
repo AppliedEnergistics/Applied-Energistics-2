@@ -25,7 +25,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.helpers.iface.DualityPatternProvider;
-import appeng.helpers.iface.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.helpers.iface.IPatternProviderHost;
 import appeng.helpers.iface.PatternProviderReturnInventory;
 import appeng.menu.AEBaseMenu;

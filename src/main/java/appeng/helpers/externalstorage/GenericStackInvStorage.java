@@ -1,11 +1,9 @@
-package appeng.helpers.iface;
+package appeng.helpers.externalstorage;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -83,20 +81,6 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
     @Override
     public Iterator<StorageView<V>> iterator(TransactionContext transaction) {
         return (Iterator) storageViews.iterator();
-    }
-
-    /**
-     * Exports the item content of the given inventory as storage.
-     */
-    public static GenericStackInvStorage<ItemVariant> items(GenericStackInv inv) {
-        return new GenericStackInvStorage<>(IVariantConversion.ITEM, AEKeyType.items(), inv);
-    }
-
-    /**
-     * Exports the fluid content of the given inventory as storage.
-     */
-    public static GenericStackInvStorage<FluidVariant> fluids(GenericStackInv inv) {
-        return new GenericStackInvStorage<>(IVariantConversion.FLUID, AEKeyType.fluids(), inv);
     }
 
     private class View extends SnapshotParticipant<GenericStack> implements StorageView<V> {

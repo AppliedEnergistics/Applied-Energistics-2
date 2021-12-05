@@ -66,16 +66,16 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.settings.TickRates;
-import appeng.helpers.iface.GenericStackInvStorage;
+import appeng.helpers.externalstorage.GenericStackFluidStorage;
+import appeng.helpers.externalstorage.GenericStackInvStorage;
+import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.CompositeStorage;
 import appeng.me.storage.MEMonitorPassThrough;
-import appeng.me.storage.StorageAdapter;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
-import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 import appeng.util.inv.InternalInventoryHost;
 
@@ -121,12 +121,12 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     /**
      * Used to expose items in the local storage of this interface to external machines.
      */
-    private final GenericStackInvStorage<ItemVariant> localItemStorage;
+    private final GenericStackItemStorage localItemStorage;
 
     /**
      * Used to expose fluids in the local storage of this interface to external machines.
      */
-    private final GenericStackInvStorage<FluidVariant> localFluidStorage;
+    private final GenericStackFluidStorage localFluidStorage;
 
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, ItemStack is) {
         this.host = host;
@@ -149,8 +149,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         getStorage().setCapacity(AEKeyType.items(), Container.LARGE_MAX_STACK_SIZE);
         getConfig().setCapacity(AEKeyType.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
         getStorage().setCapacity(AEKeyType.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
-        this.localItemStorage = GenericStackInvStorage.items(getStorage());
-        this.localFluidStorage = GenericStackInvStorage.fluids(getStorage());
+        this.localItemStorage = new GenericStackItemStorage(getStorage());
+        this.localFluidStorage = new GenericStackFluidStorage(getStorage());
     }
 
     public int getPriority() {
@@ -562,11 +562,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
      * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
      */
     private class InterfaceInventory extends CompositeStorage {
-
         InterfaceInventory() {
-            super(Map.of(
-                    AEKeyType.items(), new StorageAdapter<>(IVariantConversion.ITEM, localItemStorage),
-                    AEKeyType.fluids(), new StorageAdapter<>(IVariantConversion.FLUID, localFluidStorage)));
+            super(Map.of(AEKeyType.items(), storage, AEKeyType.fluids(), storage));
             this.setActionSource(actionSource);
         }
 

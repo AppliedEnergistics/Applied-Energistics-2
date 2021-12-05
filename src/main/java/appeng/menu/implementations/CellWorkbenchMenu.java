@@ -43,7 +43,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
-import appeng.helpers.iface.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeSlot;

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import appeng.helpers.externalstorage.GenericStackInv;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -123,8 +124,7 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         }
     }
 
-    private class GenericStorage<V extends TransferVariant<?>>
-            implements InsertionOnlyStorage<V> {
+    private class GenericStorage<V extends TransferVariant<?>> implements InsertionOnlyStorage<V> {
         private final IVariantConversion<V> conversion;
 
         protected GenericStorage(IVariantConversion<V> conversion) {
