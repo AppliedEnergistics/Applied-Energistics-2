@@ -79,7 +79,7 @@ public class WidgetContainer {
             if (widget instanceof IResizableWidget resizableWidget) {
                 resizableWidget.setHeight(widgetStyle.getHeight());
             } else {
-                widget.height = widgetStyle.getHeight();
+                widget.setHeight(widgetStyle.getHeight());
             }
         }
 
