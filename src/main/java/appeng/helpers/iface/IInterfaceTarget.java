@@ -119,7 +119,7 @@ public interface IInterfaceTarget {
         };
     }
 
-    private static <V extends TransferVariant<?>, T extends AEKey> boolean canRemove(
+    private static <V extends TransferVariant<?>> boolean canRemove(
             IVariantConversion<V> conversion, Storage<V> storage, Set<AEKey> patternInputs) {
         try (Transaction tx = Transaction.openOuter()) {
             for (var view : storage.iterable(tx)) {

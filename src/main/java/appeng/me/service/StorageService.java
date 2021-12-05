@@ -274,7 +274,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         }
 
         @Override
-        public <T extends AEKey> void mount(MEStorage inventory, int priority) {
+        public void mount(MEStorage inventory, int priority) {
             Preconditions.checkState(mounted, "Cannot use StorageMounts after the storage has been unmounted.");
 
             if (!inventories.add(inventory)) {
@@ -304,7 +304,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             inventories.clear();
         }
 
-        private <T extends AEKey> void unmount(MEStorage inventory) {
+        private void unmount(MEStorage inventory) {
             storage.unmount(inventory);
             postChangesToNetwork(inventory.getAvailableStacks().keySet(), actionSource);
         }

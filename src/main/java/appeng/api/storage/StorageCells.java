@@ -35,7 +35,6 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.stacks.AEKey;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
@@ -121,12 +120,11 @@ public final class StorageCells {
     /**
      * get the handler, for the requested channel.
      *
-     * @param channel requested channel
-     * @param is      ItemStack
+     * @param is ItemStack
      * @return the handler registered for this channel.
      */
     @Nullable
-    public static synchronized <T extends AEKey> ICellGuiHandler getGuiHandler(ItemStack is) {
+    public static synchronized ICellGuiHandler getGuiHandler(ItemStack is) {
         ICellGuiHandler fallBack = null;
 
         for (final ICellGuiHandler ch : guiHandlers) {
