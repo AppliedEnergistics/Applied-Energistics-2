@@ -70,15 +70,11 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
     public GrowingCrystalEntity(final Level level, final double x, final double y, final double z, final ItemStack is) {
         super(AEEntities.GROWING_CRYSTAL, level, x, y, z, is);
+        this.setExtendedLifetime();
     }
 
     @Override
     public void tick() {
-        // Prevent the entity from despawning
-        if (!level.isClientSide() && age >= 1000) {
-            age = 0;
-        }
-
         super.tick();
 
         final ItemStack is = this.getItem();
@@ -135,11 +131,10 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
             this.setItem(newItem);
 
-// FIXME FABRIC 117 no equivalent (entity tags? do those exist?)
-//                if (is.getItem() != newItem.getItem()
-//                        && this.getPersistentData().contains(CrystalSeedItem.TAG_PREVENT_MAGNET)) {
-//                    this.getPersistentData().remove(CrystalSeedItem.TAG_PREVENT_MAGNET);
-//                }
+            if (is.getItem() != newItem.getItem()
+                    && this.getPersistentData().contains(CrystalSeedItem.TAG_PREVENT_MAGNET)) {
+                this.getPersistentData().remove(CrystalSeedItem.TAG_PREVENT_MAGNET);
+            }
         }
     }
 

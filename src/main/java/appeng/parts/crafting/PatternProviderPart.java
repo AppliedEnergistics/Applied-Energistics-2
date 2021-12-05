@@ -21,6 +21,8 @@ package appeng.parts.crafting;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +30,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
@@ -137,5 +141,11 @@ public class PatternProviderPart extends BasicStatePart implements IPatternProvi
         } else {
             return MODELS_OFF;
         }
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
+        return this.duality.getCapability(capabilityClass);
     }
 }

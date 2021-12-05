@@ -18,56 +18,47 @@
 
 package appeng.parts.automation;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.inventories.IDynamicPartBakedModel;
 import appeng.client.render.cablebus.CubeBuilder;
 
 /**
  * Built-in model for annihilation planes that supports connected textures.
  */
-public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
+public class PlaneBakedModel implements IDynamicBakedModel {
 
     private static final PlaneConnections DEFAULT_PERMUTATION = PlaneConnections.of(false, false, false, false);
 
     private final TextureAtlasSprite frontTexture;
 
-    private final Map<PlaneConnections, Mesh> meshes;
+    private final Map<PlaneConnections, List<BakedQuad>> quads;
 
     PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture) {
         this.frontTexture = frontTexture;
 
-        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-
-        meshes = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
+        quads = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
         // Create all possible permutations (16)
         for (PlaneConnections permutation : PlaneConnections.PERMUTATIONS) {
+            List<BakedQuad> quads = new ArrayList<>(4 * 6);
 
-            MeshBuilder meshBuilder = renderer.meshBuilder();
-
-            CubeBuilder builder = new CubeBuilder(meshBuilder.getEmitter());
+            CubeBuilder builder = new CubeBuilder(quads);
 
             builder.setTextures(sidesTexture, sidesTexture, frontTexture, backTexture, sidesTexture, sidesTexture);
 
@@ -81,31 +72,22 @@ public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
 
             builder.addCube(minX, minY, 0, maxX, maxY, 1);
 
-            this.meshes.put(permutation, meshBuilder.build());
+            this.quads.put(permutation, ImmutableList.copyOf(quads));
         }
     }
 
     @Override
-    public void emitQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-            Supplier<Random> randomSupplier,
-            RenderContext context, Direction partSide, @Nullable Object modelData) {
-        PlaneConnections connections = DEFAULT_PERMUTATION;
-
-        if (modelData instanceof PlaneConnections) {
-            connections = (PlaneConnections) modelData;
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+            IModelData modelData) {
+        if (side == null) {
+            PlaneConnections connections = DEFAULT_PERMUTATION;
+            if (modelData.hasProperty(PlaneModelData.CONNECTIONS)) {
+                connections = modelData.getData(PlaneModelData.CONNECTIONS);
+            }
+            return this.quads.get(connections);
+        } else {
+            return Collections.emptyList();
         }
-
-        context.meshConsumer().accept(this.meshes.get(connections));
-    }
-
-    @Override
-    public ItemTransforms getTransforms() {
-        return ItemTransforms.NO_TRANSFORMS;
-    }
-
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
-        return Collections.emptyList();
     }
 
     @Override

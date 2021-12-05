@@ -28,9 +28,9 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 class EmptyInternalInventory implements InternalInventory {
     static final EmptyInternalInventory INSTANCE = new EmptyInternalInventory();
@@ -44,8 +44,8 @@ class EmptyInternalInventory implements InternalInventory {
     }
 
     @Override
-    public Storage<ItemVariant> toStorage() {
-        return Storage.empty();
+    public IItemHandler toItemHandler() {
+        return EmptyHandler.INSTANCE;
     }
 
     @Override

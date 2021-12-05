@@ -19,26 +19,35 @@
 package appeng.integration.modules.jei;
 
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 
-import me.shedaniel.rei.api.common.display.Display;
-import me.shedaniel.rei.plugin.common.DefaultPlugin;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.menu.me.items.PatternTermMenu;
 
-public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermMenu> {
+public class PatternRecipeTransferHandler<R extends Recipe<?>> extends RecipeTransferHandler<PatternTermMenu, R> {
 
-    public PatternRecipeTransferHandler() {
-        super(PatternTermMenu.class);
+    PatternRecipeTransferHandler(Class<PatternTermMenu> containerClass, Class<R> recipeClass,
+            IRecipeTransferHandlerHelper helper) {
+        super(containerClass, recipeClass, helper);
     }
 
-    protected Result doTransferRecipe(PatternTermMenu container, Display recipe, Context context) {
-
-        if (container.isCraftingMode() && recipe.getCategoryIdentifier() != DefaultPlugin.CRAFTING) {
-            return Result.createFailed(new TranslatableComponent("jei.ae2.requires_processing_mode"));
+    @Override
+    protected IRecipeTransferError doTransferRecipe(PatternTermMenu menu, R recipe,
+            IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
+        if (menu.isCraftingMode() && !(recipe instanceof CraftingRecipe)) {
+            return this.helper
+                    .createUserErrorWithTooltip(
+                            new TranslatableComponent("jei.ae2.requires_processing_mode"));
         }
 
-        if (recipe.getOutputEntries().isEmpty()) {
-            return Result.createFailed(new TranslatableComponent("jei.ae2.no_output"));
+        if (recipe.getResultItem().isEmpty()) {
+            return this.helper
+                    .createUserErrorWithTooltip(new TranslatableComponent("jei.ae2.no_output"));
         }
 
         return null;

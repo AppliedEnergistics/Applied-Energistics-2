@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
@@ -20,8 +19,8 @@ import appeng.items.misc.WrappedGenericStack;
 import appeng.util.Platform;
 
 public final class AEFluidKey extends AEKey {
-    public static final int AMOUNT_BUCKET = (int) FluidConstants.BUCKET;
-    public static final int AMOUNT_BLOCK = (int) FluidConstants.BLOCK;
+    public static final int AMOUNT_BUCKET = 1000;
+    public static final int AMOUNT_BLOCK = 1000;
 
     private final Fluid fluid;
     @Nullable
@@ -44,14 +43,14 @@ public final class AEFluidKey extends AEKey {
     }
 
     @Nullable
-    public static AEFluidKey of(FluidVariant fluidVariant) {
-        if (fluidVariant.isBlank()) {
+    public static AEFluidKey of(FluidStack fluidVariant) {
+        if (fluidVariant.isEmpty()) {
             return null;
         }
-        return of(fluidVariant.getFluid(), fluidVariant.getNbt());
+        return of(fluidVariant.getFluid(), fluidVariant.getTag());
     }
 
-    public static boolean matches(AEKey what, FluidVariant fluid) {
+    public static boolean matches(AEKey what, FluidStack fluid) {
         return what instanceof AEFluidKey fluidKey && fluidKey.matches(fluid);
     }
 
@@ -63,14 +62,14 @@ public final class AEFluidKey extends AEKey {
         return AEFluidKey::is;
     }
 
-    public boolean matches(FluidVariant variant) {
-        return !variant.isBlank() && fluid.isSame(variant.getFluid()) && variant.nbtMatches(tag);
+    public boolean matches(FluidStack variant) {
+        return !variant.isEmpty() && fluid.isSame(variant.getFluid()) && Objects.equals(tag, variant.getTag());
     }
 
     @Override
     public int transferFactor() {
         // On Forge this was 125mb (so 125/1000th of a bucket)
-        return AMOUNT_BUCKET * 125 / 1000;
+        return 125;
     }
 
     @Override
@@ -153,8 +152,8 @@ public final class AEFluidKey extends AEKey {
         return Platform.getFluidDisplayName(this);
     }
 
-    public FluidVariant toVariant() {
-        return FluidVariant.of(fluid, tag);
+    public FluidStack toStack(int amount) {
+        return new FluidStack(fluid, amount, tag);
     }
 
     public Fluid getFluid() {

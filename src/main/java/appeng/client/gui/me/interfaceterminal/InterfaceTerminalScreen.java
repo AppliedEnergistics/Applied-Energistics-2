@@ -234,7 +234,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
             if (action != null) {
                 InterfaceSlot machineSlot = (InterfaceSlot) slot;
-                final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.slot,
+                final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.getSlotIndex(),
                         machineSlot.getMachineInv().getServerId());
                 NetworkHandler.instance().sendToServer(p);
             }
