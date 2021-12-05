@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.items.misc.WrappedGenericStack;
 
@@ -80,6 +81,18 @@ public record GenericStack(AEKey what, long amount) {
             return null;
         }
         return new GenericStack(key, stack.getCount());
+    }
+
+    /**
+     * Converts a given fluid stack into a generic stack. If the fluid stack is empty, null is returned.
+     */
+    @Nullable
+    public static GenericStack fromFluidStack(FluidStack stack) {
+        var key = AEFluidKey.of(stack);
+        if (key == null) {
+            return null;
+        }
+        return new GenericStack(key, stack.getAmount());
     }
 
     public static long getStackSizeOrZero(@Nullable GenericStack stack) {

@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.ids.AETags;
 import appeng.api.parts.PartHelper;
@@ -44,10 +45,9 @@ import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 
-public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
+public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
     private static final String NBT_ITEM_ID = "item";
 
@@ -117,7 +117,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
     public ItemStack createFacadeForItemUnchecked(final ItemStack itemStack) {
         final ItemStack is = new ItemStack(this);
         final CompoundTag data = new CompoundTag();
-        data.putString(NBT_ITEM_ID, Registry.ITEM.getKey(itemStack.getItem()).toString());
+        data.putString(NBT_ITEM_ID, itemStack.getItem().getRegistryName().toString());
         is.setTag(data);
         return is;
     }
@@ -140,7 +140,11 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         }
 
         ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = Registry.ITEM.get(itemId);
+        Item baseItem = ForgeRegistries.ITEMS.getValue(itemId);
+
+        if (baseItem == null) {
+            return ItemStack.EMPTY;
+        }
 
         return new ItemStack(baseItem, 1);
     }
@@ -173,7 +177,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         }
 
         final CompoundTag facadeTag = new CompoundTag();
-        facadeTag.putString(NBT_ITEM_ID, Registry.ITEM.getKey(item).toString());
+        facadeTag.putString(NBT_ITEM_ID, item.getRegistryName().toString());
         facadeStack.setTag(facadeTag);
 
         return facadeStack;

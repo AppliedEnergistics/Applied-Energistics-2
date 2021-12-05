@@ -1,40 +1,35 @@
 package appeng.parts.automation;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
-import appeng.util.IVariantConversion;
+import appeng.util.BlockApiCache;
 
-class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {
-    private final BlockApiCache<Storage<V>, Direction> apiCache;
+class StorageExportStrategy<C, S> implements StackExportStrategy {
+    private final BlockApiCache<C> apiCache;
     private final Direction fromSide;
-    private final IVariantConversion<V> conversion;
+    private final HandlerStrategy<C, S> handlerStrategy;
 
-    public StorageExportStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
-            IVariantConversion<V> conversion,
+    protected StorageExportStrategy(Capability<C> apiLookup,
+            HandlerStrategy<C, S> handlerStrategy,
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
+        this.handlerStrategy = handlerStrategy;
         this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
         this.fromSide = fromSide;
-        this.conversion = conversion;
     }
 
     @Override
     public long transfer(StackTransferContext context, AEKey what, long amount, Actionable mode) {
-        var variant = conversion.getVariant(what);
-        if (variant.isBlank()) {
+        if (!handlerStrategy.isSupported(what)) {
             return 0;
         }
 
@@ -53,23 +48,20 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
                 context.getActionSource(),
                 Actionable.SIMULATE);
 
-        try (var tx = Transaction.openOuter()) {
-            long wasInserted = adjacentStorage.insert(variant, extracted, tx);
+        long wasInserted = handlerStrategy.insert(adjacentStorage, what, extracted, mode);
 
-            if (wasInserted > 0) {
-                if (mode == Actionable.MODULATE) {
-                    StorageHelper.poweredExtraction(
-                            context.getEnergySource(),
-                            inv,
-                            what,
-                            wasInserted,
-                            context.getActionSource(),
-                            Actionable.MODULATE);
-                    tx.commit();
-                }
-
-                return wasInserted;
+        if (wasInserted > 0) {
+            if (mode == Actionable.MODULATE) {
+                StorageHelper.poweredExtraction(
+                        context.getEnergySource(),
+                        inv,
+                        what,
+                        wasInserted,
+                        context.getActionSource(),
+                        Actionable.MODULATE);
             }
+
+            return wasInserted;
         }
 
         return 0;
@@ -77,8 +69,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
 
     @Override
     public long push(AEKey what, long amount, Actionable mode) {
-        var variant = conversion.getVariant(what);
-        if (variant.isBlank()) {
+        if (!handlerStrategy.isSupported(what)) {
             return 0;
         }
 
@@ -87,25 +78,13 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
             return 0;
         }
 
-        try (var tx = Transaction.openOuter()) {
-            long wasInserted = adjacentStorage.insert(variant, amount, tx);
-
-            if (wasInserted > 0) {
-                if (mode == Actionable.MODULATE) {
-                    tx.commit();
-                }
-
-                return wasInserted;
-            }
-        }
-
-        return 0;
+        return handlerStrategy.insert(adjacentStorage, what, amount, mode);
     }
 
     public static StackExportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                ItemStorage.SIDED,
-                IVariantConversion.ITEM,
+                CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                HandlerStrategy.ITEMS,
                 level,
                 fromPos,
                 fromSide);
@@ -113,8 +92,8 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
 
     public static StackExportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                FluidStorage.SIDED,
-                IVariantConversion.FLUID,
+                CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                HandlerStrategy.FLUIDS,
                 level,
                 fromPos,
                 fromSide);

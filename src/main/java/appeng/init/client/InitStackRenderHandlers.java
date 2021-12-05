@@ -23,7 +23,6 @@ import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
@@ -93,14 +92,14 @@ public class InitStackRenderHandlers {
             @Override
             public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
                     AEFluidKey stack) {
-                FluidBlitter.create(stack.toVariant())
+                FluidBlitter.create(stack)
                         .dest(x, y, 16, 16)
                         .blit(poseStack, 100 + zIndex);
             }
 
             @Override
             public Component getDisplayName(AEFluidKey stack) {
-                return FluidVariantRendering.getName(stack.toVariant());
+                return stack.getDisplayName();
             }
 
             @Override
