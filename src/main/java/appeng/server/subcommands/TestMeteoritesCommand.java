@@ -138,8 +138,10 @@ public class TestMeteoritesCommand implements ISubCommand {
 
         sendLine(sender, "Chunks checked: %d", chunksChecked);
         sendLine(sender, "Meteorites found: %d", found.size());
-        sendLine(sender, "Closest: min=%.2f max=%.2f mean=%.2f stddev=%.2f", stats.min(), stats.max(), stats.mean(),
-                stats.populationStandardDeviation());
+        if (stats.count() > 0) {
+            sendLine(sender, "Closest: min=%.2f max=%.2f mean=%.2f stddev=%.2f", stats.min(), stats.max(), stats.mean(),
+                    stats.populationStandardDeviation());
+        }
 
         int closestCount = Math.min(10, found.size());
         for (int i = 0; i < closestCount; i++) {
