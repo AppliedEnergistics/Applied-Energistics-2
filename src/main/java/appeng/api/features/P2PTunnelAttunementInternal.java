@@ -21,9 +21,9 @@ package appeng.api.features;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * Internal methods that complement {@link P2PTunnelAttunement} and which are not part of the public API.
@@ -40,7 +40,7 @@ public final class P2PTunnelAttunementInternal {
 
         Set<Item> items = new HashSet<>();
         Set<String> mods = new HashSet<>();
-        Set<ItemApiLookup<?, ?>> apis = new HashSet<>();
+        Set<Capability<?>> caps = new HashSet<>();
 
         for (var entry : P2PTunnelAttunement.tunnels.entrySet()) {
             if (entry.getValue() == tunnelItem) {
@@ -54,15 +54,15 @@ public final class P2PTunnelAttunementInternal {
             }
         }
 
-        for (var entry : P2PTunnelAttunement.apiAttunements) {
-            if (entry.tunnelType() == tunnelItem) {
-                apis.add(entry.api());
+        for (var entry : P2PTunnelAttunement.capTunnels.entrySet()) {
+            if (entry.getValue() == tunnelItem) {
+                caps.add(entry.getKey());
             }
         }
 
-        return new AttunementInfo(items, mods, apis);
+        return new AttunementInfo(items, mods, caps);
     }
 
-    public record AttunementInfo(Set<Item> items, Set<String> mods, Set<ItemApiLookup<?, ?>> apis) {
+    public record AttunementInfo(Set<Item> items, Set<String> mods, Set<Capability<?>> caps) {
     }
 }

@@ -31,9 +31,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -41,6 +38,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 
@@ -52,12 +51,9 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
             return null;
         }
 
-        var storage = ItemStorage.SIDED.find(be.getLevel(), be.getBlockPos(), be.getBlockState(), be, side);
-        if (storage != null) {
-            return new PlatformInventoryWrapper(storage);
-        }
-
-        return null;
+        return be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)
+                .map(PlatformInventoryWrapper::new)
+                .orElse(null);
     }
 
     @Nullable
@@ -73,8 +69,8 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         return !iterator().hasNext();
     }
 
-    default Storage<ItemVariant> toStorage() {
-        return new InternalInventoryStorage(this);
+    default IItemHandler toItemHandler() {
+        return new InternalInventoryItemHandler(this);
     }
 
     default Container toContainer() {

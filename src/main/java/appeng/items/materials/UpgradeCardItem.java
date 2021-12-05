@@ -20,8 +20,6 @@ package appeng.items.materials;
 
 import java.util.List;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -32,6 +30,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeInventory;
@@ -39,11 +39,10 @@ import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
-public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule, AEToolItem {
+public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule {
     private final Upgrades cardType;
 
     public UpgradeCardItem(Item.Properties properties, Upgrades cardType) {
@@ -56,7 +55,7 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule, AEToo
         return cardType;
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
@@ -97,6 +96,6 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule, AEToo
             }
         }
 
-        return InteractionResult.PASS;
+        return super.onItemUseFirst(stack, context);
     }
 }

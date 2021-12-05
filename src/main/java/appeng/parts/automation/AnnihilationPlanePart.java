@@ -20,14 +20,16 @@ package appeng.parts.automation;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -241,10 +243,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
+    public IModelData getModelData() {
+        return new PlaneModelData(getConnections());
     }
 
 }

@@ -18,20 +18,20 @@
 
 package appeng.helpers.iface;
 
-import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -39,8 +39,8 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.me.storage.StorageAdapter;
-import appeng.util.IVariantConversion;
+import appeng.capabilities.Capabilities;
+import appeng.me.storage.ExternalStorageFacade;
 
 public interface IInterfaceTarget {
     @Nullable
@@ -49,20 +49,20 @@ public interface IInterfaceTarget {
             return null;
 
         // our capability first: allows any storage channel
-        var accessor = IStorageMonitorableAccessor.SIDED.find(l, pos, null, be, side);
+        var accessor = be.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, side).orElse(null);
         if (accessor != null) {
             return wrapStorageMonitorable(accessor, src);
         }
 
         // otherwise fall back to the platform capability
         // TODO: look into exposing this for other storage channels
-        var itemHandler = ItemStorage.SIDED.find(l, pos, null, be, side);
-        var fluidHandler = FluidStorage.SIDED.find(l, pos, null, be, side);
+        var itemHandler = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+        var fluidHandler = be.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
 
-        if (itemHandler != null || fluidHandler != null) {
+        if (itemHandler.isPresent() || fluidHandler.isPresent()) {
             return wrapHandlers(
-                    Objects.requireNonNullElse(itemHandler, Storage.empty()),
-                    Objects.requireNonNullElse(fluidHandler, Storage.empty()),
+                    itemHandler.orElse(EmptyHandler.INSTANCE),
+                    fluidHandler.orElse(EmptyFluidHandler.INSTANCE),
                     src);
         }
 
@@ -93,10 +93,10 @@ public interface IInterfaceTarget {
         }
     }
 
-    private static IInterfaceTarget wrapHandlers(Storage<ItemVariant> itemHandler, Storage<FluidVariant> fluidHandler,
+    private static IInterfaceTarget wrapHandlers(IItemHandler itemHandler, IFluidHandler fluidHandler,
             IActionSource src) {
-        var itemAdapter = new StorageAdapter<>(IVariantConversion.ITEM, itemHandler);
-        var fluidAdapter = new StorageAdapter<>(IVariantConversion.FLUID, fluidHandler);
+        var itemAdapter = ExternalStorageFacade.of(itemHandler);
+        var fluidAdapter = ExternalStorageFacade.of(fluidHandler);
         return new IInterfaceTarget() {
             @Override
             public long insert(AEKey what, long amount, Actionable type) {

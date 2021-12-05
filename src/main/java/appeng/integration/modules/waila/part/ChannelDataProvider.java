@@ -17,12 +17,11 @@
  */
 package appeng.integration.modules.waila.part;
 
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.parts.IPart;
 import appeng.integration.modules.waila.WailaText;
@@ -36,7 +35,7 @@ public final class ChannelDataProvider implements IPartDataProvider {
     private static final String TAG_USED_CHANNELS = "usedChannels";
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+    public void appendBodyTooltip(IPart part, CompoundTag partTag, ITooltip tooltip) {
         if (partTag.contains(TAG_MAX_CHANNELS, Tag.TAG_INT)) {
             var usedChannels = partTag.getInt(TAG_USED_CHANNELS);
             var maxChannels = partTag.getInt(TAG_MAX_CHANNELS);

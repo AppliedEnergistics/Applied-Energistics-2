@@ -18,34 +18,32 @@
 
 package appeng.parts.p2p;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
-
-import appeng.parts.PartAdjacentApi;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 /**
  * Base class for simple capability-based p2p tunnels. Don't forget to set the 3 handlers in the constructor of the
  * child class!
  */
-public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<P, A>, A> extends P2PTunnelPart<P> {
-    private final PartAdjacentApi<A> targetApiCache;
+public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<P, C>, C> extends P2PTunnelPart<P> {
+    private final Capability<C> capability;
     // Prevents recursive block updates.
     private boolean inBlockUpdate = false;
     // Prevents recursive access to the adjacent capability in case P2P input/output faces touch
     private int accessDepth = 0;
     private final CapabilityGuard capabilityGuard = new CapabilityGuard();
     private final EmptyCapabilityGuard emptyCapabilityGuard = new EmptyCapabilityGuard();
-    protected A inputHandler;
-    protected A outputHandler;
-    protected A emptyHandler;
+    protected C inputHandler;
+    protected C outputHandler;
+    protected C emptyHandler;
 
-    public CapabilityP2PTunnelPart(ItemStack is, BlockApiLookup<A, Direction> api) {
+    public CapabilityP2PTunnelPart(ItemStack is, Capability<C> capability) {
         super(is);
-        this.targetApiCache = new PartAdjacentApi<A>(this, api);
+        this.capability = capability;
     }
 
     @Override
@@ -53,12 +51,15 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         return 2.0f;
     }
 
-    public A getExposedApi() {
-        if (isOutput()) {
-            return outputHandler;
-        } else {
-            return inputHandler;
+    public final <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
+        if (capabilityClass == capability) {
+            if (isOutput()) {
+                return LazyOptional.of(() -> outputHandler).cast();
+            } else {
+                return LazyOptional.of(() -> inputHandler).cast();
+            }
         }
+        return LazyOptional.empty();
     }
 
     /**
@@ -85,14 +86,17 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         /**
          * Get the capability, or a null handler if not available. Use within the scope of the enclosing AdjCapability.
          */
-        protected A get() {
+        protected C get() {
             if (accessDepth == 0) {
                 throw new IllegalStateException("get was called after closing the wrapper");
             } else if (accessDepth == 1) {
                 if (isActive()) {
-                    var result = targetApiCache.find();
-                    if (result != null) {
-                        return result;
+                    var self = getBlockEntity();
+                    var te = self.getLevel().getBlockEntity(getFacingPos());
+
+                    if (te != null) {
+                        return te.getCapability(capability, getSide().getOpposite())
+                                .orElse(emptyHandler);
                     }
                 }
 
@@ -128,7 +132,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         }
 
         @Override
-        protected A get() {
+        protected C get() {
             return emptyHandler;
         }
     }

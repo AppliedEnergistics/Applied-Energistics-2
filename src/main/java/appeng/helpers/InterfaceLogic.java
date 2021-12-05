@@ -27,8 +27,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -36,6 +34,10 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -64,9 +66,9 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.helpers.externalstorage.GenericStackFluidStorage;
-import appeng.helpers.externalstorage.GenericStackInvStorage;
 import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
@@ -257,11 +259,11 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         return config;
     }
 
-    public GenericStackInvStorage<ItemVariant> getLocalItemStorage() {
+    public GenericStackItemStorage getLocalItemStorage() {
         return localItemStorage;
     }
 
-    public GenericStackInvStorage<FluidVariant> getLocalFluidStorage() {
+    public GenericStackFluidStorage getLocalFluidStorage() {
         return localFluidStorage;
     }
 
@@ -589,4 +591,15 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         }
     }
 
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
+        if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return LazyOptional.of(() -> localFluidStorage).cast();
+        } else if (capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return LazyOptional.of(() -> localItemStorage).cast();
+        } else if (capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
+            return LazyOptional.of(() -> this.accessor).cast();
+        } else {
+            return LazyOptional.empty();
+        }
+    }
 }

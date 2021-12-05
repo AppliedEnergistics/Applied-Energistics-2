@@ -44,16 +44,17 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.network.NetworkHooks;
 
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
-import appeng.core.sync.packets.ICustomEntity;
 import appeng.core.sync.packets.MockExplosionPacket;
-import appeng.core.sync.packets.SpawnEntityPacket;
 
-public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntity {
+public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAdditionalSpawnData {
 
     private LivingEntity placedBy;
 
@@ -146,6 +147,8 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
                 this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
         final List<Entity> list = this.level.getEntities(this, area);
 
+        ForgeEventFactory.onExplosionDetonate(this.level, ex, list, 0.2f * 2d);
+
         for (final Entity e : list) {
             e.hurt(DamageSource.explosion(ex), 6);
         }
@@ -166,16 +169,16 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
                                             + (y + 0.5f - this.getY()) * (y + 0.5f - this.getY())
                                             + (z + 0.5f - this.getZ()) * (z + 0.5f - this.getZ())));
 
-                            final float resistance = block.getExplosionResistance();
+                            final float resistance = block.getExplosionResistance(state, this.level, point, ex);
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01 && state.getMaterial() != Material.AIR) {
                                 if (block.dropFromExplosion(ex)) {
-                                    Block.dropResources(state, this.level, point);
+                                    block.dropResources(state, this.level, point);
                                 }
 
                                 level.setBlock(point, Blocks.AIR.defaultBlockState(), 3);
-                                block.wasExploded(this.level, point, ex);
+                                block.onBlockExploded(null, this.level, point, ex);
                             }
                         }
                     }
@@ -189,16 +192,16 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
 
     @Override
     public Packet<?> getAddEntityPacket() {
-        return SpawnEntityPacket.create(this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeAdditionalSpawnData(FriendlyByteBuf buf) {
-        buf.writeByte(this.getFuse());
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        buffer.writeByte(this.getFuse());
     }
 
     @Override
-    public void readAdditionalSpawnData(FriendlyByteBuf buf) {
-        this.setFuse(buf.readByte());
+    public void readSpawnData(FriendlyByteBuf additionalData) {
+        this.setFuse(additionalData.readByte());
     }
 }

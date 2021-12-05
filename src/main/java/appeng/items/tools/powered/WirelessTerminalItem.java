@@ -24,8 +24,6 @@ import java.util.function.DoubleSupplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +38,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.config.*;
 import appeng.api.features.IGridLinkableHandler;
@@ -74,7 +74,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
 
     /**
      * Open a wireless terminal from a slot in the player inventory, i.e. activated via hotkey.
-     * 
+     *
      * @return True if the menu was opened.
      */
     public boolean openFromInventory(Player player, int inventorySlot) {
@@ -103,7 +103,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
             final TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
@@ -151,7 +151,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
 
     /**
      * Checks if a player can open a particular wireless terminal.
-     * 
+     *
      * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
      */
     protected boolean checkPreconditions(ItemStack item, Player player) {
