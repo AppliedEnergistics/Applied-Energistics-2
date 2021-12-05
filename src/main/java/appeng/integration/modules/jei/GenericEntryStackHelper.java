@@ -1,14 +1,23 @@
 package appeng.integration.modules.jei;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import dev.architectury.fluid.FluidStack;
-import me.shedaniel.rei.api.common.entry.EntryIngredient;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import com.google.common.collect.Streams;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
@@ -19,35 +28,51 @@ public final class GenericEntryStackHelper {
     }
 
     @Nullable
-    public static GenericStack of(EntryStack<?> entryStack) {
+    public static GenericStack of(Object ingredient) {
 
-        if (entryStack.getType() == VanillaEntryTypes.ITEM) {
-            return GenericStack.fromItemStack(entryStack.castValue());
-        } else if (entryStack.getType() == VanillaEntryTypes.FLUID) {
-            FluidStack fluidStack = entryStack.castValue();
+        if (ingredient instanceof ItemStack itemStack) {
+            return GenericStack.fromItemStack(itemStack);
+        } else if (ingredient instanceof FluidStack fluidStack) {
             return new GenericStack(AEFluidKey.of(fluidStack.getFluid(), fluidStack.getTag()), fluidStack.getAmount());
         } else {
             return null;
         }
     }
 
-    /**
-     * Given a list of ingredients, take the first of each that is convertible to a generic stack, and return a list of
-     * them.
-     */
-    public static List<GenericStack> of(List<EntryIngredient> ingredients) {
-        var result = new ArrayList<GenericStack>(ingredients.size());
-        for (var ingredient : ingredients) {
-            for (var entryStack : ingredient) {
-                // We use the first convertible stack of each ingredient
-                var stack = of(entryStack);
-                if (stack != null) {
-                    result.add(stack);
-                    break;
-                }
-            }
-        }
-        return result;
+    public static List<GenericStack> ofInputs(IRecipeLayout recipeLayout) {
+        return ofRecipeLayout(recipeLayout, true);
     }
 
+    public static List<GenericStack> ofOutputs(IRecipeLayout recipeLayout) {
+        return ofRecipeLayout(recipeLayout, false);
+
+    }
+
+    private static List<GenericStack> ofRecipeLayout(IRecipeLayout recipeLayout, boolean input) {
+        var result = Streams.concat(
+                convertGuiIngredients(recipeLayout.getItemStacks(), GenericStack::fromItemStack, input),
+                convertGuiIngredients(recipeLayout.getFluidStacks(), GenericStack::fromFluidStack, input))
+                // We're doing this assuming that lower number input and output slots should correlate with
+                // the encoded pattern slots. Especially output slot 0 == primary output.
+                .sorted(Comparator.comparingInt(Pair::getKey))
+                .map(Pair::getValue)
+                .toList();
+        return new ArrayList<>(result);
+    }
+
+    private static <T> Stream<Pair<Integer, GenericStack>> convertGuiIngredients(IGuiIngredientGroup<T> group,
+            Function<T, GenericStack> converter,
+            boolean input) {
+        return group.getGuiIngredients().entrySet().stream()
+                .filter(e -> e.getValue().isInput() == input)
+                .map(e -> {
+                    var displayed = e.getValue().getDisplayedIngredient();
+                    if (displayed != null) {
+                        return Pair.of(e.getKey(), converter.apply(displayed));
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull);
+    }
 }

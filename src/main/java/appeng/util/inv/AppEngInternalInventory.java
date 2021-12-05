@@ -26,7 +26,6 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -88,16 +87,6 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     }
 
     private void notifyContentsChanged(int slot) {
-        if (Transaction.isOpen()) {
-            // Notifications during transactions are handled in the adapter
-            return;
-        }
-
-        onContentsChanged(slot);
-    }
-
-    @Override
-    public void sendChangeNotification(int slot) {
         onContentsChanged(slot);
     }
 

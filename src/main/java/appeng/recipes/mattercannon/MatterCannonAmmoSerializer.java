@@ -26,8 +26,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class MatterCannonAmmoSerializer implements RecipeSerializer<MatterCannonAmmo> {
+public class MatterCannonAmmoSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+        implements RecipeSerializer<MatterCannonAmmo> {
 
     public static final MatterCannonAmmoSerializer INSTANCE = new MatterCannonAmmoSerializer();
 

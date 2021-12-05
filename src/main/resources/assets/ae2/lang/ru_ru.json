@@ -678,7 +678,6 @@
   "itemGroup.ae2.facades": "Applied Energistics 2  — Фасады",
   "jei.ae2.missing_id": "Невозможно распознать рецепт.",
   "jei.ae2.missing_items": "Отсутствующие предметы будут пропущены.",
-  "jei.ae2.no_output": "Рецепт не имеет выхода",
   "jei.ae2.recipe_too_large": "Рецепт намного больше, чем 3x3",
   "jei.ae2.requires_processing_mode": "Требуется режим обработки",
   "key.toggle_focus.desc": "Переключить фокусировку на поисковую строку",

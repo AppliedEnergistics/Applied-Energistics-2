@@ -19,29 +19,32 @@
 package appeng.integration.modules.jei;
 
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 
-import me.shedaniel.rei.api.common.display.Display;
-import me.shedaniel.rei.plugin.common.DefaultPlugin;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.encoding.EncodingMode;
 
-public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternEncodingTermMenu> {
+public class PatternRecipeTransferHandler<R extends Recipe<?>>
+        extends RecipeTransferHandler<PatternEncodingTermMenu, R> {
 
-    public PatternRecipeTransferHandler() {
-        super(PatternEncodingTermMenu.class);
+    PatternRecipeTransferHandler(Class<PatternEncodingTermMenu> containerClass, Class<R> recipeClass,
+            IRecipeTransferHandlerHelper helper) {
+        super(containerClass, recipeClass, helper);
     }
 
-    protected Result doTransferRecipe(PatternEncodingTermMenu menu, Display recipe, Context context) {
-
-        if (menu.getMode() != EncodingMode.PROCESSING && recipe.getCategoryIdentifier() != DefaultPlugin.CRAFTING) {
-            return Result.createFailed(new TranslatableComponent("jei.ae2.requires_processing_mode"));
+    @Override
+    protected IRecipeTransferError doTransferRecipe(PatternEncodingTermMenu menu, R recipe,
+            IRecipeLayout recipeLayout, Player player, boolean maxTransfer) {
+        if (menu.getMode() != EncodingMode.PROCESSING && !(recipe instanceof CraftingRecipe)) {
+            return this.helper.createUserErrorWithTooltip(
+                    new TranslatableComponent("jei.ae2.requires_processing_mode"));
         }
-
-        if (recipe.getOutputEntries().isEmpty()) {
-            return Result.createFailed(new TranslatableComponent("jei.ae2.no_output"));
-        }
-
         return null;
     }
 

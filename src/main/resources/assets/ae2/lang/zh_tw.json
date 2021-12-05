@@ -617,7 +617,6 @@
   "itemGroup.ae2.facades": "應用能源 2 － 外觀",
   "itemGroup.ae2.main": "應用能源 2",
   "jei.ae2.missing_id": "無法辨識配方。",
-  "jei.ae2.no_output": "配方沒有輸出。",
   "jei.ae2.recipe_too_large": "配方大小超過3x3。",
   "jei.ae2.requires_processing_mode": "需要切換至處理模式。",
   "key.ae2.category": "應用能源 2",

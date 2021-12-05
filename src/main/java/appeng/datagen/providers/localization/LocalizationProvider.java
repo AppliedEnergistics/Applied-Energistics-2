@@ -113,7 +113,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("itemGroup.ae2.main", "Applied Energistics 2");
         add("jei.ae2.missing_id", "Cannot identify recipe");
         add("jei.ae2.missing_items", "Missing items will be skipped");
-        add("jei.ae2.no_output", "Recipe has no output");
         add("jei.ae2.recipe_too_large", "Recipe larger than 3x3");
         add("jei.ae2.requires_processing_mode", "Requires processing mode");
         add("key.ae2.category", "Applied Energistics 2");

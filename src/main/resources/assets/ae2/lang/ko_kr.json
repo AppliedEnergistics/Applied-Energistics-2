@@ -636,7 +636,6 @@
   "itemGroup.ae2.main": "응용 에너지학",
   "jei.ae2.missing_id": "조합법을 찾을 수 없음",
   "jei.ae2.missing_items": "없는 아이템은 건너뜁니다",
-  "jei.ae2.no_output": "조합법의 결과물이 없음",
   "jei.ae2.recipe_too_large": "조합법이 3x3 보다 큼",
   "jei.ae2.requires_processing_mode": "처리 모드 필요",
   "key.ae2.category": "응용 에너지학",
