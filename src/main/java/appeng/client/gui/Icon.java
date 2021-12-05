@@ -210,7 +210,7 @@ public enum Icon {
     POWER_UNIT_EU(16, 160),
     POWER_UNIT_J(32, 160),
     POWER_UNIT_W(48, 160),
-    POWER_UNIT_TR(64, 160),
+    POWER_UNIT_RF(64, 160),
     UNUSED_10_05(80, 160),
     UNUSED_10_06(96, 160),
     UNUSED_10_07(112, 160),

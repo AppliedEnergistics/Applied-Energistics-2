@@ -183,14 +183,14 @@ public final class AEBlocks {
     public static final BlockDefinition<LightDetectorBlock> LIGHT_DETECTOR = block(AEBlockIds.LIGHT_DETECTOR, LightDetectorBlock::new);
     public static final BlockDefinition<PaintSplotchesBlock> PAINT = block(AEBlockIds.PAINT, PaintSplotchesBlock::new);
 
-    public static final BlockDefinition<StairBlock> SKY_STONE_STAIRS = block(AEBlockIds.SKY_STONE_STAIRS, () -> new StairBlock(SKY_STONE_BLOCK.block().defaultBlockState(), SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<StairBlock> SMOOTH_SKY_STONE_STAIRS = block(AEBlockIds.SMOOTH_SKY_STONE_STAIRS, () -> new StairBlock(SMOOTH_SKY_STONE_BLOCK.block().defaultBlockState(), SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<StairBlock> SKY_STONE_BRICK_STAIRS = block(AEBlockIds.SKY_STONE_BRICK_STAIRS, () -> new StairBlock(SKY_STONE_BRICK.block().defaultBlockState(), SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<StairBlock> SKY_STONE_SMALL_BRICK_STAIRS = block(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS, () -> new StairBlock(SKY_STONE_SMALL_BRICK.block().defaultBlockState(), SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<StairBlock> FLUIX_STAIRS = block(AEBlockIds.FLUIX_STAIRS, () -> new StairBlock(FLUIX_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
-    public static final BlockDefinition<StairBlock> QUARTZ_STAIRS = block(AEBlockIds.QUARTZ_STAIRS, () -> new StairBlock(QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
-    public static final BlockDefinition<StairBlock> CHISELED_QUARTZ_STAIRS = block(AEBlockIds.CHISELED_QUARTZ_STAIRS, () -> new StairBlock(CHISELED_QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
-    public static final BlockDefinition<StairBlock> QUARTZ_PILLAR_STAIRS = block(AEBlockIds.QUARTZ_PILLAR_STAIRS, () -> new StairBlock(QUARTZ_PILLAR.block().defaultBlockState(), QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairBlock> SKY_STONE_STAIRS = block(AEBlockIds.SKY_STONE_STAIRS, () -> new StairBlock(SKY_STONE_BLOCK.block()::defaultBlockState, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<StairBlock> SMOOTH_SKY_STONE_STAIRS = block(AEBlockIds.SMOOTH_SKY_STONE_STAIRS, () -> new StairBlock(SMOOTH_SKY_STONE_BLOCK.block()::defaultBlockState, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<StairBlock> SKY_STONE_BRICK_STAIRS = block(AEBlockIds.SKY_STONE_BRICK_STAIRS, () -> new StairBlock(SKY_STONE_BRICK.block()::defaultBlockState, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<StairBlock> SKY_STONE_SMALL_BRICK_STAIRS = block(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS, () -> new StairBlock(SKY_STONE_SMALL_BRICK.block()::defaultBlockState, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<StairBlock> FLUIX_STAIRS = block(AEBlockIds.FLUIX_STAIRS, () -> new StairBlock(FLUIX_BLOCK.block()::defaultBlockState, QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairBlock> QUARTZ_STAIRS = block(AEBlockIds.QUARTZ_STAIRS, () -> new StairBlock(QUARTZ_BLOCK.block()::defaultBlockState, QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairBlock> CHISELED_QUARTZ_STAIRS = block(AEBlockIds.CHISELED_QUARTZ_STAIRS, () -> new StairBlock(CHISELED_QUARTZ_BLOCK.block()::defaultBlockState, QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairBlock> QUARTZ_PILLAR_STAIRS = block(AEBlockIds.QUARTZ_PILLAR_STAIRS, () -> new StairBlock(QUARTZ_PILLAR.block()::defaultBlockState, QUARTZ_PROPERTIES));
 
     public static final BlockDefinition<WallBlock> SKY_STONE_WALL = block(AEBlockIds.SKY_STONE_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
     public static final BlockDefinition<WallBlock> SMOOTH_SKY_STONE_WALL = block(AEBlockIds.SMOOTH_SKY_STONE_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
@@ -239,6 +239,7 @@ public final class AEBlocks {
 
         // Create block and matching item, and set factory name of both
         T block = blockSupplier.get();
+        block.setRegistryName(id);
 
         Item.Properties itemProperties = new Item.Properties();
         itemProperties.tab(CreativeTab.INSTANCE);
@@ -254,6 +255,7 @@ public final class AEBlocks {
         } else {
             item = new BlockItem(block, itemProperties);
         }
+        item.setRegistryName(id);
 
         BlockDefinition<T> definition = new BlockDefinition<>(id, block, item);
         CreativeTab.add(definition);

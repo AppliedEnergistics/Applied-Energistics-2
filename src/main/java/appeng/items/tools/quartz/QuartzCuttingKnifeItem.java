@@ -18,6 +18,8 @@
 
 package appeng.items.tools.quartz;
 
+import java.util.Random;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -40,12 +42,11 @@ import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
     private final QuartzToolType type;
+    private final Random random = new Random();
 
     public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
         super(props);
         this.type = type;
-        // TODO FABRIC 117 This means knife doesnt lose durability when used in normal crafting
-        this.craftingRemainingItem = this;
     }
 
     @Override
@@ -74,21 +75,20 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
         return Platform.canRepair(this.type, a, b);
     }
 
-    // TODO FABRIC 117 recipe remainders
-//    @Override
-//    public ItemStack getContainerItem(final ItemStack itemStack) {
-//        ItemStack damagedStack = itemStack.copy();
-//        if (damagedStack.hurt(1, random, null)) {
-//            return ItemStack.EMPTY;
-//        } else {
-//            return damagedStack;
-//        }
-//    }
-//
-//    @Override
-//    public boolean hasContainerItem(final ItemStack stack) {
-//        return true;
-//    }
+    @Override
+    public ItemStack getContainerItem(final ItemStack itemStack) {
+        ItemStack damagedStack = itemStack.copy();
+        if (damagedStack.hurt(1, random, null)) {
+            return ItemStack.EMPTY;
+        } else {
+            return damagedStack;
+        }
+    }
+
+    @Override
+    public boolean hasContainerItem(final ItemStack stack) {
+        return true;
+    }
 
     @Nullable
     @Override

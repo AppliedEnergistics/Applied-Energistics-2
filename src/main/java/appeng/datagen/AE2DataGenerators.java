@@ -20,7 +20,11 @@ package appeng.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
+import appeng.core.AppEng;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.loot.BlockDropProvider;
 import appeng.datagen.providers.loot.ChestDropProvider;
@@ -40,7 +44,13 @@ import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.FluidTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
 
+@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {
+
+    @SubscribeEvent
+    public static void onGatherData(GatherDataEvent dataEvent) {
+        onGatherData(dataEvent.getGenerator(), dataEvent.getExistingFileHelper());
+    }
 
     public static void onGatherData(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         // Loot
@@ -48,10 +58,10 @@ public class AE2DataGenerators {
         generator.addProvider(new ChestDropProvider(generator.getOutputFolder()));
 
         // Tags
-        BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator);
+        BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator, existingFileHelper);
         generator.addProvider(blockTagsProvider);
-        generator.addProvider(new ItemTagsProvider(generator, blockTagsProvider));
-        generator.addProvider(new FluidTagsProvider(generator));
+        generator.addProvider(new ItemTagsProvider(generator, existingFileHelper, blockTagsProvider));
+        generator.addProvider(new FluidTagsProvider(generator, existingFileHelper));
 
         // Models
         generator.addProvider(new BlockModelProvider(generator, existingFileHelper));
