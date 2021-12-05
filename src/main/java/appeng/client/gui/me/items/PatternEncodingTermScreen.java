@@ -96,6 +96,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                 ActionItems.CYCLE_PROCESSING_OUTPUT, act -> getMenu().cycleProcessingOutput());
         this.cycleProcessingOutputBtn.setHalfSize(true);
         widgets.add("cycleProcessingOutput", this.cycleProcessingOutputBtn);
+
         ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
         widgets.add("encodePattern", encodeBtn);
 
@@ -147,6 +148,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         }
 
         this.cycleProcessingOutputBtn.visible = menu.canCycleProcessingOutputs();
+
         setSlotsHidden(SlotSemantics.CRAFTING_RESULT, mode != EncodingMode.CRAFTING);
         setSlotsHidden(SlotSemantics.PROCESSING_PRIMARY_RESULT, mode != EncodingMode.PROCESSING);
         setSlotsHidden(SlotSemantics.PROCESSING_FIRST_OPTIONAL_RESULT, mode != EncodingMode.PROCESSING);

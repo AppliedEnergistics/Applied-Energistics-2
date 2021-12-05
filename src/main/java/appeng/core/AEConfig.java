@@ -18,12 +18,9 @@
 
 package appeng.core;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
@@ -32,7 +29,17 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
+import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
@@ -43,96 +50,41 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.api.features.AEWorldGenInternal;
 import appeng.api.networking.pathing.ChannelMode;
-import appeng.core.config.BooleanOption;
-import appeng.core.config.ConfigFileManager;
-import appeng.core.config.ConfigSection;
-import appeng.core.config.ConfigValidationException;
-import appeng.core.config.DoubleOption;
-import appeng.core.config.EnumOption;
-import appeng.core.config.IntegerOption;
-import appeng.core.config.StringListOption;
-import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 
+@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AEConfig {
 
-    public static final String CLIENT_CONFIG_PATH = "appliedenergistics2/client.json";
-    public static final String COMMON_CONFIG_PATH = "appliedenergistics2/common.json";
-    public final ClientConfig CLIENT;
-    public final ConfigFileManager clientConfigManager;
-    public final CommonConfig COMMON;
-    public final ConfigFileManager commonConfigManager;
-
-    AEConfig(Path configDir) {
-        ConfigSection clientRoot = ConfigSection.createRoot();
-        CLIENT = new ClientConfig(clientRoot);
-        clientConfigManager = createConfigFileManager(clientRoot, configDir, CLIENT_CONFIG_PATH);
-
-        ConfigSection commonRoot = ConfigSection.createRoot();
-        COMMON = new CommonConfig(commonRoot);
-        commonConfigManager = createConfigFileManager(commonRoot, configDir, COMMON_CONFIG_PATH);
-
-        syncClientConfig();
-        syncCommonConfig();
-    }
-
-    private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, Path configDir,
-            String filename) {
-        var configFile = configDir.resolve(filename);
-        ConfigFileManager result = new ConfigFileManager(commonRoot, configFile);
-        if (!Files.exists(configFile)) {
-            result.save(); // Save a default file
-        } else {
-            try {
-                result.load();
-            } catch (ConfigValidationException e) {
-                AELog.error("Failed to load AE2 Config. Making backup", e);
-
-                // Backup and delete config files to reset them
-                makeBackupAndReset(configDir, filename);
-            }
-
-            // Re-save immediately to write-out new defaults
-            try {
-                result.save();
-            } catch (Exception e) {
-                AELog.warn(e);
-            }
-        }
-        return result;
-    }
+    public static final ClientConfig CLIENT;
+    public static final ForgeConfigSpec CLIENT_SPEC;
+    public static final CommonConfig COMMON;
+    public static final ForgeConfigSpec COMMON_SPEC;
 
     // Default Energy Conversion Rates
-    private static final double DEFAULT_TR_EXCHANGE = 2.0;
+    private static final double DEFAULT_RF_EXCHANGE = 0.5;
+
+    static {
+        final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
+        CLIENT_SPEC = specPair.getRight();
+        CLIENT = specPair.getLeft();
+
+        final Pair<CommonConfig, ForgeConfigSpec> commonPair = new ForgeConfigSpec.Builder()
+                .configure(CommonConfig::new);
+        COMMON_SPEC = commonPair.getRight();
+        COMMON = commonPair.getLeft();
+    }
 
     // Config instance
-    private static AEConfig instance;
-
-    public static void load(Path configFolder) {
-        if (instance != null) {
-            throw new IllegalStateException("Config is already loaded");
-        }
-        instance = new AEConfig(configFolder);
-    }
-
-    private static void makeBackupAndReset(Path configFolder, String configFile) {
-        var backupFile = configFolder.resolve(configFile + ".bak");
-        var originalFile = configFolder.resolve(configFile);
-        try {
-            Files.move(originalFile, backupFile, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            AELog.warn("Failed to backup config file %s: %s!", originalFile, e);
-        }
-    }
+    private static final AEConfig instance = new AEConfig();
 
     // Misc
     private int formationPlaneEntityLimit;
     private boolean enableEffects;
     private boolean useLargeFonts;
     private boolean useColoredCraftingStatus;
-    private boolean disableColoredCableRecipesInJEI;
     private int craftingCalculationTimePerTick;
+    private PowerUnits selectedPowerUnit = PowerUnits.AE;
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -158,15 +110,24 @@ public final class AEConfig {
     // Tunnels
     public static final double TUNNEL_POWER_LOSS = 0.05;
 
+    // FIXME: this is shit, move this concern out of the config class
+    @SubscribeEvent
+    public static void onModConfigEvent(final ModConfigEvent configEvent) {
+        if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
+            instance.syncClientConfig();
+        } else if (configEvent.getConfig().getSpec() == COMMON_SPEC) {
+            instance.syncCommonConfig();
+        }
+    }
+
     private void syncClientConfig() {
-        this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
         this.enableEffects = CLIENT.enableEffects.get();
         this.useLargeFonts = CLIENT.useLargeFonts.get();
         this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
     }
 
     private void syncCommonConfig() {
-        PowerUnits.TR.conversionRatio = COMMON.powerRatioTechReborn.get();
+        PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
         PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
@@ -248,16 +209,24 @@ public final class AEConfig {
     }
 
     public void save() {
+        if (CLIENT_SPEC.isLoaded()) {
+            CLIENT.selectedPowerUnit.set(this.selectedPowerUnit);
+            CLIENT_SPEC.save();
+        }
+
+        if (COMMON_SPEC.isLoaded()) {
+            COMMON_SPEC.save();
+        }
     }
 
     public PowerUnits getSelectedPowerUnit() {
-        return this.CLIENT.selectedPowerUnit.get();
+        return this.selectedPowerUnit;
     }
 
     public void nextPowerUnit(boolean backwards) {
-        PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(getSelectedPowerUnit(), backwards,
+        this.selectedPowerUnit = EnumCycler.rotateEnum(this.selectedPowerUnit, backwards,
                 Settings.POWER_UNITS.getValues());
-        CLIENT.selectedPowerUnit.set(selectedPowerUnit);
+        this.save();
     }
 
     // Getters
@@ -286,7 +255,11 @@ public final class AEConfig {
     }
 
     public boolean isDisableColoredCableRecipesInJEI() {
-        return this.disableColoredCableRecipesInJEI;
+        return CLIENT.disableColoredCableRecipesInJEI.get();
+    }
+
+    public boolean isShowFacadesInJEIEnabled() {
+        return CLIENT.showFacadesInJEI.get();
     }
 
     public int getCraftingCalculationTimePerTick() {
@@ -343,7 +316,7 @@ public final class AEConfig {
     }
 
     public float getImprovedFluidMultiplier() {
-        return (float) COMMON.improvedFluidMultiplier.get();
+        return COMMON.improvedFluidMultiplier.get().floatValue();
     }
 
     public boolean isShowDebugGuiOverlays() {
@@ -434,35 +407,42 @@ public final class AEConfig {
     private static class ClientConfig {
 
         // Misc
-        public final BooleanOption enableEffects;
-        public final BooleanOption useLargeFonts;
-        public final BooleanOption useColoredCraftingStatus;
-        public final BooleanOption disableColoredCableRecipesInJEI;
-        public final EnumOption<PowerUnits> selectedPowerUnit;
-        public final BooleanOption debugGuiOverlays;
-        public final BooleanOption showPlacementPreview;
+        public final BooleanValue enableEffects;
+        public final BooleanValue useLargeFonts;
+        public final BooleanValue useColoredCraftingStatus;
+        public final BooleanValue disableColoredCableRecipesInJEI;
+        public final BooleanValue showFacadesInJEI;
+        public final EnumValue<PowerUnits> selectedPowerUnit;
+        public final BooleanValue debugGuiOverlays;
+        public final BooleanValue showPlacementPreview;
 
         // Terminal Settings
-        public final EnumOption<YesNo> searchTooltips;
-        public final EnumOption<TerminalStyle> terminalStyle;
-        public final EnumOption<SearchBoxMode> terminalSearchMode;
+        public final EnumValue<YesNo> searchTooltips;
+        public final EnumValue<TerminalStyle> terminalStyle;
+        public final EnumValue<SearchBoxMode> terminalSearchMode;
 
-        public ClientConfig(ConfigSection root) {
-            ConfigSection client = root.subsection("client");
-            this.disableColoredCableRecipesInJEI = client.addBoolean("disableColoredCableRecipesInJEI", true);
-            this.enableEffects = client.addBoolean("enableEffects", true);
-            this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
-            this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
-            this.selectedPowerUnit = client.addEnum("PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
-            this.debugGuiOverlays = client.addBoolean("showDebugGuiOverlays", false, "Show debugging GUI overlays");
-            this.showPlacementPreview = client.addBoolean("showPlacementPreview", true,
-                    "Show a preview of part and facade placement");
+        public ClientConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("client");
+            this.disableColoredCableRecipesInJEI = builder.comment("TODO").define("disableColoredCableRecipesInJEI",
+                    true);
+            this.showFacadesInJEI = builder.define("showFacadesInJEI", true);
+            this.enableEffects = builder.comment("TODO").define("enableEffects", true);
+            this.useLargeFonts = builder.comment("TODO").define("useTerminalUseLargeFont", false);
+            this.useColoredCraftingStatus = builder.comment("TODO").define("useColoredCraftingStatus", true);
+            this.selectedPowerUnit = builder.comment("Power unit shown in AE UIs").defineEnum("PowerUnit",
+                    PowerUnits.AE, PowerUnits.values());
+            this.debugGuiOverlays = builder.comment("Show debugging GUI overlays")
+                    .define("showDebugGuiOverlays", false);
+            this.showPlacementPreview = builder.comment("Show a preview of part and facade placement")
+                    .define("showPlacementPreview", true);
 
-            ConfigSection terminals = root.subsection("terminals");
-            this.searchTooltips = terminals.addEnum("searchTooltips", YesNo.YES,
-                    "Should tooltips be searched. Performance impact");
-            this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
-            this.terminalSearchMode = terminals.addEnum("terminalSearchMode", SearchBoxMode.DEFAULT);
+            builder.push("terminals");
+            this.searchTooltips = builder.comment("Should tooltips be searched. Performance impact")
+                    .defineEnum("searchTooltips", YesNo.YES, YesNo.values());
+            this.terminalStyle = builder.defineEnum("terminalStyle", TerminalStyle.TALL, TerminalStyle.values());
+            this.terminalSearchMode = builder.defineEnum("terminalSearchMode", SearchBoxMode.DEFAULT,
+                    SearchBoxMode.values());
+            builder.pop();
         }
 
     }
@@ -470,189 +450,220 @@ public final class AEConfig {
     private static class CommonConfig {
 
         // Misc
-        public final IntegerOption formationPlaneEntityLimit;
-        public final IntegerOption craftingCalculationTimePerTick;
-        public final BooleanOption allowBlockEntityFacades;
-        public final BooleanOption debugTools;
-        public final BooleanOption matterCannonBlockDamage;
-        public final BooleanOption tinyTntBlockDamage;
-        public final BooleanOption serverOpsIgnoreSecurity;
-        public final EnumOption<ChannelMode> channels;
-        public final IntegerOption pathfindingStepsPerTick;
+        public final ConfigValue<Integer> formationPlaneEntityLimit;
+        public final ConfigValue<Integer> craftingCalculationTimePerTick;
+        public final BooleanValue allowBlockEntityFacades;
+        public final BooleanValue debugTools;
+        public final BooleanValue matterCannonBlockDamage;
+        public final BooleanValue tinyTntBlockDamage;
+        public final BooleanValue serverOpsIgnoreSecurity;
+        public final ConfigValue<ChannelMode> channels;
+        public final ConfigValue<Integer> pathfindingStepsPerTick;
 
         // Crafting
-        public final BooleanOption inWorldSingularity;
-        public final BooleanOption inWorldFluix;
-        public final BooleanOption inWorldCrystalGrowth;
-        public final BooleanOption disassemblyCrafting;
+        public final BooleanValue inWorldSingularity;
+        public final BooleanValue inWorldFluix;
+        public final BooleanValue inWorldCrystalGrowth;
+        public final BooleanValue disassemblyCrafting;
 
         // Spatial IO/Dimension
-        public final DoubleOption spatialPowerExponent;
-        public final DoubleOption spatialPowerMultiplier;
+        public final ConfigValue<Double> spatialPowerExponent;
+        public final ConfigValue<Double> spatialPowerMultiplier;
 
         // Logging
-        public final BooleanOption securityAuditLog;
-        public final BooleanOption blockUpdateLog;
-        public final BooleanOption packetLog;
-        public final BooleanOption craftingLog;
-        public final BooleanOption debugLog;
-        public final BooleanOption chunkLoggerTrace;
+        public final BooleanValue securityAuditLog;
+        public final BooleanValue blockUpdateLog;
+        public final BooleanValue packetLog;
+        public final BooleanValue craftingLog;
+        public final BooleanValue debugLog;
+        public final BooleanValue chunkLoggerTrace;
 
         // Batteries
-        public final DoubleOption chargerChargeRate;
-        public final IntegerOption wirelessTerminalBattery;
-        public final IntegerOption entropyManipulatorBattery;
-        public final IntegerOption matterCannonBattery;
-        public final IntegerOption portableCellBattery;
-        public final IntegerOption colorApplicatorBattery;
-        public final IntegerOption chargedStaffBattery;
+        public final ConfigValue<Double> chargerChargeRate;
+        public final ConfigValue<Integer> wirelessTerminalBattery;
+        public final ConfigValue<Integer> entropyManipulatorBattery;
+        public final ConfigValue<Integer> matterCannonBattery;
+        public final ConfigValue<Integer> portableCellBattery;
+        public final ConfigValue<Integer> colorApplicatorBattery;
+        public final ConfigValue<Integer> chargedStaffBattery;
 
         // Certus quartz
-        public final IntegerOption quartzOresPerCluster;
-        public final IntegerOption quartzOresClusterAmount;
-        public final BooleanOption generateQuartzOre;
-        public final StringListOption quartzOresBiomeBlacklist;
+        public final ConfigValue<Integer> quartzOresPerCluster;
+        public final ConfigValue<Integer> quartzOresClusterAmount;
+        public final BooleanValue generateQuartzOre;
+        public final ConfigValue<List<? extends String>> quartzOresBiomeBlacklist;
 
         // Meteors
-        public final BooleanOption generateMeteorites;
-        public final BooleanOption spawnPressesInMeteorites;
-        public final StringListOption meteoriteBiomeBlacklist;
+        public final BooleanValue generateMeteorites;
+        public final BooleanValue spawnPressesInMeteorites;
+        public final ConfigValue<List<? extends String>> meteoriteBiomeBlacklist;
 
         // Wireless
-        public final DoubleOption wirelessBaseCost;
-        public final DoubleOption wirelessCostMultiplier;
-        public final DoubleOption wirelessTerminalDrainMultiplier;
-        public final DoubleOption wirelessBaseRange;
-        public final DoubleOption wirelessBoosterRangeMultiplier;
-        public final DoubleOption wirelessBoosterExp;
-        public final DoubleOption wirelessHighWirelessCount;
+        public final ConfigValue<Double> wirelessBaseCost;
+        public final ConfigValue<Double> wirelessCostMultiplier;
+        public final ConfigValue<Double> wirelessTerminalDrainMultiplier;
+        public final ConfigValue<Double> wirelessBaseRange;
+        public final ConfigValue<Double> wirelessBoosterRangeMultiplier;
+        public final ConfigValue<Double> wirelessBoosterExp;
+        public final ConfigValue<Double> wirelessHighWirelessCount;
 
         // Portable Cells
-        public final BooleanOption portableCellDisassembly;
+        public final BooleanValue portableCellDisassembly;
 
         // Power Ratios
-        public final DoubleOption powerRatioTechReborn;
-        public final DoubleOption powerUsageMultiplier;
-
+        public final ConfigValue<Double> powerRatioForgeEnergy;
+        public final DoubleValue powerUsageMultiplier;
         // Condenser Power Requirement
-        public final IntegerOption condenserMatterBallsPower;
-        public final IntegerOption condenserSingularityPower;
+        public final ConfigValue<Integer> condenserMatterBallsPower;
+        public final ConfigValue<Integer> condenserSingularityPower;
 
         // In-World Crystal Growth
         // Settings for improved speed depending on fluid the crystal is in
-        public final StringOption improvedFluidTag;
-        public final DoubleOption improvedFluidMultiplier;
+        public final ConfigValue<String> improvedFluidTag;
+        public final ConfigValue<Double> improvedFluidMultiplier;
 
-        public final Map<TickRates, IntegerOption> tickRateMin = new HashMap<>();
-        public final Map<TickRates, IntegerOption> tickRateMax = new HashMap<>();
+        public final Map<TickRates, ConfigValue<Integer>> tickRateMin = new HashMap<>();
+        public final Map<TickRates, ConfigValue<Integer>> tickRateMax = new HashMap<>();
 
-        public CommonConfig(ConfigSection root) {
+        public CommonConfig(ForgeConfigSpec.Builder builder) {
 
-            ConfigSection general = root.subsection("general");
-            debugTools = general.addBoolean("unsupportedDeveloperTools", false);
-            matterCannonBlockDamage = general.addBoolean("matterCannonBlockDamage", true,
-                    "Enables the ability of the Matter Cannon to break blocks.");
-            tinyTntBlockDamage = general.addBoolean("tinyTntBlockDamage", true,
-                    "Enables the ability of Tiny TNT to break blocks.");
-            serverOpsIgnoreSecurity = general.addBoolean("serverOpsIgnoreSecurity", true,
-                    "Server operators are not restricted by ME security terminal settings.");
-            channels = general.addEnum("channels", ChannelMode.DEFAULT,
-                    "Changes the channel capacity that cables provide in AE2.");
-            pathfindingStepsPerTick = general.addInt("pathfindingStepsPerTick", 4,
-                    1, 1024,
-                    "The number of pathfinding steps that are taken per tick and per grid that is booting. Lower numbers will mean booting takes longer, but less work is done per tick.");
+            builder.push("general");
+            debugTools = builder.define("unsupportedDeveloperTools", false);
+            matterCannonBlockDamage = builder
+                    .comment("Enables the ability of the Matter Cannon to break blocks.")
+                    .define("matterCannonBlockDamage", true);
+            tinyTntBlockDamage = builder
+                    .comment("Enables the ability of Tiny TNT to break blocks.")
+                    .define("tinyTntBlockDamage", true);
+            serverOpsIgnoreSecurity = builder
+                    .comment("Server operators are not restricted by ME security terminal settings.")
+                    .define("serverOpsIgnoreSecurity", true);
+            channels = builder
+                    .comment("Changes the channel capacity that cables provide in AE2.")
+                    .defineEnum("channels", ChannelMode.DEFAULT, ChannelMode.values());
+            pathfindingStepsPerTick = builder
+                    .comment(
+                            "The number of pathfinding steps that are taken per tick and per grid that is booting. Lower numbers will mean booting takes longer, but less work is done per tick.")
+                    .defineInRange("pathfindingStepsPerTick", 4, 1, 1024);
+            builder.pop();
 
-            ConfigSection automation = root.subsection("automation");
-            formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
+            builder.push("automation");
+            formationPlaneEntityLimit = builder.comment("TODO").define("formationPlaneEntityLimit", 128);
+            builder.pop();
 
-            ConfigSection facades = root.subsection("facades");
-            allowBlockEntityFacades = facades.addBoolean("allowBlockEntities", false,
-                    "Unsupported: Allows whitelisting block entities as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.");
+            builder.push("facades");
+            allowBlockEntityFacades = builder.comment(
+                    "Unsupported: Allows whitelisting block entities as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.")
+                    .define("allowBlockEntities", false);
+            builder.pop();
 
-            ConfigSection craftingCPU = root.subsection("craftingCPU");
-            this.craftingCalculationTimePerTick = craftingCPU.addInt("craftingCalculationTimePerTick", 5);
+            builder.push("craftingCPU");
 
-            var crafting = root.subsection("crafting");
-            inWorldSingularity = crafting.addBoolean("inWorldSingularity", true,
-                    "Enable the in-world crafting of singularities.");
-            inWorldFluix = crafting.addBoolean("inWorldFluix", true, "Enable the in-world crafting of fluix crystals.");
-            inWorldCrystalGrowth = crafting.addBoolean("inWorldCrystalGrowth", true,
-                    "Enable the in-world crafting of crystals.");
-            disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
-                    "Enable shift-clicking with the crafting units in hand to disassemble them.");
+            this.craftingCalculationTimePerTick = builder.define("craftingCalculationTimePerTick", 5);
 
-            ConfigSection spatialio = root.subsection("spatialio");
-            this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);
-            this.spatialPowerExponent = spatialio.addDouble("spatialPowerExponent", 1.35);
+            builder.pop();
 
-            var logging = root.subsection("logging");
-            securityAuditLog = logging.addBoolean("securityAuditLog", false);
-            blockUpdateLog = logging.addBoolean("blockUpdateLog", false);
-            packetLog = logging.addBoolean("packetLog", false);
-            craftingLog = logging.addBoolean("craftingLog", false);
-            debugLog = logging.addBoolean("debugLog", false);
-            chunkLoggerTrace = logging.addBoolean("chunkLoggerTrace", false,
-                    "Enable stack trace logging for the chunk loading debug command");
+            builder.push("crafting");
+            inWorldSingularity = builder.comment("Enable the in-world crafting of singularities.")
+                    .define("inWorldSingularity", true);
+            inWorldFluix = builder.comment("Enable the in-world crafting of fluix crystals.").define("inWorldFluix",
+                    true);
+            inWorldCrystalGrowth = builder.comment("Enable the in-world crafting of pure crystals.")
+                    .define("inWorldCrystalGrowth", true);
+            disassemblyCrafting = builder
+                    .comment("Enable shift-clicking with the crafting units in hand to disassemble them.")
+                    .define("disassemblyCrafting", true);
+            builder.pop();
 
-            ConfigSection battery = root.subsection("battery");
-            this.chargerChargeRate = battery.addDouble("chargerChargeRate", 1,
-                    0.1, 10,
-                    "The chargers charging rate factor, which is applied to the charged items charge rate. 2 means it charges everything twice as fast. 0.5 half as fast.");
-            this.wirelessTerminalBattery = battery.addInt("wirelessTerminal", 1600000);
-            this.chargedStaffBattery = battery.addInt("chargedStaff", 8000);
-            this.entropyManipulatorBattery = battery.addInt("entropyManipulator", 200000);
-            this.portableCellBattery = battery.addInt("portableCell", 20000);
-            this.colorApplicatorBattery = battery.addInt("colorApplicator", 20000);
-            this.matterCannonBattery = battery.addInt("matterCannon", 200000);
+            builder.push("spatialio");
+            this.spatialPowerMultiplier = builder.define("spatialPowerMultiplier", 1250.0);
+            this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
+            builder.pop();
 
-            ConfigSection worldGen = root.subsection("worldGen");
+            builder.push("logging");
+            securityAuditLog = builder.define("securityAuditLog", false);
+            blockUpdateLog = builder.define("blockUpdateLog", false);
+            packetLog = builder.define("packetLog", false);
+            craftingLog = builder.define("craftingLog", false);
+            debugLog = builder.define("debugLog", false);
+            chunkLoggerTrace = builder.comment("Enable stack trace logging for the chunk loading debug command")
+                    .define("chunkLoggerTrace", false);
+            builder.pop();
 
-            this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
-            this.meteoriteBiomeBlacklist = worldGen.addStringList("meteoriteBiomeBlacklist", new ArrayList<>(),
-                    "Biome IDs in which meteorites should NOT be generated (i.e. minecraft:plains).");
-            this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
+            builder.push("battery");
+            this.chargerChargeRate = builder
+                    .comment(
+                            "The chargers charging rate factor, which is applied to the charged items charge rate. 2 means it charges everything twice as fast. 0.5 half as fast.")
+                    .defineInRange("chargerChargeRate", 1, 0.1, 10);
+            this.wirelessTerminalBattery = builder.define("wirelessTerminal", 1600000);
+            this.chargedStaffBattery = builder.define("chargedStaff", 8000);
+            this.entropyManipulatorBattery = builder.define("entropyManipulator", 200000);
+            this.portableCellBattery = builder.define("portableCell", 20000);
+            this.colorApplicatorBattery = builder.define("colorApplicator", 20000);
+            this.matterCannonBattery = builder.define("matterCannon", 200000);
+            builder.pop();
 
-            this.generateQuartzOre = worldGen.addBoolean("generateQuartzOre", true);
-            this.quartzOresPerCluster = worldGen.addInt("quartzOresPerCluster", 7);
-            this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 20);
-            this.quartzOresBiomeBlacklist = worldGen.addStringList("quartzOresBiomeBlacklist", new ArrayList<>(),
-                    "Biome IDs in which quartz ores should NOT be generated (i.e. minecraft:plains).");
+            builder.push("worldGen");
 
-            ConfigSection wireless = root.subsection("wireless");
-            this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);
-            this.wirelessCostMultiplier = wireless.addDouble("wirelessCostMultiplier", 1.0);
-            this.wirelessBaseRange = wireless.addDouble("wirelessBaseRange", 16.0);
-            this.wirelessBoosterRangeMultiplier = wireless.addDouble("wirelessBoosterRangeMultiplier", 1.0);
-            this.wirelessBoosterExp = wireless.addDouble("wirelessBoosterExp", 1.5);
-            this.wirelessHighWirelessCount = wireless.addDouble("wirelessHighWirelessCount", 64.0);
-            this.wirelessTerminalDrainMultiplier = wireless.addDouble("wirelessTerminalDrainMultiplier", 1.0);
+            this.generateMeteorites = builder.define("generateMeteorites", true);
+            this.meteoriteBiomeBlacklist = builder.defineList("meteoriteBiomeBlacklist",
+                    Collections.emptyList(),
+                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
+            this.spawnPressesInMeteorites = builder.define("spawnPressesInMeteorites", true);
 
-            ConfigSection portableCells = root.subsection("PortableCells");
-            portableCellDisassembly = portableCells.addBoolean("allowDisassembly", true,
-                    "Allow disassembly of portable cells into the recipe ingredients using shift+right-click");
+            this.generateQuartzOre = builder.define("generateQuartzOre", true);
+            this.quartzOresPerCluster = builder.define("quartzOresPerCluster", 7);
+            this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
+            this.quartzOresBiomeBlacklist = builder.defineList("quartzOresBiomeBlacklist",
+                    Collections.emptyList(),
+                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
 
-            ConfigSection PowerRatios = root.subsection("PowerRatios");
-            powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);
-            powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
+            builder.pop();
 
-            ConfigSection Condenser = root.subsection("Condenser");
-            condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);
-            condenserSingularityPower = Condenser.addInt("Singularity", 256000);
+            builder.push("wireless");
+            this.wirelessBaseCost = builder.define("wirelessBaseCost", 8.0);
+            this.wirelessCostMultiplier = builder.define("wirelessCostMultiplier", 1.0);
+            this.wirelessBaseRange = builder.define("wirelessBaseRange", 16.0);
+            this.wirelessBoosterRangeMultiplier = builder.define("wirelessBoosterRangeMultiplier", 1.0);
+            this.wirelessBoosterExp = builder.define("wirelessBoosterExp", 1.5);
+            this.wirelessHighWirelessCount = builder.define("wirelessHighWirelessCount", 64.0);
+            this.wirelessTerminalDrainMultiplier = builder.define("wirelessTerminalDrainMultiplier", 1.0);
+            builder.pop();
 
-            ConfigSection tickrates = root.subsection("tickRates",
-                    " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
+            builder.push("PortableCells");
+            portableCellDisassembly = builder
+                    .comment("Allow disassembly of portable cells into the recipe ingredients using shift+right-click")
+                    .define("allowDisassembly", true);
+
+            builder.push("PowerRatios");
+            powerRatioForgeEnergy = builder.define("ForgeEnergy", DEFAULT_RF_EXCHANGE);
+            powerUsageMultiplier = builder.defineInRange("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
+            builder.pop();
+
+            builder.push("Condenser");
+            condenserMatterBallsPower = builder.define("MatterBalls", 256);
+            condenserSingularityPower = builder.define("Singularity", 256000);
+            builder.pop();
+
+            builder.comment(
+                    " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.")
+                    .push("tickRates");
             for (TickRates tickRate : TickRates.values()) {
-                tickRateMin.put(tickRate, tickrates.addInt(tickRate.name() + "Min", tickRate.getDefaultMin()));
-                tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
+                tickRateMin.put(tickRate, builder.define(tickRate.name() + "Min", tickRate.getDefaultMin()));
+                tickRateMax.put(tickRate, builder.define(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
+            builder.pop();
 
-            ConfigSection inWorldCrystalGrowth = root.subsection("inWorldCrystalGrowth",
-                    "Settings for in-world growth of crystals.");
+            builder.comment("Settings for in-world growth of crystals.").push("inWorldCrystalGrowth");
 
-            improvedFluidTag = inWorldCrystalGrowth.addString("improvedFluidTag", "",
-                    "A fluid tag that identifies fluids that improve crystal growth speed. Does not affect growth with water/lava.");
-            improvedFluidMultiplier = inWorldCrystalGrowth.addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0,
-                    "The speed multiplier to use when the crystals are submerged in the improved fluid.");
+            improvedFluidTag = builder.comment(
+                    "A fluid tag that identifies fluids that improve crystal growth speed. Does not affect growth with water/lava.")
+                    .define("improvedFluidTag", "");
+            improvedFluidMultiplier = builder
+                    .comment("The speed multiplier to use when the crystals are submerged in the improved fluid.")
+                    .defineInRange("improvedFluidMultiplier", 2.0, 1.0, 10.0);
+
+            builder.pop();
         }
 
     }

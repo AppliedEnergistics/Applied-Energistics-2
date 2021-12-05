@@ -13,7 +13,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.util.CraftingRemainders;
+import appeng.util.Platform;
 
 public class ProcessingPatternBuilder {
     private final GenericStack[] outputs;
@@ -54,7 +54,7 @@ public class ProcessingPatternBuilder {
             @Override
             public AEKey getContainerItem(AEKey template) {
                 if (containerItems && template instanceof AEItemKey itemKey) {
-                    return CraftingRemainders.getRemainder(itemKey);
+                    return AEItemKey.of(Platform.getContainerItem(itemKey.toStack()));
                 }
                 return null;
             }
