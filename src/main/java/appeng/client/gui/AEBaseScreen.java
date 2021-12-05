@@ -909,11 +909,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return this.topPos;
     }
 
-    protected final Minecraft getMinecraft() {
+    public final Minecraft getMinecraft() {
         return minecraft;
     }
 
-    protected final Slot getSlotUnderMouse() {
+    public final Slot getSlotUnderMouse() {
         return hoveredSlot;
     }
 

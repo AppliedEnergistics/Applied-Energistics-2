@@ -32,7 +32,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
@@ -547,7 +546,7 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
             String modName = Platform.formatModName(what.getModId());
 
             List<Component> list = new ArrayList<>();
-            list.add(FluidVariantRendering.getName(fluidKey.toVariant()));
+            list.add(AEStackRendering.getDisplayName(fluidKey));
             list.add(new TextComponent(formattedAmount));
             list.add(new TextComponent(modName));
 
