@@ -24,18 +24,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -59,6 +56,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -82,7 +87,6 @@ import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.abstraction.REIFacade;
@@ -92,12 +96,14 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class Platform {
 
-    private static final FabricLoader FABRIC = FabricLoader.getInstance();
+    @VisibleForTesting
+    public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
 
     /*
      * random source, use it for item drop locations...
      */
     private static final Random RANDOM_GENERATOR = new Random();
+    private static final WeakHashMap<Level, FakePlayer> FAKE_PLAYERS = new WeakHashMap<>();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
@@ -180,12 +186,18 @@ public class Platform {
 
     }
 
+    /**
+     * @return True if client-side classes (such as Renderers) are available.
+     */
+    public static boolean hasClientClasses() {
+        return FMLEnvironment.dist.isClient();
+    }
+
     /*
      * returns true if the code is on the client.
      */
     public static boolean isClient() {
-        var currentServer = AppEng.instance().getCurrentServer();
-        return currentServer == null || Thread.currentThread() != currentServer.getRunningThread();
+        return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
     }
 
     public static boolean hasPermissions(DimensionalBlockPos dc, Player player) {
@@ -260,21 +272,14 @@ public class Platform {
      * returns true if the code is on the server.
      */
     public static boolean isServer() {
-        try {
-            var currentServer = AppEng.instance().getCurrentServer();
-            return currentServer != null && Thread.currentThread() == currentServer.getRunningThread();
-        } catch (NullPointerException npe) {
-            // FIXME TEST HACKS
-            // Running from tests: AppEng.instance() is null... :(
-            return false;
-        }
+        return Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER;
     }
 
     /**
      * Throws an exception if the current thread is not one of the server threads.
      */
     public static void assertServerThread() {
-        if (!isServer()) {
+        if (Thread.currentThread().getThreadGroup() != serverThreadGroup) {
             throw new UnsupportedOperationException(
                     "This code can only be called server-side and this is most likely a bug.");
         }
@@ -284,12 +289,12 @@ public class Platform {
         return Math.abs(RANDOM_GENERATOR.nextInt());
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static List<Component> getTooltip(AEItemKey item) {
         return getTooltip(item.toStack());
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static List<Component> getTooltip(AEKey what) {
         if (what instanceof AEItemKey itemKey) {
             return getTooltip(itemKey);
@@ -298,7 +303,7 @@ public class Platform {
         }
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static List<Component> getTooltip(ItemStack itemStack) {
         try {
             Default tooltipFlag = Minecraft.getInstance().options.advancedItemTooltips
@@ -312,19 +317,19 @@ public class Platform {
 
     public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
-                + FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(null);
+                + ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName()).orElse(null);
     }
 
     public static String getDescriptionId(Fluid fluid) {
         return fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId();
     }
 
-    public static String getDescriptionId(FluidVariant fluid) {
-        return getDescriptionId(fluid.getFluid());
+    public static String getDescriptionId(FluidStack fluid) {
+        return fluid.getDisplayName().getString();
     }
 
     public static Component getFluidDisplayName(AEFluidKey o) {
-        return new TranslatableComponent(getDescriptionId(o.toVariant()));
+        return new TranslatableComponent(getDescriptionId(o.toStack(1)));
     }
 
     public static boolean isChargeable(ItemStack i) {
@@ -341,7 +346,14 @@ public class Platform {
     public static Player getPlayer(ServerLevel level) {
         Objects.requireNonNull(level);
 
-        return FakePlayer.getOrCreate(level);
+        var wrp = FAKE_PLAYERS.get(level);
+        if (wrp != null) {
+            return wrp;
+        }
+
+        var p = FakePlayerFactory.getMinecraft(level);
+        FAKE_PLAYERS.put(level, p);
+        return p;
     }
 
     /**
@@ -589,6 +601,33 @@ public class Platform {
         return ItemStack.EMPTY;
     }
 
+    /**
+     * Gets the container item for the given item or EMPTY. A container item is what remains when the item is used for
+     * crafting, i.E. the empty bucket for a bucket of water.
+     */
+    // TODO: investigate if all these special cases make sense. E.g. item == null isn't possible anymore.
+    public static ItemStack getContainerItem(final ItemStack stackInSlot) {
+        if (stackInSlot == null) {
+            return ItemStack.EMPTY;
+        }
+
+        var i = stackInSlot.getItem();
+        if (i == null || !i.hasContainerItem(stackInSlot)) {
+            if (stackInSlot.getCount() > 1) {
+                stackInSlot.setCount(stackInSlot.getCount() - 1);
+                return stackInSlot;
+            }
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack ci = i.getContainerItem(stackInSlot.copy());
+        if (!ci.isEmpty() && ci.isDamageableItem() && ci.getDamageValue() == ci.getMaxDamage()) {
+            ci = ItemStack.EMPTY;
+        }
+
+        return ci;
+    }
+
     public static void notifyBlocksOfNeighbors(Level level, BlockPos pos) {
         if (level != null && !level.isClientSide) {
             TickHandler.instance().addCallable(level, new BlockUpdate(pos));
@@ -643,10 +682,6 @@ public class Platform {
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
         return level instanceof ServerLevel serverLevel && serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos));
-    }
-
-    public static Transaction openOrJoinTx() {
-        return Transaction.openNested(Transaction.getCurrentUnsafe());
     }
 
     public static boolean canItemStacksStack(ItemStack a, ItemStack b) {

@@ -155,7 +155,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
 
     @Override
 
-    public InternalInventory getExposedInventoryForSide(Direction side) {
+    protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.invExt;
     }
 

@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -42,10 +41,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.render.BakedModelUnwrapper;
+import appeng.client.render.DelegateBakedModel;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.core.definitions.AEBlocks;
@@ -107,7 +109,7 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
         FaceRotatingModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
         blockRenderer.tesselateBlock(level, rotatedModel, chest.getBlockState(), chest.getBlockPos(), poseStack, buffer,
                 false,
-                new Random(), 0L, combinedOverlay);
+                new Random(), 0L, combinedOverlay, EmptyModelData.INSTANCE);
 
         VertexConsumer ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
         CellLedRenderer.renderLed(chest, 0, ledBuffer, poseStack, partialTicks);
@@ -125,26 +127,28 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
      * The actual vertex data will be transformed using the matrix stack, but the faces will not be correctly rotated so
      * the incorrect lighting data would be used to apply diffuse lighting and the lightmap texture.
      */
-    private static class FaceRotatingModel extends ForwardingBakedModel {
+    private static class FaceRotatingModel extends DelegateBakedModel {
         private final FacingToRotation r;
 
         protected FaceRotatingModel(BakedModel base, FacingToRotation r) {
-            this.wrapped = base;
+            super(base);
             this.r = r;
         }
 
         @Override
-        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+                IModelData extraData) {
             if (side != null) {
                 side = r.resultingRotate(side); // This fixes the incorrect lightmap position
             }
-            List<BakedQuad> quads = new ArrayList<>(super.getQuads(state, side, rand));
+            List<BakedQuad> quads = new ArrayList<>(super.getQuads(state, side, rand, extraData));
 
             for (int i = 0; i < quads.size(); i++) {
                 BakedQuad quad = quads.get(i);
                 quads.set(i, new BakedQuad(quad.getVertices(), quad.getTintIndex(), r.rotate(quad.getDirection()),
                         quad.getSprite(), quad.isShade()));
             }
+
             return quads;
         }
     }

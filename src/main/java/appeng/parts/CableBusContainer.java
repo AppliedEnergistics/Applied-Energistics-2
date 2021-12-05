@@ -951,7 +951,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 continue;
             }
 
-            renderState.getPartModelData().put(side, part.getRenderAttachmentData());
+            renderState.getPartModelData().put(side, part.getModelData());
 
             // This will add the part's bounding boxes to the render state, which is
             // required for facades
