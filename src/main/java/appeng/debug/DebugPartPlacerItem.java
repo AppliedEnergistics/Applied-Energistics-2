@@ -23,7 +23,6 @@ import java.util.Arrays;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionResult;
@@ -33,11 +32,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
@@ -46,7 +45,7 @@ import appeng.items.parts.PartItem;
  * This tool will try to place anything that is registered as a {@link PartItem} (and not a colored one) onto an
  * existing cable to quickly test parts and their rendering.
  */
-public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
+public class DebugPartPlacerItem extends AEBaseItem {
 
     public DebugPartPlacerItem(Item.Properties properties) {
         super(properties);
@@ -89,7 +88,7 @@ public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
                 .toArray(Direction[]::new);
 
         BlockPos nextPos = pos;
-        for (Item item : Registry.ITEM) {
+        for (Item item : ForgeRegistries.ITEMS) {
             if (!(item instanceof PartItem)) {
                 continue;
             }

@@ -32,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.api.storage.AEKeyFilter;
 
@@ -39,7 +40,7 @@ import appeng.api.storage.AEKeyFilter;
  * Defines the properties of a specific subclass of {@link AEKey}. I.e. for {@link AEItemKey}, there is
  * {@link AEItemKeys}.
  */
-public abstract class AEKeyType {
+public abstract class AEKeyType extends ForgeRegistryEntry<AEKeyType> {
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
@@ -51,6 +52,7 @@ public abstract class AEKeyType {
         this.keyClass = keyClass;
         this.filter = what -> what.getType() == this;
         this.description = description;
+        setRegistryName(id);
     }
 
     /**
@@ -67,7 +69,7 @@ public abstract class AEKeyType {
     @Nullable
     public static AEKeyType fromRawId(int id) {
         Preconditions.checkArgument(id >= 0 && id <= Byte.MAX_VALUE, "id out of range: %d", id);
-        return AEKeyTypesInternal.getRegistry().byId(id);
+        return AEKeyTypesInternal.getRegistry().getValue(id);
     }
 
     /**
@@ -90,7 +92,7 @@ public abstract class AEKeyType {
     }
 
     public final byte getRawId() {
-        var id = AEKeyTypesInternal.getRegistry().getId(this);
+        var id = AEKeyTypesInternal.getRegistry().getID(this);
         if (id < 0 || id > 127) {
             throw new IllegalStateException("Key type " + this + " has an invalid numeric id: " + id);
         }

@@ -18,14 +18,12 @@
 
 package appeng.integration.modules.waila.tile;
 
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.BlockAccessor;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.blockentity.misc.ChargerBlockEntity;
@@ -39,7 +37,7 @@ import appeng.util.Platform;
 public final class ChargerDataProvider extends BaseDataProvider {
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         var blockEntity = accessor.getBlockEntity();
         if (blockEntity instanceof ChargerBlockEntity charger) {
             var chargerInventory = charger.getInternalInventory();

@@ -66,6 +66,7 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.AdvancementTriggers;
@@ -137,7 +138,7 @@ public class StorageBusPart extends UpgradeablePart
 
     public StorageBusPart(ItemStack is) {
         super(is);
-        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, IStorageMonitorableAccessor.SIDED);
+        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, Capabilities.STORAGE_MONITORABLE_ACCESSOR);
         this.tickRates = TickRates.StorageBus;
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);

@@ -6,8 +6,7 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.Registry;
+import net.minecraftforge.registries.ForgeRegistry;
 
 /**
  * Manages the registry used to synchronize key spaces to the client.
@@ -15,22 +14,22 @@ import net.minecraft.core.Registry;
 @ApiStatus.Internal
 public final class AEKeyTypesInternal {
     @Nullable
-    private static MappedRegistry<AEKeyType> registry;
+    private static ForgeRegistry<AEKeyType> registry;
 
     private AEKeyTypesInternal() {
     }
 
-    public static Registry<AEKeyType> getRegistry() {
+    public static ForgeRegistry<AEKeyType> getRegistry() {
         Preconditions.checkState(registry != null, "AE2 isn't initialized yet.");
         return registry;
     }
 
-    public static void setRegistry(MappedRegistry<AEKeyType> registry) {
+    public static void setRegistry(ForgeRegistry<AEKeyType> registry) {
         Preconditions.checkState(AEKeyTypesInternal.registry == null);
         AEKeyTypesInternal.registry = registry;
     }
 
     public static void register(AEKeyType keyType) {
-        Registry.register(getRegistry(), keyType.getId(), keyType);
+        registry.register(keyType);
     }
 }

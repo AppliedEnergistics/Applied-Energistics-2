@@ -18,17 +18,15 @@
 
 package appeng.integration.modules.waila.tile;
 
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.BlockAccessor;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
 
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.integration.modules.waila.BaseDataProvider;
@@ -46,7 +44,7 @@ public final class PowerStorageDataProvider extends BaseDataProvider {
     private static final String TAG_MAX_POWER = "maxPower";
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         var tag = accessor.getServerData();
         if (tag.contains(TAG_MAX_POWER, Tag.TAG_DOUBLE)) {
             var currentPower = tag.getDouble(TAG_CURRENT_POWER);
@@ -60,7 +58,8 @@ public final class PowerStorageDataProvider extends BaseDataProvider {
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity) {
+    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity,
+            boolean showDetails) {
         if (blockEntity instanceof IAEPowerStorage storage) {
             if (storage.getAEMaxPower() > 0) {
                 tag.putDouble(TAG_CURRENT_POWER, storage.getAECurrentPower());

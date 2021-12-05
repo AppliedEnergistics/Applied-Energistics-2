@@ -20,8 +20,6 @@ package appeng.block;
 
 import java.util.List;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -33,6 +31,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -51,16 +51,21 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public final void appendHoverText(final ItemStack itemStack, final Level level, final List<Component> toolTip,
             final TooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, level, toolTip, advancedTooltips);
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addCheckedInformation(final ItemStack itemStack, final Level level, final List<Component> toolTip,
             final TooltipFlag advancedTooltips) {
         this.blockType.appendHoverText(itemStack, level, toolTip, advancedTooltips);
+    }
+
+    @Override
+    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
+        return false;
     }
 
     @Override
