@@ -18,20 +18,12 @@
 
 package appeng.init.client;
 
-import java.util.function.Supplier;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.paint.PaintSplotchesModel;
 import appeng.block.qnb.QnbFormedModel;
 import appeng.client.render.FacadeItemModel;
 import appeng.client.render.SimpleModelLoader;
-import appeng.client.render.cablebus.CableBusModelLoader;
+import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModel;
 import appeng.client.render.model.BiometricCardModel;
@@ -43,6 +35,13 @@ import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.AppEng;
 import appeng.parts.automation.PlaneModel;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public final class InitBuiltInModels {
@@ -50,6 +49,7 @@ public final class InitBuiltInModels {
     }
 
     public static void init() {
+        addBuiltInModel("block/cable_bus", CableBusModel::new);
         addBuiltInModel("block/quartz_glass", GlassModel::new);
         addBuiltInModel("block/sky_compass", SkyCompassModel::new);
         addBuiltInModel("item/sky_compass", SkyCompassModel::new);
@@ -87,8 +87,6 @@ public final class InitBuiltInModels {
                 () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.MONITOR));
         addBuiltInModel("block/crafting/unit_formed",
                 () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.UNIT));
-
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new CableBusModelLoader());
     }
 
     private static void addPlaneModel(String planeName, String frontTexture) {
