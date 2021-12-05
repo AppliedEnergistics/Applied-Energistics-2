@@ -61,7 +61,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     @Nonnull
     private Class<T> blockEntityClass;
     @Nonnull
-    private BlockEntityType.BlockEntitySupplier<T> blockEntityFactory;
+    private BlockEntityType<T> blockEntityType;
 
     @Nullable
     private BlockEntityTicker<T> serverTicker;
@@ -75,11 +75,11 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
     // TODO : Was this change needed?
     public void setBlockEntity(final Class<T> blockEntityClass,
-            BlockEntityType.BlockEntitySupplier<T> blockEntityFactory,
+            BlockEntityType<T> blockEntityType,
             BlockEntityTicker<T> clientTicker,
             BlockEntityTicker<T> serverTicker) {
         this.blockEntityClass = blockEntityClass;
-        this.blockEntityFactory = blockEntityFactory;
+        this.blockEntityType = blockEntityType;
         this.serverTicker = serverTicker;
         this.clientTicker = clientTicker;
         this.setInventory(AEBaseInvBlockEntity.class.isAssignableFrom(blockEntityClass));
@@ -101,10 +101,15 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         return null;
     }
 
+    @Nonnull
+    public BlockEntityType<T> getBlockEntityType() {
+        return blockEntityType;
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return blockEntityFactory.create(pos, state);
+        return blockEntityType.create(pos, state);
     }
 
     @SuppressWarnings("unchecked")

@@ -121,7 +121,7 @@ public final class AEParts {
             Function<ItemStack, T> factory) {
 
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
-        return item(id, props -> new PartItem<>(props, factory));
+        return item(id, props -> new PartItem<>(props, partClass, factory));
     }
 
     private static <T extends IPart> ColoredItemDefinition constructColoredDefinition(String idSuffix,
@@ -134,7 +134,8 @@ public final class AEParts {
         for (final AEColor color : AEColor.values()) {
             String id = color.registryPrefix + '_' + idSuffix;
 
-            ItemDefinition<?> itemDef = item(AppEng.makeId(id), props -> new ColoredPartItem<>(props, factory, color));
+            ItemDefinition<?> itemDef = item(AppEng.makeId(id),
+                    props -> new ColoredPartItem<>(props, partClass, factory, color));
 
             definition.add(color, AppEng.makeId(id), itemDef);
         }

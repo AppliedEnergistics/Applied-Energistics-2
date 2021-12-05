@@ -169,6 +169,9 @@ loom {
     accessWidenerPath = file("src/main/resources/ae2.accesswidener")
 
     runs {
+        client {
+            programArgs "--username", "AE2Dev"
+        }
         datagen {
             client()
             source "main"

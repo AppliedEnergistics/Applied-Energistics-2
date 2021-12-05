@@ -243,18 +243,29 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         return this.configuredItem;
     }
 
+    @Nullable
+    public AEKey getConfiguredItem() {
+        return configuredItem;
+    }
+
+    public void setConfiguredItem(@Nullable AEKey configuredItem) {
+        this.configuredItem = configuredItem;
+        getHost().markForUpdate();
+    }
+
     @Override
     public long getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
-        this.amount = amount;
-    }
-
     @Override
     public boolean isLocked() {
         return this.isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+        getHost().markForUpdate();
     }
 
     @Override

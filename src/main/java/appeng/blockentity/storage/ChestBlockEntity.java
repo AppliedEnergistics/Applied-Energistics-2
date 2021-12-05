@@ -21,6 +21,7 @@ package appeng.blockentity.storage;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -144,6 +145,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     public ItemStack getCell() {
         return this.cellInventory.getStackInSlot(0);
+    }
+
+    public void setCell(ItemStack stack) {
+        this.cellInventory.setItemDirect(0, Objects.requireNonNull(stack));
     }
 
     @Override

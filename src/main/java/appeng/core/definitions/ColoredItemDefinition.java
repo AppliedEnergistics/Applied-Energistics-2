@@ -49,6 +49,10 @@ public final class ColoredItemDefinition {
         return is.asItem();
     }
 
+    public ItemStack stack(final AEColor color) {
+        return stack(color, 1);
+    }
+
     public ItemStack stack(final AEColor color, final int stackSize) {
         final ItemLike is = this.items[color.ordinal()];
 
