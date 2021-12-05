@@ -58,11 +58,6 @@ public abstract class BasePacket {
         this.p = data;
     }
 
-    @SuppressWarnings("unchecked")
-    public Packet<ClientGamePacketListener> toClientboundPacket() {
-        return (Packet<ClientGamePacketListener>) toPacket(PacketFlow.CLIENTBOUND);
-    }
-
     public Packet<?> toPacket(PacketFlow direction) {
         if (this.p.array().length > 2 * 1024 * 1024) // 2k walking room :)
         {
