@@ -1,0 +1,28 @@
+package appeng.server.testworld;
+
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+
+import appeng.api.parts.PartHelper;
+
+record PlacePart(BoundingBox bb, ItemStack what, @Nullable Direction side) implements BlockPlacingBuildAction {
+    @Override
+    public BoundingBox getBoundingBox() {
+        return bb;
+    }
+
+    @Override
+    public void placeBlock(ServerLevel level, ServerPlayer player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
+        var actualSide = Objects.requireNonNullElse(side, Direction.UP);
+        PartHelper.placeBus(what, pos, actualSide, player, InteractionHand.MAIN_HAND, level);
+    }
+}

@@ -211,7 +211,7 @@ public final class AEBlockEntities {
 
         for (var block : blocks) {
             AEBaseEntityBlock<T> baseBlock = (AEBaseEntityBlock<T>) block;
-            baseBlock.setBlockEntity(entityClass, supplier, clientTicker, serverTicker);
+            baseBlock.setBlockEntity(entityClass, type, clientTicker, serverTicker);
         }
 
         return type;

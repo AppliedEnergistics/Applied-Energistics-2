@@ -21,6 +21,7 @@ package appeng.server;
 import java.util.Locale;
 
 import appeng.server.subcommands.ChunkLogger;
+import appeng.server.subcommands.SetupTestWorldCommand;
 import appeng.server.subcommands.SpatialStorageCommand;
 import appeng.server.subcommands.Supporters;
 import appeng.server.subcommands.TestMeteoritesCommand;
@@ -40,7 +41,8 @@ public enum Commands {
     // Testing
     Compass(4, new TestCompassCommand(), true),
     TestOreGen(4, new TestOreGenCommand(), true),
-    TestMeteorites(4, new TestMeteoritesCommand(), true);
+    TestMeteorites(4, new TestMeteoritesCommand(), true),
+    SetupTestWorld(4, new SetupTestWorldCommand(), true);
 
     public final int level;
     public final ISubCommand command;

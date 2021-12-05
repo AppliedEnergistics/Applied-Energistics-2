@@ -30,8 +30,9 @@ public class ColoredPartItem<T extends IPart> extends PartItem<T> {
 
     private final AEColor color;
 
-    public ColoredPartItem(Item.Properties properties, Function<ItemStack, T> factory, AEColor color) {
-        super(properties, factory);
+    public ColoredPartItem(Item.Properties properties, Class<T> partClass, Function<ItemStack, T> factory,
+            AEColor color) {
+        super(properties, partClass, factory);
         this.color = color;
     }
 
