@@ -79,7 +79,7 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
     public TickRateModulation onTick() {
         var changes = this.cache.update();
         if (!changes.isEmpty()) {
-            this.postDifference(changes);
+            MEMonitorStorage.postDifference(this, listeners, changes, source);
             return TickRateModulation.URGENT;
         } else {
             return TickRateModulation.SLOWER;
@@ -104,19 +104,6 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
     @Override
     public void removeListener(final IMEMonitorListener l) {
         this.listeners.remove(l);
-    }
-
-    private void postDifference(Set<AEKey> a) {
-        var i = this.listeners.entrySet().iterator();
-        while (i.hasNext()) {
-            var l = i.next();
-            var key = l.getKey();
-            if (key.isValid(l.getValue())) {
-                key.postChange(this, a, this.source);
-            } else {
-                i.remove();
-            }
-        }
     }
 
     private class InventoryCache {

@@ -23,11 +23,11 @@
 
 package appeng.me.helpers;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
-
-import com.google.common.collect.ImmutableList;
+import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 
@@ -92,26 +92,17 @@ public class MEMonitorHandler implements MEMonitorStorage {
 
     private void monitorDifference(AEKey what, long difference, IActionSource source) {
         if (difference != 0) {
-            this.postChangesToListeners(ImmutableList.of(what), source);
+            this.postChangesToListeners(Collections.singleton(what), source);
         }
     }
 
-    protected void postChangesToListeners(final Iterable<AEKey> changes, final IActionSource src) {
+    protected void postChangesToListeners(Set<AEKey> changes, final IActionSource src) {
         this.notifyListenersOfChange(changes, src);
     }
 
-    protected void notifyListenersOfChange(final Iterable<AEKey> diff, final IActionSource src) {
+    protected void notifyListenersOfChange(Set<AEKey> diff, final IActionSource src) {
         this.hasChanged = true;// need to update the cache.
-        final Iterator<Entry<IMEMonitorListener, Object>> i = this.getListeners();
-        while (i.hasNext()) {
-            final Entry<IMEMonitorListener, Object> o = i.next();
-            final IMEMonitorListener receiver = o.getKey();
-            if (receiver.isValid(o.getValue())) {
-                receiver.postChange(this, diff, src);
-            } else {
-                i.remove();
-            }
-        }
+        MEMonitorStorage.postDifference(this, listeners, diff, src);
     }
 
     protected Iterator<Entry<IMEMonitorListener, Object>> getListeners() {

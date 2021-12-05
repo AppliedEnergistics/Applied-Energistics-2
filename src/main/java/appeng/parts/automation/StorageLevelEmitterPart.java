@@ -94,7 +94,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         }
 
         @Override
-        public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource actionSource) {
+        public void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource actionSource) {
             updateReportingValue(monitor);
         }
 

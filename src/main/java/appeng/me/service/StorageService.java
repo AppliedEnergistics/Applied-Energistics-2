@@ -145,7 +145,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         return storageMonitor;
     }
 
-    private void postChangesToNetwork(Iterable<AEKey> changedItems, IActionSource src) {
+    private void postChangesToNetwork(Set<AEKey> changedItems, IActionSource src) {
         if (currentBatch != null) {
             currentBatch.pending.add(new PendingChangeNotification(changedItems, src));
         } else {
@@ -154,7 +154,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @Override
-    public void postAlterationOfStoredItems(Iterable<AEKey> input, IActionSource src) {
+    public void postAlterationOfStoredItems(Set<AEKey> input, IActionSource src) {
         postChangesToNetwork(input, src);
     }
 
@@ -237,8 +237,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     private record PendingChangeNotification(
-            // The list of keys in the added or removed inventory
-            Iterable<AEKey> list,
+            // The set of keys in the added or removed inventory
+            Set<AEKey> list,
             // The action source used to notify about the changes caused by this operation.
             IActionSource src) {
     }

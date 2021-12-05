@@ -23,6 +23,11 @@
 
 package appeng.api.storage;
 
+import java.util.Map;
+import java.util.Set;
+
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 
 /**
@@ -54,5 +59,26 @@ public interface MEMonitorStorage extends MEStorage {
      */
     default KeyCounter getCachedAvailableStacks() {
         return getAvailableStacks();
+    }
+
+    /**
+     * Utility function for properly posting differences to a Map of listeners.
+     *
+     * @param changedKeys The keys that have changed.
+     */
+    static void postDifference(MEMonitorStorage monitor,
+            Map<IMEMonitorListener, Object> listeners,
+            Set<AEKey> changedKeys,
+            IActionSource source) {
+        var i = listeners.entrySet().iterator();
+        while (i.hasNext()) {
+            var l = i.next();
+            var key = l.getKey();
+            if (key.isValid(l.getValue())) {
+                key.postChange(monitor, changedKeys, source);
+            } else {
+                i.remove();
+            }
+        }
     }
 }

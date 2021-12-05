@@ -19,9 +19,9 @@
 package appeng.me.storage;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -86,17 +86,8 @@ public class MEMonitorPassThrough implements MEMonitorStorage, IMEMonitorListene
     }
 
     @Override
-    public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, final IActionSource source) {
-        final Iterator<Entry<IMEMonitorListener, Object>> i = this.listeners.entrySet().iterator();
-        while (i.hasNext()) {
-            final Entry<IMEMonitorListener, Object> e = i.next();
-            final IMEMonitorListener receiver = e.getKey();
-            if (receiver.isValid(e.getValue())) {
-                receiver.postChange(this, change, source);
-            } else {
-                i.remove();
-            }
-        }
+    public void postChange(MEMonitorStorage monitor, Set<AEKey> change, final IActionSource source) {
+        MEMonitorStorage.postDifference(this, listeners, change, source);
     }
 
     @Override

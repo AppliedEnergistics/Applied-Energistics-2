@@ -124,16 +124,7 @@ class CondenserInventory implements MEMonitorStorage, ITickingMonitor {
         }
 
         this.changeSet = new HashSet<>();
-        var i = this.listeners.entrySet().iterator();
-        while (i.hasNext()) {
-            var l = i.next();
-            var key = l.getKey();
-            if (key.isValid(l.getValue())) {
-                key.postChange(this, currentChanges, this.actionSource);
-            } else {
-                i.remove();
-            }
-        }
+        MEMonitorStorage.postDifference(this, listeners, currentChanges, actionSource);
 
         return TickRateModulation.URGENT;
     }

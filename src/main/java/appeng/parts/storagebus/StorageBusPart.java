@@ -21,6 +21,7 @@ package appeng.parts.storagebus;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -481,7 +482,7 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         @Override
-        public final void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource source) {
+        public final void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource source) {
             if (getMainNode().isActive()) {
                 getMainNode().ifPresent((grid, node) -> {
                     grid.getStorageService().postAlterationOfStoredItems(change, source);

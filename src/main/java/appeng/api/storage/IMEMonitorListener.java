@@ -23,6 +23,8 @@
 
 package appeng.api.storage;
 
+import java.util.Set;
+
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 
@@ -41,7 +43,7 @@ public interface IMEMonitorListener {
      *
      * @param change The keys that have changed.
      */
-    void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource actionSource);
+    void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource actionSource);
 
     /**
      * called when the list updates its contents, this is mostly for handling power events.

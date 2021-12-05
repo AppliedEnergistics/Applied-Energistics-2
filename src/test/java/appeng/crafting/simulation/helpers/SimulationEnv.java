@@ -188,7 +188,7 @@ public class SimulationEnv {
         MEMonitorStorage monitor = createMonitorMock();
         return new IStorageService() {
             @Override
-            public void postAlterationOfStoredItems(Iterable<AEKey> input, IActionSource src) {
+            public void postAlterationOfStoredItems(Set<AEKey> input, IActionSource src) {
                 throw new UnsupportedOperationException();
             }
 

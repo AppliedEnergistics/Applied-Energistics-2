@@ -377,7 +377,7 @@ public class MEMonitorableMenu extends AEBaseMenu
     }
 
     @Override
-    public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource source) {
+    public void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource source) {
         for (AEKey key : change) {
             this.updateHelper.addChange(key);
         }

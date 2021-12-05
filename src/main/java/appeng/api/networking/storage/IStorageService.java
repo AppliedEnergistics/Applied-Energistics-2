@@ -23,6 +23,8 @@
 
 package appeng.api.networking.storage;
 
+import java.util.Set;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.security.IActionSource;
@@ -51,7 +53,7 @@ public interface IStorageService extends IGridService {
      *
      * @param input injected items
      */
-    void postAlterationOfStoredItems(Iterable<AEKey> input, IActionSource src);
+    void postAlterationOfStoredItems(Set<AEKey> input, IActionSource src);
 
     /**
      * Adds a {@link IStorageProvider} that is not associated with a specific {@link appeng.api.networking.IGridNode }.

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -549,7 +550,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public void postChange(MEMonitorStorage monitor, Iterable<AEKey> change, IActionSource source) {
+        public void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource source) {
             if (source == ChestBlockEntity.this.mySrc
                     || source.machine().map(machine -> machine == ChestBlockEntity.this).orElse(false)) {
                 if (getMainNode().isActive()) {

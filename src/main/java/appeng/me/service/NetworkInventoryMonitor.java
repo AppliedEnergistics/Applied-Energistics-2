@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -160,11 +161,11 @@ public class NetworkInventoryMonitor implements MEMonitorStorage {
         }
     }
 
-    private void postChangesToListeners(Iterable<AEKey> changes, final IActionSource src) {
+    private void postChangesToListeners(Set<AEKey> changes, final IActionSource src) {
         this.postChange(changes, src);
     }
 
-    protected void postChange(Iterable<AEKey> changes, IActionSource src) {
+    protected void postChange(Set<AEKey> changes, IActionSource src) {
         if (this.recursionDepth > 0 || GLOBAL_DEPTH.contains(this)) {
             return;
         }
@@ -201,19 +202,9 @@ public class NetworkInventoryMonitor implements MEMonitorStorage {
         }
     }
 
-    private void notifyListenersOfChange(Iterable<AEKey> diff, IActionSource src) {
+    private void notifyListenersOfChange(Set<AEKey> diff, IActionSource src) {
         this.hasChanged = true;
-        var i = this.getListeners();
-
-        while (i.hasNext()) {
-            final Entry<IMEMonitorListener, Object> o = i.next();
-            final IMEMonitorListener receiver = o.getKey();
-            if (receiver.isValid(o.getValue())) {
-                receiver.postChange(this, diff, src);
-            } else {
-                i.remove();
-            }
-        }
+        MEMonitorStorage.postDifference(this, listeners, diff, src);
     }
 
     public boolean hasChangedLastTick() {
