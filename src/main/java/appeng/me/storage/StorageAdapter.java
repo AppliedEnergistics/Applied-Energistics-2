@@ -1,6 +1,7 @@
 package appeng.me.storage;
 
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -104,6 +105,29 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
 
             return extracted;
         }
+    }
+
+    /**
+     * Tests if the external storage contains any of the given keys using fuzzy matching. Used to detect if the inputs
+     * pushed into an external machine are still present.
+     */
+    public boolean containsAnyFuzzy(Set<AEKey> keys) {
+        if (storage == null) {
+            return false;
+        }
+
+        try (var tx = Transaction.openOuter()) {
+            for (var view : storage.iterable(tx)) {
+                var storedKey = conversion.getKey(view.getResource());
+                if (storedKey != null && view.getAmount() > 0) {
+                    var key = storedKey.dropSecondary();
+                    if (keys.contains(key)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override

@@ -28,8 +28,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -113,25 +111,9 @@ public interface IInterfaceTarget {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                return IInterfaceTarget.canRemove(IVariantConversion.ITEM, itemHandler, patternInputs)
-                        || IInterfaceTarget.canRemove(IVariantConversion.FLUID, fluidHandler, patternInputs);
+                return itemAdapter.containsAnyFuzzy(patternInputs) || fluidAdapter.containsAnyFuzzy(patternInputs);
             }
         };
-    }
-
-    private static <V extends TransferVariant<?>> boolean canRemove(
-            IVariantConversion<V> conversion, Storage<V> storage, Set<AEKey> patternInputs) {
-        try (Transaction tx = Transaction.openOuter()) {
-            for (var view : storage.iterable(tx)) {
-                if (!view.isResourceBlank() && view.getAmount() > 0) {
-                    var key = conversion.getKey(view.getResource()).dropSecondary();
-                    if (patternInputs.contains(key)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     long insert(AEKey what, long amount, Actionable type);
