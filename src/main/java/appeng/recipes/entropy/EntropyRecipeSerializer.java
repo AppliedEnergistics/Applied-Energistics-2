@@ -40,8 +40,13 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> {
+public class EntropyRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+        implements RecipeSerializer<EntropyRecipe> {
 
     public static final EntropyRecipeSerializer INSTANCE = new EntropyRecipeSerializer();
 
@@ -63,7 +68,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         JsonObject inputBlockObject = GsonHelper.getAsJsonObject(inputJson, "block", new JsonObject());
         String inputBlockId = GsonHelper.getAsString(inputBlockObject, "id", null);
         if (inputBlockId != null) {
-            Block block = getRequiredEntry(Registry.BLOCK, inputBlockId);
+            Block block = getRequiredEntry(ForgeRegistries.BLOCKS, inputBlockId);
             builder.setInputBlock(block);
             parseStateMatchers(block.getStateDefinition(), inputBlockObject, builder::addBlockStateMatcher);
         }
@@ -72,7 +77,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         JsonObject inputFluidObject = GsonHelper.getAsJsonObject(inputJson, "fluid", new JsonObject());
         String inputFluidId = GsonHelper.getAsString(inputFluidObject, "id", null);
         if (inputFluidId != null) {
-            Fluid fluid = getRequiredEntry(Registry.FLUID, inputFluidId);
+            Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, inputFluidId);
             builder.setInputFluid(fluid);
             parseStateMatchers(fluid.getStateDefinition(), inputFluidObject, builder::addFluidStateMatcher);
         }
@@ -84,7 +89,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         JsonObject outputBlockObject = GsonHelper.getAsJsonObject(outputJson, "block", new JsonObject());
         String outputBlockId = GsonHelper.getAsString(outputBlockObject, "id", null);
         if (outputBlockId != null) {
-            Block block = getRequiredEntry(Registry.BLOCK, outputBlockId);
+            Block block = getRequiredEntry(ForgeRegistries.BLOCKS, outputBlockId);
             builder.setOutputBlock(block);
 
             boolean outputBlockKeep = GsonHelper.getAsBoolean(outputBlockObject, "keep", false);
@@ -97,7 +102,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         JsonObject outputFluidObject = GsonHelper.getAsJsonObject(outputJson, "fluid", new JsonObject());
         String outputFluidId = GsonHelper.getAsString(outputFluidObject, "id", null);
         if (outputFluidId != null) {
-            Fluid fluid = getRequiredEntry(Registry.FLUID, outputFluidId);
+            Fluid fluid = getRequiredEntry(ForgeRegistries.FLUIDS, outputFluidId);
             builder.setOutputFluid(fluid);
 
             boolean outputFluidKeep = GsonHelper.getAsBoolean(outputFluidObject, "keep", false);
@@ -114,7 +119,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
             for (JsonElement jsonElement : dropList) {
                 JsonObject object = jsonElement.getAsJsonObject();
                 String itemid = GsonHelper.getAsString(object, "item");
-                Item item = Registry.ITEM.get(new ResourceLocation(itemid));
+                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemid));
                 int count = GsonHelper.getAsInt(object, "count", 1);
                 drops.add(new ItemStack(item, count));
             }
@@ -125,10 +130,10 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         return builder.build();
     }
 
-    private static <T> T getRequiredEntry(Registry<T> registry, String id) {
-        T entry = registry.getOptional(new ResourceLocation(id)).orElse(null);
+    private static <T extends IForgeRegistryEntry<T>> T getRequiredEntry(IForgeRegistry<T> registry, String id) {
+        T entry = registry.getValue(new ResourceLocation(id));
         if (entry == null) {
-            throw new IllegalArgumentException("Unknown id " + id + " for " + registry);
+            throw new IllegalArgumentException("Unknown id " + id + " for " + registry.getRegistryName());
         }
         return entry;
     }
@@ -142,7 +147,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         builder.setMode(buffer.readEnum(EntropyMode.class));
 
         if (buffer.readBoolean()) {
-            Block inputBlock = Registry.BLOCK.byId(buffer.readVarInt());
+            Block inputBlock = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
             builder.setInputBlock(inputBlock);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
@@ -151,7 +156,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         }
 
         if (buffer.readBoolean()) {
-            Fluid fluid = Registry.FLUID.byId(buffer.readVarInt());
+            Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
             builder.setInputFluid(fluid);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
@@ -160,7 +165,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         }
 
         if (buffer.readBoolean()) {
-            Block block = Registry.BLOCK.byId(buffer.readVarInt());
+            Block block = buffer.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
             builder.setOutputBlock(block);
             builder.setOutputBlockKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
@@ -170,8 +175,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         }
 
         if (buffer.readBoolean()) {
-            Fluid fluid = Registry.FLUID.byId(buffer.readVarInt());
-            ;
+            Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
             builder.setOutputFluid(fluid);
             builder.setOutputFluidKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
@@ -199,7 +203,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         buffer.writeBoolean(recipe.getInputBlock() != null);
         if (recipe.getInputBlock() != null) {
-            buffer.writeVarInt(Registry.BLOCK.getId(recipe.getInputBlock()));
+            buffer.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, recipe.getInputBlock());
 
             List<StateMatcher> inputBlockMatchers = recipe.getInputBlockMatchers();
             buffer.writeInt(inputBlockMatchers.size());
@@ -210,7 +214,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         buffer.writeBoolean(recipe.getInputFluid() != null);
         if (recipe.getInputFluid() != null) {
-            buffer.writeVarInt(Registry.FLUID.getId(recipe.getInputFluid()));
+            buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, recipe.getInputFluid());
 
             List<StateMatcher> inputFluidMatchers = recipe.getInputFluidMatchers();
             buffer.writeInt(inputFluidMatchers.size());
@@ -221,7 +225,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         buffer.writeBoolean(recipe.getOutputBlock() != null);
         if (recipe.getOutputBlock() != null) {
-            buffer.writeVarInt(Registry.BLOCK.getId(recipe.getOutputBlock()));
+            buffer.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, recipe.getOutputBlock());
             buffer.writeBoolean(recipe.getOutputBlockKeep());
 
             List<StateApplier<?>> appliers = recipe.getOutputBlockStateAppliers();
@@ -233,7 +237,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         buffer.writeBoolean(recipe.getOutputFluid() != null);
         if (recipe.getOutputFluid() != null) {
-            buffer.writeVarInt(Registry.FLUID.getId(recipe.getOutputFluid()));
+            buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, recipe.getOutputFluid());
             buffer.writeBoolean(recipe.getOutputFluidKeep());
 
             List<StateApplier<?>> appliers = recipe.getOutputFluidStateAppliers();

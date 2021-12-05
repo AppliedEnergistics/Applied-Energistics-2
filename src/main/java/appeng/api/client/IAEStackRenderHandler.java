@@ -27,12 +27,12 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
 import appeng.util.Platform;
@@ -40,7 +40,7 @@ import appeng.util.Platform;
 /**
  * Client-side rendering of AE stacks. Must be registered in {@link AEStackRendering} for each storage channel!
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public interface IAEStackRenderHandler<T extends AEKey> {
     /**
      * Draw the stack, for example the item or the fluid sprite, but not the amount.

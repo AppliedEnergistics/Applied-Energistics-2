@@ -34,10 +34,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -48,6 +46,11 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -76,7 +79,6 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.util.ConfigMenuInventory;
 import appeng.util.Platform;
-import appeng.util.fluid.FluidSoundHelper;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
@@ -541,45 +543,49 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        var fh = ContainerItemContext.ofPlayerCursor(getPlayer(), this).find(FluidStorage.ITEM);
-        if (fh == null) {
-            return;
-        }
-
-        // Check how much we can store in the item
-        long amountAllowed;
-        try (var tx = Transaction.openOuter()) {
-            amountAllowed = fh.insert(clickedFluid.toVariant(), Long.MAX_VALUE, tx);
-            if (amountAllowed == 0) {
-                return; // Nothing.
-            }
-        }
-
-        // Check if we can pull out of the system
-        var canPull = source.extract(amountAllowed, Actionable.SIMULATE);
-        if (canPull <= 0) {
-            return;
-        }
-
-        // How much could fit into the carried container
-        try (var tx = Transaction.openOuter()) {
-            long canFill = fh.insert(clickedFluid.toVariant(), canPull, tx);
-            if (canFill == 0) {
-                return;
+        var sourceHandler = new EmptyFluidHandler() {
+            @NotNull
+            @Override
+            public FluidStack getFluidInTank(int tank) {
+                return clickedFluid.toStack(Integer.MAX_VALUE);
             }
 
-            // Now actually pull out of the system
-            var extracted = source.extract(canFill, Actionable.MODULATE);
-            if (extracted <= 0) {
-                // Something went wrong
-                AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
-                return;
+            @Override
+            public int getTankCapacity(int tank) {
+                return Integer.MAX_VALUE;
             }
 
-            tx.commit();
-        }
+            @NotNull
+            @Override
+            public FluidStack drain(FluidStack resource, FluidAction action) {
+                if (clickedFluid.matches(resource)) {
+                    return drain(resource.getAmount(), action);
+                }
+                return FluidStack.EMPTY;
+            }
 
-        FluidSoundHelper.playFillSound(getPlayer(), clickedFluid);
+            @NotNull
+            @Override
+            public FluidStack drain(int maxDrain, FluidAction action) {
+                var extracted = (int) source.extract(maxDrain, Actionable.of(action));
+                return extracted <= 0 ? FluidStack.EMPTY : clickedFluid.toStack(extracted);
+            }
+        };
+
+        var playerInv = getPlayer().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+                .orElse(EmptyHandler.INSTANCE);
+
+        var result = FluidUtil.tryFillContainerAndStow(
+                getCarried(),
+                sourceHandler,
+                playerInv,
+                Integer.MAX_VALUE,
+                getPlayer(),
+                true);
+
+        if (result.isSuccess()) {
+            setCarried(result.getResult());
+        }
     }
 
     protected interface EmptyingSink {
@@ -587,45 +593,35 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected final void handleEmptyHeldItem(EmptyingSink sink) {
-        var fh = ContainerItemContext.ofPlayerCursor(getPlayer(), this).find(FluidStorage.ITEM);
-        if (fh == null) {
-            return;
-        }
-
-        // See how much we can drain from the item
-        var content = StorageUtil.findExtractableContent(fh, null);
-        if (content == null) {
-            return;
-        }
-
-        var what = AEFluidKey.of(content.resource());
-        var amount = content.amount();
-
-        // Check if we can push into the system
-        var canInsert = sink.insert(what, amount, Actionable.SIMULATE);
-        if (canInsert <= 0) {
-            return;
-        }
-
-        // Actually drain
-        try (var tx = Transaction.openOuter()) {
-            var extracted = fh.extract(what.toVariant(), canInsert, tx);
-            if (extracted != canInsert) {
-                AELog.error(
-                        "Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                        getCarried());
-                return;
+        var sinkHandler = new EmptyFluidHandler() {
+            @Override
+            public int getTankCapacity(int tank) {
+                return Integer.MAX_VALUE;
             }
 
-            if (sink.insert(what, extracted, Actionable.MODULATE) != extracted) {
-                AELog.error("Failed to insert previously simulated %s into ME system", what);
-                return;
+            @Override
+            public int fill(FluidStack resource, FluidAction action) {
+                var fluidKey = AEFluidKey.of(resource);
+                if (fluidKey != null) {
+                    return (int) sink.insert(fluidKey, resource.getAmount(), Actionable.of(action));
+                }
+                return 0;
             }
+        };
 
-            tx.commit();
+        var playerInv = getPlayer().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+                .orElse(EmptyHandler.INSTANCE);
+
+        var result = FluidUtil.tryEmptyContainerAndStow(
+                getCarried(),
+                sinkHandler,
+                playerInv,
+                Integer.MAX_VALUE,
+                getPlayer(),
+                true);
+        if (result.isSuccess()) {
+            setCarried(result.getResult());
         }
-
-        FluidSoundHelper.playEmptySound(getPlayer(), what);
     }
 
     private void handleFakeSlotAction(FakeSlot fakeSlot, InventoryAction action) {

@@ -18,13 +18,13 @@
 
 package appeng.integration.modules.waila.part;
 
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.parts.IPart;
 import appeng.core.localization.InGameTooltip;
@@ -44,7 +44,7 @@ public final class P2PStateDataProvider implements IPartDataProvider {
     public static final String TAG_P2P_FREQUENCY = "p2pFrequency";
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+    public void appendBodyTooltip(IPart part, CompoundTag partTag, ITooltip tooltip) {
         if (partTag.contains(TAG_P2P_STATE, Tag.TAG_BYTE)) {
             var state = partTag.getByte(TAG_P2P_STATE);
             var outputs = partTag.getInt(TAG_P2P_OUTPUTS);

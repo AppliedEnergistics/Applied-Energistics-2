@@ -25,16 +25,24 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.Renderer;
+import mezz.jei.api.gui.drawable.IDrawable;
 
-public class WaterBlockRenderer implements Renderer {
-    private int z;
+public class WaterBlockRenderer implements IDrawable {
     private final FakeWorld fakeWorld = new FakeWorld();
     private final BlockState waterBlock = Fluids.WATER.defaultFluidState().createLegacyBlock();
 
     @Override
-    public void render(PoseStack poseStack, Rectangle rectangle, int mouseX, int mouseY, float delta) {
+    public int getWidth() {
+        return 14;
+    }
+
+    @Override
+    public int getHeight() {
+        return 14;
+    }
+
+    @Override
+    public void draw(PoseStack stack, int xOffset, int yOffset) {
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
         var renderType = ItemBlockRenderTypes.getRenderLayer(waterBlock.getFluidState());
@@ -44,14 +52,15 @@ public class WaterBlockRenderer implements Renderer {
 
         var worldMatStack = RenderSystem.getModelViewStack();
         worldMatStack.pushPose();
-        worldMatStack.translate(rectangle.x, rectangle.y, z);
+        worldMatStack.mulPoseMatrix(stack.last().pose());
+        worldMatStack.translate(xOffset, yOffset, 0);
 
         FogRenderer.setupNoFog();
 
         // The fluid block will render [-0.5,0.5] since it's intended for world-rendering
         // we need to scale it to the rectangle's size, and then move it to the center
-        worldMatStack.translate(rectangle.width / 2.f, rectangle.height / 2.f, 0);
-        worldMatStack.scale(rectangle.width, rectangle.height, 1);
+        worldMatStack.translate(getWidth() / 2.f, getHeight() / 2.f, 0);
+        worldMatStack.scale(getWidth(), getHeight(), 1);
 
         setupOrtographicProjection(worldMatStack);
 
@@ -92,16 +101,6 @@ public class WaterBlockRenderer implements Renderer {
         worldMatStack.translate(-0.5f, -0.5f, -0.5f);
 
         RenderSystem.applyModelViewMatrix();
-    }
-
-    @Override
-    public int getZ() {
-        return z;
-    }
-
-    @Override
-    public void setZ(int z) {
-        this.z = z;
     }
 
     private class FakeWorld implements BlockAndTintGetter {

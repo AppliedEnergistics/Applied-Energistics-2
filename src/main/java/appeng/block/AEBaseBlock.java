@@ -18,13 +18,8 @@
 
 package appeng.block;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -51,18 +46,18 @@ public abstract class AEBaseBlock extends Block {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static FabricBlockSettings defaultProps(Material material) {
+    public static BlockBehaviour.Properties defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
-        return FabricBlockSettings.of(material, color)
+    public static BlockBehaviour.Properties defaultProps(Material material, MaterialColor color) {
+        return BlockBehaviour.Properties.of(material, color)
                 // These values previously were encoded in AEBaseBlock
                 .strength(2.2f, 11.f)
-                .sounds(getDefaultSoundByMaterial(material));
+                .sound(getDefaultSoundByMaterial(material));
     }
 
     private static SoundType getDefaultSoundByMaterial(Material mat) {
@@ -174,12 +169,6 @@ public abstract class AEBaseBlock extends Block {
     public String toString() {
         String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
         return this.getClass().getSimpleName() + "[" + regName + "]";
-    }
-
-    @Nullable
-    public ResourceLocation getRegistryName() {
-        var id = Registry.BLOCK.getKey(this);
-        return id != Registry.BLOCK.getDefaultKey() ? id : null;
     }
 
     protected boolean hasCustomRotation() {

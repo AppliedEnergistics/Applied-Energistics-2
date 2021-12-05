@@ -1,35 +1,48 @@
 package appeng.integration.modules.jei.throwinginwater;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
-import me.shedaniel.math.Point;
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.Renderer;
-import me.shedaniel.rei.api.client.gui.widgets.Widget;
-import me.shedaniel.rei.api.client.gui.widgets.Widgets;
-import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
-import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.items.misc.CrystalSeedItem;
 
-public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterDisplay> {
-    public static final CategoryIdentifier<ThrowingInWaterDisplay> ID = CategoryIdentifier
-            .of(AppEng.makeId("throwing_in_water"));
+public class ThrowingInWaterCategory implements IRecipeCategory<ThrowingInWaterDisplay> {
+    private static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
 
-    private final Renderer icon;
+    public static final ResourceLocation ID = AppEng.makeId("throwing_in_water");
 
-    public ThrowingInWaterCategory() {
+    private final IDrawable icon;
+
+    private final IDrawable background;
+
+    private final IDrawable arrow;
+
+    private final IDrawable slotBackground;
+
+    private final IDrawableAnimated animatedArrow;
+
+    public ThrowingInWaterCategory(IGuiHelper guiHelper) {
         var stage1 = AEItems.CERTUS_CRYSTAL_SEED.stack();
         CrystalSeedItem.setGrowthTicks(stage1, 0);
         var stage2 = AEItems.CERTUS_CRYSTAL_SEED.stack();
@@ -38,79 +51,122 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
         CrystalSeedItem.setGrowthTicks(stage3, (int) (CrystalSeedItem.GROWTH_TICKS_REQUIRED * 0.7f));
         var result = AEItems.CERTUS_QUARTZ_CRYSTAL.stack();
 
-        icon = new GrowingSeedIconRenderer(List.of(
+        background = guiHelper.createBlankDrawable(130, 62);
+        slotBackground = guiHelper.createDrawable(TEXTURE, 0, 34, 18, 18);
+        icon = new GrowingSeedIconRenderer(guiHelper, List.of(
                 stage1,
                 stage2,
                 stage3,
                 result));
+        arrow = guiHelper.createDrawable(TEXTURE, 0, 17, 24, 17);
+        animatedArrow = guiHelper.createAnimatedDrawable(
+                guiHelper.createDrawable(TEXTURE, 0, 0, 24, 17),
+                60, IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
-    public Renderer getIcon() {
-        return icon;
-    }
-
-    @Override
-    public Component getTitle() {
-        return new TranslatableComponent("rei.ae2.throwing_in_water_category");
-    }
-
-    @Override
-    public CategoryIdentifier<ThrowingInWaterDisplay> getCategoryIdentifier() {
+    public ResourceLocation getUid() {
         return ID;
     }
 
     @Override
-    public List<Widget> setupDisplay(ThrowingInWaterDisplay display, Rectangle bounds) {
+    public Class<? extends ThrowingInWaterDisplay> getRecipeClass() {
+        return ThrowingInWaterDisplay.class;
+    }
 
-        List<Widget> widgets = new ArrayList<>();
-        widgets.add(Widgets.createRecipeBase(bounds));
+    @Override
+    public IDrawable getBackground() {
+        return background;
+    }
 
-        // First column contains ingredients
-        final int col1 = bounds.x + 10;
-        var y = bounds.y + 10;
-        for (EntryIngredient input : display.getInputEntries()) {
-            var slot = Widgets.createSlot(new Point(col1, y))
-                    .entries(input)
-                    .markInput();
-            y += slot.getBounds().height;
-            widgets.add(slot);
+    @Override
+    public IDrawable getIcon() {
+        return icon;
+    }
+
+    @Override
+    public void setIngredients(ThrowingInWaterDisplay recipe, IIngredients ingredients) {
+        ingredients.setInputIngredients(recipe.getIngredients());
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResult());
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, ThrowingInWaterDisplay recipe, IIngredients ingredients) {
+
+        var slotIndex = 0;
+        var guiItemStacks = recipeLayout.getItemStacks();
+
+        var y = 5;
+        for (var input : recipe.getIngredients()) {
+            guiItemStacks.init(slotIndex++, true, 5, y);
+            y += 18;
         }
 
         // To center everything but the ingredients vertically
-        int yOffset = bounds.y + (display.getInputEntries().size() - 1) / 2 * 18 + 10;
+        int yOffset = getYOffset(recipe);
+        guiItemStacks.init(slotIndex, false, 105, yOffset);
+
+        guiItemStacks.set(ingredients);
+    }
+
+    @Override
+    public void draw(ThrowingInWaterDisplay recipe, PoseStack stack, double mouseX, double mouseY) {
+
+        // First column contains ingredients
+        var y = 5;
+        for (var input : recipe.getIngredients()) {
+            slotBackground.draw(stack, 5, y);
+            y += 18;
+        }
+
+        // To center everything but the ingredients vertically
+        int yOffset = getYOffset(recipe);
 
         // Second column is arrow pointing into water
-        final int col2 = col1 + 25;
-        var arrow1 = Widgets.createArrow(new Point(col2, yOffset));
-        widgets.add(arrow1);
+        arrow.draw(stack, 25, yOffset);
 
         // Third column is water block
-        final int col3 = col2 + arrow1.getBounds().getWidth() + 6;
-        widgets.add(Widgets.wrapRenderer(
-                new Rectangle(
-                        col3,
-                        yOffset,
-                        14,
-                        14),
-                new WaterBlockRenderer()));
+        new WaterBlockRenderer().draw(stack, 55, yOffset);
 
         // Fourth column is arrow pointing to results
-        final int col4 = col3 + 16 + 5;
-        var arrow2 = Widgets.createArrow(new Point(col4, yOffset));
-        widgets.add(arrow2);
+        arrow.draw(stack, 76, yOffset);
+        if (recipe.isSupportsAccelerators()) {
+            // If the recipe doesn't support accelerators, it's probably instant
+            animatedArrow.draw(stack, 76, yOffset);
+        }
 
         // Fifth column is the result
-        final int col5 = arrow2.getBounds().getMaxX() + 10;
-        var slot = Widgets.createSlot(new Point(col5, yOffset))
-                .entries(display.getOutputEntries().get(0))
-                .markOutput();
-        widgets.add(slot);
+        slotBackground.draw(stack, 105, yOffset);
 
         // Add descriptive text explaining the duration centered on the water block
-        if (display.isSupportsAccelerators()) {
-            var durationY = bounds.y + 10 + display.getInputEntries().size() * 18 + 2;
+        if (recipe.isSupportsAccelerators()) {
+            var durationY = 10 + recipe.getIngredients().size() * 18 + 2;
 
+            var defaultDuration = GrowingCrystalEntity.getGrowthDuration(0).toMillis();
+
+            var minecraft = Minecraft.getInstance();
+
+            var text = new TextComponent(DurationFormatUtils.formatDurationWords(
+                    defaultDuration, true, true));
+            var textWidth = minecraft.font.width(text);
+            minecraft.font.draw(stack,
+                    text,
+                    (background.getWidth() - textWidth) / 2.0f,
+                    durationY,
+                    0xFF404040);
+        }
+
+    }
+
+    private int getYOffset(ThrowingInWaterDisplay recipe) {
+        return (recipe.getIngredients().size() - 1) / 2 * 18 + 5;
+    }
+
+    @Override
+    public List<Component> getTooltipStrings(ThrowingInWaterDisplay recipe, double mouseX, double mouseY) {
+        var yOffset = getYOffset(recipe);
+
+        if (recipe.isSupportsAccelerators() && mouseY >= yOffset + 18 && mouseY <= yOffset + 31) {
             List<Component> tooltipLines = new ArrayList<>();
             tooltipLines.add(
                     new TranslatableComponent("rei.ae2.with_crystal_growth_accelerators"));
@@ -119,21 +175,15 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
                 tooltipLines.add(new TextComponent(i + ": " + DurationFormatUtils.formatDurationWords(
                         duration, true, true)));
             }
-
-            var defaultDuration = GrowingCrystalEntity.getGrowthDuration(0).toMillis();
-            widgets.add(Widgets.createLabel(
-                    new Point(col3 + 7, durationY),
-                    new TextComponent(DurationFormatUtils.formatDurationWords(
-                            defaultDuration, true, true)))
-                    .noShadow().color(0xFF404040, 0xFFBBBBBB)
-                    .centered().tooltipLines(tooltipLines.stream().map(Component::getString).toArray(String[]::new)));
+            return tooltipLines;
+        } else {
+            return Collections.emptyList();
         }
-
-        return widgets;
     }
 
     @Override
-    public int getDisplayHeight() {
-        return 72;
+    public Component getTitle() {
+        return new TranslatableComponent("rei.ae2.throwing_in_water_category");
     }
+
 }

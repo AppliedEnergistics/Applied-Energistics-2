@@ -28,10 +28,10 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -275,7 +275,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void clientPacketData(INetworkInfo network, Player player) {
         if (player.containerMenu.containerId == containerId
                 && player.containerMenu instanceof MEStorageMenu meMenu) {
