@@ -757,8 +757,8 @@ public class CraftingRecipes extends AE2RecipeProvider {
         ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ACCESS_TERMINAL)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
-                .requires(ConventionTags.INTERFACE)
-                .unlockedBy("has_interface", has(ConventionTags.INTERFACE))
+                .requires(ConventionTags.PATTERN_PROVIDER)
+                .unlockedBy("has_pattern_provider", has(ConventionTags.PATTERN_PROVIDER))
                 .save(consumer, AppEng.makeId("network/parts/terminals_interface"));
         ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ENCODING_TERMINAL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
