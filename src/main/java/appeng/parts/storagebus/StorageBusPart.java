@@ -46,7 +46,6 @@ import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.features.IPlayerRegistry;
-import appeng.api.lookup.AEApis;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
@@ -138,7 +137,7 @@ public class StorageBusPart extends UpgradeablePart
 
     public StorageBusPart(ItemStack is) {
         super(is);
-        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, AEApis.STORAGE_MONITORABLE_ACCESSOR);
+        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, IStorageMonitorableAccessor.SIDED);
         this.tickRates = TickRates.StorageBus;
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);

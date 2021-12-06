@@ -25,14 +25,25 @@ package appeng.api.storage;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.api.ids.AEConstants;
 import appeng.api.networking.security.IActionSource;
 
 /**
  * Allows storage buses to request access to another ME network so it can be used as a subnetwork. This interface is
  * used in conjunction with capabilities, so when an object of this is obtained, it already knows about which face the
  * access was requested from.
+ * <p/>
+ * To get access to the capability for this, use @CapabilityInject with this interface as the argument to the
+ * annotation.
  */
 public interface IStorageMonitorableAccessor {
+
+    BlockApiLookup<IStorageMonitorableAccessor, Direction> SIDED = BlockApiLookup.get(
+            new ResourceLocation(AEConstants.MOD_ID, "storage"), IStorageMonitorableAccessor.class, Direction.class);
 
     /**
      * @return Null if the network cannot be accessed by the given action source (i.e. security doesn't permit it).

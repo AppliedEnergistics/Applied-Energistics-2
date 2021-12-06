@@ -23,7 +23,9 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
@@ -32,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
-import appeng.api.lookup.AEApis;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -48,15 +49,15 @@ public interface IInterfaceTarget {
             return null;
 
         // our capability first: allows any storage channel
-        var accessor = AEApis.STORAGE_MONITORABLE_ACCESSOR.find(l, pos, null, be, side);
+        var accessor = IStorageMonitorableAccessor.SIDED.find(l, pos, null, be, side);
         if (accessor != null) {
             return wrapStorageMonitorable(accessor, src);
         }
 
         // otherwise fall back to the platform capability
         // TODO: look into exposing this for other storage channels
-        var itemHandler = AEApis.ITEMS.find(l, pos, null, be, side);
-        var fluidHandler = AEApis.FLUIDS.find(l, pos, null, be, side);
+        var itemHandler = ItemStorage.SIDED.find(l, pos, null, be, side);
+        var fluidHandler = FluidStorage.SIDED.find(l, pos, null, be, side);
 
         if (itemHandler != null || fluidHandler != null) {
             return wrapHandlers(

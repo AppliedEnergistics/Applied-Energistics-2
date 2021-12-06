@@ -27,12 +27,14 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.lookup.AEApis;
+import appeng.api.ids.AEConstants;
 import appeng.api.stacks.KeyCounter;
 
 /**
@@ -40,12 +42,17 @@ import appeng.api.stacks.KeyCounter;
  * your block entity.
  */
 public interface ICraftingMachine {
+
+    BlockApiLookup<ICraftingMachine, Direction> SIDED = BlockApiLookup.get(
+            new ResourceLocation(AEConstants.MOD_ID, "icraftingmachine"), ICraftingMachine.class, Direction.class);
+
     @Nullable
     static ICraftingMachine of(@Nullable BlockEntity blockEntity, Direction side) {
         if (blockEntity == null) {
             return null;
         }
-        return AEApis.CRAFTING_MACHINE.find(blockEntity.getLevel(), blockEntity.getBlockPos(), null, blockEntity, side);
+
+        return SIDED.find(blockEntity.getLevel(), blockEntity.getBlockPos(), null, blockEntity, side);
     }
 
     /**

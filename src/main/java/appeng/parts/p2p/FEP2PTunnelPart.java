@@ -27,7 +27,6 @@ import net.minecraft.world.item.ItemStack;
 import team.reborn.energy.api.EnergyStorage;
 
 import appeng.api.config.PowerUnits;
-import appeng.api.lookup.AEApis;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 
@@ -40,7 +39,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, En
     }
 
     public FEP2PTunnelPart(ItemStack is) {
-        super(is, AEApis.ENERGY);
+        super(is, EnergyStorage.SIDED);
         inputHandler = new InputEnergyStorage();
         outputHandler = new OutputEnergyStorage();
         emptyHandler = EnergyStorage.EMPTY;

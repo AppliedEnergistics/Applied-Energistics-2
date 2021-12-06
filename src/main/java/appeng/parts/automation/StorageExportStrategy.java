@@ -1,5 +1,9 @@
 package appeng.parts.automation;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -8,23 +12,22 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.config.Actionable;
-import appeng.api.lookup.AEApiCache;
-import appeng.api.lookup.AEApiLookup;
-import appeng.api.lookup.AEApis;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 import appeng.util.IVariantConversion;
 
 class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {
-    private final AEApiCache<Storage<V>> apiCache;
+    private final BlockApiCache<Storage<V>, Direction> apiCache;
+    private final Direction fromSide;
     private final IVariantConversion<V> conversion;
 
-    public StorageExportStrategy(AEApiLookup<Storage<V>> apiLookup,
+    public StorageExportStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
             IVariantConversion<V> conversion,
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
-        this.apiCache = apiLookup.createCache(level, fromPos, fromSide);
+        this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
+        this.fromSide = fromSide;
         this.conversion = conversion;
     }
 
@@ -35,7 +38,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
             return 0;
         }
 
-        var adjacentStorage = apiCache.find();
+        var adjacentStorage = apiCache.find(fromSide);
         if (adjacentStorage == null) {
             return 0;
         }
@@ -74,7 +77,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
 
     public static StackExportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                AEApis.ITEMS,
+                ItemStorage.SIDED,
                 IVariantConversion.ITEM,
                 level,
                 fromPos,
@@ -83,7 +86,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
 
     public static StackExportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                AEApis.FLUIDS,
+                FluidStorage.SIDED,
                 IVariantConversion.FLUID,
                 level,
                 fromPos,
