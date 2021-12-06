@@ -757,14 +757,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
         ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ACCESS_TERMINAL)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
-                .requires(ConventionTags.INTERFACE)
-                .unlockedBy("has_interface", has(ConventionTags.INTERFACE))
-                .save(consumer, AppEng.makeId("network/parts/terminals_interface"));
+                .requires(ConventionTags.PATTERN_PROVIDER)
+                .unlockedBy("has_pattern_provider", has(ConventionTags.PATTERN_PROVIDER))
+                .save(consumer, AppEng.makeId("network/parts/terminals_pattern_access"));
         ShapelessRecipeBuilder.shapeless(AEParts.PATTERN_ENCODING_TERMINAL)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
                 .requires(AEParts.CRAFTING_TERMINAL)
                 .unlockedBy("has_crafting_terminal", has(AEParts.CRAFTING_TERMINAL))
-                .save(consumer, AppEng.makeId("network/parts/terminals_pattern"));
+                .save(consumer, AppEng.makeId("network/parts/terminals_pattern_encoding"));
         ShapedRecipeBuilder.shaped(AEParts.TOGGLE_BUS)
                 .pattern(" a ")
                 .pattern("bcb")
