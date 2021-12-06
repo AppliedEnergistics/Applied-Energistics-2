@@ -29,6 +29,7 @@ import net.minecraft.world.level.ItemLike;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.util.Platform;
 
 public class ItemDefinition<T extends Item> implements ItemLike {
@@ -52,6 +53,10 @@ public class ItemDefinition<T extends Item> implements ItemLike {
 
     public ItemStack stack(final int stackSize) {
         return new ItemStack(item, stackSize);
+    }
+
+    public GenericStack genericStack(long stackSize) {
+        return new GenericStack(AEItemKey.of(item), stackSize);
     }
 
     /**

@@ -21,6 +21,8 @@ package appeng.blockentity.crafting;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -61,24 +63,27 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             newForward = facing;
         } else if (!this.omniDirectional
                 && (this.getForward() == facing || this.getForward() == facing.getOpposite())) {
-            this.omniDirectional = true;
-            newForward = facing;
+            newForward = null;
         } else if (this.omniDirectional) {
             newForward = facing.getOpposite();
-            this.omniDirectional = false;
         } else {
             newForward = Platform.rotateAround(this.getForward(), facing);
         }
 
-        if (this.omniDirectional) {
-            this.setOrientation(Direction.NORTH, Direction.UP);
-        } else {
-            Direction newUp = Direction.UP;
-            if (newForward == Direction.UP || newForward == Direction.DOWN) {
-                newUp = Direction.NORTH;
-            }
-            this.setOrientation(newForward, newUp);
+        setPushDirection(newForward);
+    }
+
+    public void setPushDirection(@Nullable Direction direction) {
+        this.omniDirectional = direction == null;
+        if (direction == null) {
+            direction = Direction.NORTH;
         }
+
+        Direction newUp = Direction.UP;
+        if (direction == Direction.UP || direction == Direction.DOWN) {
+            newUp = Direction.NORTH;
+        }
+        this.setOrientation(direction, newUp);
 
         if (!isClientSide()) {
             this.configureNodeSides();

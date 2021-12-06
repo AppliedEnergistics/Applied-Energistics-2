@@ -25,12 +25,15 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.config.FuzzyMode;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.util.ConfigInventory;
@@ -70,5 +73,14 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 lines.add(AEStackRendering.getDisplayName(key));
             }
         }
+    }
+
+    public static ItemStack ofItems(ItemLike... items) {
+        var cell = AEItems.ITEM_CELL_CREATIVE.stack();
+        var configInv = AEItems.ITEM_CELL_CREATIVE.asItem().getConfigInventory(cell);
+        for (int i = 0; i < items.length; i++) {
+            configInv.setStack(i, GenericStack.fromItemStack(new ItemStack(items[i])));
+        }
+        return cell;
     }
 }

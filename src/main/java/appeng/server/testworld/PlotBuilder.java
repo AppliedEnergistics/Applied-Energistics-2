@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
@@ -73,6 +74,13 @@ public interface PlotBuilder {
      */
     default void block(String bb, Block block) {
         blockState(bb, block.defaultBlockState());
+    }
+
+    /**
+     * Place the default state of a block.
+     */
+    default void fluid(String bb, Fluid fluid) {
+        blockState(bb, fluid.defaultFluidState().createLegacyBlock());
     }
 
     /**

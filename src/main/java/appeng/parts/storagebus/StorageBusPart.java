@@ -287,7 +287,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     private boolean hasRegisteredCellToNetwork() {
-        return this.isActive() && !(this.handler.getDelegate() instanceof NullInventory);
+        return getMainNode().isActive() && !(this.handler.getDelegate() instanceof NullInventory);
     }
 
     public Component getConnectedToDescription() {

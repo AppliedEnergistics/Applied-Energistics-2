@@ -195,6 +195,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             pendingPickupStrategy = null;
         }
 
+        // Reset to allow more entity pickups
+        for (var pickupStrategy : getPickupStrategies()) {
+            pickupStrategy.reset();
+        }
+
         for (PickupStrategy pickupStrategy : getPickupStrategies()) {
             var pickupResult = pickupStrategy.tryStartPickup(grid.getEnergyService(), this::insertIntoGrid);
 
