@@ -209,17 +209,6 @@ public class AEBaseBlockEntity extends BlockEntity
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    /**
-     * Handles block entities that are being received by the client as part of a full chunk.
-     */
-    public void fromClientUpdate(byte[] clientUpdate) {
-        var stream = new FriendlyByteBuf(Unpooled.wrappedBuffer(clientUpdate));
-
-        if (this.readUpdateData(stream)) {
-            this.markForUpdate();
-        }
-    }
-
     protected boolean readFromStream(FriendlyByteBuf data) {
         if (this.canBeRotated()) {
             final Direction old_Forward = this.forward;
