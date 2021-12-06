@@ -2,39 +2,36 @@ package appeng.parts.automation;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
+import appeng.api.lookup.AEApiCache;
+import appeng.api.lookup.AEApiLookup;
+import appeng.api.lookup.AEApis;
 import appeng.api.storage.MEStorage;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;
 
 public class FabricExternalStorageStrategy<V extends TransferVariant<?>> implements ExternalStorageStrategy {
-    private final BlockApiCache<Storage<V>, Direction> apiCache;
-    private final Direction fromSide;
+    private final AEApiCache<Storage<V>> apiCache;
     private final IVariantConversion<V> conversion;
 
-    public FabricExternalStorageStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
+    public FabricExternalStorageStrategy(AEApiLookup<Storage<V>> apiLookup,
             IVariantConversion<V> conversion,
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
-        this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
-        this.fromSide = fromSide;
+        this.apiCache = apiLookup.createCache(level, fromPos, fromSide);
         this.conversion = conversion;
     }
 
     @Nullable
     @Override
     public MEStorage createWrapper(boolean extractableOnly, Runnable injectOrExtractCallback) {
-        var storage = apiCache.find(fromSide);
+        var storage = apiCache.find();
         if (storage == null) {
             return null;
         }
@@ -51,7 +48,7 @@ public class FabricExternalStorageStrategy<V extends TransferVariant<?>> impleme
 
     public static ExternalStorageStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new FabricExternalStorageStrategy<>(
-                ItemStorage.SIDED,
+                AEApis.ITEMS,
                 IVariantConversion.ITEM,
                 level,
                 fromPos,
@@ -60,7 +57,7 @@ public class FabricExternalStorageStrategy<V extends TransferVariant<?>> impleme
 
     public static ExternalStorageStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new FabricExternalStorageStrategy<>(
-                FluidStorage.SIDED,
+                AEApis.FLUIDS,
                 IVariantConversion.FLUID,
                 level,
                 fromPos,

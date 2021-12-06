@@ -1,9 +1,5 @@
 package appeng.parts.automation;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -12,6 +8,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.config.Actionable;
+import appeng.api.lookup.AEApiCache;
+import appeng.api.lookup.AEApiLookup;
+import appeng.api.lookup.AEApis;
 import appeng.api.stacks.AEKey;
 import appeng.core.AELog;
 import appeng.util.IVariantConversion;
@@ -21,17 +20,15 @@ import appeng.util.IVariantConversion;
  * {@link appeng.api.storage.MEStorage}.
  */
 class StorageImportStrategy<V extends TransferVariant<?>> implements StackImportStrategy {
-    private final BlockApiCache<Storage<V>, Direction> apiCache;
-    private final Direction fromSide;
+    private final AEApiCache<Storage<V>> apiCache;
     private final IVariantConversion<V> conversion;
 
-    public StorageImportStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
+    public StorageImportStrategy(AEApiLookup<Storage<V>> apiLookup,
             IVariantConversion<V> conversion,
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
-        this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
-        this.fromSide = fromSide;
+        this.apiCache = apiLookup.createCache(level, fromPos, fromSide);
         this.conversion = conversion;
     }
 
@@ -41,7 +38,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
             return false;
         }
 
-        var adjacentStorage = apiCache.find(fromSide);
+        var adjacentStorage = apiCache.find();
         if (adjacentStorage == null) {
             return false;
         }
@@ -114,7 +111,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
 
     public static StackImportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageImportStrategy<>(
-                ItemStorage.SIDED,
+                AEApis.ITEMS,
                 IVariantConversion.ITEM,
                 level,
                 fromPos,
@@ -123,7 +120,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
 
     public static StackImportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageImportStrategy<>(
-                FluidStorage.SIDED,
+                AEApis.FLUIDS,
                 IVariantConversion.FLUID,
                 level,
                 fromPos,

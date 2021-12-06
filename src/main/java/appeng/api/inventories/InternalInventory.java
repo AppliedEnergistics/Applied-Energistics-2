@@ -31,38 +31,26 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.lookup.AEApis;
 
 public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
     @Nullable
     static ItemTransfer wrapExternal(@Nullable BlockEntity be, @Nonnull Direction side) {
-        if (be == null) {
-            return null;
-        }
-
-        var storage = ItemStorage.SIDED.find(be.getLevel(), be.getBlockPos(), be.getBlockState(), be, side);
+        var storage = AEApis.ITEMS.find(be, side);
         if (storage != null) {
             return new PlatformInventoryWrapper(storage);
         }
-
         return null;
-    }
-
-    @Nullable
-    static ItemTransfer wrapExternal(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Direction side) {
-        return wrapExternal(level.getBlockEntity(pos), side);
     }
 
     static InternalInventory empty() {
