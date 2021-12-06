@@ -38,13 +38,11 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.parts.AEBasePart;
 
 /**
- * Describes how a menu the player has opened was originally located. This can be one of three ways:
- *
- * <ul>
- * <li>A block entity at a given block position.</li>
- * <li>A part (i.e. cable bus part) at the side of a given block position.</li>
- * <li>An item held by the player.</li>
- * </ul>
+ * Describes how a menu the player has opened was originally located. This can be one of four ways, see the {@code Type}
+ * enum below.
+ * <p>
+ * Both the client and the server need a host to open a menu, but we open menus from the server. This class takes care
+ * of serializing the original "location" of the menu so that the client can also have access to it.
  */
 public final class MenuLocator {
 
@@ -58,7 +56,13 @@ public final class MenuLocator {
          * addition to the above.
          */
         PLAYER_INVENTORY_WITH_BLOCK_CONTEXT,
+        /**
+         * A block entity at a given position.
+         */
         BLOCK,
+        /**
+         * A part (i.e. cable bus part) at the side of the given block position.
+         */
         PART
     }
 

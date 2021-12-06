@@ -27,9 +27,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.core.AELog;
+import appeng.menu.implementations.MenuTypeBuilder;
 
 /**
- * Allows opening menus generically.
+ * Forwards a menu open request to the {@link MenuTypeBuilder} that was used to build a {@link MenuType}.
  */
 public final class MenuOpener {
 

@@ -54,8 +54,6 @@ import appeng.util.Platform;
 
 /**
  * Builder that allows creation of menu types which can be opened from multiple types of hosts.
- *
- * @param <M>
  */
 public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
