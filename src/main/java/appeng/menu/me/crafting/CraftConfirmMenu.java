@@ -41,26 +41,20 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
+import appeng.api.storage.ISubMenuHost;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
-import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.MenuOpener;
+import appeng.menu.ISubMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.me.common.MEMonitorableMenu;
-import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.me.items.PatternTermMenu;
-import appeng.parts.reporting.CraftingTerminalPart;
-import appeng.parts.reporting.ItemTerminalPart;
-import appeng.parts.reporting.PatternEncodingTerminalPart;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
  */
-public class CraftConfirmMenu extends AEBaseMenu {
+public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     private static final String ACTION_BACK = "back";
     private static final String ACTION_CYCLE_CPU = "cycleCpu";
@@ -98,8 +92,11 @@ public class CraftConfirmMenu extends AEBaseMenu {
 
     private CraftingPlanSummary plan;
 
+    private final ITerminalHost host;
+
     public CraftConfirmMenu(int id, Inventory ip, ITerminalHost te) {
         super(TYPE, id, ip, te);
+        this.host = te;
         this.cpuCycler = new CraftingCPUCycler(this::cpuMatches, this::onCPUSelectionChanged);
         // A player can select no crafting CPU to use a suitable one automatically
         this.cpuCycler.setAllowNoSelection(true);
@@ -179,31 +176,12 @@ public class CraftConfirmMenu extends AEBaseMenu {
             return;
         }
 
-        MenuType<?> originalGui = null;
-
-        final IActionHost ah = this.getActionHost();
-        if (ah instanceof WirelessTerminalMenuHost) {
-            originalGui = MEMonitorableMenu.WIRELESS_TYPE;
-        }
-
-        if (ah instanceof ItemTerminalPart) {
-            originalGui = MEMonitorableMenu.TYPE;
-        }
-
-        if (ah instanceof CraftingTerminalPart) {
-            originalGui = CraftingTermMenu.TYPE;
-        }
-
-        if (ah instanceof PatternEncodingTerminalPart) {
-            originalGui = PatternTermMenu.TYPE;
-        }
-
         if (this.result != null && !this.result.simulation()) {
             final ICraftingService cc = this.getGrid().getCraftingService();
             final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
-            if (g != null && originalGui != null && this.getLocator() != null) {
-                MenuOpener.open(originalGui, getPlayerInventory().player, getLocator());
+            if (g != null) {
+                this.host.returnToMainMenu(getPlayer(), this);
             }
         }
     }
@@ -296,5 +274,10 @@ public class CraftConfirmMenu extends AEBaseMenu {
         } else {
             sendClientAction(ACTION_BACK);
         }
+    }
+
+    @Override
+    public ISubMenuHost getHost() {
+        return host;
     }
 }
