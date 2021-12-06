@@ -34,6 +34,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
+import appeng.api.inventories.AEApis;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -49,7 +50,7 @@ public interface IInterfaceTarget {
             return null;
 
         // our capability first: allows any storage channel
-        var accessor = IStorageMonitorableAccessor.SIDED.find(l, pos, null, be, side);
+        var accessor = AEApis.STORAGE_ACCESSOR.find(l, pos, null, be, side);
         if (accessor != null) {
             return wrapStorageMonitorable(accessor, src);
         }

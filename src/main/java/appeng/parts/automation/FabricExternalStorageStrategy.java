@@ -2,7 +2,6 @@ package appeng.parts.automation;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -14,11 +13,11 @@ import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.storage.MEStorage;
 import appeng.me.storage.StorageAdapter;
+import appeng.util.AEApiCache;
 import appeng.util.IVariantConversion;
 
 public class FabricExternalStorageStrategy<V extends TransferVariant<?>> implements ExternalStorageStrategy {
-    private final BlockApiCache<Storage<V>, Direction> apiCache;
-    private final Direction fromSide;
+    private final AEApiCache<Storage<V>> apiCache;
     private final IVariantConversion<V> conversion;
 
     public FabricExternalStorageStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
@@ -26,15 +25,14 @@ public class FabricExternalStorageStrategy<V extends TransferVariant<?>> impleme
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
-        this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
-        this.fromSide = fromSide;
+        this.apiCache = new AEApiCache<>(apiLookup, level, fromPos, fromSide);
         this.conversion = conversion;
     }
 
     @Nullable
     @Override
     public MEStorage createWrapper(boolean extractableOnly, Runnable injectOrExtractCallback) {
-        var storage = apiCache.find(fromSide);
+        var storage = apiCache.find();
         if (storage == null) {
             return null;
         }

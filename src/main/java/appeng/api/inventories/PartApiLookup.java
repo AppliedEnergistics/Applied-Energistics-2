@@ -3,7 +3,6 @@ package appeng.api.inventories;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -25,41 +24,22 @@ public final class PartApiLookup {
     private PartApiLookup() {
     }
 
-    // These two are used as identity hash maps - BlockApiLookup has identity semantics.
+    // Used as identity hash maps - BlockApiLookup has identity semantics.
     // We use ApiProviderMap because it ensures non-null keys and values.
-    private static final ApiProviderMap<BlockApiLookup<?, ?>, Function<?, Direction>> mappings = ApiProviderMap
+    private static final ApiProviderMap<BlockApiLookup<?, Direction>, ApiProviderMap<Class<?>, PartApiProvider<?, ?>>> providers = ApiProviderMap
             .create();
-    private static final ApiProviderMap<BlockApiLookup<?, ?>, ApiProviderMap<Class<?>, PartApiProvider<?, ?, ?>>> providers = ApiProviderMap
-            .create();
-    private static final Set<BlockApiLookup<?, ?>> cableBusRegisteredLookups = ConcurrentHashMap.newKeySet();
+    private static final Set<BlockApiLookup<?, Direction>> cableBusRegisteredLookups = ConcurrentHashMap.newKeySet();
     private static final Set<BlockEntityType<? extends IPartHost>> hostTypes = ConcurrentHashMap.newKeySet();
-
-    /**
-     * Register a function mapping the context of the passed lookup to {@link Direction}. This is necessary when the
-     * context is not {@link Direction}.
-     * <p>
-     * The location is only used to resolve which part the query targets; the api provider will receive the original
-     * context. If the mapping function returns null, no API will be returned for the query.
-     * <p>
-     * If multiple mapping functions are registered for a given lookup, it is the first that will be used.
-     */
-    public static <A, C> void registerCustomContext(BlockApiLookup<A, C> lookup,
-            Function<C, Direction> mappingFunction) {
-        mappings.putIfAbsent(lookup, mappingFunction);
-    }
 
     /**
      * Expose an API for a part class.
      * <p>
      * When looking for an API instance, providers are queried starting from the class of the part, and then moving up
      * to its superclass, and so on, until a provider returning a nonnull API is found.
-     * <p>
-     * If the context of the lookup is not {@link Direction}, you need to register a mapping function for your custom
-     * context! That must be done before this function is called. Currently the query will fail silently, but IT WILL
-     * throw an exception in the future!
      */
     @SuppressWarnings("ConstantConditions")
-    public static <A, C, P extends IPart> void register(BlockApiLookup<A, C> lookup, PartApiProvider<A, C, P> provider,
+    public static <A, C, P extends IPart> void register(BlockApiLookup<A, Direction> lookup,
+            PartApiProvider<A, P> provider,
             Class<P> partClass) {
         Objects.requireNonNull(lookup, "Registered lookup may not be null.");
 
@@ -69,7 +49,7 @@ public final class PartApiLookup {
         }
 
         providers.putIfAbsent(lookup, ApiProviderMap.create());
-        ApiProviderMap<Class<?>, PartApiProvider<?, ?, ?>> toProviderMap = providers.get(lookup);
+        ApiProviderMap<Class<?>, PartApiProvider<?, ?>> toProviderMap = providers.get(lookup);
 
         if (toProviderMap.putIfAbsent(partClass, provider) != null) {
             throw new IllegalArgumentException(
@@ -83,21 +63,17 @@ public final class PartApiLookup {
         }
     }
 
-    private static <A, C> void registerLookup(BlockEntityType<? extends IPartHost> hostType,
-            BlockApiLookup<A, C> lookup) {
+    private static <A> void registerLookup(BlockEntityType<? extends IPartHost> hostType,
+            BlockApiLookup<A, Direction> lookup) {
 
-        lookup.registerForBlockEntities((be, context) -> {
-            @Nullable
-            Direction location = mapContext(lookup, context);
-
-            if (location == null) {
+        lookup.registerForBlockEntity((be, direction) -> {
+            if (direction == null) {
                 return null;
             } else {
-                var partHost = (IPartHost) be;
-                var part = partHost.getPart(location);
+                var part = be.getPart(direction);
 
                 if (part != null) {
-                    return find(lookup, context, part);
+                    return find(lookup, part);
                 } else {
                     return null;
                 }
@@ -118,31 +94,17 @@ public final class PartApiLookup {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public static <C> Direction mapContext(BlockApiLookup<?, C> lookup, C context) {
-        Function<C, Direction> mapping = (Function<C, Direction>) mappings.get(lookup);
-
-        if (mapping != null) {
-            return mapping.apply(context);
-        } else if (context instanceof Direction direction) {
-            return direction;
-        } else {
-            return null;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Nullable
-    public static <A, C> A find(BlockApiLookup<A, C> lookup, C context, IPart part) {
-        ApiProviderMap<Class<?>, PartApiProvider<?, ?, ?>> toProviderMap = providers.get(lookup);
+    public static <A> A find(BlockApiLookup<A, Direction> lookup, IPart part) {
+        ApiProviderMap<Class<?>, PartApiProvider<?, ?>> toProviderMap = providers.get(lookup);
 
         if (lookup == null)
             return null;
 
         for (Class<?> klass = part.getClass(); klass != Object.class; klass = klass.getSuperclass()) {
-            PartApiProvider<A, C, IPart> provider = (PartApiProvider<A, C, IPart>) toProviderMap.get(klass);
+            PartApiProvider<A, IPart> provider = (PartApiProvider<A, IPart>) toProviderMap.get(klass);
 
             if (provider != null) {
-                A instance = provider.find(part, context);
+                A instance = provider.find(part);
 
                 if (instance != null) {
                     return instance;
@@ -154,17 +116,15 @@ public final class PartApiLookup {
     }
 
     @FunctionalInterface
-    public interface PartApiProvider<A, C, P extends IPart> {
+    public interface PartApiProvider<A, P extends IPart> {
         /**
-         * Return an API of type {@code A} if available in the given part with the given context, or {@code null}
-         * otherwise.
+         * Return an API of type {@code A} if available in the given part, or {@code null} otherwise.
          *
-         * @param part    The part.
-         * @param context Additional context passed to the query.
+         * @param part The part.
          * @return An API of type {@code A}, or {@code null} if no API is available.
          */
         @Nullable
-        A find(P part, C context);
+        A find(P part);
     }
 
 }

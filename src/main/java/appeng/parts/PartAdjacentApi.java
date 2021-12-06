@@ -2,11 +2,11 @@ package appeng.parts;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
+import appeng.util.AEApiCache;
 import appeng.util.Platform;
 
 /**
@@ -17,7 +17,7 @@ import appeng.util.Platform;
 public class PartAdjacentApi<A> {
     private final AEBasePart part;
     private final BlockApiLookup<A, Direction> apiLookup;
-    private BlockApiCache<A, Direction> apiCache;
+    private AEApiCache<A> apiCache;
 
     public PartAdjacentApi(AEBasePart part, BlockApiLookup<A, Direction> apiLookup) {
         this.apiLookup = apiLookup;
@@ -39,9 +39,9 @@ public class PartAdjacentApi<A> {
         }
 
         if (apiCache == null) {
-            apiCache = BlockApiCache.create(apiLookup, serverLevel, targetPos);
+            apiCache = new AEApiCache<>(apiLookup, serverLevel, targetPos, attachedSide.getOpposite());
         }
 
-        return apiCache.find(attachedSide.getOpposite());
+        return apiCache.find();
     }
 }
