@@ -18,13 +18,12 @@
 
 package appeng.parts.p2p;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 
+import appeng.api.lookup.AEApiLookup;
 import appeng.parts.PartAdjacentApi;
 
 /**
@@ -43,9 +42,9 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
     protected A outputHandler;
     protected A emptyHandler;
 
-    public CapabilityP2PTunnelPart(ItemStack is, BlockApiLookup<A, Direction> api) {
+    public CapabilityP2PTunnelPart(ItemStack is, AEApiLookup<A> api) {
         super(is);
-        this.targetApiCache = new PartAdjacentApi<A>(this, api);
+        this.targetApiCache = new PartAdjacentApi<>(this, api);
     }
 
     @Override

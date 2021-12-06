@@ -20,10 +20,10 @@ package appeng.parts.p2p;
 
 import java.util.List;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.lookup.AEApis;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 
@@ -37,7 +37,7 @@ public class ItemP2PTunnelPart extends StorageP2PTunnelPart<ItemP2PTunnelPart, I
     }
 
     public ItemP2PTunnelPart(final ItemStack is) {
-        super(is, ItemStorage.SIDED);
+        super(is, AEApis.ITEMS);
     }
 
     @Override
