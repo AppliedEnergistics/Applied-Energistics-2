@@ -37,7 +37,8 @@ final class TestPlots {
                 itemChest(),
                 fluidChest(),
                 skyCompassRendering(),
-                crystalGrowthAutoCrafting());
+                crystalGrowthAutoCrafting(),
+                importExportBus());
         return plots;
     }
 
@@ -249,6 +250,25 @@ final class TestPlots {
         plot.part("5 3 6", Direction.DOWN, AEParts.QUARTZ_FIBER);
         plot.part("6 3 6", Direction.DOWN, AEParts.ANNIHILATION_PLANE);
 
+        return plot;
+    }
+
+    public static Plot importExportBus() {
+        var plot = new Plot();
+        plot.chest("1 0 1", new ItemStack(Items.ACACIA_LOG, 16), new ItemStack(Items.ENDER_PEARL, 6));
+        plot.block("1 1 1", Blocks.HOPPER);
+        plot.creativeEnergyCell("3 -1 1");
+        plot.cable("3 0 1")
+                .part(Direction.NORTH, AEParts.TERMINAL);
+        plot.cable("2 0 1")
+                .part(Direction.WEST, AEParts.IMPORT_BUS);
+        plot.cable("2 1 1")
+                .part(Direction.WEST, AEParts.EXPORT_BUS, bus -> {
+                    bus.getConfig().setStack(0, new GenericStack(AEItemKey.of(Items.ENDER_PEARL), 1));
+                });
+        plot.blockEntity("3 -1 0", AEBlocks.DRIVE, drive -> {
+            drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.stack());
+        });
         return plot;
     }
 }

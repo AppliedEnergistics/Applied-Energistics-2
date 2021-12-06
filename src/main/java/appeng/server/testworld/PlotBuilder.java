@@ -6,6 +6,9 @@ import java.util.function.Function;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluid;
@@ -15,6 +18,7 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ColoredItemDefinition;
 import appeng.core.definitions.ItemDefinition;
@@ -26,16 +30,21 @@ public interface PlotBuilder {
 
     BoundingBox bb(String def);
 
-    default void cable(String bb, ColoredItemDefinition definition) {
-        cable(bb, definition, AEColor.TRANSPARENT);
+    default CableBuilder cable(String bb) {
+        return cable(bb, AEParts.GLASS_CABLE, AEColor.TRANSPARENT);
     }
 
-    default void cable(String bb, ColoredItemDefinition definition, AEColor color) {
-        cable(bb, definition.stack(color));
+    default CableBuilder cable(String bb, ColoredItemDefinition definition) {
+        return cable(bb, definition, AEColor.TRANSPARENT);
     }
 
-    default void cable(String bb, ItemStack what) {
+    default CableBuilder cable(String bb, ColoredItemDefinition definition, AEColor color) {
+        return cable(bb, definition.stack(color));
+    }
+
+    default CableBuilder cable(String bb, ItemStack what) {
         addBuildAction(new PlacePart(bb(bb), what, null));
+        return new CableBuilder(this, bb);
     }
 
     default void part(String bb, Direction side, ItemDefinition<? extends PartItem<?>> part) {
@@ -67,6 +76,20 @@ public interface PlotBuilder {
         blockState(bb, block.block().defaultBlockState());
         var type = block.block().getBlockEntityType();
         addBuildAction(new BlockEntityCustomizer<>(bb(bb), type, postProcessor));
+    }
+
+    default void chest(String bb, ItemStack... stacks) {
+        block(bb, Blocks.CHEST);
+        customizeBlockEntity(bb, BlockEntityType.CHEST, chest -> {
+            for (int i = 0; i < stacks.length; i++) {
+                chest.setItem(i, stacks[i]);
+            }
+        });
+    }
+
+    default <T extends BlockEntity> void customizeBlockEntity(String bb, BlockEntityType<T> type,
+            Consumer<T> consumer) {
+        addBuildAction(new BlockEntityCustomizer<T>(bb(bb), type, consumer));
     }
 
     /**
