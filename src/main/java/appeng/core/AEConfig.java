@@ -577,7 +577,7 @@ public final class AEConfig {
 
             this.generateQuartzOre = worldGen.addBoolean("generateQuartzOre", true);
             this.quartzOresPerCluster = worldGen.addInt("quartzOresPerCluster", 7);
-            this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 30);
+            this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 20);
             this.quartzOresBiomeBlacklist = worldGen.addStringList("quartzOresBiomeBlacklist", new ArrayList<>(),
                     "Biome IDs in which quartz ores should NOT be generated (i.e. minecraft:plains).");
 
