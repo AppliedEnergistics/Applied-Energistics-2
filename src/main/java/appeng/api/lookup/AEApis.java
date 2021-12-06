@@ -20,15 +20,15 @@ import appeng.api.storage.IStorageMonitorableAccessor;
  */
 public final class AEApis {
     // AE2's
-    public static final AEApiLookup<ICraftingMachine> CRAFTING_MACHINE = AEApiLookup.get(BlockApiLookup.get(
+    public static final AEApiLookup<ICraftingMachine> CRAFTING_MACHINE = new AEApiLookup<>(BlockApiLookup.get(
             new ResourceLocation(AEConstants.MOD_ID, "icraftingmachine"), ICraftingMachine.class, Direction.class));
-    public static final AEApiLookup<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR = AEApiLookup.get(
+    public static final AEApiLookup<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR = new AEApiLookup<>(
             BlockApiLookup.get(new ResourceLocation(AEConstants.MOD_ID, "storage"), IStorageMonitorableAccessor.class,
                     Direction.class));
     // platform's
-    public static final AEApiLookup<Storage<ItemVariant>> ITEMS = AEApiLookup.get(ItemStorage.SIDED);
-    public static final AEApiLookup<Storage<FluidVariant>> FLUIDS = AEApiLookup.get(FluidStorage.SIDED);
-    public static final AEApiLookup<EnergyStorage> ENERGY = AEApiLookup.get(EnergyStorage.SIDED);
+    public static final AEApiLookup<Storage<ItemVariant>> ITEMS = new AEApiLookup<>(ItemStorage.SIDED);
+    public static final AEApiLookup<Storage<FluidVariant>> FLUIDS = new AEApiLookup<>(FluidStorage.SIDED);
+    public static final AEApiLookup<EnergyStorage> ENERGY = new AEApiLookup<>(EnergyStorage.SIDED);
 
     private AEApis() {
     }
