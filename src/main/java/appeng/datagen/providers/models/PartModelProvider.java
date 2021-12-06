@@ -1,14 +1,16 @@
 package appeng.datagen.providers.models;
 
-import appeng.core.AppEng;
+import java.util.function.BiFunction;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import javax.annotation.Nonnull;
-import java.util.function.BiFunction;
+import appeng.core.AppEng;
 
 public class PartModelProvider extends ModelProvider<BlockModelBuilder> {
     public PartModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {

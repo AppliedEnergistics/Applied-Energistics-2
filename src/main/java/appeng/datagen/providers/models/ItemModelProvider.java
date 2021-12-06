@@ -1,5 +1,13 @@
 package appeng.datagen.providers.models;
 
+import static appeng.core.AppEng.makeId;
+
+import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.common.data.ExistingFileHelper;
+
 import appeng.api.util.AEColor;
 import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.MemoryCardModel;
@@ -9,13 +17,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 import appeng.init.client.InitItemModelsProperties;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
-
-import static appeng.core.AppEng.makeId;
 
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider
         implements IAE2DataProvider {
@@ -135,9 +136,9 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
      * part of this model.
      */
     private void crystalSeed(ItemDefinition<?> seed,
-                             String texture0,
-                             String texture1,
-                             String texture2) {
+            String texture0,
+            String texture1,
+            String texture2) {
 
         var baseId = seed.id().getPath();
 
@@ -179,10 +180,10 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         // The color applicator uses a separate model when colored
         var coloredColorApplicator = withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath() + "_colored",
                 "item/generated")
-                .texture("layer0", makeId("item/color_applicator"))
-                .texture("layer1", makeId("item/color_applicator_tip_dark"))
-                .texture("layer2", makeId("item/color_applicator_tip_medium"))
-                .texture("layer3", makeId("item/color_applicator_tip_bright"));
+                        .texture("layer0", makeId("item/color_applicator"))
+                        .texture("layer1", makeId("item/color_applicator_tip_dark"))
+                        .texture("layer2", makeId("item/color_applicator_tip_medium"))
+                        .texture("layer3", makeId("item/color_applicator_tip_bright"));
         withExistingParent(AEItems.COLOR_APPLICATOR.id().getPath(), "item/generated")
                 .texture("layer0", makeId("item/color_applicator"))
                 // Use different model when colored

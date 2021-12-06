@@ -9,7 +9,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
@@ -30,7 +32,8 @@ final class TestPlots {
         Collections.addAll(plots,
                 allTerminals(),
                 itemChest(),
-                fluidChest());
+                fluidChest(),
+                skyCompassRendering());
         return plots;
     }
 
@@ -117,6 +120,9 @@ final class TestPlots {
             var r = new Random();
             for (var i = 0; i < 100; i++) {
                 var fluid = Registry.FLUID.getRandom(r);
+                if (fluid.isSame(Fluids.EMPTY) || !fluid.isSource(fluid.defaultFluidState())) {
+                    continue;
+                }
                 if (cellInv.insert(AEFluidKey.of(fluid), 64 * AEFluidKey.AMOUNT_BUCKET,
                         Actionable.MODULATE, new BaseActionSource()) == 0) {
                     break;
@@ -125,6 +131,31 @@ final class TestPlots {
             chest.setCell(cellItem);
         });
         plot.creativeEnergyCell("0 -1 0");
+        return plot;
+    }
+
+    public static Plot skyCompassRendering() {
+        var plot = new Plot();
+        plot.block("1 0 1", Blocks.STONE);
+        plot.blockEntity("0 0 1", AEBlocks.SKY_COMPASS, skyCompass -> {
+            skyCompass.setOrientation(Direction.WEST, Direction.UP);
+        });
+        plot.blockEntity("1 0 0", AEBlocks.SKY_COMPASS, skyCompass -> {
+            skyCompass.setOrientation(Direction.NORTH, Direction.UP);
+        });
+        plot.blockEntity("2 0 1", AEBlocks.SKY_COMPASS, skyCompass -> {
+            skyCompass.setOrientation(Direction.EAST, Direction.UP);
+        });
+        plot.blockEntity("1 0 2", AEBlocks.SKY_COMPASS, skyCompass -> {
+            skyCompass.setOrientation(Direction.SOUTH, Direction.UP);
+        });
+        plot.blockEntity("1 1 1", AEBlocks.SKY_COMPASS, skyCompass -> {
+            skyCompass.setOrientation(Direction.UP, Direction.EAST);
+        });
+        plot.block("1 3 1", Blocks.STONE);
+        plot.blockEntity("1 2 1", AEBlocks.SKY_COMPASS, skyCompass -> {
+            skyCompass.setOrientation(Direction.DOWN, Direction.EAST);
+        });
         return plot;
     }
 }
