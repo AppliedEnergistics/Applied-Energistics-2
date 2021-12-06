@@ -1,5 +1,7 @@
 package appeng.api.lookup;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.Nullable;
@@ -17,9 +19,16 @@ import net.minecraft.world.level.block.state.BlockState;
  * Wraps an API lookup on fabric or a capability on forge to allow for platform-independent API queries.
  */
 public final class AEApiLookup<A> {
+    private static final Map<BlockApiLookup<?, Direction>, AEApiLookup<?>> MAP = new IdentityHashMap<>();
+
+    @SuppressWarnings("unchecked")
+    public static synchronized <A> AEApiLookup<A> get(BlockApiLookup<A, Direction> lookup) {
+        return (AEApiLookup<A>) MAP.computeIfAbsent(lookup, AEApiLookup::new);
+    }
+
     private final BlockApiLookup<A, Direction> lookup;
 
-    public AEApiLookup(BlockApiLookup<A, Direction> lookup) {
+    private AEApiLookup(BlockApiLookup<A, Direction> lookup) {
         this.lookup = lookup;
     }
 
@@ -46,9 +55,8 @@ public final class AEApiLookup<A> {
         lookup.registerForBlockEntity(provider, blockEntityType);
     }
 
-    @SuppressWarnings("unchecked")
     public void registerSelf(BlockEntityType<?> blockEntityType) {
-        registerForBlockEntity((be, part) -> (A) be, blockEntityType);
+        lookup.registerSelf(blockEntityType);
     }
 
     public BlockApiLookup<A, Direction> getLookup() {
