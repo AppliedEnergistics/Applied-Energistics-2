@@ -261,6 +261,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     /**
      * Retrieve a previous result of testing whether <code>what</code> is a valid ingredient for <code>slot</code>.
+     * 
      * @return null if the result is unknown, otherwise indicates whether the key is valid or not.
      */
     @Nullable
