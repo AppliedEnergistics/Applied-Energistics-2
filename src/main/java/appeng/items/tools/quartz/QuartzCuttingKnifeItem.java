@@ -36,14 +36,11 @@ import appeng.items.AEBaseItem;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QuartzKnifeMenu;
-import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
-    private final QuartzToolType type;
 
     public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
         super(props);
-        this.type = type;
         // TODO FABRIC 117 This means knife doesnt lose durability when used in normal crafting
         this.craftingRemainingItem = this;
     }
@@ -67,11 +64,6 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
         p.swing(hand);
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 p.getItemInHand(hand));
-    }
-
-    @Override
-    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
-        return Platform.canRepair(this.type, a, b);
     }
 
     // TODO FABRIC 117 recipe remainders

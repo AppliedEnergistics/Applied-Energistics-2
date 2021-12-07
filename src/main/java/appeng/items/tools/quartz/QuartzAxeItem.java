@@ -20,21 +20,9 @@ package appeng.items.tools.quartz;
 
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
-
-import appeng.util.Platform;
 
 public class QuartzAxeItem extends AxeItem {
-    private final QuartzToolType type;
-
     public QuartzAxeItem(Item.Properties props, final QuartzToolType type) {
-        super(Tiers.IRON, 6.0F, -3.1F, props);
-        this.type = type;
-    }
-
-    @Override
-    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
-        return Platform.canRepair(this.type, a, b);
+        super(type.getToolTier(), 6.0F, -3.1F, props);
     }
 }
