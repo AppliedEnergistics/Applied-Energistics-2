@@ -20,17 +20,16 @@ package appeng.items.tools.quartz;
 
 import java.util.function.Supplier;
 
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.core.AppEng;
-import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
 
 public enum QuartzToolType {
-    CERTUS("certus_quartz", () -> Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL)),
-    NETHER("nether_quartz", () -> Ingredient.of(Items.QUARTZ)),
+    CERTUS("certus_quartz", () -> Ingredient.of(ConventionTags.CERTUS_QUARTZ)),
+    NETHER("nether_quartz", () -> Ingredient.of(ConventionTags.NETHER_QUARTZ)),
     ;
 
     private final Tier toolTier;
