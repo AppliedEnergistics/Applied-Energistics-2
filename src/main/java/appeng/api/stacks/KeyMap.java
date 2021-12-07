@@ -87,7 +87,7 @@ public final class KeyMap<K extends AEKey, V> implements Iterable<Map.Entry<K, V
         var subIndex = lists.get(key.getPrimaryKey());
         if (subIndex == null) {
             subIndex = VariantMap.create(key, defaultValue, defaultValueFactory);
-            lists.put(key, subIndex);
+            lists.put(key.getPrimaryKey(), subIndex);
         }
         return subIndex;
     }

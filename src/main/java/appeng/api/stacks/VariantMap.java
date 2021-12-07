@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
 
@@ -130,7 +130,7 @@ abstract class VariantMap<K extends AEKey, V> {
             super(defaultValue, defaultValueSupplier);
         }
 
-        private final Reference2ObjectMap<K, V> records = new Reference2ObjectOpenHashMap<>();
+        private final Object2ObjectMap<K, V> records = new Object2ObjectOpenHashMap<>();
 
         /**
          * For keys whose primary key does not support fuzzy range lookups, we simply return all records, which amounts
