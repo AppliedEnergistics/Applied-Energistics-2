@@ -18,7 +18,64 @@
 
 package appeng.items.tools.quartz;
 
+import java.util.function.Supplier;
+
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.crafting.Ingredient;
+
+import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
+
 public enum QuartzToolType {
-    CERTUS,
-    NETHER
+    CERTUS("certus_quartz", () -> Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL)),
+    NETHER("nether_quartz", () -> Ingredient.of(Items.QUARTZ)),
+    ;
+
+    private final Tier toolTier;
+
+    QuartzToolType(String name, Supplier<Ingredient> repairIngredient) {
+        this.toolTier = new Tier() {
+            @Override
+            public int getUses() {
+                return Tiers.IRON.getUses();
+            }
+
+            @Override
+            public float getSpeed() {
+                return Tiers.IRON.getSpeed();
+            }
+
+            @Override
+            public float getAttackDamageBonus() {
+                return Tiers.IRON.getAttackDamageBonus();
+            }
+
+            @Override
+            public int getLevel() {
+                return Tiers.IRON.getLevel();
+            }
+
+            @Override
+            public int getEnchantmentValue() {
+                return Tiers.IRON.getEnchantmentValue();
+            }
+
+            @Override
+            public Ingredient getRepairIngredient() {
+                return repairIngredient.get();
+            }
+
+            // This allows mods like LevelZ to identify our tools.
+            @Override
+            public String toString() {
+                return AppEng.MOD_ID + ":" + name;
+            }
+        };
+    }
+
+    public final Tier getToolTier() {
+        return toolTier;
+    }
 }

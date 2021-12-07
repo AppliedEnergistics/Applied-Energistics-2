@@ -54,7 +54,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ChunkPos;
@@ -88,10 +87,8 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEItems;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
-import appeng.items.tools.quartz.QuartzToolType;
 import appeng.me.GridNode;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
@@ -663,22 +660,6 @@ public class Platform {
         if (level != null && !level.isClientSide) {
             TickHandler.instance().addCallable(level, new BlockUpdate(pos));
         }
-    }
-
-    public static boolean canRepair(final QuartzToolType type, final ItemStack a, final ItemStack b) {
-        if (b.isEmpty() || a.isEmpty()) {
-            return false;
-        }
-
-        if (type == QuartzToolType.CERTUS) {
-            return AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(b);
-        }
-
-        if (type == QuartzToolType.NETHER) {
-            return Items.QUARTZ == b.getItem();
-        }
-
-        return false;
     }
 
     public static boolean isSortOrderAvailable(SortOrder order) {

@@ -20,22 +20,9 @@ package appeng.items.tools.quartz;
 
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
-
-import appeng.util.Platform;
 
 public class QuartzHoeItem extends HoeItem {
-    private final QuartzToolType type;
-
     public QuartzHoeItem(Item.Properties props, final QuartzToolType type) {
-        super(Tiers.IRON, -2, -1.0F, props);
-        this.type = type;
+        super(type.getToolTier(), -2, -1.0F, props);
     }
-
-    @Override
-    public boolean isValidRepairItem(final ItemStack a, final ItemStack b) {
-        return Platform.canRepair(this.type, a, b);
-    }
-
 }
