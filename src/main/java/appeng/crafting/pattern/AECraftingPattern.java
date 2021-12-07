@@ -236,6 +236,10 @@ public class AECraftingPattern implements IAEPatternDetails {
                     || sparseInputs[slot] != null && sparseInputs[slot].what().equals(key);
         }
 
+        if (key == null) {
+            return sparseInputs[slot] == null;
+        }
+
         var result = getTestResult(slot, key);
         if (result != null) {
             return result;
@@ -255,6 +259,11 @@ public class AECraftingPattern implements IAEPatternDetails {
         return newResult;
     }
 
+    /**
+     * Retrieve a previous result of testing whether <code>what</code> is a valid ingredient for <code>slot</code>.
+     * 
+     * @return null if the result is unknown, otherwise indicates whether the key is valid or not.
+     */
     @Nullable
     private Boolean getTestResult(int slot, AEItemKey what) {
         if (what == null || what.hasTag()) {
