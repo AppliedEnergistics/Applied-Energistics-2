@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.parts.IPart;
 import appeng.me.cache.GridStorageCache;
 import appeng.tile.misc.TileInterface;
 import appeng.tile.networking.TileCableBus;
@@ -326,7 +327,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			// In case the TE was destroyed, we have to do a full reset immediately.
 			if( te instanceof TileCableBus )
 			{
-				if( ( (TileCableBus) te ).getPart( this.getSide().getOpposite() ) instanceof PartInterface )
+				IPart iPart = ( (TileCableBus) te ).getPart( this.getSide().getOpposite() );
+				if( iPart == null || iPart instanceof PartInterface )
 				{
 					this.resetCache( true );
 					this.resetCache();

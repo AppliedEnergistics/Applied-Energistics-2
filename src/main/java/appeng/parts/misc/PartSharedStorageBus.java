@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import appeng.api.config.AccessRestriction;
+import appeng.api.parts.IPart;
 import appeng.fluids.parts.PartFluidInterface;
 import appeng.fluids.tile.TileFluidInterface;
 import appeng.tile.misc.TileInterface;
@@ -174,7 +175,8 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 			// In case the TE was destroyed, we have to do a full reset immediately.
 			if( te instanceof TileCableBus )
 			{
-				if( ( (TileCableBus) te ).getPart( this.getSide().getOpposite() ) instanceof PartFluidInterface )
+				IPart iPart = ( (TileCableBus) te ).getPart( this.getSide().getOpposite() );
+				if( iPart == null || iPart instanceof PartFluidInterface )
 				{
 					this.resetCache( true );
 					this.resetCache();

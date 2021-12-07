@@ -458,6 +458,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 			if( cfg != hasConfig )
 			{
 				resetConfigCache = true;
+				this.notifyNeighbors();
 			}
 		}
 		else if( inventory == this.tanks )

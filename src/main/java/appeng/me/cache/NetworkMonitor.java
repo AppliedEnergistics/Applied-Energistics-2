@@ -45,7 +45,7 @@ import java.util.Map.Entry;
 public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 {
 	@Nonnull
-	private static final HashMap<IActionSource, Set<NetworkMonitor<?>>> src2MonitorsMap = new HashMap<>();
+	private static final HashMap<IActionSource, LinkedList<NetworkMonitor<?>>> src2MonitorsMap = new HashMap<>();
 	private static final Set<IActionSource> nestingSources = new HashSet<>();
 
 	protected boolean wasNested = false;
@@ -61,7 +61,6 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	private final Object2ObjectMap<IMEMonitorHandlerReceiver<T>, Object> listeners;
 
 	private boolean sendEvent = false;
-	private boolean forceUpdate = false;
 	private long gridItemCount;
 	private long gridFluidCount;
 
@@ -226,19 +225,14 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	protected void postChange( final boolean add, final Iterable<T> changes, final IActionSource src )
 	{
-		src2MonitorsMap.putIfAbsent( src, new HashSet<>() );
-		isNested = false;
-		if( nestingSources.contains( src ) )
-		{
-			forceUpdate = true;
-		}
-		if( !src2MonitorsMap.get( src ).add( this ) )
+		src2MonitorsMap.putIfAbsent( src, new LinkedList<>() );
+		if( src2MonitorsMap.get( src ).contains( this ) )
 		{
 			nestingSources.add( src );
-			forceUpdate = true;
-			src2MonitorsMap.get( src ).forEach( networkMonitor -> networkMonitor.isNested = true );
 			return;
 		}
+		src2MonitorsMap.get( src ).add( this );
+		isNested = false;
 
 		this.sendEvent = true;
 
@@ -282,23 +276,25 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 		this.notifyListenersOfChange( changes, src );
 
-		src2MonitorsMap.get( src ).remove( this );
-		if( src2MonitorsMap.get( src ).isEmpty() )
+		if( src2MonitorsMap.get( src ).getFirst() == this )
 		{
+			boolean nested = nestingSources.contains( src );
+			src2MonitorsMap.get( src ).forEach( networkMonitor -> networkMonitor.isNested = nested );
+
+			src2MonitorsMap.get( src ).forEach( networkMonitor -> {
+				if( networkMonitor.isNested != networkMonitor.wasNested )
+				{
+					networkMonitor.wasNested = networkMonitor.isNested;
+					networkMonitor.forceUpdate();
+				}
+			} );
 			src2MonitorsMap.remove( src );
 			nestingSources.remove( src );
-		}
-
-		if( isNested != wasNested || forceUpdate )
-		{
-			wasNested = isNested;
-			forceUpdate();
 		}
 	}
 
 	void forceUpdate()
 	{
-		forceUpdate = false;
 		this.cachedList.resetStatus();
 		this.getAvailableItems( this.cachedList );
 

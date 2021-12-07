@@ -185,6 +185,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			if( cfg != hasConfig )
 			{
 				resetConfigCache = true;
+				this.notifyNeighbors();
 			}
 		}
 		else if( inv == this.patterns && ( !removed.isEmpty() || !added.isEmpty() ) )
