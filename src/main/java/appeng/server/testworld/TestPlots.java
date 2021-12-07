@@ -38,7 +38,8 @@ final class TestPlots {
                 fluidChest(),
                 skyCompassRendering(),
                 crystalGrowthAutoCrafting(),
-                importExportBus());
+                importExportBus(),
+                AutoCraftingTestPlot.create());
         return plots;
     }
 

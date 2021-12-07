@@ -78,7 +78,6 @@ public class CraftingCalculation {
             try {
                 return computeCraft(false);
             } catch (final CraftBranchFailure e) {
-                this.simulate = true;
                 return computeCraft(true);
             }
         } catch (Exception ex) {
@@ -90,6 +89,8 @@ public class CraftingCalculation {
     }
 
     private CraftingPlan computeCraft(boolean simulate) throws CraftBranchFailure, InterruptedException {
+        this.simulate = simulate;
+
         final Stopwatch timer = Stopwatch.createStarted();
 
         ChildCraftingSimulationState craftingInventory = new ChildCraftingSimulationState(networkInv);

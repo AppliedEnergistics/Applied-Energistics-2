@@ -2,6 +2,7 @@ package appeng.server.testworld;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 
 class Plot implements PlotBuilder {
     private final List<BuildAction> buildActions = new ArrayList<>();
@@ -60,4 +64,10 @@ class Plot implements PlotBuilder {
         }
     }
 
+    /**
+     * Runs a given callback once the grid has been initialized at all viable nodes in the given bounding box.
+     */
+    public void afterGridInitAt(String bb, BiConsumer<IGrid, IGridNode> consumer) {
+        buildActions.add(new PostGridInitAction(bb(bb), consumer));
+    }
 }
