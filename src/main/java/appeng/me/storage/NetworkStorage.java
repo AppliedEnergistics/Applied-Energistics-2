@@ -46,6 +46,8 @@ public class NetworkStorage implements MEStorage {
     private static final ThreadLocal<Deque<NetworkStorage>> DEPTH_SIM = new ThreadLocal<>();
     private static final Comparator<Integer> PRIORITY_SORTER = (o1, o2) -> Integer.compare(o2, o1);
 
+    private boolean lockMounts;
+
     private static int currentPass = 0;
 
     private final SecurityService security;
@@ -59,11 +61,23 @@ public class NetworkStorage implements MEStorage {
     }
 
     public void mount(int priority, MEStorage inventory) {
+        if (lockMounts) {
+            throw new IllegalStateException("Trying to mount storage "
+                    + inventory.getDescription().getString()
+                    + " while an operation is in progress.");
+        }
+
         this.priorityInventory.computeIfAbsent(priority, k -> new ArrayList<>())
                 .add(inventory);
     }
 
     public void unmount(MEStorage inventory) {
+        if (lockMounts) {
+            throw new IllegalStateException("Trying to unmount storage "
+                    + inventory.getDescription().getString()
+                    + " while an operation is in progress.");
+        }
+
         var prioIt = this.priorityInventory.entrySet().iterator();
         while (prioIt.hasNext()) {
             var prioEntry = prioIt.next();
@@ -85,29 +99,37 @@ public class NetworkStorage implements MEStorage {
         }
 
         var remaining = amount;
-        for (var invList : this.priorityInventory.values()) {
-            secondPassInventories.clear();
 
-            // First give every inventory a chance to accept the item if it's preferential storage for the given stack
-            var ii = invList.iterator();
-            while (ii.hasNext() && remaining > 0) {
-                var inv = ii.next();
+        this.lockMounts = true;
+        try {
+            for (var invList : this.priorityInventory.values()) {
+                secondPassInventories.clear();
 
-                if (inv.isPreferredStorageFor(what, src)) {
+                // First give every inventory a chance to accept the item if it's preferential storage for the given
+                // stack
+                var ii = invList.iterator();
+                while (ii.hasNext() && remaining > 0) {
+                    var inv = ii.next();
+
+                    if (inv.isPreferredStorageFor(what, src)) {
+                        remaining -= inv.insert(what, remaining, type, src);
+                    } else {
+                        secondPassInventories.add(inv);
+                    }
+                }
+
+                // Then give every remaining inventory a chance
+                for (var inv : secondPassInventories) {
+                    if (remaining <= 0) {
+                        break;
+                    }
+
                     remaining -= inv.insert(what, remaining, type, src);
-                } else {
-                    secondPassInventories.add(inv);
                 }
             }
 
-            // Then give every remaining inventory a chance
-            for (var inv : secondPassInventories) {
-                if (remaining <= 0) {
-                    break;
-                }
-
-                remaining -= inv.insert(what, remaining, type, src);
-            }
+        } finally {
+            this.lockMounts = false;
         }
 
         this.surface(type);
@@ -179,18 +201,20 @@ public class NetworkStorage implements MEStorage {
             return 0;
         }
 
-        var i = this.priorityInventory.descendingMap().values().iterator();
-
         var extracted = 0L;
-        while (i.hasNext()) {
-            var invList = i.next();
 
-            var ii = invList.iterator();
-            while (ii.hasNext() && extracted < amount) {
-                var inv = ii.next();
+        this.lockMounts = true;
+        try {
+            for (var invList : this.priorityInventory.descendingMap().values()) {
+                var ii = invList.iterator();
+                while (ii.hasNext() && extracted < amount) {
+                    var inv = ii.next();
 
-                extracted += inv.extract(what, amount - extracted, mode, source);
+                    extracted += inv.extract(what, amount - extracted, mode, source);
+                }
             }
+        } finally {
+            this.lockMounts = false;
         }
 
         this.surface(mode);
