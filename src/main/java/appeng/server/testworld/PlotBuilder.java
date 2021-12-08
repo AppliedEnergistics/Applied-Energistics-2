@@ -5,8 +5,10 @@ import java.util.function.Function;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HopperBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,6 +85,30 @@ public interface PlotBuilder {
         customizeBlockEntity(bb, BlockEntityType.CHEST, chest -> {
             for (int i = 0; i < stacks.length; i++) {
                 chest.setItem(i, stacks[i]);
+            }
+        });
+    }
+
+    default void filledHopper(String bb, Direction direction, ItemLike item) {
+        var stack = new ItemStack(item);
+        stack.setCount(stack.getMaxStackSize());
+        filledHopper(bb, direction, stack);
+    }
+
+    default void filledHopper(String bb, Direction direction, ItemStack stack) {
+        blockState(bb, Blocks.HOPPER.defaultBlockState().setValue(HopperBlock.FACING, direction));
+        customizeBlockEntity(bb, BlockEntityType.HOPPER, hopper -> {
+            for (int i = 0; i < hopper.getContainerSize(); i++) {
+                hopper.setItem(i, stack.copy());
+            }
+        });
+    }
+
+    default void hopper(String bb, Direction direction, ItemStack... stacks) {
+        blockState(bb, Blocks.HOPPER.defaultBlockState().setValue(HopperBlock.FACING, direction));
+        customizeBlockEntity(bb, BlockEntityType.HOPPER, hopper -> {
+            for (int i = 0; i < stacks.length; i++) {
+                hopper.setItem(i, stacks[i]);
             }
         });
     }

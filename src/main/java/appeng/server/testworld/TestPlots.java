@@ -9,6 +9,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
@@ -39,6 +40,7 @@ final class TestPlots {
                 skyCompassRendering(),
                 crystalGrowthAutoCrafting(),
                 importExportBus(),
+                inscriber(),
                 AutoCraftingTestPlot.create());
         return plots;
     }
@@ -271,5 +273,43 @@ final class TestPlots {
             drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.stack());
         });
         return plot;
+    }
+
+    private static Plot inscriber() {
+        var plot = new Plot();
+
+        processorInscriber(plot.offset(0, 1, 2), AEItems.LOGIC_PROCESSOR_PRESS, Items.GOLD_INGOT);
+        processorInscriber(plot.offset(5, 1, 2), AEItems.ENGINEERING_PROCESSOR_PRESS, Items.DIAMOND);
+        processorInscriber(plot.offset(10, 1, 2), AEItems.CALCULATION_PROCESSOR_PRESS, AEItems.CERTUS_QUARTZ_CRYSTAL);
+
+        return plot;
+    }
+
+    private static void processorInscriber(PlotBuilder plot, ItemLike processorPress, ItemLike processorMaterial) {
+        // Set up the inscriber for the processor print
+        plot.filledHopper("-1 3 0", Direction.DOWN, processorMaterial);
+        plot.creativeEnergyCell("-1 2 1");
+        plot.blockEntity("-1 2 0", AEBlocks.INSCRIBER, inscriber -> {
+            inscriber.getInternalInventory().setItemDirect(0, new ItemStack(processorPress));
+            inscriber.setOrientation(Direction.NORTH, Direction.WEST);
+        });
+
+        // Set up the inscriber for the silicon print
+        plot.filledHopper("1 3 0", Direction.DOWN, AEItems.SILICON);
+        plot.creativeEnergyCell("1 2 1");
+        plot.blockEntity("1 2 0", AEBlocks.INSCRIBER, inscriber -> {
+            inscriber.getInternalInventory().setItemDirect(0, AEItems.SILICON_PRESS.stack());
+            inscriber.setOrientation(Direction.NORTH, Direction.WEST);
+        });
+
+        // Set up the inscriber for assembly
+        plot.hopper("1 1 0", Direction.WEST);
+        plot.hopper("-1 1 0", Direction.EAST);
+        plot.filledHopper("0 2 0", Direction.DOWN, Items.REDSTONE);
+        plot.creativeEnergyCell("0 1 1");
+        plot.blockEntity("0 1 0", AEBlocks.INSCRIBER, inscriber -> {
+            inscriber.setOrientation(Direction.NORTH, Direction.WEST);
+        });
+        plot.hopper("0 0 0", Direction.DOWN);
     }
 }
