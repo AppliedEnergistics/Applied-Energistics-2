@@ -172,10 +172,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 }
 
                 // Try falling back to whatever is available
-                var firstKey = list.getFirstKey();
-                if (firstKey instanceof AEItemKey itemKey) {
-                    this.gridInv.setItemDirect(sparseIndex, itemKey.toStack());
-                    list.remove(firstKey, 1);
+                for (var entry : list) {
+                    if (entry.getLongValue() > 0 && entry.getKey() instanceof AEItemKey itemKey) {
+                        this.gridInv.setItemDirect(sparseIndex, itemKey.toStack());
+                        list.remove(itemKey, 1);
+                        break;
+                    }
                 }
             }
         }
