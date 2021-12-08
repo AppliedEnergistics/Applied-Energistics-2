@@ -47,7 +47,6 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
@@ -130,23 +129,18 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
     @Override
     protected boolean readFromStream(final FriendlyByteBuf data) {
-        final boolean c = super.readFromStream(data);
-        final int slot = data.readByte();
+        var c = super.readFromStream(data);
 
-        final boolean oldSmash = this.isSmash();
-        final boolean newSmash = (slot & 64) == 64;
+        var oldSmash = isSmash();
+        var newSmash = data.readBoolean();
 
         if (oldSmash != newSmash && newSmash) {
-            this.setSmash(true);
-            this.setClientStart(System.currentTimeMillis());
+            setSmash(true);
+            setClientStart(System.currentTimeMillis());
         }
 
-        for (int num = 0; num < this.inv.size(); num++) {
-            if ((slot & 1 << num) > 0) {
-                this.inv.setItemDirect(num, AEItemKey.fromPacket(data).toStack());
-            } else {
-                this.inv.setItemDirect(num, ItemStack.EMPTY);
-            }
+        for (int i = 0; i < this.inv.size(); i++) {
+            this.inv.setItemDirect(i, data.readItem());
         }
         this.cachedTask = null;
 
@@ -156,20 +150,10 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     @Override
     protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
-        int slot = this.isSmash() ? 64 : 0;
 
-        for (int num = 0; num < this.inv.size(); num++) {
-            if (!this.inv.getStackInSlot(num).isEmpty()) {
-                slot |= 1 << num;
-            }
-        }
-
-        data.writeByte(slot);
-        for (int num = 0; num < this.inv.size(); num++) {
-            if ((slot & 1 << num) > 0) {
-                var st = AEItemKey.of(this.inv.getStackInSlot(num));
-                st.writeToPacket(data);
-            }
+        data.writeBoolean(isSmash());
+        for (int i = 0; i < this.inv.size(); i++) {
+            data.writeItem(inv.getStackInSlot(i));
         }
     }
 
