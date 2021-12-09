@@ -80,7 +80,6 @@ public abstract class IconButton extends Button implements ITooltip {
                 fill(poseStack, this.x - 1, this.y - 1, this.x + width + 1, this.y + height + 1, 0xFFFFFFFF);
             }
 
-            // it :|
             if (this.halfSize) {
                 poseStack.pushPose();
                 poseStack.translate(this.x, this.y, 0.0F);
