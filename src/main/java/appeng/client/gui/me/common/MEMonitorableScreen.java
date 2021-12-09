@@ -34,7 +34,6 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
@@ -56,7 +55,6 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.client.ActionKey;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
@@ -71,7 +69,6 @@ import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEngClient;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -122,11 +119,19 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
                     "Cannot construct screen " + getClass() + " without a terminalStyles setting");
         }
 
+        this.searchField = widgets.addTextField("search");
+
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.repo = new Repo(scrollbar, this);
         menu.setClientRepo(this.repo);
         this.repo.setUpdateViewListener(this::updateScrollbar);
         updateScrollbar();
+
+        this.searchField.setResponder(text -> {
+            repo.setSearchString(text);
+            repo.updateView();
+            updateScrollbar();
+        });
 
         this.imageWidth = this.style.getScreenWidth();
         this.imageHeight = this.style.getScreenHeight(0);
@@ -297,18 +302,6 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
 
         super.init();
 
-        Rect2i searchFieldRect = style.getSearchFieldRect();
-        this.searchField = new AETextField(this.font,
-                this.leftPos + searchFieldRect.getX(),
-                this.topPos + searchFieldRect.getY(),
-                searchFieldRect.getWidth(),
-                searchFieldRect.getHeight());
-        this.searchField.setBordered(false);
-        this.searchField.setMaxLength(25);
-        this.searchField.setTextColor(0xFFFFFF);
-        this.searchField.setSelectionColor(0xFF008000);
-        this.searchField.setVisible(true);
-
         SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
         this.isAutoFocus = SearchBoxMode.AUTOSEARCH == searchMode || SearchBoxMode.JEI_AUTOSEARCH == searchMode
                 || SearchBoxMode.AUTOSEARCH_KEEP == searchMode || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchMode;
@@ -318,9 +311,8 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
         final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchMode
                 || SearchBoxMode.JEI_MANUAL_SEARCH == searchMode;
 
-        this.searchField.setFocus(this.isAutoFocus);
-        if (this.searchField.isFocused()) {
-            this.setFocused(this.searchField);
+        if (this.isAutoFocus) {
+            setInitialFocus(this.searchField);
         }
 
         if (isJEIEnabled) {
@@ -370,10 +362,6 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
 
     @Override
     public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
-        if (this.searchField.mouseClicked(xCoord, yCoord, btn)) {
-            return true;
-        }
-
         // Right-clicking on the search field should clear it
         if (this.searchField.isMouseOver(xCoord, yCoord) && btn == 1) {
             this.searchField.setValue("");
@@ -593,7 +581,7 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
     }
 
     @Override
-    public boolean charTyped(char character, int p_charTyped_2_) {
+    public boolean charTyped(char character, int modifiers) {
         if (character == ' ' && this.searchField.getValue().isEmpty()) {
             return true;
         }
@@ -602,48 +590,20 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
             this.setInitialFocus(this.searchField);
         }
 
-        if (this.searchField.isFocused() && this.searchField.charTyped(character, p_charTyped_2_)) {
-            this.repo.setSearchString(this.searchField.getValue());
-            this.repo.updateView();
-            this.updateScrollbar();
-            return true;
-        }
-
-        return false;
+        return super.charTyped(character, modifiers);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-
         Key input = InputConstants.getKey(keyCode, scanCode);
+        if (this.checkHotbarKeys(input)) {
+            return true;
+        }
 
-        if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
-            if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.searchField.setFocus(!this.searchField.isFocused());
-                if (this.searchField.isFocused()) {
-                    this.setFocused(this.searchField);
-                }
-                return true;
-            }
-
-            if (this.searchField.isFocused()) {
-                if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocus(false);
-                    this.setFocused(null);
-                    return true;
-                }
-
-                if (this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                    this.repo.setSearchString(this.searchField.getValue());
-                    this.repo.updateView();
-                    this.updateScrollbar();
-                }
-
-                // We need to swallow key presses if the field is focused because typing 'e'
-                // would otherwise close
-                // the screen
-                return true;
-            }
+        if (this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
+            this.searchField.setFocus(false);
+            this.setFocused(null);
+            return true;
         }
 
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);

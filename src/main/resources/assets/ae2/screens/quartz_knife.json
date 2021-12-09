@@ -15,6 +15,14 @@
       "top": 44
     }
   },
+  "widgets": {
+    "name": {
+      "left": 21,
+      "top": 30,
+      "width": 90,
+      "height": 12
+    }
+  },
   "text": {
     "dialog_title": {
       "text": {

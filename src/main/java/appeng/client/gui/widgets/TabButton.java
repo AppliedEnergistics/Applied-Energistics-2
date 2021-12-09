@@ -24,6 +24,7 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -92,23 +93,8 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public int getTooltipAreaX() {
-        return this.x;
-    }
-
-    @Override
-    public int getTooltipAreaY() {
-        return this.y;
-    }
-
-    @Override
-    public int getTooltipAreaWidth() {
-        return 22;
-    }
-
-    @Override
-    public int getTooltipAreaHeight() {
-        return 22;
+    public Rect2i getTooltipArea() {
+        return new Rect2i(x, y, 22, 22);
     }
 
     @Override

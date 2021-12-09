@@ -26,6 +26,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
@@ -37,7 +39,7 @@ import net.minecraft.network.chat.TextComponent;
  * <p>
  * The rendering does pay attention to the size of the '_' caret.
  */
-public class AETextField extends EditBox {
+public class AETextField extends EditBox implements IResizableWidget {
     private static final int PADDING = 2;
 
     private final int _fontPad;
@@ -59,6 +61,37 @@ public class AETextField extends EditBox {
                 TextComponent.EMPTY);
 
         this._fontPad = fontRenderer.width("_");
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+
+        // Swallow all key presses except for focus escape when we're focused to prevent "e" from
+        // closing the window instead of typing into the text field
+        return isFocused() && canConsumeInput() && keyCode != GLFW.GLFW_KEY_TAB && keyCode != GLFW.GLFW_KEY_ESCAPE;
+    }
+
+    @Override
+    public void setX(int x) {
+        super.setX(x + PADDING);
+    }
+
+    @Override
+    public void setY(int y) {
+        this.y = y + PADDING;
+    }
+
+    @Override
+    public void setHeight(int height) {
+        this.height = height - 2 * PADDING;
+    }
+
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width - 2 * PADDING - _fontPad);
     }
 
     public void selectAll() {

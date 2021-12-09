@@ -18,7 +18,7 @@
 
 package appeng.client.gui;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -40,7 +40,9 @@ import net.minecraft.network.chat.Component;
 import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
+import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.BackgroundPanel;
+import appeng.client.gui.widgets.IResizableWidget;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
@@ -57,9 +59,9 @@ import appeng.menu.implementations.PriorityMenu;
  */
 public class WidgetContainer {
     private final ScreenStyle style;
-    private final Map<String, AbstractWidget> widgets = new HashMap<>();
-    private final Map<String, ICompositeWidget> compositeWidgets = new HashMap<>();
-    private final Map<String, ResolvedTooltipArea> tooltips = new HashMap<>();
+    private final Map<String, AbstractWidget> widgets = new LinkedHashMap<>();
+    private final Map<String, ICompositeWidget> compositeWidgets = new LinkedHashMap<>();
+    private final Map<String, ResolvedTooltipArea> tooltips = new LinkedHashMap<>();
 
     public WidgetContainer(ScreenStyle style) {
         this.style = style;
@@ -74,7 +76,11 @@ public class WidgetContainer {
             widget.setWidth(widgetStyle.getWidth());
         }
         if (widgetStyle.getHeight() != 0) {
-            widget.height = widgetStyle.getHeight();
+            if (widget instanceof IResizableWidget resizableWidget) {
+                resizableWidget.setHeight(widgetStyle.getHeight());
+            } else {
+                widget.height = widgetStyle.getHeight();
+            }
         }
 
         if (widget instanceof TabButton) {
@@ -132,7 +138,7 @@ public class WidgetContainer {
     /**
      * Adds a panel to the screen, which takes its background from the style's "images" section, and it's position from
      * the widget section.
-     * 
+     *
      * @param id The id used to look up the background image and bounds in the style.
      */
     public void addBackgroundPanel(String id) {
@@ -141,23 +147,31 @@ public class WidgetContainer {
     }
 
     void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
-        for (Map.Entry<String, AbstractWidget> entry : widgets.entrySet()) {
+        for (var entry : widgets.entrySet()) {
             AbstractWidget widget = entry.getValue();
+            if (widget.isFocused()) {
+                widget.changeFocus(false); // Minecraft already cleared focus on the screen
+            }
 
             // Position the widget
             WidgetStyle widgetStyle = style.getWidget(entry.getKey());
             Point pos = widgetStyle.resolve(bounds);
-            widget.x = pos.getX();
-            widget.y = pos.getY();
+            if (widget instanceof IResizableWidget resizableWidget) {
+                resizableWidget.setX(pos.getX());
+                resizableWidget.setY(pos.getY());
+            } else {
+                widget.x = pos.getX();
+                widget.y = pos.getY();
+            }
 
             addWidget.accept(widget);
         }
 
         // For composite widgets, just position them. Positions for these widgets are generally relative to the dialog
         Rect2i relativeBounds = new Rect2i(0, 0, bounds.getWidth(), bounds.getHeight());
-        for (Map.Entry<String, ICompositeWidget> entry : compositeWidgets.entrySet()) {
-            ICompositeWidget widget = entry.getValue();
-            WidgetStyle widgetStyle = style.getWidget(entry.getKey());
+        for (var entry : compositeWidgets.entrySet()) {
+            var widget = entry.getValue();
+            var widgetStyle = style.getWidget(entry.getKey());
             widget.setPosition(widgetStyle.resolve(relativeBounds));
 
             widget.populateScreen(addWidget, bounds, screen);
@@ -336,6 +350,18 @@ public class WidgetContainer {
     private static boolean contains(Rect2i area, int mouseX, int mouseY) {
         return mouseX >= area.getX() && mouseX < area.getX() + area.getWidth()
                 && mouseY >= area.getY() && mouseY < area.getY() + area.getHeight();
+    }
+
+    public AETextField addTextField(String id) {
+        var searchField = new AETextField(Minecraft.getInstance().font,
+                0, 0, 0, 0);
+        searchField.setBordered(false);
+        searchField.setMaxLength(25);
+        searchField.setTextColor(0xFFFFFF);
+        searchField.setSelectionColor(0xFF008000);
+        searchField.setVisible(true);
+        add(id, searchField);
+        return searchField;
     }
 
     private static class ResolvedTooltipArea {

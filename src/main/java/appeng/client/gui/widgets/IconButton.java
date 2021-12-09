@@ -24,9 +24,8 @@ import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -61,8 +60,6 @@ public abstract class IconButton extends Button implements ITooltip {
     @Override
     public void renderButton(PoseStack poseStack, final int mouseX, final int mouseY, float partial) {
 
-        Minecraft minecraft = Minecraft.getInstance();
-
         if (this.visible) {
             final Icon icon = this.getIcon();
 
@@ -71,14 +68,20 @@ public abstract class IconButton extends Button implements ITooltip {
                 blitter.opacity(0.5f);
             }
 
-            TextureManager textureManager = minecraft.getTextureManager();
-            RenderSystem.disableDepthTest();
-            RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
-            // it :|
             if (this.halfSize) {
                 this.width = 8;
                 this.height = 8;
+            }
 
+            RenderSystem.disableDepthTest();
+            RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
+
+            if (isFocused()) {
+                fill(poseStack, this.x - 1, this.y - 1, this.x + width + 1, this.y + height + 1, 0xFFFFFFFF);
+            }
+
+            // it :|
+            if (this.halfSize) {
                 poseStack.pushPose();
                 poseStack.translate(this.x, this.y, 0.0F);
                 poseStack.scale(0.5f, 0.5f, 1.f);
@@ -95,10 +98,6 @@ public abstract class IconButton extends Button implements ITooltip {
                 icon.getBlitter().dest(x, y).blit(poseStack, getBlitOffset());
             }
             RenderSystem.enableDepthTest();
-
-            if (isHoveredOrFocused()) {
-                renderToolTip(poseStack, mouseX, mouseY);
-            }
         }
     }
 
@@ -110,23 +109,12 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public int getTooltipAreaX() {
-        return this.x;
-    }
-
-    @Override
-    public int getTooltipAreaY() {
-        return this.y;
-    }
-
-    @Override
-    public int getTooltipAreaWidth() {
-        return this.halfSize ? 8 : 16;
-    }
-
-    @Override
-    public int getTooltipAreaHeight() {
-        return this.halfSize ? 8 : 16;
+    public Rect2i getTooltipArea() {
+        return new Rect2i(
+                x,
+                y,
+                this.halfSize ? 8 : 16,
+                this.halfSize ? 8 : 16);
     }
 
     @Override

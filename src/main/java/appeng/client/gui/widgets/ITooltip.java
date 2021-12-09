@@ -22,11 +22,9 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-
-import appeng.client.gui.Tooltip;
 
 /**
  * AEBaseGui controlled Tooltip Interface.
@@ -44,61 +42,12 @@ public interface ITooltip {
     }
 
     /**
-     * x Location for the object that triggers the tooltip.
-     *
-     * @return xPosition
+     * Rectangle in screen relative coordinates which triggers the toooltip.
      */
-    int getTooltipAreaX();
-
-    /**
-     * y Location for the object that triggers the tooltip.
-     *
-     * @return yPosition
-     */
-    int getTooltipAreaY();
-
-    /**
-     * Width of the object that triggers the tooltip.
-     *
-     * @return width
-     */
-    int getTooltipAreaWidth();
-
-    /**
-     * Height for the object that triggers the tooltip.
-     *
-     * @return height
-     */
-    int getTooltipAreaHeight();
+    Rect2i getTooltipArea();
 
     /**
      * @return true if button being drawn
      */
     boolean isTooltipAreaVisible();
-
-    @Nullable
-    default Tooltip getTooltip(int mouseX, int mouseY) {
-        if (!isTooltipAreaVisible()) {
-            return null;
-        }
-
-        int x = getTooltipAreaX();
-        int y = getTooltipAreaY();
-
-        if (x < mouseX && x + getTooltipAreaWidth() > mouseX
-                && y < mouseY && y + getTooltipAreaHeight() > mouseY) {
-
-            List<Component> lines = getTooltipMessage();
-
-            // Don't show empty tooltips
-            if (lines.isEmpty()) {
-                return null;
-            }
-
-            return new Tooltip(lines);
-        }
-
-        return null;
-    }
-
 }
