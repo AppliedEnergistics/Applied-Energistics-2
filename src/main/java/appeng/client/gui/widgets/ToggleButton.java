@@ -25,6 +25,7 @@ import java.util.Objects;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
@@ -72,23 +73,8 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public int getTooltipAreaX() {
-        return this.x;
-    }
-
-    @Override
-    public int getTooltipAreaY() {
-        return this.y;
-    }
-
-    @Override
-    public int getTooltipAreaWidth() {
-        return 16;
-    }
-
-    @Override
-    public int getTooltipAreaHeight() {
-        return 16;
+    public Rect2i getTooltipArea() {
+        return new Rect2i(x, y, 16, 16);
     }
 
     @Override

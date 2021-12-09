@@ -19,7 +19,6 @@
 package appeng.client.gui;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +33,6 @@ import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.ArrayListMultimap;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -68,7 +66,6 @@ import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
-import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.VerticalButtonBar;
@@ -109,8 +106,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     private ItemStack dbl_whichItem = ItemStack.EMPTY;
     private Slot bl_clicked;
     private boolean handlingRightClick;
-    private final List<CustomSlotWidget> guiSlots = new ArrayList<>();
-    private final ArrayListMultimap<SlotSemantic, CustomSlotWidget> guiSlotsBySemantic = ArrayListMultimap.create();
     private final Map<String, TextOverride> textOverrides = new HashMap<>();
     private final EnumSet<SlotSemantic> hiddenSlots = EnumSet.noneOf(SlotSemantic.class);
     protected final WidgetContainer widgets;
@@ -171,16 +166,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     slot.y = pos.getY();
                 }
             }
-
-            // Do the same for GUI-only slots, which are used in Fluid-related UIs that do not deal with normal slots
-            List<CustomSlotWidget> guiSlots = guiSlotsBySemantic.get(entry.getKey());
-            if (guiSlots != null) {
-                for (int i = 0; i < guiSlots.size(); i++) {
-                    CustomSlotWidget guiSlot = guiSlots.get(i);
-                    Point pos = getSlotPosition(entry.getValue(), i);
-                    guiSlot.setPos(pos);
-                }
-            }
         }
 
     }
@@ -207,11 +192,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return this.menu.slots;
     }
 
-    protected final void addSlot(CustomSlotWidget slot, SlotSemantic semantic) {
-        guiSlots.add(slot);
-        guiSlotsBySemantic.put(semantic, slot);
-    }
-
     /**
      * This method is called directly before rendering the screen, and should be used to perform layout, and other
      * rendering-related updates.
@@ -227,23 +207,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         super.renderBackground(poseStack);
         super.render(poseStack, mouseX, mouseY, partialTicks);
-
-        poseStack.pushPose();
-        poseStack.translate(this.leftPos, this.topPos, 0.0F);
-        RenderSystem.enableDepthTest();
-        for (final CustomSlotWidget c : this.guiSlots) {
-            this.drawGuiSlot(poseStack, c, mouseX, mouseY, partialTicks);
-        }
-        poseStack.popPose();
-        RenderSystem.disableDepthTest();
-        for (final CustomSlotWidget c : this.guiSlots) {
-            // Custom slot widgets aren't aware of the screen's position, so we have to cheat with the mouse pos!
-            Tooltip tooltip = c.getTooltip(mouseX - this.leftPos, mouseY - this.topPos);
-            if (tooltip != null) {
-                drawTooltip(poseStack, tooltip, mouseX, mouseY);
-            }
-        }
-        RenderSystem.enableDepthTest();
 
         renderTooltips(poseStack, mouseX, mouseY);
 
@@ -324,10 +287,19 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         for (var c : this.renderables) {
-            if (c instanceof ITooltip) {
-                Tooltip tooltip = ((ITooltip) c).getTooltip(mouseX, mouseY);
-                if (tooltip != null) {
-                    drawTooltip(poseStack, tooltip, mouseX, mouseY);
+            if (c instanceof ITooltip tooltipWidget) {
+                if (!tooltipWidget.isTooltipAreaVisible()) {
+                    continue;
+                }
+
+                var area = tooltipWidget.getTooltipArea();
+                if (mouseX >= area.getX() && mouseY >= area.getY() &&
+                        mouseX < area.getX() + area.getWidth()
+                        && mouseY < area.getY() + area.getHeight()) {
+                    var tooltip = new Tooltip(tooltipWidget.getTooltipMessage());
+                    if (!tooltip.getContent().isEmpty()) {
+                        drawTooltip(poseStack, tooltip, mouseX, mouseY);
+                    }
                 }
             }
         }
@@ -336,25 +308,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         Tooltip tooltip = this.widgets.getTooltip(mouseX - leftPos, mouseY - topPos);
         if (tooltip != null) {
             drawTooltip(poseStack, tooltip, mouseX, mouseY);
-        }
-    }
-
-    protected void drawGuiSlot(PoseStack poseStack, CustomSlotWidget slot, int mouseX, int mouseY,
-            float partialTicks) {
-        if (slot.isSlotEnabled()) {
-            final int left = slot.getTooltipAreaX();
-            final int top = slot.getTooltipAreaY();
-            final int right = left + slot.getTooltipAreaWidth();
-            final int bottom = top + slot.getTooltipAreaHeight();
-
-            slot.drawContent(poseStack, getMinecraft(), mouseX, mouseY, partialTicks);
-
-            if (this.isHovering(left, top, slot.getTooltipAreaWidth(), slot.getTooltipAreaHeight(), mouseX, mouseY)
-                    && slot.canClick(getPlayer())) {
-                RenderSystem.colorMask(true, true, true, false);
-                this.fillGradient(poseStack, left, top, right, bottom, -2130706433, -2130706433);
-                RenderSystem.colorMask(true, true, true, true);
-            }
         }
     }
 
@@ -451,13 +404,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 drawOptionalSlotBackground(poseStack, (IOptionalSlot) slot, false);
             }
         }
-
-        for (final CustomSlotWidget slot : this.guiSlots) {
-            if (slot instanceof IOptionalSlot) {
-                drawOptionalSlotBackground(poseStack, (IOptionalSlot) slot, true);
-            }
-        }
-
     }
 
     private void drawOptionalSlotBackground(PoseStack poseStack, IOptionalSlot slot, boolean alwaysDraw) {
@@ -504,11 +450,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             } finally {
                 handlingRightClick = false;
             }
-        }
-
-        CustomSlotWidget slot = getGuiSlotAt(xCoord, yCoord);
-        if (slot != null) {
-            slot.slotClicked(getMenu().getCarried(), btn);
         }
 
         if (widgets.onMouseDown(getMousePoint(xCoord, yCoord), btn)) {
@@ -848,28 +789,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         } else if (hiddenSlots.remove(semantic) && style != null) {
             positionSlots(style);
         }
-    }
-
-    /**
-     * Gets the GUI slot under the given coordinates.
-     *
-     * @param x X coordinate in window space.
-     * @param y Y coordinate in window space.
-     */
-    @Nullable
-    private CustomSlotWidget getGuiSlotAt(double x, double y) {
-        for (CustomSlotWidget slot : this.guiSlots) {
-            if (this.isHovering(slot.getTooltipAreaX(), slot.getTooltipAreaY(), slot.getTooltipAreaWidth(),
-                    slot.getTooltipAreaHeight(), x, y) && slot.canClick(getPlayer())) {
-                return slot;
-            }
-        }
-
-        return null;
-    }
-
-    public List<CustomSlotWidget> getGuiSlots() {
-        return Collections.unmodifiableList(guiSlots);
     }
 
     /**

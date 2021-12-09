@@ -179,8 +179,8 @@ public class AppEngClient extends AppEngBase {
         MouseWheelScrolled.EVENT.register(this::wheelEvent);
         WorldRenderEvents.LAST.register(OverlayManager.getInstance()::renderWorldLastEvent);
 
-        for (ActionKey key : ActionKey.values()) {
-            final KeyMapping binding = new KeyMapping(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
+        for (var key : ActionKey.values()) {
+            var binding = new KeyMapping(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
             KeyBindingHelper.registerKeyBinding(binding);
             this.bindings.put(key, binding);
         }

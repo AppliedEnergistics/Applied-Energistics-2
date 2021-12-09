@@ -20,8 +20,6 @@ package appeng.client.gui.style;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.Rect2i;
-
 import appeng.client.Point;
 
 /**
@@ -63,8 +61,6 @@ public class TerminalStyle {
      * Currently only 9 is supported here.
      */
     private int slotsPerRow;
-
-    private Rect2i searchFieldRect;
 
     private boolean sortable = true;
 
@@ -128,10 +124,6 @@ public class TerminalStyle {
         this.slotsPerRow = slotsPerRow;
     }
 
-    public void setSearchFieldRect(Rect2i searchFieldRect) {
-        this.searchFieldRect = searchFieldRect;
-    }
-
     public boolean isSortable() {
         return sortable;
     }
@@ -169,13 +161,6 @@ public class TerminalStyle {
 
         // +1 is the margin between the bounding box of the slot and the real minecraft slot. this is due to the border
         return new Point(x, y).move(1, 1);
-    }
-
-    /**
-     * The bounding box of the search field in the background.
-     */
-    public Rect2i getSearchFieldRect() {
-        return searchFieldRect;
     }
 
     /**
@@ -230,9 +215,6 @@ public class TerminalStyle {
         }
         if (bottom == null) {
             throw new RuntimeException("terminalStyle.bottom is missing");
-        }
-        if (searchFieldRect == null) {
-            throw new RuntimeException("terminalStyle.searchFieldRect is missing");
         }
     }
 }

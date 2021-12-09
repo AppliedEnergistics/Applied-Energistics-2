@@ -107,23 +107,8 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
     }
 
     @Override
-    public int getTooltipAreaX() {
-        return this.x - 2;
-    }
-
-    @Override
-    public int getTooltipAreaY() {
-        return this.y - 2;
-    }
-
-    @Override
-    public int getTooltipAreaWidth() {
-        return this.width + 4;
-    }
-
-    @Override
-    public int getTooltipAreaHeight() {
-        return this.height + 4;
+    public Rect2i getTooltipArea() {
+        return new Rect2i(x - 2, y - 2, width + 4, height + 4);
     }
 
     @Override

@@ -115,6 +115,11 @@ public class VerticalButtonBar implements ICompositeWidget {
     @Override
     public void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
         this.screenOrigin = Point.fromTopLeft(bounds);
-        this.buttons.forEach(addWidget);
+        for (var button : this.buttons) {
+            if (button.isFocused()) {
+                button.changeFocus(false);
+            }
+            addWidget.accept(button);
+        }
     }
 }

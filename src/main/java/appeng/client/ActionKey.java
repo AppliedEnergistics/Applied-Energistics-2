@@ -20,10 +20,8 @@ package appeng.client;
 
 import java.util.Locale;
 
-import org.lwjgl.glfw.GLFW;
-
 public enum ActionKey {
-    TOGGLE_FOCUS(GLFW.GLFW_KEY_TAB);
+    ;
 
     private final int defaultKey;
 

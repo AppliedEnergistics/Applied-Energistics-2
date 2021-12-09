@@ -2,7 +2,6 @@
   "$schema": "../schema.json",
   "includes": ["../common/common.json", "../common/player_inventory.json"],
   "terminalStyle": {
-    "searchFieldRect": [80, 4, 90, 12],
     "slotsPerRow": 9,
     "header": {
       "texture": "guis/terminal.png",
@@ -38,6 +37,12 @@
     "viewCells": {
       "right": -2,
       "top": 0
+    },
+    "search": {
+      "left": 80,
+      "top": 4,
+      "width": 90,
+      "height": 12
     }
   }
 }

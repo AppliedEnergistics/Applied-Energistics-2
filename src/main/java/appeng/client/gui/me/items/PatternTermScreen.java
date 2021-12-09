@@ -59,15 +59,9 @@ public class PatternTermScreen<C extends PatternTermMenu> extends appeng.client.
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        this.tabCraftButton = new TabButton(
-                new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
-                btn -> getMenu().setCraftingMode(false));
-        widgets.add("craftingPatternMode", this.tabCraftButton);
-
-        this.tabProcessButton = new TabButton(
-                new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.text(), this.itemRenderer,
-                btn -> getMenu().setCraftingMode(true));
-        widgets.add("processingPatternMode", this.tabProcessButton);
+        ActionButton clearBtn = new ActionButton(ActionItems.CLOSE, act -> menu.clear());
+        clearBtn.setHalfSize(true);
+        widgets.add("clearPattern", clearBtn);
 
         this.substitutionsEnabledBtn = new ActionButton(
                 ActionItems.ENABLE_SUBSTITUTION, act -> getMenu().setSubstitute(false));
@@ -89,17 +83,24 @@ public class PatternTermScreen<C extends PatternTermMenu> extends appeng.client.
         this.fluidSubstitutionsDisabledBtn.setHalfSize(true);
         widgets.add("fluidSubstitutionsDisabled", this.fluidSubstitutionsDisabledBtn);
 
-        ActionButton clearBtn = new ActionButton(ActionItems.CLOSE, act -> menu.clear());
-        clearBtn.setHalfSize(true);
-        widgets.add("clearPattern", clearBtn);
-
-        ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
-        widgets.add("encodePattern", encodeBtn);
-
         convertItemsToFluidsBtn = new ActionButton(ActionItems.FIND_CONTAINED_FLUID,
                 act -> menu.convertItemsToFluids());
         convertItemsToFluidsBtn.setHalfSize(true);
         widgets.add("convertItemsToFluids", convertItemsToFluidsBtn);
+
+        ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
+        widgets.add("encodePattern", encodeBtn);
+
+        this.tabCraftButton = new TabButton(
+                new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
+                btn -> getMenu().setCraftingMode(false));
+        widgets.add("craftingPatternMode", this.tabCraftButton);
+
+        this.tabProcessButton = new TabButton(
+                new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.text(), this.itemRenderer,
+                btn -> getMenu().setCraftingMode(true));
+        widgets.add("processingPatternMode", this.tabProcessButton);
+
     }
 
     @Override

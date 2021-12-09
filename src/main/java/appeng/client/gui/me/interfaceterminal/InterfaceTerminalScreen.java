@@ -28,11 +28,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.Rect2i;
@@ -49,7 +45,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.stacks.AEItemKey;
-import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
@@ -57,7 +52,6 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.AEConfig;
-import appeng.core.AppEngClient;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
@@ -130,9 +124,9 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
     private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
     private final Scrollbar scrollbar;
+    private final AETextField searchField;
 
     private boolean refreshList = false;
-    private AETextField searchField;
     private int numLines = 0;
 
     public InterfaceTerminalScreen(C menu, Inventory playerInventory,
@@ -145,6 +139,9 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
         this.addToLeftToolbar(
                 new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
+
+        this.searchField = widgets.addTextField("search");
+        this.searchField.setResponder(str -> this.refreshList());
     }
 
     @Override
@@ -158,15 +155,9 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         this.imageHeight = GUI_HEADER_HEIGHT + GUI_FOOTER_HEIGHT + this.numLines * ROW_HEIGHT;
 
         super.init();
-        this.searchField = new AETextField(this.font, this.leftPos + 104, this.topPos + 4, 65, 12);
-        this.searchField.setBordered(false);
-        this.searchField.setMaxLength(25);
-        this.searchField.setTextColor(0xFFFFFF);
-        this.searchField.setVisible(true);
-        this.searchField.setResponder(str -> this.refreshList());
-        this.addWidget(this.searchField);
-        this.magicalSpecialHackyFocus(this.searchField);
-        this.changeFocus(true);
+
+        // Auto focus search field
+        this.setInitialFocus(this.searchField);
 
         // numLines may have changed, recalculate scroll bar.
         this.resetScrollbar();
@@ -208,10 +199,6 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
     @Override
     public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
-        if (this.searchField.mouseClicked(xCoord, yCoord, btn)) {
-            return true;
-        }
-
         if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
             this.searchField.setValue("");
             return true;
@@ -293,11 +280,6 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
             currentY += ROW_HEIGHT;
         }
-
-        // Draw search field.
-        if (this.searchField != null) {
-            this.searchField.render(poseStack, mouseX, mouseY, partialTicks);
-        }
     }
 
     private Rect2i selectRowBackgroundBox(boolean isInvLine, boolean firstLine, boolean lastLine) {
@@ -328,30 +310,6 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-
-        Key input = InputConstants.getKey(keyCode, scanCode);
-
-        if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
-            if (AppEngClient.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.searchField.setFocus(!this.searchField.isFocused());
-                return true;
-            }
-
-            // Forward keypresses to the search field
-            if (this.searchField.isFocused()) {
-                if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocus(false);
-                    return true;
-                }
-
-                this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_);
-
-                // We need to swallow key presses if the field is focused because typing 'e'
-                // would otherwise close the screen
-                return true;
-            }
-        }
-
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
