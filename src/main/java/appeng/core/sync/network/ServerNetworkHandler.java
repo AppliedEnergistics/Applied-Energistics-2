@@ -89,11 +89,7 @@ public class ServerNetworkHandler implements NetworkHandler {
         final BasePacket pack = BasePacketHandler.PacketTypes.getPacket(packetType).parsePacket(payload);
 
         packetContext.getTaskQueue().execute(() -> {
-            try {
-                pack.serverPacketData(null, serverPlayer);
-            } catch (final IllegalArgumentException e) {
-                AELog.debug(e);
-            }
+            pack.serverPacketData(null, serverPlayer);
         });
     }
 

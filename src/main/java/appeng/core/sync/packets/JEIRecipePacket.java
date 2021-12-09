@@ -136,7 +136,9 @@ public class JEIRecipePacket extends BasePacket {
             // are special recipes. Those recipes are sent across the wire...
             recipe = this.recipe;
         }
-        Preconditions.checkArgument(recipe != null);
+        if (recipe == null) {
+            throw new IllegalArgumentException("Client is requesting to craft unknown recipe " + this.recipeId);
+        }
 
         var cct = (IMenuCraftingPacket) con;
         var node = cct.getNetworkNode();
