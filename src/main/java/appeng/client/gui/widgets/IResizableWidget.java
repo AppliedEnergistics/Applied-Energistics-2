@@ -1,13 +1,11 @@
 package appeng.client.gui.widgets;
 
+import appeng.client.Point;
+
 public interface IResizableWidget {
 
-    void setX(int x);
+    void move(Point pos);
 
-    void setY(int y);
-
-    void setHeight(int height);
-
-    void setWidth(int width);
+    void resize(int width, int height);
 
 }

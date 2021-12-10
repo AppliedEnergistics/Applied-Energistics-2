@@ -33,6 +33,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 
+import appeng.client.Point;
+
 /**
  * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click
  * area is increased to the full element subtracted with the defined padding.
@@ -75,23 +77,15 @@ public class AETextField extends EditBox implements IResizableWidget {
     }
 
     @Override
-    public void setX(int x) {
-        super.setX(x + PADDING);
+    public void move(Point pos) {
+        super.setX(pos.getX() + PADDING);
+        this.y = pos.getY() + PADDING;
     }
 
     @Override
-    public void setY(int y) {
-        this.y = y + PADDING;
-    }
-
-    @Override
-    public void setHeight(int height) {
-        this.height = height - 2 * PADDING;
-    }
-
-    @Override
-    public void setWidth(int width) {
+    public void resize(int width, int height) {
         super.setWidth(width - 2 * PADDING - _fontPad);
+        this.height = height - 2 * PADDING;
     }
 
     public void selectAll() {
