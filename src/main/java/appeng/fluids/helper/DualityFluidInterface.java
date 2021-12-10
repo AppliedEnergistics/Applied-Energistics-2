@@ -93,7 +93,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
-	private boolean resetConfigCache;
+	private boolean resetConfigCache = true;
 	private IMEMonitor<IAEFluidStack> configCachedHandler;
 
 	public DualityFluidInterface( final AENetworkProxy networkProxy, final IFluidInterfaceHost ih )
@@ -117,15 +117,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	public IUpgradeableHost getHost()
 	{
-		if( this.iHost instanceof IUpgradeableHost )
-		{
-			return this.iHost;
-		}
-		if( this.iHost instanceof IUpgradeableHost )
-		{
-			return this.iHost;
-		}
-		return null;
+		return this.iHost;
 	}
 
 	@Override

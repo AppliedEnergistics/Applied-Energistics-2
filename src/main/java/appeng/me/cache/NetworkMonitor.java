@@ -63,6 +63,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	private boolean sendEvent = false;
 	private long gridItemCount;
 	private long gridFluidCount;
+	public boolean forceUpdate;
 
 	public NetworkMonitor( final GridStorageCache cache, final IStorageChannel<T> chan )
 	{
@@ -232,7 +233,6 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 			return;
 		}
 		src2MonitorsMap.get( src ).add( this );
-		isNested = false;
 
 		this.sendEvent = true;
 
@@ -285,7 +285,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 				if( networkMonitor.isNested != networkMonitor.wasNested )
 				{
 					networkMonitor.wasNested = networkMonitor.isNested;
-					networkMonitor.forceUpdate();
+					networkMonitor.setForceUpdate( true );
 				}
 			} );
 			src2MonitorsMap.remove( src );
@@ -293,8 +293,14 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		}
 	}
 
+	public void setForceUpdate( boolean forceUpdate )
+	{
+		this.forceUpdate = forceUpdate;
+	}
+
 	void forceUpdate()
 	{
+		forceUpdate = false;
 		this.cachedList.resetStatus();
 		this.getAvailableItems( this.cachedList );
 
@@ -357,6 +363,10 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	void onTick()
 	{
+		if( forceUpdate )
+		{
+			forceUpdate();
+		}
 		if( this.sendEvent )
 		{
 			this.sendEvent = false;

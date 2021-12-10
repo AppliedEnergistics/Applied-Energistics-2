@@ -170,15 +170,14 @@ public class GridStorageCache implements IStorageGrid
 
 	private CellChangeTracker addCellProvider( final ICellProvider cc, final CellChangeTracker tracker )
 	{
-		if( this.inactiveCellProviders.contains( cc ) && !this.activeCellProviders.contains( cc ))
+		if( this.inactiveCellProviders.contains( cc ) )
 		{
 			this.inactiveCellProviders.remove( cc );
 			this.activeCellProviders.add( cc );
 
 			final IActionSource actionSrc = cc instanceof IActionHost ? new MachineSource( (IActionHost) cc ) : new BaseActionSource();
 
-			this.storageMonitors.forEach( ( channel, monitor ) ->
-			{
+			this.storageMonitors.forEach( ( channel, monitor ) -> {
 				for( final IMEInventoryHandler<?> h : cc.getCellArray( channel ) )
 				{
 					tracker.postChanges( channel, 1, h, actionSrc );
@@ -223,7 +222,7 @@ public class GridStorageCache implements IStorageGrid
 
 		for( final ICellProvider cc : ll )
 		{
-			boolean active = true;
+			boolean active = false;
 
 			if( cc instanceof IActionHost )
 			{
@@ -231,10 +230,6 @@ public class GridStorageCache implements IStorageGrid
 				if( node != null && node.isActive() )
 				{
 					active = true;
-				}
-				else
-				{
-					active = false;
 				}
 			}
 
@@ -249,7 +244,7 @@ public class GridStorageCache implements IStorageGrid
 		}
 		tracker.applyChanges();
 
-		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.forceUpdate() );
+		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.setForceUpdate( true ) );
 	}
 
 	private <T extends IAEStack<T>, C extends IStorageChannel<T>> void postChangesToNetwork( final C chan, final int upOrDown, final IItemList<T> availableItems, final IActionSource src )
