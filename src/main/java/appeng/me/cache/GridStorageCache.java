@@ -222,7 +222,7 @@ public class GridStorageCache implements IStorageGrid
 
 		for( final ICellProvider cc : ll )
 		{
-			boolean active = false;
+			boolean active = true;
 
 			if( cc instanceof IActionHost )
 			{
@@ -230,6 +230,10 @@ public class GridStorageCache implements IStorageGrid
 				if( node != null && node.isActive() )
 				{
 					active = true;
+				}
+				else
+				{
+					active = false;
 				}
 			}
 
