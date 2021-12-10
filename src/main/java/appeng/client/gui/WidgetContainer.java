@@ -72,15 +72,13 @@ public class WidgetContainer {
 
         // Size the widget, as this doesn't change when the parent is resized
         WidgetStyle widgetStyle = style.getWidget(id);
-        if (widgetStyle.getWidth() != 0) {
-            widget.setWidth(widgetStyle.getWidth());
-        }
-        if (widgetStyle.getHeight() != 0) {
-            if (widget instanceof IResizableWidget resizableWidget) {
-                resizableWidget.setHeight(widgetStyle.getHeight());
-            } else {
-                widget.height = widgetStyle.getHeight();
-            }
+        int width = widgetStyle.getWidth() != 0 ? widgetStyle.getWidth() : widget.getWidth();
+        int height = widgetStyle.getHeight() != 0 ? widgetStyle.getHeight() : widget.getHeight();
+        if (widget instanceof IResizableWidget resizableWidget) {
+            resizableWidget.resize(width, height);
+        } else {
+            widget.setWidth(width);
+            widget.height = height;
         }
 
         if (widget instanceof TabButton) {
@@ -157,8 +155,7 @@ public class WidgetContainer {
             WidgetStyle widgetStyle = style.getWidget(entry.getKey());
             Point pos = widgetStyle.resolve(bounds);
             if (widget instanceof IResizableWidget resizableWidget) {
-                resizableWidget.setX(pos.getX());
-                resizableWidget.setY(pos.getY());
+                resizableWidget.move(pos);
             } else {
                 widget.x = pos.getX();
                 widget.y = pos.getY();
