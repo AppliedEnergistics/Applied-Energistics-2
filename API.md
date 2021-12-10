@@ -3,21 +3,51 @@
 AE2 offers various extension points for your mod to hook into. The following table lists the API classes that are most
 relevant during mod initialization:
 
-| Class | Purpose |
-| ------------- | ------------- |
-| `appeng.api.stacks.AEKeyTypes`  | Access to AE2's built-in item and fluid storage channels, as well as storage channels registered by addons. Addons also register their storage channels here.  |
-| `appeng.api.networking.GridServices`  | Addons can register their own grid-wide services here. |
-| `appeng.api.features.AEWorldGen`  | Offers limited control over AE2's world generation. |
-| `appeng.api.movable.BlockEntityMoveStrategies` | Allows mods to register custom strategies for moving block entities in and out of spatial storage. |
-| `appeng.api.features.GridLinkables` | For working with and adding items that can be linked to a grid in the security station. |
-| `appeng.api.storage.StorageCells` | For working with and adding items that serve as storage cells for grids. |
+| Class | Purpose                                                                                                          |
+| ------------- |------------------------------------------------------------------------------------------------------------------|
+| `appeng.api.stacks.AEKeyTypes`  | Addons can use this class to register custom storage types similar to `AEItemKey` and `AEFluidKey`.               |
+| `appeng.api.networking.GridServices`  | Addons can register their own grid-wide services here.                                                           |
+| `appeng.api.features.AEWorldGen`  | Offers limited control over AE2's world generation.                                                              |
+| `appeng.api.movable.BlockEntityMoveStrategies` | Allows mods to register custom strategies for moving block entities in and out of spatial storage.              |
+| `appeng.api.features.GridLinkables` | For working with and adding items that can be linked to a grid in the security station.                          |
+| `appeng.api.storage.StorageCells` | For working with and adding items that serve as storage cells for grids.                                         |
 | `appeng.api.features.Locatables` | For discovering security stations and quantum network bridges based on their unique keys, regardless of location. |
-| `appeng.api.parts.PartModels` | For registering JSON block models used by custom cable bus parts. |
-| `appeng.api.features.P2PTunnelAttunement` | For registering new items that attune P2P tunnels to specific types when right-clicked. |
-| `appeng.api.client.StorageCellModels` | For customizing the models of storage cells when they're inserted into drives or ME chests. |
+| `appeng.api.parts.PartModels` | For registering JSON block models used by custom cable bus parts.                                                |
+| `appeng.api.features.P2PTunnelAttunement` | For registering new items that attune P2P tunnels to specific types when right-clicked.                |
+| `appeng.api.client.StorageCellModels` | For customizing the models of storage cells when they're inserted into drives or ME chests.                      |
 
 In general, these classes are thread-safe and may be used directly in a mod's constructor or thereafter.
 Once initialization of mods has completed however, changes to these registries result in undefined behavior.
+
+Since order of mod initialization on Fabric is undefined, addons that rely on AE2's items and blocks being registered
+will need to use the custom entrypoint defined by `IAEAddonEntrypoint`. See that classes javadoc for details.
+
+## Item and Fluid Keys
+
+Item and fluid types are represented by keys in AE2. The `AEKey` class is the base for all keys, whether they represent
+items (`AEItemKey`) or fluids (`AEFluidKey`). Most of AE2s interfaces are generic in that they accept any `AEKey`,
+whether it is for a fluid or item. 
+
+Keys do not have counts since they don't represent a particular amount of items or fluid, they represent the *type*
+of item or type of fluid. As such, an item key consists of a reference to the `Item` and potential NBT data.
+
+To represent a stack of some key, AE2 provides the utility class `GenericStack`. It consists of a key and an amount.
+
+Each type of key is represented by an instance of `AEKeyType`, which is accessible via `AEKey.getType()`. It stores
+some properties common to all keys of a type (i.e. all item keys, or all fluid keys). 
+
+Keys can be saved to from NBT using `toTagGeneric`, which also stores a reference to their type so that
+`AEKey.fromTagGeneric` can restore the key of the correct type. The same mechanism can be used for packets with
+`AEKey.writeToPacket` and `AEKey.readKey`.
+
+Sicne Java 16, the following patter makes it easy to work with generic keys when your code only supports items:
+
+```java
+if (key instanceof AEItemKey itemKey) {
+    ItemStack is = itemKey.toStack();
+    // [...]
+}
+```
 
 ## Grids and Nodes
 
@@ -169,4 +199,63 @@ It also implements `IStorageMonitorable` to allow changes to the grid's inventor
 
 **Service Interface**: `ISpatialService`
 
+# Changes from 1.17 and before to 1.18
 
+There are large changes to the API in 1.18.
+
+`IAEStack`, `IAEItemStack` and `IAEFluidStack` have been removed. The API now separates the "what" from the "how much"
+in that it uses `AEKey` to identify what is being transferred, while a separate method-argument is used for the
+amount.
+
+The mapping is roughly as follows:
+
+| Old Class                | New Class                    |
+|--------------------------|------------------------------|
+| IAEStack                 | GenericStack, AEKey          |
+| IAEItemStack             | GenericStack, AEItemKey      |
+| IAEFluidStack            | GenericStack, AEFluidKey     |
+| IStorageChannel          | AEKeyType                    |
+| StorageChannels          | AEKeyTypes                   |
+| StorageChannels.items()  | AEKeyType.items()            |
+| StorageChannels.fluids() | AEKeyType.fluids()           |
+| IMEInventory             | MEStorage                    |
+| IMEMonitorable           | MEMonitorStorage             |
+| IGuiItem                 | IMenuItem (Use ItemMenuHost) |
+| IPortableCell            | IPortableTerminal            |
+| ICraftingMedium          | ICraftingMachine             |
+| ICellProvider            | IStorageProvider             |
+
+The network inventory is no longer channel specific. It contains items, fluids and potentially keys
+from addons at the same time. This also means `IStorageMonitorable` has become superfluous and was removed.
+`IStorageMonitorableAccessor` now gives direct access to the storage.
+
+Stack watching has changed to only send the keys for which the stored amount has changed. This was
+done since the amounts reported to the watchers were never reliable to begin with, and were never used.
+
+Craftable items are no longer reported as part of the network storage. It has been replaced by
+`grid.getCraftingService().getCraftables()`. `NoOpKeyFilter` is provided in case you want all types of 
+keys, otherwise there are the convenience filters `AEItemKey.filter()` and `AEFluidKey.filter()` to
+only retrieve items or fluids.
+
+Mounting storage into the network storage has been changed. Since storage has been unified across types,
+the storage service will now call `mountInventories` on the `IStorageProvider` service provided by any
+grid node and allow the node to "mount" storage into the network.
+When the node wants to remove or add storage due to an external event or config change, it can request
+the storage to repeat the mounting process by calling `IStorageGrid.refreshNodeStorageProvider` or using
+the utility provided in `IStorageProvider.requestUpdate`. This supersedes sending the `GridCellArrayUpdate` event.
+
+## Internal APIs
+
+The following changes have been made to internal APIs, which may still be of interest to addons that
+depend on them.
+
+Items that open AE GUIs are now more addon friendly. The `ItemMenuHost` class can be used as an easy
+way to implement a menu host for hosting terminals and other menus.
+
+The priority and crafting confirm menus now use a generic system for returning to the previous screen.
+Your part, block entity or item menu host needs to implement `ISubMenuHost` for this to work.
+
+Custom storage cells have been simplified, and the same class can be used to create addon storage
+cells for any stored item key. Due to the storage math still being different for items and fluids,
+there are still key-type specific cells, which are all based on the same class `BasicStorageCell`,
+which doesn't have a guaranteed API however (this is an improvement for later).
