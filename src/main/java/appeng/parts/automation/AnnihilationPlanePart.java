@@ -165,7 +165,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         };
 
         if (capture) {
-            strategy.pickUpEntity(grid.getEnergyService(), this::insertIntoGrid, entity);
+            if (!strategy.pickUpEntity(grid.getEnergyService(), this::insertIntoGrid, entity)) {
+                // we need to wake up the block entity in case an entity pickup fails
+                // to reset the "blocked" flags internal to the pickup strategy.
+                getMainNode().ifPresent((g, n) -> g.getTickManager().alertDevice(n));
+            }
         }
     }
 
