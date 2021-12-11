@@ -379,6 +379,10 @@ public class BasicCellInventory implements StorageCell {
             return 0;
         }
 
+        if (!this.partitionList.isEmpty() && !this.partitionList.isListed(what)) {
+            return 0;
+        }
+
         if (this.cellType.isBlackListed(this.i, what)) {
             return 0;
         }
