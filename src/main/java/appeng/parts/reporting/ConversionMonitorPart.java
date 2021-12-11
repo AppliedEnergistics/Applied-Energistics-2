@@ -81,13 +81,13 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
             } else if (InteractionUtil.canWrenchRotate(eq)
-                    && (this.getDisplayed() == null || !this.getDisplayed().equals(eq))) {
+                    && (this.getDisplayed() == null || !AEItemKey.matches(getDisplayed(), eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);
             } else {
                 this.insertItem(player, hand, false);
             }
-        } else if (this.getDisplayed() != null && this.getDisplayed().equals(eq)) {
+        } else if (this.getDisplayed() != null && AEItemKey.matches(getDisplayed(), eq)) {
             this.insertItem(player, hand, false);
         } else {
             return super.onPartActivate(player, hand, pos);

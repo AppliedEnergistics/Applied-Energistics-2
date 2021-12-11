@@ -476,6 +476,12 @@ public class MEMonitorableMenu extends AEBaseMenu
         } else if (action == InventoryAction.EMPTY_ITEM) {
             handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(powerSource, monitor, what, amount,
                     getActionSource(), mode));
+        } else if (action == InventoryAction.AUTO_CRAFT) {
+            var locator = getLocator();
+            if (locator != null && clickedKey != null) {
+                CraftAmountMenu.open(player, locator, clickedKey, clickedKey.getAmountPerUnit());
+            }
+            return;
         }
 
         // Handle interactions where the player wants to put something into the network
@@ -493,13 +499,6 @@ public class MEMonitorableMenu extends AEBaseMenu
         }
 
         switch (action) {
-            case AUTO_CRAFT:
-                final MenuLocator locator = getLocator();
-                if (locator != null) {
-                    CraftAmountMenu.open(player, locator, clickedKey, 1);
-                }
-                break;
-
             case SHIFT_CLICK:
                 moveOneStackToPlayer(clickedItem);
                 break;
