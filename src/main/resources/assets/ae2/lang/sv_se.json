@@ -331,8 +331,6 @@
   "gui.tooltips.ae2.InterfaceCraftingMode": "Tillverkningsläge",
   "gui.tooltips.ae2.InventoryTweaks": "Utrustningsjusteringar",
   "gui.tooltips.ae2.ItemName": "Föremålsnamn",
-  "gui.tooltips.ae2.ItemsRequestable": "Begärbara föremål: %s",
-  "gui.tooltips.ae2.ItemsStored": "Lagrade föremål: %s",
   "gui.tooltips.ae2.LevelType": "Nivåtyp",
   "gui.tooltips.ae2.LevelType_Energy": "Energi",
   "gui.tooltips.ae2.LevelType_Item": "Föremål",

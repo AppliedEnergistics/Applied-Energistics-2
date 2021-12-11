@@ -325,8 +325,6 @@
   "gui.tooltips.ae2.InterfaceCraftingMode": "Modo de Fabricação",
   "gui.tooltips.ae2.InventoryTweaks": "Organização de Inventário",
   "gui.tooltips.ae2.ItemName": "Nome do item",
-  "gui.tooltips.ae2.ItemsRequestable": "Items Solicitáveis: %s",
-  "gui.tooltips.ae2.ItemsStored": "Items Guardados: %s",
   "gui.tooltips.ae2.LevelType": "Tipo de Nível ",
   "gui.tooltips.ae2.LevelType_Energy": "Energia",
   "gui.tooltips.ae2.LevelType_Item": "Item",

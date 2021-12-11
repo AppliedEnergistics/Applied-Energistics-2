@@ -325,8 +325,6 @@
   "gui.tooltips.ae2.InterfaceCraftingMode": "合成模式",
   "gui.tooltips.ae2.InventoryTweaks": "InventoryTweak(R键整理)",
   "gui.tooltips.ae2.ItemName": "物品名称",
-  "gui.tooltips.ae2.ItemsRequestable": "可请求: %s",
-  "gui.tooltips.ae2.ItemsStored": "存储物品: %s",
   "gui.tooltips.ae2.LevelType": "检测类型",
   "gui.tooltips.ae2.LevelType_Energy": "能源(ae)",
   "gui.tooltips.ae2.LevelType_Item": "物品",

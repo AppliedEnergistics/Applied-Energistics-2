@@ -351,8 +351,6 @@
   "gui.tooltips.ae2.InterfaceCraftingMode": "조합 모드",
   "gui.tooltips.ae2.InventoryTweaks": "인벤토리 트위크",
   "gui.tooltips.ae2.ItemName": "아이템 이름",
-  "gui.tooltips.ae2.ItemsRequestable": "아이템 요청: %s",
-  "gui.tooltips.ae2.ItemsStored": "아이템 저장: %s",
   "gui.tooltips.ae2.LevelType": "레벨 유형",
   "gui.tooltips.ae2.LevelType_Energy": "에너지",
   "gui.tooltips.ae2.LevelType_Item": "아이템",

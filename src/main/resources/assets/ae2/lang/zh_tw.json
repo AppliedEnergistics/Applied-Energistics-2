@@ -341,8 +341,6 @@
   "gui.tooltips.ae2.InterfaceCraftingMode": "合成模式",
   "gui.tooltips.ae2.InventoryTweaks": "Inventory Tweaks",
   "gui.tooltips.ae2.ItemName": "物品名稱",
-  "gui.tooltips.ae2.ItemsRequestable": "可要求的物品： %s",
-  "gui.tooltips.ae2.ItemsStored": "儲存的物品： %s",
   "gui.tooltips.ae2.LevelType": "偵測類型",
   "gui.tooltips.ae2.LevelType_Energy": "能量",
   "gui.tooltips.ae2.LevelType_Item": "物品",

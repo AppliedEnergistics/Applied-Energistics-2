@@ -333,8 +333,6 @@
   "gui.tooltips.ae2.InterfaceCraftingMode": "クラフトモード",
   "gui.tooltips.ae2.InventoryTweaks": "Inventory Tweaks",
   "gui.tooltips.ae2.ItemName": "アイテムの名前",
-  "gui.tooltips.ae2.ItemsRequestable": "リクエスト可能なアイテム: %s",
-  "gui.tooltips.ae2.ItemsStored": "アイテム保管済み: %s",
   "gui.tooltips.ae2.LevelType": "レベルタイプ",
   "gui.tooltips.ae2.LevelType_Energy": "エネルギー",
   "gui.tooltips.ae2.LevelType_Item": "アイテム",

@@ -18,11 +18,9 @@
 
 package appeng.client.gui.me.common;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -51,7 +49,6 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -527,40 +524,23 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
     }
 
     protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry entry, int x, int y) {
-        if (entry.getWhat() instanceof AEFluidKey fluidKey) {
-            var what = entry.getWhat();
-            String formattedAmount = AEStackRendering.formatAmount(what, entry.getStoredAmount(), AmountFormat.FULL);
+        final long bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
 
-            String modName = Platform.formatModName(what.getModId());
+        var stack = entry.getWhat().wrapForDisplayOrFilter();
 
-            List<Component> list = new ArrayList<>();
-            list.add(AEStackRendering.getDisplayName(fluidKey));
-            list.add(new TextComponent(formattedAmount));
-            list.add(new TextComponent(modName));
+        var currentToolTip = this.getTooltipFromItem(stack);
 
-            this.renderComponentTooltip(poseStack, list, x, y);
-            return;
+        var storedAmount = entry.getStoredAmount();
+        if (storedAmount > bigNumber * entry.getWhat().getAmountPerUnit()
+                || storedAmount > entry.getWhat().getAmountPerUnit() && stack.isDamaged()) {
+            var formattedAmount = AEStackRendering.formatAmount(entry.getWhat(), storedAmount, AmountFormat.FULL);
+            currentToolTip.add(ButtonToolTips.StoredAmount.text(formattedAmount).withStyle(ChatFormatting.GRAY));
         }
 
-        final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
-
-        ItemStack stack = entry.getWhat().wrapForDisplayOrFilter();
-
-        final List<Component> currentToolTip = this.getTooltipFromItem(stack);
-
-        long storedAmount = entry.getStoredAmount();
-        if (storedAmount > bigNumber || storedAmount > 1 && stack.isDamaged()) {
-            final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
-                    .format(storedAmount);
-            currentToolTip
-                    .add(ButtonToolTips.ItemsStored.text(formattedAmount).withStyle(ChatFormatting.GRAY));
-        }
-
-        long requestableAmount = entry.getRequestableAmount();
+        var requestableAmount = entry.getRequestableAmount();
         if (requestableAmount > 0) {
-            final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
-                    .format(requestableAmount);
-            currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
+            var formattedAmount = AEStackRendering.formatAmount(entry.getWhat(), requestableAmount, AmountFormat.FULL);
+            currentToolTip.add(ButtonToolTips.RequestableAmount.text(formattedAmount));
         }
 
         // TODO: Should also list craftable status

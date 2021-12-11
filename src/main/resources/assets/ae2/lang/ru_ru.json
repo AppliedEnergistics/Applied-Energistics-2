@@ -387,8 +387,6 @@
   "gui.tooltips.ae2.InterfaceCraftingMode": "Режим изготовления",
   "gui.tooltips.ae2.InventoryTweaks": "Inventory Tweaks",
   "gui.tooltips.ae2.ItemName": "Название предмета",
-  "gui.tooltips.ae2.ItemsRequestable": "Запрашиваемые предметы: %s",
-  "gui.tooltips.ae2.ItemsStored": "Хранящиеся предметы: %s",
   "gui.tooltips.ae2.LevelType": "Тип уровня",
   "gui.tooltips.ae2.LevelType_Energy": "Энергия",
   "gui.tooltips.ae2.LevelType_Item": "Предмет",

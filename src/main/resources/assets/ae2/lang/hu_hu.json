@@ -317,8 +317,6 @@
   "gui.tooltips.ae2.InterfaceCraftingMode": "Barkácsoló Mód",
   "gui.tooltips.ae2.InventoryTweaks": "Inventory Tweaks szerint",
   "gui.tooltips.ae2.ItemName": "Tárgy neve szerint",
-  "gui.tooltips.ae2.ItemsRequestable": "Kérhető Tárgyak száma: %s",
-  "gui.tooltips.ae2.ItemsStored": "Tárolt tárgyak száma: %s",
   "gui.tooltips.ae2.LevelType": "Szint Típus",
   "gui.tooltips.ae2.LevelType_Energy": "Energia",
   "gui.tooltips.ae2.LevelType_Item": "Tárgy",
