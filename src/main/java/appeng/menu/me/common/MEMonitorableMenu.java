@@ -76,7 +76,6 @@ import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.MenuLocator;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
