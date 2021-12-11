@@ -28,12 +28,10 @@ import java.util.Set;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import com.google.common.collect.Queues;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -55,8 +53,7 @@ public class NetworkInventoryMonitor implements MEMonitorStorage {
     private final InterestManager<StackWatcher> interestManager;
     private final KeyCounter cachedList;
     private final Map<IMEMonitorListener, Object> listeners;
-    @Nullable
-    private MEStorage storage;
+    private final MEStorage storage;
 
     private boolean hasChangedLastTick = false;
     private boolean hasChanged = false;
@@ -77,10 +74,6 @@ public class NetworkInventoryMonitor implements MEMonitorStorage {
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-        if (storage == null) {
-            return 0;
-        }
-
         if (mode == Actionable.SIMULATE) {
             return storage.extract(what, amount, mode, source);
         }
@@ -98,18 +91,12 @@ public class NetworkInventoryMonitor implements MEMonitorStorage {
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        if (storage != null) {
-            storage.getAvailableStacks(out);
-        }
+        storage.getAvailableStacks(out);
     }
 
     @Override
     public Component getDescription() {
-        if (storage != null) {
-            return storage.getDescription();
-        } else {
-            return TextComponent.EMPTY;
-        }
+        return storage.getDescription();
     }
 
     @Nonnull
@@ -127,10 +114,6 @@ public class NetworkInventoryMonitor implements MEMonitorStorage {
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-        if (storage == null) {
-            return 0;
-        }
-
         if (mode == Actionable.SIMULATE) {
             return storage.insert(what, amount, mode, source);
         }

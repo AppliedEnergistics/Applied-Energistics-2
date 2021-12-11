@@ -95,6 +95,7 @@ public class NetworkStorage implements MEStorage {
         }
 
         if (this.testPermission(src, SecurityPermissions.INJECT)) {
+            this.surface(type);
             return 0;
         }
 
