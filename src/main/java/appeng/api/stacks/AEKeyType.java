@@ -31,6 +31,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.storage.AEKeyFilter;
@@ -98,22 +99,21 @@ public abstract class AEKeyType {
     }
 
     /**
-     * Can be used as factor for transferring stacks of a channel.
+     * How much of this key will be transferred as part of a transfer operation. Used to balance item vs. fluids
+     * transfers.
      * <p>
      * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel transferring a full bucket per
      * operation.
      */
-    public int transferFactor() {
+    public int getAmountPerOperation() {
         return 1;
     }
 
     /**
-     * The number of units (eg item count, or millibuckets) that can be stored per byte in a storage cell. Standard
-     * value for items is 8, and for fluids it's 8000
-     *
-     * @return number of units
+     * The amount of this key type that can be stored per byte used in a storage cell. Standard value for items is 8,
+     * and for fluids it's 8000.
      */
-    public int getUnitsPerByte() {
+    public int getAmountPerByte() {
         return 8;
     }
 
@@ -171,5 +171,16 @@ public abstract class AEKeyType {
      */
     public Component getDescription() {
         return description;
+    }
+
+    /**
+     * I.e. "B" for Buckets.
+     */
+    public Component getUnitSymbol() {
+        return TextComponent.EMPTY;
+    }
+
+    public int getAmountPerUnit() {
+        return 1;
     }
 }

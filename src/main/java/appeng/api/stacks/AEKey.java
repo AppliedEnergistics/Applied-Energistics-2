@@ -96,23 +96,30 @@ public abstract class AEKey {
     }
 
     /**
-     * Can be used as factor for transferring stacks of a channel.
-     * <p>
-     * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the item channel transferring a full bucket per
-     * operation.
+     * How much of this key is in one unit (i.e. one bucket). This is used for display purposes where the technical
+     * amount is not user-readable (i.e. a bucket of fluid has amount 1000 on Forge and 81000 on Fabric, but we want to
+     * show it as 1 bucket, hence this method would return 1000 on Forge and 81000 on Fabric for AEFluidKey).
      */
-    public int transferFactor() {
-        return 1;
+    public final int getAmountPerUnit() {
+        return getType().getAmountPerUnit();
+    }
+
+    public final Component getUnitSymbol() {
+        return getType().getUnitSymbol();
     }
 
     /**
-     * The number of units (eg item count, or millibuckets) that can be stored per byte in a storage cell. Standard
-     * value for items is 8, and for fluids it's 8000
-     *
-     * @return number of units
+     * @see AEKeyType#getAmountPerOperation()
      */
-    public int getUnitsPerByte() {
-        return 8;
+    public final int getAmountPerOperation() {
+        return getType().getAmountPerOperation();
+    }
+
+    /**
+     * @see AEKeyType#getAmountPerByte()
+     */
+    public final int getAmountPerByte() {
+        return getType().getAmountPerByte();
     }
 
     /**

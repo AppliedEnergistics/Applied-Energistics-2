@@ -47,7 +47,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
         }
 
         long remainingTransferAmount = context.getOperationsRemaining()
-                * (long) conversion.getKeyType().transferFactor();
+                * (long) conversion.getKeyType().getAmountPerOperation();
 
         var inv = context.getInternalStorage();
         try (var tx = Transaction.openOuter()) {
@@ -104,7 +104,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
                         extractableAmount - inserted, extractable);
             }
 
-            var opsUsed = Math.max(1, inserted / conversion.getKeyType().transferFactor());
+            var opsUsed = Math.max(1, inserted / conversion.getKeyType().getAmountPerOperation());
             context.reduceOperationsRemaining(opsUsed);
 
             tx.commit();

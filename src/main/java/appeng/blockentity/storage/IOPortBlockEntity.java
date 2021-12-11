@@ -320,7 +320,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                     var possible = destination.insert(what, totalStackSize, Actionable.SIMULATE, this.mySrc);
 
                     if (possible > 0) {
-                        possible = Math.min(possible, itemsToMove * what.transferFactor());
+                        possible = Math.min(possible, itemsToMove * what.getAmountPerOperation());
 
                         possible = src.extract(what, possible, Actionable.MODULATE, this.mySrc);
                         if (possible > 0) {
@@ -331,7 +331,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
                             }
 
                             if (inserted > 0) {
-                                itemsToMove -= Math.max(1, inserted / what.transferFactor());
+                                itemsToMove -= Math.max(1, inserted / what.getAmountPerOperation());
                                 didStuff = true;
                             }
 

@@ -243,7 +243,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
             // We allow up to a bucket per insert
             var amount = Math.min(AEFluidKey.AMOUNT_BUCKET, maxAmount);
             updateSnapshots(transaction);
-            pendingEnergy += amount / (double) AEFluidKey.AMOUNT_BUCKET / AEKeyType.fluids().transferFactor();
+            pendingEnergy += amount / (double) AEFluidKey.AMOUNT_BUCKET / AEKeyType.fluids().getAmountPerOperation();
             return amount;
         }
 
