@@ -146,7 +146,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
                 for (var fuzzyWhat : ImmutableList.copyOf(inv.getCachedAvailableStacks().findFuzzy(what, fzMode))) {
                     // The max amount exported is scaled by the key-space's transfer factor (think millibuckets vs.
                     // items)
-                    var transferFactory = fuzzyWhat.getKey().transferFactor();
+                    var transferFactory = fuzzyWhat.getKey().getAmountPerOperation();
                     long amount = (long) context.getOperationsRemaining() * transferFactory;
                     amount = getExportStrategy().push(context, fuzzyWhat.getKey(), amount, Actionable.MODULATE);
                     context.reduceOperationsRemaining(Math.max(1, amount / transferFactory));
@@ -156,7 +156,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
                 }
             } else {
                 // The max amount exported is scaled by the key-space's transfer factor (think millibuckets vs. items)
-                var transferFactory = what.transferFactor();
+                var transferFactory = what.getAmountPerOperation();
                 long amount = (long) context.getOperationsRemaining() * transferFactory;
                 amount = getExportStrategy().push(context, what, amount, Actionable.MODULATE);
                 context.reduceOperationsRemaining(Math.max(1, amount / transferFactory));
@@ -177,11 +177,11 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
 
     private void attemptCrafting(StackTransferContext context, ICraftingService cg, int slotToExport, AEKey what) {
         // don't bother crafting / checking or result, if target cannot accept at least 1 of requested item
-        var maxAmount = context.getOperationsRemaining() * what.transferFactor();
+        var maxAmount = context.getOperationsRemaining() * what.getAmountPerOperation();
         var amount = getExportStrategy().push(context, what, maxAmount, Actionable.SIMULATE);
         if (amount > 0) {
             requestCrafting(cg, slotToExport, what, amount);
-            context.reduceOperationsRemaining(Math.max(1, amount / what.transferFactor()));
+            context.reduceOperationsRemaining(Math.max(1, amount / what.getAmountPerOperation()));
         }
     }
 

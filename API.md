@@ -223,7 +223,9 @@ The mapping is roughly as follows:
 | IGuiItem                 | IMenuItem (Use ItemMenuHost) |
 | IPortableCell            | IPortableTerminal            |
 | ICraftingMedium          | ICraftingMachine             |
-| ICellProvider            | IStorageProvider             |
+| ICellProvider            | IStorageProvider             | 
+| getUnitsPerByte          | getAmountPerByte             |
+| transferFactor           | getAmountPerOperation        |
 
 The network inventory is no longer channel specific. It contains items, fluids and potentially keys
 from addons at the same time. This also means `IStorageMonitorable` has become superfluous and was removed.

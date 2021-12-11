@@ -91,7 +91,7 @@ public final class StorageHelper {
 
         var retrieved = inv.extract(request, amount, Actionable.SIMULATE, src);
 
-        var energyFactor = Math.max(1.0, request.transferFactor());
+        var energyFactor = Math.max(1.0, request.getAmountPerOperation());
         var availablePower = energy.extractAEPower(retrieved / energyFactor, Actionable.SIMULATE,
                 PowerMultiplier.CONFIG);
         var itemToExtract = Math.min((long) (availablePower * energyFactor + 0.9), retrieved);
@@ -151,7 +151,7 @@ public final class StorageHelper {
             return 0;
         }
 
-        final double energyFactor = Math.max(1.0, input.transferFactor());
+        final double energyFactor = Math.max(1.0, input.getAmountPerOperation());
         final double availablePower = energy.extractAEPower(amount / energyFactor, Actionable.SIMULATE,
                 PowerMultiplier.CONFIG);
         amount = Math.min((long) (availablePower * energyFactor + 0.9), amount);

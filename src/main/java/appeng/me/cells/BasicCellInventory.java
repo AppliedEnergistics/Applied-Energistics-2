@@ -340,12 +340,12 @@ public class BasicCellInventory implements StorageCell {
     }
 
     public long getUsedBytes() {
-        var bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / keyType.getUnitsPerByte();
+        var bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / keyType.getAmountPerByte();
         return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
     }
 
     public long getRemainingItemCount() {
-        final long remaining = this.getFreeBytes() * keyType.getUnitsPerByte() + this.getUnusedItemCount();
+        final long remaining = this.getFreeBytes() * keyType.getAmountPerByte() + this.getUnusedItemCount();
         return remaining > 0 ? remaining : 0;
     }
 
@@ -356,7 +356,7 @@ public class BasicCellInventory implements StorageCell {
             return 0;
         }
 
-        return keyType.getUnitsPerByte() - div;
+        return keyType.getAmountPerByte() - div;
     }
 
     @Override
@@ -405,7 +405,7 @@ public class BasicCellInventory implements StorageCell {
                 return 0;
             }
 
-            remainingItemCount -= (long) this.getBytesPerType() * keyType.getUnitsPerByte();
+            remainingItemCount -= (long) this.getBytesPerType() * keyType.getAmountPerByte();
             if (remainingItemCount <= 0) {
                 return 0;
             }

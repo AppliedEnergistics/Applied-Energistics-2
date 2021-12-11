@@ -22,6 +22,8 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.core.AppEng;
@@ -37,13 +39,13 @@ final class AEFluidKeys extends AEKeyType {
     }
 
     @Override
-    public int transferFactor() {
+    public int getAmountPerOperation() {
         // On Forge this was 125mb (so 125/1000th of a bucket)
-        return AEFluidKey.AMOUNT_BUCKET * 1000 / 125;
+        return AEFluidKey.AMOUNT_BUCKET * 125 / 1000;
     }
 
     @Override
-    public int getUnitsPerByte() {
+    public int getAmountPerByte() {
         return 8 * AEFluidKey.AMOUNT_BUCKET;
     }
 
@@ -57,5 +59,15 @@ final class AEFluidKeys extends AEKeyType {
     @Override
     public AEFluidKey loadKeyFromTag(CompoundTag tag) {
         return AEFluidKey.fromTag(tag);
+    }
+
+    @Override
+    public int getAmountPerUnit() {
+        return AEFluidKey.AMOUNT_BUCKET;
+    }
+
+    @Override
+    public Component getUnitSymbol() {
+        return new TextComponent("B");
     }
 }

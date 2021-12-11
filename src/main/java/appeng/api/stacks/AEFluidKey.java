@@ -68,17 +68,6 @@ public final class AEFluidKey extends AEKey {
     }
 
     @Override
-    public int transferFactor() {
-        // On Forge this was 125mb (so 125/1000th of a bucket)
-        return AMOUNT_BUCKET * 125 / 1000;
-    }
-
-    @Override
-    public int getUnitsPerByte() {
-        return 8 * AMOUNT_BUCKET;
-    }
-
-    @Override
     public AEKeyType getType() {
         return AEKeyType.fluids();
     }
