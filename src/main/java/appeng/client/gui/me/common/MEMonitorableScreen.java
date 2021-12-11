@@ -543,7 +543,11 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
             currentToolTip.add(ButtonToolTips.RequestableAmount.text(formattedAmount));
         }
 
-        // TODO: Should also list craftable status
+        // When we're _NOT_ showing the "craft" text as the amount anyway, add a Craftable entry to the tooltip
+        if (entry.isCraftable() && !(isViewOnlyCraftable() || storedAmount <= 0)) {
+            currentToolTip.add(ButtonToolTips.Craftable.text().copy().withStyle(ChatFormatting.DARK_GRAY));
+        }
+
         if (Minecraft.getInstance().options.advancedItemTooltips) {
             currentToolTip
                     .add(new TextComponent("Serial: " + entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
