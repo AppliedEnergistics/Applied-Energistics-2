@@ -147,28 +147,32 @@ public final class StorageHelper {
         Objects.requireNonNull(mode);
 
         amount = inv.insert(input, amount, Actionable.SIMULATE, src);
+        if (amount <= 0) {
+            return 0;
+        }
 
         final double energyFactor = Math.max(1.0, input.transferFactor());
         final double availablePower = energy.extractAEPower(amount / energyFactor, Actionable.SIMULATE,
                 PowerMultiplier.CONFIG);
         amount = Math.min((long) (availablePower * energyFactor + 0.9), amount);
 
-        if (amount > 0) {
-            if (mode == Actionable.MODULATE) {
-                energy.extractAEPower(amount / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                var inserted = inv.insert(input, amount, Actionable.MODULATE, src);
-
-                src.player().ifPresent(player -> {
-                    AeStats.ItemsInserted.addToPlayer(player, (int) inserted);
-                });
-
-                return inserted;
-            } else {
-                return amount;
-            }
+        if (amount <= 0) {
+            return 0;
         }
 
-        return 0;
+        if (mode == Actionable.MODULATE) {
+            energy.extractAEPower(amount / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
+            var inserted = inv.insert(input, amount, Actionable.MODULATE, src);
+
+            src.player().ifPresent(player -> {
+                AeStats.ItemsInserted.addToPlayer(player, (int) inserted);
+            });
+
+            return inserted;
+        } else {
+            return amount;
+        }
+
     }
 
     /**
