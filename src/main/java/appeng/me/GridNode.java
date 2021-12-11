@@ -315,18 +315,31 @@ public class GridNode implements IGridNode, IPathItem {
         // no longer available.
         this.ready = false;
 
-        while (!this.connections.isEmpty()) {
-            // not part of this network for real anymore.
-            if (this.connections.size() == 1) {
-                this.setGridStorage(null);
-            }
-
-            var c = this.connections.listIterator().next();
-            var otherSide = (GridNode) c.getOtherSide(this);
+        // First pass: Remove the connection on the other side
+        for (var connection : connections) {
+            var otherSide = (GridNode) connection.getOtherSide(this);
+            // Moving the pivot closer means we potentially have to search fewer nodes
+            // when searching for a grid split. Especially if the grid hasn't really been split.
             otherSide.getInternalGrid().setPivot(otherSide);
-            c.destroy();
+
+            // Ensure the other side holds no reference to this node anymore
+            otherSide.removeConnection(connection);
         }
 
+        // Second pass: Re-validate the grids of the previously connected, adjacent nodes
+        for (var connection : connections) {
+            var otherSide = (GridNode) connection.getOtherSide(this);
+            // Re-validating the grid will cause the actual grid split to occur if the previously adjacent nodes
+            // were only connected by this node.
+            otherSide.validateGrid();
+
+            // Cause a repath later. This is not done immediately.
+            otherSide.getInternalGrid().getPathingService().repath();
+        }
+
+        connections.clear();
+
+        this.setGridStorage(null);
         if (this.myGrid != null) {
             this.myGrid.remove(this);
         }
