@@ -127,13 +127,13 @@ public class CraftingTreeNode {
      */
     boolean notRecursive(final IPatternDetails details) {
         for (var output : details.getOutputs()) {
-            if (output.equals(this.what)) {
+            if (this.what.matches(output)) {
                 return false;
             }
         }
 
         for (var input : details.getInputs()) {
-            if (input.getPossibleInputs()[0].equals(this.what)) {
+            if (this.what.matches(input.getPossibleInputs()[0])) {
                 return false;
             }
         }

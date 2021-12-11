@@ -184,6 +184,22 @@ public class CraftingSimulationTest {
         testDamagedOutput(true);
     }
 
+    @Test
+    public void testNonsensicalRecursivePattern() {
+        var env = new SimulationEnv();
+
+        var water1B = fluid(Fluids.WATER, 1000);
+
+        env.addPattern(new ProcessingPatternBuilder(water1B)
+                .addPreciseInput(1, water1B)
+                .build());
+
+        env.addStoredItem(water1B);
+
+        var plan = env.runSimulation(water1B);
+        assertThatPlan(plan).succeeded();
+    }
+
     public void testDamagedOutput(boolean branching) {
         var env = new SimulationEnv();
 
