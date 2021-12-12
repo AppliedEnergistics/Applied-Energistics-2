@@ -23,7 +23,6 @@
 
 package appeng.api.networking;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
@@ -44,7 +43,6 @@ public interface IGridConnection {
      * @param gridNode current grid node
      * @return the IGridNode which represents the opposite side of the connection.
      */
-    @Nonnull
     IGridNode getOtherSide(IGridNode gridNode);
 
     /**
@@ -71,13 +69,11 @@ public interface IGridConnection {
     /**
      * @return node A
      */
-    @Nonnull
     IGridNode a();
 
     /**
      * @return node B
      */
-    @Nonnull
     IGridNode b();
 
     /**

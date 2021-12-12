@@ -35,12 +35,11 @@ import appeng.me.GridStorage;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class GridStorageData extends SavedData implements IGridStorageData {
+public final class GridStorageSaveData extends SavedData implements IGridStorageSaveData {
 
     public static final String NAME = AppEng.MOD_ID + "_storage";
 
     private static final String TAG_NEXT_ID = "nextId";
-    public static final String TAG_ORDERED_VALUES = "orderedValues";
     public static final String TAG_STORAGE = "storage";
 
     private final Map<Long, GridStorage> storage = new HashMap<>();
@@ -49,10 +48,6 @@ final class GridStorageData extends SavedData implements IGridStorageData {
     // because grids can be removed and we do not want to re-assign the same id
     // twice
     private long nextGridId;
-
-    // Stores once-per-save values. I.e. which storage press to drop next in a
-    // spawned meteor
-    private final Map<String, Integer> orderedValues = new HashMap<>();
 
     /**
      * lazy loading, can load any id, even ones that don't exist anymore.
@@ -86,14 +81,9 @@ final class GridStorageData extends SavedData implements IGridStorageData {
         this.storage.remove(id);
     }
 
-    @Override
-    public int getNextOrderedValue(final String name, int firstValue) {
-        return orderedValues.merge(name, firstValue, (oldValue, value) -> oldValue + 1);
-    }
+    public static GridStorageSaveData load(CompoundTag tag) {
 
-    public static GridStorageData load(CompoundTag tag) {
-
-        var result = new GridStorageData();
+        var result = new GridStorageSaveData();
 
         result.nextGridId = tag.getLong(TAG_NEXT_ID);
 
@@ -108,12 +98,6 @@ final class GridStorageData extends SavedData implements IGridStorageData {
                 continue;
             }
             result.storage.put(storageId, new GridStorage(storageId, storageTag.getCompound(storageIdStr)));
-        }
-
-        // Load ordered values map
-        CompoundTag orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
-        for (String key : orderedValuesTag.getAllKeys()) {
-            result.orderedValues.put(key, orderedValuesTag.getInt(key));
         }
 
         return result;
@@ -142,13 +126,6 @@ final class GridStorageData extends SavedData implements IGridStorageData {
             storageTag.put(String.valueOf(entry.getKey()), entry.getValue().dataObject());
         }
         tag.put(TAG_STORAGE, storageTag);
-
-        // Save ordered values
-        CompoundTag orderedValuesTag = new CompoundTag();
-        for (Map.Entry<String, Integer> entry : orderedValues.entrySet()) {
-            orderedValuesTag.putInt(entry.getKey(), entry.getValue());
-        }
-        tag.put(TAG_ORDERED_VALUES, orderedValuesTag);
 
         return tag;
     }
