@@ -112,7 +112,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     private final IActionSource mySrc = new MachineSource(this);
     private final IConfigManager config = new ConfigManager();
-    private long lastStateChange = 0;
     private int priority = 0;
     private int state = 0;
     private boolean wasActive = false;
@@ -165,23 +164,18 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private void recalculateDisplay() {
         var oldState = this.state;
 
+        var state = 0;
+
         for (int x = 0; x < this.getCellCount(); x++) {
-            this.state |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
+            state |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
         }
 
         if (this.isPowered()) {
-            this.state |= BIT_POWER_MASK;
-        } else {
-            this.state &= ~BIT_POWER_MASK;
+            state |= BIT_POWER_MASK;
         }
 
-        var currentActive = this.getMainNode().isActive();
-        if (this.wasActive != currentActive) {
-            this.wasActive = currentActive;
-            IStorageProvider.requestUpdate(getMainNode());
-        }
-
-        if (oldState != this.state) {
+        if (oldState != state) {
+            this.state = state;
             this.markForUpdate();
         }
     }
@@ -331,8 +325,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
         if (this.isPowered()) {
             this.state |= BIT_POWER_MASK;
-        } else {
-            this.state &= ~BIT_POWER_MASK;
         }
 
         data.writeByte(this.state);
@@ -355,8 +347,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
         this.cellItem = Item.byId(data.readVarInt());
-
-        this.lastStateChange = this.level.getGameTime();
 
         return oldPaintedColor != this.paintedColor || (this.state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || c;
     }
@@ -381,7 +371,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        this.recalculateDisplay();
+        var currentActive = this.getMainNode().isActive();
+        if (this.wasActive != currentActive) {
+            this.wasActive = currentActive;
+            IStorageProvider.requestUpdate(getMainNode());
+            recalculateDisplay();
+        }
     }
 
     @Override
@@ -478,14 +473,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     private void blinkCell(int slot) {
-        final long now = this.level.getGameTime();
-        if (now - this.lastStateChange > 8) {
-            this.state = 0;
-        }
-        this.lastStateChange = now;
-
-        this.state |= 1 << slot * BIT_CELL_STATE_BITS + 2;
-
         this.recalculateDisplay();
     }
 
