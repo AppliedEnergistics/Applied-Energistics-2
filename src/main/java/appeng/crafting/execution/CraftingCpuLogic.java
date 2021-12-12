@@ -57,8 +57,7 @@ public class CraftingCpuLogic {
     /**
      * Inventory.
      */
-    private final ListCraftingInventory inventory = new ListCraftingInventory(
-            (what, delta) -> CraftingCpuLogic.this.postChange(what));
+    private final ListCraftingInventory inventory = new ListCraftingInventory(CraftingCpuLogic.this::postChange);
     /**
      * Used crafting operations over the last 3 ticks.
      */
@@ -368,7 +367,7 @@ public class CraftingCpuLogic {
         }
     }
 
-    private void postCraftingDifference(AEKey what, long amount) {
+    private void postCraftingDifference(AEKey what) {
         var grid = cluster.getGrid();
         if (grid == null)
             return;

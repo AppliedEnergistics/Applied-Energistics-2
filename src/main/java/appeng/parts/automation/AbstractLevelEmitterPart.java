@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
@@ -121,8 +120,6 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
 
         if (hasDirectOutput()) {
             return getDirectOutput();
-        }
-        if (getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
         }
 
         final boolean flipState = this.getConfigManager()

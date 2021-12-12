@@ -52,7 +52,7 @@ public class ExecutingCraftingJob {
 
     @FunctionalInterface
     interface CraftingDifferenceListener {
-        void onCraftingDifference(AEKey what, long deltaAmount);
+        void onCraftingDifference(AEKey what);
     }
 
     ExecutingCraftingJob(ICraftingPlan plan, CraftingDifferenceListener postCraftingDifference, CraftingLink link) {

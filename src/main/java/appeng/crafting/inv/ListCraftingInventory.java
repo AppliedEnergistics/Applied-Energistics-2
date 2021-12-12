@@ -36,7 +36,7 @@ public class ListCraftingInventory implements ICraftingInventory {
 
     @FunctionalInterface
     public interface ChangeListener {
-        void onChange(AEKey key, long delta);
+        void onChange(AEKey key);
     }
 
     public ListCraftingInventory(ChangeListener listener) {
@@ -47,7 +47,7 @@ public class ListCraftingInventory implements ICraftingInventory {
     public void insert(AEKey what, long amount, Actionable mode) {
         if (mode == Actionable.MODULATE) {
             list.add(what, amount);
-            listener.onChange(what, -amount);
+            listener.onChange(what);
         }
     }
 
@@ -57,7 +57,7 @@ public class ListCraftingInventory implements ICraftingInventory {
         if (mode == Actionable.MODULATE) {
             list.remove(what, extracted);
             list.removeZeros();
-            listener.onChange(what, extracted);
+            listener.onChange(what);
         }
         return extracted;
     }
@@ -69,9 +69,12 @@ public class ListCraftingInventory implements ICraftingInventory {
 
     public void clear() {
         for (var stack : list) {
-            listener.onChange(stack.getKey(), stack.getLongValue());
+            // First clear and then notify, so that if the listener queries the new amount in the change notification,
+            // it will be 0 as it should be.
+            list.set(stack.getKey(), 0);
+            listener.onChange(stack.getKey());
         }
-        list.clear();
+        list.removeZeros();
     }
 
     public void readFromNBT(ListTag data) {
