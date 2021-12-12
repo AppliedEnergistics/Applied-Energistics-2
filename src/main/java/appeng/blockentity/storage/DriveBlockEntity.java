@@ -111,19 +111,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     @Override
     protected void writeToStream(final FriendlyByteBuf data) {
         super.writeToStream(data);
-        int newState = 0;
-
-        if (this.getMainNode().isActive()) {
-            newState |= BIT_POWER_MASK;
-        }
-        for (int x = 0; x < this.getCellCount(); x++) {
-            final int o = this.getCellStatus(x).ordinal();
-            final int i = o << BIT_CELL_STATE_BITS * x;
-            newState |= i;
-        }
-
-        data.writeInt(newState);
-
+        this.state = calculateCurrentVisualState();
+        data.writeInt(this.state);
         writeCellItemIds(data);
     }
 
@@ -255,22 +244,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         data.putInt("priority", this.priority);
     }
 
-    private void recalculateDisplay() {
-        final boolean currentActive = this.getMainNode().isActive();
-        int newState = 0;
-
-        if (currentActive) {
-            newState |= BIT_POWER_MASK;
-        }
-
-        if (this.wasActive != currentActive) {
-            this.wasActive = currentActive;
-            IStorageProvider.requestUpdate(getMainNode());
-        }
-
-        for (int x = 0; x < this.getCellCount(); x++) {
-            newState |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
-        }
+    private void updateVisualStateIfNeeded() {
+        int newState = calculateCurrentVisualState();
 
         if (newState != this.state) {
             this.state = newState;
@@ -278,9 +253,31 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         }
     }
 
+    private int calculateCurrentVisualState() {
+        updateState(); // refresh cells
+
+        int newState = 0;
+
+        if (getMainNode().isActive()) {
+            newState |= BIT_POWER_MASK;
+        }
+
+        for (int x = 0; x < this.getCellCount(); x++) {
+            newState |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
+        }
+        return newState;
+    }
+
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        recalculateDisplay();
+
+        var currentActive = getMainNode().isActive();
+        if (this.wasActive != currentActive) {
+            this.wasActive = currentActive;
+            IStorageProvider.requestUpdate(getMainNode());
+            updateVisualStateIfNeeded();
+        }
+
     }
 
     @Override
@@ -374,7 +371,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     private void blinkCell(int slot) {
-        this.recalculateDisplay();
+        this.updateVisualStateIfNeeded();
     }
 
     /**
