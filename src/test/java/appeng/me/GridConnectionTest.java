@@ -5,59 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.junit.jupiter.MockitoSettings;
-
-import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.core.worlddata.GridStorageSaveData;
-import appeng.core.worlddata.IGridStorageSaveData;
-import appeng.me.service.EnergyService;
-import appeng.util.BootstrapMinecraft;
 import appeng.util.Platform;
 
-@MockitoSettings
-@BootstrapMinecraft
-class GridConnectionTest {
-
-    @Mock
-    ServerLevel level;
-
-    Object owner = new Object();
-
-    @Mock
-    IGridNodeListener<Object> listener;
-
-    @Mock
-    MockedStatic<Platform> platform;
-
-    @Mock
-    MockedStatic<IGridStorageSaveData> gridStorageSaveData;
-
-    @BeforeEach
-    public void setupStaticMocks() {
-        platform.when(Platform::isServer).thenReturn(true);
-        platform.when(() -> Platform.securityCheck(any(), any())).thenReturn(true);
-        gridStorageSaveData.when(() -> IGridStorageSaveData.get(any())).thenReturn(new GridStorageSaveData());
-    }
+class GridConnectionTest extends AbstractGridNodeTest {
 
     @Test
     void testConnectionsToSelfArePrevented() {
@@ -256,23 +216,4 @@ class GridConnectionTest {
         }
     }
 
-    private GridNode makeNode(GridFlags... flags) {
-        return new GridNode(level, owner, listener, Set.of(flags));
-    }
-
-    private GridNode makeReadyNode(GridFlags... flags) {
-        var node = makeNode(flags);
-        node.markReady();
-        return node;
-    }
-
-    private GridNode makePoweredNode(GridFlags... flags) {
-        var node = makeNode(flags);
-        node.addService(IAEPowerStorage.class, new InfinitePowerStorage());
-        var grid = node.getInternalGrid();
-        ((EnergyService) grid.getEnergyService()).onServerEndTick();
-        assertTrue(node.isPowered());
-        node.markReady();
-        return node;
-    }
 }

@@ -28,6 +28,7 @@ import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.AELog;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.Grid;
@@ -54,10 +55,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     private int channelsByBlocks = 0;
     private double channelPowerUsage = 0.0;
     private boolean recalculateControllerNextTick = true;
-    private boolean updateNetwork = true;
+    // Flag to indicate a reboot should occur next tick
+    private boolean reboot = true;
     private boolean booting = false;
     private ControllerState controllerState = ControllerState.NO_CONTROLLER;
-    private int ticksUntilReady = 20;
+    private int ticksUntilReady = 0;
     private int lastChannels = 0;
     private HashSet<IPathItem> semiOpen = new HashSet<>();
 
@@ -71,13 +73,14 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             this.updateControllerState();
         }
 
-        if (this.updateNetwork) {
+        if (this.reboot) {
+            this.reboot = false;
+
             if (!this.booting) {
+                this.booting = true;
                 this.postBootingStatusChange();
             }
 
-            this.booting = true;
-            this.updateNetwork = false;
             this.setChannelsInUse(0);
 
             if (this.controllerState == ControllerState.NO_CONTROLLER) {
@@ -101,15 +104,15 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             } else {
                 var nodes = this.grid.size();
                 this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
-                final HashSet<IPathItem> closedList = new HashSet<>();
+                var closedList = new HashSet<IPathItem>();
                 this.semiOpen = new HashSet<>();
 
-                for (final IGridNode node : this.grid.getMachineNodes(ControllerBlockEntity.class)) {
+                for (var node : this.grid.getMachineNodes(ControllerBlockEntity.class)) {
                     closedList.add((IPathItem) node);
-                    for (final IGridConnection gcc : node.getConnections()) {
+                    for (var gcc : node.getConnections()) {
                         var gc = (GridConnection) gcc;
                         if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
-                            final List<IPathItem> open = new ArrayList<>();
+                            var open = new ArrayList<IPathItem>();
                             closedList.add(gc);
                             open.add(gc);
                             gc.setControllerRoute((GridNode) node, true);
@@ -120,10 +123,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             }
         }
 
-        if (!this.active.isEmpty() || this.ticksUntilReady > 0) {
-            final Iterator<PathSegment> i = this.active.iterator();
+        if (this.booting) {
+            // Work on remaining pathfinding work
+            var i = this.active.iterator();
             while (i.hasNext()) {
-                final PathSegment pat = i.next();
+                var pat = i.next();
                 if (pat.step()) {
                     pat.setDead(true);
                     i.remove();
@@ -132,11 +136,12 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
             this.ticksUntilReady--;
 
-            if (this.active.isEmpty() && this.ticksUntilReady <= 0) {
+            // Booting completes when both pathfinding completes, and the minimum boot time has elapsed
+            if (active.isEmpty() && ticksUntilReady <= 0) {
                 if (this.controllerState == ControllerState.CONTROLLER_ONLINE) {
-                    final Iterator<ControllerBlockEntity> controllerIterator = this.controllers.iterator();
+                    var controllerIterator = this.controllers.iterator();
                     if (controllerIterator.hasNext()) {
-                        final ControllerBlockEntity controller = controllerIterator.next();
+                        var controller = controllerIterator.next();
                         controller.getGridNode().beginVisit(new ControllerChannelUpdater());
                     }
                 }
@@ -147,6 +152,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 this.booting = false;
                 this.setChannelPowerUsage(this.getChannelsByBlocks() / 128.0);
                 this.postBootingStatusChange();
+            } else if (ticksUntilReady == -2000) {
+                AELog.warn("Booting has still not completed after 2000 ticks for %s", grid);
             }
         }
     }
@@ -278,7 +285,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     @Override
     public boolean isNetworkBooting() {
-        return this.booting && !this.active.isEmpty();
+        return this.booting;
     }
 
     @Override
@@ -292,7 +299,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         this.active.clear();
 
         this.setChannelsByBlocks(0);
-        this.updateNetwork = true;
+        this.reboot = true;
     }
 
     double getChannelPowerUsage() {
