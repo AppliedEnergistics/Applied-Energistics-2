@@ -97,8 +97,10 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     private boolean outerCallbackRegistered = false;
     private final TransactionContext.OuterCloseCallback outerCallback = result -> {
         outerCallbackRegistered = false;
-        for (var entry : pendingChangeNotifications.entrySet()) {
-            onContentsChanged(entry.getKey(), entry.getValue());
+        if (result.wasCommitted()) {
+            for (var entry : pendingChangeNotifications.entrySet()) {
+                onContentsChanged(entry.getKey(), entry.getValue());
+            }
         }
         pendingChangeNotifications.clear();
     };
