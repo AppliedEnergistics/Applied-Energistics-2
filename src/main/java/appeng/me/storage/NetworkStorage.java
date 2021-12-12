@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
@@ -41,12 +45,11 @@ import appeng.me.service.SecurityService;
  * Manages all available {@link MEStorage} on the network.
  */
 public class NetworkStorage implements MEStorage {
-
     private static final ThreadLocal<Deque<NetworkStorage>> DEPTH_MOD = new ThreadLocal<>();
     private static final ThreadLocal<Deque<NetworkStorage>> DEPTH_SIM = new ThreadLocal<>();
     private static final Comparator<Integer> PRIORITY_SORTER = (o1, o2) -> Integer.compare(o2, o1);
 
-    private boolean lockMounts;
+    private boolean mountsInUse;
 
     private static int currentPass = 0;
 
@@ -54,6 +57,10 @@ public class NetworkStorage implements MEStorage {
     private final NavigableMap<Integer, List<MEStorage>> priorityInventory;
     private final List<MEStorage> secondPassInventories = new ArrayList<>();
     private int myPass = 0;
+    // Queued mount/unmount operations that occurred while an insert/extract was ongoing
+    // Is only non-null if something is queued
+    @Nullable
+    private List<QueuedOperation> queuedOperations;
 
     public NetworkStorage(SecurityService security) {
         this.security = security;
@@ -61,35 +68,37 @@ public class NetworkStorage implements MEStorage {
     }
 
     public void mount(int priority, MEStorage inventory) {
-        if (lockMounts) {
-            throw new IllegalStateException("Trying to mount storage "
-                    + inventory.getDescription().getString()
-                    + " while an operation is in progress.");
+        if (mountsInUse) {
+            if (queuedOperations == null) {
+                queuedOperations = new ArrayList<>();
+            }
+            queuedOperations.add(new MountOperation(priority, inventory));
+        } else {
+            this.priorityInventory.computeIfAbsent(priority, k -> new ArrayList<>())
+                    .add(inventory);
         }
-
-        this.priorityInventory.computeIfAbsent(priority, k -> new ArrayList<>())
-                .add(inventory);
     }
 
     public void unmount(MEStorage inventory) {
-        if (lockMounts) {
-            throw new IllegalStateException("Trying to unmount storage "
-                    + inventory.getDescription().getString()
-                    + " while an operation is in progress.");
-        }
+        if (mountsInUse) {
+            if (queuedOperations == null) {
+                queuedOperations = new ArrayList<>();
+            }
+            queuedOperations.add(new UnmountOperation(inventory));
+        } else {
+            var prioIt = this.priorityInventory.entrySet().iterator();
+            while (prioIt.hasNext()) {
+                var prioEntry = prioIt.next();
 
-        var prioIt = this.priorityInventory.entrySet().iterator();
-        while (prioIt.hasNext()) {
-            var prioEntry = prioIt.next();
-
-            var inventories = prioEntry.getValue();
-            if (inventories.remove(inventory) && inventories.isEmpty()) {
-                prioIt.remove();
+                var inventories = prioEntry.getValue();
+                if (inventories.remove(inventory) && inventories.isEmpty()) {
+                    prioIt.remove();
+                }
             }
         }
     }
 
-    public long insert(AEKey what, long amount, final Actionable type, final IActionSource src) {
+    public long insert(AEKey what, long amount, Actionable type, IActionSource src) {
         if (this.diveList(type)) {
             return 0;
         }
@@ -101,7 +110,7 @@ public class NetworkStorage implements MEStorage {
 
         var remaining = amount;
 
-        this.lockMounts = true;
+        this.mountsInUse = true;
         try {
             for (var invList : this.priorityInventory.values()) {
                 secondPassInventories.clear();
@@ -111,6 +120,10 @@ public class NetworkStorage implements MEStorage {
                 var ii = invList.iterator();
                 while (ii.hasNext() && remaining > 0) {
                     var inv = ii.next();
+
+                    if (isQueuedForRemoval(inv)) {
+                        continue;
+                    }
 
                     if (inv.isPreferredStorageFor(what, src)) {
                         remaining -= inv.insert(what, remaining, type, src);
@@ -125,17 +138,51 @@ public class NetworkStorage implements MEStorage {
                         break;
                     }
 
+                    if (isQueuedForRemoval(inv)) {
+                        continue;
+                    }
+
                     remaining -= inv.insert(what, remaining, type, src);
                 }
             }
 
         } finally {
-            this.lockMounts = false;
+            this.mountsInUse = false;
         }
 
         this.surface(type);
 
+        flushQueuedOperations();
+
         return amount - remaining;
+    }
+
+    private void flushQueuedOperations() {
+        Preconditions.checkState(!this.mountsInUse);
+        var queuedOperations = this.queuedOperations;
+        if (queuedOperations != null) {
+            this.queuedOperations = null;
+            for (var op : queuedOperations) {
+                if (op instanceof MountOperation mountOp) {
+                    mount(mountOp.priority, mountOp.storage);
+                } else if (op instanceof UnmountOperation unmountOp) {
+                    unmount(unmountOp.storage);
+                } else {
+                    throw new IllegalStateException("Unknown operation: " + op);
+                }
+            }
+        }
+    }
+
+    private boolean isQueuedForRemoval(MEStorage inv) {
+        if (queuedOperations != null) {
+            for (var queuedOperation : queuedOperations) {
+                if (queuedOperation instanceof UnmountOperation unmountOperation && unmountOperation.storage == inv) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean diveList(Actionable type) {
@@ -148,7 +195,7 @@ public class NetworkStorage implements MEStorage {
         return false;
     }
 
-    private boolean testPermission(final IActionSource src, final SecurityPermissions permission) {
+    private boolean testPermission(IActionSource src, SecurityPermissions permission) {
         if (src.player().isPresent()) {
             if (!this.security.hasPermission(src.player().get(), permission)) {
                 return true;
@@ -204,21 +251,27 @@ public class NetworkStorage implements MEStorage {
 
         var extracted = 0L;
 
-        this.lockMounts = true;
+        this.mountsInUse = true;
         try {
             for (var invList : this.priorityInventory.descendingMap().values()) {
                 var ii = invList.iterator();
                 while (ii.hasNext() && extracted < amount) {
                     var inv = ii.next();
 
+                    if (isQueuedForRemoval(inv)) {
+                        continue;
+                    }
+
                     extracted += inv.extract(what, amount - extracted, mode, source);
                 }
             }
         } finally {
-            this.lockMounts = false;
+            this.mountsInUse = false;
         }
 
         this.surface(mode);
+
+        flushQueuedOperations();
 
         return extracted;
     }
@@ -254,5 +307,14 @@ public class NetworkStorage implements MEStorage {
     @Override
     public Component getDescription() {
         return GuiText.MENetworkStorage.text();
+    }
+
+    sealed interface QueuedOperation permits MountOperation,UnmountOperation {
+    }
+
+    private record MountOperation(int priority, MEStorage storage) implements QueuedOperation {
+    }
+
+    private record UnmountOperation(MEStorage storage) implements QueuedOperation {
     }
 }
