@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
+import com.google.common.collect.Sets;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -244,10 +245,12 @@ public class MEMonitorableMenu extends AEBaseMenu
             }
 
             var craftables = getCraftablesFromGrid();
+            boolean craftableChanged = !previousCraftables.equals(craftables);
+
             // This is currently not supported/backed by any network service
             var requestables = new KeyCounter();
 
-            if (this.updateHelper.hasChanges() || !previousCraftables.equals(craftables)) {
+            if (this.updateHelper.hasChanges() || craftableChanged) {
                 try {
                     var builder = MEInventoryUpdatePacket
                             .builder(containerId, updateHelper.isFullUpdate());
@@ -257,6 +260,13 @@ public class MEMonitorableMenu extends AEBaseMenu
                     if (this.updateHelper.isFullUpdate()) {
                         builder.addFull(updateHelper, storageList, craftables, requestables);
                     } else {
+                        // Ensure that craftables are updated correctly in an incremental update
+                        if (craftableChanged) {
+                            // Newly craftable
+                            Sets.difference(previousCraftables, craftables).forEach(updateHelper::addChange);
+                            // No longer craftable
+                            Sets.difference(craftables, previousCraftables).forEach(updateHelper::addChange);
+                        }
                         builder.addChanges(updateHelper, storageList, craftables, requestables);
                     }
 
