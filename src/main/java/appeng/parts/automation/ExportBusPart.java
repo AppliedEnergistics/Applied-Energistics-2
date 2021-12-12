@@ -148,7 +148,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
                     // items)
                     var transferFactory = fuzzyWhat.getKey().getAmountPerOperation();
                     long amount = (long) context.getOperationsRemaining() * transferFactory;
-                    amount = getExportStrategy().push(context, fuzzyWhat.getKey(), amount, Actionable.MODULATE);
+                    amount = getExportStrategy().transfer(context, fuzzyWhat.getKey(), amount, Actionable.MODULATE);
                     context.reduceOperationsRemaining(Math.max(1, amount / transferFactory));
                     if (!context.hasOperationsLeft()) {
                         break;
@@ -158,8 +158,10 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
                 // The max amount exported is scaled by the key-space's transfer factor (think millibuckets vs. items)
                 var transferFactory = what.getAmountPerOperation();
                 long amount = (long) context.getOperationsRemaining() * transferFactory;
-                amount = getExportStrategy().push(context, what, amount, Actionable.MODULATE);
-                context.reduceOperationsRemaining(Math.max(1, amount / transferFactory));
+                amount = getExportStrategy().transfer(context, what, amount, Actionable.MODULATE);
+                if (amount > 0) {
+                    context.reduceOperationsRemaining(Math.max(1, amount / transferFactory));
+                }
             }
 
             if (before == context.getOperationsRemaining() && this.isCraftingEnabled()) {
@@ -178,7 +180,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     private void attemptCrafting(StackTransferContext context, ICraftingService cg, int slotToExport, AEKey what) {
         // don't bother crafting / checking or result, if target cannot accept at least 1 of requested item
         var maxAmount = context.getOperationsRemaining() * what.getAmountPerOperation();
-        var amount = getExportStrategy().push(context, what, maxAmount, Actionable.SIMULATE);
+        var amount = getExportStrategy().push(what, maxAmount, Actionable.SIMULATE);
         if (amount > 0) {
             requestCrafting(cg, slotToExport, what, amount);
             context.reduceOperationsRemaining(Math.max(1, amount / what.getAmountPerOperation()));
@@ -192,12 +194,9 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
 
     @Override
     public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
-        var d = getExportStrategy();
-
         var grid = getMainNode().getGrid();
         if (grid != null && getMainNode().isActive()) {
-            var context = createTransferContext(grid.getStorageService().getInventory(), grid.getEnergyService());
-            return getExportStrategy().push(context, what, amount, mode);
+            return getExportStrategy().push(what, amount, mode);
         }
 
         return 0;
