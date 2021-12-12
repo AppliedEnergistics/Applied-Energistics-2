@@ -59,7 +59,7 @@ import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.events.GridPowerIdleChange;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
-import appeng.core.worlddata.IGridStorageData;
+import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.me.pathfinding.IPathItem;
 
 public class GridNode implements IGridNode, IPathItem {
@@ -105,7 +105,8 @@ public class GridNode implements IGridNode, IPathItem {
         this.level = level;
         this.owner = owner;
         this.listener = listener;
-        this.flags = EnumSet.copyOf(flags);
+        this.flags = EnumSet.noneOf(GridFlags.class);
+        this.flags.addAll(flags);
         this.services = null;
     }
 
@@ -380,6 +381,10 @@ public class GridNode implements IGridNode, IPathItem {
         return ImmutableList.copyOf(this.connections);
     }
 
+    public boolean hasNoConnections() {
+        return this.connections.isEmpty();
+    }
+
     @Override
     public boolean hasGridBooted() {
         if (myGrid == null) {
@@ -408,7 +413,7 @@ public class GridNode implements IGridNode, IPathItem {
             this.setLastSecurityKey(node.getLong("k"));
 
             final long storageID = node.getLong("g");
-            final GridStorage gridStorage = IGridStorageData.get(getLevel().getServer()).getGridStorage(storageID);
+            final GridStorage gridStorage = IGridStorageSaveData.get(getLevel()).getGridStorage(storageID);
             this.setGridStorage(gridStorage);
         } else {
             this.owningPlayerId = -1; // Unknown owner

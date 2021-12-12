@@ -18,23 +18,22 @@
 
 package appeng.me;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.core.Direction;
 
 import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.exceptions.NullNodeConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.pathing.IPathingService;
-import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.Platform;
 
@@ -42,6 +41,10 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     private int channelData = 0;
     private Object visitorIterationNumber = null;
+    /**
+     * Note that in grids with a controller, following this side will always lead down the closest path towards the
+     * controller.
+     */
     private GridNode sideA;
     @Nullable
     private Direction fromAtoB;
@@ -51,10 +54,6 @@ public class GridConnection implements IGridConnection, IPathItem {
         this.sideA = aNode;
         this.fromAtoB = fromAtoB;
         this.sideB = bNode;
-    }
-
-    private boolean isNetworkABetter(final GridNode a, final GridNode b) {
-        return a.getMyGrid().getPriority() > b.getMyGrid().getPriority() || a.getMyGrid().size() > b.getMyGrid().size();
     }
 
     @Override
@@ -124,13 +123,15 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public void setControllerRoute(final IPathItem fast, final boolean zeroOut) {
+    public void setControllerRoute(IPathItem fast, boolean zeroOut) {
         if (zeroOut) {
             this.channelData &= ~0xff;
         }
 
+        // If the shortest route to the controller is via side B, we need to flip the
+        // connections sides because side A should be the closest route to the controller.
         if (this.sideB == fast) {
-            final GridNode tmp = this.sideA;
+            var tmp = this.sideA;
             this.sideA = this.sideB;
             this.sideB = tmp;
             if (this.fromAtoB != null) {
@@ -190,12 +191,12 @@ public class GridConnection implements IGridConnection, IPathItem {
     public static GridConnection create(final IGridNode aNode, final IGridNode bNode,
             @Nullable Direction externalDirection)
             throws FailedConnectionException {
-        if (aNode == null || bNode == null) {
-            throw new NullNodeConnectionException();
-        }
+        Objects.requireNonNull(aNode, "aNode");
+        Objects.requireNonNull(bNode, "bNode");
+        Preconditions.checkArgument(aNode != bNode, "Cannot connect node to itself");
 
-        final GridNode a = (GridNode) aNode;
-        final GridNode b = (GridNode) bNode;
+        var a = (GridNode) aNode;
+        var b = (GridNode) bNode;
 
         if (a.hasConnection(b) || b.hasConnection(a)) {
             throw new ExistingConnectionException(String
@@ -203,41 +204,71 @@ public class GridConnection implements IGridConnection, IPathItem {
         }
 
         if (!Platform.securityCheck(a, b)) {
-            if (AEConfig.instance().isSecurityAuditLogEnabled()) {
-                AELog.info("Security audit 1 failed at [%s] belonging to player [id=%d]", a, a.getOwningPlayerId());
-                AELog.info("Security audit 2 failed at [%s] belonging to player [id=%d]", b, b.getOwningPlayerId());
-            }
-
             throw new SecurityConnectionException();
         }
 
         // Create the actual connection
-        final GridConnection connection = new GridConnection(a, b, externalDirection);
+        var connection = new GridConnection(a, b, externalDirection);
 
-        // Update both nodes with the new connection.
-        if (a.getMyGrid() == null) {
-            b.setGrid(a.getInternalGrid());
-        } else if (a.getMyGrid() == null) {
-            final GridPropagator gp = new GridPropagator(b.getInternalGrid());
-            aNode.beginVisit(gp);
-        } else if (b.getMyGrid() == null) {
-            final GridPropagator gp = new GridPropagator(a.getInternalGrid());
-            bNode.beginVisit(gp);
-        } else if (connection.isNetworkABetter(a, b)) {
-            final GridPropagator gp = new GridPropagator(a.getInternalGrid());
-            b.beginVisit(gp);
-        } else {
-            final GridPropagator gp = new GridPropagator(b.getInternalGrid());
-            a.beginVisit(gp);
-        }
+        mergeGrids(a, b);
 
         // a connection was destroyed RE-PATH!!
-        final IPathingService p = connection.sideA.getInternalGrid().getPathingService();
+        var p = connection.sideA.getInternalGrid().getPathingService();
         p.repath();
 
         connection.sideA.addConnection(connection);
         connection.sideB.addConnection(connection);
 
         return connection;
+    }
+
+    /**
+     * Merge the grids of two grid nodes based on both becoming connected. This method assumes that the new connection
+     * is NOT yet created, otherwise grid propagation will do more work than needed.
+     */
+    private static void mergeGrids(GridNode a, GridNode b) {
+        // Update both nodes with the new connection.
+        var gridA = a.getMyGrid();
+        var gridB = b.getMyGrid();
+        if (gridA == null && gridB == null) {
+            // Neither A nor B has a grid, create a new grid spanning both
+            assertNodeIsStandalone(a);
+            assertNodeIsStandalone(b);
+            var grid = Grid.create(a);
+            a.setGrid(grid);
+            b.setGrid(grid);
+        } else if (gridA == null) {
+            // Only node B has a grid, propagate it to A
+            assertNodeIsStandalone(a);
+            a.setGrid(gridB);
+        } else if (gridB == null) {
+            // Only node A has a grid, propagate it to B
+            assertNodeIsStandalone(b);
+            b.setGrid(gridA);
+        } else if (gridA != gridB) {
+            if (isGridABetterThanGridB(gridA, gridB)) {
+                // Both A and B have grids, but A's grid is "better" -> propagate it to B and all its connected nodes
+                var gp = new GridPropagator(a.getInternalGrid());
+                b.beginVisit(gp);
+            } else {
+                // Both A and B have grids, but B's grid is "better" -> propagate it to A and all its connected nodes
+                var gp = new GridPropagator(b.getInternalGrid());
+                a.beginVisit(gp);
+            }
+        }
+    }
+
+    private static boolean isGridABetterThanGridB(Grid gridA, Grid gridB) {
+        if (gridA.getPriority() != gridB.getPriority()) {
+            return gridA.getPriority() > gridB.getPriority();
+        }
+        return gridA.size() >= gridB.size();
+    }
+
+    private static void assertNodeIsStandalone(GridNode node) {
+        if (!node.hasNoConnections()) {
+            throw new IllegalStateException("Grid node " + node + " has no grid, but is connected: "
+                    + node.getConnections());
+        }
     }
 }
