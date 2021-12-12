@@ -23,10 +23,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
+
+import appeng.init.internal.InitGridServices;
 
 @MockitoSettings
 class GridServicesTest {
@@ -39,6 +42,12 @@ class GridServicesTest {
         var field = GridServices.class.getDeclaredField("registry");
         field.setAccessible(true);
         ((List<?>) field.get(null)).clear();
+    }
+
+    @AfterEach
+    void restoreRegistry() throws Exception {
+        clearRegistry();
+        InitGridServices.init();
     }
 
     @Test
