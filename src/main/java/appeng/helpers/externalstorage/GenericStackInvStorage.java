@@ -146,7 +146,7 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
 
         @Override
         public boolean isResourceBlank() {
-            return isSupportedSlot() && inv.getStack(slotIndex) == null;
+            return getResource().isBlank();
         }
 
         @Override
