@@ -17,13 +17,15 @@ public class CableBuilder {
         this.bb = bb;
     }
 
-    public void part(Direction side, ItemDefinition<? extends PartItem<?>> part) {
+    public CableBuilder part(Direction side, ItemDefinition<? extends PartItem<?>> part) {
         plotBuilder.part(bb, side, part);
+        return this;
     }
 
-    public <T extends IPart> void part(Direction side,
+    public <T extends IPart> CableBuilder part(Direction side,
             ItemDefinition<? extends PartItem<T>> part,
             Consumer<T> partCustomizer) {
         plotBuilder.part(bb, side, part, partCustomizer);
+        return this;
     }
 }
