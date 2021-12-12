@@ -32,7 +32,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
     }
 
     @Override
-    public long push(StackTransferContext context, AEKey what, long amount, Actionable mode) {
+    public long transfer(StackTransferContext context, AEKey what, long amount, Actionable mode) {
         var variant = conversion.getVariant(what);
         if (variant.isBlank()) {
             return 0;
@@ -65,6 +65,33 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
                             wasInserted,
                             context.getActionSource(),
                             Actionable.MODULATE);
+                    tx.commit();
+                }
+
+                return wasInserted;
+            }
+        }
+
+        return 0;
+    }
+
+    @Override
+    public long push(AEKey what, long amount, Actionable mode) {
+        var variant = conversion.getVariant(what);
+        if (variant.isBlank()) {
+            return 0;
+        }
+
+        var adjacentStorage = apiCache.find(fromSide);
+        if (adjacentStorage == null) {
+            return 0;
+        }
+
+        try (var tx = Transaction.openOuter()) {
+            long wasInserted = adjacentStorage.insert(variant, amount, tx);
+
+            if (wasInserted > 0) {
+                if (mode == Actionable.MODULATE) {
                     tx.commit();
                 }
 
