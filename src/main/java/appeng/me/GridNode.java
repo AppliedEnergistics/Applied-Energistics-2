@@ -316,12 +316,22 @@ public class GridNode implements IGridNode, IPathItem {
         // no longer available.
         this.ready = false;
 
+        boolean movedPivot = false;
+
         // First pass: Remove the connection on the other side
         for (var connection : connections) {
             var otherSide = (GridNode) connection.getOtherSide(this);
+
             // Moving the pivot closer means we potentially have to search fewer nodes
             // when searching for a grid split. Especially if the grid hasn't really been split.
-            otherSide.getInternalGrid().setPivot(otherSide);
+            // In grids with a controller, side A of the connection will be closer to the controller
+            // By moving the pivot to side A, the controller will NOT receive a new grid, which
+            // is potentially beneficial by assuming the controller has a lot more connected
+            // nodes that are not disrupted by this node being destroyed.
+            if (!movedPivot && connection.a() != this && myGrid != null) {
+                myGrid.setPivot((GridNode) connection.a());
+                movedPivot = true;
+            }
 
             // Ensure the other side holds no reference to this node anymore
             otherSide.removeConnection(connection);
@@ -330,6 +340,14 @@ public class GridNode implements IGridNode, IPathItem {
         // Second pass: Re-validate the grids of the previously connected, adjacent nodes
         for (var connection : connections) {
             var otherSide = (GridNode) connection.getOtherSide(this);
+
+            // If we were unable to move the pivot away from ourselves in the first pass
+            // just move it to the first eligible node, but only if we're the pivot
+            if (!movedPivot && myGrid != null && myGrid.getPivot() == this) {
+                myGrid.setPivot(otherSide);
+                movedPivot = true;
+            }
+
             // Re-validating the grid will cause the actual grid split to occur if the previously adjacent nodes
             // were only connected by this node.
             otherSide.validateGrid();
