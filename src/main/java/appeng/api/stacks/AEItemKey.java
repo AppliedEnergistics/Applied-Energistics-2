@@ -228,6 +228,9 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public String toString() {
-        return tag == null ? item.toString() : item.toString() + " (+tag)";
+        var id = Registry.ITEM.getKey(item);
+        String idString = id != Registry.ITEM.getDefaultKey() ? id.toString()
+                : item.getClass().getName() + "(unregistered)";
+        return tag == null ? idString : idString + " (+tag)";
     }
 }

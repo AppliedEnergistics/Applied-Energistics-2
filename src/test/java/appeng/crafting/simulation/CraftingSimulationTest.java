@@ -197,7 +197,7 @@ public class CraftingSimulationTest {
         env.addStoredItem(water1B);
 
         var plan = env.runSimulation(water1B);
-        assertThatPlan(plan).succeeded();
+        assertThatPlan(plan).failed();
     }
 
     public void testDamagedOutput(boolean branching) {

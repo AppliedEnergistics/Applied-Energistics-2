@@ -172,6 +172,9 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public String toString() {
-        return tag == null ? fluid.toString() : fluid.toString() + " (+tag)";
+        var id = Registry.FLUID.getKey(fluid);
+        String idString = id != Registry.FLUID.getDefaultKey() ? id.toString()
+                : fluid.getClass().getName() + "(unregistered)";
+        return tag == null ? idString : idString + " (+tag)";
     }
 }
