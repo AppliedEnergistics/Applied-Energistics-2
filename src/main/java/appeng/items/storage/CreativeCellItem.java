@@ -27,9 +27,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.config.FuzzyMode;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
@@ -80,6 +82,15 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
         var configInv = AEItems.ITEM_CELL_CREATIVE.asItem().getConfigInventory(cell);
         for (int i = 0; i < items.length; i++) {
             configInv.setStack(i, GenericStack.fromItemStack(new ItemStack(items[i])));
+        }
+        return cell;
+    }
+
+    public static ItemStack ofFluids(Fluid... fluids) {
+        var cell = AEItems.FLUID_CELL_CREATIVE.stack();
+        var configInv = AEItems.FLUID_CELL_CREATIVE.asItem().getConfigInventory(cell);
+        for (int i = 0; i < fluids.length; i++) {
+            configInv.setStack(i, new GenericStack(AEFluidKey.of(fluids[i]), 1));
         }
         return cell;
     }
