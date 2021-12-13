@@ -352,23 +352,11 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void onStackChange( IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src, IStorageChannel<?> chan )
+	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final IActionSource src, final IStorageChannel chan )
 	{
-		if( chan == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( chan == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
 		{
-			IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
-			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			{
-				final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
-				if( Platform.itemComparisons().isFuzzyEqualItem( myStack.getDefinition(), ( (IAEItemStack) diffStack ).getDefinition(), fzMode ) )
-				{
-					this.lastReportedValue += diffStack.getStackSize();
-				}
-			}
-			else if( diffStack.equals( myStack ) )
-			{
-				this.lastReportedValue += diffStack.getStackSize();
-			}
+			this.lastReportedValue = fullStack.getStackSize();
 			this.updateState();
 		}
 	}
