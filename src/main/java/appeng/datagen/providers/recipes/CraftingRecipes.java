@@ -678,7 +678,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', Items.STICKY_PISTON)
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/import_bus"));
-        ShapelessRecipeBuilder.shapeless(AEParts.level_emitter)
+        ShapelessRecipeBuilder.shapeless(AEParts.LEVEL_EMITTER)
                 .requires(Items.REDSTONE_TORCH)
                 .requires(AEItems.CALCULATION_PROCESSOR)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
@@ -702,10 +702,10 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_storage_monitor", has(AEParts.STORAGE_MONITOR))
                 .save(consumer, AppEng.makeId("network/parts/monitors_conversion"));
         ShapelessRecipeBuilder.shapeless(AEParts.STORAGE_MONITOR)
-                .requires(AEParts.level_emitter)
+                .requires(AEParts.LEVEL_EMITTER)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
                 .unlockedBy("has_illuminated_panel", has(ConventionTags.ILLUMINATED_PANEL))
-                .unlockedBy("has_level_emitter", has(AEParts.level_emitter))
+                .unlockedBy("has_level_emitter", has(AEParts.LEVEL_EMITTER))
                 .save(consumer, AppEng.makeId("network/parts/monitors_storage"));
         ShapelessRecipeBuilder.shapeless(AEParts.DARK_MONITOR)
                 .requires(AEParts.MONITOR)

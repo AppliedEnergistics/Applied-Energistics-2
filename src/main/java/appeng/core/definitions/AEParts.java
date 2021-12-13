@@ -94,7 +94,7 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<StorageBusPart>> STORAGE_BUS = createPart(AEPartIds.STORAGE_BUS, StorageBusPart.class, StorageBusPart::new);
     public static final ItemDefinition<PartItem<ImportBusPart>> IMPORT_BUS = createPart(AEPartIds.IMPORT_BUS, ImportBusPart.class, ImportBusPart::new);
     public static final ItemDefinition<PartItem<ExportBusPart>> EXPORT_BUS = createPart(AEPartIds.EXPORT_BUS, ExportBusPart.class, ExportBusPart::new);
-    public static final ItemDefinition<PartItem<StorageLevelEmitterPart>> level_emitter = createPart(AEPartIds.LEVEL_EMITTER, StorageLevelEmitterPart.class, StorageLevelEmitterPart::new);
+    public static final ItemDefinition<PartItem<StorageLevelEmitterPart>> LEVEL_EMITTER = createPart(AEPartIds.LEVEL_EMITTER, StorageLevelEmitterPart.class, StorageLevelEmitterPart::new);
     public static final ItemDefinition<PartItem<EnergyLevelEmitterPart>> ENERGY_LEVEL_EMITTER = createPart(AEPartIds.ENERGY_LEVEL_EMITTER, EnergyLevelEmitterPart.class, EnergyLevelEmitterPart::new);
     public static final ItemDefinition<PartItem<AnnihilationPlanePart>> ANNIHILATION_PLANE = createPart(AEPartIds.ANNIHILATION_PLANE, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
     public static final ItemDefinition<PartItem<IdentityAnnihilationPlanePart>> IDENTITY_ANNIHILATION_PLANE = createPart(AEPartIds.IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart.class, IdentityAnnihilationPlanePart::new);

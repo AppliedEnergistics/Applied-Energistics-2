@@ -14,11 +14,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import appeng.api.util.AEColor;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -71,7 +74,13 @@ public final class AutoCraftingTestPlot {
         buildObsidianCrafting(plot.offset(3, 0, 5));
 
         // Subsystem to export crafted items
-        buildChestCraftingExport(plot.offset(5, 0, 6));
+        buildChestCraftingExport(plot.offset(5, 0, 7));
+
+        // Subsystem to allow emitting water on request
+        buildWaterEmittingSource(plot.offset(5, 0, 9));
+
+        // Connect subsystems with dense cable
+        plot.cable("4 0 [6,9]", AEParts.SMART_DENSE_CABLE.stack(AEColor.TRANSPARENT));
 
         // Add post-processing action once the grid is up and running
         plot.afterGridInitAt("4 0 4", (grid, gridNode) -> {
@@ -137,6 +146,29 @@ public final class AutoCraftingTestPlot {
             eb.getConfig().insert(0, AEItemKey.of(Items.CHEST), 1, Actionable.MODULATE);
         });
         plot.block("0 0 1", Blocks.CHEST);
+    }
+
+    private static void buildWaterEmittingSource(PlotBuilder plot) {
+        plot.cable("0 0 0")
+                .part(Direction.SOUTH, AEParts.QUARTZ_FIBER);
+        plot.cable("0 0 1")
+                .part(Direction.NORTH, AEParts.TOGGLE_BUS);
+        plot.cable("0 1 0");
+        plot.cable("0 1 1")
+                .part(Direction.DOWN, AEParts.LEVEL_EMITTER, levelEmitter -> {
+                    levelEmitter.getConfig().insert(0, AEFluidKey.of(Fluids.WATER), 1, Actionable.MODULATE);
+                    levelEmitter.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
+                    // Set it to emit and craft on redstone
+                    levelEmitter.getConfigManager().putSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.YES);
+                })
+                .part(Direction.SOUTH, AEParts.INTERFACE);
+        plot.cable("0 1 2")
+                .part(Direction.NORTH, AEParts.STORAGE_BUS, storageBus -> {
+                    storageBus.getConfig().insert(0, AEFluidKey.of(Fluids.WATER), 1, Actionable.MODULATE);
+                });
+        plot.cable("0 0 2")
+                .part(Direction.DOWN, AEParts.ANNIHILATION_PLANE);
+        plot.block("[-1,1] -1 2", Blocks.WATER);
     }
 
     private static void buildObsidianCrafting(PlotBuilder plot) {

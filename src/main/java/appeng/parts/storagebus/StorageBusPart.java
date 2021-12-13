@@ -295,7 +295,9 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     protected void onConfigurationChanged() {
-        updateTarget(true);
+        if (getMainNode().isReady()) {
+            updateTarget(true);
+        }
     }
 
     private void updateTarget(boolean forceFullUpdate) {
