@@ -116,7 +116,7 @@ public final class AutoCraftingTestPlot {
                             GenericStack.fromItemStack(new ItemStack(Items.REDSTONE))
                     },
                     new GenericStack[] {
-                            new GenericStack(AEItemKey.of(Items.OBSIDIAN), 1)
+                            new GenericStack(AEFluidKey.of(Fluids.WATER), AEFluidKey.AMOUNT_BUCKET)
                     }));
 
             // Add ingredients to network storage
