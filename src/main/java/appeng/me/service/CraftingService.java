@@ -35,8 +35,8 @@ import javax.annotation.Nullable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
-
 import com.google.common.collect.Sets;
+
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;

@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
@@ -92,7 +91,7 @@ public class CraftingCpuLogic {
         // Set CPU link and job.
         var craftId = this.generateCraftId(plan.finalOutput());
         var linkCpu = new CraftingLink(CraftingCpuHelper.generateLinkData(craftId, requester == null, false), cluster);
-        this.job = new ExecutingCraftingJob(plan, this::postCraftingDifference, linkCpu);
+        this.job = new ExecutingCraftingJob(plan, this::postChange, linkCpu);
         cluster.updateOutput(plan.finalOutput());
         cluster.markDirty();
 
@@ -368,15 +367,6 @@ public class CraftingCpuLogic {
         }
     }
 
-    private void postCraftingDifference(AEKey what) {
-        var grid = cluster.getGrid();
-        if (grid == null)
-            return;
-
-        // Also notify opened menus
-        postChange(what);
-    }
-
     public boolean hasJob() {
         return this.job != null;
     }
@@ -392,7 +382,7 @@ public class CraftingCpuLogic {
     public void readFromNBT(CompoundTag data) {
         this.inventory.readFromNBT(data.getList("inventory", 10));
         if (data.contains("job")) {
-            this.job = new ExecutingCraftingJob(data.getCompound("job"), this::postCraftingDifference, this);
+            this.job = new ExecutingCraftingJob(data.getCompound("job"), this::postChange, this);
             cluster.updateOutput(this.job.finalOutput);
         } else {
             cluster.updateOutput(null);
