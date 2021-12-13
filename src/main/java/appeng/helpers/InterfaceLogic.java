@@ -19,7 +19,6 @@
 package appeng.helpers;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -70,7 +69,7 @@ import appeng.helpers.externalstorage.GenericStackFluidStorage;
 import appeng.helpers.externalstorage.GenericStackInvStorage;
 import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.me.helpers.MachineSource;
-import appeng.me.storage.CompositeStorage;
+import appeng.me.storage.DelegatingMEInventory;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
@@ -551,11 +550,12 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     }
 
     /**
-     * An adapter that makes the interface's local storage available to an AE-compatible client, such as a storage bus.
+     * An adapter that wraps access to the interface's local storage behind an action source check, to respect interface
+     * priorities when they are attached to a storage bus.
      */
-    private class InterfaceInventory extends CompositeStorage {
+    private class InterfaceInventory extends DelegatingMEInventory {
         InterfaceInventory() {
-            super(Map.of(AEKeyType.items(), storage, AEKeyType.fluids(), storage));
+            super(storage);
         }
 
         @Override
@@ -567,9 +567,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
                 return 0;
             }
 
-            var inserted = super.insert(what, amount, mode, source);
-            onTick(); // Immediately clear cache
-            return inserted;
+            return super.insert(what, amount, mode, source);
         }
 
         @Override
@@ -582,9 +580,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
                 return 0;
             }
 
-            var extracted = super.extract(what, amount, mode, source);
-            onTick(); // Immediately clear cache
-            return extracted;
+            return super.extract(what, amount, mode, source);
         }
 
         @Override

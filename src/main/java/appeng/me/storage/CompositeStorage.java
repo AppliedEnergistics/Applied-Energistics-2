@@ -2,7 +2,6 @@ package appeng.me.storage;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -72,8 +71,8 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
 
     @Override
     public TickRateModulation onTick() {
-        var changes = this.cache.update();
-        if (!changes.isEmpty()) {
+        boolean changed = this.cache.update();
+        if (changed) {
             return TickRateModulation.URGENT;
         } else {
             return TickRateModulation.SLOWER;
@@ -89,7 +88,7 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
         private KeyCounter frontBuffer = new KeyCounter();
         private KeyCounter backBuffer = new KeyCounter();
 
-        public Set<AEKey> update() {
+        public boolean update() {
             // Flip back & front buffer and start building a new list
             var tmp = backBuffer;
             backBuffer = frontBuffer;
@@ -101,22 +100,22 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
                 storage.getAvailableStacks(frontBuffer);
             }
 
+            boolean changed = false;
             // Diff the front-buffer against the backbuffer
-            var changes = new KeyCounter();
             for (var entry : frontBuffer) {
                 var old = backBuffer.get(entry.getKey());
                 if (old == 0 || old != entry.getLongValue()) {
-                    changes.add(entry.getKey(), entry.getLongValue()); // new or changed entry
+                    changed = true;
                 }
             }
             // Account for removals
             for (var oldEntry : backBuffer) {
                 if (frontBuffer.get(oldEntry.getKey()) == 0) {
-                    changes.add(oldEntry.getKey(), -oldEntry.getLongValue());
+                    changed = true;
                 }
             }
 
-            return changes.keySet();
+            return changed;
         }
 
         public void getAvailableKeys(KeyCounter out) {
