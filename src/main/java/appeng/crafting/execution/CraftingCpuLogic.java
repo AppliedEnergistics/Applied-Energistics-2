@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
@@ -372,11 +373,6 @@ public class CraftingCpuLogic {
         if (grid == null)
             return;
 
-        var craftingService = (CraftingService) grid.getCraftingService();
-        for (var watcher : craftingService.getInterestManager().get(what)) {
-            watcher.getHost().onRequestChange(craftingService, what);
-        }
-
         // Also notify opened menus
         postChange(what);
     }
@@ -442,6 +438,14 @@ public class CraftingCpuLogic {
             return this.job.waitingFor.extract(template, Long.MAX_VALUE, Actionable.SIMULATE);
         }
         return 0;
+    }
+
+    public void getAllWaitingFor(Set<AEKey> waitingFor) {
+        if (this.job != null) {
+            for (var entry : this.job.waitingFor.list) {
+                waitingFor.add(entry.getKey());
+            }
+        }
     }
 
     public long getPendingOutputs(AEKey template) {

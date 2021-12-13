@@ -36,6 +36,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
+import com.google.common.collect.Sets;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -88,8 +89,9 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     private final NetworkCraftingProviders craftingProviders = new NetworkCraftingProviders();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<AEKey, CraftingWatcher> interests = HashMultimap.create();
-    private final InterestManager<CraftingWatcher> interestManager = new InterestManager<>((Multimap) this.interests);
+    private final InterestManager<CraftingWatcher> interestManager = new InterestManager<>(this.interests);
     private final IEnergyService energyGrid;
+    private final Set<AEKey> currentlyCrafting = new HashSet<>();
     private boolean updateList = false;
 
     public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyService energyGrid) {
@@ -108,8 +110,22 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         this.craftingLinks.values().removeIf(nexus -> nexus.isDead(this.grid, this));
 
+        var previouslyCrafting = new HashSet<>(currentlyCrafting);
+        this.currentlyCrafting.clear();
         for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
             cpu.craftingLogic.tickCraftingLogic(energyGrid, this);
+
+            cpu.craftingLogic.getAllWaitingFor(this.currentlyCrafting);
+        }
+
+        // Notify watchers about items no longer being crafted
+        var changed = new HashSet<AEKey>();
+        changed.addAll(Sets.difference(previouslyCrafting, currentlyCrafting));
+        changed.addAll(Sets.difference(currentlyCrafting, previouslyCrafting));
+        for (var what : changed) {
+            for (var watcher : interestManager.get(what)) {
+                watcher.getHost().onRequestChange(this, what);
+            }
         }
     }
 
@@ -307,7 +323,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Override
     public boolean isRequesting(AEKey what) {
-        return this.requesting(what) > 0;
+        return currentlyCrafting.contains(what);
     }
 
     @Override
