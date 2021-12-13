@@ -58,8 +58,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     private final SetMultimap<AEKey, StackWatcher> interests = HashMultimap.create();
     private final InterestManager<StackWatcher> interestManager = new InterestManager<>(this.interests);
     private final NetworkStorage storage;
-    // TODO: should we expose a copy or an immutable view of this?
-    private KeyCounter cachedAvailableStacks = new KeyCounter();
+    private final KeyCounter cachedAvailableStacks = new KeyCounter(); // publicly exposed cached stacks.
+    private KeyCounter lastTickStacks = new KeyCounter(); // private cache, to make sure it's never modified.
     /**
      * Tracks the stack watcher associated with a given grid node. Needed to clean up watchers when the node leaves the
      * grid.
@@ -74,9 +74,12 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     @Override
     public void onServerEndTick() {
         // Update cache
-        var previousStacks = cachedAvailableStacks;
+        var previousStacks = lastTickStacks;
         // Already set the value so that it can be accessed by the watcher node callbacks.
-        this.cachedAvailableStacks = storage.getAvailableStacks();
+        this.lastTickStacks = storage.getAvailableStacks();
+        this.cachedAvailableStacks.reset();
+        this.cachedAvailableStacks.addAll(lastTickStacks);
+        this.cachedAvailableStacks.removeZeros();
         // Update watchers
         previousStacks.removeAll(cachedAvailableStacks);
         previousStacks.removeZeros();
