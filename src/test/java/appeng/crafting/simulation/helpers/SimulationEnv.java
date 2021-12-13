@@ -203,7 +203,7 @@ public class SimulationEnv {
 
             @Override
             public KeyCounter getCachedAvailableStacks() {
-                throw new UnsupportedOperationException();
+                return getInventory().getAvailableStacks();
             }
 
             @Override
@@ -222,7 +222,9 @@ public class SimulationEnv {
         return new MEStorage() {
             @Override
             public void getAvailableStacks(KeyCounter out) {
-                throw new UnsupportedOperationException();
+                for (var entry : networkStorage) {
+                    out.add(entry.getKey(), entry.getLongValue());
+                }
             }
 
             @Override
