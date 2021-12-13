@@ -168,7 +168,7 @@ public class NetworkCraftingProviders {
                 methods.craftableItemsList.remove(primaryOutput.what(), 1);
 
                 var patternMap = methods.craftableItems.get(primaryOutput.what());
-                patternMap.merge(pattern, -1, Integer::sum);
+                patternMap.compute(pattern, (pat, cnt) -> cnt == 1 ? null : cnt - 1);
 
                 methods.craftingMethods.get(pattern).remove(provider);
             }
