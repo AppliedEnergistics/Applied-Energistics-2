@@ -48,8 +48,7 @@ public interface IStorageProvider extends IGridNodeService {
     static void requestUpdate(IManagedGridNode managedNode) {
         var node = managedNode.getNode();
         if (node != null) {
-            var grid = node.getGrid();
-            grid.getStorageService().refreshNodeStorageProvider(node);
+            node.getGrid().getStorageService().refreshNodeStorageProvider(node);
         }
     }
 }

@@ -205,10 +205,10 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
 
                 if (gh != null) {
                     final IGridNode node = gh.getGridNode(side);
-                    if (node != null && node.getGrid() != null) {
+                    if (node != null) {
                         final IEnergyService eg = node.getGrid().getEnergyService();
-                        this.outputSecondaryMessage(player,
-                                "GridEnergy", +eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
+                        this.outputSecondaryMessage(player, "GridEnergy",
+                                +eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
                     }
                 }
             }

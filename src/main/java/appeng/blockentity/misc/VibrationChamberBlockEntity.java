@@ -169,27 +169,21 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
         }
 
         var grid = node.getGrid();
-        if (grid != null) {
-            var energy = grid.getEnergyService();
-            final double newPower = timePassed * POWER_PER_TICK;
-            final double overFlow = energy.injectPower(newPower, Actionable.SIMULATE);
+        var energy = grid.getEnergyService();
+        final double newPower = timePassed * POWER_PER_TICK;
+        final double overFlow = energy.injectPower(newPower, Actionable.SIMULATE);
 
-            // burn the over flow.
-            energy.injectPower(Math.max(0.0, newPower - overFlow), Actionable.MODULATE);
+        // burn the over flow.
+        energy.injectPower(Math.max(0.0, newPower - overFlow), Actionable.MODULATE);
 
-            if (overFlow > 0) {
-                this.setBurnSpeed(this.getBurnSpeed() - ticksSinceLastCall);
-            } else {
-                this.setBurnSpeed(this.getBurnSpeed() + ticksSinceLastCall);
-            }
-
-            this.setBurnSpeed(Math.max(MIN_BURN_SPEED, Math.min(this.getBurnSpeed(), MAX_BURN_SPEED)));
-            return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
-        } else {
+        if (overFlow > 0) {
             this.setBurnSpeed(this.getBurnSpeed() - ticksSinceLastCall);
-            this.setBurnSpeed(Math.max(MIN_BURN_SPEED, Math.min(this.getBurnSpeed(), MAX_BURN_SPEED)));
-            return TickRateModulation.SLOWER;
+        } else {
+            this.setBurnSpeed(this.getBurnSpeed() + ticksSinceLastCall);
         }
+
+        this.setBurnSpeed(Math.max(MIN_BURN_SPEED, Math.min(this.getBurnSpeed(), MAX_BURN_SPEED)));
+        return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
     }
 
     private void eatFuel() {

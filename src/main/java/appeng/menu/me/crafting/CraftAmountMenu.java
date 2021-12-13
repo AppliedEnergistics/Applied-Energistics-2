@@ -142,7 +142,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
             }
 
             final IGrid g = gn.getGrid();
-            if (g == null || this.whatToCraft == null) {
+            if (this.whatToCraft == null) {
                 return;
             }
 
