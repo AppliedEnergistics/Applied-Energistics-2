@@ -46,36 +46,36 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
             .create(StorageLevelEmitterMenu::new, StorageLevelEmitterPart.class)
             .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
+                GenericStack.writeBuffer(host.getConfig().getStack(0), buffer);
                 buffer.writeVarLong(host.getReportingValue());
             }, (host, menu, buffer) -> {
-                menu.reportingValue = buffer.readVarLong();
+                menu.getHost().getConfig().setStack(0, GenericStack.readBuffer(buffer));
+                menu.currentValue = buffer.readVarLong();
             })
             .build("storage_level_emitter");
 
     // Only synced once on menu-open, and only used on client
-    private long reportingValue;
-
-    private FakeSlot configSlot;
+    private long currentValue;
 
     public StorageLevelEmitterMenu(MenuType<StorageLevelEmitterMenu> menuType, int id, Inventory ip,
             StorageLevelEmitterPart te) {
         super(menuType, id, ip, te);
 
-        registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setReportingValue);
+        registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setValue);
     }
 
-    public long getReportingValue() {
-        return reportingValue;
+    public long getCurrentValue() {
+        return currentValue;
     }
 
-    public void setReportingValue(long reportingValue) {
+    public void setValue(long initialValue) {
         if (isClient()) {
-            if (reportingValue != this.reportingValue) {
-                this.reportingValue = reportingValue;
-                sendClientAction(ACTION_SET_REPORTING_VALUE, reportingValue);
+            if (initialValue != this.currentValue) {
+                this.currentValue = initialValue;
+                sendClientAction(ACTION_SET_REPORTING_VALUE, initialValue);
             }
         } else {
-            getHost().setReportingValue(reportingValue);
+            getHost().setReportingValue(initialValue);
         }
     }
 
@@ -84,8 +84,7 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
         this.setupUpgrades();
 
         var inv = getHost().getConfig().createMenuWrapper();
-        configSlot = new FakeSlot(inv, 0);
-        this.addSlot(configSlot, SlotSemantic.CONFIG);
+        this.addSlot(new FakeSlot(inv, 0), SlotSemantic.CONFIG);
     }
 
     @Override
@@ -113,7 +112,6 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
 
     @Nullable
     public AEKey getConfiguredFilter() {
-        var stack = GenericStack.unwrapItemStack(configSlot.getItem());
-        return stack != null ? stack.what() : null;
+        return getHost().getConfig().getKey(0);
     }
 }

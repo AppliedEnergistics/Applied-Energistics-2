@@ -43,6 +43,7 @@ public class AppEngSlot extends Slot {
     private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
     private final InternalInventory inventory;
     private final int invSlot;
+    private boolean hideAmount;
 
     private boolean isDraggable = true;
     private AEBaseMenu menu = null;
@@ -193,7 +194,17 @@ public class AppEngSlot extends Slot {
      * rendered.
      */
     public ItemStack getDisplayStack() {
-        return this.inventory.getStackInSlot(this.invSlot);
+        var is = this.inventory.getStackInSlot(this.invSlot);
+        if (hideAmount) {
+            var unwrapped = GenericStack.unwrapItemStack(is);
+            if (unwrapped != null) {
+                return GenericStack.wrapInItemStack(unwrapped.what(), 0);
+            } else {
+                is = is.copy();
+                is.setCount(1);
+            }
+        }
+        return is;
     }
 
     public float getOpacityOfIcon() {
@@ -272,6 +283,14 @@ public class AppEngSlot extends Slot {
      */
     public void resetCachedValidation() {
         this.validState = null;
+    }
+
+    public boolean isHideAmount() {
+        return hideAmount;
+    }
+
+    public void setHideAmount(boolean hideAmount) {
+        this.hideAmount = hideAmount;
     }
 
 }

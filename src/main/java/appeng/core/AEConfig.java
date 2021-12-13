@@ -40,7 +40,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.api.features.AEWorldGenInternal;
-import appeng.client.gui.NumberEntryType;
 import appeng.core.config.BooleanOption;
 import appeng.core.config.ConfigFileManager;
 import appeng.core.config.ConfigSection;
@@ -111,13 +110,6 @@ public final class AEConfig {
     private boolean useColoredCraftingStatus;
     private boolean disableColoredCableRecipesInJEI;
     private int craftingCalculationTimePerTick;
-
-    // GUI Buttons
-    private final int[] craftByStacks = { 1, 10, 100, 1000 };
-    // GUI Buttons
-    private final int[] priorityByStacks = { 1, 10, 100, 1000 };
-    private final int[] levelByStacks = { 1, 10, 100, 1000 };
-    private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -233,20 +225,6 @@ public final class AEConfig {
     }
 
     public void save() {
-    }
-
-    /**
-     * Returns an array with the quantity-steps for the +/- buttons in number entry dialogs of the given type.
-     * Guaranteed to have 4 entries.
-     */
-    public int[] getNumberEntrySteps(NumberEntryType type) {
-        return switch (type) {
-            case CRAFT_ITEM_COUNT -> craftByStacks;
-            case PRIORITY -> priorityByStacks;
-            case LEVEL_ITEM_COUNT -> levelByStacks;
-            case LEVEL_FLUID_VOLUME -> levelByMillibuckets;
-            case LEVEL_ENERGY_AMOUNT -> levelByStacks;
-        };
     }
 
     public PowerUnits getSelectedPowerUnit() {

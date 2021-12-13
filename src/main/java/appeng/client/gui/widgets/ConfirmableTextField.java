@@ -21,15 +21,13 @@ package appeng.client.gui.widgets;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.Component;
 
-public class ConfirmableTextField extends EditBox {
+public class ConfirmableTextField extends AETextField {
 
     private Runnable onConfirm;
 
-    public ConfirmableTextField(Font fontRenderer, int x, int y, int width, int height, Component text) {
-        super(fontRenderer, x, y, width, height, text);
+    public ConfirmableTextField(Font fontRenderer, int x, int y, int width, int height) {
+        super(fontRenderer, x, y, width, height);
     }
 
     @Override

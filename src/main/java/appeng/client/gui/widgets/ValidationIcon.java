@@ -21,10 +21,6 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.Icon;
@@ -51,6 +47,11 @@ public class ValidationIcon extends IconButton {
         }
     }
 
+    @Override
+    public List<Component> getTooltipMessage() {
+        return tooltip;
+    }
+
     public void setTooltip(List<Component> lines) {
         this.tooltip.clear();
         this.tooltip.addAll(lines);
@@ -66,18 +67,4 @@ public class ValidationIcon extends IconButton {
         return false; // Cannot focus this element
     }
 
-    @Override
-    public void renderToolTip(PoseStack poseStack, int mouseX, int mouseY) {
-        if (this.tooltip.isEmpty()) {
-            return;
-        }
-
-        Minecraft client = Minecraft.getInstance();
-        Screen screen = client.screen;
-        if (screen == null) {
-            return;
-        }
-
-        screen.renderComponentTooltip(poseStack, this.tooltip, x, y);
-    }
 }

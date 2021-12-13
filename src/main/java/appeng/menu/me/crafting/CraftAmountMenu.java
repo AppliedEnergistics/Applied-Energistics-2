@@ -22,12 +22,12 @@ import java.util.Objects;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
@@ -37,6 +37,7 @@ import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
@@ -47,8 +48,8 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantic;
-import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.util.inv.AppEngInternalInventory;
 
@@ -65,15 +66,12 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
     /**
      * This slot is used to synchronize a visual representation of what is to be crafted to the client.
      */
-    private final Slot craftingItem;
+    private final AppEngSlot craftingItem;
 
     /**
      * This item (server-only) indicates what should actually be crafted.
      */
     private AEKey whatToCraft;
-
-    @GuiSync(1)
-    private int initialAmount = -1;
 
     private final ITerminalHost host;
 
@@ -81,6 +79,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
         super(TYPE, id, ip, host);
         this.host = host;
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
+        this.craftingItem.setHideAmount(true);
         this.addSlot(this.craftingItem, SlotSemantic.MACHINE_OUTPUT);
     }
 
@@ -117,8 +116,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
     private void setWhatToCraft(@Nonnull AEKey whatToCraft, int initialAmount) {
         this.whatToCraft = Objects.requireNonNull(whatToCraft, "whatToCraft");
-        this.initialAmount = initialAmount;
-        this.craftingItem.set(whatToCraft.wrapForDisplayOrFilter());
+        this.craftingItem.set(whatToCraft.wrap(initialAmount));
     }
 
     /**
@@ -174,7 +172,8 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
     }
 
-    public int getInitialAmount() {
-        return initialAmount;
+    @Nullable
+    public GenericStack getWhatToCraft() {
+        return GenericStack.unwrapItemStack(craftingItem.getItem());
     }
 }

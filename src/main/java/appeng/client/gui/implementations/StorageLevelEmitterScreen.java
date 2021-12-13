@@ -18,8 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -28,7 +26,6 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.stacks.AEFluidKey;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
@@ -54,44 +51,20 @@ public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmi
         this.addToLeftToolbar(this.craftingMode);
         this.addToLeftToolbar(this.fuzzyMode);
 
-        this.level = new NumberEntryWidget(
-                AEFluidKey.is(menu.getConfiguredFilter()) ? NumberEntryType.LEVEL_FLUID_VOLUME
-                        : NumberEntryType.LEVEL_ITEM_COUNT);
-        this.level.setTextFieldBounds(25, 44, 75);
-        setInputValueFromHost();
+        this.level = new NumberEntryWidget(NumberEntryType.of(menu.getConfiguredFilter()));
+        this.level.setTextFieldStyle(style.getWidget("levelInput"));
+        this.level.setLongValue(this.menu.getCurrentValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::onClose);
         widgets.add("level", this.level);
-    }
-
-    private void setInputValueFromHost() {
-        var value = menu.getReportingValue();
-        if (AEFluidKey.is(menu.getConfiguredFilter())) {
-            value = value * 1000 / AEFluidKey.AMOUNT_BUCKET;
-        }
-        this.level.setValue(value);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        if (AEFluidKey.is(menu.getConfiguredFilter())) {
-            // Update when changing types
-            if (this.level.getType() != NumberEntryType.LEVEL_FLUID_VOLUME) {
-                menu.setReportingValue(menu.getReportingValue() * AEFluidKey.AMOUNT_BUCKET / 1000);
-                setInputValueFromHost();
-            }
-            this.level.setType(NumberEntryType.LEVEL_FLUID_VOLUME);
-        } else {
-            // Update when changing types
-            if (this.level.getType() != NumberEntryType.LEVEL_ITEM_COUNT) {
-                menu.setReportingValue(menu.getReportingValue() * 1000 / AEFluidKey.AMOUNT_BUCKET);
-                setInputValueFromHost();
-            }
-
-            this.level.setType(NumberEntryType.LEVEL_ITEM_COUNT);
-        }
+        // Update the type in case the filter has changed
+        this.level.setType(NumberEntryType.of(menu.getConfiguredFilter()));
 
         this.fuzzyMode.set(menu.getFuzzyMode());
         this.fuzzyMode.setVisibility(menu.supportsFuzzySearch());
@@ -107,20 +80,7 @@ public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmi
         this.craftingMode.setVisibility(!notCraftingMode);
     }
 
-    @Override
-    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
-        this.level.render(poseStack, mouseX, mouseY, partialTicks);
-    }
-
     private void saveReportingValue() {
-        this.level.getLongValue().ifPresent(value -> {
-            // Convert to the real reporting value
-            if (AEFluidKey.is(menu.getConfiguredFilter())) {
-                value = value * AEFluidKey.AMOUNT_BUCKET / 1000;
-            }
-            menu.setReportingValue(value);
-        });
+        this.level.getLongValue().ifPresent(menu::setValue);
     }
 }

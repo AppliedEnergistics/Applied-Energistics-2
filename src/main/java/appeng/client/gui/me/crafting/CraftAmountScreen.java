@@ -39,7 +39,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
 
     private final NumberEntryWidget amountToCraft;
 
-    private boolean initialAmountInitialized;
+    private boolean amountInitialized;
 
     public CraftAmountScreen(CraftAmountMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
@@ -49,10 +49,11 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
 
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        this.amountToCraft = new NumberEntryWidget(NumberEntryType.CRAFT_ITEM_COUNT);
-        this.amountToCraft.setValue(1);
-        this.amountToCraft.setTextFieldBounds(62, 57, 50);
+        this.amountToCraft = new NumberEntryWidget(NumberEntryType.UNITLESS);
         this.amountToCraft.setMinValue(1);
+        this.amountToCraft.setMaxValue(Integer.MAX_VALUE);
+        this.amountToCraft.setLongValue(1);
+        this.amountToCraft.setTextFieldStyle(style.getWidget("amountToCraftInput"));
         this.amountToCraft.setHideValidationIcon(true);
         this.amountToCraft.setOnConfirm(this::confirm);
         widgets.add("amountToCraft", this.amountToCraft);
@@ -62,9 +63,13 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        if (this.menu.getInitialAmount() != -1 && !this.initialAmountInitialized) {
-            this.amountToCraft.setValue(this.menu.getInitialAmount());
-            this.initialAmountInitialized = true;
+        if (!this.amountInitialized) {
+            var whatToCraft = menu.getWhatToCraft();
+            if (whatToCraft != null) {
+                this.amountToCraft.setType(NumberEntryType.of(whatToCraft.what()));
+                this.amountToCraft.setLongValue(whatToCraft.amount());
+                this.amountInitialized = true;
+            }
         }
 
         this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());

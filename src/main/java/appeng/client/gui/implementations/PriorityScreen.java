@@ -20,8 +20,6 @@ package appeng.client.gui.implementations;
 
 import java.util.OptionalInt;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -40,10 +38,10 @@ public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
         super(menu, playerInventory, title, style);
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        this.priority = new NumberEntryWidget(NumberEntryType.PRIORITY);
-        this.priority.setTextFieldBounds(62, 57, 50);
+        this.priority = new NumberEntryWidget(NumberEntryType.UNITLESS);
+        this.priority.setTextFieldStyle(style.getWidget("priorityInput"));
         this.priority.setMinValue(Integer.MIN_VALUE);
-        this.priority.setValue(this.menu.getPriorityValue());
+        this.priority.setLongValue(this.menu.getPriorityValue());
         this.priority.setOnChange(this::savePriority);
         this.priority.setOnConfirm(() -> {
             savePriority();
@@ -58,13 +56,4 @@ public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
             menu.setPriority(priority.getAsInt());
         }
     }
-
-    @Override
-    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
-
-        this.priority.render(poseStack, mouseX, mouseY, partialTicks);
-    }
-
 }

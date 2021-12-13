@@ -27,12 +27,11 @@ public enum GuiText {
 
     TankAmount, TankCapacity,
 
-    Chest, StoredEnergy, Of, Condenser, Drive, SkyChest,
+    Chest, StoredEnergy, Of, Condenser, Drive, SkyChest, FluidUnitBuckets,
 
-    VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
-    TerminalViewCellsTooltip,
+    VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, Terminal, TerminalViewCellsTooltip,
 
-    Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ExportBus,
+    Interface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ExportBus,
 
     CompatibleUpgrades, CompatibleUpgrade, UpgradeToolbelt,
 

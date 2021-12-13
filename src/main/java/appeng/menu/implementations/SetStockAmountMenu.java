@@ -3,10 +3,11 @@ package appeng.menu.implementations;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.primitives.Ints;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -100,12 +101,8 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
         this.slot = slot;
         this.whatToStock = Objects.requireNonNull(whatToStock, "whatToStock");
         this.initialAmount = initialAmount;
-        this.maxAmount = getMaxAmount(slot);
+        this.maxAmount = Ints.saturatedCast(host.getConfig().getMaxAmount(whatToStock));
         this.stockedItem.set(whatToStock.wrapForDisplayOrFilter());
-    }
-
-    public int getMaxAmount(int slot) {
-        return Container.LARGE_MAX_STACK_SIZE;
     }
 
     public int getMaxAmount() {
@@ -131,7 +128,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
             return;
         }
 
-        amount = (int) Mth.clamp(amount, 1, config.getMaxAmount(whatToStock));
+        amount = (int) Math.min(amount, config.getMaxAmount(whatToStock));
 
         if (amount <= 0) {
             config.setStack(slot, null);
@@ -143,5 +140,11 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
 
     public int getInitialAmount() {
         return initialAmount;
+    }
+
+    @Nullable
+    public AEKey getWhatToStock() {
+        var stack = GenericStack.fromItemStack(stockedItem.getItem());
+        return stack != null ? stack.what() : null;
     }
 }
