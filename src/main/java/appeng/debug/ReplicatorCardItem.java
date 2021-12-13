@@ -132,75 +132,71 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                     if (n != null) {
                         final IGrid g = n.getGrid();
 
-                        if (g != null) {
-                            final ISpatialService sc = g.getSpatialService();
+                        final ISpatialService sc = g.getSpatialService();
 
-                            if (sc.isValidRegion()) {
-                                var min = sc.getMin();
-                                var max = sc.getMax();
+                        if (sc.isValidRegion()) {
+                            var min = sc.getMin();
+                            var max = sc.getMax();
 
-                                // TODO: Why??? Places it one block up each time...
-                                // x += currentSideOff.getXOffset();
-                                // y += currentSideOff.getYOffset();
-                                // z += currentSideOff.getZOffset();
+                            // TODO: Why??? Places it one block up each time...
+                            // x += currentSideOff.getXOffset();
+                            // y += currentSideOff.getYOffset();
+                            // z += currentSideOff.getZOffset();
 
-                                final int sc_size_x = max.getX() - min.getX();
-                                final int sc_size_y = max.getY() - min.getY();
-                                final int sc_size_z = max.getZ() - min.getZ();
+                            final int sc_size_x = max.getX() - min.getX();
+                            final int sc_size_y = max.getY() - min.getY();
+                            final int sc_size_z = max.getZ() - min.getZ();
 
-                                final int min_x = min.getX();
-                                final int min_y = min.getY();
-                                final int min_z = min.getZ();
+                            final int min_x = min.getX();
+                            final int min_y = min.getY();
+                            final int min_z = min.getZ();
 
-                                // Invert to maintain correct sign for west/east
-                                final int x_rot = (int) -Math.signum(Mth.wrapDegrees(player.getYRot()));
-                                // Rotate by 90 degree, so north/south are negative/positive
-                                final int z_rot = (int) Math.signum(Mth.wrapDegrees(player.getYRot() + 90));
+                            // Invert to maintain correct sign for west/east
+                            final int x_rot = (int) -Math.signum(Mth.wrapDegrees(player.getYRot()));
+                            // Rotate by 90 degree, so north/south are negative/positive
+                            final int z_rot = (int) Math.signum(Mth.wrapDegrees(player.getYRot() + 90));
 
-                                // Loops for replication in each direction
-                                for (int r_x = 0; r_x < replications; r_x++) {
-                                    for (int r_y = 0; r_y < replications; r_y++) {
-                                        for (int r_z = 0; r_z < replications; r_z++) {
+                            // Loops for replication in each direction
+                            for (int r_x = 0; r_x < replications; r_x++) {
+                                for (int r_y = 0; r_y < replications; r_y++) {
+                                    for (int r_z = 0; r_z < replications; r_z++) {
 
-                                            // Offset x/z by the rotation index.
-                                            // For sake of simplicity always grow upwards.
-                                            final int rel_x = min.getX() - src_x + x + r_x * sc_size_x * x_rot;
-                                            final int rel_y = min.getY() - src_y + y + r_y * sc_size_y;
-                                            final int rel_z = min.getZ() - src_z + z + r_z * sc_size_z * z_rot;
+                                        // Offset x/z by the rotation index.
+                                        // For sake of simplicity always grow upwards.
+                                        final int rel_x = min.getX() - src_x + x + r_x * sc_size_x * x_rot;
+                                        final int rel_y = min.getY() - src_y + y + r_y * sc_size_y;
+                                        final int rel_z = min.getZ() - src_z + z + r_z * sc_size_z * z_rot;
 
-                                            // Copy a single SC instance completely
-                                            for (int i = 1; i < sc_size_x; i++) {
-                                                for (int j = 1; j < sc_size_y; j++) {
-                                                    for (int k = 1; k < sc_size_z; k++) {
-                                                        final BlockPos p = new BlockPos(min_x + i, min_y + j,
-                                                                min_z + k);
-                                                        final BlockPos d = new BlockPos(i + rel_x, j + rel_y,
-                                                                k + rel_z);
+                                        // Copy a single SC instance completely
+                                        for (int i = 1; i < sc_size_x; i++) {
+                                            for (int j = 1; j < sc_size_y; j++) {
+                                                for (int k = 1; k < sc_size_z; k++) {
+                                                    final BlockPos p = new BlockPos(min_x + i, min_y + j,
+                                                            min_z + k);
+                                                    final BlockPos d = new BlockPos(i + rel_x, j + rel_y,
+                                                            k + rel_z);
 
-                                                        final BlockState state = src_w.getBlockState(p);
-                                                        final BlockState prev = level.getBlockState(d);
+                                                    final BlockState state = src_w.getBlockState(p);
+                                                    final BlockState prev = level.getBlockState(d);
 
-                                                        level.setBlockAndUpdate(d, state);
-                                                        if (state.hasBlockEntity()) {
-                                                            final BlockEntity ote = src_w.getBlockEntity(p);
-                                                            var data = ote.saveWithId();
-                                                            var newBe = BlockEntity.loadStatic(d, state, data);
-                                                            if (newBe != null) {
-                                                                level.setBlockEntity(newBe);
-                                                            }
+                                                    level.setBlockAndUpdate(d, state);
+                                                    if (state.hasBlockEntity()) {
+                                                        final BlockEntity ote = src_w.getBlockEntity(p);
+                                                        var data = ote.saveWithId();
+                                                        var newBe = BlockEntity.loadStatic(d, state, data);
+                                                        if (newBe != null) {
+                                                            level.setBlockEntity(newBe);
                                                         }
-                                                        level.sendBlockUpdated(d, prev, state, 3);
                                                     }
+                                                    level.sendBlockUpdated(d, prev, state, 3);
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            } else {
-                                this.outputMsg(player, "requires valid spatial pylon setup.");
                             }
                         } else {
-                            this.outputMsg(player, "no grid?");
+                            this.outputMsg(player, "requires valid spatial pylon setup.");
                         }
                     } else {
                         this.outputMsg(player, "No grid node?");

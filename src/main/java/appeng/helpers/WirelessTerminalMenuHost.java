@@ -75,9 +75,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
             var n = actionHost.getActionableNode();
             if (n != null) {
                 this.targetGrid = n.getGrid();
-                if (this.targetGrid != null) {
-                    this.sg = this.targetGrid.getStorageService();
-                }
+                this.sg = this.targetGrid.getStorageService();
             }
         }
     }

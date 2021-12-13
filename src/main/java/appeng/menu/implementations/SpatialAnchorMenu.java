@@ -83,7 +83,7 @@ public class SpatialAnchorMenu extends AEBaseMenu {
             var gridNode = anchor.getGridNode();
 
             this.delay++;
-            if (this.delay > UPDATE_DELAY && gridNode != null && gridNode.getGrid() != null) {
+            if (this.delay > UPDATE_DELAY && gridNode != null) {
                 var grid = gridNode.getGrid();
 
                 var statistics = grid.getService(StatisticsService.class);

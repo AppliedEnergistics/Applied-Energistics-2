@@ -71,8 +71,7 @@ public interface ICraftingProvider extends IGridNodeService {
     static void requestUpdate(IManagedGridNode managedNode) {
         var node = managedNode.getNode();
         if (node != null) {
-            var grid = node.getGrid();
-            grid.getCraftingService().refreshNodeCraftingProvider(node);
+            node.getGrid().getCraftingService().refreshNodeCraftingProvider(node);
         }
     }
 }

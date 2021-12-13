@@ -214,22 +214,20 @@ public class Platform {
         var gn = actionHost.getActionableNode();
         if (gn != null) {
             var g = gn.getGrid();
-            if (g != null) {
-                if (requirePower) {
-                    var eg = g.getEnergyService();
-                    if (!eg.isNetworkPowered()) {
-                        return false;
-                    }
-                }
-
-                var sg = g.getSecurityService();
-                if (!sg.hasPermission(player, requiredPermission)) {
-                    if (notifyPlayer) {
-                        player.sendMessage(new TranslatableComponent("ae2.permission_denied")
-                                .withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                    }
+            if (requirePower) {
+                var eg = g.getEnergyService();
+                if (!eg.isNetworkPowered()) {
                     return false;
                 }
+            }
+
+            var sg = g.getSecurityService();
+            if (!sg.hasPermission(player, requiredPermission)) {
+                if (notifyPlayer) {
+                    player.sendMessage(new TranslatableComponent("ae2.permission_denied")
+                            .withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                }
+                return false;
             }
         }
 

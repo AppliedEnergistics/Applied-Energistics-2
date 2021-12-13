@@ -171,9 +171,7 @@ public class MEMonitorableMenu extends AEBaseMenu
                     if (node != null) {
                         this.networkNode = node;
                         var g = node.getGrid();
-                        if (g != null) {
-                            powerSource = new ChannelPowerSrc(this.networkNode, g.getEnergyService());
-                        }
+                        powerSource = new ChannelPowerSrc(this.networkNode, g.getEnergyService());
                     }
                 }
             } else {

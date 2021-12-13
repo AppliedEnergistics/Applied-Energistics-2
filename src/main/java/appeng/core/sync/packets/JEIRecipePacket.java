@@ -146,7 +146,6 @@ public class JEIRecipePacket extends BasePacket {
         Preconditions.checkArgument(node != null);
 
         var grid = node.getGrid();
-        Preconditions.checkArgument(grid != null);
 
         var inv = grid.getStorageService();
         var security = grid.getSecurityService();

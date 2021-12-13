@@ -94,10 +94,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
             var n = gh.getGridNode();
             if (n != null) {
                 final IGrid g = n.getGrid();
-                if (g != null) {
-                    g.postEvent(new GridCraftingCpuChange(n));
-                    return;
-                }
+                g.postEvent(new GridCraftingCpuChange(n));
+                return;
             }
         }
     }
