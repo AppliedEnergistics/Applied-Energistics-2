@@ -57,8 +57,7 @@ public class CraftingCpuLogic {
     /**
      * Inventory.
      */
-    private final ListCraftingInventory inventory = new ListCraftingInventory(
-            (what, delta) -> CraftingCpuLogic.this.postChange(what));
+    private final ListCraftingInventory inventory = new ListCraftingInventory(CraftingCpuLogic.this::postChange);
     /**
      * Used crafting operations over the last 3 ticks.
      */
@@ -92,7 +91,7 @@ public class CraftingCpuLogic {
         // Set CPU link and job.
         var craftId = this.generateCraftId(plan.finalOutput());
         var linkCpu = new CraftingLink(CraftingCpuHelper.generateLinkData(craftId, requester == null, false), cluster);
-        this.job = new ExecutingCraftingJob(plan, this::postCraftingDifference, linkCpu);
+        this.job = new ExecutingCraftingJob(plan, this::postChange, linkCpu);
         cluster.updateOutput(plan.finalOutput());
         cluster.markDirty();
 
@@ -368,20 +367,6 @@ public class CraftingCpuLogic {
         }
     }
 
-    private void postCraftingDifference(AEKey what, long amount) {
-        var grid = cluster.getGrid();
-        if (grid == null)
-            return;
-
-        var craftingService = (CraftingService) grid.getCraftingService();
-        for (var watcher : craftingService.getInterestManager().get(what)) {
-            watcher.getHost().onRequestChange(craftingService, what);
-        }
-
-        // Also notify opened menus
-        postChange(what);
-    }
-
     public boolean hasJob() {
         return this.job != null;
     }
@@ -397,7 +382,7 @@ public class CraftingCpuLogic {
     public void readFromNBT(CompoundTag data) {
         this.inventory.readFromNBT(data.getList("inventory", 10));
         if (data.contains("job")) {
-            this.job = new ExecutingCraftingJob(data.getCompound("job"), this::postCraftingDifference, this);
+            this.job = new ExecutingCraftingJob(data.getCompound("job"), this::postChange, this);
             cluster.updateOutput(this.job.finalOutput);
         } else {
             cluster.updateOutput(null);
@@ -443,6 +428,14 @@ public class CraftingCpuLogic {
             return this.job.waitingFor.extract(template, Long.MAX_VALUE, Actionable.SIMULATE);
         }
         return 0;
+    }
+
+    public void getAllWaitingFor(Set<AEKey> waitingFor) {
+        if (this.job != null) {
+            for (var entry : this.job.waitingFor.list) {
+                waitingFor.add(entry.getKey());
+            }
+        }
     }
 
     public long getPendingOutputs(AEKey template) {
