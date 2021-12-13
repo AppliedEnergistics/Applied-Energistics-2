@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,12 +64,10 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
-import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
@@ -83,8 +80,8 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
-import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.helpers.MachineSource;
+import appeng.me.storage.DelegatingMEInventory;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -215,10 +212,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             return null;
         }
 
-        var g = new ChestMonitorHandler(cellInventory, cellInventory);
-        g.addListener(new ChestNetNotifier(), g);
-
-        return g;
+        return new ChestMonitorHandler(cellInventory, cellInventory);
     }
 
     @Override
@@ -380,7 +374,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public MEMonitorStorage getInventory() {
+    public MEStorage getInventory() {
         this.updateHandler();
 
         if (this.cellHandler != null) {
@@ -526,37 +520,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         MenuOpener.open(ChestMenu.TYPE, player, MenuLocator.forBlockEntitySide(this, getForward()));
     }
 
-    private class ChestNetNotifier implements IMEMonitorListener {
-        @Override
-        public boolean isValid(final Object verificationToken) {
-            ChestBlockEntity.this.updateHandler();
-            if (ChestBlockEntity.this.cellHandler != null) {
-                return verificationToken == ChestBlockEntity.this.cellHandler;
-            }
-            return false;
-        }
-
-        @Override
-        public void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource source) {
-            if (source == ChestBlockEntity.this.mySrc
-                    || source.machine().map(machine -> machine == ChestBlockEntity.this).orElse(false)) {
-                if (getMainNode().isActive()) {
-                    getMainNode()
-                            .ifPresent(grid -> grid.getStorageService().postAlterationOfStoredItems(change,
-                                    ChestBlockEntity.this.mySrc));
-                }
-            }
-
-            ChestBlockEntity.this.blinkCell(0);
-        }
-
-        @Override
-        public void onListUpdate() {
-            // not used here
-        }
-    }
-
-    private class ChestMonitorHandler extends MEMonitorHandler {
+    private class ChestMonitorHandler extends DelegatingMEInventory {
         private final StorageCell cellInventory;
 
         public ChestMonitorHandler(MEStorage inventory, StorageCell cellInventory) {
@@ -606,7 +570,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private class Accessor implements IStorageMonitorableAccessor {
         @Nullable
         @Override
-        public MEMonitorStorage getInventory(IActionSource src) {
+        public MEStorage getInventory(IActionSource src) {
             if (Platform.canAccess(ChestBlockEntity.this.getMainNode(), src)) {
                 return ChestBlockEntity.this.getInventory();
             }

@@ -59,7 +59,7 @@ public class CraftingCalculation {
         this.output = output;
         this.simRequester = simRequester;
 
-        var storage = grid.getStorageService().getInventory();
+        var storage = grid.getStorageService();
         var craftingService = grid.getCraftingService();
         this.networkInv = new NetworkCraftingSimulationState(storage, simRequester.getActionSource());
 

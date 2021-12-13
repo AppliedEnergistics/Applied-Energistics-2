@@ -1,6 +1,5 @@
 package appeng.me.storage;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -14,17 +13,13 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
 import appeng.core.localization.GuiText;
 
 /**
  * Combines several ME storages that each handle only a given key-space.
  */
-public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
-    private final Map<IMEMonitorListener, Object> listeners = new HashMap<>();
-    private IActionSource source;
+public class CompositeStorage implements MEStorage, ITickingMonitor {
     private final InventoryCache cache;
 
     private Map<AEKeyType, MEStorage> storages;
@@ -79,7 +74,6 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
     public TickRateModulation onTick() {
         var changes = this.cache.update();
         if (!changes.isEmpty()) {
-            MEMonitorStorage.postDifference(this, listeners, changes, source);
             return TickRateModulation.URGENT;
         } else {
             return TickRateModulation.SLOWER;
@@ -89,21 +83,6 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
     @Override
     public void getAvailableStacks(KeyCounter out) {
         this.cache.getAvailableKeys(out);
-    }
-
-    @Override
-    public void setActionSource(IActionSource source) {
-        this.source = source;
-    }
-
-    @Override
-    public void addListener(final IMEMonitorListener l, final Object verificationToken) {
-        this.listeners.put(l, verificationToken);
-    }
-
-    @Override
-    public void removeListener(final IMEMonitorListener l) {
-        this.listeners.remove(l);
     }
 
     private class InventoryCache {

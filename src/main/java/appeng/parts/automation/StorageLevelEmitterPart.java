@@ -39,14 +39,11 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.core.AppEng;
 import appeng.helpers.IConfigInvHost;
 import appeng.items.parts.PartModels;
@@ -87,24 +84,6 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     private IStackWatcher stackWatcher;
     private ICraftingWatcher craftingWatcher;
 
-    private final IMEMonitorListener handlerReceiver = new IMEMonitorListener() {
-        @Override
-        public boolean isValid(Object effectiveGrid) {
-            return effectiveGrid != null && getMainNode().getGrid() == effectiveGrid;
-        }
-
-        @Override
-        public void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource actionSource) {
-            updateReportingValue(monitor);
-        }
-
-        @Override
-        public void onListUpdate() {
-            getMainNode().ifPresent(grid -> {
-                updateReportingValue(grid.getStorageService().getInventory());
-            });
-        }
-    };
     private final IStackWatcherNode stackWatcherNode = new IStackWatcherNode() {
         @Override
         public void updateWatcher(IStackWatcher newWatcher) {
@@ -117,6 +96,8 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
             if (what.equals(getConfiguredKey()) && getInstalledUpgrades(Upgrades.FUZZY) == 0) {
                 lastReportedValue = amount;
                 updateState();
+            } else { // either fuzzy upgrade or null filter
+                updateReportingValue(getGridNode().getGrid().getStorageService().getCachedAvailableStacks());
             }
         }
     };
@@ -219,43 +200,39 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
                 this.craftingWatcher.add(myStack);
             }
         } else {
-            getMainNode().ifPresent(grid -> {
-                var monitor = grid.getStorageService().getInventory();
-
+            if (this.stackWatcher != null) {
                 if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
-                    monitor.addListener(handlerReceiver, grid);
+                    this.stackWatcher.setWatchAll(true);
                 } else {
-                    monitor.removeListener(handlerReceiver);
-
-                    if (this.stackWatcher != null) {
-                        this.stackWatcher.add(myStack);
-                    }
+                    this.stackWatcher.add(myStack);
                 }
+            }
 
-                this.updateReportingValue(monitor);
+            getMainNode().ifPresent(grid -> {
+                updateReportingValue(grid.getStorageService().getCachedAvailableStacks());
             });
         }
 
         updateState();
     }
 
-    private void updateReportingValue(MEMonitorStorage monitor) {
+    private void updateReportingValue(KeyCounter monitor) {
         var myStack = getConfiguredKey();
 
         if (myStack == null) {
             this.lastReportedValue = 0;
-            for (var st : monitor.getCachedAvailableStacks()) {
+            for (var st : monitor) {
                 this.lastReportedValue += st.getLongValue();
             }
         } else if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             this.lastReportedValue = 0;
             final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
-            var fuzzyList = monitor.getCachedAvailableStacks().findFuzzy(myStack, fzMode);
+            var fuzzyList = monitor.findFuzzy(myStack, fzMode);
             for (var st : fuzzyList) {
                 this.lastReportedValue += st.getLongValue();
             }
         } else {
-            this.lastReportedValue = monitor.getCachedAvailableStacks().get(myStack);
+            this.lastReportedValue = monitor.get(myStack);
         }
 
         this.updateState();

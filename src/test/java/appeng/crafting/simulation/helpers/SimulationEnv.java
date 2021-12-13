@@ -36,9 +36,8 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingPlan;
 import appeng.me.helpers.BaseActionSource;
@@ -185,13 +184,8 @@ public class SimulationEnv {
     }
 
     private IStorageService createStorageServiceMock() {
-        MEMonitorStorage monitor = createMonitorMock();
+        MEStorage monitor = createMonitorMock();
         return new IStorageService() {
-            @Override
-            public void postAlterationOfStoredItems(Set<AEKey> input, IActionSource src) {
-                throw new UnsupportedOperationException();
-            }
-
             @Override
             public void addGlobalStorageProvider(IStorageProvider cc) {
                 throw new UnsupportedOperationException();
@@ -203,8 +197,13 @@ public class SimulationEnv {
             }
 
             @Override
-            public MEMonitorStorage getInventory() {
+            public MEStorage getInventory() {
                 return monitor;
+            }
+
+            @Override
+            public KeyCounter getCachedAvailableStacks() {
+                throw new UnsupportedOperationException();
             }
 
             @Override
@@ -219,8 +218,8 @@ public class SimulationEnv {
         };
     }
 
-    private MEMonitorStorage createMonitorMock() {
-        return new MEMonitorStorage() {
+    private MEStorage createMonitorMock() {
+        return new MEStorage() {
             @Override
             public void getAvailableStacks(KeyCounter out) {
                 throw new UnsupportedOperationException();
@@ -229,25 +228,6 @@ public class SimulationEnv {
             @Override
             public Component getDescription() {
                 return TextComponent.EMPTY;
-            }
-
-            @Override
-            public KeyCounter getCachedAvailableStacks() {
-                var result = new KeyCounter();
-                for (var entry : networkStorage) {
-                    result.add(entry.getKey(), entry.getLongValue());
-                }
-                return result;
-            }
-
-            @Override
-            public void addListener(IMEMonitorListener l, Object verificationToken) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void removeListener(IMEMonitorListener l) {
-                throw new UnsupportedOperationException();
             }
 
             @Override

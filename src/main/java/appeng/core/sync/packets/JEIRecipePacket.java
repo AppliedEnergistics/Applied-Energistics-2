@@ -43,7 +43,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
@@ -286,7 +286,7 @@ public class JEIRecipePacket extends BasePacket {
      * Finds the first matching itemstack with the highest stored amount.
      */
     private AEItemKey findBestMatchingItemStack(Ingredient ingredients, IPartitionList filter,
-            MEMonitorStorage storage, IMenuCraftingPacket cct) {
+            MEStorage storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of) //
                 .filter(r -> r != null && (filter == null || filter.isListed(r)));
@@ -299,7 +299,7 @@ public class JEIRecipePacket extends BasePacket {
      * As additional condition, it sorts by the stored amount to return the one with the highest stored amount.
      */
     private AEItemKey findBestMatchingPattern(Ingredient ingredients, IPartitionList filter,
-            ICraftingService crafting, MEMonitorStorage storage, IMenuCraftingPacket cct) {
+            ICraftingService crafting, MEStorage storage, IMenuCraftingPacket cct) {
         var stacks = Arrays.stream(ingredients.getItems())//
                 .map(AEItemKey::of)//
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))//
@@ -312,7 +312,7 @@ public class JEIRecipePacket extends BasePacket {
      * the stream is empty.
      */
     @Nullable
-    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, MEMonitorStorage storage,
+    private static AEItemKey getMostStored(Stream<AEItemKey> stacks, MEStorage storage,
             IMenuCraftingPacket cct) {
         return stacks//
                 .map(s -> {

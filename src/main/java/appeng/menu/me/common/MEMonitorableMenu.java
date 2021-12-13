@@ -32,7 +32,6 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
@@ -55,14 +54,12 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
@@ -91,7 +88,7 @@ import appeng.util.Platform;
  * @see MEMonitorableScreen
  */
 public class MEMonitorableMenu extends AEBaseMenu
-        implements IConfigManagerListener, IConfigurableObject, IMEMonitorListener, IMEInteractionHandler {
+        implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler {
 
     public static final MenuType<MEMonitorableMenu> TYPE = MenuTypeBuilder
             .<MEMonitorableMenu, ITerminalHost>create(MEMonitorableMenu::new, ITerminalHost.class)
@@ -126,7 +123,7 @@ public class MEMonitorableMenu extends AEBaseMenu
     private IGridNode networkNode;
 
     protected final IEnergySource powerSource;
-    protected final MEMonitorStorage monitor;
+    protected final MEStorage monitor;
 
     private final IncrementalUpdateHelper updateHelper = new IncrementalUpdateHelper();
 
@@ -141,6 +138,7 @@ public class MEMonitorableMenu extends AEBaseMenu
      * The last set of craftables sent to the client.
      */
     private Set<AEKey> previousCraftables = Collections.emptySet();
+    private KeyCounter previousAvailableStacks = new KeyCounter();
 
     public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
         this(menuType, id, ip, host, true);
@@ -162,7 +160,6 @@ public class MEMonitorableMenu extends AEBaseMenu
 
             this.monitor = host.getInventory();
             if (this.monitor != null) {
-                this.monitor.addListener(this, null);
 
                 if (host instanceof IPortableTerminal || host instanceof IMEChest) {
                     powerSource = (IEnergySource) host;
@@ -243,40 +240,38 @@ public class MEMonitorableMenu extends AEBaseMenu
             }
 
             var craftables = getCraftablesFromGrid();
-            boolean craftableChanged = !previousCraftables.equals(craftables);
+            var availableStacks = monitor == null ? new KeyCounter() : monitor.getAvailableStacks();
 
             // This is currently not supported/backed by any network service
             var requestables = new KeyCounter();
 
-            if (this.updateHelper.hasChanges() || craftableChanged) {
-                try {
+            try {
+                // Craftables
+                // Newly craftable
+                Sets.difference(previousCraftables, craftables).forEach(updateHelper::addChange);
+                // No longer craftable
+                Sets.difference(craftables, previousCraftables).forEach(updateHelper::addChange);
+
+                // Available changes
+                previousAvailableStacks.removeAll(availableStacks);
+                previousAvailableStacks.removeZeros();
+                previousAvailableStacks.keySet().forEach(updateHelper::addChange);
+
+                if (updateHelper.hasChanges()) {
                     var builder = MEInventoryUpdatePacket
                             .builder(containerId, updateHelper.isFullUpdate());
                     builder.setFilter(this::isKeyVisible);
-
-                    var storageList = monitor.getCachedAvailableStacks();
-                    if (this.updateHelper.isFullUpdate()) {
-                        builder.addFull(updateHelper, storageList, craftables, requestables);
-                    } else {
-                        // Ensure that craftables are updated correctly in an incremental update
-                        if (craftableChanged) {
-                            // Newly craftable
-                            Sets.difference(previousCraftables, craftables).forEach(updateHelper::addChange);
-                            // No longer craftable
-                            Sets.difference(craftables, previousCraftables).forEach(updateHelper::addChange);
-                        }
-                        builder.addChanges(updateHelper, storageList, craftables, requestables);
-                    }
-
+                    builder.addChanges(updateHelper, availableStacks, craftables, requestables);
                     builder.buildAndSend(this::sendPacketToClient);
-
-                } catch (Exception e) {
-                    AELog.warn(e, "Failed to send incremental inventory update to client");
+                    updateHelper.commitChanges();
                 }
 
-                updateHelper.commitChanges();
-                previousCraftables = ImmutableSet.copyOf(craftables);
+            } catch (Exception e) {
+                AELog.warn(e, "Failed to send incremental inventory update to client");
             }
+
+            previousCraftables = ImmutableSet.copyOf(craftables);
+            previousAvailableStacks = availableStacks;
 
             this.updatePowerStatus();
 
@@ -373,35 +368,6 @@ public class MEMonitorableMenu extends AEBaseMenu
             }
         }
         this.activeCraftingJobs = activeJobs;
-    }
-
-    @Override
-    public void removed(final Player player) {
-        super.removed(player);
-        if (this.monitor != null) {
-            this.monitor.removeListener(this);
-        }
-    }
-
-    @Override
-    public boolean isValid(final Object verificationToken) {
-        return true;
-    }
-
-    @Override
-    public void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource source) {
-        for (AEKey key : change) {
-            this.updateHelper.addChange(key);
-        }
-    }
-
-    @Override
-    public void onListUpdate() {
-        if (isServer()) {
-            // This resets it back to the initial state of requiring a full update,
-            // which will be carried out in the next update tick
-            this.updateHelper.clear();
-        }
     }
 
     @Override

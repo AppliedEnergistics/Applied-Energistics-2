@@ -47,7 +47,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
 
         var extracted = StorageHelper.poweredExtraction(
                 context.getEnergySource(),
-                inv,
+                inv.getInventory(),
                 what,
                 amount,
                 context.getActionSource(),
@@ -60,7 +60,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
                 if (mode == Actionable.MODULATE) {
                     StorageHelper.poweredExtraction(
                             context.getEnergySource(),
-                            inv,
+                            inv.getInventory(),
                             what,
                             wasInserted,
                             context.getActionSource(),

@@ -18,13 +18,10 @@
 
 package appeng.me.storage;
 
-import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 
 public interface ITickingMonitor {
 
     TickRateModulation onTick();
-
-    void setActionSource(IActionSource actionSource);
 
 }

@@ -46,6 +46,11 @@ public class StackWatcher implements IStackWatcher {
     }
 
     @Override
+    public void setWatchAll(boolean watchAll) {
+        this.service.getInterestManager().setWatchAll(watchAll, this);
+    }
+
+    @Override
     public boolean add(AEKey e) {
         if (this.myInterests.contains(e)) {
             return false;

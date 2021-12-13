@@ -23,15 +23,12 @@
 
 package appeng.api.networking.storage;
 
-import java.util.Set;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 
 /**
  * Grid-wide storage services for all {@link AEKeyType}.
@@ -41,19 +38,16 @@ public interface IStorageService extends IGridService {
     /**
      * @return The network inventory.
      */
-    MEMonitorStorage getInventory();
+    MEStorage getInventory();
 
     /**
-     * Used to inform the network of alterations to the storage system that fall outside of the standard Network
-     * operations, Examples, ME Chest inputs from the world, or a Storage Bus detecting modifications made to the chest
-     * by an outside force.
-     * <p>
-     * Expects the input to have either a negative or a positive stack size to correspond to the injection, or
-     * extraction operation.
+     * Returns the cached list of stacks available from this inventory, <strong>updated at most once per tick</strong>.
+     * Should be used when slightly outdated content is not a big deal. Preferred to
+     * {@code getInventory().getAvailableStacks()} for performance reasons.
      *
-     * @param input injected items
+     * @return The cached stacks of this network. Does not return a copy. <strong>Do not modify!</strong>
      */
-    void postAlterationOfStoredItems(Set<AEKey> input, IActionSource src);
+    KeyCounter getCachedAvailableStacks();
 
     /**
      * Adds a {@link IStorageProvider} that is not associated with a specific {@link appeng.api.networking.IGridNode }.

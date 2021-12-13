@@ -6,17 +6,17 @@ import java.util.Set;
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.MEStorage;
 import appeng.util.prioritylist.IPartitionList;
 
 /**
  * Context for stack transfer operations, regardless of whether they occur in or out of the network.
  */
 class StackTransferContext {
-    private final MEStorage internalStorage;
+    private final IStorageService internalStorage;
     private final IEnergySource energySource;
     private final IActionSource actionSource;
     private final IPartitionList filter;
@@ -24,7 +24,7 @@ class StackTransferContext {
     private final int initialOperations;
     private int operationsRemaining;
 
-    public StackTransferContext(MEStorage internalStorage, IEnergySource energySource, IActionSource actionSource,
+    public StackTransferContext(IStorageService internalStorage, IEnergySource energySource, IActionSource actionSource,
             int operationsRemaining,
             IPartitionList filter) {
         this.internalStorage = internalStorage;
@@ -39,7 +39,7 @@ class StackTransferContext {
         }
     }
 
-    public MEStorage getInternalStorage() {
+    public IStorageService getInternalStorage() {
         return internalStorage;
     }
 
@@ -80,7 +80,7 @@ class StackTransferContext {
     }
 
     public boolean canInsert(AEItemKey what, long amount) {
-        return internalStorage.insert(
+        return internalStorage.getInventory().insert(
                 what,
                 amount,
                 Actionable.SIMULATE,

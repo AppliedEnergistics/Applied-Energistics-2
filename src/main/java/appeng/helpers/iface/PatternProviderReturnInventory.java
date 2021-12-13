@@ -37,7 +37,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.IVariantConversion;
 
@@ -61,7 +61,7 @@ public class PatternProviderReturnInventory extends GenericStackInv {
     /**
      * Return true if something could be injected into the network.
      */
-    public boolean injectIntoNetwork(MEMonitorStorage storage, IActionSource src) {
+    public boolean injectIntoNetwork(MEStorage storage, IActionSource src) {
         var didSomething = false;
         injectingIntoNetwork = true;
 

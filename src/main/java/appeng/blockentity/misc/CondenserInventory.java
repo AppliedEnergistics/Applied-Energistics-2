@@ -18,32 +18,17 @@
 
 package appeng.blockentity.misc;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
-import appeng.me.helpers.BaseActionSource;
-import appeng.me.storage.ITickingMonitor;
 
-class CondenserInventory implements MEMonitorStorage, ITickingMonitor {
-    private final HashMap<IMEMonitorListener, Object> listeners = new HashMap<>();
+class CondenserInventory implements MEStorage {
     private final CondenserBlockEntity target;
-    private boolean hasChanged = true;
-    private final KeyCounter cachedList = new KeyCounter();
-    private IActionSource actionSource = new BaseActionSource();
-    private Set<AEKey> changeSet = new HashSet<>();
 
     CondenserInventory(final CondenserBlockEntity te) {
         this.target = te;
@@ -83,54 +68,5 @@ class CondenserInventory implements MEMonitorStorage, ITickingMonitor {
     @Override
     public Component getDescription() {
         return target.getBlockState().getBlock().getName();
-    }
-
-    @Override
-    public KeyCounter getCachedAvailableStacks() {
-        if (this.hasChanged) {
-            this.hasChanged = false;
-            this.cachedList.clear();
-            this.getAvailableStacks(this.cachedList);
-        }
-        return this.cachedList;
-    }
-
-    @Override
-    public void addListener(IMEMonitorListener l, final Object verificationToken) {
-        this.listeners.put(l, verificationToken);
-    }
-
-    @Override
-    public void removeListener(IMEMonitorListener l) {
-        this.listeners.remove(l);
-    }
-
-    public void updateOutput(ItemStack added, ItemStack removed) {
-        this.hasChanged = true;
-        if (!added.isEmpty()) {
-            this.changeSet.add(AEItemKey.of(added));
-        }
-        if (!removed.isEmpty()) {
-            this.changeSet.add(AEItemKey.of(removed));
-        }
-    }
-
-    @Override
-    public TickRateModulation onTick() {
-        var currentChanges = this.changeSet;
-
-        if (currentChanges.isEmpty()) {
-            return TickRateModulation.IDLE;
-        }
-
-        this.changeSet = new HashSet<>();
-        MEMonitorStorage.postDifference(this, listeners, currentChanges, actionSource);
-
-        return TickRateModulation.URGENT;
-    }
-
-    @Override
-    public void setActionSource(IActionSource actionSource) {
-        this.actionSource = actionSource;
     }
 }

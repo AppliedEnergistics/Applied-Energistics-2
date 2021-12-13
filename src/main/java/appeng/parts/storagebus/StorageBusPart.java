@@ -21,7 +21,6 @@ package appeng.parts.storagebus;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -55,15 +54,11 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.IMEMonitorListener;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
@@ -119,10 +114,6 @@ public class StorageBusPart extends UpgradeablePart
     private final StorageBusInventory handler = new StorageBusInventory(NullInventory.of());
     @Nullable
     private Component handlerDescription;
-    /**
-     * Listener for listening to changes in an {@link MEMonitorStorage} if this storage bus is attached to an interface.
-     */
-    private final Listener listener = new Listener();
     private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
     @Nullable
     private Map<AEKeyType, ExternalStorageStrategy> externalStorageStrategies;
@@ -305,7 +296,7 @@ public class StorageBusPart extends UpgradeablePart
             return; // Part is not part of level yet or its client-side
         }
 
-        MEMonitorStorage foundMonitor = null;
+        MEStorage foundMonitor = null;
         Map<AEKeyType, MEStorage> foundExternalApi = Collections.emptyMap();
 
         // Prioritize a handler to directly link to another ME network
@@ -340,7 +331,6 @@ public class StorageBusPart extends UpgradeablePart
 
         var wasSleeping = this.monitor == null;
         var wasRegistered = this.hasRegisteredCellToNetwork();
-        var before = wasRegistered ? this.handler.getAvailableStacks() : null;
 
         // Update inventory
         MEStorage newInventory;
@@ -368,23 +358,11 @@ public class StorageBusPart extends UpgradeablePart
         boolean filterOnExtract = this.getConfigManager().getSetting(Settings.FILTER_ON_EXTRACT) == YesNo.YES;
         this.handler.setExtractFiltering(filterOnExtract, isExtractableOnly() && filterOnExtract);
 
-        // First, post the change.
-        if (wasRegistered) {
-            var after = this.handler.getAvailableStacks();
-            StorageHelper.postListChanges(before, after, listener, this.source);
-        }
-
         // Let the new inventory react to us ticking.
         if (newInventory instanceof ITickingMonitor tickingMonitor) {
             this.monitor = tickingMonitor;
-            tickingMonitor.setActionSource(this.source);
         } else {
             this.monitor = null;
-        }
-
-        // Notify the network of any external change to the inventory.
-        if (newInventory instanceof MEMonitorStorage monitor) {
-            monitor.addListener(listener, newInventory);
         }
 
         // Update sleeping state.
@@ -475,27 +453,6 @@ public class StorageBusPart extends UpgradeablePart
         this.priority = newValue;
         this.getHost().markForSave();
         this.remountStorage();
-    }
-
-    private class Listener implements IMEMonitorListener {
-        @Override
-        public final boolean isValid(Object verificationToken) {
-            return handler.getDelegate() == verificationToken;
-        }
-
-        @Override
-        public final void postChange(MEMonitorStorage monitor, Set<AEKey> change, IActionSource source) {
-            if (getMainNode().isActive()) {
-                getMainNode().ifPresent((grid, node) -> {
-                    grid.getStorageService().postAlterationOfStoredItems(change, source);
-                });
-            }
-        }
-
-        @Override
-        public final void onListUpdate() {
-            // not used here.
-        }
     }
 
     /**

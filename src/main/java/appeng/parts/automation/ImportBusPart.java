@@ -50,7 +50,7 @@ public class ImportBusPart extends IOBusPart {
         }
 
         var context = new StackTransferContext(
-                grid.getStorageService().getInventory(),
+                grid.getStorageService(),
                 grid.getEnergyService(),
                 this.source,
                 getOperationsPerTick(),

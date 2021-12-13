@@ -35,6 +35,13 @@ import appeng.api.stacks.AEKey;
 @ApiStatus.NonExtendable
 public interface IStackWatcher {
     /**
+     * Request that ALL changes be broadcast to this watcher.
+     *
+     * @param watchAll true to enable watching all stacks
+     */
+    void setWatchAll(boolean watchAll);
+
+    /**
      * Add a specific {@link AEKey} to watch.
      *
      * Supports multiple values, duplicate ones will not be added.

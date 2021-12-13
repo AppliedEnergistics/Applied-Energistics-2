@@ -49,14 +49,12 @@ import appeng.api.networking.events.GridSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.items.tools.BiometricCardItem;
-import appeng.me.helpers.MEMonitorHandler;
 import appeng.me.storage.SecurityStationInventory;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
@@ -73,7 +71,6 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);
     private final IConfigManager cm = new ConfigManager();
     private final SecurityStationInventory inventory = new SecurityStationInventory(this);
-    private final MEMonitorHandler securityMonitor = new MEMonitorHandler(this.inventory);
     private long securityKey;
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isActive = false;
@@ -111,10 +108,6 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         for (var key : this.inventory.getStoredItems()) {
             drops.add(key.toStack());
         }
-    }
-
-    MEStorage getSecurityInventory() {
-        return this.inventory;
     }
 
     @Override
@@ -221,8 +214,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public MEMonitorStorage getInventory() {
-        return securityMonitor;
+    public MEStorage getInventory() {
+        return inventory;
     }
 
     public boolean isPowered() {

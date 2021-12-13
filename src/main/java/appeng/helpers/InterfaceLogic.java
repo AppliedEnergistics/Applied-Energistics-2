@@ -59,7 +59,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
@@ -71,7 +71,6 @@ import appeng.helpers.externalstorage.GenericStackInvStorage;
 import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.CompositeStorage;
-import appeng.me.storage.MEMonitorPassThrough;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
@@ -89,8 +88,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     @Nullable
     private InterfaceInventory localInvHandler;
-
-    protected final MEMonitorPassThrough networkStorage = new MEMonitorPassThrough();
+    @Nullable
+    private MEStorage networkStorage;
 
     protected final InterfaceLogicHost host;
     protected final IManagedGridNode mainNode;
@@ -136,8 +135,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
         this.actionSource = new MachineSource(mainNode::getNode);
-
-        this.networkStorage.setChangeSource(this.actionSource);
 
         this.interfaceRequestSource = new InterfaceRequestSource(mainNode::getNode);
 
@@ -243,12 +240,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     }
 
     public void gridChanged() {
-        var grid = mainNode.getGrid();
-        if (grid != null) {
-            this.networkStorage.setMonitor(grid.getStorageService().getInventory());
-        } else {
-            this.networkStorage.setMonitor(null);
-        }
+        this.networkStorage = mainNode.getGrid().getStorageService().getInventory();
 
         this.notifyNeighbors();
     }
@@ -274,7 +266,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         return localFluidStorage;
     }
 
-    private MEMonitorStorage getMonitorable(IActionSource src) {
+    private MEStorage getMonitorable(IActionSource src) {
         // If the given action source can access the grid, return the real inventory
         if (Platform.canAccess(mainNode, src)) {
             return getInventory();
@@ -291,7 +283,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
      * If the interface has configured slots, it will <b>always</b> expose its local inventory instead of the grid's
      * inventory.
      */
-    private MEMonitorStorage getInventory() {
+    private MEStorage getInventory() {
         if (hasConfig) {
             return getLocalInventory();
         }
@@ -302,7 +294,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     /**
      * Returns an ME compatible monitor for the interfaces local storage.
      */
-    private MEMonitorStorage getLocalInventory() {
+    private MEStorage getLocalInventory() {
         if (localInvHandler == null) {
             localInvHandler = new InterfaceInventory();
         }
@@ -564,7 +556,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     private class InterfaceInventory extends CompositeStorage {
         InterfaceInventory() {
             super(Map.of(AEKeyType.items(), storage, AEKeyType.fluids(), storage));
-            this.setActionSource(actionSource);
         }
 
         @Override

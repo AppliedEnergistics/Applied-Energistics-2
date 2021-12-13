@@ -18,6 +18,7 @@
 
 package appeng.items.contents;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import com.google.common.base.Preconditions;
@@ -34,12 +35,10 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.util.IConfigManager;
 import appeng.items.tools.powered.PortableCellItem;
-import appeng.me.helpers.MEMonitorHandler;
 import appeng.menu.ISubMenu;
 import appeng.util.ConfigManager;
 
@@ -48,7 +47,7 @@ import appeng.util.ConfigManager;
  */
 public class PortableCellMenuHost extends ItemMenuHost implements IPortableTerminal {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
-    private final MEMonitorHandler cellMonitor;
+    private final MEStorage cellStorage;
     private final PortableCellItem item;
 
     public PortableCellMenuHost(Player player, int slot, PortableCellItem item, ItemStack itemStack,
@@ -56,9 +55,8 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
         super(player, slot, itemStack);
         Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
-        MEStorage inv = StorageCells.getCellInventory(itemStack, null);
-        Preconditions.checkArgument(inv != null, "Portable cell doesn't expose a cell inventory.");
-        this.cellMonitor = new MEMonitorHandler(inv);
+        this.cellStorage = StorageCells.getCellInventory(itemStack, null);
+        Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
         this.item = item;
     }
 
@@ -79,8 +77,8 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     }
 
     @Override
-    public MEMonitorStorage getInventory() {
-        return cellMonitor;
+    public MEStorage getInventory() {
+        return cellStorage;
     }
 
     @Override

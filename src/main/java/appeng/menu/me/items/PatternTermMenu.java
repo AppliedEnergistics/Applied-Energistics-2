@@ -423,7 +423,7 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
         }
 
         var storage = this.getPatternTerminal().getInventory();
-        var all = storage.getCachedAvailableStacks();
+        var all = storage.getAvailableStacks();
 
         final ItemStack is = r.assemble(ic);
 

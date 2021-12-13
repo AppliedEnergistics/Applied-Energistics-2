@@ -70,7 +70,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
 
                 // Check how much of *this* resource we can actually insert into the network, it might be 0
                 // if the cells are partitioned or there's not enough types left, etc.
-                var amountForThisResource = inv.insert(resourceKey, remainingTransferAmount,
+                var amountForThisResource = inv.getInventory().insert(resourceKey, remainingTransferAmount,
                         Actionable.SIMULATE,
                         context.getActionSource());
 
@@ -96,7 +96,8 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
                 return false;
             }
 
-            var inserted = inv.insert(extractable, extractableAmount, Actionable.MODULATE, context.getActionSource());
+            var inserted = inv.getInventory().insert(extractable, extractableAmount, Actionable.MODULATE,
+                    context.getActionSource());
 
             if (inserted < extractableAmount) {
                 // Be nice and try to give the overflow back

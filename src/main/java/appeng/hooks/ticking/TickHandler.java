@@ -77,6 +77,8 @@ public class TickHandler {
     private int processQueueElementsProcessed = 0;
     private int processQueueElementsRemaining = 0;
 
+    private long tickCounter;
+
     public static TickHandler instance() {
         return INSTANCE;
     }
@@ -297,6 +299,8 @@ public class TickHandler {
                     TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS, processQueueElementsProcessed,
                     processQueueElementsRemaining);
         }
+
+        tickCounter++;
     }
 
     public void registerCraftingSimulation(final Level level, final CraftingCalculation craftingCalculation) {
@@ -406,5 +410,9 @@ public class TickHandler {
         stopWatch.stop();
 
         return queue.size();
+    }
+
+    public long getCurrentTick() {
+        return tickCounter;
     }
 }
