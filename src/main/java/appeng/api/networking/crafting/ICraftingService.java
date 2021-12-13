@@ -122,7 +122,10 @@ public interface ICraftingService extends IGridService {
     Set<AEKey> getCraftables(AEKeyFilter filter);
 
     /**
-     * is this item being crafted?
+     * Returns true if <code>what</code> is currently being requested for a crafting job in this grid.
+     * <p/>
+     * This means that its pattern was pushed to a provider and the result is now being awaited, or that more of the
+     * item is expected to be emitted. The final output of a job does not count as being requested.
      *
      * @param what item being crafted
      *
@@ -131,16 +134,18 @@ public interface ICraftingService extends IGridService {
     boolean isRequesting(AEKey what);
 
     /**
-     * The total amount being requested across all crafting cpus of a grid.
+     * Gets the total amount being requested across all crafting cpus of a grid.
      *
-     * @param what item being requested, ignores stacksize
+     * @param what the key for which the requested amount should be returned
      *
      * @return The total amount being requested.
      */
-    long requesting(AEKey what);
+    long getRequestedAmount(AEKey what);
 
     /**
-     * Return true if any item is being crafted
+     * Returns true if anything is currently being requested as part of a crafting job in this grid.
+     * 
+     * @see #isRequesting(AEKey)
      */
     boolean isRequestingAny();
 }

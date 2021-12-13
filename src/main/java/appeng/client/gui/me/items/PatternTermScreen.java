@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.config.ActionItems;
+import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
@@ -39,7 +40,7 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.menu.slot.PatternTermSlot;
 
-public class PatternTermScreen<C extends PatternTermMenu> extends appeng.client.gui.me.common.MEMonitorableScreen<C> {
+public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScreen<C> {
 
     private static final String MODES_TEXTURE = "guis/pattern_modes.png";
 

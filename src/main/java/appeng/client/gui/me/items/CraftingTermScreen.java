@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.ActionItems;
+import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.menu.me.items.CraftingTermMenu;
@@ -30,7 +31,7 @@ import appeng.menu.me.items.CraftingTermMenu;
  * This screen extends the item terminal with a crafting grid. The content of the crafting grid is stored server-side in
  * the crafting terminal itself.
  */
-public class CraftingTermScreen<C extends CraftingTermMenu> extends appeng.client.gui.me.common.MEMonitorableScreen<C> {
+public class CraftingTermScreen<C extends CraftingTermMenu> extends MEStorageScreen<C> {
 
     public CraftingTermScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {

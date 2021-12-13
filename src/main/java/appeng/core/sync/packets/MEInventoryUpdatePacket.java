@@ -42,7 +42,7 @@ import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IncrementalUpdateHelper;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 
 public class MEInventoryUpdatePacket extends BasePacket {
 
@@ -278,7 +278,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     @Environment(EnvType.CLIENT)
     public void clientPacketData(INetworkInfo network, Player player) {
         if (player.containerMenu.containerId == containerId
-                && player.containerMenu instanceof MEMonitorableMenu meMenu) {
+                && player.containerMenu instanceof MEStorageMenu meMenu) {
             var clientRepo = meMenu.getClientRepo();
             if (clientRepo == null) {
                 AELog.info("Ignoring ME inventory update packet because no client repo is available.");

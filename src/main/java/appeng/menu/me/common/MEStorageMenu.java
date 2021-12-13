@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -64,7 +65,7 @@ import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.client.gui.me.common.MEMonitorableScreen;
+import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
@@ -85,24 +86,24 @@ import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 
 /**
- * @see MEMonitorableScreen
+ * @see MEStorageScreen
  */
-public class MEMonitorableMenu extends AEBaseMenu
+public class MEStorageMenu extends AEBaseMenu
         implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler {
 
-    public static final MenuType<MEMonitorableMenu> TYPE = MenuTypeBuilder
-            .<MEMonitorableMenu, ITerminalHost>create(MEMonitorableMenu::new, ITerminalHost.class)
+    public static final MenuType<MEStorageMenu> TYPE = MenuTypeBuilder
+            .<MEStorageMenu, ITerminalHost>create(MEStorageMenu::new, ITerminalHost.class)
             .build("item_terminal");
 
-    public static final MenuType<MEMonitorableMenu> PORTABLE_ITEM_CELL_TYPE = MenuTypeBuilder
-            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+    public static final MenuType<MEStorageMenu> PORTABLE_ITEM_CELL_TYPE = MenuTypeBuilder
+            .<MEStorageMenu, IPortableTerminal>create(MEStorageMenu::new, IPortableTerminal.class)
             .build("portable_item_cell");
-    public static final MenuType<MEMonitorableMenu> PORTABLE_FLUID_CELL_TYPE = MenuTypeBuilder
-            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+    public static final MenuType<MEStorageMenu> PORTABLE_FLUID_CELL_TYPE = MenuTypeBuilder
+            .<MEStorageMenu, IPortableTerminal>create(MEStorageMenu::new, IPortableTerminal.class)
             .build("portable_fluid_cell");
 
-    public static final MenuType<MEMonitorableMenu> WIRELESS_TYPE = MenuTypeBuilder
-            .<MEMonitorableMenu, IPortableTerminal>create(MEMonitorableMenu::new, IPortableTerminal.class)
+    public static final MenuType<MEStorageMenu> WIRELESS_TYPE = MenuTypeBuilder
+            .<MEStorageMenu, IPortableTerminal>create(MEStorageMenu::new, IPortableTerminal.class)
             .build("wirelessterm");
 
     private final List<RestrictedInputSlot> viewCellSlots;
@@ -120,12 +121,22 @@ public class MEMonitorableMenu extends AEBaseMenu
 
     private IConfigManagerListener gui;
     private IConfigManager serverCM;
-    private IGridNode networkNode;
 
+    // This is null on the client-side and can be null on the server too
+    @Nullable
+    protected final MEStorage storage;
+
+    @Nullable
     protected final IEnergySource powerSource;
-    protected final MEStorage monitor;
 
     private final IncrementalUpdateHelper updateHelper = new IncrementalUpdateHelper();
+
+    /**
+     * A grid connection is optional for a screen showing the content of a {@link MEStorage}, because inventories like
+     * portable cells are not grid connected.
+     */
+    @Nullable
+    private IGridNode networkNode;
 
     /**
      * The repository of entries currently known on the client-side. This is maintained by the screen associated with
@@ -140,11 +151,11 @@ public class MEMonitorableMenu extends AEBaseMenu
     private Set<AEKey> previousCraftables = Collections.emptySet();
     private KeyCounter previousAvailableStacks = new KeyCounter();
 
-    public MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
+    public MEStorageMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
         this(menuType, id, ip, host, true);
     }
 
-    protected MEMonitorableMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, boolean bindInventory) {
+    protected MEStorageMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, boolean bindInventory) {
         super(menuType, id, ip, host);
 
         this.host = host;
@@ -158,8 +169,8 @@ public class MEMonitorableMenu extends AEBaseMenu
         if (isServer()) {
             this.serverCM = host.getConfigManager();
 
-            this.monitor = host.getInventory();
-            if (this.monitor != null) {
+            this.storage = host.getInventory();
+            if (this.storage != null) {
 
                 if (host instanceof IPortableTerminal || host instanceof IMEChest) {
                     powerSource = (IEnergySource) host;
@@ -175,7 +186,7 @@ public class MEMonitorableMenu extends AEBaseMenu
                 this.setValidMenu(false);
             }
         } else {
-            this.monitor = null;
+            this.storage = null;
         }
         this.powerSource = powerSource;
 
@@ -203,6 +214,7 @@ public class MEMonitorableMenu extends AEBaseMenu
         return false;
     }
 
+    @Nullable
     public IGridNode getNetworkNode() {
         return this.networkNode;
     }
@@ -222,7 +234,7 @@ public class MEMonitorableMenu extends AEBaseMenu
     public void broadcastChanges() {
         if (isServer()) {
             // Close the screen if the backing network inventory has changed
-            if (this.monitor != this.host.getInventory()) {
+            if (this.storage != this.host.getInventory()) {
                 this.setValidMenu(false);
                 return;
             }
@@ -240,7 +252,7 @@ public class MEMonitorableMenu extends AEBaseMenu
             }
 
             var craftables = getCraftablesFromGrid();
-            var availableStacks = monitor == null ? new KeyCounter() : monitor.getAvailableStacks();
+            var availableStacks = storage == null ? new KeyCounter() : storage.getAvailableStacks();
 
             // This is currently not supported/backed by any network service
             var requestables = new KeyCounter();
@@ -317,17 +329,14 @@ public class MEMonitorableMenu extends AEBaseMenu
     }
 
     protected void updatePowerStatus() {
-        try {
-            if (this.networkNode != null) {
-                this.setPowered(this.networkNode.isActive());
-            } else if (this.powerSource instanceof IEnergyService) {
-                this.setPowered(((IEnergyService) this.powerSource).isNetworkPowered());
-            } else {
-                this.setPowered(
-                        this.powerSource.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.8);
-            }
-        } catch (final Throwable t) {
-            // :P
+        if (this.networkNode != null) {
+            this.hasPower = this.networkNode.isActive();
+        } else if (this.powerSource instanceof IEnergyService energyService) {
+            this.hasPower = energyService.isNetworkPowered();
+        } else if (this.powerSource != null) {
+            this.hasPower = this.powerSource.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.8;
+        } else {
+            this.hasPower = false;
         }
     }
 
@@ -395,7 +404,7 @@ public class MEMonitorableMenu extends AEBaseMenu
      * Checks that the inventory monitor is connected, a power source exists and that it is powered.
      */
     protected final boolean canInteractWithGrid() {
-        return this.monitor != null && this.powerSource != null && this.isPowered();
+        return this.storage != null && this.powerSource != null && this.isPowered();
     }
 
     @Override
@@ -431,6 +440,11 @@ public class MEMonitorableMenu extends AEBaseMenu
 
     protected void handleNetworkInteraction(ServerPlayer player, @Nullable AEKey clickedKey, InventoryAction action) {
 
+        // Interacting with the network is not possible if there's no network.
+        if (this.storage == null) {
+            return;
+        }
+
         if (action == InventoryAction.PICKUP_OR_SET_DOWN && AEFluidKey.is(clickedKey)) {
             action = InventoryAction.FILL_ITEM;
         }
@@ -443,11 +457,11 @@ public class MEMonitorableMenu extends AEBaseMenu
 
         if (action == InventoryAction.FILL_ITEM) {
             handleFillingHeldItem(
-                    (amount, mode) -> StorageHelper.poweredExtraction(powerSource, monitor, clickedKey, amount,
+                    (amount, mode) -> StorageHelper.poweredExtraction(powerSource, storage, clickedKey, amount,
                             getActionSource(), mode),
                     clickedKey);
         } else if (action == InventoryAction.EMPTY_ITEM) {
-            handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(powerSource, monitor, what, amount,
+            handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(powerSource, storage, what, amount,
                     getActionSource(), mode));
         } else if (action == InventoryAction.AUTO_CRAFT) {
             var locator = getLocator();
@@ -482,7 +496,7 @@ public class MEMonitorableMenu extends AEBaseMenu
                 var carried = getCarried();
                 if (!carried.isEmpty()) {
                     var what = AEItemKey.of(carried);
-                    var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, 1, this.getActionSource());
+                    var inserted = StorageHelper.poweredInsert(powerSource, storage, what, 1, this.getActionSource());
                     if (inserted > 0) {
                         getCarried().shrink(1);
                     }
@@ -503,7 +517,7 @@ public class MEMonitorableMenu extends AEBaseMenu
                     }
                 }
 
-                var extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedItem, 1,
+                var extracted = StorageHelper.poweredExtraction(powerSource, storage, clickedItem, 1,
                         this.getActionSource());
                 if (extracted > 0) {
                     if (item.isEmpty()) {
@@ -521,7 +535,7 @@ public class MEMonitorableMenu extends AEBaseMenu
                 } else {
                     var extracted = StorageHelper.poweredExtraction(
                             powerSource,
-                            monitor,
+                            storage,
                             clickedItem,
                             clickedItem.getItem().getMaxStackSize(),
                             this.getActionSource());
@@ -537,7 +551,7 @@ public class MEMonitorableMenu extends AEBaseMenu
                 if (!getCarried().isEmpty()) {
                     putCarriedItemIntoNetwork(true);
                 } else {
-                    var extracted = monitor.extract(
+                    var extracted = storage.extract(
                             clickedItem,
                             clickedItem.getItem().getMaxStackSize(),
                             Actionable.SIMULATE,
@@ -546,7 +560,7 @@ public class MEMonitorableMenu extends AEBaseMenu
                     if (extracted > 0) {
                         // Half
                         extracted = extracted + 1 >> 1;
-                        extracted = StorageHelper.poweredExtraction(powerSource, monitor, clickedItem, extracted,
+                        extracted = StorageHelper.poweredExtraction(powerSource, storage, clickedItem, extracted,
                                 this.getActionSource());
                     }
 
@@ -592,7 +606,7 @@ public class MEMonitorableMenu extends AEBaseMenu
             amount = 1;
         }
 
-        var inserted = StorageHelper.poweredInsert(powerSource, monitor, what, amount,
+        var inserted = StorageHelper.poweredInsert(powerSource, storage, what, amount,
                 this.getActionSource());
         setCarried(Platform.getInsertionRemainder(heldStack, inserted));
     }
@@ -617,7 +631,7 @@ public class MEMonitorableMenu extends AEBaseMenu
             return false;
         }
 
-        var extracted = StorageHelper.poweredExtraction(powerSource, monitor, stack, toExtract, getActionSource());
+        var extracted = StorageHelper.poweredExtraction(powerSource, storage, stack, toExtract, getActionSource());
         if (extracted == 0) {
             return false; // No items available
         }
@@ -638,10 +652,6 @@ public class MEMonitorableMenu extends AEBaseMenu
 
     public boolean isPowered() {
         return this.hasPower;
-    }
-
-    private void setPowered(final boolean isPowered) {
-        this.hasPower = isPowered;
     }
 
     private IConfigManagerListener getGui() {
@@ -676,7 +686,7 @@ public class MEMonitorableMenu extends AEBaseMenu
             return input;
         }
 
-        var inserted = StorageHelper.poweredInsert(powerSource, monitor,
+        var inserted = StorageHelper.poweredInsert(powerSource, storage,
                 key, input.getCount(),
                 this.getActionSource());
         return Platform.getInsertionRemainder(input, inserted);
@@ -703,4 +713,11 @@ public class MEMonitorableMenu extends AEBaseMenu
         return false;
     }
 
+    /**
+     * @return The stacks available in the storage as determined the last time this menu was ticked.
+     */
+    protected final KeyCounter getPreviousAvailableStacks() {
+        Preconditions.checkState(isServer());
+        return previousAvailableStacks;
+    }
 }

@@ -39,7 +39,7 @@ import appeng.api.util.IConfigManager;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
@@ -123,7 +123,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     public MenuType<?> getMenuType(final Player player) {
-        return MEMonitorableMenu.TYPE;
+        return MEStorageMenu.TYPE;
     }
 
     @Override

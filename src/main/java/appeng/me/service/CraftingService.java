@@ -331,7 +331,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     @Override
-    public long requesting(AEKey what) {
+    public long getRequestedAmount(AEKey what) {
         long requested = 0;
 
         for (final CraftingCPUCluster cluster : this.craftingCPUClusters) {

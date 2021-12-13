@@ -55,7 +55,7 @@ import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.slot.FakeCraftingMatrixSlot;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
@@ -71,7 +71,7 @@ import appeng.util.inv.PlayerInternalInventory;
  *
  * @see appeng.client.gui.me.items.PatternTermScreen
  */
-public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotHost, IMenuCraftingPacket {
+public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost, IMenuCraftingPacket {
 
     private static final String ACTION_SET_CRAFT_MODE = "setCraftMode";
     private static final String ACTION_ENCODE = "encode";
@@ -372,7 +372,7 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
      */
     public void craftOrGetItem(PatternSlotPacket packetPatternSlot) {
         var what = packetPatternSlot.what;
-        if (what.isEmpty() || this.monitor == null || !isPowered()) {
+        if (what.isEmpty() || this.storage == null || !isPowered()) {
             return;
         }
 
@@ -392,7 +392,7 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
         var itemKey = AEItemKey.of(what);
         var amount = Mth.clamp(what.getCount(), 1, what.getItem().getMaxStackSize());
 
-        var extracted = StorageHelper.poweredExtraction(this.powerSource, this.monitor,
+        var extracted = StorageHelper.poweredExtraction(this.powerSource, this.storage,
                 itemKey, amount, this.getActionSource());
         var p = this.getPlayerInventory().player;
 
@@ -422,10 +422,8 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
             return;
         }
 
-        var storage = this.getPatternTerminal().getInventory();
-        var all = storage.getAvailableStacks();
-
-        final ItemStack is = r.assemble(ic);
+        var all = getPreviousAvailableStacks();
+        var is = r.assemble(ic);
 
         var partitionFilter = ViewCellItem.createItemFilter(this.getViewCells());
         for (int x = 0; x < ic.getContainerSize(); x++) {
@@ -461,7 +459,7 @@ public class PatternTermMenu extends MEMonitorableMenu implements IOptionalSlotH
             for (int x = 0; x < real.getContainerSize(); x++) {
                 final ItemStack failed = real.getItem(x);
                 if (!failed.isEmpty()) {
-                    this.monitor.insert(AEItemKey.of(failed), failed.getCount(), Actionable.MODULATE,
+                    this.storage.insert(AEItemKey.of(failed), failed.getCount(), Actionable.MODULATE,
                             new MachineSource(this.getPatternTerminal()));
                 }
             }

@@ -172,8 +172,13 @@ public class SimulationEnv {
             }
 
             @Override
-            public long requesting(AEKey what) {
+            public long getRequestedAmount(AEKey what) {
                 throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public boolean isRequestingAny() {
+                return false;
             }
 
             @Override

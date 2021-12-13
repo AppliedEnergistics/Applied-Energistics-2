@@ -78,7 +78,7 @@ import appeng.items.tools.quartz.QuartzSpadeItem;
 import appeng.items.tools.quartz.QuartzSwordItem;
 import appeng.items.tools.quartz.QuartzToolType;
 import appeng.items.tools.quartz.QuartzWrenchItem;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 
 /**
  * Internal implementation for the API items
@@ -128,10 +128,10 @@ public final class AEItems {
     /// PORTABLE CELLS
     ///
     private static ItemDefinition<PortableCellItem> makePortableItemCell(ResourceLocation id, StorageTier tier) {
-        return item(id, p -> new PortableCellItem(AEKeyType.items(), MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1)));
+        return item(id, p -> new PortableCellItem(AEKeyType.items(), MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1)));
     }
     private static ItemDefinition<PortableCellItem> makePortableFluidCell(ResourceLocation id, StorageTier tier) {
-        return item(id, p -> new PortableCellItem(AEKeyType.fluids(), MEMonitorableMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1)));
+        return item(id, p -> new PortableCellItem(AEKeyType.fluids(), MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1)));
     }
 
     public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL1K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL1K, PortableCellItem.SIZE_1K);
