@@ -35,12 +35,12 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IStackWatcher;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
-import appeng.api.networking.storage.IStackWatcher;
-import appeng.api.networking.storage.IStackWatcherNode;
+import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -81,13 +81,13 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL);
 
     private final ConfigInventory config = ConfigInventory.configTypes(1, this::configureWatchers);
-    private IStackWatcher stackWatcher;
-    private ICraftingWatcher craftingWatcher;
+    private IStackWatcher storageWatcher;
+    private IStackWatcher craftingWatcher;
 
-    private final IStackWatcherNode stackWatcherNode = new IStackWatcherNode() {
+    private final IStorageWatcherNode stackWatcherNode = new IStorageWatcherNode() {
         @Override
         public void updateWatcher(IStackWatcher newWatcher) {
-            stackWatcher = newWatcher;
+            storageWatcher = newWatcher;
             configureWatchers();
         }
 
@@ -97,13 +97,13 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
                 lastReportedValue = amount;
                 updateState();
             } else { // either fuzzy upgrade or null filter
-                updateReportingValue(getGridNode().getGrid().getStorageService().getCachedAvailableStacks());
+                updateReportingValue(getGridNode().getGrid());
             }
         }
     };
     private final ICraftingWatcherNode craftingWatcherNode = new ICraftingWatcherNode() {
         @Override
-        public void updateWatcher(ICraftingWatcher newWatcher) {
+        public void updateWatcher(IStackWatcher newWatcher) {
             craftingWatcher = newWatcher;
             configureWatchers();
         }
@@ -117,7 +117,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     public StorageLevelEmitterPart(ItemStack is) {
         super(is);
 
-        getMainNode().addService(IStackWatcherNode.class, stackWatcherNode);
+        getMainNode().addService(IStorageWatcherNode.class, stackWatcherNode);
         getMainNode().addService(ICraftingWatcherNode.class, craftingWatcherNode);
         getMainNode().addService(ICraftingProvider.class, this);
 
@@ -149,7 +149,11 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     protected boolean getDirectOutput() {
         var grid = getMainNode().getGrid();
         if (grid != null) {
-            return getConfiguredKey() != null && grid.getCraftingService().isRequesting(getConfiguredKey());
+            if (getConfiguredKey() != null) {
+                return grid.getCraftingService().isRequesting(getConfiguredKey());
+            } else {
+                return grid.getCraftingService().isRequestingAny();
+            }
         }
 
         return false;
@@ -185,8 +189,8 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     protected void configureWatchers() {
         var myStack = getConfiguredKey();
 
-        if (this.stackWatcher != null) {
-            this.stackWatcher.reset();
+        if (this.storageWatcher != null) {
+            this.storageWatcher.reset();
         }
 
         if (this.craftingWatcher != null) {
@@ -196,43 +200,46 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         ICraftingProvider.requestUpdate(getMainNode());
 
         if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
-            if (this.craftingWatcher != null && myStack != null) {
-                this.craftingWatcher.add(myStack);
+            if (this.craftingWatcher != null) {
+                if (myStack == null) {
+                    this.craftingWatcher.setWatchAll(true);
+                } else {
+                    this.craftingWatcher.add(myStack);
+                }
             }
         } else {
-            if (this.stackWatcher != null) {
+            if (this.storageWatcher != null) {
                 if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
-                    this.stackWatcher.setWatchAll(true);
+                    this.storageWatcher.setWatchAll(true);
                 } else {
-                    this.stackWatcher.add(myStack);
+                    this.storageWatcher.add(myStack);
                 }
             }
 
-            getMainNode().ifPresent(grid -> {
-                updateReportingValue(grid.getStorageService().getCachedAvailableStacks());
-            });
+            getMainNode().ifPresent(this::updateReportingValue);
         }
 
         updateState();
     }
 
-    private void updateReportingValue(KeyCounter monitor) {
+    private void updateReportingValue(IGrid grid) {
+        var stacks = grid.getStorageService().getCachedAvailableStacks();
         var myStack = getConfiguredKey();
 
         if (myStack == null) {
             this.lastReportedValue = 0;
-            for (var st : monitor) {
+            for (var st : stacks) {
                 this.lastReportedValue += st.getLongValue();
             }
         } else if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             this.lastReportedValue = 0;
             final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
-            var fuzzyList = monitor.findFuzzy(myStack, fzMode);
+            var fuzzyList = stacks.findFuzzy(myStack, fzMode);
             for (var st : fuzzyList) {
                 this.lastReportedValue += st.getLongValue();
             }
         } else {
-            this.lastReportedValue = monitor.get(myStack);
+            this.lastReportedValue = stacks.get(myStack);
         }
 
         this.updateState();

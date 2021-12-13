@@ -29,24 +29,22 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.security.ISecurityService;
-import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import appeng.me.helpers.InterestManager;
+import appeng.me.helpers.StackWatcher;
 import appeng.me.storage.NetworkStorage;
-import appeng.me.storage.StackWatcher;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
 
-    private final IGrid grid;
     /**
      * Tracks the storage service's state for each grid node that provides storage to the network.
      */
@@ -55,8 +53,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * Tracks state for storage providers that are provided by other grid services (i.e. crafting).
      */
     private final List<ProviderState> globalProviders = new ArrayList<>();
-    private final SetMultimap<AEKey, StackWatcher> interests = HashMultimap.create();
-    private final InterestManager<StackWatcher> interestManager = new InterestManager<>(this.interests);
+    private final SetMultimap<AEKey, StackWatcher<IStorageWatcherNode>> interests = HashMultimap.create();
+    private final InterestManager<StackWatcher<IStorageWatcherNode>> interestManager = new InterestManager<>(
+            this.interests);
     private final NetworkStorage storage;
     private final KeyCounter cachedAvailableStacks = new KeyCounter(); // publicly exposed cached stacks.
     private KeyCounter lastTickStacks = new KeyCounter(); // private cache, to make sure it's never modified.
@@ -64,10 +63,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * Tracks the stack watcher associated with a given grid node. Needed to clean up watchers when the node leaves the
      * grid.
      */
-    private final Map<IGridNode, StackWatcher> watchers = new IdentityHashMap<>();
+    private final Map<IGridNode, StackWatcher<IStorageWatcherNode>> watchers = new IdentityHashMap<>();
 
-    public StorageService(IGrid g, ISecurityService security) {
-        this.grid = g;
+    public StorageService(ISecurityService security) {
         this.storage = new NetworkStorage((SecurityService) security);
     }
 
@@ -96,7 +94,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     /**
      * When a node joins the grid, we automatically register provided {@link IStorageProvider} and
-     * {@link IStackWatcherNode}.
+     * {@link IStorageWatcherNode}.
      */
     @Override
     public void addNode(IGridNode node) {
@@ -109,9 +107,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
             }
         }
 
-        var watcher = node.getService(IStackWatcherNode.class);
+        var watcher = node.getService(IStorageWatcherNode.class);
         if (watcher != null) {
-            var iw = new StackWatcher(this, watcher);
+            var iw = new StackWatcher<>(interestManager, watcher);
             this.watchers.put(node, iw);
             watcher.updateWatcher(iw);
         }
@@ -119,7 +117,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     /**
      * When a node leaves the grid, we automatically unregister the previously registered {@link IStorageProvider} or
-     * {@link appeng.api.networking.storage.IStackWatcher}.
+     * {@link IStorageWatcherNode}.
      */
     @Override
     public void removeNode(IGridNode node) {
@@ -182,10 +180,6 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         }
 
         throw new IllegalArgumentException("The given node is not part of this grid or has no storage provider.");
-    }
-
-    public InterestManager<StackWatcher> getInterestManager() {
-        return this.interestManager;
     }
 
     /**

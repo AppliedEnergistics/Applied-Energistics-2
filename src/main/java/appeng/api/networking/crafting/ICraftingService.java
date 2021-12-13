@@ -138,4 +138,9 @@ public interface ICraftingService extends IGridService {
      * @return The total amount being requested.
      */
     long requesting(AEKey what);
+
+    /**
+     * Return true if any item is being crafted
+     */
+    boolean isRequestingAny();
 }
