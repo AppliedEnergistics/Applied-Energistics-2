@@ -144,7 +144,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
             if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
                 // When fuzzy exporting, simply attempt export of all items in the set of fuzzy-equals keys
                 for (var fuzzyWhat : ImmutableList
-                        .copyOf(storageService.getCachedAvailableStacks().findFuzzy(what, fzMode))) {
+                        .copyOf(storageService.getCachedInventory().findFuzzy(what, fzMode))) {
                     // The max amount exported is scaled by the key-space's transfer factor (think millibuckets vs.
                     // items)
                     var transferFactory = fuzzyWhat.getKey().getAmountPerOperation();

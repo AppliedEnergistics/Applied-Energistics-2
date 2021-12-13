@@ -197,7 +197,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private void updateReportingValue(IStorageService storageService) {
         this.lastHumanReadableText = null;
         if (this.configuredItem != null) {
-            this.amount = storageService.getCachedAvailableStacks().get(this.configuredItem);
+            this.amount = storageService.getCachedInventory().get(this.configuredItem);
         } else {
             this.amount = 0;
         }

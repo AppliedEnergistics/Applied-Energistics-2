@@ -138,7 +138,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     }
 
     @Override
-    public KeyCounter getCachedAvailableStacks() {
+    public KeyCounter getCachedInventory() {
         return cachedAvailableStacks;
     }
 

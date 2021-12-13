@@ -41,13 +41,15 @@ public interface IStorageService extends IGridService {
     MEStorage getInventory();
 
     /**
-     * Returns the cached list of stacks available from this inventory, <strong>updated at most once per tick</strong>.
+     * Returns the cached content of the network inventory. The cache is <strong>updated at most once per tick</strong>.
+     * Changes to network inventory will not be reflected by the cache until the next tick.
+     * <p/>
      * Should be used when slightly outdated content is not a big deal. Preferred to
      * {@code getInventory().getAvailableStacks()} for performance reasons.
      *
      * @return The cached stacks of this network. Does not return a copy. <strong>Do not modify!</strong>
      */
-    KeyCounter getCachedAvailableStacks();
+    KeyCounter getCachedInventory();
 
     /**
      * Adds a {@link IStorageProvider} that is not associated with a specific {@link appeng.api.networking.IGridNode }.

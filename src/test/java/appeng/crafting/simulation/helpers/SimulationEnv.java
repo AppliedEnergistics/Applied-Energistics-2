@@ -202,7 +202,7 @@ public class SimulationEnv {
             }
 
             @Override
-            public KeyCounter getCachedAvailableStacks() {
+            public KeyCounter getCachedInventory() {
                 return getInventory().getAvailableStacks();
             }
 

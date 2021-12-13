@@ -223,7 +223,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     }
 
     private void updateReportingValue(IGrid grid) {
-        var stacks = grid.getStorageService().getCachedAvailableStacks();
+        var stacks = grid.getStorageService().getCachedInventory();
         var myStack = getConfiguredKey();
 
         if (myStack == null) {

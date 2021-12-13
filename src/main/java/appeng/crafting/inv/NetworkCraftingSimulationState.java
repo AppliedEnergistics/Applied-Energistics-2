@@ -45,7 +45,7 @@ public class NetworkCraftingSimulationState extends CraftingSimulationState {
             return;
         }
 
-        for (var stack : storage.getCachedAvailableStacks()) {
+        for (var stack : storage.getCachedInventory()) {
             long extracted = storage.getInventory().extract(stack.getKey(), stack.getLongValue(), Actionable.SIMULATE,
                     src);
             if (extracted > 0) {
