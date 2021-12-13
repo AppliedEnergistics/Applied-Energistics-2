@@ -7,7 +7,7 @@
   },
   "slots": {
     "MACHINE_OUTPUT": {
-      "left": 34,
+      "left": 14,
       "top": 53
     }
   },
@@ -24,7 +24,7 @@
   },
   "widgets": {
     "next": {
-      "left": 128,
+      "left": 126,
       "top": 51,
       "width": 38,
       "height": 20
@@ -38,6 +38,12 @@
       "top": 30,
       "width": 138,
       "height": 62
+    },
+    "amountToCraftInput": {
+      "left": 40,
+      "top": 55,
+      "width": 61,
+      "height": 12
     }
   }
 }

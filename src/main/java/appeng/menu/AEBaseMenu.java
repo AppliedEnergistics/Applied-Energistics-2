@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.base.Preconditions;
@@ -81,8 +82,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
 
     private final IActionSource mySrc;
+    @Nullable
     private final BlockEntity blockEntity;
+    @Nullable
     private final IPart part;
+    @Nullable
     protected final ItemMenuHost itemMenuHost;
     private final DataSynchronization dataSync = new DataSynchronization(this);
     private final Inventory playerInventory;

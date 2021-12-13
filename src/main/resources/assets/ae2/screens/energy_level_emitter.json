@@ -14,15 +14,6 @@
         "left": 8,
         "top": 6
       }
-    },
-    "energy_unit": {
-      "text": {
-        "translate": "gui.ae2.units.appliedenergstics"
-      },
-      "position": {
-        "left": 144,
-        "top": 44
-      }
     }
   },
   "widgets": {
@@ -31,6 +22,12 @@
       "top": 17,
       "width": 138,
       "height": 62
+    },
+    "levelInput": {
+      "left": 23,
+      "top": 42,
+      "width": 118,
+      "height": 12
     }
   }
 }

@@ -44,6 +44,12 @@
       "top": 30,
       "width": 138,
       "height": 62
+    },
+    "priorityInput": {
+      "left": 60,
+      "top": 55,
+      "width": 61,
+      "height": 12
     }
   }
 }

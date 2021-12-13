@@ -23,7 +23,6 @@ import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.core.AppEng;
@@ -68,6 +67,6 @@ final class AEFluidKeys extends AEKeyType {
 
     @Override
     public Component getUnitSymbol() {
-        return new TextComponent("B");
+        return GuiText.FluidUnitBuckets.text();
     }
 }

@@ -7,7 +7,7 @@
   },
   "slots": {
     "MACHINE_OUTPUT": {
-      "left": 34,
+      "left": 14,
       "top": 53
     }
   },
@@ -33,11 +33,17 @@
       "left": 154,
       "top": 0
     },
-    "amountToCraft": {
+    "amountToStock": {
       "left": 20,
       "top": 30,
       "width": 138,
       "height": 62
+    },
+    "amountToStockInput": {
+      "left": 40,
+      "top": 55,
+      "width": 61,
+      "height": 12
     }
   }
 }

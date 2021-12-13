@@ -18,8 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -45,9 +43,9 @@ public class EnergyLevelEmitterScreen extends UpgradeableScreen<EnergyLevelEmitt
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
         this.addToLeftToolbar(this.redstoneMode);
 
-        this.level = new NumberEntryWidget(NumberEntryType.LEVEL_ENERGY_AMOUNT);
-        this.level.setTextFieldBounds(25, 44, 75);
-        this.level.setValue(menu.getReportingValue());
+        this.level = new NumberEntryWidget(NumberEntryType.ENERGY);
+        this.level.setTextFieldStyle(style.getWidget("levelInput"));
+        this.level.setLongValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::onClose);
         widgets.add("level", this.level);
@@ -59,13 +57,6 @@ public class EnergyLevelEmitterScreen extends UpgradeableScreen<EnergyLevelEmitt
 
         this.redstoneMode.active = true;
         this.redstoneMode.set(menu.getRedStoneMode());
-    }
-
-    @Override
-    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
-        super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
-        this.level.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
     private void saveReportingValue() {

@@ -18,15 +18,23 @@
 
 package appeng.client.gui.widgets;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
@@ -36,12 +44,14 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.NumberEntryType;
-import appeng.core.AEConfig;
+import appeng.client.gui.Rects;
+import appeng.client.gui.style.WidgetStyle;
 
 /**
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
@@ -49,8 +59,9 @@ import appeng.core.AEConfig;
  */
 public class NumberEntryWidget extends GuiComponent implements ICompositeWidget {
 
-    private static final Component INVALID_NUMBER = new TranslatableComponent(
-            "gui.ae2.validation.InvalidNumber");
+    private static final long[] STEPS = new long[] { 1, 10, 100, 1000 };
+
+    private static final Component INVALID_NUMBER = new TranslatableComponent("gui.ae2.validation.InvalidNumber");
     private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.ae2.validation.NumberLessThanMinValue";
     private static final String NUMBER_GREATER_THAN_MAX_VALUE = "gui.ae2.validation.NumberGreaterThanMaxValue";
     private static final Component PLUS = new TextComponent("+");
@@ -59,9 +70,8 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     private static final int TEXT_COLOR_NORMAL = 0xFFFFFF;
 
     private final ConfirmableTextField textField;
+    private final DecimalFormat decimalFormat;
     private NumberEntryType type;
-    private Button[] minusButtons;
-    private Button[] plusButtons;
     private List<Button> buttons;
     private long minValue;
     private long maxValue = Long.MAX_VALUE;
@@ -77,15 +87,17 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
     private Rect2i bounds = new Rect2i(0, 0, 0, 0);
 
-    private Point textFieldOrigin = Point.ZERO;
+    private Rect2i textFieldBounds = Rects.ZERO;
 
     public NumberEntryWidget(NumberEntryType type) {
-        this.type = type;
+        this.type = Objects.requireNonNull(type, "type");
+        this.decimalFormat = new DecimalFormat("#.####", new DecimalFormatSymbols());
+        this.decimalFormat.setParseBigDecimal(true);
+        this.decimalFormat.setNegativePrefix("-");
 
         Font font = Minecraft.getInstance().font;
 
-        this.textField = new ConfirmableTextField(font, 0, 0, 0, font.lineHeight,
-                TextComponent.EMPTY);
+        this.textField = new ConfirmableTextField(font, 0, 0, 0, font.lineHeight);
         this.textField.setBordered(false);
         this.textField.setMaxLength(16);
         this.textField.setTextColor(TEXT_COLOR_NORMAL);
@@ -123,9 +135,26 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
      * Sets the bounds of the text field on the screen. This may seem insane, but the text-field background is actually
      * baked into the screens background image, which necessitates setting it precisely.
      */
-    public void setTextFieldBounds(int x, int y, int width) {
-        textFieldOrigin = new Point(x, y);
-        this.textField.setWidth(width);
+    public void setTextFieldBounds(Rect2i bounds) {
+        this.textFieldBounds = bounds;
+        this.textField.move(Point.fromTopLeft(bounds));
+        this.textField.resize(bounds.getWidth(), bounds.getHeight());
+    }
+
+    public void setTextFieldStyle(WidgetStyle style) {
+        int left = 0;
+        if (style.getLeft() != null) {
+            left = style.getLeft();
+        }
+        int top = 0;
+        if (style.getTop() != null) {
+            top = style.getTop();
+        }
+        setTextFieldBounds(new Rect2i(
+                left,
+                top,
+                style.getWidth(),
+                style.getHeight()));
     }
 
     public void setMinValue(long minValue) {
@@ -155,37 +184,30 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
     @Override
     public void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
-        final int[] steps = AEConfig.instance().getNumberEntrySteps(type);
-        int a = steps[0];
-        int b = steps[1];
-        int c = steps[2];
-        int d = steps[3];
-
         int left = bounds.getX() + this.bounds.getX();
         int top = bounds.getY() + this.bounds.getY();
 
         List<Button> buttons = new ArrayList<>(9);
-        this.plusButtons = new Button[4];
-        this.minusButtons = new Button[4];
 
-        buttons.add(plusButtons[0] = new Button(left, top, 22, 20, makeLabel(PLUS, a), btn -> addQty(1)));
-        buttons.add(plusButtons[1] = new Button(left + 28, top, 28, 20, makeLabel(PLUS, b), btn -> addQty(2)));
-        buttons.add(plusButtons[2] = new Button(left + 62, top, 32, 20, makeLabel(PLUS, c), btn -> addQty(3)));
-        buttons.add(plusButtons[3] = new Button(left + 100, top, 38, 20, makeLabel(PLUS, d), btn -> addQty(4)));
+        buttons.add(new Button(left, top, 22, 20, makeLabel(PLUS, STEPS[0]), btn -> addQty(STEPS[0])));
+        buttons.add(new Button(left + 28, top, 28, 20, makeLabel(PLUS, STEPS[1]), btn -> addQty(STEPS[1])));
+        buttons.add(new Button(left + 62, top, 32, 20, makeLabel(PLUS, STEPS[2]), btn -> addQty(STEPS[2])));
+        buttons.add(new Button(left + 100, top, 38, 20, makeLabel(PLUS, STEPS[3]), btn -> addQty(STEPS[3])));
 
         // Need to add these now for sensible tab-order
         buttons.forEach(addWidget);
 
         // Placing this here will give a sensible tab order
-        this.textField.x = bounds.getX() + textFieldOrigin.getX();
-        this.textField.y = bounds.getY() + textFieldOrigin.getY();
+        var textFieldBounds = Rects.move(this.textFieldBounds, bounds.getX(), bounds.getY());
+        this.textField.move(Point.fromTopLeft(textFieldBounds));
+        this.textField.resize(textFieldBounds.getWidth(), textFieldBounds.getHeight());
         screen.setInitialFocus(this.textField);
         addWidget.accept(this.textField);
 
-        buttons.add(minusButtons[0] = new Button(left, top + 42, 22, 20, makeLabel(MINUS, a), btn -> addQty(-1)));
-        buttons.add(minusButtons[1] = new Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, b), btn -> addQty(-2)));
-        buttons.add(minusButtons[2] = new Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, c), btn -> addQty(-3)));
-        buttons.add(minusButtons[3] = new Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, d), btn -> addQty(-4)));
+        buttons.add(new Button(left, top + 42, 22, 20, makeLabel(MINUS, STEPS[0]), btn -> addQty(-STEPS[0])));
+        buttons.add(new Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, STEPS[1]), btn -> addQty(-STEPS[1])));
+        buttons.add(new Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, STEPS[2]), btn -> addQty(-STEPS[2])));
+        buttons.add(new Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, STEPS[3]), btn -> addQty(-STEPS[3])));
 
         // This element is not focusable
         if (!hideValidationIcon) {
@@ -212,16 +234,15 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
      * value.
      */
     public OptionalInt getIntValue() {
-        String text = textField.getValue().trim();
-        try {
-            int value = Integer.parseInt(text, 10);
-            if (value < minValue) {
+        var value = getLongValue();
+        if (value.isPresent()) {
+            var longValue = value.getAsLong();
+            if (longValue > Integer.MAX_VALUE) {
                 return OptionalInt.empty();
             }
-            return OptionalInt.of(value);
-        } catch (NumberFormatException ignored) {
-            return OptionalInt.empty();
+            return OptionalInt.of((int) longValue);
         }
+        return OptionalInt.empty();
     }
 
     /**
@@ -229,63 +250,87 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
      * value.
      */
     public OptionalLong getLongValue() {
-        String text = textField.getValue().trim();
-        try {
-            long value = Long.parseLong(text, 10);
-            if (value < minValue) {
-                return OptionalLong.empty();
-            }
-            return OptionalLong.of(value);
-        } catch (NumberFormatException ignored) {
+        var internalValue = getValueInternal();
+        if (internalValue.isEmpty()) {
             return OptionalLong.empty();
         }
+
+        var externalValue = convertToExternalValue(internalValue.get());
+        if (externalValue < minValue) {
+            return OptionalLong.empty();
+        } else if (externalValue > maxValue) {
+            return OptionalLong.empty();
+        }
+        return OptionalLong.of(externalValue);
     }
 
-    public void setValue(long value) {
-        this.textField.setValue(String.valueOf(Math.max(minValue, value)));
+    public void setLongValue(long value) {
+        var internalValue = convertToInternalValue(Mth.clamp(value, minValue, maxValue));
+        this.textField.setValue(decimalFormat.format(internalValue));
         this.textField.moveCursorToEnd();
         this.textField.setHighlightPos(0);
         validate();
     }
 
-    private void addQty(int i) {
-        Preconditions.checkArgument(Math.abs(i) >= 1 && Math.abs(i) <= 4);
-
-        var steps = AEConfig.instance().getNumberEntrySteps(type);
-        var step = steps[Math.absExact(i) - 1];
-        var delta = i < 0 ? -step : step;
-        getLongValue().ifPresent(currentValue -> setValue(currentValue + delta));
+    private void addQty(long delta) {
+        var currentValue = getValueInternal().orElse(BigDecimal.ZERO);
+        setValueInternal(currentValue.add(BigDecimal.valueOf(delta)));
     }
 
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        this.textField.render(poseStack, mouseX, mouseY, partialTicks);
+    /**
+     * Retrieves the numeric representation of the value entered by the user, if it is convertible.
+     */
+    private Optional<BigDecimal> getValueInternal() {
+        var position = new ParsePosition(0);
+        var textValue = textField.getValue().trim();
+        BigDecimal decimal = (BigDecimal) decimalFormat.parse(textValue, position);
+        if (position.getErrorIndex() != -1 || position.getIndex() != textValue.length()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(decimal);
+    }
+
+    /**
+     * Changes the value displayed to the user.
+     */
+    private void setValueInternal(BigDecimal value) {
+        textField.setValue(decimalFormat.format(value));
     }
 
     private void validate() {
         List<Component> validationErrors = new ArrayList<>();
 
-        String text = textField.getValue().trim();
-        try {
-            long value = Long.parseLong(text, 10);
-            if (value < minValue) {
-                validationErrors.add(new TranslatableComponent(NUMBER_LESS_THAN_MIN_VALUE, minValue));
-            } else if (value > maxValue) {
-                validationErrors.add(new TranslatableComponent(NUMBER_GREATER_THAN_MAX_VALUE, maxValue));
+        var possibleValue = getValueInternal();
+        if (possibleValue.isPresent()) {
+            // Reject decimal values if the unit is integral
+            if (type.amountPerUnit() == 1 && possibleValue.get().scale() > 0) {
+                validationErrors.add(new TextComponent("Must be whole number"));
+            } else {
+                var value = convertToExternalValue(possibleValue.get());
+                if (value < minValue) {
+                    var formatted = decimalFormat.format(convertToInternalValue(minValue));
+                    validationErrors.add(new TranslatableComponent(NUMBER_LESS_THAN_MIN_VALUE, formatted));
+                } else if (value > maxValue) {
+                    var formatted = decimalFormat.format(convertToInternalValue(maxValue));
+                    validationErrors.add(new TranslatableComponent(NUMBER_GREATER_THAN_MAX_VALUE, formatted));
+                }
             }
-        } catch (NumberFormatException ignored) {
+        } else {
             validationErrors.add(INVALID_NUMBER);
         }
 
         boolean valid = validationErrors.isEmpty();
         this.textField.setTextColor(valid ? TEXT_COLOR_NORMAL : TEXT_COLOR_ERROR);
+        this.textField.setTooltipMessage(validationErrors);
+
         if (this.validationIcon != null) {
             this.validationIcon.setValid(valid);
             this.validationIcon.setTooltip(validationErrors);
         }
     }
 
-    private Component makeLabel(Component prefix, int amount) {
-        return prefix.plainCopy().append(String.valueOf(amount));
+    private Component makeLabel(Component prefix, long amount) {
+        return prefix.plainCopy().append(decimalFormat.format(amount));
     }
 
     public void setHideValidationIcon(boolean hideValidationIcon) {
@@ -301,11 +346,60 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
             return;
         }
         this.type = type;
-
-        var steps = AEConfig.instance().getNumberEntrySteps(type);
-        for (int i = 0; i < steps.length; i++) {
-            minusButtons[i].setMessage(makeLabel(MINUS, steps[i]));
-            plusButtons[i].setMessage(makeLabel(PLUS, steps[i]));
+        // Update the external with the now changed scaling
+        if (onChange != null) {
+            onChange.run();
         }
+
+        validate();
+    }
+
+    private long convertToExternalValue(BigDecimal internalValue) {
+        var multiplicand = BigDecimal.valueOf(type.amountPerUnit());
+        var value = internalValue.multiply(multiplicand, MathContext.DECIMAL128);
+        value = value.setScale(0, RoundingMode.UP);
+        return value.longValue();
+    }
+
+    private BigDecimal convertToInternalValue(long externalValue) {
+        var divisor = BigDecimal.valueOf(type.amountPerUnit());
+        return BigDecimal.valueOf(externalValue).divide(divisor, MathContext.DECIMAL128);
+    }
+
+    @Override
+    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+        var font = Minecraft.getInstance().font;
+        font.draw(
+                poseStack,
+                type.unit(),
+                bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth() + 3,
+                bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f + 1,
+                ChatFormatting.DARK_GRAY.getColor());
+    }
+
+    @Override
+    public boolean onMouseWheel(Point mousePos, double delta) {
+        if (textFieldBounds.contains(mousePos.getX(), mousePos.getY())) {
+            if (delta < 0) {
+                // Decrement by 1 or clamp to the min value if it's been reached
+                var minValueInternal = convertToInternalValue(minValue);
+                if (getValueInternal().orElse(minValueInternal).subtract(BigDecimal.ONE)
+                        .compareTo(minValueInternal) >= 0) {
+                    addQty(-1);
+                } else {
+                    setValueInternal(minValueInternal);
+                }
+            } else if (delta > 0) {
+                // Increment by 1 or clamp to the max value if it's been reached
+                var maxValueInternal = convertToInternalValue(maxValue);
+                if (getValueInternal().orElse(maxValueInternal).add(BigDecimal.ONE).compareTo(maxValueInternal) <= 0) {
+                    addQty(1);
+                } else {
+                    setValueInternal(maxValueInternal);
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

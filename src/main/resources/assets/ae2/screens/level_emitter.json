@@ -28,6 +28,12 @@
       "top": 17,
       "width": 138,
       "height": 62
+    },
+    "levelInput": {
+      "left": 23,
+      "top": 42,
+      "width": 83,
+      "height": 12
     }
   }
 }

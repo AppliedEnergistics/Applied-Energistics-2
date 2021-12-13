@@ -36,7 +36,7 @@ public class SetStockAmountScreen extends AEBaseScreen<SetStockAmountMenu> {
 
     private final NumberEntryWidget amount;
 
-    private boolean initialAmountInitialized;
+    private boolean amountInitialized;
 
     public SetStockAmountScreen(SetStockAmountMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
@@ -46,28 +46,32 @@ public class SetStockAmountScreen extends AEBaseScreen<SetStockAmountMenu> {
 
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        this.amount = new NumberEntryWidget(NumberEntryType.CRAFT_ITEM_COUNT);
-        this.amount.setValue(1);
-        this.amount.setTextFieldBounds(62, 57, 50);
-        this.amount.setMinValue(1);
+        this.amount = new NumberEntryWidget(NumberEntryType.UNITLESS);
+        this.amount.setLongValue(1);
+        this.amount.setTextFieldStyle(style.getWidget("amountToStockInput"));
+        this.amount.setMinValue(0);
         this.amount.setHideValidationIcon(true);
         this.amount.setOnConfirm(this::confirm);
-        widgets.add("amountToCraft", this.amount);
+        widgets.add("amountToStock", this.amount);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.amount.setMaxValue(menu.getMaxAmount());
+        if (!this.amountInitialized) {
+            var whatToStock = menu.getWhatToStock();
+            if (whatToStock != null) {
+                this.amount.setType(NumberEntryType.of(whatToStock));
+                this.amount.setLongValue(menu.getInitialAmount());
 
-        if (this.menu.getInitialAmount() != -1 && !this.initialAmountInitialized) {
-            this.amount.setValue(this.menu.getInitialAmount());
-            this.initialAmountInitialized = true;
+                this.amount.setMaxValue(menu.getMaxAmount());
+                this.amountInitialized = true;
+            }
         }
     }
 
     private void confirm() {
-        menu.confirm(this.amount.getIntValue().orElse(0));
+        this.amount.getIntValue().ifPresent(menu::confirm);
     }
 }

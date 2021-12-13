@@ -23,13 +23,10 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.stacks.GenericStack;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigMenuInventory;
 
 public class FakeSlot extends AppEngSlot {
-    private boolean hideAmount;
-
     public FakeSlot(InternalInventory inv, int invSlot) {
         super(inv, invSlot);
     }
@@ -46,21 +43,6 @@ public class FakeSlot extends AppEngSlot {
     @Override
     public boolean mayPlace(ItemStack stack) {
         return false;
-    }
-
-    @Override
-    public ItemStack getDisplayStack() {
-        var is = super.getDisplayStack();
-        if (hideAmount) {
-            var unwrapped = GenericStack.unwrapItemStack(is);
-            if (unwrapped != null) {
-                return GenericStack.wrapInItemStack(unwrapped.what(), 0);
-            } else {
-                is = is.copy();
-                is.setCount(1);
-            }
-        }
-        return is;
     }
 
     @Override
@@ -128,13 +110,5 @@ public class FakeSlot extends AppEngSlot {
             is.setCount(1);
             set(is);
         }
-    }
-
-    public boolean isHideAmount() {
-        return hideAmount;
-    }
-
-    public void setHideAmount(boolean hideAmount) {
-        this.hideAmount = hideAmount;
     }
 }

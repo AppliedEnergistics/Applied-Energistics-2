@@ -18,18 +18,22 @@
 
 package appeng.client.gui;
 
-public enum NumberEntryType {
-    CRAFT_ITEM_COUNT(Long.class), PRIORITY(Long.class), LEVEL_ITEM_COUNT(Long.class), LEVEL_FLUID_VOLUME(Long.class),
-    LEVEL_ENERGY_AMOUNT(Long.class);
+import javax.annotation.Nullable;
 
-    private final Class<? extends Number> inputType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
-    NumberEntryType(Class<? extends Number> inputType) {
-        this.inputType = inputType;
+import appeng.api.config.PowerUnits;
+import appeng.api.stacks.AEKey;
+
+public record NumberEntryType(int amountPerUnit, Component unit) {
+    public static final NumberEntryType ENERGY = new NumberEntryType(1, PowerUnits.AE.textComponent());
+    public static final NumberEntryType UNITLESS = new NumberEntryType(1, TextComponent.EMPTY);
+
+    public static NumberEntryType of(@Nullable AEKey key) {
+        if (key == null) {
+            return UNITLESS;
+        }
+        return new NumberEntryType(key.getAmountPerUnit(), key.getUnitSymbol());
     }
-
-    public Class<? extends Number> getInputType() {
-        return inputType;
-    }
-
 }

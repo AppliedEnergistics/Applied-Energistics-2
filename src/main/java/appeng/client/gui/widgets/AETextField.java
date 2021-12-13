@@ -18,6 +18,10 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -26,12 +30,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
 
 import appeng.client.Point;
 
@@ -41,11 +49,12 @@ import appeng.client.Point;
  * <p>
  * The rendering does pay attention to the size of the '_' caret.
  */
-public class AETextField extends EditBox implements IResizableWidget {
+public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     private static final int PADDING = 2;
 
     private final int _fontPad;
     private int selectionColor = 0xFF00FF00;
+    private List<Component> tooltipMessage = Collections.emptyList();
 
     /**
      * Uses the values to instantiate a padded version of a text field. Pays attention to the '_' caret.
@@ -136,13 +145,8 @@ public class AETextField extends EditBox implements IResizableWidget {
 
         startY -= PADDING;
 
-        if (endX > this.x + this.width) {
-            endX = this.x + this.width;
-        }
-
-        if (startX > this.x + this.width) {
-            startX = this.x + this.width;
-        }
+        endX = Mth.clamp(endX, this.x, this.x + this.width);
+        startX = Mth.clamp(startX, this.x, this.x + this.width);
 
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
@@ -164,4 +168,27 @@ public class AETextField extends EditBox implements IResizableWidget {
         RenderSystem.disableColorLogicOp();
     }
 
+    @Override
+    public Rect2i getTooltipArea() {
+        return new Rect2i(
+                x - PADDING,
+                y - PADDING,
+                width + 2 * PADDING + _fontPad,
+                height + 2 * PADDING);
+    }
+
+    @Override
+    public boolean isTooltipAreaVisible() {
+        return visible;
+    }
+
+    @NotNull
+    @Override
+    public List<Component> getTooltipMessage() {
+        return tooltipMessage;
+    }
+
+    public void setTooltipMessage(List<Component> tooltipMessage) {
+        this.tooltipMessage = Objects.requireNonNull(tooltipMessage);
+    }
 }
