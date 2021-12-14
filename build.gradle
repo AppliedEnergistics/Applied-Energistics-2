@@ -21,6 +21,7 @@ plugins {
     id 'maven-publish'
     id "com.diffplug.spotless" version "5.12.4"
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.modrinth.minotaur" version "1.2.1"
 }
 
 repositories {
@@ -73,7 +74,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}") {
         exclude group: "net.fabricmc.fabric-api", module: "fabric-gametest-api-v1"
     }
-    include modImplementation("teamreborn:energy:${project.tr_energy_version}"){
+    include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 
@@ -113,28 +114,30 @@ version = version_major + "." + version_minor + "." + version_patch
 
 ext.pr = System.getenv('PR_NUMBER') ?: ""
 if (ext.pr) {
-  version = version + "+pr." + ext.pr
+    version = version + "+pr." + ext.pr
 }
 
 ext.branch = System.getenv('BRANCH') ?: ""
 if (ext.branch) {
-  version = version + "+branch." + ext.branch
+    version = version + "+branch." + ext.branch
 }
 
 ext.tag = System.getenv('TAG') ?: ""
-if (ext.tag && System.getenv("GITHUB_ENV")) {
-  if (!ext.tag.startsWith("fabric/v")) {
-      throw new GradleException("Tags for the fabric version should start with fabric/: ${ext.tag}")
-  }
+if (ext.tag) {
+    if (!ext.tag.startsWith("fabric/v")) {
+        throw new GradleException("Tags for the fabric version should start with fabric/: ${ext.tag}")
+    }
 
-  version = ext.tag.substring("fabric/v".length())
-  def envFile = new File(System.getenv("GITHUB_ENV"))
-  // Validate that the rest is a semver version
-  if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
-    envFile.append("VERSION=${version}")
-  } else {
-    throw new GradleException("Invalid semver: $version")
-  }
+    version = ext.tag.substring("fabric/v".length())
+    // Validate that the rest is a semver version
+    if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
+        if (System.getenv("GITHUB_ENV")) {
+            def envFile = new File(System.getenv("GITHUB_ENV"))
+            envFile.append("VERSION=${version}")
+        }
+    } else {
+        throw new GradleException("Invalid semver: $version")
+    }
 }
 
 ext.isAlpha = project.version.contains("alpha")
@@ -200,14 +203,14 @@ jar {
 
     manifest {
         attributes([
-                "Specification-Title": "Applied Energistics 2",
-                "Specification-Vendor": "TeamAppliedEnergistics",
-                "Specification-Version": "${project.version}",
-                "Implementation-Title": "${project.name}",
-                "Implementation-Version": "${project.version}",
-                "Implementation-Vendor" :"TeamAppliedEnergistics",
+                "Specification-Title"     : "Applied Energistics 2",
+                "Specification-Vendor"    : "TeamAppliedEnergistics",
+                "Specification-Version"   : "${project.version}",
+                "Implementation-Title"    : "${project.name}",
+                "Implementation-Version"  : "${project.version}",
+                "Implementation-Vendor"   : "TeamAppliedEnergistics",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "ae2.mixins.json"
+                "MixinConfigs"            : "ae2.mixins.json"
         ])
     }
 }
@@ -323,10 +326,12 @@ spotless {
     }
 }
 
+
 import com.diffplug.spotless.FormatterFunc
 import com.diffplug.spotless.FormatterStep
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.modrinth.minotaur.TaskModrinthUpload
 
 /**
  * Enforce key ordering in the lang files by parsing the JSON to a TreeMap and writing it back.
@@ -354,12 +359,12 @@ final class LangJsonOrderStep {
 
 ////////////////
 // Curse Forge
-if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT")) {
+if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
     def cfReleaseType = "release"
     if (ext.isAlpha) {
-      cfReleaseType = "alpha"
+        cfReleaseType = "alpha"
     } else if (ext.isBeta) {
-      cfReleaseType = "beta"
+        cfReleaseType = "beta"
     }
 
     curseforge {
@@ -382,6 +387,36 @@ if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT")) {
             tasks.getByName("curseforge${project.curseforge_project}").dependsOn remapJar
         }
     }
+}
+
+////////////////
+// Modrinth
+
+import com.modrinth.minotaur.request.VersionType
+
+if (!version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
+    def mrVersionType = VersionType.RELEASE
+    if (ext.isAlpha) {
+        mrVersionType = VersionType.ALPHA
+    } else if (ext.isBeta) {
+        mrVersionType = VersionType.BETA
+    }
+
+    task publishModrinth(type: TaskModrinthUpload) {
+        onlyIf {
+            System.getenv("MODRINTH")
+        }
+
+        token = System.getenv("MODRINTH")
+        changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
+        projectId = 'XxWD5pD3'
+        versionNumber = project.version
+        versionType = mrVersionType
+        uploadFile = remapJar
+        addGameVersion(project.minecraft_version)
+        addLoader('fabric')
+    }
+    publishModrinth.dependsOn remapJar
 }
 
 ////////////////
