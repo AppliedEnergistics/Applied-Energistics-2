@@ -38,6 +38,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.stacks.AEKey;
@@ -89,8 +90,13 @@ public class AEStackRendering {
     }
 
     @SuppressWarnings("unchecked")
-    public static void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int z, AEKey stack) {
-        getUnchecked(stack).drawRepresentation(minecraft, poseStack, x, y, z, stack);
+    public static void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int z, AEKey what) {
+        getUnchecked(what).drawInGui(minecraft, poseStack, x, y, z, what);
+    }
+
+    public static void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEKey what, float scale,
+            int combinedLightIn) {
+        getUnchecked(what).drawOnBlockFace(poseStack, buffers, what, scale, combinedLightIn);
     }
 
     @SuppressWarnings("unchecked")
@@ -107,4 +113,5 @@ public class AEStackRendering {
     public static String formatAmount(AEKey what, long amount, AmountFormat format) {
         return getUnchecked(what).formatAmount(amount, format);
     }
+
 }

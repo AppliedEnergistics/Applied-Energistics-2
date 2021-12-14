@@ -22,21 +22,22 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
-import appeng.client.render.TesrRenderHelper;
+import appeng.client.render.BlockEntityRenderHelper;
 
 /**
  * Renders the item currently being crafted
  */
 @Environment(EnvType.CLIENT)
-public class CraftingMonitorTESR implements BlockEntityRenderer<CraftingMonitorBlockEntity> {
+public class CraftingMonitorRenderer implements BlockEntityRenderer<CraftingMonitorBlockEntity> {
 
-    public CraftingMonitorTESR(BlockEntityRendererProvider.Context context) {
+    public CraftingMonitorRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
@@ -51,14 +52,17 @@ public class CraftingMonitorTESR implements BlockEntityRenderer<CraftingMonitorB
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5); // Move to the center of the block
 
-            TesrRenderHelper.rotateToFace(poseStack, facing, (byte) 0);
+            BlockEntityRenderHelper.rotateToFace(poseStack, facing, (byte) 0);
             poseStack.translate(0, 0.08, 0.5);
-            var what = jobProgress.what();
-            var itemToShow = what.wrapForDisplayOrFilter();
 
-            TesrRenderHelper.renderItem2dWithAmount(poseStack, buffers, itemToShow, jobProgress.amount(), 0.3f, -0.18f,
-                    15728880,
-                    combinedOverlay);
+            BlockEntityRenderHelper.renderItem2dWithAmount(
+                    poseStack,
+                    buffers,
+                    jobProgress.what(),
+                    jobProgress.amount(),
+                    0.3f,
+                    -0.18f,
+                    LightTexture.FULL_BRIGHT);
 
             poseStack.popPose();
         }

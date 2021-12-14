@@ -22,10 +22,16 @@ import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -49,7 +55,7 @@ public class InitStackRenderHandlers {
         var itemSSRenderer = new StackSizeRenderer();
         AEStackRendering.register(AEKeyType.items(), AEItemKey.class, new IAEStackRenderHandler<>() {
             @Override
-            public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
+            public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
                     AEItemKey stack) {
                 ItemStack displayStack = stack.toStack();
                 // The item renderer uses this global stack, so we have to apply the current transform to it.
@@ -65,6 +71,25 @@ public class InitStackRenderHandlers {
                 globalStack.popPose();
                 // Ensure the global state is correctly reset.
                 RenderSystem.applyModelViewMatrix();
+            }
+
+            @Override
+            public void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEItemKey what, float scale,
+                    int combinedLight) {
+                poseStack.pushPose();
+                // Push it out of the block face a bit to avoid z-fighting
+                poseStack.translate(0, 0, 0.01f);
+                // The Z-scaling by 0.001 causes the model to be visually "flattened"
+                // This cannot replace a proper projection, but it's cheap and gives the desired effect.
+                // We don't scale the normal matrix to avoid lighting issues.
+                poseStack.mulPoseMatrix(Matrix4f.createScaleMatrix(scale, scale, 0.001f));
+                // Rotate the normal matrix a little bit for nicer lighting.
+                poseStack.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
+
+                Minecraft.getInstance().getItemRenderer().renderStatic(what.toStack(), ItemTransforms.TransformType.GUI,
+                        combinedLight, OverlayTexture.NO_OVERLAY, poseStack, buffers, 0);
+
+                poseStack.popPose();
             }
 
             @Override
@@ -91,11 +116,70 @@ public class InitStackRenderHandlers {
         var fluidSSRenderer = new FluidStackSizeRenderer();
         AEStackRendering.register(AEKeyType.fluids(), AEFluidKey.class, new IAEStackRenderHandler<>() {
             @Override
-            public void drawRepresentation(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
-                    AEFluidKey stack) {
-                FluidBlitter.create(stack.toVariant())
+            public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
+                    AEFluidKey what) {
+                FluidBlitter.create(what)
                         .dest(x, y, 16, 16)
                         .blit(poseStack, 100 + zIndex);
+            }
+
+            @Override
+            public void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEFluidKey what, float scale,
+                    int combinedLight) {
+                var variant = what.toVariant();
+                var color = FluidVariantRendering.getColor(variant);
+                var sprite = FluidVariantRendering.getSprite(variant);
+
+                if (sprite == null) {
+                    return;
+                }
+
+                poseStack.pushPose();
+                // Push it out of the block face a bit to avoid z-fighting
+                poseStack.translate(0, 0, 0.01f);
+
+                var buffer = buffers.getBuffer(RenderType.solid());
+
+                // In comparison to items, make it _slightly_ smaller because item icons
+                // usually don't extend to the full size.
+                scale -= 0.05f;
+
+                // y is flipped here
+                var x0 = -scale / 2;
+                var y0 = scale / 2;
+                var x1 = scale / 2;
+                var y1 = -scale / 2;
+
+                var transform = poseStack.last().pose();
+                buffer.vertex(transform, x0, y1, 0)
+                        .color(color)
+                        .uv(sprite.getU0(), sprite.getV1())
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
+                        .uv2(combinedLight)
+                        .normal(0, 0, 1)
+                        .endVertex();
+                buffer.vertex(transform, x1, y1, 0)
+                        .color(color)
+                        .uv(sprite.getU1(), sprite.getV1())
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
+                        .uv2(combinedLight)
+                        .normal(0, 0, 1)
+                        .endVertex();
+                buffer.vertex(transform, x1, y0, 0)
+                        .color(color)
+                        .uv(sprite.getU1(), sprite.getV0())
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
+                        .uv2(combinedLight)
+                        .normal(0, 0, 1)
+                        .endVertex();
+                buffer.vertex(transform, x0, y0, 0)
+                        .color(color)
+                        .uv(sprite.getU0(), sprite.getV0())
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
+                        .uv2(combinedLight)
+                        .normal(0, 0, 1)
+                        .endVertex();
+                poseStack.popPose();
             }
 
             @Override
