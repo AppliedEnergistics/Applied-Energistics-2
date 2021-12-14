@@ -16,7 +16,6 @@ import net.minecraft.world.level.ItemLike;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
-import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
     private final Item item;
@@ -206,7 +205,7 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public Component getDisplayName() {
-        return Platform.getItemDisplayName(this);
+        return toStack().getHoverName();
     }
 
     @Override

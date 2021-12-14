@@ -28,7 +28,6 @@ import mcp.mobius.waila.api.IPluginConfig;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.integration.modules.waila.BaseDataProvider;
 import appeng.integration.modules.waila.WailaText;
-import appeng.util.Platform;
 
 /**
  * Shows the name of the item being crafted.
@@ -42,7 +41,7 @@ public final class CraftingMonitorDataProvider extends BaseDataProvider {
             var displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {
-                tooltip.add(WailaText.Crafting.textComponent(Platform.getItemDisplayName(displayStack)));
+                tooltip.add(WailaText.Crafting.textComponent(displayStack.what().getDisplayName()));
             }
         }
     }

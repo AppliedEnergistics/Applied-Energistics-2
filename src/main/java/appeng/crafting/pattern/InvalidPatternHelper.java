@@ -29,8 +29,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.util.Platform;
-
 class InvalidPatternHelper {
 
     private final List<PatternIngredient> outputs = new ArrayList<>();
@@ -105,7 +103,7 @@ class InvalidPatternHelper {
         }
 
         public Component getName() {
-            return this.isValid() ? Platform.getItemDisplayName(this.stack)
+            return this.isValid() ? this.stack.getHoverName()
                     : new TextComponent(this.id + '@' + this.getDamage());
         }
 

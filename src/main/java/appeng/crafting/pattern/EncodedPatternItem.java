@@ -203,10 +203,10 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
         var what = stack.what();
         if (what instanceof AEItemKey itemKey) {
             amountInfo = String.valueOf(stack.amount());
-            displayName = Platform.getItemDisplayName(itemKey);
+            displayName = itemKey.getDisplayName();
         } else if (what instanceof AEFluidKey fluidKey) {
             amountInfo = Platform.formatFluidAmount(stack.amount());
-            displayName = Platform.getFluidDisplayName(fluidKey);
+            displayName = fluidKey.getDisplayName();
         } else {
             throw new IllegalArgumentException("Unsupported storage channel: " + what);
         }

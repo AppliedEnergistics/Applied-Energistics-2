@@ -45,7 +45,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
@@ -310,18 +309,7 @@ public class Platform {
     }
 
     @Environment(EnvType.CLIENT)
-    public static List<Component> getTooltip(final Object o) {
-        if (o == null) {
-            return Collections.emptyList();
-        }
-
-        ItemStack itemStack = ItemStack.EMPTY;
-        if (o instanceof ItemStack) {
-            itemStack = (ItemStack) o;
-        } else {
-            return Collections.emptyList();
-        }
-
+    public static List<Component> getTooltip(ItemStack itemStack) {
         try {
             Default tooltipFlag = Minecraft.getInstance().options.advancedItemTooltips
                     ? Default.ADVANCED
@@ -335,33 +323,6 @@ public class Platform {
     public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
                 + FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(null);
-    }
-
-    public static Component getItemDisplayName(AEItemKey what) {
-        return getItemDisplayName(what.toStack());
-    }
-
-    public static Component getItemDisplayName(final Object o) {
-        if (o == null) {
-            return new TextComponent("** Null");
-        }
-
-        ItemStack itemStack = ItemStack.EMPTY;
-        if (o instanceof ItemStack) {
-            itemStack = (ItemStack) o;
-        } else {
-            return new TextComponent("**Invalid Object");
-        }
-
-        try {
-            return itemStack.getHoverName();
-        } catch (final Exception errA) {
-            try {
-                return new TranslatableComponent(itemStack.getDescriptionId());
-            } catch (final Exception errB) {
-                return new TextComponent("** Exception");
-            }
-        }
     }
 
     public static String getDescriptionId(Fluid fluid) {
