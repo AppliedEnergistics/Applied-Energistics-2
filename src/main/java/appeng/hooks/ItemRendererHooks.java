@@ -67,7 +67,7 @@ public final class ItemRendererHooks {
 
         var unwrapped = GenericStack.unwrapItemStack(stack);
         if (unwrapped != null) {
-            AEStackRendering.drawRepresentation(
+            AEStackRendering.drawInGui(
                     Minecraft.getInstance(),
                     new PoseStack(),
                     x,

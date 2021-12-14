@@ -25,8 +25,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
@@ -42,7 +42,7 @@ import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
-import appeng.client.render.TesrRenderHelper;
+import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
@@ -220,14 +220,12 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5); // Move into the center of the block
 
-        Direction facing = this.getSide();
-
-        TesrRenderHelper.rotateToFace(poseStack, facing, this.getSpin());
+        BlockEntityRenderHelper.rotateToFace(poseStack, getSide(), this.getSpin());
 
         poseStack.translate(0, 0.05, 0.5);
 
-        TesrRenderHelper.renderItem2dWithAmount(poseStack, buffers, configuredItem.wrapForDisplayOrFilter(), amount,
-                0.4f, -0.23f, 15728880, combinedOverlayIn);
+        BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount,
+                0.4f, -0.23f, LightTexture.FULL_BRIGHT);
 
         poseStack.popPose();
 
@@ -238,14 +236,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         return true;
     }
 
+    @Nullable
     @Override
     public AEKey getDisplayed() {
         return this.configuredItem;
-    }
-
-    @Nullable
-    public AEKey getConfiguredItem() {
-        return configuredItem;
     }
 
     public void setConfiguredItem(@Nullable AEKey configuredItem) {

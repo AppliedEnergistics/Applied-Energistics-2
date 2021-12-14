@@ -19,26 +19,21 @@
 package appeng.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 
-import appeng.util.IWideReadableNumberConverter;
-import appeng.util.ReadableNumberConverter;
+import appeng.api.client.AEStackRendering;
+import appeng.api.client.AmountFormat;
+import appeng.api.stacks.AEKey;
 
 /**
- * Helper methods for rendering TESRs.
+ * Helper methods for rendering block entities.
  */
-public class TesrRenderHelper {
-
-    private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
+public class BlockEntityRenderHelper {
 
     /**
      * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on
@@ -76,31 +71,20 @@ public class TesrRenderHelper {
         }
     }
 
-    // TODO, A different approach will have to be used for this from TESRs, -covers,
-    // i have ideas.
-
     /**
      * Render an item in 2D.
      */
-    public static void renderItem2d(PoseStack poseStack, MultiBufferSource buffers, ItemStack itemStack,
-            float scale, int combinedLightIn, int combinedOverlayIn) {
-        if (!itemStack.isEmpty()) {
-            poseStack.pushPose();
-            // Push it out of the block face a bit to avoid z-fighting
-            poseStack.translate(0, 0, 0.01f);
-            // The Z-scaling by 0.001 causes the model to be visually "flattened"
-            // This cannot replace a proper projection, but it's cheap and gives the desired effect.
-            // We don't scale the normal matrix to avoid lighting issues.
-            poseStack.mulPoseMatrix(Matrix4f.createScaleMatrix(scale, scale, 0.001f));
-            // Rotate the normal matrix a little bit for nicer lighting.
-            poseStack.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
-
-            Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, TransformType.GUI,
-                    combinedLightIn, OverlayTexture.NO_OVERLAY, poseStack, buffers, 0);
-
-            poseStack.popPose();
-
-        }
+    public static void renderItem2d(PoseStack poseStack,
+            MultiBufferSource buffers,
+            AEKey what,
+            float scale,
+            int combinedLightIn) {
+        AEStackRendering.drawOnBlockFace(
+                poseStack,
+                buffers,
+                what,
+                scale,
+                combinedLightIn);
     }
 
     /**
@@ -108,23 +92,27 @@ public class TesrRenderHelper {
      *
      * @param spacing Specifies how far apart the item and the item stack amount are rendered.
      */
-    public static void renderItem2dWithAmount(PoseStack poseStack, MultiBufferSource buffers,
-            ItemStack renderStack, long amount, float itemScale, float spacing, int combinedLightIn,
-            int combinedOverlayIn) {
-        TesrRenderHelper.renderItem2d(poseStack, buffers, renderStack, itemScale, combinedLightIn, combinedOverlayIn);
+    public static void renderItem2dWithAmount(PoseStack poseStack,
+            MultiBufferSource buffers,
+            AEKey what,
+            long amount,
+            float itemScale,
+            float spacing,
+            int combinedLightIn) {
+        renderItem2d(poseStack, buffers, what, itemScale, combinedLightIn);
 
-        final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm(amount);
+        var renderedStackSize = AEStackRendering.formatAmount(what, amount, AmountFormat.FULL);
 
         // Render the item count
-        final Font fr = Minecraft.getInstance().font;
-        final int width = fr.width(renderedStackSize);
+        var fr = Minecraft.getInstance().font;
+        var width = fr.width(renderedStackSize);
         poseStack.pushPose();
         poseStack.translate(0.0f, spacing, 0.02f);
         poseStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
         poseStack.scale(0.5f, 0.5f, 0);
         poseStack.translate(-0.5f * width, 0.0f, 0.5f);
         fr.drawInBatch(renderedStackSize, 0, 0, -1, false, poseStack.last().pose(), buffers, false, 0,
-                15728880);
+                LightTexture.FULL_BRIGHT);
         poseStack.popPose();
 
     }

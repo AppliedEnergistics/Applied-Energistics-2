@@ -23,6 +23,8 @@
 
 package appeng.api.implementations.parts;
 
+import javax.annotation.Nullable;
+
 import appeng.api.parts.IPart;
 import appeng.api.stacks.AEKey;
 import appeng.api.util.INetworkToolAware;
@@ -35,6 +37,7 @@ public interface IStorageMonitorPart extends IMonitorPart, IPart, INetworkToolAw
     /**
      * @return what is being shown on the storage monitor
      */
+    @Nullable
     AEKey getDisplayed();
 
     /**

@@ -450,7 +450,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
-                        AEStackRendering.drawRepresentation(
+                        AEStackRendering.drawInGui(
                                 minecraft,
                                 poseStack,
                                 s.x,
