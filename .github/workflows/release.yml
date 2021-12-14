@@ -37,6 +37,10 @@ jobs:
         run: |
           echo ::set-output name=ARTIFACT_PATH::./build/libs/appliedenergistics2-${VERSION}.jar
           echo ::set-output name=ARTIFACT_NAME::appliedenergistics2-${VERSION}.jar
+          echo ::set-output name=JAVADOC_PATH::./build/libs/appliedenergistics2-${VERSION}-javadoc.jar
+          echo ::set-output name=JAVADOC_NAME::appliedenergistics2-${VERSION}-javadoc.jar
+          echo ::set-output name=API_PATH::./build/libs/appliedenergistics2-${VERSION}-api.jar
+          echo ::set-output name=API_NAME::appliedenergistics2-${VERSION}-api.jar
       - name: Upload Release Artifact
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -45,6 +49,24 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
           asset_name: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
+          asset_content_type: application/zip
+      - name: Upload Javadocs Artifact
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_PATH }}
+          asset_name: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_NAME }}
+          asset_content_type: application/zip
+      - name: Upload API
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ steps.prepare_artifact_metadata.outputs.API_PATH }}
+          asset_name: ${{ steps.prepare_artifact_metadata.outputs.API_NAME }}
           asset_content_type: application/zip
       - name: Upload to Curseforge
         env:
