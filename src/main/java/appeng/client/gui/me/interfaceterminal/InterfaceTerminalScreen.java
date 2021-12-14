@@ -57,7 +57,6 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.iface.DualityPatternProvider;
 import appeng.menu.implementations.InterfaceTerminalMenu;
-import appeng.util.Platform;
 
 public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AEBaseScreen<C> {
 
@@ -425,11 +424,10 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
         for (int i = 0; i < outTag.size(); i++) {
 
-            final ItemStack parsedItemStack = ItemStack.of(outTag.getCompound(i));
-            if (!parsedItemStack.isEmpty()) {
-                final String displayName = Platform
-                        .getItemDisplayName(AEItemKey.of(parsedItemStack)).getString()
-                        .toLowerCase();
+            var parsedItemStack = ItemStack.of(outTag.getCompound(i));
+            var itemKey = AEItemKey.of(parsedItemStack);
+            if (itemKey != null) {
+                var displayName = itemKey.getDisplayName().getString().toLowerCase();
                 if (displayName.contains(searchTerm)) {
                     return true;
                 }

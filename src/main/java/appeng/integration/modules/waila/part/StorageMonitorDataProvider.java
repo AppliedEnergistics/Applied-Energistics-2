@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import appeng.api.parts.IPart;
 import appeng.integration.modules.waila.WailaText;
 import appeng.parts.reporting.AbstractMonitorPart;
-import appeng.util.Platform;
 
 /**
  * Displays the stack if present and if the monitor is locked.
@@ -41,7 +40,7 @@ public final class StorageMonitorDataProvider implements IPartDataProvider {
 
             if (displayed != null) {
                 tooltip.add(WailaText.Showing.textComponent().append(": ")
-                        .append(Platform.getItemDisplayName(displayed)));
+                        .append(displayed.getDisplayName()));
             }
 
             tooltip.add(isLocked ? WailaText.Locked.textComponent() : WailaText.Unlocked.textComponent());
