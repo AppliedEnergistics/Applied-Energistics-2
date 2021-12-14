@@ -32,20 +32,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew build --no-daemon --max-workers 1
-      - name: Upload to curseforge
-        env:
-          CHANGELOG: ${{ github.event.release.body }}
-          CURSEFORGE: ${{ secrets.CURSEFORGE }}
-        run: ./gradlew curseforge --no-daemon --max-workers 1
-      - name: Publish to github packages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew publishMavenPublicationToGitHubPackagesRepository --no-daemon --max-workers 1
-      - name: Publish to modmaven
-        env:
-          MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
-          MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
-        run: ./gradlew publishMavenPublicationToModmavenRepository --no-daemon --max-workers 1
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
@@ -60,3 +46,22 @@ jobs:
           asset_path: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
           asset_name: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
           asset_content_type: application/zip
+      - name: Upload to Curseforge
+        env:
+          CHANGELOG: ${{ github.event.release.body }}
+          CURSEFORGE: ${{ secrets.CURSEFORGE }}
+        run: ./gradlew curseforge --no-daemon --max-workers 1
+      - name: Publish to Github Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publishMavenPublicationToGitHubPackagesRepository --no-daemon --max-workers 1
+      - name: Publish to Modmaven
+        env:
+          MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
+          MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
+        run: ./gradlew publishMavenPublicationToModmavenRepository --no-daemon --max-workers 1
+      - name: Upload to Modrinth
+        env:
+          CHANGELOG: ${{ github.event.release.body }}
+          MODRINTH: ${{ secrets.MODRINTH }}
+        run: ./gradlew publishModrinth --no-daemon --max-workers 1
