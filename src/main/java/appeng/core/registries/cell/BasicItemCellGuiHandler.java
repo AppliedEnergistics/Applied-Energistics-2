@@ -29,7 +29,7 @@ import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
@@ -40,7 +40,7 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler {
 
     @Override
     public void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler, ItemStack cell) {
-        MenuOpener.open(MEMonitorableMenu.TYPE, player,
+        MenuOpener.open(MEStorageMenu.TYPE, player,
                 MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
     }
 }

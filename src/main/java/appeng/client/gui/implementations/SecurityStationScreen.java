@@ -24,11 +24,12 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.client.gui.Icon;
+import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.menu.implementations.SecurityStationMenu;
 
-public class SecurityStationScreen extends appeng.client.gui.me.common.MEMonitorableScreen<SecurityStationMenu> {
+public class SecurityStationScreen extends MEStorageScreen<SecurityStationMenu> {
 
     private final ToggleButton inject;
     private final ToggleButton extract;

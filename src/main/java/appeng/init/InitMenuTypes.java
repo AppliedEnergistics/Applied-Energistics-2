@@ -46,7 +46,7 @@ import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.menu.implementations.WirelessMenu;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
@@ -79,10 +79,10 @@ public final class InitMenuTypes {
                 InscriberMenu.TYPE,
                 InterfaceMenu.TYPE,
                 InterfaceTerminalMenu.TYPE,
-                MEMonitorableMenu.TYPE,
-                MEMonitorableMenu.PORTABLE_FLUID_CELL_TYPE,
-                MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE,
-                MEMonitorableMenu.WIRELESS_TYPE,
+                MEStorageMenu.TYPE,
+                MEStorageMenu.PORTABLE_FLUID_CELL_TYPE,
+                MEStorageMenu.PORTABLE_ITEM_CELL_TYPE,
+                MEStorageMenu.WIRELESS_TYPE,
                 MolecularAssemblerMenu.TYPE,
                 NetworkStatusMenu.TYPE,
                 NetworkToolMenu.TYPE,

@@ -46,7 +46,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -160,9 +160,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     @Override
     public void onChangeInventory(final InternalInventory inv, final int slot,
             final ItemStack removed, final ItemStack added) {
-        if (inv == this.outputSlot) {
-            this.meHandler.outputChanged(added, removed);
-        }
     }
 
     @Override
@@ -277,13 +274,9 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private class MEHandler implements IStorageMonitorableAccessor {
         private final CondenserInventory itemInventory = new CondenserInventory(CondenserBlockEntity.this);
 
-        void outputChanged(ItemStack added, ItemStack removed) {
-            this.itemInventory.updateOutput(added, removed);
-        }
-
         @Nullable
         @Override
-        public MEMonitorStorage getInventory(IActionSource src) {
+        public MEStorage getInventory(IActionSource src) {
             return this.itemInventory;
         }
     }

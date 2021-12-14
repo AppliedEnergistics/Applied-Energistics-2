@@ -49,5 +49,5 @@ public interface IStorageMonitorableAccessor {
      * @return Null if the network cannot be accessed by the given action source (i.e. security doesn't permit it).
      */
     @Nullable
-    MEMonitorStorage getInventory(IActionSource src);
+    MEStorage getInventory(IActionSource src);
 }

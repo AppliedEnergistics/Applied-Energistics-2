@@ -303,7 +303,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             destination = networkInv;
         } else {
             src = networkInv;
-            srcList = networkInv.getCachedAvailableStacks();
+            srcList = grid.getStorageService().getCachedInventory();
             destination = cellInv;
         }
 

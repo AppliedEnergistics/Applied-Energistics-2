@@ -25,35 +25,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.events.GridStorageEvent;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityService;
-import appeng.api.networking.storage.IStackWatcherNode;
 import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
-import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.InterestManager;
-import appeng.me.helpers.MachineSource;
+import appeng.me.helpers.StackWatcher;
 import appeng.me.storage.NetworkStorage;
-import appeng.me.storage.StackWatcher;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
 
-    private final IGrid grid;
     /**
      * Tracks the storage service's state for each grid node that provides storage to the network.
      */
@@ -62,60 +53,63 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * Tracks state for storage providers that are provided by other grid services (i.e. crafting).
      */
     private final List<ProviderState> globalProviders = new ArrayList<>();
-    private final SetMultimap<AEKey, StackWatcher> interests = HashMultimap.create();
-    private final InterestManager<StackWatcher> interestManager = new InterestManager<>(this.interests);
+    private final SetMultimap<AEKey, StackWatcher<IStorageWatcherNode>> interests = HashMultimap.create();
+    private final InterestManager<StackWatcher<IStorageWatcherNode>> interestManager = new InterestManager<>(
+            this.interests);
     private final NetworkStorage storage;
-    private final NetworkInventoryMonitor storageMonitor;
-    /**
-     * When mounting many storage providers at once, we use a batch operation to prevent repeated rescans and rebuilds
-     * of the network inventory.
-     */
-    @Nullable
-    private MountBatchChange currentBatch;
+    private final KeyCounter cachedAvailableStacks = new KeyCounter(); // publicly exposed cached stacks.
+    private KeyCounter lastTickStacks = new KeyCounter(); // private cache, to make sure it's never modified.
     /**
      * Tracks the stack watcher associated with a given grid node. Needed to clean up watchers when the node leaves the
      * grid.
      */
-    private final Map<IGridNode, StackWatcher> watchers = new IdentityHashMap<>();
+    private final Map<IGridNode, StackWatcher<IStorageWatcherNode>> watchers = new IdentityHashMap<>();
 
-    public StorageService(IGrid g, ISecurityService security) {
-        this.grid = g;
+    public StorageService(ISecurityService security) {
         this.storage = new NetworkStorage((SecurityService) security);
-        this.storageMonitor = new NetworkInventoryMonitor(this.storage, interestManager);
     }
 
     @Override
     public void onServerEndTick() {
-        if (this.storageMonitor.hasChangedLastTick()) {
-            this.storageMonitor.clearHasChangedLastTick();
-            grid.postEvent(new GridStorageEvent(this.storageMonitor));
+        // Update cache
+        var previousStacks = lastTickStacks;
+        // Already set the value so that it can be accessed by the watcher node callbacks.
+        this.lastTickStacks = storage.getAvailableStacks();
+        this.cachedAvailableStacks.reset();
+        this.cachedAvailableStacks.addAll(lastTickStacks);
+        this.cachedAvailableStacks.removeZeros();
+        // Update watchers
+        previousStacks.removeAll(cachedAvailableStacks);
+        previousStacks.removeZeros();
+        for (var entry : previousStacks) {
+            long newAmount = cachedAvailableStacks.get(entry.getKey());
+            for (var watcher : interestManager.get(entry.getKey())) {
+                watcher.getHost().onStackChange(entry.getKey(), newAmount);
+            }
+            for (var watcher : interestManager.getAllStacksWatchers()) {
+                watcher.getHost().onStackChange(entry.getKey(), newAmount);
+            }
         }
     }
 
     /**
      * When a node joins the grid, we automatically register provided {@link IStorageProvider} and
-     * {@link IStackWatcherNode}.
+     * {@link IStorageWatcherNode}.
      */
     @Override
     public void addNode(IGridNode node) {
         var storageProvider = node.getService(IStorageProvider.class);
         if (storageProvider != null) {
-            // Determine the logical source for inventory changes by this storage provider
-            var actionSource = node.getOwner() instanceof IActionHost actionHost ? new MachineSource(actionHost)
-                    : new BaseActionSource();
-
-            ProviderState state = new ProviderState(storageProvider, actionSource);
+            ProviderState state = new ProviderState(storageProvider);
             this.nodeProviders.put(node, state);
             if (node.isActive()) {
-                try (var tracker = new MountBatchChange()) {
-                    state.mount();
-                }
+                state.mount();
             }
         }
 
-        var watcher = node.getService(IStackWatcherNode.class);
+        var watcher = node.getService(IStorageWatcherNode.class);
         if (watcher != null) {
-            var iw = new StackWatcher(this, watcher);
+            var iw = new StackWatcher<>(interestManager, watcher);
             this.watchers.put(node, iw);
             watcher.updateWatcher(iw);
         }
@@ -123,7 +117,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     /**
      * When a node leaves the grid, we automatically unregister the previously registered {@link IStorageProvider} or
-     * {@link appeng.api.networking.storage.IStackWatcher}.
+     * {@link IStorageWatcherNode}.
      */
     @Override
     public void removeNode(IGridNode node) {
@@ -134,49 +128,35 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
         var providerState = this.nodeProviders.remove(node);
         if (providerState != null) {
-            try (var tracker = new MountBatchChange()) {
-                providerState.unmount();
-            }
+            providerState.unmount();
         }
     }
 
     @Override
-    public MEMonitorStorage getInventory() {
-        return storageMonitor;
-    }
-
-    private void postChangesToNetwork(Set<AEKey> changedItems, IActionSource src) {
-        if (currentBatch != null) {
-            currentBatch.pending.add(new PendingChangeNotification(changedItems, src));
-        } else {
-            storageMonitor.postChange(changedItems, src);
-        }
+    public MEStorage getInventory() {
+        return storage;
     }
 
     @Override
-    public void postAlterationOfStoredItems(Set<AEKey> input, IActionSource src) {
-        postChangesToNetwork(input, src);
+    public KeyCounter getCachedInventory() {
+        return cachedAvailableStacks;
     }
 
     @Override
     public void addGlobalStorageProvider(IStorageProvider provider) {
         var state = new ProviderState(provider);
         this.globalProviders.add(state);
-        try (var tracker = new MountBatchChange()) {
-            state.mount();
-        }
+        state.mount();
     }
 
     @Override
     public void removeGlobalStorageProvider(IStorageProvider provider) {
-        try (var tracker = new MountBatchChange()) {
-            var it = this.globalProviders.iterator();
-            while (it.hasNext()) {
-                var state = it.next();
-                if (state.provider == provider) {
-                    it.remove();
-                    state.unmount();
-                }
+        var it = this.globalProviders.iterator();
+        while (it.hasNext()) {
+            var state = it.next();
+            if (state.provider == provider) {
+                it.remove();
+                state.unmount();
             }
         }
     }
@@ -187,60 +167,19 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         if (state == null) {
             throw new IllegalArgumentException("The given node is not part of this grid or has no storage provider.");
         }
-        try (var batch = new MountBatchChange()) {
-            state.update();
-        }
+        state.update();
     }
 
     @Override
     public void refreshGlobalStorageProvider(IStorageProvider provider) {
         for (var state : globalProviders) {
             if (state.provider == provider) {
-                try (var batch = new MountBatchChange()) {
-                    state.update();
-                }
+                state.update();
                 return;
             }
         }
 
         throw new IllegalArgumentException("The given node is not part of this grid or has no storage provider.");
-    }
-
-    public InterestManager<StackWatcher> getInterestManager() {
-        return this.interestManager;
-    }
-
-    /**
-     * Batches mount and unmount operations together to only notify storage listeners at the very end.
-     */
-    private class MountBatchChange implements AutoCloseable {
-        private final List<PendingChangeNotification> pending = new ArrayList<>();
-
-        public MountBatchChange() {
-            Preconditions.checkState(currentBatch == null, "Cannot perform multiple batch updates simultaneously");
-            currentBatch = this;
-        }
-
-        @Override
-        public void close() {
-            Preconditions.checkState(currentBatch == this, "Batch update got somehow canceled");
-            currentBatch = null;
-
-            for (var pendingOp : this.pending) {
-                apply(pendingOp);
-            }
-        }
-
-        private void apply(PendingChangeNotification rec) {
-            postChangesToNetwork(rec.list(), rec.src);
-        }
-    }
-
-    private record PendingChangeNotification(
-            // The set of keys in the added or removed inventory
-            Set<AEKey> list,
-            // The action source used to notify about the changes caused by this operation.
-            IActionSource src) {
     }
 
     /**
@@ -249,17 +188,11 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      */
     private class ProviderState implements IStorageMounts {
         private final IStorageProvider provider;
-        private final IActionSource actionSource;
         private final Set<MEStorage> inventories = new HashSet<>();
         private boolean mounted;
 
-        public ProviderState(IStorageProvider provider, IActionSource actionSource) {
-            this.provider = provider;
-            this.actionSource = actionSource;
-        }
-
         public ProviderState(IStorageProvider provider) {
-            this(provider, new BaseActionSource());
+            this.provider = provider;
         }
 
         /**
@@ -283,8 +216,6 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
             // Mount this inventory into the network storage
             storage.mount(priority, inventory);
-
-            postChangesToNetwork(inventory.getAvailableStacks().keySet(), actionSource);
         }
 
         public void update() {
@@ -306,7 +237,6 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
         private void unmount(MEStorage inventory) {
             storage.unmount(inventory);
-            postChangesToNetwork(inventory.getAvailableStacks().keySet(), actionSource);
         }
     }
 }

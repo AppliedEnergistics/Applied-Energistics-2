@@ -36,9 +36,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.implementations.parts.IStorageMonitorPart;
-import appeng.api.networking.storage.IStackWatcher;
-import appeng.api.networking.storage.IStackWatcherNode;
+import appeng.api.networking.IStackWatcher;
 import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -60,7 +60,7 @@ import appeng.util.ReadableNumberConverter;
  * @since rv3
  */
 public abstract class AbstractMonitorPart extends AbstractDisplayPart
-        implements IStorageMonitorPart, IStackWatcherNode {
+        implements IStorageMonitorPart, IStorageWatcherNode {
     private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
     @Nullable
     private AEKey configuredItem;
@@ -72,7 +72,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public AbstractMonitorPart(ItemStack is, boolean requireChannel) {
         super(is, requireChannel);
 
-        getMainNode().addService(IStackWatcherNode.class, this);
+        getMainNode().addService(IStorageWatcherNode.class, this);
     }
 
     @Override
@@ -197,7 +197,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private void updateReportingValue(IStorageService storageService) {
         this.lastHumanReadableText = null;
         if (this.configuredItem != null) {
-            this.amount = storageService.getInventory().getCachedAvailableStacks().get(this.configuredItem);
+            this.amount = storageService.getCachedInventory().get(this.configuredItem);
         } else {
             this.amount = 0;
         }

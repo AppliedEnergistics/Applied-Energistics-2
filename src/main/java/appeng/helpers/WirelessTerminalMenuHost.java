@@ -35,7 +35,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.core.AEConfig;
@@ -81,7 +81,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     }
 
     @Override
-    public MEMonitorStorage getInventory() {
+    public MEStorage getInventory() {
         return this.sg != null ? this.sg.getInventory() : null;
     }
 

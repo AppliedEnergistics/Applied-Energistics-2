@@ -29,5 +29,5 @@ import appeng.api.util.IConfigurableObject;
 
 public interface ITerminalHost extends IConfigurableObject, ISubMenuHost {
     @Nullable
-    MEMonitorStorage getInventory();
+    MEStorage getInventory();
 }

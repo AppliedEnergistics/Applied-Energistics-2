@@ -26,7 +26,6 @@ package appeng.api.storage;
 import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -34,9 +33,7 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.KeyCounter;
 import appeng.core.stats.AeStats;
 import appeng.crafting.CraftingLink;
 
@@ -173,53 +170,5 @@ public final class StorageHelper {
             return amount;
         }
 
-    }
-
-    /**
-     * A utility function to notify the {@link IStorageService} of grid inventory changes that result from storage cells
-     * being removed or added to the grid.
-     *
-     * @param service     the storage service to notify
-     * @param removedCell the removed cell. May be {@link ItemStack#EMPTY} if no cell was removed.
-     * @param addedCell   the added cell. May be {@link ItemStack#EMPTY} if no cell was added.
-     * @param src         the action source
-     */
-    private static void postWholeCellChanges(IStorageService service,
-            ItemStack removedCell,
-            ItemStack addedCell,
-            IActionSource src) {
-        var myChanges = new KeyCounter();
-
-        if (!removedCell.isEmpty()) {
-            var myInv = StorageCells.getCellInventory(removedCell, null);
-            if (myInv != null) {
-                myInv.getAvailableStacks(myChanges);
-                for (var is : myChanges) {
-                    is.setValue(-is.getLongValue());
-                }
-            }
-        }
-        if (!addedCell.isEmpty()) {
-            var myInv = StorageCells.getCellInventory(addedCell, null);
-            if (myInv != null) {
-                myInv.getAvailableStacks(myChanges);
-            }
-
-        }
-        service.postAlterationOfStoredItems(myChanges.keySet(), src);
-    }
-
-    public static void postListChanges(KeyCounter before,
-            KeyCounter after,
-            IMEMonitorListener monitor,
-            IActionSource source) {
-        var changes = new KeyCounter();
-        changes.removeAll(before);
-        changes.addAll(after);
-        changes.removeZeros();
-
-        if (!changes.isEmpty()) {
-            monitor.postChange(null, changes.keySet(), source);
-        }
     }
 }

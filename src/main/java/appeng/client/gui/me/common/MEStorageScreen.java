@@ -77,14 +77,14 @@ import appeng.integration.abstraction.JEIFacade;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantic;
 import appeng.menu.me.common.GridInventoryEntry;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
-public class MEMonitorableScreen<C extends MEMonitorableMenu>
+public class MEStorageScreen<C extends MEStorageMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
     private static final int MIN_ROWS = 3;
@@ -96,7 +96,7 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
     private final IConfigManager configSrc;
     private final boolean supportsViewCells;
     private TabButton craftingStatusBtn;
-    private AETextField searchField;
+    private final AETextField searchField;
     private int rows = 0;
     private SettingToggleButton<ViewItems> viewModeToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
@@ -106,7 +106,7 @@ public class MEMonitorableScreen<C extends MEMonitorableMenu>
     private int currentMouseY = 0;
     private final Scrollbar scrollbar;
 
-    public MEMonitorableScreen(C menu, Inventory playerInventory,
+    public MEStorageScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 

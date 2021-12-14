@@ -1,9 +1,7 @@
 package appeng.me.storage;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -14,17 +12,13 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.IMEMonitorListener;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.api.storage.MEStorage;
 import appeng.core.localization.GuiText;
 
 /**
  * Combines several ME storages that each handle only a given key-space.
  */
-public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
-    private final Map<IMEMonitorListener, Object> listeners = new HashMap<>();
-    private IActionSource source;
+public class CompositeStorage implements MEStorage, ITickingMonitor {
     private final InventoryCache cache;
 
     private Map<AEKeyType, MEStorage> storages;
@@ -77,9 +71,8 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
 
     @Override
     public TickRateModulation onTick() {
-        var changes = this.cache.update();
-        if (!changes.isEmpty()) {
-            MEMonitorStorage.postDifference(this, listeners, changes, source);
+        boolean changed = this.cache.update();
+        if (changed) {
             return TickRateModulation.URGENT;
         } else {
             return TickRateModulation.SLOWER;
@@ -91,26 +84,11 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
         this.cache.getAvailableKeys(out);
     }
 
-    @Override
-    public void setActionSource(IActionSource source) {
-        this.source = source;
-    }
-
-    @Override
-    public void addListener(final IMEMonitorListener l, final Object verificationToken) {
-        this.listeners.put(l, verificationToken);
-    }
-
-    @Override
-    public void removeListener(final IMEMonitorListener l) {
-        this.listeners.remove(l);
-    }
-
     private class InventoryCache {
         private KeyCounter frontBuffer = new KeyCounter();
         private KeyCounter backBuffer = new KeyCounter();
 
-        public Set<AEKey> update() {
+        public boolean update() {
             // Flip back & front buffer and start building a new list
             var tmp = backBuffer;
             backBuffer = frontBuffer;
@@ -122,22 +100,22 @@ public class CompositeStorage implements MEMonitorStorage, ITickingMonitor {
                 storage.getAvailableStacks(frontBuffer);
             }
 
+            boolean changed = false;
             // Diff the front-buffer against the backbuffer
-            var changes = new KeyCounter();
             for (var entry : frontBuffer) {
                 var old = backBuffer.get(entry.getKey());
                 if (old == 0 || old != entry.getLongValue()) {
-                    changes.add(entry.getKey(), entry.getLongValue()); // new or changed entry
+                    changed = true;
                 }
             }
             // Account for removals
             for (var oldEntry : backBuffer) {
                 if (frontBuffer.get(oldEntry.getKey()) == 0) {
-                    changes.add(oldEntry.getKey(), -oldEntry.getLongValue());
+                    changed = true;
                 }
             }
 
-            return changes.keySet();
+            return changed;
         }
 
         public void getAvailableKeys(KeyCounter out) {

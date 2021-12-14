@@ -37,7 +37,7 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
@@ -58,11 +58,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     private final IActionSource mySrc;
     private final IEnergySource energySrc;
-    private final MEMonitorStorage storage;
+    private final MEStorage storage;
     private final IMenuCraftingPacket menu;
 
     public CraftingTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
-            final MEMonitorStorage storage, final InternalInventory cMatrix, final InternalInventory secondMatrix,
+            final MEStorage storage, final InternalInventory cMatrix, final InternalInventory secondMatrix,
             final IMenuCraftingPacket ccp) {
         super(player, cMatrix);
         this.energySrc = energySrc;
@@ -110,7 +110,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             if (getMenu().getCarried().isEmpty()) {
                 var rs = getItem().copy();
                 if (!rs.isEmpty()) {
-                    getMenu().setCarried(this.craftItem(who, rs, storage, storage.getCachedAvailableStacks()));
+                    getMenu().setCarried(this.craftItem(who, rs, storage, storage.getAvailableStacks()));
                 }
                 return;
             }
@@ -126,7 +126,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         for (var x = 0; x < maxTimesToCraft; x++) {
             if (target.simulateAdd(rs).isEmpty()) {
-                var all = storage.getCachedAvailableStacks();
+                var all = storage.getAvailableStacks();
                 final var extra = target.addItems(this.craftItem(who, rs, storage, all));
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();
@@ -168,7 +168,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return super.getRemainingItems(ic, level);
     }
 
-    private ItemStack craftItem(final Player p, ItemStack request, MEMonitorStorage inv,
+    private ItemStack craftItem(final Player p, ItemStack request, MEStorage inv,
             KeyCounter all) {
         // update crafting matrix...
         var is = this.getItem();
@@ -240,7 +240,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return ItemStack.EMPTY;
     }
 
-    private boolean preCraft(final Player p, final MEMonitorStorage inv, final ItemStack[] set,
+    private boolean preCraft(final Player p, final MEStorage inv, final ItemStack[] set,
             final ItemStack result) {
         return true;
     }
@@ -249,7 +249,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         super.onTake(p, is);
     }
 
-    private void postCraft(final Player p, final MEMonitorStorage inv, final ItemStack[] set,
+    private void postCraft(final Player p, final MEStorage inv, final ItemStack[] set,
             final ItemStack result) {
         final List<ItemStack> drops = new ArrayList<>();
 

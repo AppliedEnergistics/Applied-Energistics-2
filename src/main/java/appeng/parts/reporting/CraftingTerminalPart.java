@@ -31,7 +31,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
@@ -87,7 +87,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return CraftingTermMenu.TYPE;
         }
-        return MEMonitorableMenu.TYPE;
+        return MEStorageMenu.TYPE;
     }
 
     @Override

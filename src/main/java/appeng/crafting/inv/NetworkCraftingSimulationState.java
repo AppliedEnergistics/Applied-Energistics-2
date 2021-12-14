@@ -27,9 +27,9 @@ import com.google.common.collect.Iterables;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.MEMonitorStorage;
 
 /**
  * Currently, extracts the whole network contents when the job starts. Lazily extracting is unfortunately not possible
@@ -39,18 +39,15 @@ import appeng.api.storage.MEMonitorStorage;
 public class NetworkCraftingSimulationState extends CraftingSimulationState {
     private final KeyCounter list = new KeyCounter();
 
-    public NetworkCraftingSimulationState(MEMonitorStorage storage, @Nullable IActionSource src) {
+    public NetworkCraftingSimulationState(IStorageService storage, @Nullable IActionSource src) {
         // Take care of the edge case where ICraftingSimulationRequester#getActionSource() returns null.
         if (src == null) {
             return;
         }
 
-        collectChannelContents(storage, src);
-    }
-
-    private void collectChannelContents(MEMonitorStorage storage, IActionSource src) {
-        for (var stack : storage.getCachedAvailableStacks()) {
-            long extracted = storage.extract(stack.getKey(), stack.getLongValue(), Actionable.SIMULATE, src);
+        for (var stack : storage.getCachedInventory()) {
+            long extracted = storage.getInventory().extract(stack.getKey(), stack.getLongValue(), Actionable.SIMULATE,
+                    src);
             if (extracted > 0) {
                 this.list.add(stack.getKey(), extracted);
             }

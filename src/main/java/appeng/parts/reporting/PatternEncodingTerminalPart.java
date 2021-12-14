@@ -37,7 +37,7 @@ import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.IPatternTerminalHost;
 import appeng.items.parts.PartModels;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
@@ -104,7 +104,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return PatternTermMenu.TYPE;
         }
-        return MEMonitorableMenu.TYPE;
+        return MEStorageMenu.TYPE;
     }
 
     @Override

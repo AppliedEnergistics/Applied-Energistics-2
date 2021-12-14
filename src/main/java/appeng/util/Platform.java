@@ -82,7 +82,7 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.MEMonitorStorage;
+import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -604,7 +604,7 @@ public class Platform {
 
     public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
             IActionSource mySrc,
-            MEMonitorStorage src,
+            MEStorage src,
             Level level,
             Recipe<CraftingContainer> r,
             ItemStack output,

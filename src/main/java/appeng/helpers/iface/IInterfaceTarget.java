@@ -82,7 +82,7 @@ public interface IInterfaceTarget {
 
                 @Override
                 public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                    for (var stack : storage.getCachedAvailableStacks()) {
+                    for (var stack : storage.getAvailableStacks()) {
                         if (patternInputs.contains(stack.getKey().dropSecondary())) {
                             return true;
                         }

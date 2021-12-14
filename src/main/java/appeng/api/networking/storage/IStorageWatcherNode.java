@@ -23,35 +23,29 @@
 
 package appeng.api.networking.storage;
 
-import org.jetbrains.annotations.ApiStatus;
-
+import appeng.api.networking.IGridNodeService;
+import appeng.api.networking.IStackWatcher;
 import appeng.api.stacks.AEKey;
 
 /**
- * DO NOT IMPLEMENT.
- *
- * Will be injected when adding an {@link IStackWatcherNode} to a grid.
+ * A node that is notified of changes to the currently stored items in the network. Implementors should store the
+ * watcher passed to {@link #updateWatcher} and use it to configure the watched stacks.
  */
-@ApiStatus.NonExtendable
-public interface IStackWatcher {
-    /**
-     * Add a specific {@link AEKey} to watch.
-     *
-     * Supports multiple values, duplicate ones will not be added.
-     *
-     * @return true, if successfully added.
-     */
-    boolean add(AEKey stack);
+public interface IStorageWatcherNode extends IGridNodeService {
 
     /**
-     * Remove a specific {@link AEKey} from the watcher.
+     * provides the watcher for this host, for the current network, is called when the hot changes networks. You do not
+     * need to clear your old watcher, its already been removed by the time this gets called.
      *
-     * @return true, if successfully removed.
+     * @param newWatcher stack watcher
      */
-    boolean remove(AEKey stack);
+    void updateWatcher(IStackWatcher newWatcher);
 
     /**
-     * Removes all watched stacks and resets the watcher to a clean state.
+     * Called when a watched item changes amounts.
+     * 
+     * @param what   What has changed
+     * @param amount New amount in the network
      */
-    void reset();
+    void onStackChange(AEKey what, long amount);
 }

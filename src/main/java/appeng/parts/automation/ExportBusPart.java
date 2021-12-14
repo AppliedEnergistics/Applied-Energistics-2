@@ -41,11 +41,11 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
-import appeng.api.storage.MEMonitorStorage;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
@@ -118,12 +118,12 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
             return TickRateModulation.SLOWER;
         }
 
-        var inv = grid.getStorageService().getInventory();
+        var storageService = grid.getStorageService();
         var cg = grid.getCraftingService();
         var fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
         var schedulingMode = this.getConfigManager().getSetting(Settings.SCHEDULING_MODE);
 
-        var context = createTransferContext(inv, grid.getEnergyService());
+        var context = createTransferContext(storageService, grid.getEnergyService());
 
         int x = 0;
         for (x = 0; x < this.availableSlots() && context.hasOperationsLeft(); x++) {
@@ -143,7 +143,8 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
 
             if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
                 // When fuzzy exporting, simply attempt export of all items in the set of fuzzy-equals keys
-                for (var fuzzyWhat : ImmutableList.copyOf(inv.getCachedAvailableStacks().findFuzzy(what, fzMode))) {
+                for (var fuzzyWhat : ImmutableList
+                        .copyOf(storageService.getCachedInventory().findFuzzy(what, fzMode))) {
                     // The max amount exported is scaled by the key-space's transfer factor (think millibuckets vs.
                     // items)
                     var transferFactory = fuzzyWhat.getKey().getAmountPerOperation();
@@ -203,9 +204,9 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     }
 
     @NotNull
-    private StackTransferContext createTransferContext(MEMonitorStorage inventory, IEnergyService energyService) {
+    private StackTransferContext createTransferContext(IStorageService storageService, IEnergyService energyService) {
         return new StackTransferContext(
-                inventory,
+                storageService,
                 energyService,
                 this.source,
                 getOperationsPerTick(),

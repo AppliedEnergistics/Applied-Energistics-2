@@ -58,9 +58,9 @@ import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
-import appeng.crafting.CraftingWatcher;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.InterestManager;
+import appeng.me.helpers.StackWatcher;
 import appeng.me.service.helpers.CraftingServiceStorage;
 import appeng.me.service.helpers.NetworkCraftingProviders;
 
@@ -84,12 +84,13 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     private final Set<CraftingCPUCluster> craftingCPUClusters = new HashSet<>();
-    private final Map<IGridNode, ICraftingWatcher> craftingWatchers = new HashMap<>();
+    private final Map<IGridNode, StackWatcher<ICraftingWatcherNode>> craftingWatchers = new HashMap<>();
     private final IGrid grid;
     private final NetworkCraftingProviders craftingProviders = new NetworkCraftingProviders();
     private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
-    private final Multimap<AEKey, CraftingWatcher> interests = HashMultimap.create();
-    private final InterestManager<CraftingWatcher> interestManager = new InterestManager<>(this.interests);
+    private final Multimap<AEKey, StackWatcher<ICraftingWatcherNode>> interests = HashMultimap.create();
+    private final InterestManager<StackWatcher<ICraftingWatcherNode>> interestManager = new InterestManager<>(
+            this.interests);
     private final IEnergyService energyGrid;
     private final Set<AEKey> currentlyCrafting = new HashSet<>();
     private boolean updateList = false;
@@ -124,6 +125,9 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         changed.addAll(Sets.difference(currentlyCrafting, previouslyCrafting));
         for (var what : changed) {
             for (var watcher : interestManager.get(what)) {
+                watcher.getHost().onRequestChange(this, what);
+            }
+            for (var watcher : interestManager.getAllStacksWatchers()) {
                 watcher.getHost().onRequestChange(this, what);
             }
         }
@@ -163,7 +167,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         var watchingNode = gridNode.getService(ICraftingWatcherNode.class);
         if (watchingNode != null) {
-            final CraftingWatcher watcher = new CraftingWatcher(this, watchingNode);
+            var watcher = new StackWatcher<>(interestManager, watchingNode);
             this.craftingWatchers.put(gridNode, watcher);
             watchingNode.updateWatcher(watcher);
         }
@@ -327,7 +331,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     @Override
-    public long requesting(AEKey what) {
+    public long getRequestedAmount(AEKey what) {
         long requested = 0;
 
         for (final CraftingCPUCluster cluster : this.craftingCPUClusters) {
@@ -337,15 +341,16 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         return requested;
     }
 
+    @Override
+    public boolean isRequestingAny() {
+        return !currentlyCrafting.isEmpty();
+    }
+
     public Iterable<ICraftingProvider> getProviders(IPatternDetails key) {
         return craftingProviders.getMediums(key);
     }
 
     public boolean hasCpu(final ICraftingCPU cpu) {
         return this.craftingCPUClusters.contains(cpu);
-    }
-
-    public InterestManager<CraftingWatcher> getInterestManager() {
-        return this.interestManager;
     }
 }

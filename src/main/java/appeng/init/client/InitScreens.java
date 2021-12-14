@@ -57,7 +57,7 @@ import appeng.client.gui.implementations.StorageBusScreen;
 import appeng.client.gui.implementations.StorageLevelEmitterScreen;
 import appeng.client.gui.implementations.VibrationChamberScreen;
 import appeng.client.gui.implementations.WirelessScreen;
-import appeng.client.gui.me.common.MEMonitorableScreen;
+import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.me.crafting.CraftAmountScreen;
 import appeng.client.gui.me.crafting.CraftConfirmScreen;
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
@@ -96,7 +96,7 @@ import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.menu.implementations.WirelessMenu;
-import appeng.menu.me.common.MEMonitorableMenu;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingCPUMenu;
@@ -155,21 +155,21 @@ public final class InitScreens {
         register(SpatialAnchorMenu.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
 
         // Terminals
-        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
-                MEMonitorableMenu.TYPE,
-                MEMonitorableScreen::new,
+        InitScreens.<MEStorageMenu, MEStorageScreen<MEStorageMenu>>register(
+                MEStorageMenu.TYPE,
+                MEStorageScreen::new,
                 "/screens/terminals/terminal.json");
-        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
-                MEMonitorableMenu.PORTABLE_ITEM_CELL_TYPE,
-                MEMonitorableScreen::new,
+        InitScreens.<MEStorageMenu, MEStorageScreen<MEStorageMenu>>register(
+                MEStorageMenu.PORTABLE_ITEM_CELL_TYPE,
+                MEStorageScreen::new,
                 "/screens/terminals/portable_item_cell.json");
-        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
-                MEMonitorableMenu.PORTABLE_FLUID_CELL_TYPE,
-                MEMonitorableScreen::new,
+        InitScreens.<MEStorageMenu, MEStorageScreen<MEStorageMenu>>register(
+                MEStorageMenu.PORTABLE_FLUID_CELL_TYPE,
+                MEStorageScreen::new,
                 "/screens/terminals/portable_fluid_cell.json");
-        InitScreens.<MEMonitorableMenu, MEMonitorableScreen<MEMonitorableMenu>>register(
-                MEMonitorableMenu.WIRELESS_TYPE,
-                MEMonitorableScreen::new,
+        InitScreens.<MEStorageMenu, MEStorageScreen<MEStorageMenu>>register(
+                MEStorageMenu.WIRELESS_TYPE,
+                MEStorageScreen::new,
                 "/screens/terminals/wireless_terminal.json");
         register(SecurityStationMenu.TYPE,
                 SecurityStationScreen::new,
