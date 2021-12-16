@@ -1,5 +1,6 @@
 package appeng.server.testworld;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -15,6 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluid;
 
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
@@ -147,4 +150,13 @@ public interface PlotBuilder {
     default PlotBuilder offset(int x, int y, int z) {
         return transform(bb -> bb.moved(x, y, z));
     }
+
+    /**
+     * Runs a given callback once the grid has been initialized at all viable nodes in the given bounding box.
+     */
+    default void afterGridInitAt(String bb, BiConsumer<IGrid, IGridNode> consumer) {
+        addBuildAction(new PostGridInitAction(bb(bb), consumer));
+    }
+
+    void addTest(String name, PlotTest.PlotTestAssertions assertion);
 }

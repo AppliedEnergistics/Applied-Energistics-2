@@ -15,6 +15,7 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 import appeng.util.IVariantConversion;
+import appeng.util.Platform;
 
 class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {
     private final BlockApiCache<Storage<V>, Direction> apiCache;
@@ -53,7 +54,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
                 context.getActionSource(),
                 Actionable.SIMULATE);
 
-        try (var tx = Transaction.openOuter()) {
+        try (var tx = Platform.openOrJoinTx()) {
             long wasInserted = adjacentStorage.insert(variant, extracted, tx);
 
             if (wasInserted > 0) {

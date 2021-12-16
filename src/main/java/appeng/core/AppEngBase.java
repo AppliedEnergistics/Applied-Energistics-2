@@ -27,11 +27,13 @@ import com.mojang.brigadier.CommandDispatcher;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.gametest.framework.GameTestRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -81,6 +83,7 @@ import appeng.init.worldgen.InitStructures;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.PartPlacement;
 import appeng.server.AECommand;
+import appeng.server.testworld.GameTestPlotAdapter;
 import appeng.services.ChunkLoadingService;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
@@ -315,6 +318,12 @@ public abstract class AppEngBase implements AppEng {
                 .getEntrypoints(AppEng.MOD_ID + ":" + sideSpecificEntrypoint, IAEAddonEntrypoint.class);
         for (var entrypoint : sideSpecificEntrypoints) {
             entrypoint.onAe2Initialized();
+        }
+    }
+
+    protected static void registerTests() {
+        if (FabricGameTestHelper.ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            GameTestRegistry.register(GameTestPlotAdapter.class);
         }
     }
 }

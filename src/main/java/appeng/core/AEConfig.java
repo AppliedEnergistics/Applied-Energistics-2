@@ -98,7 +98,7 @@ public final class AEConfig {
 
     public static void load(Path configFolder) {
         if (instance != null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Config is already loaded");
         }
         instance = new AEConfig(configFolder);
     }

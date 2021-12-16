@@ -54,7 +54,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.17.1:2021.09.05@zip")
+        parchment("org.parchmentmc.data:parchment-1.17.1:2021.12.12@zip")
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -71,9 +71,7 @@ dependencies {
     }
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}") {
-        exclude group: "net.fabricmc.fabric-api", module: "fabric-gametest-api-v1"
-    }
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
     include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
@@ -181,6 +179,22 @@ loom {
             property "appeng.generateData", "true"
             property "appeng.generateData.outputPath", file("src/generated/resources").absolutePath
             property "appeng.generateData.existingData", file("src/main/resources").absolutePath
+        }
+
+        // Use to run the tests
+        gametest {
+            server()
+            name "Game Test"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+            runDir "build/gametest"
+            source sourceSets.test
+        }
+        // Use to debug tests
+        gametestClient {
+            client()
+            name "Game Test Client"
+            source sourceSets.test
         }
     }
 }

@@ -27,4 +27,9 @@ class TransformingPlotBuilder implements PlotBuilder {
     public PlotBuilder transform(Function<BoundingBox, BoundingBox> transform) {
         return new TransformingPlotBuilder(this.plot, this.transform.andThen(transform));
     }
+
+    @Override
+    public void addTest(String name, PlotTest.PlotTestAssertions assertion) {
+        plot.addTest(name, assertion);
+    }
 }

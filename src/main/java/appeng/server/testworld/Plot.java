@@ -2,22 +2,23 @@ package appeng.server.testworld;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-
 class Plot implements PlotBuilder {
+    private final ResourceLocation id;
+
     private final List<BuildAction> buildActions = new ArrayList<>();
+
+    private final List<PlotTest> tests = new ArrayList<>();
 
     public BoundingBox getBounds() {
         return BoundingBox.encapsulatingBoxes(buildActions.stream().map(BuildAction::getBoundingBox).toList())
@@ -25,6 +26,14 @@ class Plot implements PlotBuilder {
     }
 
     private static final Pattern RANGE = Pattern.compile("\\[(-?\\d+),(-?\\d+)]");
+
+    public Plot(ResourceLocation id) {
+        this.id = id;
+    }
+
+    public ResourceLocation getId() {
+        return id;
+    }
 
     @Override
     public void addBuildAction(BuildAction action) {
@@ -58,16 +67,18 @@ class Plot implements PlotBuilder {
         return new BoundingBox(p[0], p[2], p[4], p[1], p[3], p[5]);
     }
 
-    public void build(ServerLevel level, ServerPlayer player, BlockPos origin) {
+    public void build(ServerLevel level, Player player, BlockPos origin) {
         for (var action : buildActions) {
             action.build(level, player, origin);
         }
     }
 
-    /**
-     * Runs a given callback once the grid has been initialized at all viable nodes in the given bounding box.
-     */
-    public void afterGridInitAt(String bb, BiConsumer<IGrid, IGridNode> consumer) {
-        buildActions.add(new PostGridInitAction(bb(bb), consumer));
+    public List<PlotTest> getTests() {
+        return tests;
+    }
+
+    @Override
+    public void addTest(String name, PlotTest.PlotTestAssertions assertion) {
+        tests.add(new PlotTest(name, assertion));
     }
 }

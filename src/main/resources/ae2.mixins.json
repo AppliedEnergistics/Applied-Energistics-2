@@ -13,7 +13,8 @@
     "OnNeighborUpdateMixin",
     "ServerLevelCustomItemEntityMixin",
     "ConditionalRecipeMixin",
-    "BreakSpeedMixin"
+    "BreakSpeedMixin",
+    "tests.StructureUtilsMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",

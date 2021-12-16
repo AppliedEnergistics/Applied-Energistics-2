@@ -34,9 +34,7 @@ public final class AutoCraftingTestPlot {
     private AutoCraftingTestPlot() {
     }
 
-    public static Plot create() {
-        var plot = new Plot();
-
+    public static void create(PlotBuilder plot) {
         plot.block("[4,5] [0,1] [4,5]", AEBlocks.CONTROLLER);
         plot.creativeEnergyCell("4 -1 4");
 
@@ -135,8 +133,6 @@ public final class AutoCraftingTestPlot {
                 }
             }
         });
-
-        return plot;
     }
 
     private static void buildChestCraftingExport(PlotBuilder plot) {

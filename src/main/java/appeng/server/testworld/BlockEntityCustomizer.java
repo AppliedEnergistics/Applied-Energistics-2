@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -17,7 +17,7 @@ public record BlockEntityCustomizer<T extends BlockEntity> (BoundingBox bb,
         BlockEntityType<T> type,
         Consumer<T> consumer) implements BlockPlacingBuildAction {
     @Override
-    public void placeBlock(ServerLevel level, ServerPlayer player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
+    public void placeBlock(ServerLevel level, Player player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
         level.getBlockEntity(pos, type).ifPresent(consumer);
     }
 

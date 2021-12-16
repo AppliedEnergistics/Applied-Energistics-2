@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import appeng.api.networking.IGrid;
@@ -17,7 +17,7 @@ public record PostGridInitAction(BoundingBox bb,
         BiConsumer<IGrid, IGridNode> consumer) implements BlockPlacingBuildAction {
 
     @Override
-    public void placeBlock(ServerLevel level, ServerPlayer player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
+    public void placeBlock(ServerLevel level, Player player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
         Runnable delayedAction = new Runnable() {
             private int attempts = 120;
 

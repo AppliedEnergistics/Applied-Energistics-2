@@ -2,10 +2,18 @@ package appeng.server.testworld;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.Consumer;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -15,41 +23,64 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.util.AEColor;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.storage.CreativeCellItem;
 import appeng.me.helpers.BaseActionSource;
 
-final class TestPlots {
+public final class TestPlots {
+    private static final Map<ResourceLocation, Consumer<PlotBuilder>> PLOT_FACTORIES = ImmutableMap
+            .<ResourceLocation, Consumer<PlotBuilder>>builder()
+            .put(AppEng.makeId("plot/allterminals"), TestPlots::allTerminals)
+            .put(AppEng.makeId("plot/itemchest"), TestPlots::itemChest)
+            .put(AppEng.makeId("plot/fluidchest"), TestPlots::fluidChest)
+            .put(AppEng.makeId("plot/skycompassrendering"), TestPlots::skyCompassRendering)
+            .put(AppEng.makeId("plot/crystalgrowthautocrafting"), TestPlots::crystalGrowthAutoCrafting)
+            .put(AppEng.makeId("plot/importexportbus"), TestPlots::importExportBus)
+            .put(AppEng.makeId("plot/inscriber"), TestPlots::inscriber)
+            .put(AppEng.makeId("plot/autocraftingtestplot"), AutoCraftingTestPlot::create)
+            .put(AppEng.makeId("plot/importandexportinonetick"), TestPlots::importAndExportInOneTick)
+            .build();
+
     private TestPlots() {
     }
 
     public static ArrayList<Plot> createPlots() {
         var plots = new ArrayList<Plot>();
-        Collections.addAll(plots,
-                allTerminals(),
-                itemChest(),
-                fluidChest(),
-                skyCompassRendering(),
-                crystalGrowthAutoCrafting(),
-                importExportBus(),
-                inscriber(),
-                AutoCraftingTestPlot.create());
+        for (var entry : PLOT_FACTORIES.entrySet()) {
+            var plot = new Plot(entry.getKey());
+            entry.getValue().accept(plot);
+            plots.add(plot);
+        }
         return plots;
+    }
+
+    @Nullable
+    public static Plot getById(ResourceLocation name) {
+        var factory = PLOT_FACTORIES.get(name);
+        if (factory == null) {
+            return null;
+        }
+        var plot = new Plot(name);
+        factory.accept(plot);
+        return plot;
     }
 
     /**
      * A wall of all terminals/monitors in all color combinations.
      */
-    public static Plot allTerminals() {
-        var plot = new Plot();
+    public static void allTerminals(PlotBuilder plot) {
         plot.creativeEnergyCell("0 -1 0");
 
         plot.cable("[-1,0] [0,8] 0", AEParts.COVERED_DENSE_CABLE);
@@ -91,7 +122,6 @@ final class TestPlots {
             line.part("8 0 0", Direction.NORTH, AEParts.SEMI_DARK_MONITOR);
             line.part("9 0 0", Direction.NORTH, AEParts.DARK_MONITOR);
         }
-        return plot;
     }
 
     private static ArrayList<AEColor> getColorsTransparentFirst() {
@@ -102,8 +132,7 @@ final class TestPlots {
         return colors;
     }
 
-    public static Plot itemChest() {
-        var plot = new Plot();
+    public static void itemChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
             var cellItem = AEItems.ITEM_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
@@ -117,11 +146,9 @@ final class TestPlots {
             chest.setCell(cellItem);
         });
         plot.creativeEnergyCell("0 -1 0");
-        return plot;
     }
 
-    public static Plot fluidChest() {
-        var plot = new Plot();
+    public static void fluidChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
             var cellItem = AEItems.FLUID_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
@@ -139,11 +166,9 @@ final class TestPlots {
             chest.setCell(cellItem);
         });
         plot.creativeEnergyCell("0 -1 0");
-        return plot;
     }
 
-    public static Plot skyCompassRendering() {
-        var plot = new Plot();
+    public static void skyCompassRendering(PlotBuilder plot) {
         plot.block("1 0 1", Blocks.STONE);
         plot.blockEntity("0 0 1", AEBlocks.SKY_COMPASS, skyCompass -> {
             skyCompass.setOrientation(Direction.WEST, Direction.UP);
@@ -164,12 +189,9 @@ final class TestPlots {
         plot.blockEntity("1 2 1", AEBlocks.SKY_COMPASS, skyCompass -> {
             skyCompass.setOrientation(Direction.DOWN, Direction.EAST);
         });
-        return plot;
     }
 
-    public static Plot crystalGrowthAutoCrafting() {
-        var plot = new Plot();
-
+    public static void crystalGrowthAutoCrafting(PlotBuilder plot) {
         // Lower subnet for formation plane and power for growth accelerators
         plot.cable("[4,6] 1 6", AEParts.GLASS_CABLE);
         plot.part("6 1 6", Direction.UP, AEParts.FORMATION_PLANE);
@@ -252,12 +274,9 @@ final class TestPlots {
         });
         plot.part("5 3 6", Direction.DOWN, AEParts.QUARTZ_FIBER);
         plot.part("6 3 6", Direction.DOWN, AEParts.ANNIHILATION_PLANE);
-
-        return plot;
     }
 
-    public static Plot importExportBus() {
-        var plot = new Plot();
+    public static void importExportBus(PlotBuilder plot) {
         plot.chest("1 0 1", new ItemStack(Items.ACACIA_LOG, 16), new ItemStack(Items.ENDER_PEARL, 6));
         plot.block("1 1 1", Blocks.HOPPER);
         plot.creativeEnergyCell("3 -1 1");
@@ -272,17 +291,12 @@ final class TestPlots {
         plot.blockEntity("3 -1 0", AEBlocks.DRIVE, drive -> {
             drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.stack());
         });
-        return plot;
     }
 
-    private static Plot inscriber() {
-        var plot = new Plot();
-
+    private static void inscriber(PlotBuilder plot) {
         processorInscriber(plot.offset(0, 1, 2), AEItems.LOGIC_PROCESSOR_PRESS, Items.GOLD_INGOT);
         processorInscriber(plot.offset(5, 1, 2), AEItems.ENGINEERING_PROCESSOR_PRESS, Items.DIAMOND);
         processorInscriber(plot.offset(10, 1, 2), AEItems.CALCULATION_PROCESSOR_PRESS, AEItems.CERTUS_QUARTZ_CRYSTAL);
-
-        return plot;
     }
 
     private static void processorInscriber(PlotBuilder plot, ItemLike processorPress, ItemLike processorMaterial) {
@@ -311,5 +325,38 @@ final class TestPlots {
             inscriber.setOrientation(Direction.NORTH, Direction.WEST);
         });
         plot.hopper("0 0 0", Direction.DOWN);
+    }
+
+    /**
+     * Reproduces an issue with Fabric Transactions found in
+     * https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5798
+     */
+    private static void importAndExportInOneTick(PlotBuilder plot) {
+        plot.creativeEnergyCell("-1 0 0");
+        plot.chest("0 0 1");
+        plot.cable("0 0 0")
+                .part(Direction.SOUTH, AEParts.EXPORT_BUS, exportBus -> {
+                    exportBus.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
+                    exportBus.getConfig().insert(0, AEItemKey.of(Items.OAK_PLANKS), 1, Actionable.MODULATE);
+                });
+        plot.cable("0 1 0");
+        plot.cable("0 1 -1")
+                .part(Direction.DOWN, AEParts.LEVEL_EMITTER, part -> {
+                    part.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
+                    part.getConfig().insert(0, AEItemKey.of(Items.OAK_PLANKS), 1, Actionable.MODULATE);
+                    part.getConfigManager().putSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.YES);
+                });
+        plot.cable("0 0 -1")
+                .part(Direction.NORTH, AEParts.IMPORT_BUS, part -> {
+                    part.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
+                    part.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL);
+                });
+        plot.block("1 0 0", AEBlocks.CRAFTING_STORAGE_1K);
+        plot.chest("0 0 -2", new ItemStack(Items.OAK_PLANKS, 1));
+
+        plot.addTest("itemInserted", helper -> {
+            helper.assertContainerContains(new BlockPos(0, 0, 1), Items.OAK_PLANKS);
+            helper.assertContainerEmpty(new BlockPos(0, 0, -1));
+        });
     }
 }

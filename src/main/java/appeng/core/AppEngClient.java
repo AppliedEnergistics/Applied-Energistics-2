@@ -126,6 +126,7 @@ public class AppEngClient extends AppEngBase {
 
         INSTANCE = this;
         notifyAddons("client");
+        registerTests();
 
         // Only activate the site exporter when we're not running a release version, since it'll
         // replace blocks around spawn.
