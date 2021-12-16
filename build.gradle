@@ -199,6 +199,12 @@ loom {
     }
 }
 
+// For reproducible results, the world should be deleted before each run
+task cleanGametestWorld(type: Delete) {
+    delete "build/gametest"
+}
+tasks.runGametest.dependsOn cleanGametestWorld
+
 //////////////
 // Artifacts
 processResources {

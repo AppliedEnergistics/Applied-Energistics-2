@@ -2,6 +2,7 @@ package appeng.server.testworld;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -78,7 +79,7 @@ class Plot implements PlotBuilder {
     }
 
     @Override
-    public void addTest(String name, PlotTest.PlotTestAssertions assertion) {
+    public void addTest(String name, Consumer<PlotTestHelper> assertion) {
         tests.add(new PlotTest(name, assertion));
     }
 }

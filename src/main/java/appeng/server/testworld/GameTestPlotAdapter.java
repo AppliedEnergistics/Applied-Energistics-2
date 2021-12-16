@@ -3,6 +3,7 @@ package appeng.server.testworld;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.nbt.CompoundTag;
@@ -12,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.StructureBlockEntity;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 import appeng.util.Platform;
@@ -32,11 +34,16 @@ public class GameTestPlotAdapter {
                         plot.getId().toString(),
                         Rotation.NONE,
                         50,
-                        10,
+                        // Setup time needs to take the time needed to boot the grid into account
+                        21,
                         true,
                         1,
                         1,
-                        test.assertions()::runAssertions));
+                        gameTestHelper -> {
+                            test.assertions().accept(new PlotTestHelper(
+                                    getPlotTranslation(plot.getBounds()),
+                                    gameTestHelper.testInfo));
+                        }));
             }
         }
 
@@ -82,16 +89,21 @@ public class GameTestPlotAdapter {
 
         if (plot != null) {
             var bounds = plot.getBounds();
+            var origin = structureBlock.getBlockPos()
+                    .offset(structureBlock.getStructurePos())
+                    .offset(getPlotTranslation(bounds));
             var level = (ServerLevel) structureBlock.getLevel();
-            var origin = structureBlock.getBlockPos().offset(structureBlock.getStructurePos())
-                    .offset(
-                            bounds.minX() < 0 ? -bounds.minX() : 0,
-                            bounds.minY() < 0 ? -bounds.minY() : 0,
-                            bounds.minZ() < 0 ? -bounds.minZ() : 0);
             plot.build(
                     level,
                     Platform.getPlayer(level),
                     origin);
         }
+    }
+
+    private static BlockPos getPlotTranslation(BoundingBox bounds) {
+        return new BlockPos(
+                bounds.minX() < 0 ? -bounds.minX() : 0,
+                bounds.minY() < 0 ? -bounds.minY() : 0,
+                bounds.minZ() < 0 ? -bounds.minZ() : 0);
     }
 }
