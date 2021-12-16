@@ -73,6 +73,9 @@ mutable field net/minecraft/world/item/Item craftingRemainingItem Lnet/minecraft
 
 accessible class net/minecraft/client/renderer/block/model/BlockElementFace$Deserializer
 
+## Tests
+accessible field net/minecraft/gametest/framework/GameTestHelper testInfo Lnet/minecraft/gametest/framework/GameTestInfo;
+
 ### Datagens
 accessible class net/minecraft/client/renderer/block/model/ItemTransform$Deserializer
 accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deserializer DEFAULT_ROTATION Lcom/mojang/math/Vector3f;

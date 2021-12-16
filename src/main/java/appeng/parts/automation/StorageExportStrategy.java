@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -88,7 +87,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
             return 0;
         }
 
-        try (var tx = Transaction.openOuter()) {
+        try (var tx = Platform.openOrJoinTx()) {
             long wasInserted = adjacentStorage.insert(variant, amount, tx);
 
             if (wasInserted > 0) {

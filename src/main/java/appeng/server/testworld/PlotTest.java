@@ -1,10 +1,6 @@
 package appeng.server.testworld;
 
-import net.minecraft.gametest.framework.GameTestHelper;
+import java.util.function.Consumer;
 
-public record PlotTest(String name, PlotTestAssertions assertions) {
-    @FunctionalInterface
-    public interface PlotTestAssertions {
-        void runAssertions(GameTestHelper helper);
-    }
+public record PlotTest(String name, Consumer<PlotTestHelper> assertions) {
 }

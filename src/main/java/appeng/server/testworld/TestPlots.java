@@ -333,7 +333,7 @@ public final class TestPlots {
      */
     private static void importAndExportInOneTick(PlotBuilder plot) {
         plot.creativeEnergyCell("-1 0 0");
-        plot.chest("0 0 1");
+        plot.chest("0 0 1"); // Output Chest
         plot.cable("0 0 0")
                 .part(Direction.SOUTH, AEParts.EXPORT_BUS, exportBus -> {
                     exportBus.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
@@ -352,11 +352,13 @@ public final class TestPlots {
                     part.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL);
                 });
         plot.block("1 0 0", AEBlocks.CRAFTING_STORAGE_1K);
-        plot.chest("0 0 -2", new ItemStack(Items.OAK_PLANKS, 1));
+        plot.chest("0 0 -2", new ItemStack(Items.OAK_PLANKS, 1)); // Input Chest
 
         plot.addTest("itemInserted", helper -> {
-            helper.assertContainerContains(new BlockPos(0, 0, 1), Items.OAK_PLANKS);
-            helper.assertContainerEmpty(new BlockPos(0, 0, -1));
+            helper.succeedWhen(() -> {
+                helper.assertContainerContains(new BlockPos(0, 0, 1), Items.OAK_PLANKS);
+                helper.assertContainerEmpty(new BlockPos(0, 0, -2));
+            });
         });
     }
 }

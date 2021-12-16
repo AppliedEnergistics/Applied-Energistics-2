@@ -1,5 +1,6 @@
 package appeng.server.testworld;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -29,7 +30,7 @@ class TransformingPlotBuilder implements PlotBuilder {
     }
 
     @Override
-    public void addTest(String name, PlotTest.PlotTestAssertions assertion) {
+    public void addTest(String name, Consumer<PlotTestHelper> assertion) {
         plot.addTest(name, assertion);
     }
 }
