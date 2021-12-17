@@ -172,6 +172,7 @@ loom {
     runs {
         client {
             programArgs "--username", "AE2Dev"
+            property "appeng.tests", "true"
         }
         datagen {
             client()
