@@ -3,12 +3,21 @@ package appeng.util;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
+
+import appeng.api.config.Actionable;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.AEKeyFilter;
 import appeng.helpers.externalstorage.GenericStackInv;
+import appeng.me.helpers.BaseActionSource;
 
 /**
  * Configuration inventories contain a set of {@link AEKey} references that configure how certain aspects of a machine
@@ -125,5 +134,15 @@ public class ConfigInventory extends GenericStackInv {
     @Override
     public ConfigMenuInventory createMenuWrapper() {
         return new ConfigMenuInventory(this);
+    }
+
+    public void addFilter(ItemLike item) {
+        Preconditions.checkState(getMode() == Mode.CONFIG_TYPES);
+        insert(AEItemKey.of(item), 1, Actionable.MODULATE, new BaseActionSource());
+    }
+
+    public void addFilter(Fluid fluid) {
+        Preconditions.checkState(getMode() == Mode.CONFIG_TYPES);
+        insert(AEFluidKey.of(fluid), 1, Actionable.MODULATE, new BaseActionSource());
     }
 }

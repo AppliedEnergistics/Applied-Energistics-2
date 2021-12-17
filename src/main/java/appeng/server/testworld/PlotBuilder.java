@@ -158,5 +158,5 @@ public interface PlotBuilder {
         addBuildAction(new PostGridInitAction(bb(bb), consumer));
     }
 
-    void addTest(String name, Consumer<PlotTestHelper> assertion);
+    void test(Consumer<PlotTestHelper> assertion);
 }

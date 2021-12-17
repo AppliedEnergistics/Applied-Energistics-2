@@ -35,7 +35,6 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.world.level.Level;
 
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.ticking.IGridTickable;
@@ -59,9 +58,11 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     private PriorityQueue<TickTracker> currentlyTickingQueue = null;
 
     private long currentTick = 0;
-    private Stopwatch stopWatch = Stopwatch.createUnstarted();
+    private final Stopwatch stopWatch = Stopwatch.createUnstarted();
+    @Nullable
+    private IGridNode currentlyTicking;
 
-    public TickManagerService(@SuppressWarnings("unused") final IGrid g) {
+    public TickManagerService() {
     }
 
     @Override
@@ -111,27 +112,39 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
                 break;
             }
 
-            queue.poll();
-            final int diff = (int) (this.currentTick - tt.getLastTick());
-            final TickRateModulation mod = this.unsafeTickingRequest(tt, diff);
-
-            switch (mod) {
-                case URGENT -> tt.setCurrentRate(0);
-                case FASTER -> tt.setCurrentRate(tt.getCurrentRate() - TICK_RATE_SPEED_UP_FACTOR);
-                case IDLE -> tt.setCurrentRate(tt.getRequest().maxTickRate);
-                case SLOWER -> tt.setCurrentRate(tt.getCurrentRate() + TICK_RATE_SLOW_DOWN_FACTOR);
-                case SLEEP -> this.sleepDevice(tt.getNode());
-                default -> {
-                    return;
-                }
+            if (queue.poll() != tt) {
+                throw new IllegalStateException();
+            }
+            var diff = (int) (this.currentTick - tt.getLastTick());
+            currentlyTicking = tt.getNode();
+            TickRateModulation mod;
+            try {
+                mod = this.unsafeTickingRequest(tt, diff);
+            } finally {
+                currentlyTicking = null;
             }
 
             // Update the last time this node was ticked
             tt.setLastTick(this.currentTick);
 
-            if (this.awake.containsKey(tt.getNode())) {
-                // Queue already known, no need to use addToQueue() to resolve it again.
-                queue.add(tt);
+            var newRate = switch (mod) {
+                case URGENT -> tt.getRequest().minTickRate;
+                case FASTER -> tt.getCurrentRate() - TICK_RATE_SPEED_UP_FACTOR;
+                case IDLE, SLEEP -> tt.getRequest().maxTickRate;
+                case SLOWER -> tt.getCurrentRate() + TICK_RATE_SLOW_DOWN_FACTOR;
+                case SAME -> tt.getCurrentRate();
+            };
+            // This will clamp to the min,max range
+            tt.setCurrentRate(newRate);
+
+            if (mod == TickRateModulation.SLEEP) {
+                sleepDevice(tt.getNode());
+            } else {
+                // Note that the node _may_ have been removed entirely from the grid in its own tick
+                if (this.awake.containsKey(tt.getNode())) {
+                    // Queue already known, no need to use addToQueue() to resolve it again.
+                    queue.add(tt);
+                }
             }
         }
     }
@@ -157,7 +170,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
             Objects.requireNonNull(tr);
 
-            final TickTracker tt = new TickTracker(tr, gridNode, tickable, this.currentTick);
+            var tt = new TickTracker(tr, gridNode, tickable, this.currentTick);
 
             if (tr.canBeAlerted) {
                 this.alertable.put(gridNode, tt);
@@ -173,10 +186,16 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     }
 
     @Override
-    public boolean alertDevice(final IGridNode node) {
+    public boolean alertDevice(IGridNode node) {
         Objects.requireNonNull(node);
 
-        final TickTracker tt = this.alertable.get(node);
+        // Avoid corrupting the tick queue if the node is already ticking at this time
+        // The result of its ticking method will take precedence over this call
+        if (node == currentlyTicking) {
+            return false;
+        }
+
+        var tt = this.alertable.get(node);
         if (tt == null) {
             return false;
         }
@@ -186,8 +205,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         this.awake.put(node, tt);
 
         // configure sort.
-        tt.setLastTick(tt.getLastTick() - tt.getRequest().maxTickRate);
-        tt.setCurrentRate(tt.getRequest().minTickRate);
+        tt.setTickOnNextTick();
 
         // prevent dupes and tick build up.
         this.updateQueuePosition(node, tt);
@@ -196,13 +214,20 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     }
 
     @Override
-    public boolean sleepDevice(final IGridNode node) {
+    public boolean sleepDevice(IGridNode node) {
         Objects.requireNonNull(node);
 
-        if (this.awake.containsKey(node)) {
-            final TickTracker gt = this.awake.get(node);
-            this.awake.remove(node);
-            this.sleeping.put(node, gt);
+        // Avoid corrupting the tick queue if the node is already ticking at this time
+        // The result of its ticking method will take precedence over this call
+        if (node == currentlyTicking) {
+            return false;
+        }
+
+        var tracker = awake.remove(node);
+        if (tracker != null) {
+            tracker.setCurrentRate(tracker.getRequest().maxTickRate);
+            sleeping.put(node, tracker);
+            removeFromQueue(node, tracker);
             return true;
         }
 
@@ -210,8 +235,14 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     }
 
     @Override
-    public boolean wakeDevice(final IGridNode node) {
+    public boolean wakeDevice(IGridNode node) {
         Objects.requireNonNull(node);
+
+        // Avoid corrupting the tick queue if the node is already ticking at this time
+        // The result of its ticking method will take precedence over this call
+        if (node == currentlyTicking) {
+            return false;
+        }
 
         if (this.sleeping.containsKey(node)) {
             final TickTracker tt = this.sleeping.get(node);

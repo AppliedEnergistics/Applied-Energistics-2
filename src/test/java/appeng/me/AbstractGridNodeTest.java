@@ -67,7 +67,13 @@ abstract class AbstractGridNodeTest {
         return node;
     }
 
-    protected void runTick(IGrid grid) {
+    protected final void runTick(IGrid grid, int count) {
+        for (int i = 0; i < count; i++) {
+            runTick(grid);
+        }
+    }
+
+    protected final void runTick(IGrid grid) {
         var internalGrid = (Grid) grid;
         internalGrid.onServerStartTick();
         internalGrid.onLevelStartTick(level);
