@@ -31,7 +31,6 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterators;
 
 import net.minecraft.CrashReport;
-import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.world.level.Level;
 
@@ -263,7 +262,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
      *
      * @return average time spent ticking this node in nanoseconds, or 0 for an unknown node
      */
-    public long getAverageTime(final IGridNode node) {
+    public long getAverageTime(IGridNode node) {
         var stats = this.getStatistics(node);
         if (stats == null) {
             return 0;
@@ -277,7 +276,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
      *
      * @return 0 if the node isn't ticking or doesn't belong to this grid.
      */
-    public long getOverallTime(final IGridNode node) {
+    public long getOverallTime(IGridNode node) {
         var stats = this.getStatistics(node);
         if (stats == null) {
             return 0;
@@ -292,7 +291,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
      * @param node
      * @return maximum time or 0 for an unknown node
      */
-    public long getMaximumTime(final IGridNode node) {
+    public long getMaximumTime(IGridNode node) {
         var stats = this.getStatistics(node);
         if (stats == null) {
             return 0;
@@ -301,7 +300,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         return stats.getMax();
     }
 
-    private LongSummaryStatistics getStatistics(final IGridNode node) {
+    private LongSummaryStatistics getStatistics(IGridNode node) {
         TickTracker tt = this.awake.get(node);
 
         if (tt == null) {
@@ -366,11 +365,11 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
             return mod;
         } catch (final Throwable t) {
-            final CrashReport crashreport = CrashReport.forThrowable(t, "Ticking GridNode");
-            final CrashReportCategory crashreportcategory = crashreport
+            var report = CrashReport.forThrowable(t, "Ticking GridNode");
+            var category = report
                     .addCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
-            tt.addEntityCrashInfo(crashreportcategory);
-            throw new ReportedException(crashreport);
+            tt.addEntityCrashInfo(category);
+            throw new ReportedException(report);
         }
     }
 

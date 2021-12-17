@@ -15,6 +15,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.me.service.TickManagerService;
 
 public class GridNodeTickingTest extends AbstractGridNodeTest {
 
@@ -24,29 +25,23 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
     @Test
     void testAlertDevice() {
         var timesSinceLastTick = new ArrayList<Integer>();
-        var node = makeNode();
-        node.addService(IGridTickable.class, new IGridTickable() {
-            @Override
-            public TickingRequest getTickingRequest(IGridNode node) {
-                return new TickingRequest(10, 10, true, true);
-            }
-
-            @Override
-            public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                timesSinceLastTick.add(ticksSinceLastCall);
-                return TickRateModulation.SAME;
-            }
-        });
-        node.markReady();
+        var node = makeTickingNode(
+                new TickingRequest(10, 10, true, true),
+                (tickingNode, ticksSinceLastCall) -> {
+                    timesSinceLastTick.add(ticksSinceLastCall);
+                    return TickRateModulation.SAME;
+                });
 
         // Since it's asleep, nothing happens
         runTick(node.getGrid(), 10);
         assertThat(timesSinceLastTick).isEmpty();
+        assertNodeIsAsleep(node);
 
         // Alerting it will also wake it up
         node.getGrid().getTickManager().alertDevice(node);
         runTick(node.getGrid(), 1);
         assertThat(timesSinceLastTick).containsExactly(11);
+        assertNodeIsAwake(node);
 
         // It will then continue to tick at its minimal rate
         runTick(node.getGrid(), 10);
@@ -66,20 +61,12 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         @Test
         void testNodesThatStartOutSleeping() {
             var timesSinceLastTick = new ArrayList<Integer>();
-            var node = makeNode();
-            node.addService(IGridTickable.class, new IGridTickable() {
-                @Override
-                public TickingRequest getTickingRequest(IGridNode node) {
-                    return new TickingRequest(1, 1, true, false);
-                }
-
-                @Override
-                public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                    timesSinceLastTick.add(ticksSinceLastCall);
-                    return TickRateModulation.SAME;
-                }
-            });
-            node.markReady();
+            var node = makeTickingNode(
+                    new TickingRequest(1, 1, true, false),
+                    (tickingNode, ticksSinceLastCall) -> {
+                        timesSinceLastTick.add(ticksSinceLastCall);
+                        return TickRateModulation.SAME;
+                    });
             int timesTicked = 0;
             while (timesSinceLastTick.size() < 5 && timesTicked++ < 1000) {
                 runTick(node.getGrid());
@@ -100,20 +87,12 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         @Test
         void testNodesPuttingThemselvesToSleep() {
             var timesSinceLastTick = new ArrayList<Integer>();
-            var node = makeNode();
-            node.addService(IGridTickable.class, new IGridTickable() {
-                @Override
-                public TickingRequest getTickingRequest(IGridNode node) {
-                    return new TickingRequest(1, 1, false, false);
-                }
-
-                @Override
-                public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                    timesSinceLastTick.add(ticksSinceLastCall);
-                    return TickRateModulation.SLEEP;
-                }
-            });
-            node.markReady();
+            var node = makeTickingNode(
+                    new TickingRequest(1, 1, false, false),
+                    (tickingNode, ticksSinceLastCall) -> {
+                        timesSinceLastTick.add(ticksSinceLastCall);
+                        return TickRateModulation.SLEEP;
+                    });
             int timesTicked = 0;
             while (timesSinceLastTick.size() < 5 && timesTicked++ < 1000) {
                 runTick(node.getGrid());
@@ -135,20 +114,12 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         @Test
         void testNodeBeingPutToSleepExternally() {
             var timesSinceLastTick = new ArrayList<Integer>();
-            var node = makeNode();
-            node.addService(IGridTickable.class, new IGridTickable() {
-                @Override
-                public TickingRequest getTickingRequest(IGridNode node) {
-                    return new TickingRequest(5, 5, false, false);
-                }
-
-                @Override
-                public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                    timesSinceLastTick.add(ticksSinceLastCall);
-                    return TickRateModulation.SAME;
-                }
-            });
-            node.markReady();
+            var node = makeTickingNode(
+                    new TickingRequest(5, 5, false, false),
+                    (tickingNode, ticksSinceLastCall) -> {
+                        timesSinceLastTick.add(ticksSinceLastCall);
+                        return TickRateModulation.SAME;
+                    });
 
             // Run ticks until the node ticked once
             int timesTicked = 0;
@@ -172,20 +143,12 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         @Test
         void testAwakeNodeThatIsNotAsleep() {
             var timesSinceLastTick = new ArrayList<Integer>();
-            var node = makeNode();
-            node.addService(IGridTickable.class, new IGridTickable() {
-                @Override
-                public TickingRequest getTickingRequest(IGridNode node) {
-                    return new TickingRequest(2, 2, false, false);
-                }
-
-                @Override
-                public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                    timesSinceLastTick.add(ticksSinceLastCall);
-                    return TickRateModulation.SAME;
-                }
-            });
-            node.markReady();
+            var node = makeTickingNode(
+                    new TickingRequest(2, 2, false, false),
+                    (tickingNode, ticksSinceLastCall) -> {
+                        timesSinceLastTick.add(ticksSinceLastCall);
+                        return TickRateModulation.SAME;
+                    });
 
             // Run one tick, the node would tick next tick
             runTick(node.getGrid());
@@ -205,44 +168,26 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         void testNodesCallingTickManagerFunctionsWhileTheyAreTicking(String operation)
                 throws FailedConnectionException {
             var timesSinceLastTick = new ArrayList<Integer>();
-            var node = makeNode();
-            node.addService(IGridTickable.class, new IGridTickable() {
-                @Override
-                public TickingRequest getTickingRequest(IGridNode node) {
-                    return new TickingRequest(1, 10, false, true);
-                }
-
-                @Override
-                public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                    timesSinceLastTick.add(ticksSinceLastCall);
-                    var result = switch (operation) {
-                        case "wake" -> node.getGrid().getTickManager().wakeDevice(node);
-                        case "alert" -> node.getGrid().getTickManager().alertDevice(node);
-                        case "sleep" -> node.getGrid().getTickManager().sleepDevice(node);
-                        default -> throw new IllegalArgumentException();
-                    };
-                    assertThat(result).isFalse();
-                    return TickRateModulation.IDLE;
-                }
+            var node = makeTickingNode(new TickingRequest(1, 10, false, true), (tickingNode, ticksSinceLastCall) -> {
+                timesSinceLastTick.add(ticksSinceLastCall);
+                var result = switch (operation) {
+                    case "wake" -> tickingNode.getGrid().getTickManager().wakeDevice(tickingNode);
+                    case "alert" -> tickingNode.getGrid().getTickManager().alertDevice(tickingNode);
+                    case "sleep" -> tickingNode.getGrid().getTickManager().sleepDevice(tickingNode);
+                    default -> throw new IllegalArgumentException();
+                };
+                assertThat(result).isFalse();
+                return TickRateModulation.IDLE;
             });
             // Set up a second node to ensure it does get ticked. In the regression, alertDevice would put
             // the other node at the front of the queue constantly, preventing this node from ticking
             var timesSinceLastTick2 = new ArrayList<Integer>();
-            var secondNode = makeNode();
-            secondNode.addService(IGridTickable.class, new IGridTickable() {
-                @Override
-                public TickingRequest getTickingRequest(IGridNode node) {
-                    return new TickingRequest(6, 6, false, false);
-                }
-
-                @Override
-                public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                    timesSinceLastTick2.add(ticksSinceLastCall);
-                    return TickRateModulation.SAME;
-                }
-            });
-            node.markReady();
-            secondNode.markReady();
+            var secondNode = makeTickingNode(
+                    new TickingRequest(6, 6, false, false),
+                    (tickingNode, ticksSinceLastTick) -> {
+                        timesSinceLastTick2.add(ticksSinceLastTick);
+                        return TickRateModulation.SAME;
+                    });
             GridConnection.create(node, secondNode, null);
 
             runTick(node.getGrid(), 25);
@@ -305,24 +250,37 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
     private ArrayList<Integer> runTicks(TickingRequest request, TickRateModulation modulation) {
         var timesSinceLastTick = new ArrayList<Integer>();
 
-        var node = makeNode();
-        node.addService(IGridTickable.class, new IGridTickable() {
-            @Override
-            public TickingRequest getTickingRequest(IGridNode node) {
-                return request;
-            }
-
-            @Override
-            public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                timesSinceLastTick.add(ticksSinceLastCall);
-                return modulation;
-            }
+        var node = makeTickingNode(request, (tickingNode, ticksSinceLastCall) -> {
+            timesSinceLastTick.add(ticksSinceLastCall);
+            return modulation;
         });
-        node.markReady();
+
         int timesTicked = 0;
         while (timesSinceLastTick.size() < 5 && timesTicked++ < 1000) {
             runTick(node.getGrid());
         }
         return timesSinceLastTick;
+    }
+
+    private TickManagerService.NodeStatus assertNodeIsAsleep(GridNode node) {
+        var status = getNodeStatus(node);
+        assertThat(status.awake()).isFalse();
+        assertThat(status.sleeping()).isTrue();
+        assertThat(status.queued()).isFalse();
+        var ticker = node.getService(IGridTickable.class);
+        assertThat(status.currentRate()).isEqualTo(ticker.getTickingRequest(node).maxTickRate);
+        return status;
+    }
+
+    private TickManagerService.NodeStatus assertNodeIsAwake(GridNode node) {
+        var status = getNodeStatus(node);
+        assertThat(status.awake()).isTrue();
+        assertThat(status.sleeping()).isFalse();
+        assertThat(status.queued()).isTrue();
+        return status;
+    }
+
+    private TickManagerService.NodeStatus getNodeStatus(GridNode node) {
+        return ((TickManagerService) node.getGrid().getTickManager()).getStatus(node);
     }
 }

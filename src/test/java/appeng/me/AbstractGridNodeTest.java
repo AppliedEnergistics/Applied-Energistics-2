@@ -15,8 +15,12 @@ import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.worlddata.GridStorageSaveData;
 import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.me.service.EnergyService;
@@ -65,6 +69,28 @@ abstract class AbstractGridNodeTest {
         assertTrue(node.isPowered());
         node.markReady();
         return node;
+    }
+
+    protected GridNode makeTickingNode(TickingRequest request, NodeTicker ticker, GridFlags... flags) {
+        var node = makeNode(flags);
+        node.addService(IGridTickable.class, new IGridTickable() {
+            @Override
+            public TickingRequest getTickingRequest(IGridNode node) {
+                return request;
+            }
+
+            @Override
+            public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+                return ticker.tick(node, ticksSinceLastCall);
+            }
+        });
+        node.markReady();
+        return node;
+    }
+
+    @FunctionalInterface
+    interface NodeTicker {
+        TickRateModulation tick(IGridNode node, int ticksSinceLastTick);
     }
 
     protected final void runTick(IGrid grid, int count) {
