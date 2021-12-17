@@ -108,7 +108,7 @@ public final class ConventionTags {
     /**
      * Used to identify items that act as wrenches.
      */
-    public static final Tag.Named<Item> WRENCH = tag("c:wrench");
+    public static final Tag.Named<Item> WRENCH = tag("c:wrenches");
 
     public static final Map<DyeColor, Tag.Named<Item>> DYES = Arrays.stream(DyeColor.values())
             .collect(Collectors.toMap(
