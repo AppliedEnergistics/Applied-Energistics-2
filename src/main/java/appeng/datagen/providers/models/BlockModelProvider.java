@@ -55,7 +55,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         simpleBlockAndItem(AEBlocks.CONDENSER);
         simpleBlockAndItem(AEBlocks.ENERGY_ACCEPTOR);
         simpleBlockAndItem(AEBlocks.INTERFACE);
-        simpleBlockAndItem(AEBlocks.PATTERN_PROVIDER);
 
         simpleBlockAndItem(AEBlocks.DEBUG_ITEM_GEN, "block/debug/item_gen");
         simpleBlockAndItem(AEBlocks.DEBUG_CHUNK_LOADER, "block/debug/chunk_loader");
@@ -92,6 +91,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
         vibrationChamber();
         spatialAnchor();
+        patternProvider();
     }
 
     private void vibrationChamber() {
@@ -128,6 +128,13 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 .partialState().with(SpatialAnchorBlock.POWERED, true).setModels(new ConfiguredModel(onModel))
                 .partialState().with(SpatialAnchorBlock.POWERED, false).setModels(new ConfiguredModel(offModel));
         itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_ANCHOR), offModel.getLocation());
+    }
+
+    private void patternProvider() {
+        var def = AEBlocks.PATTERN_PROVIDER;
+        var normalModel = cubeAll(def.block());
+        simpleBlockItem(def.block(), normalModel);
+        // the block state and the oriented model are in manually written json files
     }
 
     private String modelPath(BlockDefinition<?> block) {
