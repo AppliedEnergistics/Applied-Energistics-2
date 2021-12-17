@@ -150,8 +150,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean addPart(ItemStack is, final Direction side, final @Nullable Player player,
-            final @Nullable InteractionHand hand) {
+    public boolean addPart(ItemStack is, Direction side, @Nullable Player player) {
         // This code-path does not allow adding facades, while canAddPart allows facades.
         if (!(is.getItem() instanceof IPartItem<?>partItem)) {
             return false;
@@ -174,8 +173,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             this.storage.setCenter(cablePart);
             cablePart.setPartHostInfo(null, this, this.tcb.getBlockEntity());
 
-            if (player != null && hand != null) {
-                cablePart.onPlacement(player, hand, is, side);
+            if (player != null) {
+                cablePart.onPlacement(player, is);
             }
 
             if (this.inWorld) {
@@ -212,8 +211,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             this.storage.setPart(side, part);
             part.setPartHostInfo(side, this, this.getBlockEntity());
 
-            if (player != null && hand != null) {
-                part.onPlacement(player, hand, is, side);
+            if (player != null) {
+                part.onPlacement(player, is);
             }
 
             if (this.inWorld) {
@@ -262,7 +261,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     @Override
     public boolean replacePart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand) {
         this.removePartWithoutUpdates(side);
-        return this.addPart(is, side, owner, hand);
+        return this.addPart(is, side, owner);
     }
 
     @Override
@@ -337,12 +336,12 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     public SelectedPart selectPartLocal(final Vec3 pos) {
-        for (final Direction side : Platform.DIRECTIONS_WITH_NULL) {
-            final IPart p = this.getPart(side);
+        for (var side : Platform.DIRECTIONS_WITH_NULL) {
+            var p = this.getPart(side);
             if (p != null) {
-                final List<AABB> boxes = new ArrayList<>();
+                var boxes = new ArrayList<AABB>();
 
-                final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
+                var bch = new BusCollisionHelper(boxes, side, true);
                 p.getBoxes(bch);
                 for (AABB bb : boxes) {
                     bb = bb.inflate(0.002, 0.002, 0.002);
@@ -354,13 +353,13 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         }
 
         if (PartHelper.getCableRenderMode().opaqueFacades) {
-            final IFacadeContainer fc = this.getFacadeContainer();
-            for (final Direction side : Direction.values()) {
-                final IFacadePart p = fc.getFacade(side);
+            var fc = this.getFacadeContainer();
+            for (var side : Direction.values()) {
+                var p = fc.getFacade(side);
                 if (p != null) {
-                    final List<AABB> boxes = new ArrayList<>();
+                    var boxes = new ArrayList<AABB>();
 
-                    final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
+                    var bch = new BusCollisionHelper(boxes, side, true);
                     p.getBoxes(bch, true);
                     for (AABB bb : boxes) {
                         bb = bb.inflate(0.01, 0.01, 0.01);
@@ -730,7 +729,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                     }
                 } else {
                     this.removePart(side);
-                    var partAdded = this.addPart(new ItemStack(myItem, 1), side, null, null);
+                    var partAdded = this.addPart(new ItemStack(myItem, 1), side, null);
                     if (partAdded) {
                         p = this.getPart(side);
                         p.readFromStream(data);

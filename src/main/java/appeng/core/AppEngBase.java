@@ -27,7 +27,6 @@ import com.mojang.brigadier.CommandDispatcher;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
@@ -322,7 +321,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     protected static void registerTests() {
-        if (FabricGameTestHelper.ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment()) {
+        if ("true".equals(System.getProperty("appeng.tests"))) {
             GameTestRegistry.register(GameTestPlotAdapter.class);
         }
     }

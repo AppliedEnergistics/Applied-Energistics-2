@@ -60,13 +60,12 @@ public interface IPart extends ICustomCableConnection {
     /**
      * get an ItemStack that represents the bus, should contain the settings for whatever, can also be used in
      * conjunction with removePart to take a part off and drop it or something.
-     *
+     * <p>
      * This is used to drop the bus, and to save the bus, when saving the bus, wrenched is false, and writeToNBT will be
      * called to save important details about the part, if the part is wrenched include in your NBT Data any settings
      * you might want to keep around, you can restore those settings when constructing your part.
      *
      * @param type , what kind of ItemStack to return?
-     *
      * @return item of part
      */
     ItemStack getItemStack(PartItemStack type);
@@ -121,7 +120,6 @@ public interface IPart extends ICustomCableConnection {
      * does this part act like a ladder?
      *
      * @param entity climbing entity
-     *
      * @return true if entity can climb
      */
     boolean isLadder(LivingEntity entity);
@@ -152,7 +150,6 @@ public interface IPart extends ICustomCableConnection {
      * read data from bus packet.
      *
      * @param data to be read data
-     *
      * @return true will re-draw the part.
      */
     boolean readFromStream(FriendlyByteBuf data);
@@ -160,7 +157,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause
      * crashes.
-     *
+     * <p>
      * or null if you don't have a grid node.
      *
      * @return grid node
@@ -190,7 +187,6 @@ public interface IPart extends ICustomCableConnection {
      * @return a grid node that represents the external facing side and allows external connections. this nodes
      *         {@link IManagedGridNode#setExposedOnSides(Set)} will be automatically updated with the side the part is
      *         placed on.
-     *
      */
     IGridNode getExternalFacingNode();
 
@@ -217,7 +213,6 @@ public interface IPart extends ICustomCableConnection {
      * @param player right clicking player
      * @param hand   hand used
      * @param pos    position of block
-     *
      * @return if your activate method performed something.
      */
     boolean onActivate(Player player, InteractionHand hand, Vec3 pos);
@@ -228,17 +223,15 @@ public interface IPart extends ICustomCableConnection {
      * @param player shift right clicking player
      * @param hand   hand used
      * @param pos    position of block
-     *
      * @return if your activate method performed something, you should use false unless you really need it.
      */
     boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos);
 
     /**
      * Called when you left click the part, very similar to Block.onBlockClicked a
-     * 
+     *
      * @param player left clicking player
      * @param pos    clicked position, in block-local coordinates
-     *
      * @return True if your part wants to suppress the default behavior of attacking the part host.
      */
     default boolean onClicked(Player player, Vec3 pos) {
@@ -250,7 +243,6 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param player shift-left clicking player
      * @param pos    clicked position, in block-local coordinates
-     *
      * @return True if your part wants to suppress the default behavior of attacking the part host.
      */
     default boolean onShiftClicked(Player player, Vec3 pos) {
@@ -285,19 +277,17 @@ public interface IPart extends ICustomCableConnection {
     /**
      * Called when placed in the world by a player, this happens before addWorld.
      *
-     * @param player placing player
-     * @param held   held item
-     * @param side   placing side
+     * @param player    placing player
+     * @param partStack The item stack used to place the part.
      */
-    void onPlacement(Player player, InteractionHand hand, ItemStack held, Direction side);
+    void onPlacement(Player player, ItemStack partStack);
 
     /**
      * Used to determine which parts can be placed on what cables.
-     *
+     * <p>
      * Dense cables are not allowed for functional (getGridNode returns a node) parts. Doing so will result in crashes.
      *
      * @param what placed part
-     *
      * @return true if the part can be placed on this support.
      */
     boolean canBePlacedOn(BusSupport what);

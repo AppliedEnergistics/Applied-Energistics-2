@@ -57,7 +57,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        return PartHelper.placeBus(stack, context.getClickedPos(), context.getClickedFace(),
+        return PartHelper.usePartItem(stack, context.getClickedPos(), context.getClickedFace(),
                 context.getPlayer(),
                 context.getHand(), context.getLevel());
     }

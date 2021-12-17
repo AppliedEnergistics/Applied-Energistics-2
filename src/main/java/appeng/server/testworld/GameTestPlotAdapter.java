@@ -33,7 +33,7 @@ public class GameTestPlotAdapter {
             }
 
             result.add(new TestFunction(
-                    batchName,
+                    "ae2",
                     batchName,
                     plot.getId().toString(),
                     Rotation.NONE,
