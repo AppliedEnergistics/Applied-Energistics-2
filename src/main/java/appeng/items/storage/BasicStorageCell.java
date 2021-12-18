@@ -39,7 +39,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
-import appeng.core.definitions.AEItems;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
