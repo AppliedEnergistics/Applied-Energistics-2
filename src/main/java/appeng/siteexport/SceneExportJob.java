@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.monster.Zombie;
@@ -128,6 +130,7 @@ public class SceneExportJob {
                 renderer.captureAsPng(() -> {
 
                     var worldMat = new PoseStack();
+                    worldMat.mulPose(Quaternion.fromYXZ((float) Math.toRadians(scene.rotationY), 0, 0));
                     worldMat.translate(
                             -scene.centerOn.x(),
                             -scene.centerOn.y(),
@@ -137,33 +140,39 @@ public class SceneExportJob {
 
                     var buffers = client.renderBuffers().bufferSource();
 
-                    for (var rt : new RenderType[] {
-                            RenderType.solid(),
-                            RenderType.cutout(),
-                            RenderType.cutoutMipped()
-                    }) {
+                    for (var rt : RenderType.chunkBufferLayers()) {
                         var buffer = buffers.getBuffer(rt);
 
-                        for (var pos : scene.blocks.keySet()) {
+                        for (var pos : BlockPos.betweenClosed(scene.getMin(), scene.getMax())) {
                             var state = clientLevel.getBlockState(pos);
                             if (ItemBlockRenderTypes.getChunkRenderType(state) == rt) {
                                 worldMat.pushPose();
                                 worldMat.translate(pos.getX(), pos.getY(), pos.getZ());
                                 state.getBlock().animateTick(state, clientLevel, pos, random);
-                                if (state.getRenderShape() != RenderShape.INVISIBLE) {
-                                    if (state.getRenderShape() == RenderShape.MODEL) {
-                                        blockRenderer.renderBatched(state, pos, clientLevel, worldMat, buffer, false,
-                                                rand);
-                                    }
-                                    var be = clientLevel.getBlockEntity(pos);
-                                    if (be != null) {
-                                        beRenderer.render(be, 0, worldMat, buffers);
-                                    }
+                                if (state.getRenderShape() == RenderShape.MODEL) {
+                                    blockRenderer.renderBatched(state, pos, clientLevel, worldMat, buffer, false,
+                                            rand);
                                 }
                                 worldMat.popPose();
                             }
                         }
                         buffers.endBatch();
+                    }
+
+                    for (var pos : BlockPos.betweenClosed(scene.getMin(), scene.getMax())) {
+                        var state = clientLevel.getBlockState(pos);
+                        worldMat.pushPose();
+                        worldMat.translate(pos.getX(), pos.getY(), pos.getZ());
+                        if (state.getRenderShape() != RenderShape.INVISIBLE) {
+                            var be = clientLevel.getBlockEntity(pos);
+                            if (be != null) {
+                                RenderSystem.runAsFancy(() -> {
+                                    beRenderer.render(be, 0, worldMat, buffers);
+                                });
+                                buffers.endBatch();
+                            }
+                        }
+                        worldMat.popPose();
                     }
                 }, outputPath);
             } finally {

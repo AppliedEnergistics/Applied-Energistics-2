@@ -3,6 +3,7 @@ package appeng.siteexport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.mojang.math.Vector3f;
@@ -16,11 +17,15 @@ import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingStorageBlock;
 import appeng.block.misc.QuartzFixtureBlock;
 import appeng.block.misc.VibrationChamberBlock;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
+import appeng.server.testworld.Plot;
+import appeng.server.testworld.PlotBuilder;
+import appeng.server.testworld.TestPlots;
 
 final class SiteExportScenes {
     private SiteExportScenes() {
@@ -64,6 +69,7 @@ final class SiteExportScenes {
 
         scenes.add(createQnbScene());
         scenes.add(createColoredCablesScene());
+        scenes.add(plotScene("inscriber_hoppers", TestPlots::inscriber));
 
         return scenes;
     }
@@ -129,6 +135,20 @@ final class SiteExportScenes {
         var state = block.defaultBlockState();
         state = stateCustomizer.apply(state);
         scene.blocks.put(BlockPos.ZERO, state);
+        return scene;
+    }
+
+    private static Scene plotScene(String filename, Consumer<PlotBuilder> plotFactory) {
+        var plot = new Plot(AppEng.makeId(filename));
+        plotFactory.accept(plot);
+        return plotScene(filename, plot);
+    }
+
+    private static Scene plotScene(String filename, Plot plot) {
+        String fullPath = "large/" + filename + ".png";
+        var renderSettings = blockArea();
+        var scene = new PlotScene(renderSettings, fullPath, plot);
+        scene.waitTicks = 22;
         return scene;
     }
 

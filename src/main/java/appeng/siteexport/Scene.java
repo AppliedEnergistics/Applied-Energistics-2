@@ -35,6 +35,7 @@ class Scene {
     Consumer<ClientLevel> beforeRender;
     int waitTicks = 1;
     Vector3f centerOn = Vector3f.ZERO;
+    int rotationY;
 
     public Scene(SceneRenderSettings settings, String filename) {
         this.settings = settings;
