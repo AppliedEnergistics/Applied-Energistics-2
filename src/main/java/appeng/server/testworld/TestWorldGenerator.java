@@ -1,5 +1,6 @@
 package appeng.server.testworld;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
@@ -67,17 +68,18 @@ public class TestWorldGenerator {
     public void generate() {
         clearLevel();
         buildPlatform();
-        buildPlots();
+        var entities = new ArrayList<Entity>();
+        buildPlots(entities);
 
-        clearEntities();
+        clearEntities(entities);
     }
 
-    private void buildPlots() {
+    private void buildPlots(List<Entity> entities) {
         for (var positionedPlot : positionedPlots) {
             // Outline the plot
             outline(positionedPlot);
 
-            positionedPlot.plot.build(level, player, positionedPlot.origin);
+            positionedPlot.plot.build(level, player, positionedPlot.origin, entities);
         }
     }
 
@@ -146,11 +148,11 @@ public class TestWorldGenerator {
         }
     }
 
-    private void clearEntities() {
+    private void clearEntities(List<Entity> plotEntities) {
         // Clear up any item entities that might have spawned
         var entities = Iterables.toArray(level.getAllEntities(), Entity.class);
         for (var entity : entities) {
-            if (!(entity instanceof LivingEntity) && entity.isAlive()) {
+            if (!plotEntities.contains(entity) && !(entity instanceof LivingEntity) && entity.isAlive()) {
                 entity.discard();
             }
         }

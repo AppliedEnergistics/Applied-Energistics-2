@@ -14,11 +14,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
@@ -40,6 +44,8 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.storage.CreativeCellItem;
+import appeng.items.tools.powered.MatterCannonItem;
+import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
 import appeng.parts.automation.ImportBusPart;
 
@@ -59,6 +65,7 @@ public final class TestPlots {
             .put(AppEng.makeId("importintostoragebus"), TestPlots::importIntoStorageBus)
             .put(AppEng.makeId("importonpulse"), TestPlots::importOnPulse)
             .put(AppEng.makeId("importonpulsetransactioncrash"), TestPlots::importOnPulseTransactionCrash)
+            .put(AppEng.makeId("mattercannonrange"), TestPlots::matterCannonRange)
             .build();
 
     private TestPlots() {
@@ -503,6 +510,36 @@ public final class TestPlots {
                     })
                     .thenSucceed();
         }).setupTicks(20).maxTicks(150);
+    }
+
+    public static void matterCannonRange(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+
+        plot.fencedEntity(origin.offset(0, 0, 5), EntityType.COW);
+        plot.creativeEnergyCell(origin.below());
+        plot.blockEntity(
+                origin,
+                AEBlocks.CHEST,
+                chest -> chest.setCell(createMatterCannon(Items.IRON_NUGGET)));
+
+        var dispenserPos = origin.offset(0, 1, 1);
+        plot.blockState(dispenserPos, Blocks.DISPENSER.defaultBlockState()
+                .setValue(DispenserBlock.FACING, Direction.SOUTH));
+        plot.customizeBlockEntity(dispenserPos, BlockEntityType.DISPENSER, dispenser -> {
+            dispenser.addItem(createMatterCannon(Items.IRON_NUGGET));
+        });
+        plot.buttonOn(dispenserPos, Direction.NORTH);
+    }
+
+    private static ItemStack createMatterCannon(Item... ammo) {
+        var cannon = AEItems.MASS_CANNON.stack();
+        ((MatterCannonItem) cannon.getItem()).injectAEPower(cannon, Double.MAX_VALUE, Actionable.MODULATE);
+        var cannonInv = BasicCellInventory.createInventory(cannon, null);
+        for (var item : ammo) {
+            cannonInv.insert(
+                    AEItemKey.of(item), item.getMaxStackSize(), Actionable.MODULATE, new BaseActionSource());
+        }
+        return cannon;
     }
 
 }

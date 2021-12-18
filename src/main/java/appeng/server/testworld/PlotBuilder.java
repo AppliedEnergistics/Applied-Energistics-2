@@ -6,10 +6,12 @@ import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.HopperBlock;
 import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -104,12 +106,38 @@ public interface PlotBuilder {
         return leverPos;
     }
 
+    /**
+     * place a button on the side of the given block. returns the button position.
+     */
+    default BlockPos buttonOn(BlockPos pos, Direction side) {
+        var leverPos = pos.relative(side);
+        AttachFace face = AttachFace.WALL;
+        if (side == Direction.UP) {
+            face = AttachFace.CEILING;
+            side = Direction.EAST;
+        } else if (side == Direction.DOWN) {
+            face = AttachFace.FLOOR;
+            side = Direction.EAST;
+        }
+        var state = Blocks.POLISHED_BLACKSTONE_BUTTON.defaultBlockState()
+                .setValue(ButtonBlock.FACE, face)
+                .setValue(ButtonBlock.FACING, side);
+        blockState(leverPos, state);
+        return leverPos;
+    }
+
     default void block(BlockPos pos, BlockDefinition<?> block) {
         block(posToBb(pos), block);
     }
 
     default void block(String bb, BlockDefinition<?> block) {
         blockState(bb, block.block().defaultBlockState());
+    }
+
+    default <T extends AEBaseBlockEntity> void blockEntity(BlockPos pos,
+            BlockDefinition<? extends AEBaseEntityBlock<T>> block,
+            Consumer<T> postProcessor) {
+        blockEntity(posToBb(pos), block, postProcessor);
     }
 
     /**
@@ -163,6 +191,11 @@ public interface PlotBuilder {
     default <T extends BlockEntity> void customizeBlockEntity(String bb, BlockEntityType<T> type,
             Consumer<T> consumer) {
         addBuildAction(new BlockEntityCustomizer<T>(bb(bb), type, consumer));
+    }
+
+    default <T extends BlockEntity> void customizeBlockEntity(BlockPos pos, BlockEntityType<T> type,
+            Consumer<T> consumer) {
+        customizeBlockEntity(posToBb(pos), type, consumer);
     }
 
     /**
@@ -228,4 +261,13 @@ public interface PlotBuilder {
     }
 
     Test test(Consumer<PlotTestHelper> assertion);
+
+    default void fencedEntity(BlockPos pos, EntityType<?> entity) {
+        var subPlot = offset(pos.getX(), pos.getY(), pos.getZ());
+        subPlot.block("[-1,1] -1 [-1,1]", Blocks.STONE);
+        subPlot.block("[-1,1] 0 [-1,1]", Blocks.STONE_BRICK_WALL);
+        subPlot.block("0 0 0", Blocks.AIR);
+
+        addBuildAction(new SpawnEntityAction(bb(posToBb(pos)), entity));
+    }
 }

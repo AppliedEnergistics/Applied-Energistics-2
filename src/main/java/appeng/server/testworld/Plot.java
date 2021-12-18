@@ -11,6 +11,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -69,8 +70,16 @@ public class Plot implements PlotBuilder {
     }
 
     public void build(ServerLevel level, Player player, BlockPos origin) {
+        build(level, player, origin, new ArrayList<>());
+    }
+
+    public void build(ServerLevel level, Player player, BlockPos origin, List<Entity> entities) {
         for (var action : buildActions) {
             action.build(level, player, origin);
+        }
+
+        for (var action : buildActions) {
+            action.spawnEntities(level, origin, entities);
         }
     }
 
