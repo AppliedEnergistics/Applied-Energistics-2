@@ -53,6 +53,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
      * This can be retrieved when disassembling the storage cell.
      */
     protected final ItemLike coreItem;
+    protected final ItemLike housingItem;
     protected final double idleDrain;
     protected final int totalBytes;
     protected final int bytesPerType;
@@ -61,6 +62,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
     public BasicStorageCell(Item.Properties properties,
             ItemLike coreItem,
+            ItemLike housingItem,
             double idleDrain,
             int kilobytes,
             int bytesPerType,
@@ -70,6 +72,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         this.idleDrain = idleDrain;
         this.totalBytes = kilobytes * 1024;
         this.coreItem = coreItem;
+        this.housingItem = housingItem;
         this.bytesPerType = bytesPerType;
         this.totalTypes = totalTypes;
         this.keyType = keyType;
@@ -171,7 +174,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
                     }
 
                     // drop empty storage cell case
-                    playerInventory.placeItemBackInInventory(AEItems.ITEM_CELL_HOUSING.stack());
+                    playerInventory.placeItemBackInInventory(new ItemStack(housingItem));
 
                     return true;
                 }
