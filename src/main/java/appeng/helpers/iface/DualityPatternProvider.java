@@ -371,7 +371,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
         @Nonnull
         @Override
         public TickingRequest getTickingRequest(@Nonnull IGridNode node) {
-            return new TickingRequest(TickRates.Interface.getMin(), TickRates.Interface.getMax(), !hasWorkToDo(), true);
+            return new TickingRequest(TickRates.Interface, !hasWorkToDo(), true);
         }
 
         @Nonnull

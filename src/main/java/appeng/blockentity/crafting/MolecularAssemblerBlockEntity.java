@@ -383,7 +383,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, int ticksSinceLastCall) {
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (!this.gridInv.getStackInSlot(9).isEmpty()) {
             this.pushOut(this.gridInv.getStackInSlot(9));
 

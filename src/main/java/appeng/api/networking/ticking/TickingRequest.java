@@ -23,43 +23,43 @@
 
 package appeng.api.networking.ticking;
 
+import appeng.core.settings.TickRates;
+
 /**
  * Describes how your grid node ticking is executed.
+ *
+ * @param minTickRate  the minimum number of ticks that must pass between ticks. Valid Values are : 1+ Suggested is 5-20
+ * @param maxTickRate  the maximum number of ticks that can pass between ticks, if this value is exceeded the grid node
+ *                     must tick. Valid Values are 1+ Suggested is 20-40
+ * @param isSleeping   Determines the current expected state of your node, if your node expects to be sleeping, then
+ *                     return true.
+ * @param canBeAlerted True only if you call {@link ITickManager}.alertDevice( IGridNode );
  */
-public class TickingRequest {
+public record TickingRequest(
+        int minTickRate,
+        int maxTickRate,
+        boolean isSleeping,
+        boolean canBeAlerted,
+        int initialTickRate) {
 
-    /**
-     * the minimum number of ticks that must pass between ticks.
-     *
-     * Valid Values are : 1+
-     *
-     * Suggested is 5-20
-     */
-    public final int minTickRate;
+    public TickingRequest(int minTickRate, int maxTickRate, boolean isSleeping, boolean canBeAlerted) {
+        this(
+                minTickRate,
+                maxTickRate,
+                isSleeping,
+                canBeAlerted,
+                getInitialTickDelay(minTickRate, maxTickRate));
+    }
 
-    /**
-     * the maximum number of ticks that can pass between ticks, if this value is exceeded the grid node must tick.
-     *
-     * Valid Values are 1+
-     *
-     * Suggested is 20-40
-     */
-    public final int maxTickRate;
+    public TickingRequest(TickRates tickRates, boolean isSleeping, boolean canBeAlerted) {
+        this(
+                tickRates.getMin(),
+                tickRates.getMax(),
+                isSleeping,
+                canBeAlerted);
+    }
 
-    /**
-     * Determines the current expected state of your node, if your node expects to be sleeping, then return true.
-     */
-    public final boolean isSleeping;
-
-    /**
-     * True only if you call {@link ITickManager}.alertDevice( IGridNode );
-     */
-    public final boolean canBeAlerted;
-
-    public TickingRequest(final int min, final int max, final boolean sleep, final boolean alertable) {
-        this.minTickRate = min;
-        this.maxTickRate = max;
-        this.isSleeping = sleep;
-        this.canBeAlerted = alertable;
+    private static int getInitialTickDelay(int min, int max) {
+        return (min + max) / 2;
     }
 }

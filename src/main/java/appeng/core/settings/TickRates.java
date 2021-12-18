@@ -49,7 +49,7 @@ public enum TickRates {
     private int min;
     private int max;
 
-    TickRates(final int min, final int max) {
+    TickRates(int min, int max) {
         this.defaultMin = min;
         this.defaultMax = max;
         this.min = min;

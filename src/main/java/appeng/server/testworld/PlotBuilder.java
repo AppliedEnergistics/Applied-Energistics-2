@@ -4,15 +4,18 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HopperBlock;
+import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluid;
 
@@ -23,6 +26,7 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ColoredItemDefinition;
@@ -34,6 +38,14 @@ public interface PlotBuilder {
     void addBuildAction(BuildAction action);
 
     BoundingBox bb(String def);
+
+    static String posToBb(BlockPos pos) {
+        return pos.getX() + " " + pos.getY() + " " + pos.getZ();
+    }
+
+    default CableBuilder cable(BlockPos pos) {
+        return cable(posToBb(pos));
+    }
 
     default CableBuilder cable(String bb) {
         return cable(bb, AEParts.GLASS_CABLE, AEColor.TRANSPARENT);
@@ -64,8 +76,36 @@ public interface PlotBuilder {
         addBuildAction(new PartCustomizer<>(bb(bb), side, part, partCustomizer));
     }
 
+    default void creativeEnergyCell(BlockPos pos) {
+        creativeEnergyCell(posToBb(pos));
+    }
+
     default void creativeEnergyCell(String bb) {
         block(bb, AEBlocks.CREATIVE_ENERGY_CELL);
+    }
+
+    /**
+     * place a lever on the side of the given block. returns the levers position.
+     */
+    default BlockPos leverOn(BlockPos pos, Direction side) {
+        var leverPos = pos.relative(side);
+        AttachFace face = AttachFace.WALL;
+        if (side == Direction.UP) {
+            face = AttachFace.CEILING;
+            side = Direction.EAST;
+        } else if (side == Direction.DOWN) {
+            face = AttachFace.FLOOR;
+            side = Direction.EAST;
+        }
+        var state = Blocks.LEVER.defaultBlockState()
+                .setValue(LeverBlock.FACE, face)
+                .setValue(LeverBlock.FACING, side);
+        blockState(leverPos, state);
+        return leverPos;
+    }
+
+    default void block(BlockPos pos, BlockDefinition<?> block) {
+        block(posToBb(pos), block);
     }
 
     default void block(String bb, BlockDefinition<?> block) {
@@ -81,6 +121,10 @@ public interface PlotBuilder {
         blockState(bb, block.block().defaultBlockState());
         var type = block.block().getBlockEntityType();
         addBuildAction(new BlockEntityCustomizer<>(bb(bb), type, postProcessor));
+    }
+
+    default void chest(BlockPos pos, ItemStack... stacks) {
+        chest(posToBb(pos), stacks);
     }
 
     default void chest(String bb, ItemStack... stacks) {
@@ -124,6 +168,13 @@ public interface PlotBuilder {
     /**
      * Place the default state of a block.
      */
+    default void block(BlockPos pos, Block block) {
+        block(posToBb(pos), block);
+    }
+
+    /**
+     * Place the default state of a block.
+     */
     default void block(String bb, Block block) {
         blockState(bb, block.defaultBlockState());
     }
@@ -133,6 +184,13 @@ public interface PlotBuilder {
      */
     default void fluid(String bb, Fluid fluid) {
         blockState(bb, fluid.defaultFluidState().createLegacyBlock());
+    }
+
+    /**
+     * Place a specific block state.
+     */
+    default void blockState(BlockPos pos, BlockState blockState) {
+        blockState(posToBb(pos), blockState);
     }
 
     /**
@@ -158,6 +216,16 @@ public interface PlotBuilder {
         addBuildAction(new PostGridInitAction(bb(bb), consumer));
     }
 
-    Test test(Consumer<PlotTestHelper> assertion);
+    /**
+     * Creates a drive with an empty item and fluid cell.
+     */
+    default void storageDrive(BlockPos pos) {
+        blockEntity(posToBb(pos), AEBlocks.DRIVE, drive -> {
+            var cells = drive.getInternalInventory();
+            cells.addItems(AEItems.ITEM_CELL_64K.stack());
+            cells.addItems(AEItems.FLUID_CELL_64K.stack());
+        });
+    }
 
+    Test test(Consumer<PlotTestHelper> assertion);
 }

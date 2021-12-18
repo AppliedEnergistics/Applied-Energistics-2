@@ -43,7 +43,7 @@ public class TickTracker implements Comparable<TickTracker> {
         this.request = req;
         this.gt = gt;
         this.node = node;
-        this.setCurrentRate((req.minTickRate + req.maxTickRate) / 2);
+        this.setCurrentRate(req.initialTickRate());
         this.setLastTick(currentTick);
         this.statistics = new LongSummaryStatistics();
     }
@@ -70,8 +70,8 @@ public class TickTracker implements Comparable<TickTracker> {
         node.fillCrashReportCategory(category);
 
         category.setDetail("CurrentTickRate", this.getCurrentRate());
-        category.setDetail("MinTickRate", this.getRequest().minTickRate);
-        category.setDetail("MaxTickRate", this.getRequest().maxTickRate);
+        category.setDetail("MinTickRate", this.getRequest().minTickRate());
+        category.setDetail("MaxTickRate", this.getRequest().maxTickRate());
         category.setDetail("ConnectedSides", this.getNode().getConnectedSides());
     }
 
@@ -80,7 +80,7 @@ public class TickTracker implements Comparable<TickTracker> {
     }
 
     public void setCurrentRate(final int currentRate) {
-        this.currentRate = Mth.clamp(currentRate, request.minTickRate, request.maxTickRate);
+        this.currentRate = Mth.clamp(currentRate, request.minTickRate(), request.maxTickRate());
     }
 
     public void setTickOnNextTick() {

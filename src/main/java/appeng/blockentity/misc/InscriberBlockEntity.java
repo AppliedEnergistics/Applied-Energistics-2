@@ -203,7 +203,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     // @Override
     @Override
     public TickingRequest getTickingRequest(final IGridNode node) {
-        return new TickingRequest(TickRates.Inscriber.getMin(), TickRates.Inscriber.getMax(), !this.hasWork(), false);
+        return new TickingRequest(TickRates.Inscriber, !this.hasWork(), false);
     }
 
     private boolean hasWork() {

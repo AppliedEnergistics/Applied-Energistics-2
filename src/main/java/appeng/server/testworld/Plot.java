@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
-class Plot implements PlotBuilder {
+public class Plot implements PlotBuilder {
     private final ResourceLocation id;
 
     private final List<BuildAction> buildActions = new ArrayList<>();

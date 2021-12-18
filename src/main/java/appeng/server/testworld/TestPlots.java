@@ -23,11 +23,13 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
 
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.parts.PartHelper;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
@@ -39,9 +41,10 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.storage.CreativeCellItem;
 import appeng.me.helpers.BaseActionSource;
+import appeng.parts.automation.ImportBusPart;
 
 public final class TestPlots {
-    private static final Map<ResourceLocation, Consumer<PlotBuilder>> PLOT_FACTORIES = ImmutableMap
+    public static final Map<ResourceLocation, Consumer<PlotBuilder>> PLOT_FACTORIES = ImmutableMap
             .<ResourceLocation, Consumer<PlotBuilder>>builder()
             .put(AppEng.makeId("allterminals"), TestPlots::allTerminals)
             .put(AppEng.makeId("itemchest"), TestPlots::itemChest)
@@ -55,6 +58,7 @@ public final class TestPlots {
             .put(AppEng.makeId("exportfromstoragebus"), TestPlots::exportFromStorageBus)
             .put(AppEng.makeId("importintostoragebus"), TestPlots::importIntoStorageBus)
             .put(AppEng.makeId("importonpulse"), TestPlots::importOnPulse)
+            .put(AppEng.makeId("importonpulsetransactioncrash"), TestPlots::importOnPulseTransactionCrash)
             .build();
 
     private TestPlots() {
@@ -128,7 +132,7 @@ public final class TestPlots {
         }
     }
 
-    private static ArrayList<AEColor> getColorsTransparentFirst() {
+    public static ArrayList<AEColor> getColorsTransparentFirst() {
         var colors = new ArrayList<AEColor>();
         Collections.addAll(colors, AEColor.values());
         colors.remove(AEColor.TRANSPARENT);
@@ -297,13 +301,13 @@ public final class TestPlots {
         });
     }
 
-    private static void inscriber(PlotBuilder plot) {
+    public static void inscriber(PlotBuilder plot) {
         processorInscriber(plot.offset(0, 1, 2), AEItems.LOGIC_PROCESSOR_PRESS, Items.GOLD_INGOT);
         processorInscriber(plot.offset(5, 1, 2), AEItems.ENGINEERING_PROCESSOR_PRESS, Items.DIAMOND);
         processorInscriber(plot.offset(10, 1, 2), AEItems.CALCULATION_PROCESSOR_PRESS, AEItems.CERTUS_QUARTZ_CRYSTAL);
     }
 
-    private static void processorInscriber(PlotBuilder plot, ItemLike processorPress, ItemLike processorMaterial) {
+    public static void processorInscriber(PlotBuilder plot, ItemLike processorPress, ItemLike processorMaterial) {
         // Set up the inscriber for the processor print
         plot.filledHopper("-1 3 0", Direction.DOWN, processorMaterial);
         plot.creativeEnergyCell("-1 2 1");
@@ -335,7 +339,7 @@ public final class TestPlots {
      * Reproduces an issue with Fabric Transactions found in
      * https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5798
      */
-    private static void importAndExportInOneTick(PlotBuilder plot) {
+    public static void importAndExportInOneTick(PlotBuilder plot) {
         plot.creativeEnergyCell("-1 0 0");
         plot.chest("0 0 1"); // Output Chest
         plot.cable("0 0 0")
@@ -369,7 +373,7 @@ public final class TestPlots {
     /**
      * Export from a chest->storagebus->exportbus->chest to test that it interacts correctly with Fabric transactions.
      */
-    private static void exportFromStorageBus(PlotBuilder plot) {
+    public static void exportFromStorageBus(PlotBuilder plot) {
         plot.creativeEnergyCell("1 0 0");
         plot.cable("0 0 0")
                 .part(Direction.SOUTH, AEParts.EXPORT_BUS, part -> {
@@ -390,7 +394,7 @@ public final class TestPlots {
     /**
      * Import into a storage bus, which tests that the external interaction is correct w.r.t. Fabric transactions.
      */
-    private static void importIntoStorageBus(PlotBuilder plot) {
+    public static void importIntoStorageBus(PlotBuilder plot) {
         plot.creativeEnergyCell("1 0 0");
         plot.cable("0 0 0")
                 .part(Direction.NORTH, AEParts.IMPORT_BUS)
@@ -412,44 +416,93 @@ public final class TestPlots {
     /**
      * Import on Pulse (transition low->high)
      */
-    private static void importOnPulse(PlotBuilder plot) {
-        plot.creativeEnergyCell("1 0 0");
-        plot.cable("0 0 0")
-                .part(Direction.NORTH, AEParts.IMPORT_BUS, bus -> {
+    public static void importOnPulse(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        var inputPos = origin.south();
+
+        plot.creativeEnergyCell(origin.west().west());
+        plot.storageDrive(origin.west());
+        plot.cable(origin)
+                .part(Direction.SOUTH, AEParts.IMPORT_BUS, bus -> {
                     bus.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
                     bus.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.SIGNAL_PULSE);
                 })
-                .part(Direction.SOUTH, AEParts.STORAGE_BUS);
-        plot.chest("0 0 1"); // Output Chest
-        plot.chest("0 0 -1", new ItemStack(Items.OAK_PLANKS)); // Import Chest
-
-        var inputPos = new BlockPos(0, 0, -1);
-        var outputPos = new BlockPos(0, 0, 1);
+                .part(Direction.NORTH, AEParts.TERMINAL);
+        plot.chest(inputPos, new ItemStack(Items.OAK_PLANKS)); // Import Chest
+        plot.block(origin.east(), Blocks.STONE);
+        var leverPos = plot.leverOn(origin.east(), Direction.NORTH);
 
         plot.test(helper -> {
             // Import bus should import nothing on its own
             var inputChest = (ChestBlockEntity) helper.getBlockEntity(inputPos);
+            var grid = helper.getGrid(origin);
+            Runnable assertNothingMoved = () -> {
+                helper.assertContainerContains(inputPos, Items.OAK_PLANKS);
+            };
+            Runnable assertMoved = () -> {
+                helper.assertContainerEmpty(inputPos);
+                helper.assertContains(grid, Items.OAK_PLANKS);
+            };
+            Runnable reset = () -> {
+                inputChest.clearContent();
+                helper.clearStorage(grid);
+                inputChest.setItem(0, new ItemStack(Items.OAK_PLANKS));
+            };
+            Runnable toggleSignal = () -> {
+                helper.pullLever(leverPos);
+            };
 
-            helper.assertContainerContains(inputPos, Items.OAK_PLANKS);
-            helper.assertContainerEmpty(outputPos);
-
-            // Place a redstone block to trigger the redstone pulse
-            helper.setBlock(0, 1, 0, Blocks.REDSTONE_BLOCK);
-            helper.assertContainerEmpty(inputPos);
-            helper.assertContainerContains(outputPos, Items.OAK_PLANKS);
-
-            // The pulse can occur multiple times per tick
-            inputChest.setItem(0, new ItemStack(Items.ACACIA_PLANKS));
-            helper.destroyBlock(new BlockPos(0, 1, 0));
-            // But it should not trigger on the 1->0 transition
-            helper.assertContainerContains(inputPos, Items.ACACIA_PLANKS);
-
-            // Set it to redstone again to trigger the pulse
-            helper.setBlock(0, 1, 0, Blocks.REDSTONE_BLOCK);
-            helper.assertContainerEmpty(inputPos);
-            helper.assertContainerContains(outputPos, Items.ACACIA_PLANKS);
-
-            helper.succeed();
-        }).setupTicks(100);
+            helper.startSequence()
+                    .thenExecuteAfter(1, assertNothingMoved)
+                    .thenExecute(toggleSignal)
+                    // The items should only be moved on the subsequent tick
+                    .thenExecute(assertNothingMoved)
+                    .thenExecuteAfter(1, assertMoved)
+                    .thenExecute(reset)
+                    // The transition from on->off should NOT count as a pulse,
+                    // and it should not move anything on its own afterwards
+                    .thenExecute(toggleSignal)
+                    .thenExecuteFor(30, assertNothingMoved)
+                    .thenSucceed();
+        });
     }
+
+    /**
+     * Import on Pulse (transition low->high), combined with the storage bus attached to the storage we are importing
+     * from. This is a regression test for Fabric, where the Storage Bus has to open a Transaction for
+     * getAvailableStacks, and the simulated extraction causes a neighbor update, triggering the import bus.
+     */
+    public static void importOnPulseTransactionCrash(PlotBuilder plot) {
+        plot.creativeEnergyCell("1 0 0");
+        plot.chest("0 0 -1", new ItemStack(Items.OAK_PLANKS)); // Import Chest
+        plot.chest("0 0 1"); // Output Chest
+        plot.block("0 1 0", Blocks.REDSTONE_BLOCK);
+        plot.cable("-1 0 0");
+        // This storage bus triggers a neighbor update on the input chest when it scans its inventory
+        plot.cable("-1 0 -1")
+                .part(Direction.EAST, AEParts.STORAGE_BUS, storageBus -> {
+                    storageBus.getConfigManager().putSetting(Settings.ACCESS, AccessRestriction.READ);
+                });
+        plot.cable("0 0 0")
+                .part(Direction.SOUTH, AEParts.STORAGE_BUS);
+
+        // The planks should never move over to the output chest since there's never an actual pulse
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenExecuteAfter(1, () -> {
+                        var pos = helper.absolutePos(BlockPos.ZERO);
+                        var importBus = (ImportBusPart) PartHelper.setPart(helper.getLevel(), pos, Direction.NORTH,
+                                null, AEParts.IMPORT_BUS.stack());
+                        importBus.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
+                        importBus.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED,
+                                RedstoneMode.SIGNAL_PULSE);
+                    })
+                    .thenExecuteFor(100, () -> {
+                        // Force an inventory rescan
+                        helper.assertContainerEmpty(new BlockPos(0, 0, 1));
+                    })
+                    .thenSucceed();
+        }).setupTicks(20).maxTicks(150);
+    }
+
 }

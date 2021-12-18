@@ -414,7 +414,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean hasRedstone(final Direction side) {
+    public boolean hasRedstone() {
         if (this.hasRedstone == YesNo.UNDECIDED) {
             this.updateRedstone();
         }
@@ -636,8 +636,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         this.hasRedstone = YesNo.UNDECIDED;
 
-        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
-            final IPart part = this.getPart(s);
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = this.getPart(s);
             if (part != null) {
                 part.onNeighborChanged(level, pos, neighbor);
             }

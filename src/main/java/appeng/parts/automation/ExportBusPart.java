@@ -42,7 +42,6 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
@@ -113,11 +112,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     }
 
     @Override
-    protected TickRateModulation doBusWork(IGrid grid) {
-        if (!canDoBusWork()) {
-            return TickRateModulation.SLOWER;
-        }
-
+    protected boolean doBusWork(IGrid grid) {
         var storageService = grid.getStorageService();
         var cg = grid.getCraftingService();
         var fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
@@ -175,7 +170,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
             this.updateSchedulingMode(schedulingMode, x);
         }
 
-        return context.hasDoneWork() ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+        return context.hasDoneWork();
     }
 
     private void attemptCrafting(StackTransferContext context, ICraftingService cg, int slotToExport, AEKey what) {

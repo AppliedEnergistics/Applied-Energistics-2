@@ -151,7 +151,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.Charger.getMin(), TickRates.Charger.getMin(), false, true);
+        return new TickingRequest(TickRates.Charger, false, true);
     }
 
     @Override

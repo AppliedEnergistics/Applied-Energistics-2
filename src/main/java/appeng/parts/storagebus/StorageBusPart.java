@@ -104,7 +104,6 @@ public class StorageBusPart extends UpgradeablePart
             new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_has_channel"));
 
     protected final IActionSource source;
-    private final TickRates tickRates;
     private final ConfigInventory config = ConfigInventory.configTypes(63, this::onConfigurationChanged);
     /**
      * This is the virtual inventory this storage bus exposes to the network it belongs to. To avoid continuous
@@ -129,7 +128,6 @@ public class StorageBusPart extends UpgradeablePart
     public StorageBusPart(ItemStack is) {
         super(is);
         this.adjacentStorageAccessor = new PartAdjacentApi<>(this, IStorageMonitorableAccessor.SIDED);
-        this.tickRates = TickRates.StorageBus;
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
@@ -195,7 +193,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public final boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public final boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
             openConfigMenu(player);
         }
@@ -252,12 +250,12 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public final TickingRequest getTickingRequest(final IGridNode node) {
-        return new TickingRequest(tickRates.getMin(), tickRates.getMax(), false, true);
+    public final TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(TickRates.StorageBus, false, true);
     }
 
     @Override
-    public final TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+    public final TickRateModulation tickingRequest(IGridNode node, final int ticksSinceLastCall) {
         if (this.shouldUpdateTarget) {
             this.updateTarget(false);
             this.shouldUpdateTarget = false;

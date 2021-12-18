@@ -246,8 +246,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean hasRedstone(final Direction side) {
-        return this.getCableBus().hasRedstone(side);
+    public boolean hasRedstone() {
+        return this.getCableBus().hasRedstone();
     }
 
     @Override

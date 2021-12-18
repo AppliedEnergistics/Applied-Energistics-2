@@ -141,7 +141,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
             this.eatFuel();
         }
 
-        return new TickingRequest(TickRates.VibrationChamber.getMin(), TickRates.VibrationChamber.getMax(),
+        return new TickingRequest(TickRates.VibrationChamber,
                 this.getBurnTime() <= 0, false);
     }
 

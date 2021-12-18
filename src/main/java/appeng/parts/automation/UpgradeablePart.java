@@ -73,30 +73,12 @@ public abstract class UpgradeablePart extends BasicStatePart
 
     protected boolean isSleeping() {
         if (upgrades.getInstalledUpgrades(Upgrades.REDSTONE) > 0) {
-            switch (this.getRSMode()) {
-                case IGNORE:
-                    return false;
-
-                case HIGH_SIGNAL:
-                    if (this.getHost().hasRedstone(this.getSide())) {
-                        return false;
-                    }
-
-                    break;
-
-                case LOW_SIGNAL:
-                    if (!this.getHost().hasRedstone(this.getSide())) {
-                        return false;
-                    }
-
-                    break;
-
-                case SIGNAL_PULSE:
-                default:
-                    break;
-            }
-
-            return true;
+            return switch (this.getRSMode()) {
+                case IGNORE -> false;
+                case HIGH_SIGNAL -> !this.getHost().hasRedstone();
+                case LOW_SIGNAL -> this.getHost().hasRedstone();
+                case SIGNAL_PULSE -> true;
+            };
         }
 
         return false;

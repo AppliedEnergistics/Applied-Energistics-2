@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
@@ -37,11 +36,7 @@ public class ImportBusPart extends IOBusPart {
     }
 
     @Override
-    protected TickRateModulation doBusWork(IGrid grid) {
-        if (!this.canDoBusWork()) {
-            return TickRateModulation.IDLE;
-        }
-
+    protected boolean doBusWork(IGrid grid) {
         if (importStrategy == null) {
             var self = this.getHost().getBlockEntity();
             var fromPos = self.getBlockPos().relative(this.getSide());
@@ -58,7 +53,7 @@ public class ImportBusPart extends IOBusPart {
 
         importStrategy.transfer(context);
 
-        return context.hasDoneWork() ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+        return context.hasDoneWork();
     }
 
     @Override

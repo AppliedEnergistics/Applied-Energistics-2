@@ -172,7 +172,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     @Override
     public TickingRequest getTickingRequest(final IGridNode node) {
-        return new TickingRequest(TickRates.LightTunnel.getMin(), TickRates.LightTunnel.getMax(), false, false);
+        return new TickingRequest(TickRates.LightTunnel, false, false);
     }
 
     @Override

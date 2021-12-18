@@ -127,9 +127,9 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
             tt.setLastTick(this.currentTick);
 
             var newRate = switch (mod) {
-                case URGENT -> tt.getRequest().minTickRate;
+                case URGENT -> tt.getRequest().minTickRate();
                 case FASTER -> tt.getCurrentRate() - TICK_RATE_SPEED_UP_FACTOR;
-                case IDLE, SLEEP -> tt.getRequest().maxTickRate;
+                case IDLE, SLEEP -> tt.getRequest().maxTickRate();
                 case SLOWER -> tt.getCurrentRate() + TICK_RATE_SLOW_DOWN_FACTOR;
                 case SAME -> tt.getCurrentRate();
             };
@@ -171,11 +171,11 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
             var tt = new TickTracker(tr, gridNode, tickable, this.currentTick);
 
-            if (tr.canBeAlerted) {
+            if (tr.canBeAlerted()) {
                 this.alertable.put(gridNode, tt);
             }
 
-            if (tr.isSleeping) {
+            if (tr.isSleeping()) {
                 this.sleeping.put(gridNode, tt);
             } else {
                 this.awake.put(gridNode, tt);
@@ -196,6 +196,9 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
         var tt = this.alertable.get(node);
         if (tt == null) {
+            if (this.sleeping.containsKey(node) || this.awake.containsKey(node)) {
+                throw new IllegalArgumentException("Trying to alert a node that isn't alertable");
+            }
             return false;
         }
 
@@ -224,7 +227,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
         var tracker = awake.remove(node);
         if (tracker != null) {
-            tracker.setCurrentRate(tracker.getRequest().maxTickRate);
+            tracker.setCurrentRate(tracker.getRequest().maxTickRate());
             sleeping.put(node, tracker);
             removeFromQueue(node, tracker);
             return true;

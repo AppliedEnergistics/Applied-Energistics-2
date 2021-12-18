@@ -268,7 +268,7 @@ public class GridNodeTickingTest extends AbstractGridNodeTest {
         assertThat(status.sleeping()).isTrue();
         assertThat(status.queued()).isFalse();
         var ticker = node.getService(IGridTickable.class);
-        assertThat(status.currentRate()).isEqualTo(ticker.getTickingRequest(node).maxTickRate);
+        assertThat(status.currentRate()).isEqualTo(ticker.getTickingRequest(node).maxTickRate());
         return status;
     }
 

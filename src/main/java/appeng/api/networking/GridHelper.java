@@ -33,7 +33,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
@@ -106,7 +105,7 @@ public final class GridHelper {
     @Nullable
     public static IInWorldGridNodeHost getNodeHost(LevelAccessor level, BlockPos pos) {
         if (level.hasChunkAt(pos)) {
-            final BlockEntity te = level.getBlockEntity(pos);
+            var te = level.getBlockEntity(pos);
             if (te instanceof IInWorldGridNodeHost host) {
                 return host;
             }

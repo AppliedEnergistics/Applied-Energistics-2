@@ -91,7 +91,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     protected boolean getIntention() {
-        return this.getHost().hasRedstone(this.getSide());
+        return this.getHost().hasRedstone();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class ToggleBusPart extends BasicStatePart {
     @Override
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         final boolean oldHasRedstone = this.hasRedstone;
-        this.hasRedstone = this.getHost().hasRedstone(this.getSide());
+        this.hasRedstone = this.getHost().hasRedstone();
 
         if (this.hasRedstone != oldHasRedstone) {
             this.updateInternalState();
@@ -132,7 +132,7 @@ public class ToggleBusPart extends BasicStatePart {
     public void addToWorld() {
         super.addToWorld();
         this.getOuterNode().create(getLevel(), getBlockEntity().getBlockPos());
-        this.hasRedstone = this.getHost().hasRedstone(this.getSide());
+        this.hasRedstone = this.getHost().hasRedstone();
         this.updateInternalState();
     }
 

@@ -161,13 +161,11 @@ public interface IPartHost extends ICustomCableConnection {
     void partChanged();
 
     /**
-     * get the redstone state of host on this side, this value is cached internally.
-     *
-     * @param side side of part
+     * Check if the part host currently has redstone power greater than 0. This value is cached internally.
      *
      * @return true of the part host is receiving redstone from an external source.
      */
-    boolean hasRedstone(@Nullable Direction side);
+    boolean hasRedstone();
 
     /**
      * returns false if this block contains any parts or facades, true other wise.
