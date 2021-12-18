@@ -227,7 +227,7 @@ public class PartPlacement {
                 return InteractionResult.FAIL;
             }
 
-            final var partAdded = host.addPart(held, side, player, hand);
+            final var partAdded = host.addPart(held, side, player);
             if (partAdded) {
                 BlockState blockState = level.getBlockState(pos);
                 var ss = multiPart.block().getSoundType(blockState);

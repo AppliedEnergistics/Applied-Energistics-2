@@ -25,7 +25,6 @@ import java.util.List;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -128,9 +127,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final Direction side) {
-        super.onPlacement(player, hand, held, side);
+    public void onPlacement(final Player player, final ItemStack partStack) {
+        super.onPlacement(player, partStack);
         this.outerNode.setOwningPlayer(player);
     }
 

@@ -24,27 +24,26 @@ public class GameTestPlotAdapter {
         var result = new ArrayList<TestFunction>();
 
         for (var plot : TestPlots.createPlots()) {
-            // For each plot, create a BEFORE/AFTER batch function
-            var batchName = plot.getId().getPath();
-
-            for (var test : plot.getTests()) {
-                result.add(new TestFunction(
-                        batchName,
-                        test.name(),
-                        plot.getId().toString(),
-                        Rotation.NONE,
-                        50,
-                        // Setup time needs to take the time needed to boot the grid into account
-                        21,
-                        true,
-                        1,
-                        1,
-                        gameTestHelper -> {
-                            test.assertions().accept(new PlotTestHelper(
-                                    getPlotTranslation(plot.getBounds()),
-                                    gameTestHelper.testInfo));
-                        }));
+            var test = plot.getTest();
+            if (test == null) {
+                continue;
             }
+
+            result.add(new TestFunction(
+                    "ae2",
+                    plot.getId().toString(),
+                    plot.getId().toString(),
+                    Rotation.NONE,
+                    test.maxTicks,
+                    test.setupTicks,
+                    true,
+                    1,
+                    1,
+                    gameTestHelper -> {
+                        test.getTestFunction().accept(new PlotTestHelper(
+                                getPlotTranslation(plot.getBounds()),
+                                gameTestHelper.testInfo));
+                    }));
         }
 
         return result;

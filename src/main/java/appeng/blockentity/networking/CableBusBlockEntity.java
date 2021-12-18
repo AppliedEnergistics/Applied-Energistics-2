@@ -195,9 +195,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean addPart(final ItemStack is, final Direction side, final Player player,
-            final InteractionHand hand) {
-        return this.getCableBus().addPart(is, side, player, hand);
+    public boolean addPart(ItemStack is, Direction side, Player player) {
+        return this.getCableBus().addPart(is, side, player);
     }
 
     @Override

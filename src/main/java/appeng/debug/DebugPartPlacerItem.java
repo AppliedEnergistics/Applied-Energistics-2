@@ -108,12 +108,12 @@ public class DebugPartPlacerItem extends AEBaseItem implements AEToolItem {
                 continue;
             }
 
-            if (!partHost.addPart(cable.getItemStack(PartItemStack.PICK), null, player, null)) {
+            if (!partHost.addPart(cable.getItemStack(PartItemStack.PICK), null, player)) {
                 continue;
             }
             for (Direction dir : perpendicularFaces) {
                 ItemStack itemStack = new ItemStack(item, 1);
-                partHost.addPart(itemStack, dir, player, null);
+                partHost.addPart(itemStack, dir, player);
             }
         }
 

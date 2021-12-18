@@ -172,6 +172,7 @@ loom {
     runs {
         client {
             programArgs "--username", "AE2Dev"
+            property "appeng.tests", "true"
         }
         datagen {
             client()
@@ -185,15 +186,9 @@ loom {
         gametest {
             server()
             name "Game Test"
+            property "appeng.tests", "true"
             vmArg "-Dfabric-api.gametest"
-            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
             runDir "build/gametest"
-            source sourceSets.test
-        }
-        // Use to debug tests
-        gametestClient {
-            client()
-            name "Game Test Client"
             source sourceSets.test
         }
     }

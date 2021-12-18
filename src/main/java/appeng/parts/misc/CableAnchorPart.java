@@ -197,8 +197,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final Direction side) {
+    public void onPlacement(final Player player, final ItemStack partStack) {
 
     }
 

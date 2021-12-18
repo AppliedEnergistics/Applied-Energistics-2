@@ -24,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -154,9 +153,8 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final Direction side) {
-        super.onPlacement(player, hand, held, side);
+    public void onPlacement(final Player player, final ItemStack partStack) {
+        super.onPlacement(player, partStack);
         this.getOuterNode().setOwningPlayer(player);
     }
 

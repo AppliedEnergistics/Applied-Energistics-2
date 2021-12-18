@@ -371,8 +371,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final Direction side) {
+    public void onPlacement(Player player, ItemStack partStack) {
         this.mainNode.setOwningPlayer(player);
     }
 

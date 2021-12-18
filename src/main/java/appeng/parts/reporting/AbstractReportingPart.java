@@ -174,12 +174,11 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public final void onPlacement(final Player player, final InteractionHand hand, final ItemStack held,
-            final Direction side) {
-        super.onPlacement(player, hand, held, side);
+    public final void onPlacement(final Player player, final ItemStack partStack) {
+        super.onPlacement(player, partStack);
 
         final byte rotation = (byte) (Mth.floor(player.getYRot() * 4F / 360F + 2.5D) & 3);
-        if (side == Direction.UP || side == Direction.DOWN) {
+        if (getSide() == Direction.UP || getSide() == Direction.DOWN) {
             this.spin = rotation;
         }
     }

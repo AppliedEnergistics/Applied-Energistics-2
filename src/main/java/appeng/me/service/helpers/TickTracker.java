@@ -23,6 +23,7 @@ import java.util.LongSummaryStatistics;
 import javax.annotation.Nonnull;
 
 import net.minecraft.CrashReportCategory;
+import net.minecraft.util.Mth;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -38,7 +39,7 @@ public class TickTracker implements Comparable<TickTracker> {
     private long lastTick;
     private int currentRate;
 
-    public TickTracker(final TickingRequest req, final IGridNode node, final IGridTickable gt, final long currentTick) {
+    public TickTracker(TickingRequest req, IGridNode node, IGridTickable gt, long currentTick) {
         this.request = req;
         this.gt = gt;
         this.node = node;
@@ -79,8 +80,11 @@ public class TickTracker implements Comparable<TickTracker> {
     }
 
     public void setCurrentRate(final int currentRate) {
-        this.currentRate = Math.min(this.getRequest().maxTickRate,
-                Math.max(this.getRequest().minTickRate, currentRate));
+        this.currentRate = Mth.clamp(currentRate, request.minTickRate, request.maxTickRate);
+    }
+
+    public void setTickOnNextTick() {
+        this.currentRate = 0;
     }
 
     public long getNextTick() {

@@ -77,7 +77,7 @@ public interface IPartHost extends ICustomCableConnection {
      * @param owner with owning player
      * @return If the part could be placed.
      */
-    boolean addPart(ItemStack is, @Nullable Direction side, @Nullable Player owner, @Nullable InteractionHand hand);
+    boolean addPart(ItemStack is, @Nullable Direction side, @Nullable Player owner);
 
     /**
      * Replace an existing part on the specific side with a new one. Returns false if it failed to be replaced.

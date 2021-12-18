@@ -55,7 +55,7 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
             return InteractionResult.PASS;
         }
 
-        return PartHelper.placeBus(held, context.getClickedPos(), context.getClickedFace(),
+        return PartHelper.usePartItem(held, context.getClickedPos(), context.getClickedFace(),
                 player,
                 context.getHand(), context.getLevel());
     }

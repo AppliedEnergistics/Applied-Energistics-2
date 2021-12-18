@@ -11,7 +11,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -95,7 +94,7 @@ class Scene {
         for (var entry : cables.entrySet()) {
             var pos = entry.getKey();
             level.getBlockEntity(pos, AEBlockEntities.CABLE_BUS).ifPresent(cableBus -> {
-                cableBus.addPart(new ItemStack(entry.getValue()), null, null, InteractionHand.MAIN_HAND);
+                cableBus.addPart(new ItemStack(entry.getValue()), null, null);
             });
         }
 
