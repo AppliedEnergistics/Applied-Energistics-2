@@ -188,7 +188,6 @@ loom {
             name "Game Test"
             property "appeng.tests", "true"
             vmArg "-Dfabric-api.gametest"
-            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
             runDir "build/gametest"
             source sourceSets.test
         }

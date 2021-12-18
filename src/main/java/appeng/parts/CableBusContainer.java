@@ -424,15 +424,15 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     public boolean isEmpty() {
-        final IFacadeContainer fc = this.getFacadeContainer();
-        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
-            final IPart part = this.getPart(s);
+        var fc = this.getFacadeContainer();
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = this.getPart(s);
             if (part != null) {
                 return false;
             }
 
             if (s != null) {
-                final IFacadePart fp = fc.getFacade(s);
+                var fp = fc.getFacade(s);
                 if (fp != null) {
                     return false;
                 }
@@ -457,8 +457,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     private void updateRedstone() {
-        final BlockEntity te = this.getBlockEntity();
-        this.hasRedstone = te.getLevel().getBestNeighborSignal(te.getBlockPos()) != 0 ? YesNo.YES : YesNo.NO;
+        var te = this.getBlockEntity();
+        this.hasRedstone = te.getLevel().hasNeighborSignal(te.getBlockPos()) ? YesNo.YES : YesNo.NO;
     }
 
     private void updateDynamicRender() {

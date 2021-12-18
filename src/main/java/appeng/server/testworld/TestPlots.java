@@ -19,6 +19,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
 
@@ -53,6 +54,7 @@ public final class TestPlots {
             .put(AppEng.makeId("importandexportinonetick"), TestPlots::importAndExportInOneTick)
             .put(AppEng.makeId("exportfromstoragebus"), TestPlots::exportFromStorageBus)
             .put(AppEng.makeId("importintostoragebus"), TestPlots::importIntoStorageBus)
+            .put(AppEng.makeId("importonpulse"), TestPlots::importOnPulse)
             .build();
 
     private TestPlots() {
@@ -401,6 +403,53 @@ public final class TestPlots {
                 helper.assertContainerContains(new BlockPos(0, 0, 1), Items.OAK_PLANKS);
                 helper.assertContainerEmpty(new BlockPos(0, 0, -1));
             });
+            helper.startSequence()
+                    .thenIdle(10)
+                    .thenSucceed();
         });
+    }
+
+    /**
+     * Import on Pulse (transition low->high)
+     */
+    private static void importOnPulse(PlotBuilder plot) {
+        plot.creativeEnergyCell("1 0 0");
+        plot.cable("0 0 0")
+                .part(Direction.NORTH, AEParts.IMPORT_BUS, bus -> {
+                    bus.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
+                    bus.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.SIGNAL_PULSE);
+                })
+                .part(Direction.SOUTH, AEParts.STORAGE_BUS);
+        plot.chest("0 0 1"); // Output Chest
+        plot.chest("0 0 -1", new ItemStack(Items.OAK_PLANKS)); // Import Chest
+
+        var inputPos = new BlockPos(0, 0, -1);
+        var outputPos = new BlockPos(0, 0, 1);
+
+        plot.test(helper -> {
+            // Import bus should import nothing on its own
+            var inputChest = (ChestBlockEntity) helper.getBlockEntity(inputPos);
+
+            helper.assertContainerContains(inputPos, Items.OAK_PLANKS);
+            helper.assertContainerEmpty(outputPos);
+
+            // Place a redstone block to trigger the redstone pulse
+            helper.setBlock(0, 1, 0, Blocks.REDSTONE_BLOCK);
+            helper.assertContainerEmpty(inputPos);
+            helper.assertContainerContains(outputPos, Items.OAK_PLANKS);
+
+            // The pulse can occur multiple times per tick
+            inputChest.setItem(0, new ItemStack(Items.ACACIA_PLANKS));
+            helper.destroyBlock(new BlockPos(0, 1, 0));
+            // But it should not trigger on the 1->0 transition
+            helper.assertContainerContains(inputPos, Items.ACACIA_PLANKS);
+
+            // Set it to redstone again to trigger the pulse
+            helper.setBlock(0, 1, 0, Blocks.REDSTONE_BLOCK);
+            helper.assertContainerEmpty(inputPos);
+            helper.assertContainerContains(outputPos, Items.ACACIA_PLANKS);
+
+            helper.succeed();
+        }).setupTicks(100);
     }
 }

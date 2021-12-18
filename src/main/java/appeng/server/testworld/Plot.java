@@ -19,7 +19,7 @@ class Plot implements PlotBuilder {
 
     private final List<BuildAction> buildActions = new ArrayList<>();
 
-    private Consumer<PlotTestHelper> test;
+    private Test test;
 
     public BoundingBox getBounds() {
         return BoundingBox.encapsulatingBoxes(buildActions.stream().map(BuildAction::getBoundingBox).toList())
@@ -74,12 +74,13 @@ class Plot implements PlotBuilder {
         }
     }
 
-    public Consumer<PlotTestHelper> getTest() {
+    public Test getTest() {
         return test;
     }
 
     @Override
-    public void test(Consumer<PlotTestHelper> test) {
-        this.test = test;
+    public Test test(Consumer<PlotTestHelper> testFunction) {
+        this.test = new Test(testFunction);
+        return this.test;
     }
 }

@@ -30,7 +30,7 @@ class TransformingPlotBuilder implements PlotBuilder {
     }
 
     @Override
-    public void test(Consumer<PlotTestHelper> assertion) {
-        plot.test(assertion);
+    public Test test(Consumer<PlotTestHelper> assertion) {
+        return plot.test(assertion);
     }
 }
