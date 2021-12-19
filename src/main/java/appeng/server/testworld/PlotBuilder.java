@@ -246,7 +246,14 @@ public interface PlotBuilder {
      * Runs a given callback once the grid has been initialized at all viable nodes in the given bounding box.
      */
     default void afterGridInitAt(String bb, BiConsumer<IGrid, IGridNode> consumer) {
-        addBuildAction(new PostGridInitAction(bb(bb), consumer));
+        addBuildAction(new PostGridInitAction(bb(bb), consumer, true));
+    }
+
+    /**
+     * Runs a given callback once the grid is available at all viable nodes in the given bounding box.
+     */
+    default void afterGridExistsAt(String bb, BiConsumer<IGrid, IGridNode> consumer) {
+        addBuildAction(new PostGridInitAction(bb(bb), consumer, false));
     }
 
     /**
