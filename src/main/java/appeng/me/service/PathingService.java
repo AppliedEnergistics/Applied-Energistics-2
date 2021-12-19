@@ -18,23 +18,38 @@
 
 package appeng.me.service;
 
-import java.util.*;
-
 import appeng.api.features.IPlayerRegistry;
-import appeng.api.networking.*;
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.GridHelper;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridMultiblock;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.Grid;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
-import appeng.me.pathfinding.*;
+import appeng.me.pathfinding.AdHocChannelUpdater;
+import appeng.api.networking.pathing.ChannelMode;
+import appeng.me.pathfinding.ControllerChannelUpdater;
+import appeng.me.pathfinding.ControllerValidator;
+import appeng.me.pathfinding.IPathItem;
+import appeng.me.pathfinding.PathSegment;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PathingService implements IPathingService, IGridServiceProvider {
 
@@ -48,8 +63,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     private final List<PathSegment> active = new ArrayList<>();
     private final Set<ControllerBlockEntity> controllers = new HashSet<>();
-    private final Set<IGridNode> requireChannels = new HashSet<>();
-    private final Set<IGridNode> blockDense = new HashSet<>();
+    private final Set<IGridNode> nodesNeedingChannels = new HashSet<>();
+    private final Set<IGridNode> cannotCarryCompressedNodes = new HashSet<>();
     private final Grid grid;
     private int channelsInUse = 0;
     private int channelsByBlocks = 0;
@@ -61,7 +76,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     private ControllerState controllerState = ControllerState.NO_CONTROLLER;
     private int ticksUntilReady = 0;
     private int lastChannels = 0;
-    private HashSet<IPathItem> semiOpen = new HashSet<>();
+    private ChannelMode channelMode = AEConfig.instance().getChannelMode();
 
     public PathingService(final IGrid g) {
         this.grid = (Grid) g;
@@ -84,15 +99,14 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             this.setChannelsInUse(0);
 
             if (this.controllerState == ControllerState.NO_CONTROLLER) {
-                final int requiredChannels = this.calculateRequiredChannels();
+                var requiredChannels = this.calculateAdHocChannels();
                 int used = requiredChannels;
-                if (requiredChannels > 8) {
+                if (requiredChannels > channelMode.getAdHocNetworkChannels()) {
                     used = 0;
                 }
-
-                final int nodes = this.grid.size();
                 this.setChannelsInUse(used);
 
+                var nodes = this.grid.size();
                 this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
                 this.setChannelsByBlocks(nodes * used);
                 this.setChannelPowerUsage(this.getChannelsByBlocks() / 128.0);
@@ -105,7 +119,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 var nodes = this.grid.size();
                 this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
                 var closedList = new HashSet<IPathItem>();
-                this.semiOpen = new HashSet<>();
+                var semiOpen = new HashSet<IPathItem>();
 
                 for (var node : this.grid.getMachineNodes(ControllerBlockEntity.class)) {
                     closedList.add((IPathItem) node);
@@ -116,7 +130,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                             closedList.add(gc);
                             open.add(gc);
                             gc.setControllerRoute((GridNode) node, true);
-                            this.active.add(new PathSegment(this, open, this.semiOpen, closedList));
+                            this.active.add(new PathSegment(this, open, semiOpen, closedList));
                         }
                     }
                 }
@@ -171,11 +185,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         }
 
         if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
-            this.requireChannels.remove(gridNode);
+            this.nodesNeedingChannels.remove(gridNode);
         }
 
         if (gridNode.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
-            this.blockDense.remove(gridNode);
+            this.cannotCarryCompressedNodes.remove(gridNode);
         }
 
         this.repath();
@@ -189,11 +203,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         }
 
         if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
-            this.requireChannels.add(gridNode);
+            this.nodesNeedingChannels.add(gridNode);
         }
 
         if (gridNode.hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)) {
-            this.blockDense.add(gridNode);
+            this.cannotCarryCompressedNodes.add(gridNode);
         }
 
         this.repath();
@@ -210,31 +224,35 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         }
     }
 
-    private int calculateRequiredChannels() {
-        this.semiOpen.clear();
+    private int calculateAdHocChannels() {
+        var ignore = new HashSet<IGridNode>();
 
-        int depth = 0;
-        for (final IGridNode node : this.requireChannels) {
-            if (!this.semiOpen.contains(node)) {
-                if (node.hasFlag(GridFlags.COMPRESSED_CHANNEL) && !this.blockDense.isEmpty()) {
-                    return 9;
+        int channels = 0;
+        for (var node : this.nodesNeedingChannels) {
+            if (!ignore.contains(node)) {
+                // Prevent ad-hoc networks from being connected to the outside and inside node of P2P tunnels at the same time
+                // this effectively prevents the nesting of P2P-tunnels in ad-hoc networks.
+                if (node.hasFlag(GridFlags.COMPRESSED_CHANNEL) && !this.cannotCarryCompressedNodes.isEmpty()) {
+                    return channelMode.getAdHocNetworkChannels() + 1;
                 }
 
-                depth++;
+                channels++;
 
+                // Multiblocks only require a single channel. Add the remainder of the multi-block to the ignore-list,
+                // to make this method skip them for channel calculation.
                 if (node.hasFlag(GridFlags.MULTIBLOCK)) {
                     var multiblock = node.getService(IGridMultiblock.class);
                     if (multiblock != null) {
                         var it = multiblock.getMultiblockNodes();
                         while (it.hasNext()) {
-                            this.semiOpen.add((IPathItem) it.next());
+                            ignore.add(it.next());
                         }
                     }
                 }
             }
         }
 
-        return depth;
+        return channels;
     }
 
     private void achievementPost() {
@@ -244,7 +262,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             final IAdvancementTrigger currentBracket = this.getAchievementBracket(this.getChannelsInUse());
             final IAdvancementTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
             if (currentBracket != lastBracket && currentBracket != null) {
-                for (var n : this.requireChannels) {
+                for (var n : this.nodesNeedingChannels) {
                     var player = IPlayerRegistry.getConnected(server, n.getOwningPlayerId());
                     if (player != null) {
                         currentBracket.trigger(player);
@@ -275,9 +293,9 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         final IGridNode gridNode = ev.node;
 
         if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
-            this.requireChannels.add(gridNode);
+            this.nodesNeedingChannels.add(gridNode);
         } else {
-            this.requireChannels.remove(gridNode);
+            this.nodesNeedingChannels.remove(gridNode);
         }
 
         this.repath();
@@ -295,6 +313,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     @Override
     public void repath() {
+        this.channelMode = AEConfig.instance().getChannelMode();
+
         // clean up...
         this.active.clear();
 
@@ -324,5 +344,9 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     public void setChannelsInUse(final int channelsInUse) {
         this.channelsInUse = channelsInUse;
+    }
+
+    public ChannelMode getChannelMode() {
+        return channelMode;
     }
 }

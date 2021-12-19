@@ -22,6 +22,8 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
+import appeng.core.AEConfig;
+import appeng.me.GridNode;
 
 /**
  * Extended part that provides info about channel capacity and usage to probes like HWYLA and TheOneProbe.
@@ -35,7 +37,7 @@ public interface IUsedChannelProvider extends IPart {
         int howMany = 0;
         IGridNode node = this.getGridNode();
         if (node != null && node.isActive()) {
-            for (final IGridConnection gc : node.getConnections()) {
+            for (var gc : node.getConnections()) {
                 howMany = Math.max(gc.getUsedChannels(), howMany);
             }
         }
@@ -46,9 +48,9 @@ public interface IUsedChannelProvider extends IPart {
      * @return The number of channels that can be carried at most. Purely for informational purposes.
      */
     default int getMaxChannelsInfo() {
-        IGridNode node = this.getGridNode();
-        if (node != null) {
-            return node.hasFlag(GridFlags.DENSE_CAPACITY) ? 32 : 8;
+        var node = this.getGridNode();
+        if (node instanceof GridNode gridNode) {
+            return gridNode.getMaxChannels();
         }
         return 0;
     }
