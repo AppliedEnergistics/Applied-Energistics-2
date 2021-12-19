@@ -119,19 +119,19 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
         if (this.booting) {
             // Work on remaining pathfinding work
-            boolean needsMorePathfinding = false;
-            if (this.ongoingCalculation != null) { // can be null for ad-hoc or invalid controller state
-                needsMorePathfinding = !this.ongoingCalculation.isFinished();
-                this.ongoingCalculation.step();
+            if (ongoingCalculation != null) { // can be null for ad-hoc or invalid controller state
+                ongoingCalculation.step();
+                if (ongoingCalculation.isFinished()) {
+                    this.channelsByBlocks = ongoingCalculation.getChannelsByBlocks();
+                    this.channelsInUse = ongoingCalculation.getChannelsInUse();
+                    ongoingCalculation = null;
+                }
             }
 
             this.ticksUntilReady--;
 
             // Booting completes when both pathfinding completes, and the minimum boot time has elapsed
-            if (needsMorePathfinding && ticksUntilReady <= 0) {
-                this.channelsByBlocks = this.ongoingCalculation.getChannelsByBlocks();
-                this.channelsInUse = this.ongoingCalculation.getChannelsInUse();
-                this.ongoingCalculation = null;
+            if (ongoingCalculation == null && ticksUntilReady <= 0) {
                 if (this.controllerState == ControllerState.CONTROLLER_ONLINE) {
                     var controllerIterator = this.controllers.iterator();
                     if (controllerIterator.hasNext()) {
