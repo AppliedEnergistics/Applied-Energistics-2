@@ -583,9 +583,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             implements InsertionOnlyStorage<FluidVariant> {
         private GenericStack queuedInsert;
 
-        private record QueuedInsert(AEFluidKey what, long amount) {
-        }
-
         /**
          * If we accept fluids, simulate that we have an empty tank with 1 bucket capacity at all times.
          */
