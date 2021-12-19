@@ -2,12 +2,15 @@ package appeng.server.testworld;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +44,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.util.AEColor;
+import appeng.blockentity.storage.DriveBlockEntity;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -51,6 +56,7 @@ import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
 import appeng.parts.automation.ImportBusPart;
 import appeng.parts.crafting.PatternProviderPart;
+import appeng.util.CraftingRecipeUtil;
 
 public final class TestPlots {
     public static final Map<ResourceLocation, Consumer<PlotBuilder>> PLOT_FACTORIES = ImmutableMap
@@ -76,7 +82,11 @@ public final class TestPlots {
     private TestPlots() {
     }
 
-    public static ArrayList<Plot> createPlots() {
+    public static List<ResourceLocation> getPlotIds() {
+        return new ArrayList<>(PLOT_FACTORIES.keySet());
+    }
+
+    public static List<Plot> createPlots() {
         var plots = new ArrayList<Plot>();
         for (var entry : PLOT_FACTORIES.entrySet()) {
             var plot = new Plot(entry.getKey());
@@ -593,66 +603,96 @@ public final class TestPlots {
     }
 
     public static void maxChannelsAdHocTest(PlotBuilder plot) {
-        var random = new Random();
-
-        var recipeCounter = new AtomicInteger();
-
         plot.creativeEnergyCell("0 -1 0");
+        plot.block("[-3,3] -2 [-3,3]", AEBlocks.DRIVE);
         plot.cable("[-3,3] 0 [-3,3]", AEParts.SMART_DENSE_CABLE.stack(AEColor.TRANSPARENT));
         plot.cable("[-3,3] [1,64] [-3,2]")
                 .part(Direction.EAST, AEParts.TERMINAL)
                 .part(Direction.NORTH, AEParts.TERMINAL)
                 .part(Direction.WEST, AEParts.TERMINAL)
                 .part(Direction.WEST, AEParts.TERMINAL);
+        plot.cable("[-3,3] [1,64] 3")
+                .part(Direction.NORTH, AEParts.PATTERN_PROVIDER)
+                .part(Direction.SOUTH, AEParts.PATTERN_PROVIDER)
+                .part(Direction.EAST, AEParts.PATTERN_PROVIDER)
+                .part(Direction.WEST, AEParts.PATTERN_PROVIDER);
 
-        Consumer<PatternProviderPart> setupProvider = provider -> {
-            var patterns = provider.getDuality().getPatternInv();
+        plot.afterGridExistsAt("0 0 0", (grid, node) -> {
+            var patternProviders = grid.getMachines(PatternProviderPart.class).iterator();
+            PatternProviderPart current = patternProviders.next();
+            var craftingRecipes = node.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
 
-            var craftingRecipes = provider.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
+            Set<AEItemKey> neededIngredients = new HashSet<>();
+            Set<AEItemKey> providedResults = new HashSet<>();
 
-            for (int x = 0; x < 3; x++) {
-                var recipe = craftingRecipes.get(recipeCounter.incrementAndGet() % craftingRecipes.size());
+            for (var recipe : craftingRecipes) {
+                if (recipe.isSpecial()) {
+                    continue;
+                }
+
+                ItemStack craftingPattern;
                 try {
-                    var craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
+                    var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe).stream()
+                            .map(i -> {
+                                if (i.isEmpty()) {
+                                    return ItemStack.EMPTY;
+                                } else {
+                                    return i.getItems()[0];
+                                }
+                            }).toArray(ItemStack[]::new);
+                    craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
                             recipe,
-                            recipe.getIngredients().stream()
-                                    .map(i -> {
-                                        if (i.isEmpty()) {
-                                            return ItemStack.EMPTY;
-                                        } else {
-                                            return i.getItems()[0];
-                                        }
-                                    })
-                                    .toArray(ItemStack[]::new),
+                            ingredients,
                             recipe.getResultItem(),
                             false,
                             false);
-                    provider.getDuality().getPatternInv().addItems(craftingPattern);
-                } catch (Exception ignored) {
+
+                    for (ItemStack ingredient : ingredients) {
+                        var key = AEItemKey.of(ingredient);
+                        if (key != null) {
+                            neededIngredients.add(key);
+                        }
+                    }
+                    if (!recipe.getResultItem().isEmpty()) {
+                        providedResults.add(AEItemKey.of(recipe.getResultItem()));
+                    }
+                } catch (Exception e) {
+                    AELog.warn(e);
+                    continue;
+                }
+
+                if (!current.getDuality().getPatternInv().addItems(craftingPattern).isEmpty()) {
+                    if (!patternProviders.hasNext()) {
+                        break;
+                    }
+                    current = patternProviders.next();
+                    current.getDuality().getPatternInv().addItems(craftingPattern);
                 }
             }
 
-            for (int x = 0; x < 1; x++) {
-                var ins = new ArrayList<GenericStack>();
-                var insCount = 1 + random.nextInt(3);
-                for (var i = 0; i < insCount; i++) {
-                    var in = Registry.ITEM.getRandom(random);
-                    ins.add(new GenericStack(AEItemKey.of(in), 1 + random.nextInt(10)));
-                }
-                var out = new GenericStack(
-                        AEItemKey.of(Registry.ITEM.getRandom(random)),
-                        1 + random.nextInt(5));
+            // Add creative cells for anything that's not provided as a recipe result
+            var keysToAdd = Sets.difference(neededIngredients, providedResults).iterator();
+            drives: for (var drive : grid.getMachines(DriveBlockEntity.class)) {
 
-                patterns.addItems(PatternDetailsHelper.encodeProcessingPattern(
-                        ins.toArray(GenericStack[]::new),
-                        new GenericStack[] { out }));
+                var cellInv = drive.getInternalInventory();
+                for (int i = 0; i < cellInv.size(); i++) {
+                    var creativeCell = AEItems.ITEM_CELL_CREATIVE.stack();
+                    var configInv = AEItems.ITEM_CELL_CREATIVE.asItem().getConfigInventory(creativeCell);
+
+                    for (int j = 0; j < configInv.size(); j++) {
+                        if (!keysToAdd.hasNext()) {
+                            cellInv.addItems(creativeCell);
+                            break drives;
+                        }
+
+                        var keyToAdd = keysToAdd.next();
+                        configInv.setStack(j, new GenericStack(keyToAdd, 1));
+                    }
+                    cellInv.addItems(creativeCell);
+
+                }
             }
-        };
-        plot.cable("[-3,3] [1,64] 3")
-                .part(Direction.NORTH, AEParts.PATTERN_PROVIDER, setupProvider)
-                .part(Direction.SOUTH, AEParts.PATTERN_PROVIDER, setupProvider)
-                .part(Direction.EAST, AEParts.PATTERN_PROVIDER, setupProvider)
-                .part(Direction.WEST, AEParts.PATTERN_PROVIDER, setupProvider);
+        });
     }
 
 }

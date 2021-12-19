@@ -1,14 +1,20 @@
 package appeng.server.subcommands;
 
+import static net.minecraft.commands.Commands.literal;
+
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Stopwatch;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.GameRules;
@@ -16,6 +22,7 @@ import net.minecraft.world.level.levelgen.FlatLevelSource;
 
 import appeng.core.AELog;
 import appeng.server.ISubCommand;
+import appeng.server.testworld.TestPlots;
 import appeng.server.testworld.TestWorldGenerator;
 
 /**
@@ -24,7 +31,21 @@ import appeng.server.testworld.TestWorldGenerator;
  */
 public class SetupTestWorldCommand implements ISubCommand {
     @Override
+    public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        for (var plotId : TestPlots.getPlotIds()) {
+            builder.then(literal(plotId.toString()).executes(ctx -> {
+                setupTestWorld(ctx.getSource().getServer(), ctx.getSource(), plotId);
+                return 1;
+            }));
+        }
+    }
+
+    @Override
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx, CommandSourceStack sender) {
+        setupTestWorld(srv, sender, null);
+    }
+
+    private void setupTestWorld(MinecraftServer srv, CommandSourceStack sender, @Nullable ResourceLocation plotId) {
         var sw = Stopwatch.createStarted();
         try {
             var player = sender.getPlayerOrException();
@@ -43,7 +64,7 @@ public class SetupTestWorldCommand implements ISubCommand {
             changeGameRules(srv);
 
             var origin = new BlockPos(0, 60, 0);
-            var generator = new TestWorldGenerator(level, player, origin);
+            var generator = new TestWorldGenerator(level, player, origin, plotId);
             generator.generate();
 
             player.getAbilities().flying = true;

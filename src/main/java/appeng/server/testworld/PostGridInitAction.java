@@ -14,7 +14,8 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public record PostGridInitAction(BoundingBox bb,
-        BiConsumer<IGrid, IGridNode> consumer) implements BlockPlacingBuildAction {
+        BiConsumer<IGrid, IGridNode> consumer,
+        boolean waitForActive) implements BlockPlacingBuildAction {
 
     @Override
     public void placeBlock(ServerLevel level, Player player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
@@ -39,7 +40,7 @@ public record PostGridInitAction(BoundingBox bb,
                     return; // Stop -> not eligible
                 }
 
-                if (gridNode == null || !gridNode.isActive()) {
+                if (gridNode == null || waitForActive && !gridNode.isActive()) {
                     if (--attempts > 0) {
                         TickHandler.instance().addCallable(level, this);
                     } else {

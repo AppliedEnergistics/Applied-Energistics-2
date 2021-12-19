@@ -1,12 +1,16 @@
 package appeng.server.testworld;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.Iterables;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -32,13 +36,21 @@ public class TestWorldGenerator {
     private final BoundingBox overallBounds;
     private final BlockPos suitableStartPos;
 
-    public TestWorldGenerator(ServerLevel level, ServerPlayer player, BlockPos origin) {
+    public TestWorldGenerator(ServerLevel level, ServerPlayer player, BlockPos origin,
+            @Nullable ResourceLocation plotId) {
         this.level = level;
         this.origin = origin;
         this.player = player;
 
         // Try to position the plots
-        var positionedArea = RectanglePacking.pack(TestPlots.createPlots(), plot -> {
+        List<Plot> plots;
+        if (plotId != null) {
+            plots = Collections.singletonList(TestPlots.getById(plotId));
+        } else {
+            plots = TestPlots.createPlots();
+        }
+
+        var positionedArea = RectanglePacking.pack(plots, plot -> {
             var bb = plot.getBounds();
             return new RectanglePacking.Size(bb.getXSpan() + 2 * PADDING, bb.getZSpan() + 2 * PADDING);
         });
