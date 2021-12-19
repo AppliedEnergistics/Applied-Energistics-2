@@ -66,6 +66,7 @@ public final class TestPlots {
             .put(AppEng.makeId("importonpulse"), TestPlots::importOnPulse)
             .put(AppEng.makeId("importonpulsetransactioncrash"), TestPlots::importOnPulseTransactionCrash)
             .put(AppEng.makeId("mattercannonrange"), TestPlots::matterCannonRange)
+            .put(AppEng.makeId("insertfluidintomechest"), TestPlots::testInsertFluidIntoMEChest)
             .build();
 
     private TestPlots() {
@@ -561,6 +562,30 @@ public final class TestPlots {
                     AEItemKey.of(item), item.getMaxStackSize(), Actionable.MODULATE, new BaseActionSource());
         }
         return cannon;
+    }
+
+    /**
+     * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5821
+     */
+    public static void testInsertFluidIntoMEChest(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.creativeEnergyCell(origin.below());
+        plot.blockEntity(origin, AEBlocks.CHEST, chest -> {
+            chest.setCell(AEItems.FLUID_CELL_4K.stack());
+        });
+        plot.cable(origin.east())
+                .part(Direction.WEST, AEParts.EXPORT_BUS, bus -> {
+                    bus.getConfig().addFilter(Fluids.WATER);
+                });
+        plot.blockEntity(origin.east().north(), AEBlocks.DRIVE, drive -> {
+            drive.getInternalInventory().addItems(CreativeCellItem.ofFluids(Fluids.WATER));
+        });
+        plot.creativeEnergyCell(origin.east().north().below());
+
+        plot.test(helper -> helper.succeedWhen(() -> {
+            var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
+            helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
+        }));
     }
 
 }
