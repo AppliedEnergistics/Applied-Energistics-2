@@ -24,7 +24,7 @@ public interface IPathItem {
 
     IPathItem getControllerRoute();
 
-    void setControllerRoute(IPathItem fast, boolean zeroOut);
+    void setControllerRoute(IPathItem fast);
 
     /**
      * used to determine if the finder can continue.

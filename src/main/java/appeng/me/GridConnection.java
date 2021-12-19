@@ -124,10 +124,8 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public void setControllerRoute(IPathItem fast, boolean zeroOut) {
-        if (zeroOut) { // TODO: this is always true
-            this.lastUsedChannels = 0;
-        }
+    public void setControllerRoute(IPathItem fast) {
+        this.lastUsedChannels = 0;
 
         // If the shortest route to the controller is via side B, we need to flip the
         // connections sides because side A should be the closest route to the controller.

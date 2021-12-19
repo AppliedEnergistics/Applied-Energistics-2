@@ -23,8 +23,6 @@
 
 package appeng.api.networking.pathing;
 
-import javax.annotation.Nonnull;
-
 import appeng.api.networking.IGridService;
 
 /**
@@ -43,7 +41,6 @@ public interface IPathingService extends IGridService {
     /**
      * @return the controller state of the network, useful if you want to require a controller for a feature.
      */
-    @Nonnull
     ControllerState getControllerState();
 
     /**
