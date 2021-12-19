@@ -163,9 +163,12 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     }
 
     public void applyDiff(CraftingSimulationState parent) {
+        // It's important to apply this hereto ensure that the extract below doesn't make us count some stacks twice.
+        parent.requiredExtract.addAll(requiredExtract);
+
         for (var entry : modifiableCache) {
             var unmodified = unmodifiedCache.get(entry.getKey());
-            long sizeDelta = unmodified - entry.getLongValue();
+            long sizeDelta = entry.getLongValue() - unmodified;
 
             if (sizeDelta > 0) {
                 parent.insert(entry.getKey(), sizeDelta, Actionable.MODULATE);
@@ -188,8 +191,6 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         for (var entry : crafts.entrySet()) {
             parent.addCrafting(entry.getKey(), entry.getValue());
         }
-
-        parent.requiredExtract.addAll(requiredExtract);
     }
 
     public static CraftingPlan buildCraftingPlan(CraftingSimulationState state,

@@ -277,6 +277,32 @@ public class CraftingSimulationTest {
                 .bytesMatch(2, 2, 0);
     }
 
+    /**
+     * Basic test for multiple paths (multiple patterns that produce the same output).
+     */
+    @Test
+    public void testMultiplePaths() {
+        var env = new SimulationEnv();
+
+        var input1 = item(Items.COBBLESTONE);
+        var input2 = item(Items.OAK_PLANKS);
+        var output = item(Items.DIAMOND);
+
+        var pattern1 = env.addPattern(new ProcessingPatternBuilder(output).addPreciseInput(1, input1).build());
+        var pattern2 = env.addPattern(new ProcessingPatternBuilder(output).addPreciseInput(1, input2).build());
+
+        env.addStoredItem(input1.what(), 5);
+        env.addStoredItem(input2.what(), 3);
+
+        var plan = env.runSimulation(mult(output, 8)); // should be able to make 3+5 = 8 items
+        assertThatPlan(plan)
+                .succeeded()
+                .patternsMatch(pattern1, 5, pattern2, 3)
+                .emittedMatch()
+                .missingMatch()
+                .usedMatch(mult(input1, 5), mult(input2, 3));
+    }
+
     private static GenericStack item(Item item) {
         return GenericStack.fromItemStack(new ItemStack(item));
     }
