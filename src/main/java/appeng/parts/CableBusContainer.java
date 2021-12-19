@@ -178,6 +178,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             }
 
             if (this.inWorld) {
+                // Ensure the exposed sides are set correctly before connecting it to nodes around
+                updateConnections();
                 cablePart.addToWorld();
             }
 
@@ -381,10 +383,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     public void partChanged() {
+        // Drop all facades if no center to attach them to exists anymore
         if (this.storage.getCenter() == null) {
-            final List<ItemStack> facades = new ArrayList<>();
+            var facades = new ArrayList<ItemStack>();
 
-            final IFacadeContainer fc = this.getFacadeContainer();
+            var fc = this.getFacadeContainer();
             for (final Direction d : Direction.values()) {
                 final IFacadePart fp = fc.getFacade(d);
                 if (fp != null) {
@@ -394,7 +397,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             }
 
             if (!facades.isEmpty()) {
-                final BlockEntity te = this.tcb.getBlockEntity();
+                var te = this.tcb.getBlockEntity();
                 Platform.spawnDrops(te.getLevel(), te.getBlockPos(), facades);
             }
         }
@@ -472,16 +475,17 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     public void updateConnections() {
-        if (this.storage.getCenter() != null) {
+        var center = this.storage.getCenter();
+        if (center != null) {
             var sides = EnumSet.allOf(Direction.class);
 
-            for (final Direction s : Direction.values()) {
+            for (var s : Direction.values()) {
                 if (this.getPart(s) != null || this.isBlocked(s)) {
                     sides.remove(s);
                 }
             }
 
-            this.storage.getCenter().setExposedOnSides(sides);
+            center.setExposedOnSides(sides);
         }
     }
 
