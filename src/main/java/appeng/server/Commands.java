@@ -21,6 +21,7 @@ package appeng.server;
 import java.util.Locale;
 
 import appeng.server.subcommands.ChunkLogger;
+import appeng.server.subcommands.SetChannelMode;
 import appeng.server.subcommands.SetupTestWorldCommand;
 import appeng.server.subcommands.SpatialStorageCommand;
 import appeng.server.subcommands.Supporters;
@@ -36,6 +37,7 @@ public enum Commands {
     // Admin
     Chunklogger(4, new ChunkLogger()),
     Spatial(4, new SpatialStorageCommand()),
+    SET_CHANNEL_MODE(4, "channelmode", new SetChannelMode()),
     TICK_MONITORING(4, "tickmonitor", new TickMonitoring()),
 
     // Testing

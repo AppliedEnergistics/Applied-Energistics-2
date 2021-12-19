@@ -18,11 +18,8 @@
 
 package appeng.parts.networking;
 
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
-import appeng.core.AEConfig;
 import appeng.me.GridNode;
 
 /**

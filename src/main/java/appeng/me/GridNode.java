@@ -33,7 +33,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.networking.pathing.ChannelMode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
@@ -578,8 +577,7 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public int getMaxChannels()
-    {
+    public int getMaxChannels() {
         if (flags.contains(GridFlags.CANNOT_CARRY)) {
             return 0;
         }

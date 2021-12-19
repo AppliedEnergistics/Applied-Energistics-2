@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import appeng.api.networking.pathing.ChannelMode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 

@@ -40,6 +40,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.api.features.AEWorldGenInternal;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.config.BooleanOption;
 import appeng.core.config.ConfigFileManager;
 import appeng.core.config.ConfigSection;
@@ -49,7 +50,6 @@ import appeng.core.config.IntegerOption;
 import appeng.core.config.StringListOption;
 import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
-import appeng.api.networking.pathing.ChannelMode;
 import appeng.util.EnumCycler;
 
 public final class AEConfig {
