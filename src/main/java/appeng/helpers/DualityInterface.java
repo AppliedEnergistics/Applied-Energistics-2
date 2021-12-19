@@ -564,27 +564,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IEnergySource src = this.gridProxy.getEnergy();
 
-            if (this.craftingTracker.isBusy(x)) {
-                changed = this.handleCrafting(x, adaptor, itemStack) || changed;
-            } else if (itemStack.getStackSize() > 0) {
-                // make sure strange things didn't happen...
-                if (!adaptor.simulateAdd(itemStack.createItemStack()).isEmpty()) {
-                    changed = true;
-                    throw new GridAccessException();
-                }
-
-                final IAEItemStack acquired = Platform.poweredExtraction(src, this.destination, itemStack,
-                        this.interfaceRequestSource);
-                if (acquired != null) {
-                    changed = true;
-                    final ItemStack issue = adaptor.addItems(acquired.createItemStack());
-                    if (!issue.isEmpty()) {
-                        throw new IllegalStateException("bad attempt at managing inventory. ( addItems )");
-                    }
-                } else {
-                    changed = this.handleCrafting(x, adaptor, itemStack) || changed;
-                }
-            } else if (itemStack.getStackSize() < 0) {
+            // Prioritize sending off unwanted items over handling the completed crafting job
+            if (itemStack.getStackSize() < 0) {
                 IAEItemStack toStore = itemStack.copy();
                 toStore.setStackSize(-toStore.getStackSize());
 
@@ -611,6 +592,29 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     if (removed.isEmpty() || removed.getCount() != diff) {
                         throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
                     }
+                }
+            }
+
+            // Prioritize previously requested crafting over requesting new crafting or stocking from the network
+            if (this.craftingTracker.isBusy(x)) {
+                changed = this.handleCrafting(x, adaptor, itemStack) || changed;
+            } else if (itemStack.getStackSize() > 0) {
+                // make sure strange things didn't happen...
+                if (!adaptor.simulateAdd(itemStack.createItemStack()).isEmpty()) {
+                    changed = true;
+                    throw new GridAccessException();
+                }
+
+                final IAEItemStack acquired = Platform.poweredExtraction(src, this.destination, itemStack,
+                        this.interfaceRequestSource);
+                if (acquired != null) {
+                    changed = true;
+                    final ItemStack issue = adaptor.addItems(acquired.createItemStack());
+                    if (!issue.isEmpty()) {
+                        throw new IllegalStateException("bad attempt at managing inventory. ( addItems )");
+                    }
+                } else {
+                    changed = this.handleCrafting(x, adaptor, itemStack) || changed;
                 }
             }
             // else wtf?
