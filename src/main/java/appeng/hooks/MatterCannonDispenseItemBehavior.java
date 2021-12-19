@@ -19,37 +19,38 @@
 package appeng.hooks;
 
 import net.minecraft.core.BlockSource;
-import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.items.tools.powered.MatterCannonItem;
+import appeng.util.LookDirection;
 import appeng.util.Platform;
 
 public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack execute(final BlockSource dispenser, ItemStack dispensedItem) {
-        final Item i = dispensedItem.getItem();
-        if (i instanceof MatterCannonItem tm) {
-            var direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
-            Direction dir = null;
-            for (var d : Direction.values()) {
-                if (direction.getStepX() == d.getStepX() && direction.getStepY() == d.getStepY()
-                        && direction.getStepZ() == d.getStepZ()) {
-                    dir = d;
-                }
-            }
+    protected ItemStack execute(BlockSource source, ItemStack dispensedItem) {
+        if (dispensedItem.getItem() instanceof MatterCannonItem tm) {
+            var position = DispenserBlock.getDispensePosition(source);
+            var direction = source.getBlockState().getValue(DispenserBlock.FACING);
 
-            var level = dispenser.getLevel();
+            var src = new Vec3(
+                    position.x(),
+                    position.y(),
+                    position.z());
+            var dir = new LookDirection(
+                    src,
+                    src.add(
+                            32 * direction.getStepX(),
+                            32 * direction.getStepY(),
+                            32 * direction.getStepZ()));
+
+            var level = source.getLevel();
             var p = Platform.getPlayer(level);
-            Platform.configurePlayer(p, dir, dispenser.getEntity());
-
-            p.setPos(p.getX() + dir.getStepX(), p.getY() + dir.getStepY(), p.getZ() + dir.getStepZ());
-
-            dispensedItem = tm.use(level, p, null).getObject();
+            Platform.configurePlayer(p, direction, source.getEntity());
+            tm.fireCannon(level, dispensedItem, p, dir);
         }
         return dispensedItem;
     }

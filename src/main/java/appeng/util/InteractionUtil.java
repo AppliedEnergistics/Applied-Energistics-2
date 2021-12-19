@@ -81,24 +81,24 @@ public final class InteractionUtil {
         return getPlayerRay(playerIn, reachDistance);
     }
 
-    public static LookDirection getPlayerRay(final Player playerIn, double reachDistance) {
-        final double x = playerIn.xo + (playerIn.getX() - playerIn.xo);
-        final double y = playerIn.yo + (playerIn.getY() - playerIn.yo) + playerIn.getEyeHeight();
-        final double z = playerIn.zo + (playerIn.getZ() - playerIn.zo);
+    public static LookDirection getPlayerRay(Player playerIn, double reachDistance) {
+        var x = playerIn.xo + (playerIn.getX() - playerIn.xo);
+        var y = playerIn.yo + (playerIn.getY() - playerIn.yo) + playerIn.getEyeHeight();
+        var z = playerIn.zo + (playerIn.getZ() - playerIn.zo);
 
-        final float playerPitch = playerIn.xRotO + (playerIn.getXRot() - playerIn.xRotO);
-        final float playerYaw = playerIn.yRotO + (playerIn.getYRot() - playerIn.yRotO);
+        var playerPitch = playerIn.xRotO + (playerIn.getXRot() - playerIn.xRotO);
+        var playerYaw = playerIn.yRotO + (playerIn.getYRot() - playerIn.yRotO);
 
-        final float yawRayX = Mth.sin(-playerYaw * 0.017453292f - (float) Math.PI);
-        final float yawRayZ = Mth.cos(-playerYaw * 0.017453292f - (float) Math.PI);
+        var yawRayX = Mth.sin(-playerYaw * 0.017453292f - (float) Math.PI);
+        var yawRayZ = Mth.cos(-playerYaw * 0.017453292f - (float) Math.PI);
 
-        final float pitchMultiplier = -Mth.cos(-playerPitch * 0.017453292F);
-        final float eyeRayY = Mth.sin(-playerPitch * 0.017453292F);
-        final float eyeRayX = yawRayX * pitchMultiplier;
-        final float eyeRayZ = yawRayZ * pitchMultiplier;
+        var pitchMultiplier = -Mth.cos(-playerPitch * 0.017453292F);
+        var eyeRayY = Mth.sin(-playerPitch * 0.017453292F);
+        var eyeRayX = yawRayX * pitchMultiplier;
+        var eyeRayZ = yawRayZ * pitchMultiplier;
 
-        final Vec3 from = new Vec3(x, y, z);
-        final Vec3 to = from.add(eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance);
+        var from = new Vec3(x, y, z);
+        var to = from.add(eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance);
 
         return new LookDirection(from, to);
     }

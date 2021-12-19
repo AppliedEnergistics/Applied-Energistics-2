@@ -522,13 +522,24 @@ public final class TestPlots {
                 AEBlocks.CHEST,
                 chest -> chest.setCell(createMatterCannon(Items.IRON_NUGGET)));
 
-        var dispenserPos = origin.offset(0, 1, 1);
-        plot.blockState(dispenserPos, Blocks.DISPENSER.defaultBlockState()
+        plot.block("-2 [0,1] 5", Blocks.STONE);
+        plot.block("2 [0,1] 5", Blocks.STONE);
+
+        plot.creativeEnergyCell(origin.west().below());
+        plot.block(origin.west(), AEBlocks.CHARGER);
+
+        matterCannonDispenser(plot.offset(-2, 1, 1), AEItems.COLORED_LUMEN_PAINT_BALL.item(AEColor.PURPLE));
+        matterCannonDispenser(plot.offset(0, 1, 1), Items.IRON_NUGGET);
+        matterCannonDispenser(plot.offset(2, 1, 1));
+    }
+
+    private static void matterCannonDispenser(PlotBuilder plot, Item... ammos) {
+        plot.blockState(BlockPos.ZERO, Blocks.DISPENSER.defaultBlockState()
                 .setValue(DispenserBlock.FACING, Direction.SOUTH));
-        plot.customizeBlockEntity(dispenserPos, BlockEntityType.DISPENSER, dispenser -> {
-            dispenser.addItem(createMatterCannon(Items.IRON_NUGGET));
+        plot.customizeBlockEntity(BlockPos.ZERO, BlockEntityType.DISPENSER, dispenser -> {
+            dispenser.addItem(createMatterCannon(ammos));
         });
-        plot.buttonOn(dispenserPos, Direction.NORTH);
+        plot.buttonOn(BlockPos.ZERO, Direction.NORTH);
     }
 
     private static ItemStack createMatterCannon(Item... ammo) {

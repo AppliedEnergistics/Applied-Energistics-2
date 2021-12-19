@@ -507,33 +507,17 @@ public class Platform {
         return !gs.isAvailable() || gs.hasPermission(playerID, SecurityPermissions.BUILD);
     }
 
-    public static void configurePlayer(final Player player, final Direction side, final BlockEntity blockEntity) {
+    public static void configurePlayer(Player player, Direction side, BlockEntity blockEntity) {
         float pitch = 0.0f;
         float yaw = 0.0f;
-        // player.yOffset = 1.8f;
-
         switch (side) {
-            case DOWN:
-                pitch = 90.0f;
-                // player.getYOffset() = -1.8f;
-                break;
-            case EAST:
-                yaw = -90.0f;
-                break;
-            case NORTH:
-                yaw = 180.0f;
-                break;
-            case SOUTH:
-                yaw = 0.0f;
-                break;
-            case UP:
-                pitch = 90.0f;
-                break;
-            case WEST:
-                yaw = 90.0f;
-                break;
-            default:
-                break;
+            case DOWN, UP -> pitch = 90.0f;
+            case EAST -> yaw = -90.0f;
+            case NORTH -> yaw = 180.0f;
+            case SOUTH -> yaw = 0.0f;
+            case WEST -> yaw = 90.0f;
+            default -> {
+            }
         }
 
         player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,

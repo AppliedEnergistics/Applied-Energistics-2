@@ -82,6 +82,7 @@ import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
+import appeng.util.LookDirection;
 import appeng.util.Platform;
 
 public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellItem {
@@ -109,72 +110,84 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player p,
-            final @Nullable InteractionHand hand) {
-        if (this.getAECurrentPower(p.getItemInHand(hand)) > ENERGY_PER_SHOT) {
-            int shots = 1;
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, InteractionHand hand) {
+        var stack = p.getItemInHand(hand);
 
-            final CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory(p.getItemInHand(hand));
-            if (cu != null) {
-                shots += cu.getInstalledUpgrades(Upgrades.SPEED);
-            }
+        var direction = InteractionUtil.getPlayerRay(p, 32);
 
-            var inv = StorageCells.getCellInventory(p.getItemInHand(hand), null);
-            if (inv != null) {
-                var itemList = inv.getAvailableStacks();
-                var req = itemList.getFirstEntry(AEItemKey.class);
-                if (req.getKey() instanceof AEItemKey itemKey) {
-                    shots = Math.min(shots, (int) req.getLongValue());
-                    for (int sh = 0; sh < shots; sh++) {
-                        this.extractAEPower(p.getItemInHand(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
-
-                        if (level.isClientSide()) {
-                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                                    p.getItemInHand(hand));
-                        }
-
-                        var aeAmmo = inv.extract(req.getKey(), 1, Actionable.MODULATE, new PlayerSource(p));
-                        if (aeAmmo == 0) {
-                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                                    p.getItemInHand(hand));
-                        }
-
-                        var dir = InteractionUtil.getPlayerRay(p, 32);
-
-                        final Vec3 rayFrom = dir.getA();
-                        final Vec3 rayTo = dir.getB();
-                        final Vec3 direction = rayTo.subtract(rayFrom);
-                        direction.normalize();
-
-                        var x = rayFrom.x;
-                        var y = rayFrom.y;
-                        var z = rayFrom.z;
-
-                        var stack = itemKey.toStack();
-                        var penetration = getPenetration(stack); // 196.96655f;
-                        if (penetration <= 0) {
-                            if (stack.getItem() instanceof PaintBallItem) {
-                                this.shootPaintBalls(stack, level, p, rayFrom, rayTo, direction, x, y, z);
-                            }
-                            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                                    p.getItemInHand(hand));
-                        } else {
-                            this.standardAmmo(penetration, level, p, rayFrom, rayTo, direction, x, y, z);
-                        }
-                    }
-                } else {
-                    if (!level.isClientSide()) {
-                        p.sendMessage(PlayerMessages.AmmoDepleted.get(), Util.NIL_UUID);
-                    }
-                    return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                            p.getItemInHand(hand));
-                }
-            }
+        if (fireCannon(level, stack, p, direction)) {
+            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
+                    stack);
+        } else {
+            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
         }
-        return new InteractionResultHolder<>(InteractionResult.FAIL, p.getItemInHand(hand));
     }
 
-    private void shootPaintBalls(final ItemStack type, final Level level, final Player p, final Vec3 Vector3d,
+    public boolean fireCannon(Level level, ItemStack stack, Player player, LookDirection dir) {
+        if (getAECurrentPower(stack) < ENERGY_PER_SHOT) {
+            return false;
+        }
+
+        var inv = StorageCells.getCellInventory(stack, null);
+        if (inv == null) {
+            return false;
+        }
+
+        var itemList = inv.getAvailableStacks();
+        var req = itemList.getFirstEntry(AEItemKey.class);
+        if (req == null || !(req.getKey() instanceof AEItemKey itemKey)) {
+            if (!level.isClientSide()) {
+                player.sendMessage(PlayerMessages.AmmoDepleted.get(), Util.NIL_UUID);
+            }
+            return true;
+        }
+
+        int shots = 1;
+        var cu = getUpgradesInventory(stack);
+        if (cu != null) {
+            shots += cu.getInstalledUpgrades(Upgrades.SPEED);
+        }
+        shots = Math.min(shots, (int) req.getLongValue());
+
+        for (int sh = 0; sh < shots; sh++) {
+            extractAEPower(stack, ENERGY_PER_SHOT, Actionable.MODULATE);
+
+            if (level.isClientSide()) {
+                // Up until this point, we can simulate on the client, after this,
+                // we need to run the server-side version
+                return true;
+            }
+
+            var aeAmmo = inv.extract(req.getKey(), 1, Actionable.MODULATE, new PlayerSource(player));
+            if (aeAmmo == 0) {
+                return true;
+            }
+
+            var rayFrom = dir.getA();
+            var rayTo = dir.getB();
+            var direction = rayTo.subtract(rayFrom);
+            direction.normalize();
+
+            var x = rayFrom.x;
+            var y = rayFrom.y;
+            var z = rayFrom.z;
+
+            var ammoStack = itemKey.toStack();
+            var penetration = getPenetration(ammoStack); // 196.96655f;
+            if (penetration <= 0) {
+                if (ammoStack.getItem() instanceof PaintBallItem) {
+                    shootPaintBalls(ammoStack, level, player, rayFrom, rayTo, direction, x, y, z);
+                    return true;
+                }
+            } else {
+                standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
+            }
+        }
+
+        return true;
+    }
+
+    private void shootPaintBalls(final ItemStack type, final Level level, @Nullable final Player p, final Vec3 Vector3d,
             final Vec3 Vector3d1, final Vec3 direction, final double d0, final double d1, final double d2) {
         final AABB bb = new AABB(Math.min(Vector3d.x, Vector3d1.x), Math.min(Vector3d.y, Vector3d1.y),
                 Math.min(Vector3d.z, Vector3d1.z), Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
@@ -276,8 +289,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
             Entity entity = null;
             Vec3 entityIntersection = null;
-            final List<Entity> list = level.getEntities(p, bb,
-                    e -> !(e instanceof ItemEntity) && e.isAlive());
+            var list = level.getEntities(p, bb, e -> !(e instanceof ItemEntity) && e.isAlive());
             double closest = 9999999.0D;
 
             for (Entity entity1 : list) {

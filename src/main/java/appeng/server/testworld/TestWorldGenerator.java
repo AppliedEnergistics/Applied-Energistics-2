@@ -10,7 +10,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -152,7 +152,7 @@ public class TestWorldGenerator {
         // Clear up any item entities that might have spawned
         var entities = Iterables.toArray(level.getAllEntities(), Entity.class);
         for (var entity : entities) {
-            if (!plotEntities.contains(entity) && !(entity instanceof LivingEntity) && entity.isAlive()) {
+            if (!plotEntities.contains(entity) && !(entity instanceof Player) && entity.isAlive()) {
                 entity.discard();
             }
         }
