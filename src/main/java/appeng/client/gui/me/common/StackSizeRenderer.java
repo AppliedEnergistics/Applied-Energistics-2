@@ -28,9 +28,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 
 import appeng.core.AEConfig;
-import appeng.util.ISlimReadableNumberConverter;
-import appeng.util.IWideReadableNumberConverter;
-import appeng.util.ReadableNumberConverter;
 
 /**
  * @author AlgorithmX2
@@ -39,9 +36,6 @@ import appeng.util.ReadableNumberConverter;
  * @since rv0
  */
 public class StackSizeRenderer {
-    protected static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
-    protected static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
-
     public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text) {
         renderSizeLabel(fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
     }
@@ -63,14 +57,6 @@ public class StackSizeRenderer {
         fontRenderer.drawInBatch(text, X, Y, 0xffffff, true, tm.getMatrix(), buffer, false, 0, 15728880);
         buffer.endBatch();
         RenderSystem.enableBlend();
-    }
-
-    public String getToBeRenderedStackSize(long originalSize, boolean useLargeFonts) {
-        if (useLargeFonts) {
-            return SLIM_CONVERTER.toSlimReadableForm(originalSize);
-        } else {
-            return WIDE_CONVERTER.toWideReadableForm(originalSize);
-        }
     }
 
 }

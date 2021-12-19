@@ -36,9 +36,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.storage.AEKeyFilter;
-import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.util.ISlimReadableNumberConverter;
-import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
 
 /**
@@ -46,9 +43,6 @@ import appeng.util.ReadableNumberConverter;
  * {@link AEItemKeys}.
  */
 public abstract class AEKeyType {
-    private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
-    private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
-
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
@@ -193,8 +187,6 @@ public abstract class AEKeyType {
         return 1;
     }
 
-    protected abstract StackSizeRenderer getStackSizeRenderer();
-
     /**
      * Format the amount into a user-readable string. See {@link AmountFormat} for an explanation of the different
      * formats. Includes the unit if applicable.
@@ -202,8 +194,8 @@ public abstract class AEKeyType {
     public final String formatAmount(long amount, AmountFormat format) {
         return switch (format) {
             case FULL -> formatFullAmount(amount);
-            case PREVIEW_REGULAR -> getStackSizeRenderer().getToBeRenderedStackSize(amount, false);
-            case PREVIEW_LARGE_FONT -> getStackSizeRenderer().getToBeRenderedStackSize(amount, true);
+            case PREVIEW_REGULAR -> formatShortAmount(amount, 4);
+            case PREVIEW_LARGE_FONT -> formatShortAmount(amount, 3);
         };
     }
 
@@ -214,7 +206,7 @@ public abstract class AEKeyType {
             var units = amount / (double) getAmountPerUnit();
             result.append(NumberFormat.getNumberInstance().format(units));
         } else {
-            result.append(amount);
+            result.append(NumberFormat.getNumberInstance().format(amount));
         }
 
         var unit = getUnitSymbol();
@@ -223,5 +215,14 @@ public abstract class AEKeyType {
         }
 
         return result.toString();
+    }
+
+    private String formatShortAmount(long amount, int maxWidth) {
+        if (getAmountPerUnit() > 1) {
+            var units = amount / (double) getAmountPerUnit();
+            return ReadableNumberConverter.format(units, maxWidth);
+        } else {
+            return ReadableNumberConverter.format(amount, maxWidth);
+        }
     }
 }

@@ -24,13 +24,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
 final class AEItemKeys extends AEKeyType {
-    private static final StackSizeRenderer STACK_SIZE_RENDERER = new StackSizeRenderer();
-
     private static final ResourceLocation ID = AppEng.makeId("i");
 
     static final AEItemKeys INSTANCE = new AEItemKeys();
@@ -54,10 +51,5 @@ final class AEItemKeys extends AEKeyType {
     @Override
     public boolean supportsFuzzyRangeSearch() {
         return false;
-    }
-
-    @Override
-    protected StackSizeRenderer getStackSizeRenderer() {
-        return STACK_SIZE_RENDERER;
     }
 }
