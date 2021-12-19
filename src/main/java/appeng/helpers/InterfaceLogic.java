@@ -441,8 +441,30 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         var networkInv = grid.getStorageService().getInventory();
         var energySrc = grid.getEnergyService();
 
+        // Always move out unwanted items before handling crafting or restocking
+        if (amount < 0) {
+            // Move from interface to network storage
+            amount = -amount;
+
+            // Make sure the storage has enough items to execute the plan
+            var inSlot = storage.getStack(slot);
+            if (!what.matches(inSlot) || inSlot.amount() < amount) {
+                return true; // Replan
+            }
+
+            var inserted = (int) StorageHelper.poweredInsert(energySrc, networkInv, what, amount,
+                    this.interfaceRequestSource);
+
+            // Remove the items we just injected somewhere else into the network.
+            if (inserted > 0) {
+                storage.extract(slot, what, inserted, Actionable.MODULATE);
+            }
+
+            return inserted > 0;
+        }
+
         if (this.craftingTracker.isBusy(slot)) {
-            // We are waiting for a crafting result for this slot, check its status before taking other actions
+            // We are already waiting for a crafting result for this slot
             return this.handleCrafting(slot, what, amount);
         } else if (amount > 0) {
             // Move from network into interface
@@ -462,25 +484,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             } else {
                 return this.handleCrafting(slot, what, amount);
             }
-        } else if (amount < 0) {
-            // Move from interface to network storage
-            amount = -amount;
-
-            // Make sure the storage has enough items to execute the plan
-            var inSlot = storage.getStack(slot);
-            if (!what.matches(inSlot) || inSlot.amount() < amount) {
-                return true;
-            }
-
-            var inserted = (int) StorageHelper.poweredInsert(energySrc, networkInv, what, amount,
-                    this.interfaceRequestSource);
-
-            // Remove the items we just injected somewhere else into the network.
-            if (inserted > 0) {
-                storage.extract(slot, what, inserted, Actionable.MODULATE);
-            }
-
-            return inserted > 0;
         }
 
         // else wtf?
