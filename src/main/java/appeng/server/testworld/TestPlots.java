@@ -96,11 +96,23 @@ public final class TestPlots {
      * A wall of all terminals/monitors in all color combinations.
      */
     public static void allTerminals(PlotBuilder plot) {
+        var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+        enchantedPickaxe.enchant(Enchantments.BLOCK_FORTUNE, 3);
+        var enchantedPickaxeKey = AEItemKey.of(enchantedPickaxe);
+
         plot.creativeEnergyCell("0 -1 0");
 
         plot.cable("[-1,0] [0,8] 0", AEParts.COVERED_DENSE_CABLE);
         plot.part("0 [0,8] 0", Direction.WEST, AEParts.CABLE_ANCHOR);
         plot.block("[-1,0] 5 0", AEBlocks.CONTROLLER);
+        plot.storageDrive(new BlockPos(0, 5, 1));
+        plot.afterGridInitAt("0 5 1", (grid, gridNode) -> {
+            var storage = grid.getStorageService().getInventory();
+            var src = new BaseActionSource();
+            storage.insert(AEItemKey.of(Items.DIAMOND_PICKAXE), 10, Actionable.MODULATE, src);
+            storage.insert(enchantedPickaxeKey, 1234, Actionable.MODULATE, src);
+            storage.insert(AEItemKey.of(Items.ACACIA_LOG), Integer.MAX_VALUE, Actionable.MODULATE, src);
+        });
 
         // Generate a "line" of cable+terminals that extends from the center
         // Only go up to 9 in height, then flip the X axis and continue on the other side
@@ -124,9 +136,7 @@ public final class TestPlots {
             line.part("3 0 0", Direction.NORTH, AEParts.PATTERN_ENCODING_TERMINAL);
             line.part("4 0 0", Direction.NORTH, AEParts.PATTERN_ACCESS_TERMINAL);
             line.part("5 0 0", Direction.NORTH, AEParts.STORAGE_MONITOR, monitor -> {
-                var diamondPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-                diamondPickaxe.enchant(Enchantments.BLOCK_FORTUNE, 3);
-                monitor.setConfiguredItem(AEItemKey.of(diamondPickaxe));
+                monitor.setConfiguredItem(enchantedPickaxeKey);
                 monitor.setLocked(true);
             });
             line.part("6 0 0", Direction.NORTH, AEParts.CONVERSION_MONITOR, monitor -> {
