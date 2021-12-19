@@ -26,10 +26,13 @@ import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -56,6 +59,9 @@ import appeng.util.Platform;
  * Builder that allows creation of menu types which can be opened from multiple types of hosts.
  */
 public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
+
+    @Nullable
+    private ResourceLocation id;
 
     private final Class<I> hostInterface;
 
@@ -106,7 +112,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     /**
      * Specifies a custom strategy for obtaining a custom menu name.
      * <p>
-     * The stratgy should return {@link TextComponent#EMPTY} if there's no custom name.
+     * The strategy should return {@link TextComponent#EMPTY} if there's no custom name.
      */
     public MenuTypeBuilder<M, I> withMenuTitle(Function<I, Component> menuTitleStrategy) {
         this.menuTitleStrategy = menuTitleStrategy;
@@ -129,15 +135,21 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      * buffer.
      */
     private M fromNetwork(int containerId, Inventory inv, FriendlyByteBuf packetBuf) {
-        I host = getHostFromLocator(inv.player, MenuLocator.read(packetBuf));
-        if (host != null) {
-            M menu = factory.create(containerId, inv, host);
-            if (initialDataDeserializer != null) {
-                initialDataDeserializer.deserializeInitialData(host, menu, packetBuf);
+        var locator = MenuLocator.read(packetBuf);
+        I host = getHostFromLocator(inv.player, locator);
+        if (host == null) {
+            var connection = Minecraft.getInstance().getConnection();
+            if (connection != null) {
+                connection.send(new ServerboundContainerClosePacket(containerId));
             }
-            return menu;
+            throw new IllegalStateException("Couldn't find menu host at " + locator + " for " + this.id
+                    + " on client. Closing menu.");
         }
-        return null;
+        M menu = factory.create(containerId, inv, host);
+        if (initialDataDeserializer != null) {
+            initialDataDeserializer.deserializeInitialData(host, menu, packetBuf);
+        }
+        return menu;
     }
 
     private boolean open(Player player, MenuLocator locator) {
@@ -274,9 +286,11 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      */
     public MenuType<M> build(String id) {
         Preconditions.checkState(menuType == null, "build was already called");
+        Preconditions.checkState(this.id == null, "id should not be set");
 
+        this.id = AppEng.makeId(id);
         menuType = ScreenHandlerRegistry.registerExtended(
-                AppEng.makeId(id),
+                this.id,
                 this::fromNetwork);
         MenuOpener.addOpener(menuType, this::open);
         return menuType;
