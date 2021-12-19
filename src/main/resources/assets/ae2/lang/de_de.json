@@ -584,7 +584,7 @@
   "itemGroup.ae2.main": "Applied Energistics 2",
   "stat.ae2.items_extracted": "Items aus ME Speicher entfernt",
   "stat.ae2.items_inserted": "Items zu ME Speicher hinzugefügt",
-  "waila.ae2.Channels": "%1$d von %2$d Kanälen",
+  "waila.ae2.ChannelsOf": "%1$d von %2$d Kanälen",
   "waila.ae2.Contains": "Enthält",
   "waila.ae2.Crafting": "Fertigung",
   "waila.ae2.DeviceMissingChannel": "Gerät ohne Kanal",

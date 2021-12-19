@@ -34,6 +34,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.Platform;
 
@@ -141,13 +142,16 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public boolean canSupportMoreChannels() {
-        var mode = sideA.getGrid().getPathingService().getChannelMode();
         return this.getLastUsedChannels() < getMaxChannels();
     }
 
     @Override
     public int getMaxChannels() {
-        return 32 * sideB.getGrid().getPathingService().getChannelMode().getCableCapacityFactor();
+        var mode = sideB.getGrid().getPathingService().getChannelMode();
+        if (mode == ChannelMode.INFINITE) {
+            return Integer.MAX_VALUE;
+        }
+        return 32 * mode.getCableCapacityFactor();
     }
 
     @Override

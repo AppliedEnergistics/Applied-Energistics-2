@@ -475,7 +475,7 @@
   "item.ae2.yellow_smart_dense_cable": "Amarillo ME Cable Denso",
   "itemGroup.ae2.facades": "Applied Energistics 2 - Fachadas",
   "itemGroup.ae2.main": "Applied Energistics 2",
-  "waila.ae2.Channels": "%1$d of %2$d Canales",
+  "waila.ae2.ChannelsOf": "%1$d of %2$d Canales",
   "waila.ae2.Contains": "Contiene",
   "waila.ae2.DeviceMissingChannel": "Dispositivo sin Canal",
   "waila.ae2.DeviceOffline": "Dispositivo Fuera de Línea",

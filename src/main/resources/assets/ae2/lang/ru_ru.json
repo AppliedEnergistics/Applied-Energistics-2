@@ -738,7 +738,7 @@
   "theoneprobe.ae2.showing": "Показ",
   "theoneprobe.ae2.stored_energy": "%1$d / %2$d",
   "theoneprobe.ae2.unlocked": "Разблокировано",
-  "waila.ae2.Channels": "Каналов %1$d / %2$d",
+  "waila.ae2.ChannelsOf": "Каналов %1$d / %2$d",
   "waila.ae2.Charged": "%d%% заряжен",
   "waila.ae2.Contains": "Содержит: %s",
   "waila.ae2.Crafting": "Изготовление: %s",

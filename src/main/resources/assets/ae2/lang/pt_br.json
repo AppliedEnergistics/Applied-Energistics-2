@@ -620,7 +620,7 @@
   "key.toggle_focus.desc": "Alterar foco da caixa de procura",
   "stat.ae2.items_extracted": "Itens extraídos do Armazenamento ME",
   "stat.ae2.items_inserted": "Itens adicionados ao Armazenamento ME",
-  "waila.ae2.Channels": "%1$d de %2$d Canais",
+  "waila.ae2.ChannelsOf": "%1$d de %2$d Canais",
   "waila.ae2.Contains": "Contém",
   "waila.ae2.Crafting": "Fabricando",
   "waila.ae2.DeviceMissingChannel": "Dispositivo Sem Canal",

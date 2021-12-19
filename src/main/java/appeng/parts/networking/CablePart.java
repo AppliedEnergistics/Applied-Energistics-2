@@ -34,8 +34,8 @@ import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.BusSupport;
-import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
@@ -237,10 +237,10 @@ public class CablePart extends AEBasePart implements ICablePart {
     public void writeToStream(final FriendlyByteBuf data) {
         int flags = 0;
         boolean[] writeSide = new boolean[Direction.values().length];
-        int[] channelsPerSide = new int[Direction.values().length];
+        byte[] channelsPerSide = new byte[Direction.values().length];
 
         for (Direction thisSide : Direction.values()) {
-            final IPart part = this.getHost().getPart(thisSide);
+            var part = this.getHost().getPart(thisSide);
             if (part != null) {
                 writeSide[thisSide.ordinal()] = true;
                 int channels = 0;
@@ -249,7 +249,7 @@ public class CablePart extends AEBasePart implements ICablePart {
                         channels = Math.max(channels, gc.getUsedChannels());
                     }
                 }
-                channelsPerSide[thisSide.ordinal()] = channels;
+                channelsPerSide[thisSide.ordinal()] = getVisualChannels(channels);
             }
         }
 
@@ -258,7 +258,8 @@ public class CablePart extends AEBasePart implements ICablePart {
             for (var entry : n.getInWorldConnections().entrySet()) {
                 var side = entry.getKey().ordinal();
                 writeSide[side] = true;
-                channelsPerSide[side] = entry.getValue().getUsedChannels();
+                var connection = entry.getValue();
+                channelsPerSide[side] = getVisualChannels(connection.getUsedChannels());
                 flags |= 1 << side;
             }
 
@@ -273,6 +274,38 @@ public class CablePart extends AEBasePart implements ICablePart {
             if (writeSide[i]) {
                 data.writeByte(channelsPerSide[i]);
             }
+        }
+    }
+
+    private byte getVisualChannels(int channels) {
+        var node = getGridNode();
+        if (node == null) {
+            return 0;
+        }
+
+        byte visualMaxChannels = switch (getCableConnectionType()) {
+            case NONE -> 0;
+            case GLASS, SMART, COVERED -> 8;
+            case DENSE_COVERED, DENSE_SMART -> 32;
+        };
+
+        // In infinite mode, we either return 0 or full strength
+        if (node.getGrid().getPathingService().getChannelMode() == ChannelMode.INFINITE) {
+            return channels <= 0 ? 0 : visualMaxChannels;
+        }
+
+        int gridMaxChannels = node.getMaxChannels();
+        if (visualMaxChannels == 0 || gridMaxChannels == 0) {
+            return 0;
+        }
+
+        // Generally we round down here
+        var result = (byte) (Math.min(visualMaxChannels, channels * visualMaxChannels / gridMaxChannels));
+        // Except if at least 1 channel is used
+        if (result == 0 && channels > 0) {
+            return 1;
+        } else {
+            return result;
         }
     }
 

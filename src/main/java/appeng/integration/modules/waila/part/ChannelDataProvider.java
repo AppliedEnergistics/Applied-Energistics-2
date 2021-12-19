@@ -40,7 +40,12 @@ public final class ChannelDataProvider implements IPartDataProvider {
         if (partTag.contains(TAG_MAX_CHANNELS, Tag.TAG_INT)) {
             var usedChannels = partTag.getInt(TAG_USED_CHANNELS);
             var maxChannels = partTag.getInt(TAG_MAX_CHANNELS);
-            tooltip.add(WailaText.Channels.textComponent(usedChannels, maxChannels));
+            // Even in the maxChannels=0 case, we'll show as infinite
+            if (maxChannels <= 0) {
+                tooltip.add(WailaText.Channels.textComponent(usedChannels));
+            } else {
+                tooltip.add(WailaText.ChannelsOf.textComponent(usedChannels, maxChannels));
+            }
         }
     }
 

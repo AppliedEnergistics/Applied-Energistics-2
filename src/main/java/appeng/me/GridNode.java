@@ -57,6 +57,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.events.GridPowerIdleChange;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.core.worlddata.IGridStorageSaveData;
@@ -491,10 +492,6 @@ public class GridNode implements IGridNode, IPathItem {
         return this.owningPlayerId;
     }
 
-    private int getUsedChannels() {
-        return this.usedChannels;
-    }
-
     protected void findInWorldConnections() {
     }
 
@@ -575,12 +572,21 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
+    public int getUsedChannels() {
+        return this.usedChannels;
+    }
+
+    @Override
     public int getMaxChannels() {
         if (flags.contains(GridFlags.CANNOT_CARRY)) {
             return 0;
         }
 
         var channelMode = myGrid.getPathingService().getChannelMode();
+        if (channelMode == ChannelMode.INFINITE) {
+            return Integer.MAX_VALUE;
+        }
+
         if (!flags.contains(GridFlags.DENSE_CAPACITY)) {
             return 8 * channelMode.getCableCapacityFactor();
         } else {

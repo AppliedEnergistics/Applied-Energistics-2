@@ -564,7 +564,7 @@
   "itemGroup.ae2.main": "Applied Energistics 2",
   "stat.ae2.items_extracted": "Oggetti estratti dal Deposito ME",
   "stat.ae2.items_inserted": "Oggetti aggiunti al Deposito ME",
-  "waila.ae2.Channels": "Canali %1$d di %2$d",
+  "waila.ae2.ChannelsOf": "Canali %1$d di %2$d",
   "waila.ae2.Contains": "Contiene",
   "waila.ae2.Crafting": "Fabbricazione",
   "waila.ae2.DeviceMissingChannel": "Al dispositivo manca il canale",

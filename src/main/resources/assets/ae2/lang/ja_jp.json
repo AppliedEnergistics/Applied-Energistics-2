@@ -545,7 +545,7 @@
   "theoneprobe.ae2.showing": "表示中",
   "theoneprobe.ae2.stored_energy": "%1$d / %2$d",
   "theoneprobe.ae2.unlocked": "解錠された",
-  "waila.ae2.Channels": "%1$d / %2$dチャンネル",
+  "waila.ae2.ChannelsOf": "%1$d / %2$dチャンネル",
   "waila.ae2.Contains": "含まれる",
   "waila.ae2.Crafting": "クラフト中",
   "waila.ae2.DeviceMissingChannel": "デバイスのチャンネル未探知",

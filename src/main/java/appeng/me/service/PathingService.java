@@ -21,6 +21,8 @@ package appeng.me.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -29,6 +31,7 @@ import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridServiceProvider;
+import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
@@ -47,6 +50,8 @@ import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.PathingCalculation;
 
 public class PathingService implements IPathingService, IGridServiceProvider {
+
+    private static final String TAG_CHANNEL_MODE = "channelMode";
 
     static {
         GridHelper.addGridServiceEventHandler(GridChannelRequirementChanged.class,
@@ -71,6 +76,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     private ControllerState controllerState = ControllerState.NO_CONTROLLER;
     private int ticksUntilReady = 0;
     private int lastChannels = 0;
+    /**
+     * This can be used for testing to set a specific channel mode on this grid that will not be overwritten by
+     * repathing.
+     */
+    private boolean channelModeLocked;
     private ChannelMode channelMode = AEConfig.instance().getChannelMode();
 
     public PathingService(final IGrid g) {
@@ -294,7 +304,9 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     @Override
     public void repath() {
-        this.channelMode = AEConfig.instance().getChannelMode();
+        if (!this.channelModeLocked) {
+            this.channelMode = AEConfig.instance().getChannelMode();
+        }
 
         // clean up...
         this.ongoingCalculation = null;
@@ -313,5 +325,47 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     public ChannelMode getChannelMode() {
         return channelMode;
+    }
+
+    public void setForcedChannelMode(@Nullable ChannelMode forcedChannelMode) {
+        if (forcedChannelMode == null) {
+            if (this.channelModeLocked) {
+                this.channelModeLocked = false;
+                repath();
+            }
+        } else {
+            this.channelModeLocked = true;
+            if (this.channelMode != forcedChannelMode) {
+                this.channelMode = forcedChannelMode;
+                this.repath();
+            }
+        }
+    }
+
+    @Override
+    public void onSplit(IGridStorage destinationStorage) {
+        populateGridStorage(destinationStorage);
+    }
+
+    @Override
+    public void onJoin(IGridStorage sourceStorage) {
+        var tag = sourceStorage.dataObject();
+        var channelModeName = tag.getString(TAG_CHANNEL_MODE);
+        try {
+            channelMode = ChannelMode.valueOf(channelModeName);
+            channelModeLocked = true;
+        } catch (IllegalArgumentException ignored) {
+            channelModeLocked = false;
+        }
+    }
+
+    @Override
+    public void populateGridStorage(IGridStorage destinationStorage) {
+        var tag = destinationStorage.dataObject();
+        if (channelModeLocked) {
+            tag.putString(TAG_CHANNEL_MODE, channelMode.name());
+        } else {
+            tag.remove(TAG_CHANNEL_MODE);
+        }
     }
 }

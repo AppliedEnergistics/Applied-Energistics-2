@@ -19,6 +19,7 @@
 package appeng.parts.networking;
 
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.IPart;
 import appeng.me.GridNode;
 
@@ -42,11 +43,15 @@ public interface IUsedChannelProvider extends IPart {
     }
 
     /**
-     * @return The number of channels that can be carried at most. Purely for informational purposes.
+     * @return The number of channels that can be carried at most. Purely for informational purposes. -1 indicates there
+     *         is no limit to the number of carried channels.
      */
     default int getMaxChannelsInfo() {
         var node = this.getGridNode();
         if (node instanceof GridNode gridNode) {
+            if (gridNode.getGrid().getPathingService().getChannelMode() == ChannelMode.INFINITE) {
+                return -1;
+            }
             return gridNode.getMaxChannels();
         }
         return 0;

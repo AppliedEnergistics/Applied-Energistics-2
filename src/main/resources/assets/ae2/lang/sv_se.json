@@ -661,7 +661,7 @@
   "theoneprobe.ae2.showing": "Visas",
   "theoneprobe.ae2.stored_energy": "%1$d / %2$d",
   "theoneprobe.ae2.unlocked": "Upplåst",
-  "waila.ae2.Channels": "%1$d av %2$d kanaler",
+  "waila.ae2.ChannelsOf": "%1$d av %2$d kanaler",
   "waila.ae2.Contains": "Innehåller",
   "waila.ae2.Crafting": "Tillverkning",
   "waila.ae2.DeviceMissingChannel": "Enheten saknar kanal",
