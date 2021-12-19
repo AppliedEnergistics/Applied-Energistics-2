@@ -288,22 +288,24 @@ public class AEBaseBlockEntity extends BlockEntity
      */
     @OverridingMethodsMustInvokeSuper
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
-        if (this.hasCustomInventoryName()) {
-            final CompoundTag dsp = new CompoundTag();
+        if (hasCustomInventoryName()) {
+            var dsp = new CompoundTag();
             dsp.putString("Name", this.customName);
             output.put("display", dsp);
         }
 
-        if (this instanceof IConfigurableObject configurableObject) {
-            configurableObject.getConfigManager().writeToNBT(output);
-        }
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            if (this instanceof IConfigurableObject configurableObject) {
+                configurableObject.getConfigManager().writeToNBT(output);
+            }
 
-        if (this instanceof IPriorityHost pHost) {
-            output.putInt("priority", pHost.getPriority());
-        }
+            if (this instanceof IPriorityHost pHost) {
+                output.putInt("priority", pHost.getPriority());
+            }
 
-        if (this instanceof IConfigInvHost configInvHost) {
-            configInvHost.getConfig().writeToChildTag(output, "config");
+            if (this instanceof IConfigInvHost configInvHost) {
+                configInvHost.getConfig().writeToChildTag(output, "config");
+            }
         }
     }
 
