@@ -35,7 +35,7 @@ public final class SlotSemantics {
     /**
      * NOTE: If you use this in an addon, use an Addon-Specific Prefix for your semantic id (i.e. your mod id).
      */
-    public static SlotSemantic add(String id, boolean playerSide) {
+    public static SlotSemantic register(String id, boolean playerSide) {
         var semantic = new SlotSemantic(id, playerSide);
         var existing = REGISTRY.putIfAbsent(semantic.id(), semantic);
         if (existing != null) {
@@ -53,50 +53,51 @@ public final class SlotSemantics {
         return semantic;
     }
 
-    public static final SlotSemantic STORAGE = add("STORAGE", false);
+    public static final SlotSemantic STORAGE = register("STORAGE", false);
 
-    public static final SlotSemantic PLAYER_INVENTORY = add("PLAYER_INVENTORY", true);
-    public static final SlotSemantic PLAYER_HOTBAR = add("PLAYER_HOTBAR", true);
-    public static final SlotSemantic TOOLBOX = add("TOOLBOX", true);
+    public static final SlotSemantic PLAYER_INVENTORY = register("PLAYER_INVENTORY", true);
+    public static final SlotSemantic PLAYER_HOTBAR = register("PLAYER_HOTBAR", true);
+    public static final SlotSemantic TOOLBOX = register("TOOLBOX", true);
     /**
      * Used for configuration slots that configure a filter, such as on planes, import/export busses, etc.
      */
-    public static final SlotSemantic CONFIG = add("CONFIG", false);
+    public static final SlotSemantic CONFIG = register("CONFIG", false);
     /**
      * An upgrade slot on a machine, cell workbench, etc.
      */
-    public static final SlotSemantic UPGRADE = add("UPGRADE", false);
+    public static final SlotSemantic UPGRADE = register("UPGRADE", false);
     /**
      * One or more slots for storage cells, i.e. on drives, cell workbench or chest.
      */
-    public static final SlotSemantic STORAGE_CELL = add("STORAGE_CELL", false);
+    public static final SlotSemantic STORAGE_CELL = register("STORAGE_CELL", false);
 
-    public static final SlotSemantic INSCRIBER_PLATE_TOP = add("INSCRIBER_PLATE_TOP", false);
+    public static final SlotSemantic INSCRIBER_PLATE_TOP = register("INSCRIBER_PLATE_TOP", false);
 
-    public static final SlotSemantic INSCRIBER_PLATE_BOTTOM = add("INSCRIBER_PLATE_BOTTOM", false);
+    public static final SlotSemantic INSCRIBER_PLATE_BOTTOM = register("INSCRIBER_PLATE_BOTTOM", false);
 
-    public static final SlotSemantic MACHINE_INPUT = add("MACHINE_INPUT", false);
+    public static final SlotSemantic MACHINE_INPUT = register("MACHINE_INPUT", false);
 
-    public static final SlotSemantic MACHINE_OUTPUT = add("MACHINE_OUTPUT", false);
+    public static final SlotSemantic MACHINE_OUTPUT = register("MACHINE_OUTPUT", false);
 
-    public static final SlotSemantic MACHINE_CRAFTING_GRID = add("MACHINE_CRAFTING_GRID", false);
+    public static final SlotSemantic MACHINE_CRAFTING_GRID = register("MACHINE_CRAFTING_GRID", false);
 
-    public static final SlotSemantic BLANK_PATTERN = add("BLANK_PATTERN", false);
+    public static final SlotSemantic BLANK_PATTERN = register("BLANK_PATTERN", false);
 
-    public static final SlotSemantic ENCODED_PATTERN = add("ENCODED_PATTERN", false);
+    public static final SlotSemantic ENCODED_PATTERN = register("ENCODED_PATTERN", false);
 
-    public static final SlotSemantic VIEW_CELL = add("VIEW_CELL", false);
+    public static final SlotSemantic VIEW_CELL = register("VIEW_CELL", false);
 
-    public static final SlotSemantic CRAFTING_GRID = add("CRAFTING_GRID", false);
+    public static final SlotSemantic CRAFTING_GRID = register("CRAFTING_GRID", false);
 
-    public static final SlotSemantic CRAFTING_RESULT = add("CRAFTING_RESULT", false);
+    public static final SlotSemantic CRAFTING_RESULT = register("CRAFTING_RESULT", false);
 
-    public static final SlotSemantic PROCESSING_PRIMARY_RESULT = add("PROCESSING_PRIMARY_RESULT", false);
+    public static final SlotSemantic PROCESSING_PRIMARY_RESULT = register("PROCESSING_PRIMARY_RESULT", false);
 
-    public static final SlotSemantic PROCESSING_FIRST_OPTIONAL_RESULT = add("PROCESSING_FIRST_OPTIONAL_RESULT", false);
-
-    public static final SlotSemantic PROCESSING_SECOND_OPTIONAL_RESULT = add("PROCESSING_SECOND_OPTIONAL_RESULT",
+    public static final SlotSemantic PROCESSING_FIRST_OPTIONAL_RESULT = register("PROCESSING_FIRST_OPTIONAL_RESULT",
             false);
 
-    public static final SlotSemantic BIOMETRIC_CARD = add("BIOMETRIC_CARD", false);
+    public static final SlotSemantic PROCESSING_SECOND_OPTIONAL_RESULT = register("PROCESSING_SECOND_OPTIONAL_RESULT",
+            false);
+
+    public static final SlotSemantic BIOMETRIC_CARD = register("BIOMETRIC_CARD", false);
 }
