@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import appeng.api.networking.pathing.ChannelMode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -39,7 +40,8 @@ import appeng.util.Platform;
 
 public class GridConnection implements IGridConnection, IPathItem {
 
-    private int channelData = 0;
+    private int usedChannels = 0;
+    private int lastUsedChannels = 0;
     private Object visitorIterationNumber = null;
     /**
      * Note that in grids with a controller, following this side will always lead down the closest path towards the
@@ -111,7 +113,7 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public int getUsedChannels() {
-        return this.channelData >> 8 & 0xff;
+        return usedChannels;
     }
 
     @Override
@@ -125,7 +127,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     @Override
     public void setControllerRoute(IPathItem fast, boolean zeroOut) {
         if (zeroOut) {
-            this.channelData &= ~0xff;
+            this.lastUsedChannels = 0;
         }
 
         // If the shortest route to the controller is via side B, we need to flip the
@@ -142,7 +144,13 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public boolean canSupportMoreChannels() {
-        return this.getLastUsedChannels() < Channels.getMaxChannels();
+        var mode = sideA.getGrid().getPathingService().getChannelMode();
+        return this.getLastUsedChannels() < getMaxChannels();
+    }
+
+    @Override
+    public int getMaxChannels() {
+        return 32 * sideB.getGrid().getPathingService().getChannelMode().getCableCapacityFactor();
     }
 
     @Override
@@ -152,7 +160,7 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public void incrementChannelCount(final int usedChannels) {
-        this.channelData += usedChannels;
+        this.lastUsedChannels += usedChannels;
     }
 
     @Override
@@ -163,8 +171,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     @Override
     public void finalizeChannels() {
         if (this.getUsedChannels() != this.getLastUsedChannels()) {
-            this.channelData &= 0xff;
-            this.channelData |= this.channelData << 8;
+            this.usedChannels = this.lastUsedChannels;
 
             if (this.sideA.getInternalGrid() != null) {
                 this.sideA.notifyStatusChange(IGridNodeListener.State.CHANNEL);
@@ -177,7 +184,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     private int getLastUsedChannels() {
-        return this.channelData & 0xff;
+        return this.lastUsedChannels;
     }
 
     Object getVisitorIterationNumber() {

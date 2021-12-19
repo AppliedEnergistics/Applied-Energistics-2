@@ -32,6 +32,11 @@ public interface IPathItem {
     boolean canSupportMoreChannels();
 
     /**
+     * The maximum number of channels connections to this path item can carry.
+     */
+    int getMaxChannels();
+
+    /**
      * find possible choices for other pathing.
      */
     Iterable<IPathItem> getPossibleOptions();

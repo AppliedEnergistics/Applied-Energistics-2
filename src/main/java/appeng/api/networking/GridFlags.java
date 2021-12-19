@@ -33,7 +33,8 @@ public enum GridFlags {
     REQUIRE_CHANNEL,
 
     /**
-     * P2P ME tunnels use this setting.
+     * This is used for the inner node of ME-P2P tunnels, which connects to the grid that will carry the content of the
+     * P2P tunnel compressed into a single channel.
      */
     COMPRESSED_CHANNEL,
 
@@ -43,7 +44,8 @@ public enum GridFlags {
     CANNOT_CARRY,
 
     /**
-     * Used by P2P Tunnels to prevent tunnels from tunneling recursively.
+     * This is used for the outer node of ME-P2P tunnels, which provides the 32-channel connection at both ends
+     * of the tunnel.
      */
     CANNOT_CARRY_COMPRESSED,
 

@@ -50,4 +50,9 @@ public interface IPathingService extends IGridService {
      * trigger a network reset, booting, path-finding and all.
      */
     void repath();
+
+    /**
+     * @return The current mode used for channel calculations.
+     */
+    ChannelMode getChannelMode();
 }

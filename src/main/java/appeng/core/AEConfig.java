@@ -49,6 +49,7 @@ import appeng.core.config.IntegerOption;
 import appeng.core.config.StringListOption;
 import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.util.EnumCycler;
 
 public final class AEConfig {
@@ -383,6 +384,14 @@ public final class AEConfig {
         return COMMON.serverOpsIgnoreSecurity.get();
     }
 
+    public ChannelMode getChannelMode() {
+        return COMMON.channels.get();
+    }
+
+    public void setChannelModel(ChannelMode mode) {
+        COMMON.channels.set(mode);
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -428,6 +437,7 @@ public final class AEConfig {
         public final BooleanOption matterCannonBlockDamage;
         public final BooleanOption tinyTntBlockDamage;
         public final BooleanOption serverOpsIgnoreSecurity;
+        public final EnumOption<ChannelMode> channels;
 
         // Crafting
         public final BooleanOption inWorldSingularity;
@@ -502,6 +512,8 @@ public final class AEConfig {
                     "Enables the ability of Tiny TNT to break blocks.");
             serverOpsIgnoreSecurity = general.addBoolean("serverOpsIgnoreSecurity", true,
                     "Server operators are not restricted by ME security terminal settings.");
+            channels = general.addEnum("channels", ChannelMode.DEFAULT,
+                    "Changes the channel capacity that cables provide in AE2.");
 
             ConfigSection automation = root.subsection("automation");
             formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);

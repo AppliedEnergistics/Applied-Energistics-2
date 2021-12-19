@@ -33,6 +33,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.networking.pathing.ChannelMode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
@@ -576,13 +577,18 @@ public class GridNode implements IGridNode, IPathItem {
         return this.getUsedChannels() < this.getMaxChannels();
     }
 
-    private int getMaxChannels() {
+    @Override
+    public int getMaxChannels()
+    {
         if (flags.contains(GridFlags.CANNOT_CARRY)) {
             return 0;
-        } else if (!flags.contains(GridFlags.DENSE_CAPACITY)) {
-            return 8;
+        }
+
+        var channelMode = myGrid.getPathingService().getChannelMode();
+        if (!flags.contains(GridFlags.DENSE_CAPACITY)) {
+            return 8 * channelMode.getCableCapacityFactor();
         } else {
-            return 32;
+            return 32 * channelMode.getCableCapacityFactor();
         }
     }
 
@@ -602,17 +608,13 @@ public class GridNode implements IGridNode, IPathItem {
             return;
         }
 
-        if (this.getLastUsedChannels() != this.getUsedChannels()) {
+        if (this.lastUsedChannels != this.getUsedChannels()) {
             this.lastUsedChannels = this.usedChannels;
 
             if (this.getInternalGrid() != null) {
                 notifyStatusChange(IGridNodeListener.State.CHANNEL);
             }
         }
-    }
-
-    private int getLastUsedChannels() {
-        return this.lastUsedChannels;
     }
 
     public long getLastSecurityKey() {
