@@ -2,6 +2,8 @@ package appeng.api.stacks;
 
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.Contract;
+
 import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -165,7 +167,13 @@ public abstract class AEKey {
         return 0;
     }
 
-    public boolean matches(@Nullable GenericStack stack) {
+    /**
+     * Checks if the given stack has the same key as this.
+     * 
+     * @return False if stack is null, otherwise true iff the stacks key is equal to this.
+     */
+    @Contract("null -> false")
+    public final boolean matches(@Nullable GenericStack stack) {
         return stack != null && stack.what().equals(this);
     }
 
