@@ -113,8 +113,6 @@ public final class ReadableNumberConverter {
 
         // handles low numbers more efficiently since no format is needed
         var format = getFormat();
-
-        format.setDecimalSeparatorAlwaysShown(false);
         format.setMaximumFractionDigits(fractionalDigits);
         return format.format(number);
     }
@@ -122,6 +120,7 @@ public final class ReadableNumberConverter {
     private static DecimalFormat getFormat() {
         var symbols = DecimalFormatSymbols.getInstance();
         var format = new DecimalFormat(".#;0.#");
+        format.setDecimalSeparatorAlwaysShown(false);
         format.setDecimalFormatSymbols(symbols);
         format.setRoundingMode(RoundingMode.DOWN);
         return format;
