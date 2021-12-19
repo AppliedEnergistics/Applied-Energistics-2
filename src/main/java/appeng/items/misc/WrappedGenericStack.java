@@ -21,13 +21,10 @@ package appeng.items.misc;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -39,8 +36,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
@@ -166,44 +161,6 @@ public class WrappedGenericStack extends AEBaseItem {
 
         // Generally disallow picking this up
         return true;
-    }
-
-    @Override
-    public String getDescriptionId(ItemStack stack) {
-        return Platform.getDescriptionId(this.getFluid(stack));
-    }
-
-    private FluidVariant getFluid(ItemStack is) {
-        if (is.hasTag()) {
-            var key = AEFluidKey.fromTag(is.getTag());
-            return key != null ? key.toVariant() : FluidVariant.blank();
-        }
-        return FluidVariant.blank();
-    }
-
-    public long getAmount(ItemStack is) {
-        Preconditions.checkArgument(is.getItem() == this);
-        if (is.hasTag()) {
-            return is.getTag().getLong(NBT_AMOUNT);
-        }
-        return 0;
-    }
-
-    public void setAmount(ItemStack is, long amount) {
-        Preconditions.checkArgument(is.getItem() == this);
-        if (amount == 0) {
-            is.removeTagKey(NBT_AMOUNT);
-        } else {
-            is.getOrCreateTag().putLong(NBT_AMOUNT, amount);
-        }
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        long amount = getAmount(stack);
-        if (amount > 0) {
-            lines.add(new TextComponent(Platform.formatFluidAmount(amount)));
-        }
     }
 
     @Override

@@ -24,8 +24,8 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.client.AmountFormat;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AmountFormat;
 import appeng.client.gui.AEBaseScreen;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftingPlanSummaryEntry;
@@ -40,20 +40,17 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     protected List<Component> getEntryDescription(CraftingPlanSummaryEntry entry) {
         List<Component> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getStoredAmount(),
-                    AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.FromStorage.text(amount));
         }
 
         if (entry.getMissingAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getMissingAmount(),
-                    AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getMissingAmount(), AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.Missing.text(amount));
         }
 
         if (entry.getCraftAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getCraftAmount(),
-                    AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getCraftAmount(), AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.ToCraft.text(amount));
         }
         return lines;
@@ -71,15 +68,15 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
         // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {
             lines.add(GuiText.FromStorage
-                    .text(AEStackRendering.formatAmount(entry.getWhat(), entry.getStoredAmount(), AmountFormat.FULL)));
+                    .text(entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.FULL)));
         }
         if (entry.getMissingAmount() > 0) {
             lines.add(GuiText.Missing.text(
-                    AEStackRendering.formatAmount(entry.getWhat(), entry.getMissingAmount(), AmountFormat.FULL)));
+                    entry.getWhat().formatAmount(entry.getMissingAmount(), AmountFormat.FULL)));
         }
         if (entry.getCraftAmount() > 0) {
             lines.add(GuiText.ToCraft
-                    .text(AEStackRendering.formatAmount(entry.getWhat(), entry.getCraftAmount(), AmountFormat.FULL)));
+                    .text(entry.getWhat().formatAmount(entry.getCraftAmount(), AmountFormat.FULL)));
         }
 
         return lines;

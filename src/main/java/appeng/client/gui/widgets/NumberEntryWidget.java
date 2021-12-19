@@ -368,13 +368,15 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
     @Override
     public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
-        var font = Minecraft.getInstance().font;
-        font.draw(
-                poseStack,
-                type.unit(),
-                bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth() + 3,
-                bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f + 1,
-                ChatFormatting.DARK_GRAY.getColor());
+        if (type.unit() != null) {
+            var font = Minecraft.getInstance().font;
+            font.draw(
+                    poseStack,
+                    type.unit(),
+                    bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth() + 3,
+                    bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f + 1,
+                    ChatFormatting.DARK_GRAY.getColor());
+        }
     }
 
     @Override

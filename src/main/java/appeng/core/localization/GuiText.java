@@ -27,7 +27,7 @@ public enum GuiText {
 
     TankAmount, TankCapacity,
 
-    Chest, StoredEnergy, Of, Condenser, Drive, SkyChest, FluidUnitBuckets,
+    Chest, StoredEnergy, Of, Condenser, Drive, SkyChest,
 
     VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, Terminal, TerminalViewCellsTooltip,
 

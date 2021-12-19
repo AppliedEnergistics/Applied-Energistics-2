@@ -66,10 +66,4 @@ public interface IAEStackRenderHandler<T extends AEKey> {
                 // Append the name of the mod by default as mods such as REI would also add that
                 new TextComponent(Platform.formatModName(stack.getModId())));
     }
-
-    /**
-     * Format the amount into a user-readable string. See {@link AmountFormat} for an explanation of the different
-     * formats.
-     */
-    String formatAmount(long amount, AmountFormat format);
 }

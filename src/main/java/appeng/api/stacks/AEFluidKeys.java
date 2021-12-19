@@ -22,13 +22,16 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.client.gui.me.common.FluidStackSizeRenderer;
+import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
 final class AEFluidKeys extends AEKeyType {
+    private static final StackSizeRenderer STACK_SIZE_RENDERER = new FluidStackSizeRenderer();
+
     private static final ResourceLocation ID = AppEng.makeId("f");
 
     static final AEFluidKeys INSTANCE = new AEFluidKeys();
@@ -65,8 +68,12 @@ final class AEFluidKeys extends AEKeyType {
         return AEFluidKey.AMOUNT_BUCKET;
     }
 
+    protected StackSizeRenderer getStackSizeRenderer() {
+        return STACK_SIZE_RENDERER;
+    }
+
     @Override
-    public Component getUnitSymbol() {
-        return GuiText.FluidUnitBuckets.text();
+    public String getUnitSymbol() {
+        return "B";
     }
 }

@@ -104,7 +104,8 @@ public abstract class AEKey {
         return getType().getAmountPerUnit();
     }
 
-    public final Component getUnitSymbol() {
+    @Nullable
+    public final String getUnitSymbol() {
         return getType().getUnitSymbol();
     }
 
@@ -120,6 +121,13 @@ public abstract class AEKey {
      */
     public final int getAmountPerByte() {
         return getType().getAmountPerByte();
+    }
+
+    /**
+     * @see AEKeyType#formatAmount(long,AmountFormat)
+     */
+    public String formatAmount(long amount, AmountFormat format) {
+        return getType().formatAmount(amount, format);
     }
 
     /**

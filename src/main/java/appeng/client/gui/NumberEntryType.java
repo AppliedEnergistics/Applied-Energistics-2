@@ -20,15 +20,12 @@ package appeng.client.gui;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-
 import appeng.api.config.PowerUnits;
 import appeng.api.stacks.AEKey;
 
-public record NumberEntryType(int amountPerUnit, Component unit) {
-    public static final NumberEntryType ENERGY = new NumberEntryType(1, PowerUnits.AE.textComponent());
-    public static final NumberEntryType UNITLESS = new NumberEntryType(1, TextComponent.EMPTY);
+public record NumberEntryType(int amountPerUnit, @Nullable String unit) {
+    public static final NumberEntryType ENERGY = new NumberEntryType(1, PowerUnits.AE.getSymbolName());
+    public static final NumberEntryType UNITLESS = new NumberEntryType(1, null);
 
     public static NumberEntryType of(@Nullable AEKey key) {
         if (key == null) {

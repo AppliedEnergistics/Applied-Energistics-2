@@ -42,11 +42,10 @@ import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AmountFormat;
 import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
-import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
-import appeng.util.ReadableNumberConverter;
 
 /**
  * A basic subclass for any item monitor like display with an item icon and an amount.
@@ -61,7 +60,6 @@ import appeng.util.ReadableNumberConverter;
  */
 public abstract class AbstractMonitorPart extends AbstractDisplayPart
         implements IStorageMonitorPart, IStorageWatcherNode {
-    private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
     @Nullable
     private AEKey configuredItem;
     private long amount;
@@ -103,6 +101,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         data.writeBoolean(this.configuredItem != null);
         if (this.configuredItem != null) {
             this.configuredItem.writeToPacket(data);
+            data.writeVarLong(this.amount);
         }
     }
 
@@ -118,8 +117,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         // This item is rendered dynamically and doesn't need to trigger a chunk update
         if (data.readBoolean()) {
             this.configuredItem = AEItemKey.fromPacket(data);
+            this.amount = data.readVarLong();
         } else {
             this.configuredItem = null;
+            this.amount = 0;
         }
 
         return needRedraw;
@@ -273,7 +274,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         if (what.equals(this.configuredItem)) {
             this.amount = amount;
 
-            var humanReadableText = NUMBER_CONVERTER.toWideReadableForm(this.amount);
+            var humanReadableText = what.formatAmount(amount, AmountFormat.PREVIEW_REGULAR);
 
             // Try throttling to only relevant updates
             if (!humanReadableText.equals(this.lastHumanReadableText)) {

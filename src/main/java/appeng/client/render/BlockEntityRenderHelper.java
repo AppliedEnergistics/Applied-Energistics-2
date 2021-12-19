@@ -27,8 +27,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.client.AmountFormat;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AmountFormat;
 
 /**
  * Helper methods for rendering block entities.
@@ -101,7 +101,7 @@ public class BlockEntityRenderHelper {
             int combinedLightIn) {
         renderItem2d(poseStack, buffers, what, itemScale, combinedLightIn);
 
-        var renderedStackSize = AEStackRendering.formatAmount(what, amount, AmountFormat.FULL);
+        var renderedStackSize = what.formatAmount(amount, AmountFormat.PREVIEW_REGULAR);
 
         // Render the item count
         var fr = Minecraft.getInstance().font;

@@ -23,6 +23,8 @@
 
 package appeng.api.stacks;
 
+import java.text.NumberFormat;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -31,16 +33,22 @@ import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.storage.AEKeyFilter;
+import appeng.client.gui.me.common.StackSizeRenderer;
+import appeng.util.ISlimReadableNumberConverter;
+import appeng.util.IWideReadableNumberConverter;
+import appeng.util.ReadableNumberConverter;
 
 /**
  * Defines the properties of a specific subclass of {@link AEKey}. I.e. for {@link AEItemKey}, there is
  * {@link AEItemKeys}.
  */
 public abstract class AEKeyType {
+    private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
+    private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
+
     private final ResourceLocation id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
@@ -176,11 +184,44 @@ public abstract class AEKeyType {
     /**
      * I.e. "B" for Buckets.
      */
-    public Component getUnitSymbol() {
-        return TextComponent.EMPTY;
+    @Nullable
+    public String getUnitSymbol() {
+        return null;
     }
 
     public int getAmountPerUnit() {
         return 1;
+    }
+
+    protected abstract StackSizeRenderer getStackSizeRenderer();
+
+    /**
+     * Format the amount into a user-readable string. See {@link AmountFormat} for an explanation of the different
+     * formats. Includes the unit if applicable.
+     */
+    public final String formatAmount(long amount, AmountFormat format) {
+        return switch (format) {
+            case FULL -> formatFullAmount(amount);
+            case PREVIEW_REGULAR -> getStackSizeRenderer().getToBeRenderedStackSize(amount, false);
+            case PREVIEW_LARGE_FONT -> getStackSizeRenderer().getToBeRenderedStackSize(amount, true);
+        };
+    }
+
+    private String formatFullAmount(long amount) {
+        var result = new StringBuilder();
+
+        if (getAmountPerUnit() > 1) {
+            var units = amount / (double) getAmountPerUnit();
+            result.append(NumberFormat.getNumberInstance().format(units));
+        } else {
+            result.append(amount);
+        }
+
+        var unit = getUnitSymbol();
+        if (unit != null) {
+            result.append(' ').append(unit);
+        }
+
+        return result.toString();
     }
 }

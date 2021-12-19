@@ -44,6 +44,7 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
@@ -52,7 +53,6 @@ import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 
 public abstract class EncodedPatternItem extends AEBaseItem implements AEToolItem {
     // rather simple client side caching.
@@ -198,18 +198,8 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
     }
 
     protected static Component getStackComponent(GenericStack stack) {
-        String amountInfo;
-        Component displayName;
-        var what = stack.what();
-        if (what instanceof AEItemKey itemKey) {
-            amountInfo = String.valueOf(stack.amount());
-            displayName = itemKey.getDisplayName();
-        } else if (what instanceof AEFluidKey fluidKey) {
-            amountInfo = Platform.formatFluidAmount(stack.amount());
-            displayName = fluidKey.getDisplayName();
-        } else {
-            throw new IllegalArgumentException("Unsupported storage channel: " + what);
-        }
+        var amountInfo = stack.what().formatAmount(stack.amount(), AmountFormat.FULL);
+        var displayName = stack.what().getDisplayName();
         return new TextComponent(amountInfo + " x ").append(displayName);
     }
 

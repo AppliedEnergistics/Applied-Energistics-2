@@ -41,7 +41,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.client.AmountFormat;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -49,6 +48,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
+import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -471,8 +471,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
                                 : GuiText.SmallFontCraft.getLocal();
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
                     } else {
-                        var text = AEStackRendering.formatAmount(entry.getWhat(), storedAmount,
-                                useLargeFonts ? AmountFormat.PREVIEW_LARGE_FONT : AmountFormat.PREVIEW_REGULAR);
+                        AmountFormat format = useLargeFonts ? AmountFormat.PREVIEW_LARGE_FONT
+                                : AmountFormat.PREVIEW_REGULAR;
+                        var text = entry.getWhat().formatAmount(storedAmount, format);
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
                     }
                 }
@@ -533,13 +534,13 @@ public class MEStorageScreen<C extends MEStorageMenu>
         var storedAmount = entry.getStoredAmount();
         if (storedAmount > bigNumber * entry.getWhat().getAmountPerUnit()
                 || storedAmount > entry.getWhat().getAmountPerUnit() && stack.isDamaged()) {
-            var formattedAmount = AEStackRendering.formatAmount(entry.getWhat(), storedAmount, AmountFormat.FULL);
+            var formattedAmount = entry.getWhat().formatAmount(storedAmount, AmountFormat.FULL);
             currentToolTip.add(ButtonToolTips.StoredAmount.text(formattedAmount).withStyle(ChatFormatting.GRAY));
         }
 
         var requestableAmount = entry.getRequestableAmount();
         if (requestableAmount > 0) {
-            var formattedAmount = AEStackRendering.formatAmount(entry.getWhat(), requestableAmount, AmountFormat.FULL);
+            var formattedAmount = entry.getWhat().formatAmount(requestableAmount, AmountFormat.FULL);
             currentToolTip.add(ButtonToolTips.RequestableAmount.text(formattedAmount));
         }
 

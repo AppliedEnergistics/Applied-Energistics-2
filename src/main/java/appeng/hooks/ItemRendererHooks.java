@@ -27,7 +27,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.client.AmountFormat;
+import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.crafting.pattern.EncodedPatternItem;
@@ -76,7 +76,7 @@ public final class ItemRendererHooks {
                     unwrapped.what());
 
             if (unwrapped.amount() > 0) {
-                String amtText = AEStackRendering.formatAmount(unwrapped.what(), unwrapped.amount(), AmountFormat.FULL);
+                String amtText = unwrapped.what().formatAmount(unwrapped.amount(), AmountFormat.FULL);
                 Font font = Minecraft.getInstance().font;
                 StackSizeRenderer.renderSizeLabel(font, x, y, amtText, false);
             }

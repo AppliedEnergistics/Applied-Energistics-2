@@ -24,8 +24,8 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.client.AmountFormat;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AmountFormat;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.core.AEConfig;
@@ -44,20 +44,17 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     protected List<Component> getEntryDescription(CraftingStatusEntry entry) {
         List<Component> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getStoredAmount(),
-                    AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.FromStorage.text(amount));
         }
 
         if (entry.getActiveAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getActiveAmount(),
-                    AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getActiveAmount(), AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.Crafting.text(amount));
         }
 
         if (entry.getPendingAmount() > 0) {
-            String amount = AEStackRendering.formatAmount(entry.getWhat(), entry.getPendingAmount(),
-                    AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getPendingAmount(), AmountFormat.PREVIEW_REGULAR);
             lines.add(GuiText.Scheduled.text(amount));
         }
         return lines;
@@ -75,15 +72,15 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
         // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {
             lines.add(GuiText.FromStorage
-                    .text(AEStackRendering.formatAmount(entry.getWhat(), entry.getStoredAmount(), AmountFormat.FULL)));
+                    .text(entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.FULL)));
         }
         if (entry.getActiveAmount() > 0) {
             lines.add(GuiText.Crafting
-                    .text(AEStackRendering.formatAmount(entry.getWhat(), entry.getActiveAmount(), AmountFormat.FULL)));
+                    .text(entry.getWhat().formatAmount(entry.getActiveAmount(), AmountFormat.FULL)));
         }
         if (entry.getPendingAmount() > 0) {
             lines.add(GuiText.Scheduled.text(
-                    AEStackRendering.formatAmount(entry.getWhat(), entry.getPendingAmount(), AmountFormat.FULL)));
+                    entry.getWhat().formatAmount(entry.getPendingAmount(), AmountFormat.FULL)));
         }
 
         return lines;

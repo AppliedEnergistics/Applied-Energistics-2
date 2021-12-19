@@ -110,8 +110,4 @@ public class AEStackRendering {
         return new ArrayList<Component>(getUnchecked(stack).getTooltip(stack));
     }
 
-    public static String formatAmount(AEKey what, long amount, AmountFormat format) {
-        return getUnchecked(what).formatAmount(amount, format);
-    }
-
 }

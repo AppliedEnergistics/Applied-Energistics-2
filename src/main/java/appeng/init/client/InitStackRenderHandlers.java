@@ -37,22 +37,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.client.AmountFormat;
 import appeng.api.client.IAEStackRenderHandler;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.client.gui.me.common.FluidStackSizeRenderer;
-import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.client.gui.style.FluidBlitter;
-import appeng.util.Platform;
 
 public class InitStackRenderHandlers {
     private InitStackRenderHandlers() {
     }
 
     public static void init() {
-        var itemSSRenderer = new StackSizeRenderer();
         AEStackRendering.register(AEKeyType.items(), AEItemKey.class, new IAEStackRenderHandler<>() {
             @Override
             public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
@@ -103,17 +98,7 @@ public class InitStackRenderHandlers {
                         Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
                                 : TooltipFlag.Default.NORMAL);
             }
-
-            @Override
-            public String formatAmount(long amount, AmountFormat format) {
-                return switch (format) {
-                    case FULL -> String.valueOf(amount);
-                    case PREVIEW_REGULAR -> itemSSRenderer.getToBeRenderedStackSize(amount, false);
-                    case PREVIEW_LARGE_FONT -> itemSSRenderer.getToBeRenderedStackSize(amount, true);
-                };
-            }
         });
-        var fluidSSRenderer = new FluidStackSizeRenderer();
         AEStackRendering.register(AEKeyType.fluids(), AEFluidKey.class, new IAEStackRenderHandler<>() {
             @Override
             public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex,
@@ -185,15 +170,6 @@ public class InitStackRenderHandlers {
             @Override
             public Component getDisplayName(AEFluidKey stack) {
                 return FluidVariantRendering.getName(stack.toVariant());
-            }
-
-            @Override
-            public String formatAmount(long amount, AmountFormat format) {
-                return switch (format) {
-                    case FULL -> Platform.formatFluidAmount(amount);
-                    case PREVIEW_REGULAR -> fluidSSRenderer.getToBeRenderedStackSize(amount, false);
-                    case PREVIEW_LARGE_FONT -> fluidSSRenderer.getToBeRenderedStackSize(amount, true);
-                };
             }
         });
     }

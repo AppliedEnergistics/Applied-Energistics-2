@@ -65,7 +65,7 @@ public class StackSizeRenderer {
         RenderSystem.enableBlend();
     }
 
-    public String getToBeRenderedStackSize(final long originalSize, boolean useLargeFonts) {
+    public String getToBeRenderedStackSize(long originalSize, boolean useLargeFonts) {
         if (useLargeFonts) {
             return SLIM_CONVERTER.toSlimReadableForm(originalSize);
         } else {
