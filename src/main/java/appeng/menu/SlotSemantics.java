@@ -35,7 +35,7 @@ public final class SlotSemantics {
     /**
      * NOTE: If you use this in an addon, use an Addon-Specific Prefix for your semantic id (i.e. your mod id).
      */
-    private static SlotSemantic add(String id, boolean playerSide) {
+    public static SlotSemantic add(String id, boolean playerSide) {
         var semantic = new SlotSemantic(id, playerSide);
         var existing = REGISTRY.putIfAbsent(semantic.id(), semantic);
         if (existing != null) {
