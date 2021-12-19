@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -74,7 +75,11 @@ public final class AEEntities {
         String registryLoc = "ae2:" + id;
         Builder<T> builder = Builder.of(entityFactory, classification);
         customizer.accept(builder);
+        // Temporarily disable the data fixer check to avoid the annoying "no data fixer registered for ae2:xxx".
+        boolean prev = SharedConstants.CHECK_DATA_FIXER_SCHEMA;
+        SharedConstants.CHECK_DATA_FIXER_SCHEMA = false;
         EntityType<T> result = builder.build(registryLoc);
+        SharedConstants.CHECK_DATA_FIXER_SCHEMA = prev;
         ENTITY_TYPES.put(new ResourceLocation(registryLoc), result);
         return result;
     }
