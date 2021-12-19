@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
@@ -60,9 +60,9 @@ public class SpatialIOPortMenu extends AEBaseMenu {
         super(TYPE, id, ip, spatialIOPort);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS,
-                spatialIOPort.getInternalInventory(), 0), SlotSemantic.MACHINE_INPUT);
+                spatialIOPort.getInternalInventory(), 0), SlotSemantics.MACHINE_INPUT);
         this.addSlot(new OutputSlot(spatialIOPort.getInternalInventory(), 1,
-                RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS.icon), SlotSemantic.MACHINE_OUTPUT);
+                RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS.icon), SlotSemantics.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
     }

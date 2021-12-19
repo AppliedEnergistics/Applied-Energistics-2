@@ -47,7 +47,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.InaccessibleSlot;
@@ -80,7 +80,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
         this.host = host;
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
         this.craftingItem.setHideAmount(true);
-        this.addSlot(this.craftingItem, SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(this.craftingItem, SlotSemantics.MACHINE_OUTPUT);
     }
 
     @Override

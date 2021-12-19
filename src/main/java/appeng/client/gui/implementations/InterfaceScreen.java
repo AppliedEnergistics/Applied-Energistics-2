@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IconButton;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.InterfaceMenu;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
@@ -42,7 +42,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
 
         widgets.addOpenPriorityButton();
 
-        var configSlots = menu.getSlots(SlotSemantic.CONFIG);
+        var configSlots = menu.getSlots(SlotSemantics.CONFIG);
         for (int i = 0; i < configSlots.size(); i++) {
             var button = new SetAmountButton(btn -> {
                 var idx = amountButtons.indexOf(btn);
@@ -60,7 +60,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        var configSlots = menu.getSlots(SlotSemantic.CONFIG);
+        var configSlots = menu.getSlots(SlotSemantics.CONFIG);
         for (int i = 0; i < amountButtons.size(); i++) {
             var button = amountButtons.get(i);
             var item = configSlots.get(i).getItem();

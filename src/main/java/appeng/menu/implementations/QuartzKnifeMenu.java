@@ -32,7 +32,7 @@ import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.items.materials.NamePressItem;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.inv.AppEngInternalInventory;
@@ -57,8 +57,8 @@ public class QuartzKnifeMenu extends AEBaseMenu {
 
         this.addSlot(
                 new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.METAL_INGOTS, this.inSlot, 0),
-                SlotSemantic.MACHINE_INPUT);
-        this.addSlot(new QuartzKniveSlot(this.inSlot, 0, null), SlotSemantic.MACHINE_OUTPUT);
+                SlotSemantics.MACHINE_INPUT);
+        this.addSlot(new QuartzKniveSlot(this.inSlot, 0, null), SlotSemantics.MACHINE_OUTPUT);
 
         this.createPlayerInventorySlots(ip);
 

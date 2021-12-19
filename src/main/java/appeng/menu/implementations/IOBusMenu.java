@@ -23,7 +23,7 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.client.gui.implementations.IOBusScreen;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalFakeSlot;
 import appeng.parts.automation.ExportBusPart;
@@ -56,7 +56,7 @@ public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
         this.setupUpgrades();
 
         var inv = this.getHost().getConfig().createMenuWrapper();
-        var s = SlotSemantic.CONFIG;
+        var s = SlotSemantics.CONFIG;
         this.addSlot(new FakeSlot(inv, 0), s);
 
         // Slots that become available with 1 capacity card

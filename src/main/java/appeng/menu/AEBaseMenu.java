@@ -208,7 +208,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     protected final void createPlayerInventorySlots(Inventory playerInventory) {
         Preconditions.checkState(
-                getSlots(SlotSemantic.PLAYER_INVENTORY).isEmpty(),
+                getSlots(SlotSemantics.PLAYER_INVENTORY).isEmpty(),
                 "Player inventory was already created");
 
         for (int i = 0; i < playerInventory.items.size(); i++) {
@@ -218,9 +218,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             } else {
                 slot = new Slot(playerInventory, i, 0, 0);
             }
-            SlotSemantic s = i < Inventory.getSelectionSize()
-                    ? SlotSemantic.PLAYER_HOTBAR
-                    : SlotSemantic.PLAYER_INVENTORY;
+            var s = i < Inventory.getSelectionSize()
+                    ? SlotSemantics.PLAYER_HOTBAR
+                    : SlotSemantics.PLAYER_INVENTORY;
             addSlot(slot, s);
         }
     }
@@ -277,10 +277,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         SlotSemantic slotSemantic = semanticBySlot.get(slot);
-        return slotSemantic == SlotSemantic.PLAYER_INVENTORY
-                || slotSemantic == SlotSemantic.PLAYER_HOTBAR
+        return slotSemantic == SlotSemantics.PLAYER_INVENTORY
+                || slotSemantic == SlotSemantics.PLAYER_HOTBAR
                 // The crafting grid in the crafting terminal also shift-clicks into the network
-                || slotSemantic == SlotSemantic.CRAFTING_GRID;
+                || slotSemantic == SlotSemantics.CRAFTING_GRID;
     }
 
     @Override

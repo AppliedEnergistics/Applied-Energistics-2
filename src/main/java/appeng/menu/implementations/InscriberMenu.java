@@ -27,7 +27,7 @@ import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.OutputSlot;
@@ -59,17 +59,17 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
 
         RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0);
         top.setStackLimit(1);
-        this.top = this.addSlot(top, SlotSemantic.INSCRIBER_PLATE_TOP);
+        this.top = this.addSlot(top, SlotSemantics.INSCRIBER_PLATE_TOP);
         RestrictedInputSlot bottom = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv,
                 1);
         bottom.setStackLimit(1);
-        this.bottom = this.addSlot(bottom, SlotSemantic.INSCRIBER_PLATE_BOTTOM);
+        this.bottom = this.addSlot(bottom, SlotSemantics.INSCRIBER_PLATE_BOTTOM);
         RestrictedInputSlot middle = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_INPUT, inv,
                 2);
         middle.setStackLimit(1);
-        this.middle = this.addSlot(middle, SlotSemantic.MACHINE_INPUT);
+        this.middle = this.addSlot(middle, SlotSemantics.MACHINE_INPUT);
 
-        this.addSlot(new OutputSlot(inv, 3, null), SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(new OutputSlot(inv, 3, null), SlotSemantics.MACHINE_OUTPUT);
     }
 
     @Override

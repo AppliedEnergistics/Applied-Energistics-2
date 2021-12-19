@@ -23,7 +23,7 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.slot.RestrictedInputSlot;
 
 /**
@@ -40,7 +40,7 @@ public class DriveMenu extends AEBaseMenu {
 
         for (int i = 0; i < 10; i++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
-                    drive.getInternalInventory(), i), SlotSemantic.STORAGE_CELL);
+                    drive.getInternalInventory(), i), SlotSemantics.STORAGE_CELL);
         }
 
         this.createPlayerInventorySlots(ip);

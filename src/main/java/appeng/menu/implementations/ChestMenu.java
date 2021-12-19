@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.slot.RestrictedInputSlot;
 
 /**
@@ -41,7 +41,7 @@ public class ChestMenu extends AEBaseMenu {
         super(TYPE, id, ip, chest);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,
-                chest.getInternalInventory(), 1), SlotSemantic.STORAGE_CELL);
+                chest.getInternalInventory(), 1), SlotSemantics.STORAGE_CELL);
 
         this.createPlayerInventorySlots(ip);
     }

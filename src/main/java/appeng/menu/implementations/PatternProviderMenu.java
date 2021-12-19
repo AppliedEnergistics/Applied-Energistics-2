@@ -29,7 +29,7 @@ import appeng.helpers.iface.DualityPatternProvider;
 import appeng.helpers.iface.IPatternProviderHost;
 import appeng.helpers.iface.PatternProviderReturnInventory;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
@@ -61,14 +61,14 @@ public class PatternProviderMenu extends AEBaseMenu {
         for (int x = 0; x < DualityPatternProvider.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
                     duality.getPatternInv(), x),
-                    SlotSemantic.ENCODED_PATTERN);
+                    SlotSemantics.ENCODED_PATTERN);
         }
 
         // Show first few entries of the return inv
         var returnInv = duality.getReturnInv().createMenuWrapper();
         for (int i = 0; i < PatternProviderReturnInventory.NUMBER_OF_SLOTS; i++) {
             if (i < returnInv.size()) {
-                this.addSlot(new AppEngSlot(returnInv, i), SlotSemantic.STORAGE);
+                this.addSlot(new AppEngSlot(returnInv, i), SlotSemantics.STORAGE);
             }
         }
 

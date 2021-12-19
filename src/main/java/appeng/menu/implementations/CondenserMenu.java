@@ -25,7 +25,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.blockentity.misc.CondenserBlockEntity;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.OutputSlot;
@@ -55,12 +55,12 @@ public class CondenserMenu extends AEBaseMenu implements IProgressProvider {
         var inv = condenser.getInternalInventory();
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.TRASH, inv, 0),
-                SlotSemantic.MACHINE_INPUT);
-        this.addSlot(new OutputSlot(inv, 1, null), SlotSemantic.MACHINE_OUTPUT);
+                SlotSemantics.MACHINE_INPUT);
+        this.addSlot(new OutputSlot(inv, 1, null), SlotSemantics.MACHINE_OUTPUT);
         this.addSlot(
                 new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_COMPONENT, inv, 2)
                         .setStackLimit(1),
-                SlotSemantic.STORAGE_CELL);
+                SlotSemantics.STORAGE_CELL);
 
         this.createPlayerInventorySlots(ip);
     }

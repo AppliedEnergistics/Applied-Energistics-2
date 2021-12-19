@@ -75,7 +75,7 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.items.storage.ViewCellItem;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
@@ -136,7 +136,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.configSrc = ((IConfigurableObject) this.menu).getConfigManager();
         this.menu.setGui(this);
 
-        List<Slot> viewCellSlots = menu.getSlots(SlotSemantic.VIEW_CELL);
+        List<Slot> viewCellSlots = menu.getSlots(SlotSemantics.VIEW_CELL);
         this.supportsViewCells = !viewCellSlots.isEmpty();
         if (this.supportsViewCells) {
             List<Component> tooltip = Collections.singletonList(GuiText.TerminalViewCellsTooltip.text());

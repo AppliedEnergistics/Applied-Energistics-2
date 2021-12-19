@@ -34,7 +34,7 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import appeng.client.gui.MockResourceManager;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 class StyleManagerTest {
@@ -62,10 +62,10 @@ class StyleManagerTest {
         assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB()).isEqualTo(0xff404040);
         assertThat(style.getText()).hasSize(2);
         assertThat(style.getSlots()).containsOnlyKeys(
-                SlotSemantic.TOOLBOX,
-                SlotSemantic.PLAYER_INVENTORY,
-                SlotSemantic.PLAYER_HOTBAR,
-                SlotSemantic.CONFIG,
-                SlotSemantic.STORAGE_CELL);
+                SlotSemantics.TOOLBOX.id(),
+                SlotSemantics.PLAYER_INVENTORY.id(),
+                SlotSemantics.PLAYER_HOTBAR.id(),
+                SlotSemantics.CONFIG.id(),
+                SlotSemantics.STORAGE_CELL.id());
     }
 }

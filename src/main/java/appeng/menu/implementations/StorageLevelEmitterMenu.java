@@ -31,7 +31,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.StorageLevelEmitterScreen;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.slot.FakeSlot;
 import appeng.parts.automation.StorageLevelEmitterPart;
 
@@ -84,7 +84,7 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
         this.setupUpgrades();
 
         var inv = getHost().getConfig().createMenuWrapper();
-        this.addSlot(new FakeSlot(inv, 0), SlotSemantic.CONFIG);
+        this.addSlot(new FakeSlot(inv, 0), SlotSemantics.CONFIG);
     }
 
     @Override

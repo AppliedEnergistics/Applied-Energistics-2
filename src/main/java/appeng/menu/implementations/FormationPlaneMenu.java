@@ -28,7 +28,7 @@ import appeng.api.config.YesNo;
 import appeng.api.stacks.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.FormationPlaneScreen;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalFakeSlot;
@@ -59,9 +59,9 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
             for (int x = 0; x < 9; x++) {
                 int invIdx = y * 9 + x;
                 if (y < 2) {
-                    this.addSlot(new FakeSlot(config, invIdx), SlotSemantic.CONFIG);
+                    this.addSlot(new FakeSlot(config, invIdx), SlotSemantics.CONFIG);
                 } else {
-                    this.addSlot(new OptionalFakeSlot(config, this, invIdx, y - 2), SlotSemantic.CONFIG);
+                    this.addSlot(new OptionalFakeSlot(config, this, invIdx, y - 2), SlotSemantics.CONFIG);
                 }
             }
         }

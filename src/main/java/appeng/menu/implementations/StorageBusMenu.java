@@ -40,7 +40,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.StorageBusScreen;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalFakeSlot;
@@ -89,9 +89,9 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
             for (int x = 0; x < 9; x++) {
                 int invSlot = y * 9 + x;
                 if (y < 2) {
-                    this.addSlot(new FakeSlot(config, invSlot), SlotSemantic.CONFIG);
+                    this.addSlot(new FakeSlot(config, invSlot), SlotSemantics.CONFIG);
                 } else {
-                    this.addSlot(new OptionalFakeSlot(config, this, invSlot, y - 2), SlotSemantic.CONFIG);
+                    this.addSlot(new OptionalFakeSlot(config, this, invSlot, y - 2), SlotSemantics.CONFIG);
                 }
             }
         }

@@ -41,7 +41,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
@@ -82,7 +82,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
                 RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
                         this.tbInventory.getInternalInventory(), i);
                 // The toolbox is in the network tool that is part of the player inventory
-                this.addSlot(slot, SlotSemantic.TOOLBOX);
+                this.addSlot(slot, SlotSemantics.TOOLBOX);
             }
         }
 
@@ -109,7 +109,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         for (int i = 0; i < getUpgrades().size(); i++) {
             var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, i);
             slot.setNotDraggable();
-            this.addSlot(slot, SlotSemantic.UPGRADE);
+            this.addSlot(slot, SlotSemantics.UPGRADE);
         }
     }
 

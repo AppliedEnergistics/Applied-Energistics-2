@@ -23,7 +23,7 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.RestrictedInputSlot;
@@ -49,7 +49,7 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
         this.vibrationChamber = vibrationChamber;
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.FUEL,
-                vibrationChamber.getInternalInventory(), 0), SlotSemantic.MACHINE_INPUT);
+                vibrationChamber.getInternalInventory(), 0), SlotSemantics.MACHINE_INPUT);
 
         this.createPlayerInventorySlots(ip);
     }

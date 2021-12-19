@@ -25,7 +25,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.core.AEConfig;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.RestrictedInputSlot;
 
@@ -49,7 +49,7 @@ public class WirelessMenu extends AEBaseMenu {
         super(TYPE, id, ip, te);
 
         this.addSlot(this.boosterSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.RANGE_BOOSTER,
-                te.getInternalInventory(), 0), SlotSemantic.STORAGE);
+                te.getInternalInventory(), 0), SlotSemantics.STORAGE);
 
         this.createPlayerInventorySlots(ip);
     }

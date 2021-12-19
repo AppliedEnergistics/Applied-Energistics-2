@@ -29,7 +29,7 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.slot.OutputSlot;
@@ -64,13 +64,13 @@ public class SecurityStationMenu extends MEStorageMenu implements InternalInvent
         this.securityBox = (SecurityStationBlockEntity) monitorable;
 
         this.addSlot(this.configSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BIOMETRIC_CARD,
-                this.securityBox.getConfigSlot(), 0), SlotSemantic.BIOMETRIC_CARD);
+                this.securityBox.getConfigSlot(), 0), SlotSemantics.BIOMETRIC_CARD);
 
         // Add a small inventory and two slots for linking items to the connected grid
         AppEngInternalInventory gridLinkingInv = new AppEngInternalInventory(this, 2);
         this.addSlot(this.linkableIn = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.GRID_LINKABLE_ITEM,
-                gridLinkingInv, 0), SlotSemantic.MACHINE_INPUT);
-        this.addSlot(this.linkableOut = new OutputSlot(gridLinkingInv, 1, null), SlotSemantic.MACHINE_OUTPUT);
+                gridLinkingInv, 0), SlotSemantics.MACHINE_INPUT);
+        this.addSlot(this.linkableOut = new OutputSlot(gridLinkingInv, 1, null), SlotSemantics.MACHINE_OUTPUT);
 
         registerClientAction(ACTION_TOGGLE_PERMISSION, SecurityPermissions.class, this::toggleSetting);
     }
