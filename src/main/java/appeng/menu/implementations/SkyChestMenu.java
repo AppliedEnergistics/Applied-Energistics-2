@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
 
 /**
@@ -46,7 +46,7 @@ public class SkyChestMenu extends AEBaseMenu {
 
         var inv = chest.getInternalInventory();
         for (int i = 0; i < inv.size(); i++) {
-            this.addSlot(new AppEngSlot(inv, i), SlotSemantic.STORAGE);
+            this.addSlot(new AppEngSlot(inv, i), SlotSemantics.STORAGE);
         }
 
         this.createPlayerInventorySlots(ip);

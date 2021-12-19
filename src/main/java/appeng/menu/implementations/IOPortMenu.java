@@ -28,7 +28,7 @@ import appeng.api.config.Settings;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.storage.IOPortBlockEntity;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.OutputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
@@ -58,12 +58,12 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
 
         for (int i = 0; i < 6; i++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, cells, i),
-                    SlotSemantic.MACHINE_INPUT);
+                    SlotSemantics.MACHINE_INPUT);
         }
 
         for (int i = 0; i < 6; i++) {
             this.addSlot(new OutputSlot(cells, 6 + i,
-                    RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.icon), SlotSemantic.MACHINE_OUTPUT);
+                    RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.icon), SlotSemantics.MACHINE_OUTPUT);
         }
 
         this.setupUpgrades();

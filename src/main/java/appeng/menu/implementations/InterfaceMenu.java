@@ -26,7 +26,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.InterfaceScreen;
 import appeng.helpers.InterfaceLogicHost;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
 
@@ -51,12 +51,12 @@ public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
 
         var config = duality.getConfig().createMenuWrapper();
         for (int x = 0; x < config.size(); x++) {
-            this.addSlot(new FakeSlot(config, x), SlotSemantic.CONFIG);
+            this.addSlot(new FakeSlot(config, x), SlotSemantics.CONFIG);
         }
 
         var storage = duality.getStorage().createMenuWrapper();
         for (int x = 0; x < storage.size(); x++) {
-            this.addSlot(new AppEngSlot(storage, x), SlotSemantic.STORAGE);
+            this.addSlot(new AppEngSlot(storage, x), SlotSemantics.STORAGE);
         }
     }
 

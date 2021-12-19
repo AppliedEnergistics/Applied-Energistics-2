@@ -52,7 +52,7 @@ import appeng.helpers.IPatternTerminalHost;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.NullMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
@@ -124,21 +124,21 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
         this.craftingGridInv = this.getPatternTerminal().getSubInventory(IPatternTerminalHost.INV_CRAFTING);
         for (int i = 0; i < 9; i++) {
             this.addSlot(this.craftingGridSlots[i] = new FakeCraftingMatrixSlot(this.craftingGridInv, i),
-                    SlotSemantic.CRAFTING_GRID);
+                    SlotSemantics.CRAFTING_GRID);
         }
 
         // Create the output slot used for crafting mode patterns
         this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
-                host.getInventory(), this.craftingGridInv, patternInv, this, 2, this), SlotSemantic.CRAFTING_RESULT);
+                host.getInventory(), this.craftingGridInv, patternInv, this, 2, this), SlotSemantics.CRAFTING_RESULT);
         this.craftOutputSlot.setIcon(null);
 
         // Create slots for the outputs of processing-mode patterns. Unrolled as each as a different semantic
         this.addSlot(this.processingOutputSlots[0] = new PatternOutputsSlot(output, this, 0, 1),
-                SlotSemantic.PROCESSING_PRIMARY_RESULT);
+                SlotSemantics.PROCESSING_PRIMARY_RESULT);
         this.addSlot(this.processingOutputSlots[1] = new PatternOutputsSlot(output, this, 1, 1),
-                SlotSemantic.PROCESSING_FIRST_OPTIONAL_RESULT);
+                SlotSemantics.PROCESSING_FIRST_OPTIONAL_RESULT);
         this.addSlot(this.processingOutputSlots[2] = new PatternOutputsSlot(output, this, 2, 1),
-                SlotSemantic.PROCESSING_SECOND_OPTIONAL_RESULT);
+                SlotSemantics.PROCESSING_SECOND_OPTIONAL_RESULT);
 
         for (int i = 0; i < 3; i++) {
             this.processingOutputSlots[i].setRenderDisabled(false);
@@ -146,11 +146,11 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
         }
 
         this.addSlot(this.blankPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BLANK_PATTERN,
-                patternInv, 0), SlotSemantic.BLANK_PATTERN);
+                patternInv, 0), SlotSemantics.BLANK_PATTERN);
         this.addSlot(
                 this.encodedPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
                         patternInv, 1),
-                SlotSemantic.ENCODED_PATTERN);
+                SlotSemantics.ENCODED_PATTERN);
 
         this.encodedPatternSlot.setStackLimit(1);
 

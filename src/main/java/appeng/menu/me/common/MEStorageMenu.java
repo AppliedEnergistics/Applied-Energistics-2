@@ -75,7 +75,7 @@ import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.crafting.CraftAmountMenu;
@@ -197,7 +197,7 @@ public class MEStorageMenu extends AEBaseMenu
             for (int i = 0; i < viewCellStorage.size(); i++) {
                 var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.VIEW_CELL,
                         viewCellStorage, i);
-                this.addSlot(slot, SlotSemantic.VIEW_CELL);
+                this.addSlot(slot, SlotSemantics.VIEW_CELL);
                 this.viewCellSlots.add(slot);
             }
         } else {

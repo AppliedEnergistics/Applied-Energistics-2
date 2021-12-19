@@ -21,7 +21,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.util.inv.AppEngInternalInventory;
@@ -65,7 +65,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
         registerClientAction(ACTION_SET_STOCK_AMOUNT, Integer.class, this::confirm);
         this.host = host;
         this.stockedItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
-        this.addSlot(this.stockedItem, SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(this.stockedItem, SlotSemantics.MACHINE_OUTPUT);
     }
 
     @Override

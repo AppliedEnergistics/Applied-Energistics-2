@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.slot.RestrictedInputSlot;
 
 /**
@@ -41,7 +41,7 @@ public class QNBMenu extends AEBaseMenu {
         super(TYPE, id, ip, quantumBridge);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,
-                quantumBridge.getInternalInventory(), 0).setStackLimit(1), SlotSemantic.STORAGE);
+                quantumBridge.getInternalInventory(), 0).setStackLimit(1), SlotSemantics.STORAGE);
 
         this.createPlayerInventorySlots(ip);
     }

@@ -39,7 +39,7 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.NullMenu;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.slot.CraftingMatrixSlot;
@@ -78,12 +78,12 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
         for (int i = 0; i < 9; i++) {
             this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this, craftingGridInv, i),
-                    SlotSemantic.CRAFTING_GRID);
+                    SlotSemantics.CRAFTING_GRID);
         }
 
         this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
                 this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this),
-                SlotSemantic.CRAFTING_RESULT);
+                SlotSemantics.CRAFTING_RESULT);
 
         this.slotsChanged(craftingGridInv.toContainer());
     }
@@ -141,7 +141,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     public boolean hasItemType(ItemStack itemStack, int amount) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
-        for (Slot slot : getSlots(SlotSemantic.CRAFTING_GRID)) {
+        for (Slot slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
             ItemStack stackInSlot = slot.getItem();
             if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameTags(itemStack, stackInSlot)) {
                 if (itemStack.getCount() >= amount) {

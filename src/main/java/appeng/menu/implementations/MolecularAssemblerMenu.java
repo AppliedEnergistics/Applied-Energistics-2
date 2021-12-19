@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.AppEngSlot;
@@ -70,14 +70,14 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
         var mac = this.getHost().getSubInventory(MolecularAssemblerBlockEntity.INV_MAIN);
 
         for (int i = 0; i < 9; i++) {
-            this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantic.MACHINE_CRAFTING_GRID);
+            this.addSlot(new MolecularAssemblerPatternSlot(this, mac, i), SlotSemantics.MACHINE_CRAFTING_GRID);
         }
 
         encodedPatternSlot = this.addSlot(
                 new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_AE_CRAFTING_PATTERN, mac, 10),
-                SlotSemantic.ENCODED_PATTERN);
+                SlotSemantics.ENCODED_PATTERN);
 
-        this.addSlot(new OutputSlot(mac, 9, null), SlotSemantic.MACHINE_OUTPUT);
+        this.addSlot(new OutputSlot(mac, 9, null), SlotSemantics.MACHINE_OUTPUT);
 
         setupUpgrades();
     }

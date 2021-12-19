@@ -19,7 +19,6 @@
 package appeng.client.gui;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +77,7 @@ import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.me.interaction.EmptyingAction;
 import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
@@ -107,7 +107,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     private Slot bl_clicked;
     private boolean handlingRightClick;
     private final Map<String, TextOverride> textOverrides = new HashMap<>();
-    private final EnumSet<SlotSemantic> hiddenSlots = EnumSet.noneOf(SlotSemantic.class);
+    private final Set<SlotSemantic> hiddenSlots = new HashSet<>();
     protected final WidgetContainer widgets;
     protected final ScreenStyle style;
 
@@ -140,13 +140,15 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     private void positionSlots(ScreenStyle style) {
 
-        for (Map.Entry<SlotSemantic, SlotPosition> entry : style.getSlots().entrySet()) {
+        for (var entry : style.getSlots().entrySet()) {
+            var semantic = SlotSemantics.getOrThrow(entry.getKey());
+
             // Do not position slots that are hidden
-            if (hiddenSlots.contains(entry.getKey())) {
+            if (hiddenSlots.contains(semantic)) {
                 continue;
             }
 
-            List<Slot> slots = menu.getSlots(entry.getKey());
+            List<Slot> slots = menu.getSlots(semantic);
             for (int i = 0; i < slots.size(); i++) {
                 Slot slot = slots.get(i);
 

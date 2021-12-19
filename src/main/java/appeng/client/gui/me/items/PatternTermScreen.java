@@ -36,7 +36,7 @@ import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PatternSlotPacket;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.me.items.PatternTermMenu;
 import appeng.menu.slot.PatternTermSlot;
 
@@ -137,10 +137,10 @@ public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScree
             this.fluidSubstitutionsDisabledBtn.visible = false;
         }
 
-        setSlotsHidden(SlotSemantic.CRAFTING_RESULT, !this.menu.isCraftingMode());
-        setSlotsHidden(SlotSemantic.PROCESSING_PRIMARY_RESULT, this.menu.isCraftingMode());
-        setSlotsHidden(SlotSemantic.PROCESSING_FIRST_OPTIONAL_RESULT, this.menu.isCraftingMode());
-        setSlotsHidden(SlotSemantic.PROCESSING_SECOND_OPTIONAL_RESULT, this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantics.CRAFTING_RESULT, !this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantics.PROCESSING_PRIMARY_RESULT, this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantics.PROCESSING_FIRST_OPTIONAL_RESULT, this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantics.PROCESSING_SECOND_OPTIONAL_RESULT, this.menu.isCraftingMode());
 
         // Only show tooltips for the processing output slots, if we're in processing mode
         widgets.setTooltipAreaEnabled("processing-primary-output", !this.menu.isCraftingMode());

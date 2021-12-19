@@ -32,7 +32,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.core.localization.GuiText;
-import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.UpgradeableMenu;
 
 /**
@@ -45,7 +45,7 @@ public class UpgradeableScreen<T extends UpgradeableMenu<?>> extends AEBaseScree
         super(menu, playerInventory, title, style);
 
         this.widgets.add("upgrades", new UpgradesPanel(
-                menu.getSlots(SlotSemantic.UPGRADE),
+                menu.getSlots(SlotSemantics.UPGRADE),
                 this::getCompatibleUpgrades));
         if (menu.hasToolbox()) {
             this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolboxName()));

@@ -33,8 +33,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Component.Serializer;
 import net.minecraft.network.chat.Style;
 
-import appeng.menu.SlotSemantic;
-
 /**
  * A screen style document defines various visual aspects of AE2 screens.
  */
@@ -52,7 +50,7 @@ public class ScreenStyle {
     /**
      * Positioning information for groups of slots.
      */
-    private final Map<SlotSemantic, SlotPosition> slots = new EnumMap<>(SlotSemantic.class);
+    private final Map<String, SlotPosition> slots = new HashMap<>();
 
     /**
      * Various text-labels positioned on the screen.
@@ -62,7 +60,7 @@ public class ScreenStyle {
     /**
      * Color-Palette for the screen.
      */
-    private final Map<PaletteColor, Color> palette = new EnumMap<PaletteColor, Color>(PaletteColor.class);
+    private final Map<PaletteColor, Color> palette = new EnumMap<>(PaletteColor.class);
 
     /**
      * Additional images that are screen-specific.
@@ -86,7 +84,7 @@ public class ScreenStyle {
         return palette.get(color);
     }
 
-    public Map<SlotSemantic, SlotPosition> getSlots() {
+    public Map<String, SlotPosition> getSlots() {
         return slots;
     }
 
