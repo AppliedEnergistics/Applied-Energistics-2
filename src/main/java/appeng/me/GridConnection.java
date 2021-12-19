@@ -125,7 +125,7 @@ public class GridConnection implements IGridConnection, IPathItem {
 
     @Override
     public void setControllerRoute(IPathItem fast, boolean zeroOut) {
-        if (zeroOut) {
+        if (zeroOut) { // TODO: this is always true
             this.lastUsedChannels = 0;
         }
 
