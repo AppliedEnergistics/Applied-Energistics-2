@@ -44,8 +44,8 @@ public enum GridFlags {
     CANNOT_CARRY,
 
     /**
-     * This is used for the outer node of ME-P2P tunnels, which provides the 32-channel connection at both ends
-     * of the tunnel.
+     * This is used for the outer node of ME-P2P tunnels, which provides the 32-channel connection at both ends of the
+     * tunnel.
      */
     CANNOT_CARRY_COMPRESSED,
 

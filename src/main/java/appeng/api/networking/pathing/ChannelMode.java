@@ -43,7 +43,7 @@ public enum ChannelMode {
 
     /**
      * @return Multiplier for the default capacity of cables. Must be a power of two. 0 disables cable capacity
-     * requirements altogether.
+     *         requirements altogether.
      */
     public int getCableCapacityFactor() {
         return cableCapacityFactor;

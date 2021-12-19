@@ -18,6 +18,11 @@
 
 package appeng.me.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -29,6 +34,7 @@ import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridChannelRequirementChanged;
 import appeng.api.networking.events.GridControllerChange;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.blockentity.networking.ControllerBlockEntity;
@@ -40,16 +46,10 @@ import appeng.me.Grid;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.me.pathfinding.AdHocChannelUpdater;
-import appeng.api.networking.pathing.ChannelMode;
 import appeng.me.pathfinding.ControllerChannelUpdater;
 import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class PathingService implements IPathingService, IGridServiceProvider {
 
@@ -230,7 +230,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         int channels = 0;
         for (var node : this.nodesNeedingChannels) {
             if (!ignore.contains(node)) {
-                // Prevent ad-hoc networks from being connected to the outside and inside node of P2P tunnels at the same time
+                // Prevent ad-hoc networks from being connected to the outside and inside node of P2P tunnels at the
+                // same time
                 // this effectively prevents the nesting of P2P-tunnels in ad-hoc networks.
                 if (node.hasFlag(GridFlags.COMPRESSED_CHANNEL) && !this.cannotCarryCompressedNodes.isEmpty()) {
                     return channelMode.getAdHocNetworkChannels() + 1;
