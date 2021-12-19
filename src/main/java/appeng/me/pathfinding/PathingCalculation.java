@@ -69,7 +69,7 @@ public class PathingCalculation {
                 if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
                     visited.add(gc);
                     queue.add(gc);
-                    gc.setControllerRoute((GridNode) node, true);
+                    gc.setControllerRoute((GridNode) node);
                 }
             }
         }
@@ -83,7 +83,7 @@ public class PathingCalculation {
             for (final IPathItem pi : i.getPossibleOptions()) {
                 if (!this.visited.contains(pi)) {
                     // Set BFS parent.
-                    pi.setControllerRoute(i, true);
+                    pi.setControllerRoute(i);
 
                     if (pi.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                         if (this.multiblocksWithChannel.contains(pi)) {

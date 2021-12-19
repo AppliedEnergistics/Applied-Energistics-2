@@ -557,10 +557,8 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public void setControllerRoute(final IPathItem fast, final boolean zeroOut) {
-        if (zeroOut) {
-            this.usedChannels = 0;
-        }
+    public void setControllerRoute(final IPathItem fast) {
+        this.usedChannels = 0;
 
         GridConnection connection = (GridConnection) fast;
 
