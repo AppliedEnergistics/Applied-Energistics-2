@@ -178,4 +178,8 @@ public interface IGridNode {
      * Fills in details about this node in the given crash report category.
      */
     void fillCrashReportCategory(CrashReportCategory category);
+
+    int getMaxChannels();
+
+    int getUsedChannels();
 }

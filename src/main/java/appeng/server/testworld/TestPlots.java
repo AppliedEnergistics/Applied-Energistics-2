@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableMap;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -48,6 +50,7 @@ import appeng.items.tools.powered.MatterCannonItem;
 import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
 import appeng.parts.automation.ImportBusPart;
+import appeng.parts.crafting.PatternProviderPart;
 
 public final class TestPlots {
     public static final Map<ResourceLocation, Consumer<PlotBuilder>> PLOT_FACTORIES = ImmutableMap
@@ -67,6 +70,7 @@ public final class TestPlots {
             .put(AppEng.makeId("importonpulsetransactioncrash"), TestPlots::importOnPulseTransactionCrash)
             .put(AppEng.makeId("mattercannonrange"), TestPlots::matterCannonRange)
             .put(AppEng.makeId("insertfluidintomechest"), TestPlots::testInsertFluidIntoMEChest)
+            .put(AppEng.makeId("maxchannelsadhoctest"), TestPlots::maxChannelsAdHocTest)
             .build();
 
     private TestPlots() {
@@ -586,6 +590,69 @@ public final class TestPlots {
             var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
             helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
         }));
+    }
+
+    public static void maxChannelsAdHocTest(PlotBuilder plot) {
+        var random = new Random();
+
+        var recipeCounter = new AtomicInteger();
+
+        plot.creativeEnergyCell("0 -1 0");
+        plot.cable("[-3,3] 0 [-3,3]", AEParts.SMART_DENSE_CABLE.stack(AEColor.TRANSPARENT));
+        plot.cable("[-3,3] [1,64] [-3,2]")
+                .part(Direction.EAST, AEParts.TERMINAL)
+                .part(Direction.NORTH, AEParts.TERMINAL)
+                .part(Direction.WEST, AEParts.TERMINAL)
+                .part(Direction.WEST, AEParts.TERMINAL);
+
+        Consumer<PatternProviderPart> setupProvider = provider -> {
+            var patterns = provider.getDuality().getPatternInv();
+
+            var craftingRecipes = provider.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
+
+            for (int x = 0; x < 3; x++) {
+                var recipe = craftingRecipes.get(recipeCounter.incrementAndGet() % craftingRecipes.size());
+                try {
+                    var craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
+                            recipe,
+                            recipe.getIngredients().stream()
+                                    .map(i -> {
+                                        if (i.isEmpty()) {
+                                            return ItemStack.EMPTY;
+                                        } else {
+                                            return i.getItems()[0];
+                                        }
+                                    })
+                                    .toArray(ItemStack[]::new),
+                            recipe.getResultItem(),
+                            false,
+                            false);
+                    provider.getDuality().getPatternInv().addItems(craftingPattern);
+                } catch (Exception ignored) {
+                }
+            }
+
+            for (int x = 0; x < 1; x++) {
+                var ins = new ArrayList<GenericStack>();
+                var insCount = 1 + random.nextInt(3);
+                for (var i = 0; i < insCount; i++) {
+                    var in = Registry.ITEM.getRandom(random);
+                    ins.add(new GenericStack(AEItemKey.of(in), 1 + random.nextInt(10)));
+                }
+                var out = new GenericStack(
+                        AEItemKey.of(Registry.ITEM.getRandom(random)),
+                        1 + random.nextInt(5));
+
+                patterns.addItems(PatternDetailsHelper.encodeProcessingPattern(
+                        ins.toArray(GenericStack[]::new),
+                        new GenericStack[] { out }));
+            }
+        };
+        plot.cable("[-3,3] [1,64] 3")
+                .part(Direction.NORTH, AEParts.PATTERN_PROVIDER, setupProvider)
+                .part(Direction.SOUTH, AEParts.PATTERN_PROVIDER, setupProvider)
+                .part(Direction.EAST, AEParts.PATTERN_PROVIDER, setupProvider)
+                .part(Direction.WEST, AEParts.PATTERN_PROVIDER, setupProvider);
     }
 
 }

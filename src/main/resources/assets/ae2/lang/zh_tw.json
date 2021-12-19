@@ -676,7 +676,7 @@
   "theoneprobe.ae2.showing": "顯示中",
   "theoneprobe.ae2.stored_energy": "%1$d / %2$d",
   "theoneprobe.ae2.unlocked": "未鎖定",
-  "waila.ae2.Channels": "%1$d / %2$d 頻道",
+  "waila.ae2.ChannelsOf": "%1$d / %2$d 頻道",
   "waila.ae2.Contains": "容納",
   "waila.ae2.Crafting": "合成中",
   "waila.ae2.DeviceMissingChannel": "裝置沒有可用的頻道",

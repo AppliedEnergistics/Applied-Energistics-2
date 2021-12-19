@@ -7,7 +7,7 @@ public enum ChannelMode {
     /**
      * Cables carry infinite channels, effectively disabling pathfinding and channel requirements.
      */
-    INFINITE(0, 0),
+    INFINITE(Integer.MAX_VALUE, 0),
     /**
      * Default channel capacity per cable.
      */

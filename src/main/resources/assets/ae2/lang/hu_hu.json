@@ -492,7 +492,7 @@
   "itemGroup.ae2.main": "Applied Energistics 2",
   "stat.ae2.items_extracted": "Tárgyak eltávolítva ME tárolókból",
   "stat.ae2.items_inserted": "Tárgyak hozzáadva ME tárolókhoz",
-  "waila.ae2.Channels": "%2$d Csatornából %1$d használatban",
+  "waila.ae2.ChannelsOf": "%2$d Csatornából %1$d használatban",
   "waila.ae2.Contains": "Energiaszint",
   "waila.ae2.Crafting": "Barkácsol",
   "waila.ae2.DeviceMissingChannel": "Hiányzó Csatorna",

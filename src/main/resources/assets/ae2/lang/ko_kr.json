@@ -691,7 +691,7 @@
   "theoneprobe.ae2.showing": "공개",
   "theoneprobe.ae2.stored_energy": "%1$d / %2$d",
   "theoneprobe.ae2.unlocked": "잠겨있지 않음",
-  "waila.ae2.Channels": "%1$d의 %2$d 채널",
+  "waila.ae2.ChannelsOf": "%1$d의 %2$d 채널",
   "waila.ae2.Contains": "포함: %s",
   "waila.ae2.Crafting": "조합: %s",
   "waila.ae2.DeviceMissingChannel": "채널을 잃은 장치",

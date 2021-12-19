@@ -592,7 +592,7 @@
   "itemGroup.ae2.main": "Applied Energistics 2",
   "stat.ae2.items_extracted": "Eléments extraits des disques ME",
   "stat.ae2.items_inserted": "Eléments ajoutés aux disques ME",
-  "waila.ae2.Channels": "%1$d of %2$d Canaux",
+  "waila.ae2.ChannelsOf": "%1$d of %2$d Canaux",
   "waila.ae2.Contains": "Contient",
   "waila.ae2.Crafting": "Fabrication",
   "waila.ae2.DeviceMissingChannel": "Appareil sans canal",

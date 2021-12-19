@@ -547,7 +547,7 @@
   "itemGroup.ae2.main": "Applied Energistics 2",
   "stat.ae2.items_extracted": "Předměty odebrány z ME úložiště",
   "stat.ae2.items_inserted": "Předměty přidány do ME úložiště",
-  "waila.ae2.Channels": "%1$d of %2$d Kanály",
+  "waila.ae2.ChannelsOf": "%1$d of %2$d Kanály",
   "waila.ae2.Contains": "Obsahuje",
   "waila.ae2.DeviceMissingChannel": "Zařízení postrádá kanál",
   "waila.ae2.DeviceOffline": "Zařízení Offline",
