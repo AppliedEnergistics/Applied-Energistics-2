@@ -18,9 +18,7 @@
 
 package appeng.me.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import appeng.api.features.IPlayerRegistry;
@@ -43,13 +41,10 @@ import appeng.core.AELog;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.Grid;
-import appeng.me.GridConnection;
-import appeng.me.GridNode;
 import appeng.me.pathfinding.AdHocChannelUpdater;
 import appeng.me.pathfinding.ControllerChannelUpdater;
 import appeng.me.pathfinding.ControllerValidator;
-import appeng.me.pathfinding.IPathItem;
-import appeng.me.pathfinding.PathSegment;
+import appeng.me.pathfinding.PathingCalculation;
 
 public class PathingService implements IPathingService, IGridServiceProvider {
 
@@ -61,7 +56,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 });
     }
 
-    private final List<PathSegment> active = new ArrayList<>();
+    private PathingCalculation ongoingCalculation = null;
     private final Set<ControllerBlockEntity> controllers = new HashSet<>();
     private final Set<IGridNode> nodesNeedingChannels = new HashSet<>();
     private final Set<IGridNode> cannotCarryCompressedNodes = new HashSet<>();
@@ -96,7 +91,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 this.postBootingStatusChange();
             }
 
-            this.setChannelsInUse(0);
+            this.channelsInUse = 0;
 
             if (this.controllerState == ControllerState.NO_CONTROLLER) {
                 var requiredChannels = this.calculateAdHocChannels();
@@ -104,12 +99,12 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 if (requiredChannels > channelMode.getAdHocNetworkChannels()) {
                     used = 0;
                 }
-                this.setChannelsInUse(used);
+                this.channelsInUse = used;
 
                 var nodes = this.grid.size();
                 this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
-                this.setChannelsByBlocks(nodes * used);
-                this.setChannelPowerUsage(this.getChannelsByBlocks() / 128.0);
+                this.channelsByBlocks = nodes * used;
+                this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
 
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(used));
             } else if (this.controllerState == ControllerState.CONTROLLER_CONFLICT) {
@@ -118,40 +113,25 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             } else {
                 var nodes = this.grid.size();
                 this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
-                var closedList = new HashSet<IPathItem>();
-                var semiOpen = new HashSet<IPathItem>();
-
-                for (var node : this.grid.getMachineNodes(ControllerBlockEntity.class)) {
-                    closedList.add((IPathItem) node);
-                    for (var gcc : node.getConnections()) {
-                        var gc = (GridConnection) gcc;
-                        if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
-                            var open = new ArrayList<IPathItem>();
-                            closedList.add(gc);
-                            open.add(gc);
-                            gc.setControllerRoute((GridNode) node, true);
-                            this.active.add(new PathSegment(this, open, semiOpen, closedList));
-                        }
-                    }
-                }
+                this.ongoingCalculation = new PathingCalculation(grid);
             }
         }
 
         if (this.booting) {
             // Work on remaining pathfinding work
-            var i = this.active.iterator();
-            while (i.hasNext()) {
-                var pat = i.next();
-                if (pat.step()) {
-                    pat.setDead(true);
-                    i.remove();
-                }
+            boolean needsMorePathfinding = false;
+            if (this.ongoingCalculation != null) { // can be null for ad-hoc or invalid controller state
+                needsMorePathfinding = !this.ongoingCalculation.isFinished();
+                this.ongoingCalculation.step();
             }
 
             this.ticksUntilReady--;
 
             // Booting completes when both pathfinding completes, and the minimum boot time has elapsed
-            if (active.isEmpty() && ticksUntilReady <= 0) {
+            if (needsMorePathfinding && ticksUntilReady <= 0) {
+                this.channelsByBlocks = this.ongoingCalculation.getChannelsByBlocks();
+                this.channelsInUse = this.ongoingCalculation.getChannelsInUse();
+                this.ongoingCalculation = null;
                 if (this.controllerState == ControllerState.CONTROLLER_ONLINE) {
                     var controllerIterator = this.controllers.iterator();
                     if (controllerIterator.hasNext()) {
@@ -164,7 +144,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 this.achievementPost();
 
                 this.booting = false;
-                this.setChannelPowerUsage(this.getChannelsByBlocks() / 128.0);
+                this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
                 this.postBootingStatusChange();
             } else if (ticksUntilReady == -2000) {
                 AELog.warn("Booting has still not completed after 2000 ticks for %s", grid);
@@ -259,8 +239,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     private void achievementPost() {
         var server = grid.getPivot().getLevel().getServer();
 
-        if (this.lastChannels != this.getChannelsInUse()) {
-            final IAdvancementTrigger currentBracket = this.getAchievementBracket(this.getChannelsInUse());
+        if (this.lastChannels != this.channelsInUse) {
+            final IAdvancementTrigger currentBracket = this.getAchievementBracket(this.channelsInUse);
             final IAdvancementTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
             if (currentBracket != lastBracket && currentBracket != null) {
                 for (var n : this.nodesNeedingChannels) {
@@ -271,7 +251,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 }
             }
         }
-        this.lastChannels = this.getChannelsInUse();
+        this.lastChannels = this.channelsInUse;
     }
 
     private IAdvancementTrigger getAchievementBracket(final int ch) {
@@ -317,9 +297,9 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         this.channelMode = AEConfig.instance().getChannelMode();
 
         // clean up...
-        this.active.clear();
+        this.ongoingCalculation = null;
 
-        this.setChannelsByBlocks(0);
+        this.channelsByBlocks = 0;
         this.reboot = true;
     }
 
@@ -329,22 +309,6 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
     private void setChannelPowerUsage(final double channelPowerUsage) {
         this.channelPowerUsage = channelPowerUsage;
-    }
-
-    public int getChannelsByBlocks() {
-        return this.channelsByBlocks;
-    }
-
-    public void setChannelsByBlocks(final int channelsByBlocks) {
-        this.channelsByBlocks = channelsByBlocks;
-    }
-
-    public int getChannelsInUse() {
-        return this.channelsInUse;
-    }
-
-    public void setChannelsInUse(final int channelsInUse) {
-        this.channelsInUse = channelsInUse;
     }
 
     public ChannelMode getChannelMode() {
