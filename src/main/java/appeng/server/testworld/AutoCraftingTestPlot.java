@@ -35,18 +35,18 @@ public final class AutoCraftingTestPlot {
     }
 
     public static void create(PlotBuilder plot) {
-        plot.block("[4,5] [0,1] [4,5]", AEBlocks.CONTROLLER);
         plot.creativeEnergyCell("4 -1 4");
 
         // Cable to CPU / Access / Storage
         plot.cable("4 0 [1,5]");
         plot.cable("[3,6] 0 1");
+        plot.block("[4,5] [0,1] [4,5]", AEBlocks.CONTROLLER);
 
         // Crafting cube
         craftingCube(plot.offset(1, 0, 1));
 
         // Stack of pattern providers with 6 assemblers each
-        plot.cable("[5,8] 0 5");
+        plot.cable("[6,8] 0 5");
         var assemblerStack = plot.offset(8, 1, 5);
         for (var i = 0; i < 8; i++) {
             assemblerFlower(assemblerStack.offset(0, i * 3, 0));

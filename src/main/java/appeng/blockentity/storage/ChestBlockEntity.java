@@ -64,6 +64,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -578,9 +579,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private class FluidHandler extends SnapshotParticipant<FluidHandler.QueuedInsert>
+    private class FluidHandler extends SnapshotParticipant<Boolean>
             implements InsertionOnlyStorage<FluidVariant> {
-        private QueuedInsert queuedInsert;
+        private GenericStack queuedInsert;
 
         private record QueuedInsert(AEFluidKey what, long amount) {
         }
@@ -606,10 +607,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             ChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
                 var what = AEFluidKey.of(resource);
-                var inserted = pushToNetwork(new QueuedInsert(what, maxAmount), false);
+                var inserted = pushToNetwork(what, maxAmount, Actionable.SIMULATE);
                 if (inserted > 0) {
                     updateSnapshots(transaction);
-                    this.queuedInsert = new QueuedInsert(what, inserted);
+                    queuedInsert = new GenericStack(what, inserted);
                 }
                 return inserted;
             }
@@ -626,30 +627,30 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        protected final QueuedInsert createSnapshot() {
-            return queuedInsert;
+        protected final Boolean createSnapshot() {
+            // Null snapshots are not allowed even though this is what we really want, so we just use Boolean instead.
+            return Boolean.TRUE;
         }
 
         @Override
-        protected final void readSnapshot(QueuedInsert snapshot) {
-            this.queuedInsert = snapshot;
+        protected final void readSnapshot(Boolean snapshot) {
+            queuedInsert = null;
         }
 
         @Override
         protected final void onFinalCommit() {
-            pushToNetwork(queuedInsert, true);
+            pushToNetwork(queuedInsert.what(), queuedInsert.amount(), Actionable.MODULATE);
             queuedInsert = null;
         }
 
-        private long pushToNetwork(QueuedInsert queuedInsert, boolean commit) {
+        private long pushToNetwork(AEKey what, long amount, Actionable mode) {
             ChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
-                final Actionable mode = commit ? Actionable.MODULATE : Actionable.SIMULATE;
                 return StorageHelper.poweredInsert(
                         ChestBlockEntity.this,
                         ChestBlockEntity.this.cellHandler,
-                        queuedInsert.what(),
-                        queuedInsert.amount(),
+                        what,
+                        amount,
                         ChestBlockEntity.this.mySrc,
                         mode);
             }
