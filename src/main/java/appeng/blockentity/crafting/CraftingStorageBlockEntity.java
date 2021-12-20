@@ -19,7 +19,7 @@
 package appeng.blockentity.crafting;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -34,14 +34,14 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
     }
 
     @Override
-    protected ItemStack getItemFromBlockEntity() {
-        final int storage = getStorageBytes() / KILO_SCALAR;
+    protected Item getItemFromBlockEntity() {
+        var storage = getStorageBytes() / KILO_SCALAR;
 
         return switch (storage) {
-            case 1 -> AEBlocks.CRAFTING_STORAGE_1K.stack();
-            case 4 -> AEBlocks.CRAFTING_STORAGE_4K.stack();
-            case 16 -> AEBlocks.CRAFTING_STORAGE_16K.stack();
-            case 64 -> AEBlocks.CRAFTING_STORAGE_64K.stack();
+            case 1 -> AEBlocks.CRAFTING_STORAGE_1K.asItem();
+            case 4 -> AEBlocks.CRAFTING_STORAGE_4K.asItem();
+            case 16 -> AEBlocks.CRAFTING_STORAGE_16K.asItem();
+            case 64 -> AEBlocks.CRAFTING_STORAGE_64K.asItem();
             default -> super.getItemFromBlockEntity();
         };
     }

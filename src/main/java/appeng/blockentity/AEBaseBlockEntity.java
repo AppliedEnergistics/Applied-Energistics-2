@@ -47,6 +47,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -112,13 +113,8 @@ public class AEBaseBlockEntity extends BlockEntity
         return this;
     }
 
-    @Nonnull
-    protected ItemStack getItemFromBlockEntity() {
-        final Item item = REPRESENTATIVE_ITEMS.get(getType());
-        if (item == null) {
-            return ItemStack.EMPTY;
-        }
-        return new ItemStack(item);
+    protected Item getItemFromBlockEntity() {
+        return REPRESENTATIVE_ITEMS.getOrDefault(getType(), Items.AIR);
     }
 
     @Override

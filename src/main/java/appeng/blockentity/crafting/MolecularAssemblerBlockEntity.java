@@ -124,7 +124,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         if (hasCustomInventoryName()) {
             return Optional.of(getCustomInventoryName());
         } else {
-            return Optional.of(getItemFromBlockEntity().getHoverName());
+            return Optional.of(getItemFromBlockEntity().getDescription());
         }
     }
 

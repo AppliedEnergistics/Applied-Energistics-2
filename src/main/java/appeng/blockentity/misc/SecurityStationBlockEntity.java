@@ -295,7 +295,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return getItemFromBlockEntity();
+        return new ItemStack(getItemFromBlockEntity());
     }
 
     public void openMenu(Player p) {
