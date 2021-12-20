@@ -37,14 +37,20 @@ import appeng.api.util.AEColor;
 public interface IMemoryCard {
 
     /**
+     * A tag that may be present on the memory card to show a color code for P2P frequencies or other purposes on the
+     * memory card model.
+     */
+    String NBT_COLOR_CODE = "colorCode";
+
+    /**
      * Configures the data stored on the memory card, the SettingsName, will be localized when displayed.
-     *
+     * <p/>
      * The data can contain an optional string with the key "tooltip", which will be used as unlocalized string to
      * display it after the settings name.
-     *
-     * The data can contain an optional intArray using "colorCode" to be displayed on the model itself. It needs to have
-     * exactly 8 elements representing the ordinal of the matching {@link AEColor}. The first 4 values represent the top
-     * row, left to right. The second 4 the bottom row.
+     * <p/>
+     * The data can contain an optional intArray using {@link #NBT_COLOR_CODE} to be displayed on the model itself. It
+     * needs to have exactly 8 elements representing the ordinal of the matching {@link AEColor}. The first 4 values
+     * represent the top row, left to right. The second 4 the bottom row.
      *
      * @param is           item
      * @param settingsName unlocalized string that represents the block entity.

@@ -26,7 +26,9 @@ import javax.annotation.Nullable;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,10 +40,10 @@ import appeng.api.config.PowerUnits;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
 import appeng.me.service.P2PService;
@@ -51,6 +53,9 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStatePart {
+    private static final String CONFIG_NBT_TYPE = "p2pType";
+    private static final String CONFIG_NBT_FREQ = "p2pFreq";
+
     private final TunnelCollection type = new TunnelCollection<T>(null, this.getClass());
     private boolean output;
     private short freq;
@@ -174,28 +179,22 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
         // Prefer restoring from memory card
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
-            final CompoundTag data = mc.getData(is);
+            var configData = mc.getData(is);
 
-            final ItemStack newType = ItemStack.of(data);
-            final short freq = data.getShort("freq");
-
-            if (!newType.isEmpty() && newType.getItem() instanceof IPartItem<?>newPartItem) {
-                if (P2PTunnelPart.class.isAssignableFrom(newPartItem.getPartClass())) {
-                    var newBus = this.getHost().replacePart(newPartItem, this.getSide(), player, hand);
-
-                    if (newBus instanceof P2PTunnelPart<?>newTunnel) {
-                        newTunnel.setOutput(true);
-
-                        newTunnel.getMainNode().ifPresent(grid -> {
-                            P2PService.get(grid).updateFreq(newTunnel, freq);
-                        });
-
-                        newTunnel.onTunnelNetworkChange();
-                    }
-
-                    mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
-                    return true;
+            // Change the actual tunnel type and import settings when the encoded type is a P2P
+            var partItem = IPartItem.byId(new ResourceLocation(configData.getString(CONFIG_NBT_TYPE)));
+            if (partItem != null && P2PTunnelPart.class.isAssignableFrom(partItem.getPartClass())) {
+                IPart newBus = this;
+                if (newBus.getPartItem() != partItem) {
+                    newBus = this.getHost().replacePart(partItem, this.getSide(), player, hand);
                 }
+
+                if (newBus instanceof P2PTunnelPart<?>newTunnel) {
+                    newTunnel.importSettings(SettingsFrom.MEMORY_CARD, configData);
+                }
+
+                mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                return true;
             }
             mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
             return false;
@@ -255,18 +254,9 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
             this.onTunnelConfigChange();
 
-            final ItemStack p2pItem = getDroppedItemStack();
-            final String type = p2pItem.getDescriptionId();
+            var type = getPartItem().asItem().getDescriptionId();
 
-            p2pItem.save(data);
-            data.putShort("freq", this.getFrequency());
-
-            final AEColor[] colors = Platform.p2p().toColors(this.getFrequency());
-            final int[] colorCode = new int[] { colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(),
-                    colors[1].ordinal(), colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(),
-                    colors[3].ordinal(), };
-
-            data.putIntArray("colorCode", colorCode);
+            exportSettings(SettingsFrom.MEMORY_CARD, data);
 
             mc.setMemoryCardContents(is, type + ".name", data);
             if (needsNewFrequency) {
@@ -277,6 +267,46 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input) {
+        super.importSettings(mode, input);
+
+        if (input.contains(CONFIG_NBT_FREQ, Tag.TAG_SHORT)) {
+            var freq = input.getShort(CONFIG_NBT_FREQ);
+
+            // Only make this an output, if it's not already on the frequency.
+            // Otherwise, the tunnel input may be made unusable by accidentally loading it with its own settings
+            if (freq != this.freq) {
+                setOutput(true);
+                var grid = getMainNode().getGrid();
+                if (grid != null) {
+                    P2PService.get(grid).updateFreq(this, freq);
+                } else {
+                    setFrequency(freq); // Remember it for when we actually join the grid
+                }
+                onTunnelNetworkChange();
+            }
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+
+        // Save the tunnel type
+        output.putString(CONFIG_NBT_TYPE, IPartItem.getId(getPartItem()).toString());
+
+        if (freq != 0) {
+            output.putShort(CONFIG_NBT_FREQ, freq);
+
+            var colors = Platform.p2p().toColors(freq);
+            var colorCode = new int[] { colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(),
+                    colors[1].ordinal(), colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(),
+                    colors[3].ordinal(), };
+            output.putIntArray(IMemoryCard.NBT_COLOR_CODE, colorCode);
+        }
     }
 
     public void onTunnelConfigChange() {

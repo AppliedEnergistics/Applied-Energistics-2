@@ -23,8 +23,12 @@
 
 package appeng.api.parts;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -54,4 +58,50 @@ public interface IPartItem<P extends IPart> extends ItemLike {
      * @return part from item
      */
     P createPart();
+
+    /**
+     * @return The registry id for this item.
+     */
+    static ResourceLocation getId(IPartItem<?> item) {
+        var id = Registry.ITEM.getKey(item.asItem());
+        if (id == Registry.ITEM.getDefaultKey()) {
+            throw new IllegalStateException("Part item " + item + " is not registered");
+        }
+        return id;
+    }
+
+    /**
+     * @return The registry id for this item, suitable for network serialization.
+     */
+    static int getNetworkId(IPartItem<?> item) {
+        var id = Registry.ITEM.getId(item.asItem());
+        if (id == 0) {
+            throw new IllegalStateException("Part item " + item + " is not registered");
+        }
+        return id;
+    }
+
+    /**
+     * Retrieve a part item by its {@link #getId(IPartItem) id}.
+     */
+    @Nullable
+    static IPartItem<?> byId(ResourceLocation id) {
+        var item = Registry.ITEM.get(id);
+        if (item instanceof IPartItem<?>partItem) {
+            return partItem;
+        }
+        return null;
+    }
+
+    /**
+     * Retrieve a part item by its {@link #getNetworkId(IPartItem) id}.
+     */
+    @Nullable
+    static IPartItem<?> byNetworkId(int id) {
+        var item = Registry.ITEM.byId(id);
+        if (item instanceof IPartItem<?>partItem) {
+            return partItem;
+        }
+        return null;
+    }
 }
