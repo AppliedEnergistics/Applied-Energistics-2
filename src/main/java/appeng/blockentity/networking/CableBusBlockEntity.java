@@ -319,7 +319,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
 
             // SelectedPart contains either a facade or a part. Never both.
             if (sp.part != null) {
-                is.add(sp.part.getDroppedItemStack());
                 sp.part.getDrops(is, true);
                 cb.removePart(sp.side);
             }

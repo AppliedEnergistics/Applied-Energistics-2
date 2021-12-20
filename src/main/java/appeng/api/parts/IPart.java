@@ -67,20 +67,6 @@ public interface IPart extends ICustomCableConnection {
     IPartItem<?> getPartItem();
 
     /**
-     * Gets the item stack to drop when this part is removed from the cable bus for any reason, or when it is picked in
-     * creative mode.
-     */
-    default ItemStack getDroppedItemStack() {
-        var stack = new ItemStack(getPartItem());
-        var tag = new CompoundTag();
-        exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
-        if (!tag.isEmpty()) {
-            stack.setTag(tag);
-        }
-        return stack;
-    }
-
-    /**
      * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
      * {@link #requireDynamicRender()} in order for this method to be called.
      */
@@ -315,6 +301,13 @@ public interface IPart extends ICustomCableConnection {
      * @param wrenched control flag for wrenched vs broken
      */
     default void getDrops(List<ItemStack> drops, boolean wrenched) {
+        var stack = new ItemStack(getPartItem());
+        var tag = new CompoundTag();
+        exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
+        if (!tag.isEmpty()) {
+            stack.setTag(tag);
+        }
+        drops.add(stack);
     }
 
     /**

@@ -18,8 +18,8 @@
 
 package appeng.parts;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -216,12 +216,14 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
         CustomNameUtil.setCustomName(output, this.customName);
 
-        if (this instanceof IConfigurableObject configurableObject) {
-            configurableObject.getConfigManager().writeToNBT(output);
-        }
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            if (this instanceof IConfigurableObject configurableObject) {
+                configurableObject.getConfigManager().writeToNBT(output);
+            }
 
-        if (this instanceof IPriorityHost pHost) {
-            output.putInt("priority", pHost.getPriority());
+            if (this instanceof IPriorityHost pHost) {
+                output.putInt("priority", pHost.getPriority());
+            }
         }
     }
 
@@ -323,10 +325,10 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
 
         @Override
         public void onSecurityBreak(T nodeOwner, IGridNode node) {
-            var is = nodeOwner.getDroppedItemStack();
-            if (!is.isEmpty() && nodeOwner.getGridNode() != null) {
-                var items = List.of(is);
-                nodeOwner.getHost().removePart(nodeOwner.getSide());
+            var items = new ArrayList<ItemStack>();
+            nodeOwner.getDrops(items, false);
+            nodeOwner.getHost().removePart(nodeOwner.getSide());
+            if (!items.isEmpty()) {
                 var be = nodeOwner.getHost().getBlockEntity();
                 Platform.spawnDrops(be.getLevel(), be.getBlockPos(), items);
             }

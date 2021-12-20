@@ -188,7 +188,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         final SelectedPart sp = this.cb(level, pos).selectPartLocal(v3);
 
         if (sp.part != null) {
-            return sp.part.getDroppedItemStack();
+            return new ItemStack(sp.part.getPartItem());
         } else if (sp.facade != null) {
             return sp.facade.getItemStack();
         }
