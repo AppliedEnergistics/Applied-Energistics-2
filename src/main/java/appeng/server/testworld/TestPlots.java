@@ -38,6 +38,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.PartHelper;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -54,6 +55,7 @@ import appeng.items.storage.CreativeCellItem;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
+import appeng.me.service.PathingService;
 import appeng.parts.automation.ImportBusPart;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.util.CraftingRecipeUtil;
@@ -618,6 +620,9 @@ public final class TestPlots {
                 .part(Direction.WEST, AEParts.PATTERN_PROVIDER);
 
         plot.afterGridExistsAt("0 0 0", (grid, node) -> {
+            // This has so many nodes it needs infinite mode
+            ((PathingService) grid.getSpatialService()).setForcedChannelMode(ChannelMode.INFINITE);
+
             var patternProviders = grid.getMachines(PatternProviderPart.class).iterator();
             PatternProviderPart current = patternProviders.next();
             var craftingRecipes = node.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
