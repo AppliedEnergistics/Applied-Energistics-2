@@ -61,6 +61,22 @@ public class ItemPlacementStrategy implements PlacementStrategy {
 
         if (level.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeAsEntity) {
+                final var sum = this.countEntitesAround(level, placePos);
+
+                // Disable spawning once there is a certain amount of entities in an area.
+                if (sum < AEConfig.instance().getFormationPlaneEntityLimit()) {
+                    worked = true;
+
+                    if (type == Actionable.MODULATE) {
+                        is.setCount(maxStorage);
+                        if (!spawnItemEntity(level, host, side, is)) {
+                            // revert in case something prevents spawning.
+                            worked = false;
+                        }
+
+                    }
+                }
+            } else {
                 final var player = Platform.getPlayer(level);
                 Platform.configurePlayer(player, side, host);
 
@@ -82,22 +98,6 @@ public class ItemPlacementStrategy implements PlacementStrategy {
 
                 // Seems to work without... Safe keeping
                 // player.setHeldItem(hand, ItemStack.EMPTY);
-            } else {
-                final var sum = this.countEntitesAround(level, placePos);
-
-                // Disable spawning once there is a certain amount of entities in an area.
-                if (sum < AEConfig.instance().getFormationPlaneEntityLimit()) {
-                    worked = true;
-
-                    if (type == Actionable.MODULATE) {
-                        is.setCount(maxStorage);
-                        if (!spawnItemEntity(level, host, side, is)) {
-                            // revert in case something prevents spawning.
-                            worked = false;
-                        }
-
-                    }
-                }
             }
         }
 
