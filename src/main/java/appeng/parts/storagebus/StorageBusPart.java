@@ -492,7 +492,10 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
         super.exportSettings(mode, output);
-        config.writeToChildTag(output, "config");
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            config.writeToChildTag(output, "config");
+        }
     }
 
     @Override

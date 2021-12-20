@@ -840,9 +840,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     public List<ItemStack> getDrops(final List<ItemStack> drops) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
-            final IPart part = this.getPart(side);
+            var part = this.getPart(side);
             if (part != null) {
-                drops.add(part.getDroppedItemStack());
                 part.getDrops(drops, false);
             }
 
@@ -857,9 +856,9 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return drops;
     }
 
-    public List<ItemStack> getNoDrops(final List<ItemStack> drops) {
+    public List<ItemStack> getNoDrops(List<ItemStack> drops) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
-            final IPart part = this.getPart(side);
+            var part = this.getPart(side);
             if (part != null) {
                 part.getDrops(drops, false);
             }

@@ -19,7 +19,9 @@
 package appeng.util;
 
 public enum SettingsFrom {
-    // moved the item, and replaced it.
+    /**
+     * For exporting: the item was broken or wrenched. For importing: the item was placed.
+     */
     DISMANTLE_ITEM,
 
     // used memory card?

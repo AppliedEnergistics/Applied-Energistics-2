@@ -190,6 +190,9 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     @Override
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
         super.exportSettings(mode, output);
-        output.putLong("reportingValue", reportingValue);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putLong("reportingValue", reportingValue);
+        }
     }
 }

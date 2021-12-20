@@ -115,6 +115,8 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
 
     @Override
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+        super.getDrops(drops, wrenched);
+
         this.logic.addDrops(drops);
     }
 

@@ -20,6 +20,7 @@ package appeng.parts.p2p;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -113,18 +114,15 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         bch.addBox(2, 2, 14, 14, 14, 16);
     }
 
-    /**
-     * Drop P2P Tunnels as the base type.
-     */
     @Override
-    public ItemStack getDroppedItemStack() {
+    public void getDrops(List<ItemStack> drops, boolean wrenched) {
         var stack = AEParts.ME_P2P_TUNNEL.stack();
         var tag = new CompoundTag();
         exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
         if (!tag.isEmpty()) {
             stack.setTag(tag);
         }
-        return stack;
+        drops.add(stack);
     }
 
     @Override
@@ -296,16 +294,18 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         super.exportSettings(mode, output);
 
         // Save the tunnel type
-        output.putString(CONFIG_NBT_TYPE, IPartItem.getId(getPartItem()).toString());
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putString(CONFIG_NBT_TYPE, IPartItem.getId(getPartItem()).toString());
 
-        if (freq != 0) {
-            output.putShort(CONFIG_NBT_FREQ, freq);
+            if (freq != 0) {
+                output.putShort(CONFIG_NBT_FREQ, freq);
 
-            var colors = Platform.p2p().toColors(freq);
-            var colorCode = new int[] { colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(),
-                    colors[1].ordinal(), colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(),
-                    colors[3].ordinal(), };
-            output.putIntArray(IMemoryCard.NBT_COLOR_CODE, colorCode);
+                var colors = Platform.p2p().toColors(freq);
+                var colorCode = new int[] { colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(),
+                        colors[1].ordinal(), colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(),
+                        colors[3].ordinal(), };
+                output.putIntArray(IMemoryCard.NBT_COLOR_CODE, colorCode);
+            }
         }
     }
 
