@@ -195,7 +195,7 @@ public final class P2PTunnelAttunement {
             throw new IllegalArgumentException("Given tunnel part item is not a part");
         }
 
-        if (P2PTunnelPart.class.isAssignableFrom((partItem.getPartClass()))) {
+        if (!P2PTunnelPart.class.isAssignableFrom((partItem.getPartClass()))) {
             throw new IllegalArgumentException("Given tunnel part item results in a part that is not a P2P tunnel: "
                     + partItem);
         }
