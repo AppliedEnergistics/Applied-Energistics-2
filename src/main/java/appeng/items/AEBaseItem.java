@@ -20,11 +20,12 @@ package appeng.items;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
-public abstract class AEBaseItem extends Item {
+public abstract class AEBaseItem extends Item implements FabricItem {
 
     public AEBaseItem(Item.Properties properties) {
         super(properties);

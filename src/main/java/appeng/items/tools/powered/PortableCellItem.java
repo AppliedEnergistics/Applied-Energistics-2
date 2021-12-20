@@ -41,7 +41,6 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.core.AEConfig;
-import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellMenuHost;
@@ -53,7 +52,7 @@ import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 
 public class PortableCellItem extends AEBasePoweredItem
-        implements IBasicCellItem, IMenuItem, ICustomReequipAnimation {
+        implements IBasicCellItem, IMenuItem {
 
     public static final StorageTier SIZE_1K = new StorageTier(512, 54, 8);
     public static final StorageTier SIZE_4K = new StorageTier(2048, 45, 32);
@@ -164,8 +163,9 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
+    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
+            ItemStack newStack) {
+        return false;
     }
 
     /**
