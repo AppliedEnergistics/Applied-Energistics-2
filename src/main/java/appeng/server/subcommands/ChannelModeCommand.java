@@ -21,7 +21,7 @@ import appeng.server.ISubCommand;
 /**
  * Command to easily change {@link AEConfig#getChannelMode()} at runtime.
  */
-public class SetChannelMode implements ISubCommand {
+public class ChannelModeCommand implements ISubCommand {
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
         for (var mode : ChannelMode.values()) {
