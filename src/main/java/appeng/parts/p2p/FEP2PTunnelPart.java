@@ -22,12 +22,12 @@ import java.util.List;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.world.item.ItemStack;
 
 import team.reborn.energy.api.EnergyStorage;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 
 public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, EnergyStorage> {
@@ -38,7 +38,7 @@ public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, En
         return MODELS.getModels();
     }
 
-    public FEP2PTunnelPart(ItemStack is) {
+    public FEP2PTunnelPart(PartItem<?> is) {
         super(is, EnergyStorage.SIDED);
         inputHandler = new InputEnergyStorage();
         outputHandler = new OutputEnergyStorage();

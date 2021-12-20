@@ -25,7 +25,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -40,6 +39,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -74,7 +74,7 @@ public class ToggleBusPart extends BasicStatePart {
     private IGridConnection connection;
     private boolean hasRedstone = false;
 
-    public ToggleBusPart(final ItemStack is) {
+    public ToggleBusPart(PartItem<?> is) {
         super(is);
 
         this.getMainNode().setIdlePowerUsage(0.0);
@@ -153,8 +153,8 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onPlacement(final Player player, final ItemStack partStack) {
-        super.onPlacement(player, partStack);
+    public void onPlacement(final Player player) {
+        super.onPlacement(player);
         this.getOuterNode().setOwningPlayer(player);
     }
 

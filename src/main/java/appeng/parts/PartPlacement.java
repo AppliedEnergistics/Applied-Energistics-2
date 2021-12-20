@@ -127,7 +127,7 @@ public class PartPlacement {
             }
         }
 
-        if (held.isEmpty() || !(held.getItem() instanceof IPartItem)) {
+        if (held.isEmpty() || !(held.getItem() instanceof IPartItem<?>partItem)) {
             return InteractionResult.PASS;
         }
 
@@ -227,8 +227,7 @@ public class PartPlacement {
                 return InteractionResult.FAIL;
             }
 
-            final var partAdded = host.addPart(held, side, player);
-            if (partAdded) {
+            if (host.addPart(partItem, side, player) != null) {
                 BlockState blockState = level.getBlockState(pos);
                 var ss = multiPart.block().getSoundType(blockState);
 

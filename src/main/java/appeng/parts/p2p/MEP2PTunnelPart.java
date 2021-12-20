@@ -26,7 +26,6 @@ import java.util.List;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.exceptions.FailedConnectionException;
@@ -43,6 +42,7 @@ import appeng.api.util.AECableType;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.service.helpers.Connections;
 import appeng.me.service.helpers.TunnelConnection;
@@ -64,7 +64,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             .setInWorldNode(true)
             .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 
-    public MEP2PTunnelPart(final ItemStack is) {
+    public MEP2PTunnelPart(PartItem<?> is) {
         super(is);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL)
@@ -127,8 +127,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void onPlacement(final Player player, final ItemStack partStack) {
-        super.onPlacement(player, partStack);
+    public void onPlacement(final Player player) {
+        super.onPlacement(player);
         this.outerNode.setOwningPlayer(player);
     }
 

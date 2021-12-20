@@ -40,7 +40,6 @@ import appeng.core.CreativeTab;
 import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.debug.DebugCardItem;
-import appeng.debug.DebugPartPlacerItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
@@ -251,7 +250,6 @@ public final class AEItems {
     public static final ItemDefinition<MeteoritePlacerItem> DEBUG_METEORITE_PLACER = item(AppEng.makeId("debug_meteorite_placer"), MeteoritePlacerItem::new);
     public static final ItemDefinition<DebugCardItem> DEBUG_CARD = item(AppEng.makeId("debug_card"), DebugCardItem::new);
     public static final ItemDefinition<ReplicatorCardItem> DEBUG_REPLICATOR_CARD = item(AppEng.makeId("debug_replicator_card"), ReplicatorCardItem::new);
-    public static final ItemDefinition<DebugPartPlacerItem> DEBUG_PART_PLACER = item(AppEng.makeId("debug_part_placer"), DebugPartPlacerItem::new);
     public static final ItemDefinition<WrappedGenericStack> WRAPPED_GENERIC_STACK = item(AEItemIds.WRAPPED_GENERIC_STACK, WrappedGenericStack::new);
 
     // spotless:on

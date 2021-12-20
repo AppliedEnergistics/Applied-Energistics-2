@@ -19,10 +19,10 @@
 package appeng.parts.reporting;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -55,7 +55,7 @@ public class StorageMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
 
-    public StorageMonitorPart(ItemStack is) {
+    public StorageMonitorPart(PartItem<?> is) {
         super(is, false);
     }
 

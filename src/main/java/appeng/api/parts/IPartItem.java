@@ -23,7 +23,9 @@
 
 package appeng.api.parts;
 
-import net.minecraft.world.item.ItemStack;
+import javax.annotation.Nullable;
+
+import net.minecraft.world.level.ItemLike;
 
 //@formatter:off
 
@@ -46,15 +48,14 @@ import net.minecraft.world.item.ItemStack;
  * </code>
  * </pre>
  */
-public interface IPartItem<P extends IPart> {
+public interface IPartItem<P extends IPart> extends ItemLike {
 
     /**
      * create a new part INSTANCE
      *
-     * @param is ItemStack of this item, may have additional properties.
-     *
-     * @return part from item
+     * @return part from item. Null if part creation failed, this will cancel placing the part.
      */
-    P createPart(ItemStack is);
+    @Nullable
+    P createPart();
 
 }

@@ -34,11 +34,11 @@ import javax.annotation.Nullable;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.pathing.IPathingService;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 
 /**
@@ -46,7 +46,7 @@ import appeng.api.util.AEColor;
  * <p>
  * updateState, getGrid, destroy are required to implement a proper IGridHost.
  * <p>
- * Don't Implement; Acquire from {@link AEApi}.createGridNode
+ * Don't Implement; Acquire from {@link GridHelper} via {@link IManagedGridNode}.
  */
 public interface IGridNode {
 
@@ -161,11 +161,11 @@ public interface IGridNode {
     boolean isExposedOnSide(@Nonnull Direction side);
 
     /**
-     * @return An itemstack that will only be used to represent this grid node in user interfaces. Can return an
-     *         {@link ItemStack#isEmpty() empty stack} to indicate the node should not be shown in the UI.
+     * @return An item that will only be used to represent this grid node in user interfaces. Can return an
+     *         <code>null</code> to indicate the node should not be shown in the UI.
      */
-    @Nonnull
-    ItemStack getVisualRepresentation();
+    @Nullable
+    AEItemKey getVisualRepresentation();
 
     /**
      * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the

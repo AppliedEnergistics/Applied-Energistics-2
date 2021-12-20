@@ -11,8 +11,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
@@ -21,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
+import appeng.api.parts.IPartItem;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 
@@ -30,7 +29,7 @@ class Scene {
     SceneRenderSettings settings;
     String filename;
     Map<BlockPos, BlockState> blocks = new HashMap<>();
-    Map<BlockPos, Item> cables = new HashMap<>();
+    Map<BlockPos, IPartItem<?>> cables = new HashMap<>();
     Consumer<ServerLevel> postSetup;
     Consumer<ClientLevel> beforeRender;
     int waitTicks = 1;
@@ -95,7 +94,7 @@ class Scene {
         for (var entry : cables.entrySet()) {
             var pos = entry.getKey();
             level.getBlockEntity(pos, AEBlockEntities.CABLE_BUS).ifPresent(cableBus -> {
-                cableBus.addPart(new ItemStack(entry.getValue()), null, null);
+                cableBus.addPart(entry.getValue(), null, null);
             });
         }
 
@@ -104,7 +103,7 @@ class Scene {
         }
     }
 
-    public void putCable(BlockPos blockPos, Item item) {
+    public void putCable(BlockPos blockPos, IPartItem<?> item) {
         blocks.put(blockPos, AEBlocks.CABLE_BUS.block().defaultBlockState());
         cables.put(blockPos, item);
     }

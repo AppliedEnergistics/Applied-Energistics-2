@@ -33,6 +33,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -126,7 +127,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
      */
     private final GenericStackFluidStorage localFluidStorage;
 
-    public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, ItemStack is) {
+    public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is) {
         this.host = host;
         this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::readConfig);
         this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::updatePlan);

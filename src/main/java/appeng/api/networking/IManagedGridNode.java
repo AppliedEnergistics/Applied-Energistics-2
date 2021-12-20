@@ -36,8 +36,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 
 /**
@@ -127,9 +129,17 @@ public interface IManagedGridNode {
 
     /**
      * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
-     * {@link ItemStack#EMPTY} to hide the node from UIs.
+     * <code>null</code> to hide the node from UIs.
      */
-    IManagedGridNode setVisualRepresentation(@Nonnull ItemStack visualRepresentation);
+    IManagedGridNode setVisualRepresentation(@Nullable AEItemKey visualRepresentation);
+
+    default IManagedGridNode setVisualRepresentation(ItemStack visualRepresentation) {
+        return setVisualRepresentation(AEItemKey.of(visualRepresentation));
+    }
+
+    default IManagedGridNode setVisualRepresentation(ItemLike visualRepresentation) {
+        return setVisualRepresentation(AEItemKey.of(visualRepresentation));
+    }
 
     IManagedGridNode setInWorldNode(boolean accessible);
 

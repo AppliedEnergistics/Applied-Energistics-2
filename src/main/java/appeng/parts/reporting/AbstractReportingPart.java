@@ -27,7 +27,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,6 +38,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
+import appeng.items.parts.PartItem;
 import appeng.parts.AEBasePart;
 import appeng.util.InteractionUtil;
 
@@ -66,11 +66,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     private int clientFlags = 0; // sent as byte.
     private int opacity = -1;
 
-    public AbstractReportingPart(final ItemStack is) {
-        this(is, false);
-    }
-
-    protected AbstractReportingPart(final ItemStack is, final boolean requireChannel) {
+    protected AbstractReportingPart(PartItem<?> is, final boolean requireChannel) {
         super(is);
 
         if (requireChannel) {
@@ -174,8 +170,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public final void onPlacement(final Player player, final ItemStack partStack) {
-        super.onPlacement(player, partStack);
+    public final void onPlacement(Player player) {
+        super.onPlacement(player);
 
         final byte rotation = (byte) (Mth.floor(player.getYRot() * 4F / 360F + 2.5D) & 3);
         if (getSide() == Direction.UP || getSide() == Direction.DOWN) {

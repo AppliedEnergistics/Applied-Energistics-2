@@ -30,6 +30,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.CraftingTermMenu;
@@ -55,7 +56,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
 
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
-    public CraftingTerminalPart(final ItemStack is) {
+    public CraftingTerminalPart(PartItem<?> is) {
         super(is);
     }
 

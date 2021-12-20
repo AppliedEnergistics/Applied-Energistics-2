@@ -26,7 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 
@@ -47,6 +46,7 @@ import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigInvHost;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.MenuLocator;
@@ -82,7 +82,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
      */
     private boolean pendingPulse = false;
 
-    public IOBusPart(TickRates tickRates, ItemStack is) {
+    public IOBusPart(TickRates tickRates, PartItem<?> is) {
         super(is);
         this.tickRates = tickRates;
         this.source = new MachineSource(this);

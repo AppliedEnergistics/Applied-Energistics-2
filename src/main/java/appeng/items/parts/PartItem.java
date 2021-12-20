@@ -39,9 +39,9 @@ import appeng.items.AEBaseItem;
 public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T> {
 
     private final Class<T> partClass;
-    private final Function<ItemStack, T> factory;
+    private final Function<PartItem<T>, T> factory;
 
-    public PartItem(Item.Properties properties, Class<T> partClass, Function<ItemStack, T> factory) {
+    public PartItem(Item.Properties properties, Class<T> partClass, Function<PartItem<T>, T> factory) {
         super(properties);
         this.partClass = partClass;
         this.factory = factory;
@@ -61,8 +61,8 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
     }
 
     @Override
-    public T createPart(ItemStack is) {
-        return factory.apply(is);
+    public T createPart() {
+        return factory.apply(this);
     }
 
     public Optional<T> getPart(BlockGetter level, BlockPos pos, Direction direction) {

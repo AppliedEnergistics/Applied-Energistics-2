@@ -38,7 +38,7 @@ import appeng.api.util.DimensionalBlockPos;
 
 /**
  * Implemented on AE's block entities.
- *
+ * <p>
  * Do Not Implement
  */
 public interface IPartHost extends ICustomCableConnection {
@@ -52,7 +52,6 @@ public interface IPartHost extends ICustomCableConnection {
      * Get a part attached to the host based on the location it's attached to.
      *
      * @param side side of host or null for center.
-     *
      * @return the part located on the specified side, or null if there is no part.
      */
     @Nullable
@@ -64,7 +63,6 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @param part to be added part
      * @param side onto side or null for center of host.
-     *
      * @return returns false if the part cannot be added.
      */
     boolean canAddPart(ItemStack part, @Nullable Direction side);
@@ -72,27 +70,30 @@ public interface IPartHost extends ICustomCableConnection {
     /**
      * Add a new part to the specified side, returns false if it failed to be added.
      *
-     * @param is    new part
-     * @param side  onto side or null for center of host.
-     * @param owner with owning player
-     * @return If the part could be placed.
+     * @param partItem new part item
+     * @param side     onto side or null for center of host.
+     * @param owner    with owning player
+     * @return The part if the part could be placed, or null.
      */
-    boolean addPart(ItemStack is, @Nullable Direction side, @Nullable Player owner);
+    @Nullable
+    <T extends IPart> T addPart(IPartItem<T> partItem, @Nullable Direction side, @Nullable Player owner);
 
     /**
-     * Replace an existing part on the specific side with a new one. Returns false if it failed to be replaced.
+     * Replace an existing part on the specific side with a new one. Returns null if it failed to be replaced.
      *
-     * @param is    new part
-     * @param side  onto side or null for center of host.
-     * @param owner with owning player
-     * @return If the part could be replaced.
+     * @param partItem the part item to create the part from
+     * @param side     onto side or null for center of host.
+     * @param owner    with owning player
+     * @return If the part could be replaced, or null.
      */
-    boolean replacePart(ItemStack is, @Nullable Direction side, @Nullable Player owner, @Nullable InteractionHand hand);
+    @Nullable
+    <T extends IPart> T replacePart(IPartItem<T> partItem, @Nullable Direction side, @Nullable Player owner,
+            @Nullable InteractionHand hand);
 
     /**
      * Removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
      * "gone" and its never coming back; think about it.
-     *
+     * <p>
      * if you want to drop the part you must request it prior to removing it.
      *
      * @param side onto side or null for center of host
@@ -136,7 +137,6 @@ public interface IPartHost extends ICustomCableConnection {
      * Finds the part located at the position in block-local coordinates (0,0,0 is located at the block pos).
      *
      * @param pos part position
-     *
      * @return a new SelectedPart, this is never null.
      */
     SelectedPart selectPartLocal(Vec3 pos);

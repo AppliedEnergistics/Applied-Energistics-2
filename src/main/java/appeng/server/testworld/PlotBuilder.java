@@ -24,6 +24,7 @@ import net.minecraft.world.level.material.Fluid;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
@@ -53,28 +54,28 @@ public interface PlotBuilder {
         return cable(bb, AEParts.GLASS_CABLE, AEColor.TRANSPARENT);
     }
 
-    default CableBuilder cable(String bb, ColoredItemDefinition definition) {
+    default CableBuilder cable(String bb, ColoredItemDefinition<? extends IPartItem<?>> definition) {
         return cable(bb, definition, AEColor.TRANSPARENT);
     }
 
-    default CableBuilder cable(String bb, ColoredItemDefinition definition, AEColor color) {
-        return cable(bb, definition.stack(color));
+    default CableBuilder cable(String bb, ColoredItemDefinition<? extends IPartItem<?>> definition, AEColor color) {
+        return cable(bb, definition.item(color));
     }
 
-    default CableBuilder cable(String bb, ItemStack what) {
+    default CableBuilder cable(String bb, IPartItem<?> what) {
         addBuildAction(new PlacePart(bb(bb), what, null));
         return new CableBuilder(this, bb);
     }
 
     default void part(String bb, Direction side, ItemDefinition<? extends PartItem<?>> part) {
-        addBuildAction(new PlacePart(bb(bb), part.stack(), side));
+        addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
     }
 
     default <T extends IPart> void part(String bb,
             Direction side,
             ItemDefinition<? extends PartItem<T>> part,
             Consumer<T> partCustomizer) {
-        addBuildAction(new PlacePart(bb(bb), part.stack(), side));
+        addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
         addBuildAction(new PartCustomizer<>(bb(bb), side, part, partCustomizer));
     }
 

@@ -195,11 +195,10 @@ public final class P2PTunnelAttunement {
             throw new IllegalArgumentException("Given tunnel part item is not a part");
         }
 
-        var is = new ItemStack(partItem);
-        var part = partItem.createPart(is);
+        var part = partItem.createPart();
         if (!(part instanceof P2PTunnelPart)) {
             throw new IllegalArgumentException("Given tunnel part item results in a part that is not a P2P tunnel: "
-                    + part.getClass());
+                    + partItem);
         }
 
         return item;

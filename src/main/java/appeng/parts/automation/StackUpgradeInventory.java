@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Upgrades;
@@ -27,17 +28,21 @@ import appeng.util.inv.InternalInventoryHost;
  * An upgrade inventory that limits which upgrades are supported by checking them against a part itemstack.
  */
 public class StackUpgradeInventory extends UpgradeInventory {
-    private final ItemStack stack;
+    private final Item item;
+
+    public StackUpgradeInventory(Item item, InternalInventoryHost inventory, int slots) {
+        super(inventory, slots);
+        this.item = item;
+    }
 
     public StackUpgradeInventory(ItemStack stack, InternalInventoryHost inventory, int slots) {
-        super(inventory, slots);
-        this.stack = stack;
+        this(stack.getItem(), inventory, slots);
     }
 
     @Override
     public int getMaxInstalled(Upgrades upgrades) {
         for (Upgrades.Supported supported : upgrades.getSupported()) {
-            if (supported.isSupported(stack.getItem())) {
+            if (supported.isSupported(item)) {
                 return supported.getMaxCount();
             }
         }

@@ -56,7 +56,6 @@ import appeng.items.tools.powered.MatterCannonItem;
 import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.service.PathingService;
-import appeng.parts.automation.ImportBusPart;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.util.CraftingRecipeUtil;
 
@@ -144,7 +143,7 @@ public final class TestPlots {
                 line = plot.offset(0, y, 0);
             }
             y++;
-            line.cable("[1,9] 0 0", AEParts.GLASS_CABLE.stack(color));
+            line.cable("[1,9] 0 0", AEParts.GLASS_CABLE, color);
             if (color == AEColor.TRANSPARENT) {
                 line.part("[1,9] 0 0", Direction.UP, AEParts.CABLE_ANCHOR);
             }
@@ -525,8 +524,8 @@ public final class TestPlots {
             helper.startSequence()
                     .thenExecuteAfter(1, () -> {
                         var pos = helper.absolutePos(BlockPos.ZERO);
-                        var importBus = (ImportBusPart) PartHelper.setPart(helper.getLevel(), pos, Direction.NORTH,
-                                null, AEParts.IMPORT_BUS.stack());
+                        var importBus = PartHelper.setPart(helper.getLevel(), pos, Direction.NORTH,
+                                null, AEParts.IMPORT_BUS.asItem());
                         importBus.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
                         importBus.getConfigManager().putSetting(Settings.REDSTONE_CONTROLLED,
                                 RedstoneMode.SIGNAL_PULSE);
@@ -607,7 +606,7 @@ public final class TestPlots {
     public static void maxChannelsAdHocTest(PlotBuilder plot) {
         plot.creativeEnergyCell("0 -1 0");
         plot.block("[-3,3] -2 [-3,3]", AEBlocks.DRIVE);
-        plot.cable("[-3,3] 0 [-3,3]", AEParts.SMART_DENSE_CABLE.stack(AEColor.TRANSPARENT));
+        plot.cable("[-3,3] 0 [-3,3]", AEParts.SMART_DENSE_CABLE);
         plot.cable("[-3,3] [1,64] [-3,2]")
                 .part(Direction.EAST, AEParts.TERMINAL)
                 .part(Direction.NORTH, AEParts.TERMINAL)

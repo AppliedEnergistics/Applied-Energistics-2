@@ -176,7 +176,6 @@ public class ReiPlugin implements REIClientPlugin {
                 AEItems.DEBUG_CARD::isSameAs,
                 AEItems.DEBUG_ERASER::isSameAs,
                 AEItems.DEBUG_METEORITE_PLACER::isSameAs,
-                AEItems.DEBUG_PART_PLACER::isSameAs,
                 AEItems.DEBUG_REPLICATOR_CARD::isSameAs);
 
         // Will be hidden if colored cables are hidden

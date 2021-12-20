@@ -19,15 +19,15 @@
 package appeng.parts.networking;
 
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.items.parts.ColoredPartItem;
 
 public abstract class DenseCablePart extends CablePart {
-    public DenseCablePart(final ItemStack is) {
+    public DenseCablePart(ColoredPartItem<?> is) {
         super(is);
 
         this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED);

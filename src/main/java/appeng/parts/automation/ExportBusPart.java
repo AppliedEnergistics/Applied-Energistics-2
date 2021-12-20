@@ -29,7 +29,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SchedulingMode;
@@ -48,6 +47,7 @@ import appeng.api.stacks.AEKey;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
@@ -79,7 +79,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     @Nullable
     private StackExportStrategy exportStrategy;
 
-    public ExportBusPart(ItemStack is) {
+    public ExportBusPart(PartItem<?> is) {
         super(TickRates.ExportBus, is);
         getMainNode().addService(ICraftingRequester.class, this);
 

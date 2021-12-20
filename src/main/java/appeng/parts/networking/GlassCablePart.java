@@ -18,10 +18,10 @@
 
 package appeng.parts.networking;
 
-import net.minecraft.world.item.ItemStack;
+import appeng.items.parts.ColoredPartItem;
 
 public class GlassCablePart extends CablePart {
-    public GlassCablePart(final ItemStack is) {
+    public GlassCablePart(ColoredPartItem<?> is) {
         super(is);
     }
 }

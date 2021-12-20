@@ -23,9 +23,11 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.client.AEStackRendering;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
@@ -96,12 +98,13 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
 
             drawMachineCount(poseStack, itemX, cellY, entry.getCount());
 
-            this.drawItem(itemX, itemY, entry.getDisplay());
+            AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, getBlitOffset(),
+                    entry.getDisplay());
 
             // Update the tooltip based on the calculated cell rectangle and mouse position
             if (isHovering(cellX, cellY, CELL_WIDTH, CELL_HEIGHT, mouseX, mouseY)) {
                 tooltip = new ArrayList<>();
-                tooltip.add(entry.getDisplay().getHoverName());
+                tooltip.add(entry.getDisplay().getDisplayName());
 
                 tooltip.add(GuiText.Installed.text(entry.getCount()));
                 if (entry.getIdlePowerUsage() > 0) {
