@@ -357,6 +357,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     }
 
     @Override
+    public int getUsedChannels() {
+        return channelsInUse;
+    }
+
+    @Override
     public void onSplit(IGridStorage destinationStorage) {
         populateGridStorage(destinationStorage);
     }

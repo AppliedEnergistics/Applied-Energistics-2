@@ -270,6 +270,11 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         return this.drainPerTick + this.pgc.getChannelPowerUsage();
     }
 
+    @Override
+    public double getChannelPowerUsage() {
+        return this.pgc.getChannelPowerUsage();
+    }
+
     private void publicPowerState(final boolean newState, final IGrid grid) {
         if (this.publicHasPower == newState) {
             return;

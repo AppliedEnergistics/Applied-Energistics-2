@@ -44,6 +44,8 @@ public class NetworkStatus {
     private double averagePowerUsage;
     private double storedPower;
     private double maxStoredPower;
+    private double channelPower;
+    private int channelsUsed;
 
     private List<MachineGroup> groupedMachines = Collections.emptyList();
 
@@ -56,6 +58,8 @@ public class NetworkStatus {
         status.averagePowerUsage = eg.getAvgPowerUsage();
         status.storedPower = eg.getStoredPower();
         status.maxStoredPower = eg.getMaxStoredPower();
+        status.channelPower = eg.getChannelPowerUsage();
+        status.channelsUsed = grid.getPathingService().getUsedChannels();
 
         // This is essentially a groupBy machineRepresentation + count, sum(idlePowerUsage)
         Map<AEItemKey, MachineGroup> groupedMachines = new HashMap<>();
@@ -94,6 +98,14 @@ public class NetworkStatus {
         return maxStoredPower;
     }
 
+    public double getChannelPower() {
+        return channelPower;
+    }
+
+    public int getChannelsUsed() {
+        return channelsUsed;
+    }
+
     /**
      * @return Machines grouped by their UI representation.
      */
@@ -110,6 +122,8 @@ public class NetworkStatus {
         status.averagePowerUsage = data.readDouble();
         status.storedPower = data.readDouble();
         status.maxStoredPower = data.readDouble();
+        status.channelPower = data.readDouble();
+        status.channelsUsed = data.readVarInt();
 
         int count = data.readVarInt();
         ImmutableList.Builder<MachineGroup> machines = ImmutableList.builder();
@@ -129,6 +143,8 @@ public class NetworkStatus {
         data.writeDouble(averagePowerUsage);
         data.writeDouble(storedPower);
         data.writeDouble(maxStoredPower);
+        data.writeDouble(channelPower);
+        data.writeVarInt(channelsUsed);
         data.writeVarInt(groupedMachines.size());
         for (MachineGroup machine : groupedMachines) {
             machine.write(data);

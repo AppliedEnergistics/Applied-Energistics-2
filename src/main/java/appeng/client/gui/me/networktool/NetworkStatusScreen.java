@@ -68,12 +68,15 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
+        setTextContent("dialog_title", GuiText.NetworkDetails.text(status.getChannelsUsed()));
         setTextContent("stored_power", GuiText.StoredPower.text(Platform.formatPower(status.getStoredPower(), false)));
         setTextContent("max_power", GuiText.MaxPower.text(Platform.formatPower(status.getMaxStoredPower(), false)));
         setTextContent("power_input_rate",
                 GuiText.PowerInputRate.text(Platform.formatPower(status.getAveragePowerInjection(), true)));
         setTextContent("power_usage_rate",
                 GuiText.PowerUsageRate.text(Platform.formatPower(status.getAveragePowerUsage(), true)));
+        setTextContent("channel_power_rate",
+                GuiText.ChannelEnergyDrain.text(Platform.formatPower(status.getChannelPower(), true)));
     }
 
     @Override
