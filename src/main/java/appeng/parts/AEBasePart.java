@@ -196,11 +196,12 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     /**
      * depending on the from, different settings will be accepted
      *
-     * @param mode  source of settings
-     * @param input compound of source
+     * @param mode   source of settings
+     * @param input  compound of source
+     * @param player the optional player who is importing the settings
      */
     @OverridingMethodsMustInvokeSuper
-    public void importSettings(SettingsFrom mode, CompoundTag input) {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         this.customName = CustomNameUtil.getCustomName(input);
 
         if (this instanceof IConfigurableObject configurableObject) {
@@ -259,7 +260,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
                 var storedName = memoryCard.getSettingsName(memCardIS);
                 var data = memoryCard.getData(memCardIS);
                 if (name.equals(storedName)) {
-                    importSettings(SettingsFrom.MEMORY_CARD, data);
+                    importSettings(SettingsFrom.MEMORY_CARD, data, player);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                 } else {
                     memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);

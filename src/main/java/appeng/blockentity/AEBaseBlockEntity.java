@@ -281,10 +281,11 @@ public class AEBaseBlockEntity extends BlockEntity
     /**
      * null means nothing to store...
      *
-     * @param mode source of settings
+     * @param mode   source of settings
+     * @param player The (optional) player, who is exporting the settings
      */
     @OverridingMethodsMustInvokeSuper
-    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
         CustomNameUtil.setCustomName(output, customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
@@ -305,10 +306,11 @@ public class AEBaseBlockEntity extends BlockEntity
     /**
      * Depending on the mode, different settings will be accepted.
      *
-     * @param input source of settings
+     * @param input  source of settings
+     * @param player The (optional) player, who is importing the settings
      */
     @OverridingMethodsMustInvokeSuper
-    public void importSettings(SettingsFrom mode, CompoundTag input) {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         if (this instanceof IConfigurableObject configurableObject) {
             configurableObject.getConfigManager().readFromNBT(input);
         }
@@ -422,7 +424,7 @@ public class AEBaseBlockEntity extends BlockEntity
         for (var ol : itemDropCandidates) {
             if (Platform.itemComparisons().isEqualItemType(ol, op)) {
                 var tag = new CompoundTag();
-                exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
+                exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
                 if (!tag.isEmpty()) {
                     ol.setTag(tag);
                 }

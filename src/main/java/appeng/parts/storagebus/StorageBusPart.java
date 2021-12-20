@@ -484,8 +484,8 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input) {
-        super.importSettings(mode, input);
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
         config.readFromChildTag(input, "config");
     }
 

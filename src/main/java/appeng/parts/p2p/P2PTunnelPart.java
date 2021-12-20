@@ -188,7 +188,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
                 }
 
                 if (newBus instanceof P2PTunnelPart<?>newTunnel) {
-                    newTunnel.importSettings(SettingsFrom.MEMORY_CARD, configData);
+                    newTunnel.importSettings(SettingsFrom.MEMORY_CARD, configData, player);
                 }
 
                 mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
@@ -268,8 +268,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input) {
-        super.importSettings(mode, input);
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
 
         if (input.contains(CONFIG_NBT_FREQ, Tag.TAG_SHORT)) {
             var freq = input.getShort(CONFIG_NBT_FREQ);

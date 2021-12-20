@@ -18,10 +18,13 @@
 
 package appeng.blockentity.networking;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -108,8 +111,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input) {
-        super.importSettings(mode, input);
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
             this.internalCurrentPower = input.getDouble("internalCurrentPower");
@@ -117,8 +120,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void exportSettings(SettingsFrom from, CompoundTag data) {
-        super.exportSettings(from, data);
+    public void exportSettings(SettingsFrom from, CompoundTag data, @Nullable Player player) {
+        super.exportSettings(from, data, player);
 
         if (from == SettingsFrom.DISMANTLE_ITEM && this.internalCurrentPower > 0.0001) {
             data.putDouble("internalCurrentPower", this.internalCurrentPower);

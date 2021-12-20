@@ -127,9 +127,10 @@ public interface IPart extends ICustomCableConnection {
     /**
      * Depending on the mode, different settings will be accepted.
      *
-     * @param input source of settings
+     * @param input  source of settings
+     * @param player the (optional) player who is importing the settings
      */
-    default void importSettings(SettingsFrom mode, CompoundTag input) {
+    default void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
     }
 
     /**
