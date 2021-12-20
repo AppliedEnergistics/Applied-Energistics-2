@@ -73,6 +73,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     // Flag to indicate a reboot should occur next tick
     private boolean reboot = true;
     private boolean booting = false;
+    @Nullable
+    private AdHocNetworkError adHocNetworkError;
     private ControllerState controllerState = ControllerState.NO_CONTROLLER;
     private int ticksUntilReady = 0;
     private int lastChannels = 0;
@@ -102,21 +104,18 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             }
 
             this.channelsInUse = 0;
+            this.adHocNetworkError = null;
 
             if (this.controllerState == ControllerState.NO_CONTROLLER) {
-                var requiredChannels = this.calculateAdHocChannels();
-                int used = requiredChannels;
-                if (requiredChannels > channelMode.getAdHocNetworkChannels()) {
-                    used = 0;
-                }
-                this.channelsInUse = used;
+                // Returns 0 if there's an error
+                this.channelsInUse = this.calculateAdHocChannels();
 
                 var nodes = this.grid.size();
                 this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
-                this.channelsByBlocks = nodes * used;
+                this.channelsByBlocks = nodes * this.channelsInUse;
                 this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
 
-                this.grid.getPivot().beginVisit(new AdHocChannelUpdater(used));
+                this.grid.getPivot().beginVisit(new AdHocChannelUpdater(this.channelsInUse));
             } else if (this.controllerState == ControllerState.CONTROLLER_CONFLICT) {
                 this.ticksUntilReady = 20;
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(0));
@@ -214,8 +213,15 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         }
     }
 
+    @Nullable
+    public AdHocNetworkError getAdHocNetworkError() {
+        return adHocNetworkError;
+    }
+
     private int calculateAdHocChannels() {
         var ignore = new HashSet<IGridNode>();
+
+        this.adHocNetworkError = null;
 
         int channels = 0;
         for (var node : this.nodesNeedingChannels) {
@@ -224,7 +230,8 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 // same time
                 // this effectively prevents the nesting of P2P-tunnels in ad-hoc networks.
                 if (node.hasFlag(GridFlags.COMPRESSED_CHANNEL) && !this.cannotCarryCompressedNodes.isEmpty()) {
-                    return channelMode.getAdHocNetworkChannels() + 1;
+                    this.adHocNetworkError = AdHocNetworkError.NESTED_P2P_TUNNEL;
+                    return 0;
                 }
 
                 channels++;
@@ -241,6 +248,11 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                     }
                 }
             }
+        }
+
+        if (channels > channelMode.getAdHocNetworkChannels()) {
+            this.adHocNetworkError = AdHocNetworkError.TOO_MANY_CHANNELS;
+            return 0;
         }
 
         return channels;
