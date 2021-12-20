@@ -227,8 +227,11 @@ public class TickHandler {
     private void onServerLevelTickStart(ServerLevel level) {
         var queue = this.callQueue.remove(level);
         processQueueElementsRemaining += this.processQueue(queue, level);
-        // Put it back to save on GC, but only if no new tasks were added in the meantime
-        this.callQueue.putIfAbsent(level, queue);
+        var newQueue = this.callQueue.put(level, queue);
+        // Some new tasks may have been added while we were processing the queue
+        if (newQueue != null) {
+            queue.addAll(newQueue);
+        }
 
         // tick networks
         this.grids.updateNetworks();

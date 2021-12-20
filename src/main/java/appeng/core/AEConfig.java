@@ -392,6 +392,10 @@ public final class AEConfig {
         COMMON.channels.set(mode);
     }
 
+    public int getPathfindingStepsPerTick() {
+        return COMMON.pathfindingStepsPerTick.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -438,6 +442,7 @@ public final class AEConfig {
         public final BooleanOption tinyTntBlockDamage;
         public final BooleanOption serverOpsIgnoreSecurity;
         public final EnumOption<ChannelMode> channels;
+        public final IntegerOption pathfindingStepsPerTick;
 
         // Crafting
         public final BooleanOption inWorldSingularity;
@@ -514,6 +519,9 @@ public final class AEConfig {
                     "Server operators are not restricted by ME security terminal settings.");
             channels = general.addEnum("channels", ChannelMode.DEFAULT,
                     "Changes the channel capacity that cables provide in AE2.");
+            pathfindingStepsPerTick = general.addInt("pathfindingStepsPerTick", 4,
+                    1, 1024,
+                    "The number of pathfinding steps that are taken per tick and per grid that is booting. Lower numbers will mean booting takes longer, but less work is done per tick.");
 
             ConfigSection automation = root.subsection("automation");
             formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);

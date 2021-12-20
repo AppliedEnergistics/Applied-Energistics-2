@@ -621,7 +621,7 @@ public final class TestPlots {
 
         plot.afterGridExistsAt("0 0 0", (grid, node) -> {
             // This has so many nodes it needs infinite mode
-            ((PathingService) grid.getSpatialService()).setForcedChannelMode(ChannelMode.INFINITE);
+            ((PathingService) grid.getPathingService()).setForcedChannelMode(ChannelMode.INFINITE);
 
             var patternProviders = grid.getMachines(PatternProviderPart.class).iterator();
             PatternProviderPart current = patternProviders.next();
