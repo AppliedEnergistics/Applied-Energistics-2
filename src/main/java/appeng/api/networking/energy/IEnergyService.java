@@ -35,10 +35,18 @@ import appeng.api.networking.IGridService;
 public interface IEnergyService extends IGridService, IEnergySource {
 
     /**
-     * @return the current calculated idle energy drain each tick, is used internally to drain power for each tick.
+     * Return the current calculated idle energy drain each tick, is used internally to drain power for each tick. It's
+     * the sum of the {@linkplain #getChannelPowerUsage() idle channel power usage} and the idle usages of the machines
+     * in the network.
      */
     @Nonnegative
     double getIdlePowerUsage();
+
+    /**
+     * @return the current idle power usage of channels
+     */
+    @Nonnegative
+    double getChannelPowerUsage();
 
     /**
      * @return the average power drain over the past 10 ticks, includes idle usage during this time, and all use of

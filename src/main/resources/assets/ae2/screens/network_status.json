@@ -3,13 +3,10 @@
   "includes": ["common/common.json"],
   "background": {
     "texture": "guis/networkstatus.png",
-    "srcRect": [0, 0, 195, 147]
+    "srcRect": [0, 0, 195, 157]
   },
   "text": {
     "dialog_title": {
-      "text": {
-        "translate": "gui.ae2.NetworkDetails"
-      },
       "position": {
         "left": 8,
         "top": 6
@@ -27,16 +24,22 @@
         "top": 26
       }
     },
-    "power_usage_rate": {
+    "channel_power_rate": {
       "position": {
         "left": 13,
         "top": 123
       }
     },
-    "power_input_rate": {
+    "power_usage_rate": {
       "position": {
         "left": 13,
         "top": 133
+      }
+    },
+    "power_input_rate": {
+      "position": {
+        "left": 13,
+        "top": 143
       }
     }
   },
