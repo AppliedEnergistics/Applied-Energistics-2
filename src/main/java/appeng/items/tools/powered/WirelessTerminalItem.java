@@ -50,14 +50,13 @@ import appeng.api.util.IConfigManager;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalMenuHost;
-import appeng.hooks.ICustomReequipAnimation;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.util.ConfigManager;
 
-public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomReequipAnimation, IMenuItem {
+public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem {
 
     public static final IGridLinkableHandler LINKABLE_HANDLER = new LinkableHandler();
 
@@ -138,8 +137,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements ICustomRe
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
+    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
+            ItemStack newStack) {
+        return false;
     }
 
     @Nullable
