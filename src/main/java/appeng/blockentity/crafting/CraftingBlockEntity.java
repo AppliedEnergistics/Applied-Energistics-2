@@ -31,7 +31,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -70,11 +70,11 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    protected ItemStack getItemFromBlockEntity() {
+    protected Item getItemFromBlockEntity() {
         if (isAccelerator()) {
-            return AEBlocks.CRAFTING_ACCELERATOR.stack();
+            return AEBlocks.CRAFTING_ACCELERATOR.asItem();
         } else {
-            return AEBlocks.CRAFTING_UNIT.stack();
+            return AEBlocks.CRAFTING_UNIT.asItem();
         }
     }
 

@@ -30,7 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -144,8 +144,8 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     }
 
     @Override
-    protected ItemStack getItemFromBlockEntity() {
-        return AEBlocks.CRAFTING_MONITOR.stack();
+    protected Item getItemFromBlockEntity() {
+        return AEBlocks.CRAFTING_MONITOR.asItem();
     }
 
     @Nonnull

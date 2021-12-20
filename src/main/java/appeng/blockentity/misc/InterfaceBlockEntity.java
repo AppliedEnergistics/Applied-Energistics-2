@@ -58,7 +58,7 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
     };
 
     private final InterfaceLogic logic = new InterfaceLogic(this.getMainNode(), this,
-            getItemFromBlockEntity().getItem());
+            getItemFromBlockEntity().asItem());
 
     public InterfaceBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
