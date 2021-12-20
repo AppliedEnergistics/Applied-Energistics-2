@@ -38,13 +38,13 @@ import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.IStackWatcher;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.storage.IStorageWatcherNode;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
-import appeng.items.parts.PartItem;
 import appeng.util.Platform;
 
 /**
@@ -67,8 +67,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private boolean isLocked;
     private IStackWatcher myWatcher;
 
-    public AbstractMonitorPart(PartItem<?> is, boolean requireChannel) {
-        super(is, requireChannel);
+    public AbstractMonitorPart(IPartItem<?> partItem, boolean requireChannel) {
+        super(partItem, requireChannel);
 
         getMainNode().addService(IStorageWatcherNode.class, this);
     }

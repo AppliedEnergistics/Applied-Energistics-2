@@ -23,8 +23,8 @@ import appeng.api.util.AECableType;
 import appeng.items.parts.ColoredPartItem;
 
 public class CoveredCablePart extends CablePart {
-    public CoveredCablePart(ColoredPartItem<?> is) {
-        super(is);
+    public CoveredCablePart(ColoredPartItem<?> partItem) {
+        super(partItem);
     }
 
     @Override

@@ -184,8 +184,9 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
         return this.getCableBus().getFacadeContainer();
     }
 
+    @Nullable
     @Override
-    public IPart getPart(final Direction side) {
+    public IPart getPart(@Nullable Direction side) {
         return this.cb.getPart(side);
     }
 

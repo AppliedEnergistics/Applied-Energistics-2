@@ -37,8 +37,8 @@ import appeng.api.implementations.parts.IMonitorPart;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.items.parts.PartItem;
 import appeng.parts.AEBasePart;
 import appeng.util.InteractionUtil;
 
@@ -66,8 +66,8 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     private int clientFlags = 0; // sent as byte.
     private int opacity = -1;
 
-    protected AbstractReportingPart(PartItem<?> is, final boolean requireChannel) {
-        super(is);
+    protected AbstractReportingPart(IPartItem<?> partItem, final boolean requireChannel) {
+        super(partItem);
 
         if (requireChannel) {
             this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);

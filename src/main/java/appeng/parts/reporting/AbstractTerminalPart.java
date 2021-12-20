@@ -33,10 +33,10 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.parts.IPartItem;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
-import appeng.items.parts.PartItem;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -62,8 +62,8 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     private final IConfigManager cm = new ConfigManager();
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
-    public AbstractTerminalPart(PartItem<?> is) {
-        super(is, true);
+    public AbstractTerminalPart(IPartItem<?> partItem) {
+        super(partItem, true);
 
         this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.cm.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);

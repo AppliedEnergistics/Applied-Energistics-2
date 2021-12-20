@@ -133,10 +133,16 @@ public interface IManagedGridNode {
      */
     IManagedGridNode setVisualRepresentation(@Nullable AEItemKey visualRepresentation);
 
+    /**
+     * Shortcut for {@link #setVisualRepresentation(AEItemKey)} based on an {@link ItemStack}.
+     */
     default IManagedGridNode setVisualRepresentation(ItemStack visualRepresentation) {
         return setVisualRepresentation(AEItemKey.of(visualRepresentation));
     }
 
+    /**
+     * Shortcut for {@link #setVisualRepresentation(AEItemKey)} based on an {@link ItemLike}.
+     */
     default IManagedGridNode setVisualRepresentation(ItemLike visualRepresentation) {
         return setVisualRepresentation(AEItemKey.of(visualRepresentation));
     }

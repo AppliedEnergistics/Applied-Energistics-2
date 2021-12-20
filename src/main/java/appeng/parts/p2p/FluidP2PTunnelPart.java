@@ -23,8 +23,8 @@ import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 
 public class FluidP2PTunnelPart extends StorageP2PTunnelPart<FluidP2PTunnelPart, FluidVariant> {
@@ -36,8 +36,8 @@ public class FluidP2PTunnelPart extends StorageP2PTunnelPart<FluidP2PTunnelPart,
         return MODELS.getModels();
     }
 
-    public FluidP2PTunnelPart(PartItem<?> is) {
-        super(is, FluidStorage.SIDED);
+    public FluidP2PTunnelPart(IPartItem<?> partItem) {
+        super(partItem, FluidStorage.SIDED);
     }
 
     @Override

@@ -36,10 +36,10 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
@@ -52,8 +52,8 @@ public class QuartzFiberPart extends AEBasePart {
 
     private final IManagedGridNode outerNode;
 
-    public QuartzFiberPart(PartItem<?> is) {
-        super(is);
+    public QuartzFiberPart(IPartItem<?> partItem) {
+        super(partItem);
         var energyBridge = new GridBridgeProvider();
         this.getMainNode()
                 .setIdlePowerUsage(0)
@@ -62,7 +62,7 @@ public class QuartzFiberPart extends AEBasePart {
         this.outerNode = GridHelper.createManagedNode(this, NodeListener.INSTANCE)
                 .setTagName("outer")
                 .setIdlePowerUsage(0)
-                .setVisualRepresentation(is)
+                .setVisualRepresentation(partItem)
                 .setFlags(GridFlags.CANNOT_CARRY)
                 .setInWorldNode(true)
                 .addService(IEnergyGridProvider.class, energyBridge);

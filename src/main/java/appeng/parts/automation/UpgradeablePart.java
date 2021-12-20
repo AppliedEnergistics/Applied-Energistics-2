@@ -33,9 +33,9 @@ import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.parts.IPartItem;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.items.parts.PartItem;
 import appeng.parts.BasicStatePart;
 import appeng.util.ConfigManager;
 import appeng.util.inv.InternalInventoryHost;
@@ -45,9 +45,9 @@ public abstract class UpgradeablePart extends BasicStatePart
     private final IConfigManager config;
     private final UpgradeInventory upgrades;
 
-    public UpgradeablePart(PartItem<?> is) {
-        super(is);
-        this.upgrades = new StackUpgradeInventory(getPartItem(), this, this.getUpgradeSlots());
+    public UpgradeablePart(IPartItem<?> partItem) {
+        super(partItem);
+        this.upgrades = new StackUpgradeInventory(partItem.asItem(), this, this.getUpgradeSlots());
         this.config = new ConfigManager(this::onSettingChanged);
     }
 

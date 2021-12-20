@@ -115,8 +115,9 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return this.storage.getCenter();
     }
 
+    @Nullable
     @Override
-    public IPart getPart(final Direction partLocation) {
+    public IPart getPart(@Nullable Direction partLocation) {
         if (partLocation == null) {
             return this.storage.getCenter();
         }
@@ -757,15 +758,15 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             if (part != null) {
                 var itemId = Registry.ITEM.getKey(part.getPartItem().asItem());
 
-                var partData = new CompoundTag();
-                part.writeToNBT(partData);
-
                 var side = this.getSide(part);
                 var id = side == null ? "center" : side.name();
 
+                var partData = new CompoundTag();
+                part.writeToNBT(partData);
+
                 data.putString("item:" + id, itemId.toString());
-                if (!data.isEmpty()) {
-                    data.put("extra:" + id, data);
+                if (!partData.isEmpty()) {
+                    data.put("extra:" + id, partData);
                 }
             }
         }

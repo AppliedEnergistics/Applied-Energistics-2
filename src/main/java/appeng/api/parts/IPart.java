@@ -28,7 +28,6 @@ import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -136,7 +135,6 @@ public interface IPart extends ICustomCableConnection {
      * @param mode   The purpose to export settings for.
      * @param output The tag to write the settings to.
      */
-    @OverridingMethodsMustInvokeSuper
     default void exportSettings(SettingsFrom mode, CompoundTag output) {
     }
 
@@ -145,7 +143,6 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param input source of settings
      */
-    @OverridingMethodsMustInvokeSuper
     default void importSettings(SettingsFrom mode, CompoundTag input) {
     }
 

@@ -44,6 +44,7 @@ import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -54,7 +55,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
@@ -78,8 +78,8 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     private IncludeExclude filterMode = IncludeExclude.WHITELIST;
     private IPartitionList filter;
 
-    public FormationPlanePart(PartItem<?> is) {
-        super(is);
+    public FormationPlanePart(IPartItem<?> partItem) {
+        super(partItem);
         getMainNode().addService(IStorageProvider.class, this);
         this.config = ConfigInventory.configTypes(StackWorldBehaviors.hasPlacementStrategy(),
                 63, this::updateFilter);
@@ -275,7 +275,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
         @Override
         public Component getDescription() {
-            return getPartItem().getDescription();
+            return getPartItem().asItem().getDescription();
         }
     }
 

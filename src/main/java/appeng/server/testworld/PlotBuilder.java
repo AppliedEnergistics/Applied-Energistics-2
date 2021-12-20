@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -271,11 +272,16 @@ public interface PlotBuilder {
     Test test(Consumer<PlotTestHelper> assertion);
 
     default void fencedEntity(BlockPos pos, EntityType<?> entity) {
+        fencedEntity(pos, entity, e -> {
+        });
+    }
+
+    default void fencedEntity(BlockPos pos, EntityType<?> entity, Consumer<Entity> postProcessor) {
         var subPlot = offset(pos.getX(), pos.getY(), pos.getZ());
         subPlot.block("[-1,1] -1 [-1,1]", Blocks.STONE);
         subPlot.block("[-1,1] 0 [-1,1]", Blocks.STONE_BRICK_WALL);
         subPlot.block("0 0 0", Blocks.AIR);
 
-        addBuildAction(new SpawnEntityAction(bb(posToBb(pos)), entity));
+        addBuildAction(new SpawnEntityAction(bb(posToBb(pos)), entity, postProcessor));
     }
 }

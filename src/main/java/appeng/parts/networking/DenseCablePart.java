@@ -27,8 +27,8 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.items.parts.ColoredPartItem;
 
 public abstract class DenseCablePart extends CablePart {
-    public DenseCablePart(ColoredPartItem<?> is) {
-        super(is);
+    public DenseCablePart(ColoredPartItem<?> partItem) {
+        super(partItem);
 
         this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED);
     }

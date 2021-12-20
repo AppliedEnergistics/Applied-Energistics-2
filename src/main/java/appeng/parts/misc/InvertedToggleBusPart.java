@@ -20,9 +20,9 @@ package appeng.parts.misc;
 
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -35,8 +35,8 @@ public class InvertedToggleBusPart extends ToggleBusPart {
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
 
-    public InvertedToggleBusPart(PartItem<?> is) {
-        super(is);
+    public InvertedToggleBusPart(IPartItem<?> partItem) {
+        super(partItem);
         this.getMainNode().setIdlePowerUsage(0.0);
         this.getOuterNode().setIdlePowerUsage(0.0);
         this.getMainNode().setFlags();

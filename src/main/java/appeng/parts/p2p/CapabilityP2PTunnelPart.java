@@ -24,7 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 
-import appeng.items.parts.PartItem;
+import appeng.api.parts.IPartItem;
 import appeng.parts.PartAdjacentApi;
 
 /**
@@ -43,8 +43,8 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
     protected A outputHandler;
     protected A emptyHandler;
 
-    public CapabilityP2PTunnelPart(PartItem<?> is, BlockApiLookup<A, Direction> api) {
-        super(is);
+    public CapabilityP2PTunnelPart(IPartItem<?> partItem, BlockApiLookup<A, Direction> api) {
+        super(partItem);
         this.targetApiCache = new PartAdjacentApi<A>(this, api);
     }
 

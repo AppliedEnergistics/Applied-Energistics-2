@@ -40,12 +40,12 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.storage.IStorageWatcherNode;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.AppEng;
 import appeng.helpers.IConfigInvHost;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -114,8 +114,8 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         }
     };
 
-    public StorageLevelEmitterPart(PartItem<?> is) {
-        super(is);
+    public StorageLevelEmitterPart(IPartItem<?> partItem) {
+        super(partItem);
 
         getMainNode().addService(IStorageWatcherNode.class, stackWatcherNode);
         getMainNode().addService(ICraftingWatcherNode.class, craftingWatcherNode);

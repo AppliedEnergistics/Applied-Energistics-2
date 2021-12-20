@@ -30,8 +30,8 @@ import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.util.Platform;
 
@@ -47,8 +47,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     private int power;
     private boolean recursive = false;
 
-    public RedstoneP2PTunnelPart(PartItem<?> is) {
-        super(is);
+    public RedstoneP2PTunnelPart(IPartItem<?> partItem) {
+        super(partItem);
     }
 
     @Override

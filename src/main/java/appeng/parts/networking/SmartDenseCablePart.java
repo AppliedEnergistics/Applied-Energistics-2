@@ -24,8 +24,8 @@ import appeng.items.parts.ColoredPartItem;
 
 public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelProvider {
 
-    public SmartDenseCablePart(ColoredPartItem<?> is) {
-        super(is);
+    public SmartDenseCablePart(ColoredPartItem<?> partItem) {
+        super(partItem);
     }
 
     @Override

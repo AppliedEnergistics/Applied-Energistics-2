@@ -20,9 +20,9 @@ package appeng.parts.reporting;
 
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 
 /**
@@ -40,8 +40,8 @@ public abstract class AbstractPanelPart extends AbstractReportingPart {
     @PartModels
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/monitor_base");
 
-    public AbstractPanelPart(PartItem<?> is) {
-        super(is, false);
+    public AbstractPanelPart(IPartItem<?> partItem) {
+        super(partItem, false);
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import appeng.api.parts.IPart;
+import appeng.api.parts.PartHelper;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 
@@ -18,7 +19,10 @@ public record PartCustomizer<T extends IPart> (BoundingBox bb,
         Consumer<T> partCustomizer) implements BlockPlacingBuildAction {
     @Override
     public void placeBlock(ServerLevel level, Player player, BlockPos pos, BlockPos minPos, BlockPos maxPos) {
-        part.asItem().getPart(level, pos, side).ifPresent(partCustomizer);
+        var placedPart = PartHelper.getPart(part.asItem(), level, pos, side);
+        if (placedPart != null) {
+            partCustomizer.accept(placedPart);
+        }
     }
 
     @Override

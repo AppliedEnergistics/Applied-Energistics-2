@@ -35,13 +35,13 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.parts.AEBasePart;
@@ -74,9 +74,9 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
 
     private final InterfaceLogic logic;
 
-    public InterfacePart(PartItem<?> is) {
-        super(is);
-        this.logic = new InterfaceLogic(this.getMainNode(), this, is);
+    public InterfacePart(IPartItem<?> partItem) {
+        super(partItem);
+        this.logic = new InterfaceLogic(this.getMainNode(), this, partItem.asItem());
     }
 
     @Override

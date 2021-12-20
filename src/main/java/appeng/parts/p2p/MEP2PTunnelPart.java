@@ -37,12 +37,12 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.service.helpers.Connections;
 import appeng.me.service.helpers.TunnelConnection;
@@ -64,8 +64,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             .setInWorldNode(true)
             .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 
-    public MEP2PTunnelPart(PartItem<?> is) {
-        super(is);
+    public MEP2PTunnelPart(IPartItem<?> partItem) {
+        super(partItem);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL)
                 .addService(IGridTickable.class, this);

@@ -23,16 +23,16 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
-import appeng.items.parts.PartItem;
 import appeng.menu.implementations.IOBusMenu;
 
 public class ImportBusPart extends IOBusPart {
     private StackImportStrategy importStrategy;
 
-    public ImportBusPart(PartItem<?> is) {
-        super(TickRates.ImportBus, is);
+    public ImportBusPart(IPartItem<?> partItem) {
+        super(TickRates.ImportBus, partItem);
     }
 
     @Override

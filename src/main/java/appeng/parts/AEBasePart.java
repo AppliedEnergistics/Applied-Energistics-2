@@ -50,6 +50,7 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -58,7 +59,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.PartItem;
+import appeng.util.CustomNameUtil;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -66,7 +67,7 @@ import appeng.util.SettingsFrom;
 public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory {
 
     private final IManagedGridNode mainNode;
-    private final PartItem<?> partItem;
+    private final IPartItem<?> partItem;
     private BlockEntity blockEntity = null;
     private IPartHost host = null;
     @Nullable
@@ -74,8 +75,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     @Nullable
     private Component customName;
 
-    public AEBasePart(PartItem<?> partItem) {
-        this.partItem = Objects.requireNonNull(partItem, "item");
+    public AEBasePart(IPartItem<?> partItem) {
+        this.partItem = Objects.requireNonNull(partItem, "partItem");
         this.mainNode = createMainNode()
                 .setVisualRepresentation(AEItemKey.of(this.partItem))
                 .setExposedOnSides(EnumSet.noneOf(Direction.class));
@@ -151,7 +152,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public PartItem<?> getPartItem() {
+    public IPartItem<?> getPartItem() {
         return this.partItem;
     }
 
@@ -200,6 +201,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
      */
     @OverridingMethodsMustInvokeSuper
     public void importSettings(SettingsFrom mode, CompoundTag input) {
+        this.customName = CustomNameUtil.getCustomName(input);
+
         if (this instanceof IConfigurableObject configurableObject) {
             configurableObject.getConfigManager().readFromNBT(input);
         }
@@ -211,6 +214,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
 
     @OverridingMethodsMustInvokeSuper
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        CustomNameUtil.setCustomName(output, this.customName);
+
         if (this instanceof IConfigurableObject configurableObject) {
             configurableObject.getConfigManager().writeToNBT(output);
         }
@@ -230,7 +235,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard()
                 && memCardIS.getItem() instanceof IMemoryCard memoryCard) {
 
-            Item partItem = getPartItem();
+            Item partItem = getPartItem().asItem();
 
             // Blocks and parts share the same soul!
             if (AEParts.INTERFACE.asItem() == partItem) {
