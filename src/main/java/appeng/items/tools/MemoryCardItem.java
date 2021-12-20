@@ -26,6 +26,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
@@ -126,13 +127,15 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
     public AEColor[] getColorCode(ItemStack is) {
         final CompoundTag tag = this.getData(is);
 
-        if (tag.contains("colorCode")) {
-            final int[] frequency = tag.getIntArray("colorCode");
-            final AEColor[] colorArray = AEColor.values();
+        if (tag.contains(IMemoryCard.NBT_COLOR_CODE, Tag.TAG_INT_ARRAY)) {
+            var frequency = tag.getIntArray(IMemoryCard.NBT_COLOR_CODE);
+            var colorArray = AEColor.values();
 
-            return new AEColor[] { colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]],
-                    colorArray[frequency[3]], colorArray[frequency[4]], colorArray[frequency[5]],
-                    colorArray[frequency[6]], colorArray[frequency[7]], };
+            if (frequency.length == 8) {
+                return new AEColor[] { colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]],
+                        colorArray[frequency[3]], colorArray[frequency[4]], colorArray[frequency[5]],
+                        colorArray[frequency[6]], colorArray[frequency[7]], };
+            }
         }
 
         return DEFAULT_COLOR_CODE;

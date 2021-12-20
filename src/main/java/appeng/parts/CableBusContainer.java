@@ -37,7 +37,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -696,7 +695,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         for (int x = 0; x < Platform.DIRECTIONS_WITH_NULL.length; x++) {
             var p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
             if (p != null) {
-                data.writeVarInt(Item.getId(p.getPartItem().asItem()));
+                data.writeVarInt(IPartItem.getNetworkId(p.getPartItem()));
 
                 p.writeToStream(data);
             }
@@ -715,15 +714,14 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             if ((sides & 1 << x) == 1 << x) {
                 IPart p = this.getPart(side);
 
-                final int itemID = data.readVarInt();
+                var itemId = data.readVarInt();
+                var partItem = IPartItem.byNetworkId(itemId);
 
-                var newPartItem = Item.byId(itemID);
-
-                if (p != null && p.getPartItem() == newPartItem) {
+                if (p != null && p.getPartItem() == partItem) {
                     if (p.readFromStream(data)) {
                         updateBlock = true;
                     }
-                } else if (newPartItem instanceof IPartItem<?>partItem) {
+                } else if (partItem != null) {
                     this.removePart(side);
                     p = this.addPart(partItem, side, null);
                     if (p != null) {
@@ -732,7 +730,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                         throw new IllegalStateException("Invalid Stream For CableBus Container.");
                     }
                 } else {
-                    throw new IllegalStateException("Invalid item from server for part: " + newPartItem);
+                    throw new IllegalStateException("Invalid item from server for part: " + itemId);
                 }
             } else if (this.getPart(side) != null) {
                 this.removePart(side);
@@ -756,7 +754,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
             var part = this.getPart(s);
             if (part != null) {
-                var itemId = Registry.ITEM.getKey(part.getPartItem().asItem());
+                var itemId = IPartItem.getId(part.getPartItem());
 
                 var side = this.getSide(part);
                 var id = side == null ? "center" : side.name();
@@ -812,8 +810,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             String extraKey = "extra:" + id;
             if (data.contains(itemKey, Tag.TAG_STRING)) {
                 var itemId = new ResourceLocation(data.getString(itemKey));
-                var item = Registry.ITEM.get(itemId);
-                if (!(item instanceof IPartItem<?>partItem)) {
+                var partItem = IPartItem.byId(itemId);
+                if (partItem == null) {
                     AELog.warn("Ignoring persisted part with non-part-item %s", itemId);
                     continue;
                 }
