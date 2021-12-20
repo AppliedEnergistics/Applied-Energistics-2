@@ -50,7 +50,6 @@ import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.PathingCalculation;
 
 public class PathingService implements IPathingService, IGridServiceProvider {
-
     private static final String TAG_CHANNEL_MODE = "channelMode";
 
     static {
@@ -111,17 +110,17 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 this.channelsInUse = this.calculateAdHocChannels();
 
                 var nodes = this.grid.size();
-                this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
+                this.ticksUntilReady = Math.max(5, nodes / 100);
                 this.channelsByBlocks = nodes * this.channelsInUse;
                 this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
 
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(this.channelsInUse));
             } else if (this.controllerState == ControllerState.CONTROLLER_CONFLICT) {
-                this.ticksUntilReady = 20;
+                this.ticksUntilReady = 5;
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(0));
             } else {
                 var nodes = this.grid.size();
-                this.ticksUntilReady = 20 + Math.max(0, nodes / 100 - 20);
+                this.ticksUntilReady = Math.max(5, nodes / 100);
                 this.ongoingCalculation = new PathingCalculation(grid);
             }
         }
@@ -129,11 +128,14 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         if (this.booting) {
             // Work on remaining pathfinding work
             if (ongoingCalculation != null) { // can be null for ad-hoc or invalid controller state
-                ongoingCalculation.step();
-                if (ongoingCalculation.isFinished()) {
-                    this.channelsByBlocks = ongoingCalculation.getChannelsByBlocks();
-                    this.channelsInUse = ongoingCalculation.getChannelsInUse();
-                    ongoingCalculation = null;
+                for (var i = 0; i < AEConfig.instance().getPathfindingStepsPerTick(); i++) {
+                    ongoingCalculation.step();
+                    if (ongoingCalculation.isFinished()) {
+                        this.channelsByBlocks = ongoingCalculation.getChannelsByBlocks();
+                        this.channelsInUse = ongoingCalculation.getChannelsInUse();
+                        ongoingCalculation = null;
+                        break;
+                    }
                 }
             }
 
