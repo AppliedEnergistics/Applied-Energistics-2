@@ -666,12 +666,12 @@ public final class TestPlots {
                     continue;
                 }
 
-                if (!current.getDuality().getPatternInv().addItems(craftingPattern).isEmpty()) {
+                if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {
                     if (!patternProviders.hasNext()) {
                         break;
                     }
                     current = patternProviders.next();
-                    current.getDuality().getPatternInv().addItems(craftingPattern);
+                    current.getLogic().getPatternInv().addItems(craftingPattern);
                 }
             }
 
