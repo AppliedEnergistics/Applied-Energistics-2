@@ -185,7 +185,11 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         }
 
         if (is.hasTag()) {
-            blockEntity.importSettings(SettingsFrom.DISMANTLE_ITEM, is.getTag());
+            Player player = null;
+            if (placer instanceof Player) {
+                player = (Player) placer;
+            }
+            blockEntity.importSettings(SettingsFrom.DISMANTLE_ITEM, is.getTag(), player);
         }
     }
 
@@ -207,7 +211,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
                 if (InteractionUtil.isInAlternateUseMode(player)) {
                     var data = new CompoundTag();
-                    blockEntity.exportSettings(SettingsFrom.MEMORY_CARD, data);
+                    blockEntity.exportSettings(SettingsFrom.MEMORY_CARD, data, player);
                     if (!data.isEmpty()) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
@@ -217,7 +221,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                     final CompoundTag data = memoryCard.getData(heldItem);
 
                     if (this.getDescriptionId().equals(savedName)) {
-                        blockEntity.importSettings(SettingsFrom.MEMORY_CARD, data);
+                        blockEntity.importSettings(SettingsFrom.MEMORY_CARD, data, player);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                     } else {
                         memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
@@ -278,11 +282,17 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                         .create(LootContextParamSets.BLOCK);
                 var be = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
                 if (be instanceof AEBaseBlockEntity aeBaseBlockEntity) {
+                    var looter = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
+                    Player player = null;
+                    if (looter instanceof Player) {
+                        player = (Player) looter;
+                    }
+
                     if (drop.hasTag()) {
-                        aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, drop.getTag());
+                        aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, drop.getTag(), player);
                     } else {
                         var tag = new CompoundTag();
-                        aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
+                        aeBaseBlockEntity.exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
                         if (!tag.isEmpty()) {
                             drop.setTag(tag);
                         }

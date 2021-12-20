@@ -234,7 +234,7 @@ public class PartPlacement {
                 // Import settings from the item if possible
                 if (held.hasTag()) {
                     try {
-                        addedPart.importSettings(SettingsFrom.DISMANTLE_ITEM, held.getTag());
+                        addedPart.importSettings(SettingsFrom.DISMANTLE_ITEM, held.getTag(), player);
                     } catch (Exception e) {
                         AELog.warn(e);
                     }
