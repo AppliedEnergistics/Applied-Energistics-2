@@ -74,7 +74,7 @@ public enum GuiText {
 
     FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start,
 
-    SelectedCraftingCPU, Automatic, Simulation, Missing, ConfirmCraftCpuStatus, ConfirmCraftNoCpu,
+    SelectedCraftingCPU, Automatic, PartialPlan, Missing, ConfirmCraftCpuStatus, ConfirmCraftNoCpu,
 
     InterfaceTerminal, NoCraftingCPUs, Clean, InvalidPattern,
 

@@ -245,7 +245,6 @@
   "gui.ae2.SelectAmount": "Välj mängd",
   "gui.ae2.SelectedCraftingCPU": "Tillverkningsprocessor: %s",
   "gui.ae2.SerialNumber": "Serienummer: %s",
-  "gui.ae2.Simulation": "Simulering",
   "gui.ae2.SkyChest": "Himmelstenskista",
   "gui.ae2.SmallFontCraft": "Tillverka",
   "gui.ae2.SpatialCapacity": "Kapacitet: %dx%dx%d",
