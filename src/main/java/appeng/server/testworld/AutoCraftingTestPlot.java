@@ -125,7 +125,7 @@ public final class AutoCraftingTestPlot {
             for (var provider : grid.getMachines(PatternProviderBlockEntity.class)) {
                 while (!patterns.isEmpty()) {
                     var pattern = patterns.get(0);
-                    if (provider.getDuality().getPatternInv().addItems(pattern).isEmpty()) {
+                    if (provider.getLogic().getPatternInv().addItems(pattern).isEmpty()) {
                         patterns.remove(0);
                     } else {
                         break; // Try the next pattern provider
@@ -178,7 +178,7 @@ public final class AutoCraftingTestPlot {
                     new GenericStack[] {
                             new GenericStack(AEItemKey.of(Items.OBSIDIAN), 1)
                     });
-            provider.getDuality().getPatternInv().addItems(pattern);
+            provider.getLogic().getPatternInv().addItems(pattern);
         });
         plot.cable("-1 0 0")
                 // Insertion inventory for the pattern provider

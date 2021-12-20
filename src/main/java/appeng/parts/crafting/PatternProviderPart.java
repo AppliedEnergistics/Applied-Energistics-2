@@ -33,8 +33,8 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
-import appeng.helpers.iface.DualityPatternProvider;
-import appeng.helpers.iface.IPatternProviderHost;
+import appeng.helpers.iface.PatternProviderLogic;
+import appeng.helpers.iface.PatternProviderLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -42,7 +42,7 @@ import appeng.menu.implementations.PatternProviderMenu;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class PatternProviderPart extends BasicStatePart implements IPatternProviderHost {
+public class PatternProviderPart extends BasicStatePart implements PatternProviderLogicHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/pattern_provider_base");
@@ -60,11 +60,11 @@ public class PatternProviderPart extends BasicStatePart implements IPatternProvi
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
-    private final DualityPatternProvider duality;
+    private final PatternProviderLogic logic;
 
     public PatternProviderPart(ItemStack is) {
         super(is);
-        this.duality = new DualityPatternProvider(this.getMainNode(), this);
+        this.logic = new PatternProviderLogic(this.getMainNode(), this);
     }
 
     @Override
@@ -81,24 +81,24 @@ public class PatternProviderPart extends BasicStatePart implements IPatternProvi
     @Override
     public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
-        this.duality.readFromNBT(data);
+        this.logic.readFromNBT(data);
     }
 
     @Override
     public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
-        this.duality.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
     public void addToWorld() {
         super.addToWorld();
-        this.duality.updatePatterns();
+        this.logic.updatePatterns();
     }
 
     @Override
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
-        this.duality.addDrops(drops);
+        this.logic.addDrops(drops);
     }
 
     @Override
@@ -119,8 +119,8 @@ public class PatternProviderPart extends BasicStatePart implements IPatternProvi
     }
 
     @Override
-    public DualityPatternProvider getDuality() {
-        return duality;
+    public PatternProviderLogic getLogic() {
+        return logic;
     }
 
     @Override

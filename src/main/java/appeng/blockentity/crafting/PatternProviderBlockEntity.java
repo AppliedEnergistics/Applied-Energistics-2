@@ -36,15 +36,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.helpers.iface.DualityPatternProvider;
-import appeng.helpers.iface.IPatternProviderHost;
+import appeng.helpers.iface.PatternProviderLogic;
+import appeng.helpers.iface.PatternProviderLogicHost;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.util.Platform;
 
-public class PatternProviderBlockEntity extends AENetworkBlockEntity implements IPatternProviderHost {
-    private final DualityPatternProvider duality = new DualityPatternProvider(this.getMainNode(), this);
+public class PatternProviderBlockEntity extends AENetworkBlockEntity implements PatternProviderLogicHost {
+    private final PatternProviderLogic logic = new PatternProviderLogic(this.getMainNode(), this);
     private boolean omniDirectional = true;
 
     public PatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -53,7 +53,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        this.duality.onMainNodeStateChanged();
+        this.logic.onMainNodeStateChanged();
     }
 
     public void setSide(final Direction facing) {
@@ -102,7 +102,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
-        this.duality.addDrops(drops);
+        this.logic.addDrops(drops);
     }
 
     @Override
@@ -110,14 +110,14 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
         this.configureNodeSides();
 
         super.onReady();
-        this.duality.updatePatterns();
+        this.logic.updatePatterns();
     }
 
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         data.putBoolean("omniDirectional", this.omniDirectional);
-        this.duality.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
         super.loadTag(data);
         this.omniDirectional = data.getBoolean("omniDirectional");
 
-        this.duality.readFromNBT(data);
+        this.logic.readFromNBT(data);
     }
 
     @Override
@@ -148,8 +148,8 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public DualityPatternProvider getDuality() {
-        return duality;
+    public PatternProviderLogic getLogic() {
+        return logic;
     }
 
     @Override

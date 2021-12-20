@@ -28,8 +28,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 
-public interface IPatternProviderHost extends IConfigurableObject {
-    DualityPatternProvider getDuality();
+/**
+ * Interface to be implemented by blocks or parts wanting to host a pattern provider.
+ */
+public interface PatternProviderLogicHost extends IConfigurableObject {
+    PatternProviderLogic getLogic();
 
     /**
      * @return The block entity that is in-world and hosts the interface.
@@ -43,6 +46,6 @@ public interface IPatternProviderHost extends IConfigurableObject {
     @Nonnull
     @Override
     default IConfigManager getConfigManager() {
-        return getDuality().getConfigManager();
+        return getLogic().getConfigManager();
     }
 }

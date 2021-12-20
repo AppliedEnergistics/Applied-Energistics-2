@@ -25,8 +25,8 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.helpers.externalstorage.GenericStackInv;
-import appeng.helpers.iface.DualityPatternProvider;
-import appeng.helpers.iface.IPatternProviderHost;
+import appeng.helpers.iface.PatternProviderLogic;
+import appeng.helpers.iface.PatternProviderLogicHost;
 import appeng.helpers.iface.PatternProviderReturnInventory;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
@@ -40,32 +40,32 @@ import appeng.menu.slot.RestrictedInputSlot;
 public class PatternProviderMenu extends AEBaseMenu {
 
     public static final MenuType<PatternProviderMenu> TYPE = MenuTypeBuilder
-            .create(PatternProviderMenu::new, IPatternProviderHost.class)
+            .create(PatternProviderMenu::new, PatternProviderLogicHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("pattern_provider");
 
-    private final DualityPatternProvider duality;
+    private final PatternProviderLogic logic;
 
     @GuiSync(3)
     public YesNo blockingMode = YesNo.NO;
     @GuiSync(4)
     public YesNo showInAccessTerminal = YesNo.YES;
 
-    public PatternProviderMenu(int id, Inventory playerInventory, IPatternProviderHost host) {
+    public PatternProviderMenu(int id, Inventory playerInventory, PatternProviderLogicHost host) {
         super(TYPE, id, playerInventory, host);
 
         this.createPlayerInventorySlots(playerInventory);
 
-        this.duality = host.getDuality();
+        this.logic = host.getLogic();
 
-        for (int x = 0; x < DualityPatternProvider.NUMBER_OF_PATTERN_SLOTS; x++) {
+        for (int x = 0; x < PatternProviderLogic.NUMBER_OF_PATTERN_SLOTS; x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                    duality.getPatternInv(), x),
+                    logic.getPatternInv(), x),
                     SlotSemantics.ENCODED_PATTERN);
         }
 
         // Show first few entries of the return inv
-        var returnInv = duality.getReturnInv().createMenuWrapper();
+        var returnInv = logic.getReturnInv().createMenuWrapper();
         for (int i = 0; i < PatternProviderReturnInventory.NUMBER_OF_SLOTS; i++) {
             if (i < returnInv.size()) {
                 this.addSlot(new AppEngSlot(returnInv, i), SlotSemantics.STORAGE);
@@ -79,15 +79,15 @@ public class PatternProviderMenu extends AEBaseMenu {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
         if (isServer()) {
-            blockingMode = duality.getConfigManager().getSetting(Settings.BLOCKING_MODE);
-            showInAccessTerminal = duality.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);
+            blockingMode = logic.getConfigManager().getSetting(Settings.BLOCKING_MODE);
+            showInAccessTerminal = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);
         }
 
         super.broadcastChanges();
     }
 
     public GenericStackInv getReturnInv() {
-        return duality.getReturnInv();
+        return logic.getReturnInv();
     }
 
     public YesNo getBlockingMode() {

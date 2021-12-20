@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.network.chat.Component;
 
-import appeng.helpers.iface.DualityPatternProvider;
+import appeng.helpers.iface.PatternProviderLogic;
 import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.util.inv.AppEngInternalInventory;
 
@@ -45,7 +45,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
 
     /**
      * Used to sort this record in the interface terminal's table, comes from
-     * {@link DualityPatternProvider#getSortValue()}
+     * {@link PatternProviderLogic#getSortValue()}
      */
     private final long order;
 

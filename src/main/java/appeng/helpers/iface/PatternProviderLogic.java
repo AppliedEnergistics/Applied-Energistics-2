@@ -76,11 +76,11 @@ import appeng.util.inv.InternalInventoryHost;
 /**
  * Shared code between the pattern provider block and part.
  */
-public class DualityPatternProvider implements InternalInventoryHost, ICraftingProvider {
+public class PatternProviderLogic implements InternalInventoryHost, ICraftingProvider {
 
     public static final int NUMBER_OF_PATTERN_SLOTS = 9;
 
-    private final IPatternProviderHost host;
+    private final PatternProviderLogicHost host;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final ConfigManager configManager = new ConfigManager();
@@ -99,7 +99,7 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
     // Stack returning logic
     private final PatternProviderReturnInventory returnInv;
 
-    public DualityPatternProvider(IManagedGridNode mainNode, IPatternProviderHost host) {
+    public PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
         this.host = host;
         this.mainNode = mainNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -210,8 +210,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
             var adjBe = level.getBlockEntity(adjPos);
             var adjBeSide = direction.getOpposite();
 
-            if (adjBe instanceof IPatternProviderHost adjHost) {
-                if (adjHost.getDuality().sameGrid(this.mainNode.getGrid())) {
+            if (adjBe instanceof PatternProviderLogicHost adjHost) {
+                if (adjHost.getLogic().sameGrid(this.mainNode.getGrid())) {
                     continue;
                 }
             }
@@ -405,8 +405,8 @@ public class DualityPatternProvider implements InternalInventoryHost, ICraftingP
                 continue;
             }
 
-            if (directedBlockEntity instanceof IPatternProviderHost interfaceHost) {
-                if (interfaceHost.getDuality().sameGrid(this.mainNode.getGrid())) {
+            if (directedBlockEntity instanceof PatternProviderLogicHost interfaceHost) {
+                if (interfaceHost.getLogic().sameGrid(this.mainNode.getGrid())) {
                     continue;
                 }
             }

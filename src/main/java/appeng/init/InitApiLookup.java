@@ -88,16 +88,16 @@ public final class InitApiLookup {
     }
 
     private static void initPatternProvider() {
-        PartApiLookup.register(ItemStorage.SIDED, (part, context) -> part.getDuality().getReturnInv().getItemStorage(),
+        PartApiLookup.register(ItemStorage.SIDED, (part, context) -> part.getLogic().getReturnInv().getItemStorage(),
                 PatternProviderPart.class);
         ItemStorage.SIDED.registerForBlockEntity(
-                (blockEntity, direction) -> blockEntity.getDuality().getReturnInv().getItemStorage(),
+                (blockEntity, direction) -> blockEntity.getLogic().getReturnInv().getItemStorage(),
                 AEBlockEntities.PATTERN_PROVIDER);
 
         PartApiLookup.register(FluidStorage.SIDED,
-                (part, context) -> part.getDuality().getReturnInv().getFluidStorage(), PatternProviderPart.class);
+                (part, context) -> part.getLogic().getReturnInv().getFluidStorage(), PatternProviderPart.class);
         FluidStorage.SIDED.registerForBlockEntity(
-                (blockEntity, direction) -> blockEntity.getDuality().getReturnInv().getFluidStorage(),
+                (blockEntity, direction) -> blockEntity.getLogic().getReturnInv().getFluidStorage(),
                 AEBlockEntities.PATTERN_PROVIDER);
     }
 

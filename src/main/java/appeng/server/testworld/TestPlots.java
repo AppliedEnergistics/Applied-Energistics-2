@@ -265,7 +265,7 @@ public final class TestPlots {
                     new GenericStack[] {
                             AEItems.CERTUS_QUARTZ_CRYSTAL.genericStack(1)
                     });
-            provider.getDuality().getPatternInv().addItems(encodedPattern);
+            provider.getLogic().getPatternInv().addItems(encodedPattern);
             // Add a pattern for fluix crystal growth
             encodedPattern = PatternDetailsHelper.encodeProcessingPattern(
                     new GenericStack[] {
@@ -274,7 +274,7 @@ public final class TestPlots {
                     new GenericStack[] {
                             AEItems.FLUIX_CRYSTAL.genericStack(1)
                     });
-            provider.getDuality().getPatternInv().addItems(encodedPattern);
+            provider.getLogic().getPatternInv().addItems(encodedPattern);
             // Add a pattern for fluix dust
             encodedPattern = PatternDetailsHelper.encodeProcessingPattern(
                     new GenericStack[] {
@@ -285,7 +285,7 @@ public final class TestPlots {
                     new GenericStack[] {
                             AEItems.FLUIX_DUST.genericStack(2)
                     });
-            provider.getDuality().getPatternInv().addItems(encodedPattern);
+            provider.getLogic().getPatternInv().addItems(encodedPattern);
         });
         // Terminal to issue crafts + access results
         plot.cable("3 2 6", AEParts.GLASS_CABLE);

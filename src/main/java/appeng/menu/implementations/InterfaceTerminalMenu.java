@@ -45,8 +45,8 @@ import appeng.core.AELog;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.helpers.InventoryAction;
-import appeng.helpers.iface.DualityPatternProvider;
-import appeng.helpers.iface.IPatternProviderHost;
+import appeng.helpers.iface.PatternProviderLogic;
+import appeng.helpers.iface.PatternProviderLogicHost;
 import appeng.menu.AEBaseMenu;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.reporting.PatternAccessTerminalPart;
@@ -71,7 +71,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
     // We use this serial number to uniquely identify all inventories we send to the client
     // It is used in packets sent by the client to interact with these inventories
     private static long inventorySerial = Long.MIN_VALUE;
-    private final Map<IPatternProviderHost, InvTracker> diList = new IdentityHashMap<>();
+    private final Map<PatternProviderLogicHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
 
     public InterfaceTerminalMenu(int id, final Inventory ip, final PatternAccessTerminalPart anchor) {
@@ -128,10 +128,10 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         boolean forceFullUpdate;
     }
 
-    private <T extends IPatternProviderHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
+    private <T extends PatternProviderLogicHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
-            var dual = ih.getDuality();
+            var dual = ih.getLogic();
             if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.NO) {
                 continue;
             }
@@ -246,14 +246,14 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         }
 
         for (var ih : grid.getActiveMachines(PatternProviderBlockEntity.class)) {
-            var dual = ih.getDuality();
+            var dual = ih.getLogic();
             if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
 
         for (var ih : grid.getActiveMachines(PatternProviderPart.class)) {
-            var dual = ih.getDuality();
+            var dual = ih.getLogic();
             if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
@@ -328,7 +328,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         // This is a reference to the real inventory used by this machine
         private final InternalInventory server;
 
-        public InvTracker(final DualityPatternProvider dual, final InternalInventory patterns, final Component name) {
+        public InvTracker(final PatternProviderLogic dual, final InternalInventory patterns, final Component name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(this.server.size());
             this.name = name;

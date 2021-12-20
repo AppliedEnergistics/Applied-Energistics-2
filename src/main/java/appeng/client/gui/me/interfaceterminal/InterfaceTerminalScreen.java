@@ -55,7 +55,7 @@ import appeng.core.AEConfig;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
-import appeng.helpers.iface.DualityPatternProvider;
+import appeng.helpers.iface.PatternProviderLogic;
 import appeng.menu.implementations.InterfaceTerminalMenu;
 
 public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AEBaseScreen<C> {
@@ -486,7 +486,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
         if (o == null) {
             this.byId.put(id,
-                    o = new InterfaceRecord(id, DualityPatternProvider.NUMBER_OF_PATTERN_SLOTS, sortBy, name));
+                    o = new InterfaceRecord(id, PatternProviderLogic.NUMBER_OF_PATTERN_SLOTS, sortBy, name));
             this.refreshList = true;
         }
 

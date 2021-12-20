@@ -47,14 +47,14 @@ public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
 
         registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);
 
-        var duality = host.getInterfaceLogic();
+        var logic = host.getInterfaceLogic();
 
-        var config = duality.getConfig().createMenuWrapper();
+        var config = logic.getConfig().createMenuWrapper();
         for (int x = 0; x < config.size(); x++) {
             this.addSlot(new FakeSlot(config, x), SlotSemantics.CONFIG);
         }
 
-        var storage = duality.getStorage().createMenuWrapper();
+        var storage = logic.getStorage().createMenuWrapper();
         for (int x = 0; x < storage.size(); x++) {
             this.addSlot(new AppEngSlot(storage, x), SlotSemantics.STORAGE);
         }
