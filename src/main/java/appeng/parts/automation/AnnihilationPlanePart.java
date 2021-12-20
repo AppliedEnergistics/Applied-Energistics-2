@@ -36,12 +36,12 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
 import appeng.core.settings.TickRates;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
@@ -65,8 +65,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     private PickupStrategy pendingPickupStrategy;
 
-    public AnnihilationPlanePart(PartItem<?> is) {
-        super(is);
+    public AnnihilationPlanePart(IPartItem<?> partItem) {
+        super(partItem);
         getMainNode().addService(IGridTickable.class, this);
     }
 

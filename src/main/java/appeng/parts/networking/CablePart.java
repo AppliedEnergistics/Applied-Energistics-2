@@ -59,14 +59,14 @@ public class CablePart extends AEBasePart implements ICablePart {
     private Set<Direction> connections = Collections.emptySet();
     private boolean powered = false;
 
-    public CablePart(ColoredPartItem<?> is) {
-        super(is);
+    public CablePart(ColoredPartItem<?> partItem) {
+        super(partItem);
         this.getMainNode()
                 .setFlags(GridFlags.PREFERRED)
                 .setIdlePowerUsage(0.0)
                 .setInWorldNode(true)
                 .setExposedOnSides(EnumSet.allOf(Direction.class));
-        this.getMainNode().setGridColor(is.getColor());
+        this.getMainNode().setGridColor(partItem.getColor());
     }
 
     @Override

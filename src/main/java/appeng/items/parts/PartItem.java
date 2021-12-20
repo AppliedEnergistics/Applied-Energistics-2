@@ -18,30 +18,24 @@
 
 package appeng.items.parts;
 
-import java.util.Optional;
 import java.util.function.Function;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
-import appeng.core.definitions.AEBlockEntities;
 import appeng.items.AEBaseItem;
 
 public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T> {
 
     private final Class<T> partClass;
-    private final Function<PartItem<T>, T> factory;
+    private final Function<IPartItem<T>, T> factory;
 
-    public PartItem(Item.Properties properties, Class<T> partClass, Function<PartItem<T>, T> factory) {
+    public PartItem(Item.Properties properties, Class<T> partClass, Function<IPartItem<T>, T> factory) {
         super(properties);
         this.partClass = partClass;
         this.factory = factory;
@@ -49,32 +43,23 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Player player = context.getPlayer();
-        ItemStack held = player.getItemInHand(context.getHand());
-        if (held.getItem() != this) {
+        ItemStack held = context.getItemInHand();
+        if (held.getItem() != this || context.getPlayer() == null) {
             return InteractionResult.PASS;
         }
 
         return PartHelper.usePartItem(held, context.getClickedPos(), context.getClickedFace(),
-                player,
-                context.getHand(), context.getLevel());
+                context.getPlayer(), context.getHand(), context.getLevel());
+    }
+
+    @Override
+    public Class<T> getPartClass() {
+        return partClass;
     }
 
     @Override
     public T createPart() {
         return factory.apply(this);
-    }
-
-    public Optional<T> getPart(BlockGetter level, BlockPos pos, Direction direction) {
-        return level.getBlockEntity(pos, AEBlockEntities.CABLE_BUS)
-                .flatMap(be -> {
-                    var part = be.getPart(direction);
-                    if (partClass.isInstance(part)) {
-                        return Optional.of(partClass.cast(part));
-                    } else {
-                        return Optional.empty();
-                    }
-                });
     }
 
 }

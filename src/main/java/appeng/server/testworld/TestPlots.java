@@ -541,7 +541,9 @@ public final class TestPlots {
     public static void matterCannonRange(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
-        plot.fencedEntity(origin.offset(0, 0, 5), EntityType.COW);
+        plot.fencedEntity(origin.offset(0, 0, 5), EntityType.COW, entity -> {
+            entity.setSilent(true);
+        });
         plot.creativeEnergyCell(origin.below());
         plot.blockEntity(
                 origin,

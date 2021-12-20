@@ -23,8 +23,8 @@ import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 
 public class ItemP2PTunnelPart extends StorageP2PTunnelPart<ItemP2PTunnelPart, ItemVariant> {
@@ -36,8 +36,8 @@ public class ItemP2PTunnelPart extends StorageP2PTunnelPart<ItemP2PTunnelPart, I
         return MODELS.getModels();
     }
 
-    public ItemP2PTunnelPart(PartItem<?> is) {
-        super(is, ItemStorage.SIDED);
+    public ItemP2PTunnelPart(IPartItem<?> partItem) {
+        super(partItem, ItemStorage.SIDED);
     }
 
     @Override

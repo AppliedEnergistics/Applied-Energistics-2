@@ -31,12 +31,12 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.IPatternTerminalHost;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.PatternTermMenu;
@@ -65,8 +65,8 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     private boolean substitute = false;
     private boolean substituteFluids = true;
 
-    public PatternEncodingTerminalPart(PartItem<?> is) {
-        super(is);
+    public PatternEncodingTerminalPart(IPartItem<?> partItem) {
+        super(partItem);
     }
 
     @Override

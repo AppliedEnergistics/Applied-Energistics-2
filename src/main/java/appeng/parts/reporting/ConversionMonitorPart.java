@@ -24,11 +24,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.StorageHelper;
 import appeng.core.AppEng;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.PartModel;
@@ -59,8 +59,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
 
-    public ConversionMonitorPart(PartItem<?> is) {
-        super(is, true);
+    public ConversionMonitorPart(IPartItem<?> partItem) {
+        super(partItem, true);
     }
 
     @Override

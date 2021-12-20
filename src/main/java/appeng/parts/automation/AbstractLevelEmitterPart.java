@@ -32,9 +32,9 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.items.parts.PartItem;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -45,8 +45,8 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     protected long lastReportedValue;
     private long reportingValue;
 
-    public AbstractLevelEmitterPart(PartItem<?> is) {
-        super(is);
+    public AbstractLevelEmitterPart(IPartItem<?> partItem) {
+        super(partItem);
 
         // Level emitters do not require a channel to function
         getMainNode().setFlags();

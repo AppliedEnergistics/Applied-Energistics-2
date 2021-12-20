@@ -21,7 +21,7 @@ package appeng.parts.networking;
 import appeng.items.parts.ColoredPartItem;
 
 public class GlassCablePart extends CablePart {
-    public GlassCablePart(ColoredPartItem<?> is) {
-        super(is);
+    public GlassCablePart(ColoredPartItem<?> partItem) {
+        super(partItem);
     }
 }

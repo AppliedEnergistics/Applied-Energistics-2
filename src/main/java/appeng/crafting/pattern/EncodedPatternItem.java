@@ -151,7 +151,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
         }
 
         if (stack.hasCustomHoverName()) {
-            stack.removeTagKey("display");
+            stack.resetHoverName();
         }
 
         var isCrafting = details instanceof AECraftingPattern;

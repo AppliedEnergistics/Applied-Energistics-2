@@ -42,12 +42,12 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.implementations.IOBusMenu;
 import appeng.parts.PartModel;
@@ -79,8 +79,8 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     @Nullable
     private StackExportStrategy exportStrategy;
 
-    public ExportBusPart(PartItem<?> is) {
-        super(TickRates.ExportBus, is);
+    public ExportBusPart(IPartItem<?> partItem) {
+        super(TickRates.ExportBus, partItem);
         getMainNode().addService(ICraftingRequester.class, this);
 
         this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);

@@ -32,7 +32,6 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -46,11 +45,11 @@ public class CableAnchorPart implements IPart {
     public static final PartModel FACADE_MODELS = new PartModel(false,
             new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor_short"));
 
-    private final PartItem<CableAnchorPart> partItem;
+    private final IPartItem<CableAnchorPart> partItem;
     private IPartHost host = null;
     private Direction mySide = Direction.UP;
 
-    public CableAnchorPart(PartItem<CableAnchorPart> partItem) {
+    public CableAnchorPart(IPartItem<CableAnchorPart> partItem) {
         this.partItem = partItem;
     }
 

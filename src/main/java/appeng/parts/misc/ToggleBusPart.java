@@ -35,11 +35,11 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -74,8 +74,8 @@ public class ToggleBusPart extends BasicStatePart {
     private IGridConnection connection;
     private boolean hasRedstone = false;
 
-    public ToggleBusPart(PartItem<?> is) {
-        super(is);
+    public ToggleBusPart(IPartItem<?> partItem) {
+        super(partItem);
 
         this.getMainNode().setIdlePowerUsage(0.0);
         this.getMainNode().setFlags();

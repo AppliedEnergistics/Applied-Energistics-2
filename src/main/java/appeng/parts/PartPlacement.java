@@ -44,6 +44,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalBlockPos;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -53,6 +54,7 @@ import appeng.facade.IFacadeItem;
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
+import appeng.util.SettingsFrom;
 
 public class PartPlacement {
 
@@ -227,7 +229,17 @@ public class PartPlacement {
                 return InteractionResult.FAIL;
             }
 
-            if (host.addPart(partItem, side, player) != null) {
+            var addedPart = host.addPart(partItem, side, player);
+            if (addedPart != null) {
+                // Import settings from the item if possible
+                if (held.hasTag()) {
+                    try {
+                        addedPart.importSettings(SettingsFrom.DISMANTLE_ITEM, held.getTag());
+                    } catch (Exception e) {
+                        AELog.warn(e);
+                    }
+                }
+
                 BlockState blockState = level.getBlockState(pos);
                 var ss = multiPart.block().getSoundType(blockState);
 

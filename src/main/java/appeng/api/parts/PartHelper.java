@@ -35,6 +35,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
@@ -64,6 +65,25 @@ public final class PartHelper {
     }
 
     /**
+     * Tries to retrieve a part placed from a given part item from the world, and returns it.
+     *
+     * @param side Null will retrieve the part at the center (the cable).
+     */
+    @Nullable
+    public static <T extends IPart> T getPart(IPartItem<T> partItem, BlockGetter level, BlockPos pos,
+            @Nullable Direction side) {
+        var be = level.getBlockEntity(pos);
+        if (be instanceof IPartHost partHost) {
+            var part = partHost.getPart(side);
+            var partClass = partItem.getPartClass();
+            if (partClass.isInstance(part)) {
+                return partClass.cast(part);
+            }
+        }
+        return null;
+    }
+
+    /**
      * Place or replace a part at the given position and side. Use `null` as the side to place a cable in the center of
      * the bus. An existing cable bus at the location will be reused, otherwise the existing block will be replaced with
      * a cable bus if its material is replaceable.
@@ -72,8 +92,7 @@ public final class PartHelper {
      */
     @Nullable
     public static <T extends IPart> T setPart(ServerLevel level, BlockPos pos, @Nullable Direction side,
-            @Nullable Player player,
-            IPartItem<T> partItem) {
+            @Nullable Player player, IPartItem<T> partItem) {
         Objects.requireNonNull(level, "level");
         Objects.requireNonNull(pos, "pos");
 

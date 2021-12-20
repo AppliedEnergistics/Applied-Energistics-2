@@ -16,15 +16,15 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.Direction;
 
 import appeng.api.config.PowerUnits;
-import appeng.items.parts.PartItem;
+import appeng.api.parts.IPartItem;
 
 /**
  * Base class for P2P tunnels that work with {@code Storage<T>}.
  */
 public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>, T extends TransferVariant<?>>
         extends CapabilityP2PTunnelPart<P, Storage<T>> {
-    public StorageP2PTunnelPart(PartItem<?> is, BlockApiLookup<Storage<T>, Direction> api) {
-        super(is, api);
+    public StorageP2PTunnelPart(IPartItem<?> partItem, BlockApiLookup<Storage<T>, Direction> api) {
+        super(partItem, api);
         this.inputHandler = new InputStorage();
         this.outputHandler = new OutputStorage();
         this.emptyHandler = Storage.empty();

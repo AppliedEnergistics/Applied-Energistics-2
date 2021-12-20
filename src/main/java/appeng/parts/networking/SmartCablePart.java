@@ -24,8 +24,8 @@ import appeng.api.util.AECableType;
 import appeng.items.parts.ColoredPartItem;
 
 public class SmartCablePart extends CablePart implements IUsedChannelProvider {
-    public SmartCablePart(ColoredPartItem<?> is) {
-        super(is);
+    public SmartCablePart(ColoredPartItem<?> partItem) {
+        super(partItem);
     }
 
     /**

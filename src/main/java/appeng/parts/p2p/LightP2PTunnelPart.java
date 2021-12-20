@@ -32,9 +32,9 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 
 public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implements IGridTickable {
@@ -49,8 +49,8 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     private int lastValue = 0;
     private int opacity = -1;
 
-    public LightP2PTunnelPart(PartItem<?> is) {
-        super(is);
+    public LightP2PTunnelPart(IPartItem<?> partItem) {
+        super(partItem);
         getMainNode().addService(IGridTickable.class, this);
     }
 

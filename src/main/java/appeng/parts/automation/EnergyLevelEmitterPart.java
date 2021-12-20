@@ -30,9 +30,9 @@ import appeng.api.config.Settings;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherNode;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -80,8 +80,8 @@ public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
         }
     };
 
-    public EnergyLevelEmitterPart(PartItem<?> is) {
-        super(is);
+    public EnergyLevelEmitterPart(IPartItem<?> partItem) {
+        super(partItem);
 
         getMainNode().addService(IEnergyWatcherNode.class, energyWatcherNode);
         this.getConfigManager().registerSetting(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);

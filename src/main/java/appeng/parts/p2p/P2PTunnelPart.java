@@ -44,7 +44,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
-import appeng.items.parts.PartItem;
 import appeng.me.service.P2PService;
 import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.BasicStatePart;
@@ -57,7 +56,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     private short freq;
     private final EnergyDrainHandler energyDrainHandler = new EnergyDrainHandler();
 
-    public P2PTunnelPart(PartItem<?> partItem) {
+    public P2PTunnelPart(IPartItem<?> partItem) {
         super(partItem);
         this.getMainNode().setIdlePowerUsage(this.getPowerDrainPerTick());
     }
@@ -181,8 +180,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             final short freq = data.getShort("freq");
 
             if (!newType.isEmpty() && newType.getItem() instanceof IPartItem<?>newPartItem) {
-                var testPart = newPartItem.createPart();
-                if (testPart instanceof P2PTunnelPart) {
+                if (P2PTunnelPart.class.isAssignableFrom(newPartItem.getPartClass())) {
                     var newBus = this.getHost().replacePart(newPartItem, this.getSide(), player, hand);
 
                     if (newBus instanceof P2PTunnelPart<?>newTunnel) {

@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -99,7 +98,6 @@ public class Platform {
      * random source, use it for item drop locations...
      */
     private static final Random RANDOM_GENERATOR = new Random();
-    private static final WeakHashMap<Level, Player> FAKE_PLAYERS = new WeakHashMap<>();
 
     private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
 

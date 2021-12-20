@@ -20,8 +20,8 @@ package appeng.parts.automation;
 
 import java.util.List;
 
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 
 public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
@@ -34,8 +34,8 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
         return MODELS.getModels();
     }
 
-    public IdentityAnnihilationPlanePart(PartItem<?> is) {
-        super(is);
+    public IdentityAnnihilationPlanePart(IPartItem<?> partItem) {
+        super(partItem);
     }
 
     @Override

@@ -23,39 +23,35 @@
 
 package appeng.api.parts;
 
-import javax.annotation.Nullable;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 
 //@formatter:off
 
 /**
- * This is a pretty basic requirement, once you implement the interface, and createPartFromItemStack
- *
- * you must register your bus with the Bus renderer, using IAppEngApi.instance().partHelper().setItemBusRenderer( this
- * );
- *
- * then simply add this, and call AE's Bus Placement Code.
- *
- * <pre>
- * <code>
- *
- * {@literal @}Override
- * public default ActionResultType onItemUse(ItemStack is, PlayerEntity player, World level, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
- *	{
- *		return IAppEngApi.instance().partHelper().placeBus( is, pos, side, player, hand, level );
- *	}
- * </code>
- * </pre>
+ * When implementing a custom part, you must create an item to both represent the part in NBT and Packet data, and to
+ * actually place the part onto the bus. Implement this interface on your part {@link net.minecraft.world.item.Item}.
+ * <p/>
+ * To help with placing parts onto buses, use
+ * {@link PartHelper#usePartItem(ItemStack, BlockPos, Direction, Player, InteractionHand, Level)} to implement your
+ * items {@link net.minecraft.world.item.Item#useOn(UseOnContext)} method.
  */
 public interface IPartItem<P extends IPart> extends ItemLike {
+    /**
+     * @return The class of the parts that will be created by this part item.
+     */
+    Class<P> getPartClass();
 
     /**
      * create a new part INSTANCE
      *
-     * @return part from item. Null if part creation failed, this will cancel placing the part.
+     * @return part from item
      */
-    @Nullable
     P createPart();
-
 }

@@ -67,6 +67,7 @@ import appeng.helpers.IConfigInvHost;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.hooks.ticking.TickHandler;
+import appeng.util.CustomNameUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -288,11 +289,7 @@ public class AEBaseBlockEntity extends BlockEntity
      */
     @OverridingMethodsMustInvokeSuper
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
-        if (hasCustomInventoryName()) {
-            var dsp = new CompoundTag();
-            dsp.putString("Name", this.customName);
-            output.put("display", dsp);
-        }
+        CustomNameUtil.setCustomName(output, customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             if (this instanceof IConfigurableObject configurableObject) {

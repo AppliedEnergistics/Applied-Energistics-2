@@ -28,7 +28,7 @@ import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
-import appeng.items.parts.PartItem;
+import appeng.api.parts.IPartItem;
 
 /**
  * Provides a simple way of synchronizing up to 8 flags of state to the client. By default, it includes the power and
@@ -42,7 +42,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
 
     private int clientFlags = 0; // sent as byte.
 
-    public BasicStatePart(PartItem<?> partItem) {
+    public BasicStatePart(IPartItem<?> partItem) {
         super(partItem);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }

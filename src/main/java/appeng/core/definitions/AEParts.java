@@ -28,6 +28,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.ids.AEPartIds;
 import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartModels;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -117,7 +118,7 @@ public final class AEParts {
 
     private static <T extends IPart> ItemDefinition<PartItem<T>> createPart(ResourceLocation id,
             Class<T> partClass,
-            Function<PartItem<T>, T> factory) {
+            Function<IPartItem<T>, T> factory) {
 
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(id, props -> new PartItem<>(props, partClass, factory));
