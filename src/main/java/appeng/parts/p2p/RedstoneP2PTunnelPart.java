@@ -23,7 +23,6 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -32,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartModel;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.util.Platform;
 
@@ -47,7 +47,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     private int power;
     private boolean recursive = false;
 
-    public RedstoneP2PTunnelPart(final ItemStack is) {
+    public RedstoneP2PTunnelPart(PartItem<?> is) {
         super(is);
     }
 

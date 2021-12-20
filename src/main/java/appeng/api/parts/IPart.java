@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -54,21 +54,32 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.util.SettingsFrom;
 
 public interface IPart extends ICustomCableConnection {
 
     /**
-     * get an ItemStack that represents the bus, should contain the settings for whatever, can also be used in
-     * conjunction with removePart to take a part off and drop it or something.
-     * <p>
-     * This is used to drop the bus, and to save the bus, when saving the bus, wrenched is false, and writeToNBT will be
-     * called to save important details about the part, if the part is wrenched include in your NBT Data any settings
-     * you might want to keep around, you can restore those settings when constructing your part.
+     * Gets the item from which this part was created. Will be used to save and load this part from NBT Data or to
+     * Packets when synchronizing it with the client. It will also be used to drop the part when it is dismantled or
+     * broken.
      *
-     * @param type , what kind of ItemStack to return?
-     * @return item of part
+     * @return The item from which this part was placed.
      */
-    ItemStack getItemStack(PartItemStack type);
+    IPartItem<?> getPartItem();
+
+    /**
+     * Gets the item stack to drop when this part is removed from the cable bus for any reason, or when it is picked in
+     * creative mode.
+     */
+    default ItemStack getDroppedItemStack() {
+        var stack = new ItemStack(getPartItem());
+        var tag = new CompoundTag();
+        exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
+        if (!tag.isEmpty()) {
+            stack.setTag(tag);
+        }
+        return stack;
+    }
 
     /**
      * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
@@ -82,39 +93,68 @@ public interface IPart extends ICustomCableConnection {
     /**
      * return true only if your part require dynamic rendering, must be consistent.
      *
-     * @return true to enable renderDynamic
+     * @return true to enable {@link #renderDynamic}
      */
-    boolean requireDynamicRender();
+    default boolean requireDynamicRender() {
+        return false;
+    }
 
     /**
      * @return if the bus has a solid side, and you can place random stuff on it like torches or levers
      */
-    boolean isSolid();
+    default boolean isSolid() {
+        return false;
+    }
 
     /**
-     * @return true if this part can connect to redstone ( also MFR Rednet )
+     * @return true if this part can connect to redstone
      */
-    boolean canConnectRedstone();
+    default boolean canConnectRedstone() {
+        return false;
+    }
 
     /**
-     * Write the part information for saving, the part will be saved with getItemStack(false) and this method will be
-     * called after to load settings, inventory or other values from the world.
+     * Write the part information for saving. This information will be saved alongside the {@link #getPartItem()} to
+     * save settings, inventory or other values to the world.
      *
      * @param data to be written nbt data
      */
-    void writeToNBT(CompoundTag data);
+    default void writeToNBT(CompoundTag data) {
+    }
 
     /**
-     * Read the previously written NBT Data. this is the mirror for writeToNBT
+     * Read the previously written NBT Data. this is the mirror for {@link #writeToNBT}.
      *
      * @param data to be read nbt data
      */
-    void readFromNBT(CompoundTag data);
+    default void readFromNBT(CompoundTag data) {
+    }
+
+    /**
+     * Exports settings for attaching it to a memory card or item stack.
+     * 
+     * @param mode   The purpose to export settings for.
+     * @param output The tag to write the settings to.
+     */
+    @OverridingMethodsMustInvokeSuper
+    default void exportSettings(SettingsFrom mode, CompoundTag output) {
+    }
+
+    /**
+     * Depending on the mode, different settings will be accepted.
+     *
+     * @param input source of settings
+     */
+    @OverridingMethodsMustInvokeSuper
+    default void importSettings(SettingsFrom mode, CompoundTag input) {
+    }
 
     /**
      * @return get the amount of light produced by the bus
      */
-    int getLightLevel();
+    default int getLightLevel() {
+        return 0;
+    }
 
     /**
      * does this part act like a ladder?
@@ -122,29 +162,37 @@ public interface IPart extends ICustomCableConnection {
      * @param entity climbing entity
      * @return true if entity can climb
      */
-    boolean isLadder(LivingEntity entity);
+    default boolean isLadder(LivingEntity entity) {
+        return false;
+    }
 
     /**
      * a block around the bus's host has been changed.
      */
-    void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
+    default void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    }
 
     /**
      * @return output redstone on facing side
      */
-    int isProvidingStrongPower();
+    default int isProvidingStrongPower() {
+        return 0;
+    }
 
     /**
      * @return output redstone on facing side
      */
-    int isProvidingWeakPower();
+    default int isProvidingWeakPower() {
+        return 0;
+    }
 
     /**
      * write data to bus packet.
      *
      * @param data to be written data
      */
-    void writeToStream(FriendlyByteBuf data);
+    default void writeToStream(FriendlyByteBuf data) {
+    }
 
     /**
      * read data from bus packet.
@@ -152,7 +200,9 @@ public interface IPart extends ICustomCableConnection {
      * @param data to be read data
      * @return true will re-draw the part.
      */
-    boolean readFromStream(FriendlyByteBuf data);
+    default boolean readFromStream(FriendlyByteBuf data) {
+        return false;
+    }
 
     /**
      * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause
@@ -162,6 +212,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @return grid node
      */
+    @Nullable
     IGridNode getGridNode();
 
     /**
@@ -169,17 +220,20 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param entity colliding entity
      */
-    void onEntityCollision(Entity entity);
+    default void onEntityCollision(Entity entity) {
+    }
 
     /**
      * called when your part is being removed from the world.
      */
-    void removeFromWorld();
+    default void removeFromWorld() {
+    }
 
     /**
      * called when your part is being added to the world.
      */
-    void addToWorld();
+    default void addToWorld() {
+    }
 
     /**
      * used for tunnels.
@@ -188,7 +242,10 @@ public interface IPart extends ICustomCableConnection {
      *         {@link IManagedGridNode#setExposedOnSides(Set)} will be automatically updated with the side the part is
      *         placed on.
      */
-    IGridNode getExternalFacingNode();
+    @Nullable
+    default IGridNode getExternalFacingNode() {
+        return null;
+    }
 
     /**
      * If {@link #getExternalFacingNode()} returns a non-null node, this method controls the cable type that is returned
@@ -215,7 +272,9 @@ public interface IPart extends ICustomCableConnection {
      * @param pos    position of block
      * @return if your activate method performed something.
      */
-    boolean onActivate(Player player, InteractionHand hand, Vec3 pos);
+    default boolean onActivate(Player player, InteractionHand hand, Vec3 pos) {
+        return false;
+    }
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -225,7 +284,9 @@ public interface IPart extends ICustomCableConnection {
      * @param pos    position of block
      * @return if your activate method performed something, you should use false unless you really need it.
      */
-    boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos);
+    default boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
+        return false;
+    }
 
     /**
      * Called when you left click the part, very similar to Block.onBlockClicked a
@@ -256,7 +317,8 @@ public interface IPart extends ICustomCableConnection {
      * @param drops    item drops if wrenched
      * @param wrenched control flag for wrenched vs broken
      */
-    void getDrops(List<ItemStack> drops, boolean wrenched);
+    default void getDrops(List<ItemStack> drops, boolean wrenched) {
+    }
 
     /**
      * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
@@ -272,15 +334,17 @@ public interface IPart extends ICustomCableConnection {
      * @param pos   location of block
      * @param r     random
      */
-    void animateTick(Level level, BlockPos pos, Random r);
+    default void animateTick(Level level, BlockPos pos, Random r) {
+    }
 
     /**
      * Called when placed in the world by a player, this happens before addWorld.
+     * 
+     * @param player placing player
      *
-     * @param player    placing player
-     * @param partStack The item stack used to place the part.
      */
-    void onPlacement(Player player, ItemStack partStack);
+    default void onPlacement(Player player) {
+    }
 
     /**
      * Used to determine which parts can be placed on what cables.
@@ -290,7 +354,9 @@ public interface IPart extends ICustomCableConnection {
      * @param what placed part
      * @return true if the part can be placed on this support.
      */
-    boolean canBePlacedOn(BusSupport what);
+    default boolean canBePlacedOn(BusSupport what) {
+        return what == BusSupport.CABLE;
+    }
 
     /**
      * This method is used when a chunk is rebuilt to determine how this part should be rendered. The returned models
@@ -311,7 +377,6 @@ public interface IPart extends ICustomCableConnection {
      *
      * <b>Important:</b> All models must have been registered via the {@link PartModels} API before use.
      */
-    @Nonnull
     default IPartModel getStaticModels() {
         return new IPartModel() {
         };

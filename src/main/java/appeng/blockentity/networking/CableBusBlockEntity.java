@@ -40,7 +40,7 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
-import appeng.api.parts.PartItemStack;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -195,13 +195,17 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean addPart(ItemStack is, Direction side, Player player) {
-        return this.getCableBus().addPart(is, side, player);
+    @Nullable
+    public <T extends IPart> T addPart(IPartItem<T> partItem, Direction side,
+            @org.jetbrains.annotations.Nullable Player player) {
+        return cb.addPart(partItem, side, player);
     }
 
+    @org.jetbrains.annotations.Nullable
     @Override
-    public boolean replacePart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand) {
-        return this.getCableBus().replacePart(is, side, owner, hand);
+    public <T extends IPart> T replacePart(IPartItem<T> partItem, @org.jetbrains.annotations.Nullable Direction side,
+            Player owner, InteractionHand hand) {
+        return cb.replacePart(partItem, side, owner, hand);
     }
 
     @Override
@@ -314,7 +318,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
 
             // SelectedPart contains either a facade or a part. Never both.
             if (sp.part != null) {
-                is.add(sp.part.getItemStack(PartItemStack.WRENCH));
+                is.add(sp.part.getDroppedItemStack());
                 sp.part.getDrops(is, true);
                 cb.removePart(sp.side);
             }

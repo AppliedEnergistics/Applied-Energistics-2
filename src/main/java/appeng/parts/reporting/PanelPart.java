@@ -19,10 +19,10 @@
 package appeng.parts.reporting;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -36,7 +36,7 @@ public class PanelPart extends AbstractPanelPart {
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);
 
-    public PanelPart(final ItemStack is) {
+    public PanelPart(PartItem<?> is) {
         super(is);
     }
 

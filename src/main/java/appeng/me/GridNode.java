@@ -44,7 +44,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -59,6 +58,7 @@ import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.events.GridPowerIdleChange;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.IPart;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.me.pathfinding.IPathItem;
@@ -83,8 +83,8 @@ public class GridNode implements IGridNode, IPathItem {
     private double previousDraw = 0.0;
     // idle power usage per tick in AE
     private double idlePowerUsage = 1.0;
-    @Nonnull
-    private ItemStack visualRepresentation = ItemStack.EMPTY;
+    @Nullable
+    private AEItemKey visualRepresentation = null;
     @Nonnull
     private AEColor gridColor = AEColor.TRANSPARENT;
     private long lastSecurityKey = -1;
@@ -263,10 +263,10 @@ public class GridNode implements IGridNode, IPathItem {
 
     /**
      * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
-     * {@link ItemStack#EMPTY} to hide the node from UIs.
+     * <code>null</code> to hide the node from UIs.
      */
-    public void setVisualRepresentation(@Nonnull ItemStack visualRepresentation) {
-        this.visualRepresentation = Objects.requireNonNull(visualRepresentation);
+    public void setVisualRepresentation(@Nullable AEItemKey visualRepresentation) {
+        this.visualRepresentation = visualRepresentation;
     }
 
     /**
@@ -470,9 +470,9 @@ public class GridNode implements IGridNode, IPathItem {
         return idlePowerUsage;
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public ItemStack getVisualRepresentation() {
+    public AEItemKey getVisualRepresentation() {
         return visualRepresentation;
     }
 

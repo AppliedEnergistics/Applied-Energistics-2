@@ -20,18 +20,18 @@ package appeng.parts.automation;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
+import appeng.items.parts.PartItem;
 import appeng.menu.implementations.IOBusMenu;
 
 public class ImportBusPart extends IOBusPart {
     private StackImportStrategy importStrategy;
 
-    public ImportBusPart(ItemStack is) {
+    public ImportBusPart(PartItem<?> is) {
         super(TickRates.ImportBus, is);
     }
 

@@ -38,18 +38,18 @@ import appeng.api.config.PowerUnits;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
+import appeng.items.parts.PartItem;
 import appeng.me.service.P2PService;
 import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.BasicStatePart;
 import appeng.util.Platform;
+import appeng.util.SettingsFrom;
 
 public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStatePart {
     private final TunnelCollection type = new TunnelCollection<T>(null, this.getClass());
@@ -57,8 +57,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     private short freq;
     private final EnergyDrainHandler energyDrainHandler = new EnergyDrainHandler();
 
-    public P2PTunnelPart(final ItemStack is) {
-        super(is);
+    public P2PTunnelPart(PartItem<?> partItem) {
+        super(partItem);
         this.getMainNode().setIdlePowerUsage(this.getPowerDrainPerTick());
     }
 
@@ -109,14 +109,18 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         bch.addBox(2, 2, 14, 14, 14, 16);
     }
 
+    /**
+     * Drop P2P Tunnels as the base type.
+     */
     @Override
-    public ItemStack getItemStack(final PartItemStack type) {
-        if (type == PartItemStack.WORLD || type == PartItemStack.NETWORK || type == PartItemStack.WRENCH
-                || type == PartItemStack.PICK) {
-            return super.getItemStack(type);
+    public ItemStack getDroppedItemStack() {
+        var stack = AEParts.ME_P2P_TUNNEL.stack();
+        var tag = new CompoundTag();
+        exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
+        if (!tag.isEmpty()) {
+            stack.setTag(tag);
         }
-
-        return AEParts.ME_P2P_TUNNEL.stack();
+        return stack;
     }
 
     @Override
@@ -176,11 +180,10 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             final ItemStack newType = ItemStack.of(data);
             final short freq = data.getShort("freq");
 
-            if (!newType.isEmpty() && newType.getItem() instanceof IPartItem) {
-                final IPart testPart = ((IPartItem<?>) newType.getItem()).createPart(newType);
+            if (!newType.isEmpty() && newType.getItem() instanceof IPartItem<?>newPartItem) {
+                var testPart = newPartItem.createPart();
                 if (testPart instanceof P2PTunnelPart) {
-                    final boolean dir = this.getHost().replacePart(newType, this.getSide(), player, hand);
-                    final IPart newBus = this.getHost().getPart(this.getSide());
+                    var newBus = this.getHost().replacePart(newPartItem, this.getSide(), player, hand);
 
                     if (newBus instanceof P2PTunnelPart<?>newTunnel) {
                         newTunnel.setOutput(true);
@@ -202,23 +205,23 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
         // Attunement via held item replaces the tunnel part with the desired target part type
         var newType = P2PTunnelAttunement.getTunnelPartByTriggerItem(is);
-        if (!newType.isEmpty() && !ItemStack.isSame(newType, getItemStack())) {
+        if (!newType.isEmpty() && newType.getItem() != getPartItem()
+                && newType.getItem() instanceof IPartItem<?>partItem) {
             var oldOutput = isOutput();
             var myFreq = getFrequency();
 
             // If we were able to replace the tunnel part, copy over frequency/output state
-            if (getHost().replacePart(newType, getSide(), player, hand)) {
-                if (getHost().getPart(getSide()) instanceof P2PTunnelPart newTunnel) {
-                    newTunnel.setOutput(oldOutput);
-                    newTunnel.onTunnelNetworkChange();
+            var tunnel = getHost().replacePart(partItem, getSide(), player, hand);
+            if (tunnel instanceof P2PTunnelPart newTunnel) {
+                newTunnel.setOutput(oldOutput);
+                newTunnel.onTunnelNetworkChange();
 
-                    newTunnel.getMainNode().ifPresent(grid -> {
-                        P2PService.get(grid).updateFreq(newTunnel, myFreq);
-                    });
-                }
-
-                Platform.notifyBlocksOfNeighbors(getLevel(), getBlockEntity().getBlockPos());
+                newTunnel.getMainNode().ifPresent(grid -> {
+                    P2PService.get(grid).updateFreq(newTunnel, myFreq);
+                });
             }
+
+            Platform.notifyBlocksOfNeighbors(getLevel(), getBlockEntity().getBlockPos());
             return true;
         }
 
@@ -254,7 +257,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
             this.onTunnelConfigChange();
 
-            final ItemStack p2pItem = this.getItemStack(PartItemStack.WRENCH);
+            final ItemStack p2pItem = getDroppedItemStack();
             final String type = p2pItem.getDescriptionId();
 
             p2pItem.save(data);

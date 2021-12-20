@@ -21,7 +21,6 @@ import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.util.AEColor;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -78,7 +77,7 @@ public final class AutoCraftingTestPlot {
         buildWaterEmittingSource(plot.offset(5, 0, 9));
 
         // Connect subsystems with dense cable
-        plot.cable("4 0 [6,9]", AEParts.SMART_DENSE_CABLE.stack(AEColor.TRANSPARENT));
+        plot.cable("4 0 [6,9]", AEParts.SMART_DENSE_CABLE);
 
         // Add post-processing action once the grid is up and running
         plot.afterGridInitAt("4 0 4", (grid, gridNode) -> {

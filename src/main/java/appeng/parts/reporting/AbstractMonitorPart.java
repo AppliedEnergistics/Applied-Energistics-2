@@ -31,7 +31,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
 
@@ -45,6 +44,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
+import appeng.items.parts.PartItem;
 import appeng.util.Platform;
 
 /**
@@ -67,7 +67,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private boolean isLocked;
     private IStackWatcher myWatcher;
 
-    public AbstractMonitorPart(ItemStack is, boolean requireChannel) {
+    public AbstractMonitorPart(PartItem<?> is, boolean requireChannel) {
         super(is, requireChannel);
 
         getMainNode().addService(IStorageWatcherNode.class, this);

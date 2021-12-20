@@ -19,7 +19,6 @@
 package appeng.parts.networking;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -31,6 +30,7 @@ import appeng.api.util.AECableType;
 import appeng.blockentity.powersink.IExternalPowerSink;
 import appeng.core.AppEng;
 import appeng.helpers.ForgeEnergyAdapter;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
@@ -41,7 +41,7 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/energy_acceptor"));
     private final ForgeEnergyAdapter energyAdapter;
 
-    public EnergyAcceptorPart(final ItemStack is) {
+    public EnergyAcceptorPart(PartItem<?> is) {
         super(is);
         this.getMainNode().setIdlePowerUsage(0);
         this.energyAdapter = new ForgeEnergyAdapter(this);

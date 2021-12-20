@@ -19,9 +19,9 @@
 package appeng.parts.reporting;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.core.AppEng;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 
 /**
@@ -52,7 +52,7 @@ public abstract class AbstractDisplayPart extends AbstractReportingPart {
     protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
             "part/display_status_has_channel");
 
-    public AbstractDisplayPart(ItemStack is, boolean requireChannel) {
+    public AbstractDisplayPart(PartItem<?> is, boolean requireChannel) {
         super(is, requireChannel);
     }
 

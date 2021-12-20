@@ -23,7 +23,6 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,6 +34,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 
 public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implements IGridTickable {
@@ -49,7 +49,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     private int lastValue = 0;
     private int opacity = -1;
 
-    public LightP2PTunnelPart(final ItemStack is) {
+    public LightP2PTunnelPart(PartItem<?> is) {
         super(is);
         getMainNode().addService(IGridTickable.class, this);
     }

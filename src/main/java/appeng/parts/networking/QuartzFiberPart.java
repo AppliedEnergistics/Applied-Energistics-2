@@ -26,7 +26,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
@@ -40,6 +39,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
@@ -52,7 +52,7 @@ public class QuartzFiberPart extends AEBasePart {
 
     private final IManagedGridNode outerNode;
 
-    public QuartzFiberPart(final ItemStack is) {
+    public QuartzFiberPart(PartItem<?> is) {
         super(is);
         var energyBridge = new GridBridgeProvider();
         this.getMainNode()
@@ -114,8 +114,8 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void onPlacement(final Player player, final ItemStack partStack) {
-        super.onPlacement(player, partStack);
+    public void onPlacement(final Player player) {
+        super.onPlacement(player);
         this.outerNode.setOwningPlayer(player);
     }
 

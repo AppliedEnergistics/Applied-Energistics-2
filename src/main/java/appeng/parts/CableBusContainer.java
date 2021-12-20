@@ -27,9 +27,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -60,7 +62,6 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
-import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -129,10 +130,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         }
 
         if (is.getItem() instanceof IPartItem<?>partItem) {
-            is = is.copy();
-            is.setCount(1);
-
-            var part = partItem.createPart(is);
+            var part = partItem.createPart();
             if (part == null) {
                 return false;
             }
@@ -150,31 +148,26 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean addPart(ItemStack is, Direction side, @Nullable Player player) {
+    @Nullable
+    public <T extends IPart> T addPart(IPartItem<T> partItem, Direction side, @Nullable Player player) {
         // This code-path does not allow adding facades, while canAddPart allows facades.
-        if (!(is.getItem() instanceof IPartItem<?>partItem)) {
-            return false;
-        }
 
-        is = is.copy();
-        is.setCount(1);
-
-        var part = partItem.createPart(is);
+        var part = partItem.createPart();
 
         if (part == null) {
-            return false;
+            return null;
         }
 
         if (part instanceof ICablePart cablePart) {
             if (getCable() != null || !arePartsCompatibleWithCable(cablePart)) {
-                return false;
+                return null;
             }
 
             this.storage.setCenter(cablePart);
             cablePart.setPartHostInfo(null, this, this.tcb.getBlockEntity());
 
             if (player != null) {
-                cablePart.onPlacement(player, is);
+                cablePart.onPlacement(player);
             }
 
             if (this.inWorld) {
@@ -198,7 +191,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
                                 cablePart.removeFromWorld();
                                 this.storage.setCenter(null);
-                                return false;
+                                return null;
                             }
                         }
                     }
@@ -207,14 +200,14 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         } else if (side != null) {
             var cable = getCable();
             if (!isPartCompatibleWithCable(part, cable)) {
-                return false;
+                return null;
             }
 
             this.storage.setPart(side, part);
             part.setPartHostInfo(side, this, this.getBlockEntity());
 
             if (player != null) {
-                part.onPlacement(player, is);
+                part.onPlacement(player);
             }
 
             if (this.inWorld) {
@@ -234,7 +227,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
                         part.removeFromWorld();
                         this.storage.removePart(side);
-                        return false;
+                        return null;
                     }
                 }
             }
@@ -242,7 +235,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
         updateAfterPartChange();
 
-        return true;
+        return part;
     }
 
     // Check that the current attached parts are compatible with the given cable part
@@ -261,9 +254,10 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean replacePart(ItemStack is, @Nullable Direction side, Player owner, InteractionHand hand) {
+    public <T extends IPart> T replacePart(IPartItem<T> partItem, @Nullable Direction side, Player owner,
+            InteractionHand hand) {
         this.removePartWithoutUpdates(side);
-        return this.addPart(is, side, owner);
+        return this.addPart(partItem, side, owner);
     }
 
     @Override
@@ -690,7 +684,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     public void writeToStream(final FriendlyByteBuf data) {
         int sides = 0;
         for (int x = 0; x < Platform.DIRECTIONS_WITH_NULL.length; x++) {
-            final IPart p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
+            var p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
             if (p != null) {
                 sides |= 1 << x;
             }
@@ -699,11 +693,9 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         data.writeByte((byte) sides);
 
         for (int x = 0; x < Platform.DIRECTIONS_WITH_NULL.length; x++) {
-            final IPart p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
+            var p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
             if (p != null) {
-                final ItemStack is = p.getItemStack(PartItemStack.NETWORK);
-
-                data.writeVarInt(Item.getId(is.getItem()));
+                data.writeVarInt(Item.getId(p.getPartItem().asItem()));
 
                 p.writeToStream(data);
             }
@@ -724,22 +716,22 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
                 final int itemID = data.readVarInt();
 
-                final Item myItem = Item.byId(itemID);
+                var newPartItem = Item.byId(itemID);
 
-                final ItemStack current = p != null ? p.getItemStack(PartItemStack.NETWORK) : null;
-                if (current != null && current.getItem() == myItem) {
+                if (p != null && p.getPartItem() == newPartItem) {
                     if (p.readFromStream(data)) {
                         updateBlock = true;
                     }
-                } else {
+                } else if (newPartItem instanceof IPartItem<?>partItem) {
                     this.removePart(side);
-                    var partAdded = this.addPart(new ItemStack(myItem, 1), side, null);
-                    if (partAdded) {
-                        p = this.getPart(side);
+                    p = this.addPart(partItem, side, null);
+                    if (p != null) {
                         p.readFromStream(data);
                     } else {
                         throw new IllegalStateException("Invalid Stream For CableBus Container.");
                     }
+                } else {
+                    throw new IllegalStateException("Invalid item from server for part: " + newPartItem);
                 }
             } else if (this.getPart(side) != null) {
                 this.removePart(side);
@@ -761,19 +753,20 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
             fc.writeToNBT(data);
 
-            final IPart part = this.getPart(s);
+            var part = this.getPart(s);
             if (part != null) {
-                final CompoundTag def = new CompoundTag();
-                part.getItemStack(PartItemStack.WORLD).save(def);
+                var itemId = Registry.ITEM.getKey(part.getPartItem().asItem());
 
-                final CompoundTag extra = new CompoundTag();
-                part.writeToNBT(extra);
+                var partData = new CompoundTag();
+                part.writeToNBT(partData);
 
                 var side = this.getSide(part);
                 var id = side == null ? "center" : side.name();
 
-                data.put("def:" + id, def);
-                data.put("extra:" + id, extra);
+                data.putString("item:" + id, itemId.toString());
+                if (!data.isEmpty()) {
+                    data.put("extra:" + id, data);
+                }
             }
         }
     }
@@ -802,29 +795,39 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var id = side == null ? "center" : side.name();
 
+            // TODO 1.18: Remove in Beta
+            // Migrates from old format to new format
             String defKey = "def:" + id;
-            String extraKey = "extra:" + id;
-            if (data.contains(defKey, Tag.TAG_COMPOUND)
-                    && data.contains(extraKey, Tag.TAG_COMPOUND)) {
+            if (data.contains(defKey, Tag.TAG_COMPOUND)) {
                 final CompoundTag def = data.getCompound(defKey);
-                final CompoundTag extra = data.getCompound(extraKey);
-                IPart p = this.getPart(side);
                 final ItemStack iss = ItemStack.of(def);
                 if (iss.isEmpty()) {
                     continue;
                 }
+                data.putString("item:" + id, Registry.ITEM.getKey(iss.getItem()).toString());
+            }
 
-                final ItemStack current = p == null ? ItemStack.EMPTY : p.getItemStack(PartItemStack.WORLD);
+            String itemKey = "item:" + id;
+            String extraKey = "extra:" + id;
+            if (data.contains(itemKey, Tag.TAG_STRING)) {
+                var itemId = new ResourceLocation(data.getString(itemKey));
+                var item = Registry.ITEM.get(itemId);
+                if (!(item instanceof IPartItem<?>partItem)) {
+                    AELog.warn("Ignoring persisted part with non-part-item %s", itemId);
+                    continue;
+                }
 
-                if (Platform.itemComparisons().isEqualItemType(iss, current)) {
-                    p.readFromNBT(extra);
+                var partData = data.getCompound(extraKey);
+
+                var p = this.getPart(side);
+                if (p != null && p.getPartItem() == partItem) {
+                    p.readFromNBT(partData);
                 } else {
-                    var partAdded = this.replacePart(iss, side, null, null);
-                    if (partAdded) {
-                        p = this.getPart(side);
-                        p.readFromNBT(extra);
+                    p = this.replacePart(partItem, side, null, null);
+                    if (p != null) {
+                        p.readFromNBT(partData);
                     } else {
-                        AELog.warn("Invalid NBT For CableBus Container: " + iss.getItem().getClass().getName()
+                        AELog.warn("Invalid NBT For CableBus Container: " + itemId
                                 + " is not a valid part; it was ignored.");
                     }
                 }
@@ -840,7 +843,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(side);
             if (part != null) {
-                drops.add(part.getItemStack(PartItemStack.BREAK));
+                drops.add(part.getDroppedItemStack());
                 part.getDrops(drops, false);
             }
 

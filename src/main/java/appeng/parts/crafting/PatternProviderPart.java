@@ -35,6 +35,7 @@ import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.helpers.iface.PatternProviderLogicHost;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -62,7 +63,7 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
 
     private final PatternProviderLogic logic;
 
-    public PatternProviderPart(ItemStack is) {
+    public PatternProviderPart(PartItem<?> is) {
         super(is);
         this.logic = new PatternProviderLogic(this.getMainNode(), this);
     }

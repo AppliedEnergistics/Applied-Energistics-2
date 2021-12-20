@@ -36,6 +36,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
+import appeng.items.parts.PartItem;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -61,7 +62,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     private final IConfigManager cm = new ConfigManager();
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
-    public AbstractTerminalPart(final ItemStack is) {
+    public AbstractTerminalPart(PartItem<?> is) {
         super(is, true);
 
         this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
@@ -119,7 +120,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return getItemStack();
+        return new ItemStack(getPartItem());
     }
 
     public MenuType<?> getMenuType(final Player player) {

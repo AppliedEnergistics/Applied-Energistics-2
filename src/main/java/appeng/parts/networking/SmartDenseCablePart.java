@@ -18,14 +18,13 @@
 
 package appeng.parts.networking;
 
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
+import appeng.items.parts.ColoredPartItem;
 
 public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelProvider {
 
-    public SmartDenseCablePart(ItemStack is) {
+    public SmartDenseCablePart(ColoredPartItem<?> is) {
         super(is);
     }
 

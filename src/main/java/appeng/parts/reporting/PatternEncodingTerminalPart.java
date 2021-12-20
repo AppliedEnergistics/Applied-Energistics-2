@@ -36,6 +36,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.IPatternTerminalHost;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.PatternTermMenu;
@@ -64,7 +65,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     private boolean substitute = false;
     private boolean substituteFluids = true;
 
-    public PatternEncodingTerminalPart(final ItemStack is) {
+    public PatternEncodingTerminalPart(PartItem<?> is) {
         super(is);
     }
 

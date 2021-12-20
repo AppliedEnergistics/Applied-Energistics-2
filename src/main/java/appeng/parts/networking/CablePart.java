@@ -25,7 +25,6 @@ import java.util.Set;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.ICablePart;
@@ -38,6 +37,7 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.definitions.AEParts;
@@ -59,16 +59,14 @@ public class CablePart extends AEBasePart implements ICablePart {
     private Set<Direction> connections = Collections.emptySet();
     private boolean powered = false;
 
-    public CablePart(final ItemStack is) {
+    public CablePart(ColoredPartItem<?> is) {
         super(is);
         this.getMainNode()
                 .setFlags(GridFlags.PREFERRED)
                 .setIdlePowerUsage(0.0)
                 .setInWorldNode(true)
                 .setExposedOnSides(EnumSet.allOf(Direction.class));
-        if (is.getItem() instanceof ColoredPartItem<?>coloredPartItem) {
-            this.getMainNode().setGridColor(coloredPartItem.getColor());
-        }
+        this.getMainNode().setGridColor(is.getColor());
     }
 
     @Override
@@ -83,7 +81,7 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public AEColor getCableColor() {
-        if (getItemStack().getItem() instanceof ColoredPartItem<?>coloredPartItem) {
+        if (getPartItem() instanceof ColoredPartItem<?>coloredPartItem) {
             return coloredPartItem.getColor();
         }
         return AEColor.TRANSPARENT;
@@ -108,18 +106,18 @@ public class CablePart extends AEBasePart implements ICablePart {
     @Override
     public boolean changeColor(final AEColor newColor, final Player who) {
         if (this.getCableColor() != newColor) {
-            ItemStack newPart = null;
+            IPartItem<?> newPart = null;
 
             if (this.getCableConnectionType() == AECableType.GLASS) {
-                newPart = AEParts.GLASS_CABLE.stack(newColor, 1);
+                newPart = AEParts.GLASS_CABLE.item(newColor);
             } else if (this.getCableConnectionType() == AECableType.COVERED) {
-                newPart = AEParts.COVERED_CABLE.stack(newColor, 1);
+                newPart = AEParts.COVERED_CABLE.item(newColor);
             } else if (this.getCableConnectionType() == AECableType.SMART) {
-                newPart = AEParts.SMART_CABLE.stack(newColor, 1);
+                newPart = AEParts.SMART_CABLE.item(newColor);
             } else if (this.getCableConnectionType() == AECableType.DENSE_COVERED) {
-                newPart = AEParts.COVERED_DENSE_CABLE.stack(newColor, 1);
+                newPart = AEParts.COVERED_DENSE_CABLE.item(newColor);
             } else if (this.getCableConnectionType() == AECableType.DENSE_SMART) {
-                newPart = AEParts.SMART_DENSE_CABLE.stack(newColor, 1);
+                newPart = AEParts.SMART_DENSE_CABLE.item(newColor);
             }
 
             boolean hasPermission = true;

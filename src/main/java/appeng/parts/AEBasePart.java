@@ -21,26 +21,20 @@ package appeng.parts;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.CrashReportCategory;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -54,11 +48,9 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.PartItemStack;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigurableObject;
@@ -66,6 +58,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
+import appeng.items.parts.PartItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -73,18 +66,18 @@ import appeng.util.SettingsFrom;
 public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory {
 
     private final IManagedGridNode mainNode;
-    private final ItemStack is;
+    private final PartItem<?> partItem;
     private BlockEntity blockEntity = null;
     private IPartHost host = null;
     @Nullable
     private Direction side;
+    @Nullable
+    private Component customName;
 
-    public AEBasePart(final ItemStack is) {
-        Objects.requireNonNull(is);
-
-        this.is = is;
+    public AEBasePart(PartItem<?> partItem) {
+        this.partItem = Objects.requireNonNull(partItem, "item");
         this.mainNode = createMainNode()
-                .setVisualRepresentation(is)
+                .setVisualRepresentation(AEItemKey.of(this.partItem))
                 .setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
@@ -117,11 +110,6 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         return this.host.getColor();
     }
 
-    @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
-
-    }
-
     public IManagedGridNode getMainNode() {
         return this.mainNode;
     }
@@ -141,12 +129,12 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
 
     @Override
     public Component getCustomInventoryName() {
-        return this.getItemStack().getHoverName();
+        return Objects.requireNonNullElse(customName, TextComponent.EMPTY);
     }
 
     @Override
     public boolean hasCustomInventoryName() {
-        return this.getItemStack().hasCustomHoverName();
+        return customName != null;
     }
 
     @Override
@@ -163,28 +151,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public ItemStack getItemStack(final PartItemStack type) {
-        if (type == PartItemStack.NETWORK) {
-            final ItemStack copy = this.is.copy();
-            copy.setTag(null);
-            return copy;
-        }
-        return this.is;
-    }
-
-    @Override
-    public boolean isSolid() {
-        return false;
-    }
-
-    @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-
-    }
-
-    @Override
-    public boolean canConnectRedstone() {
-        return false;
+    public PartItem<?> getPartItem() {
+        return this.partItem;
     }
 
     @Override
@@ -198,33 +166,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public int isProvidingStrongPower() {
-        return 0;
-    }
-
-    @Override
-    public int isProvidingWeakPower() {
-        return 0;
-    }
-
-    @Override
-    public void writeToStream(final FriendlyByteBuf data) {
-
-    }
-
-    @Override
-    public boolean readFromStream(final FriendlyByteBuf data) {
-        return false;
-    }
-
-    @Override
     public IGridNode getGridNode() {
         return this.mainNode.getNode();
-    }
-
-    @Override
-    public void onEntityCollision(final Entity entity) {
-
     }
 
     @Override
@@ -245,34 +188,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public IGridNode getExternalFacingNode() {
-        return null;
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public void animateTick(final Level level, final BlockPos pos, final Random r) {
-
-    }
-
-    @Override
-    public int getLightLevel() {
-        return 0;
-    }
-
-    @Override
-    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
-
-    }
-
-    @Override
     public float getCableConnectionLength(AECableType cable) {
         return 3;
-    }
-
-    @Override
-    public boolean isLadder(final LivingEntity entity) {
-        return false;
     }
 
     /**
@@ -282,7 +199,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
      * @param input compound of source
      */
     @OverridingMethodsMustInvokeSuper
-    protected void importSettings(SettingsFrom mode, CompoundTag input) {
+    public void importSettings(SettingsFrom mode, CompoundTag input) {
         if (this instanceof IConfigurableObject configurableObject) {
             configurableObject.getConfigManager().readFromNBT(input);
         }
@@ -293,7 +210,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @OverridingMethodsMustInvokeSuper
-    protected void exportSettings(SettingsFrom mode, CompoundTag output) {
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
         if (this instanceof IConfigurableObject configurableObject) {
             configurableObject.getConfigManager().writeToNBT(output);
         }
@@ -313,27 +230,29 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard()
                 && memCardIS.getItem() instanceof IMemoryCard memoryCard) {
 
-            ItemStack is = this.getItemStack(PartItemStack.NETWORK);
+            Item partItem = getPartItem();
 
             // Blocks and parts share the same soul!
-            if (AEParts.INTERFACE.isSameAs(is)) {
-                is = AEBlocks.INTERFACE.stack();
+            if (AEParts.INTERFACE.asItem() == partItem) {
+                partItem = AEBlocks.INTERFACE.asItem();
+            } else if (AEParts.PATTERN_PROVIDER.asItem() == partItem) {
+                partItem = AEBlocks.PATTERN_PROVIDER.asItem();
             }
 
-            final String name = is.getDescriptionId();
+            var name = partItem.getDescriptionId();
 
             if (InteractionUtil.isInAlternateUseMode(player)) {
                 var data = new CompoundTag();
-                this.exportSettings(SettingsFrom.MEMORY_CARD, data);
+                exportSettings(SettingsFrom.MEMORY_CARD, data);
                 if (!data.isEmpty()) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                 }
             } else {
-                final String storedName = memoryCard.getSettingsName(memCardIS);
-                final CompoundTag data = memoryCard.getData(memCardIS);
+                var storedName = memoryCard.getSettingsName(memCardIS);
+                var data = memoryCard.getData(memCardIS);
                 if (name.equals(storedName)) {
-                    this.importSettings(SettingsFrom.MEMORY_CARD, data);
+                    importSettings(SettingsFrom.MEMORY_CARD, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                 } else {
                     memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
@@ -371,18 +290,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public void onPlacement(Player player, ItemStack partStack) {
+    public void onPlacement(Player player) {
         this.mainNode.setOwningPlayer(player);
-    }
-
-    @Override
-    public boolean canBePlacedOn(final BusSupport what) {
-        return what == BusSupport.CABLE;
-    }
-
-    @Override
-    public boolean requireDynamicRender() {
-        return false;
     }
 
     public Direction getSide() {
@@ -391,10 +300,6 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
 
     private void setSide(final Direction side) {
         this.side = side;
-    }
-
-    public ItemStack getItemStack() {
-        return this.is;
     }
 
     @Nullable
@@ -413,13 +318,12 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
 
         @Override
         public void onSecurityBreak(T nodeOwner, IGridNode node) {
-            var is = nodeOwner.getItemStack();
-            if (is.getCount() > 0 && nodeOwner.getGridNode() != null) {
-                var items = List.of(is.copy());
+            var is = nodeOwner.getDroppedItemStack();
+            if (!is.isEmpty() && nodeOwner.getGridNode() != null) {
+                var items = List.of(is);
                 nodeOwner.getHost().removePart(nodeOwner.getSide());
                 var be = nodeOwner.getHost().getBlockEntity();
                 Platform.spawnDrops(be.getLevel(), be.getBlockPos(), items);
-                is.setCount(0);
             }
         }
 

@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.config.Actionable;
@@ -42,6 +41,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
 import appeng.core.settings.TickRates;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
@@ -65,7 +65,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     private PickupStrategy pendingPickupStrategy;
 
-    public AnnihilationPlanePart(final ItemStack is) {
+    public AnnihilationPlanePart(PartItem<?> is) {
         super(is);
         getMainNode().addService(IGridTickable.class, this);
     }

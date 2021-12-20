@@ -24,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -35,6 +34,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.items.parts.PartItem;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -45,7 +45,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     protected long lastReportedValue;
     private long reportingValue;
 
-    public AbstractLevelEmitterPart(ItemStack is) {
+    public AbstractLevelEmitterPart(PartItem<?> is) {
         super(is);
 
         // Level emitters do not require a channel to function
@@ -182,13 +182,13 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    protected void importSettings(SettingsFrom mode, CompoundTag input) {
+    public void importSettings(SettingsFrom mode, CompoundTag input) {
         super.importSettings(mode, input);
         reportingValue = input.getLong("reportingValue");
     }
 
     @Override
-    protected void exportSettings(SettingsFrom mode, CompoundTag output) {
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
         super.exportSettings(mode, output);
         output.putLong("reportingValue", reportingValue);
     }

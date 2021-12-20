@@ -41,6 +41,7 @@ import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.parts.AEBasePart;
@@ -73,7 +74,7 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
 
     private final InterfaceLogic logic;
 
-    public InterfacePart(final ItemStack is) {
+    public InterfacePart(PartItem<?> is) {
         super(is);
         this.logic = new InterfaceLogic(this.getMainNode(), this, is);
     }
@@ -172,6 +173,6 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return getItemStack();
+        return new ItemStack(getPartItem());
     }
 }

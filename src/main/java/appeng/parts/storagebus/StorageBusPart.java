@@ -67,6 +67,7 @@ import appeng.core.stats.AdvancementTriggers;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.InterfaceLogicHost;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.CompositeStorage;
@@ -125,7 +126,7 @@ public class StorageBusPart extends UpgradeablePart
     private boolean shouldUpdateTarget = true;
     private ITickingMonitor monitor = null;
 
-    public StorageBusPart(ItemStack is) {
+    public StorageBusPart(PartItem<?> is) {
         super(is);
         this.adjacentStorageAccessor = new PartAdjacentApi<>(this, IStorageMonitorableAccessor.SIDED);
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
@@ -211,7 +212,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return getItemStack();
+        return new ItemStack(getPartItem());
     }
 
     public MenuType<?> getMenuType() {

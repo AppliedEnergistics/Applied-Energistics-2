@@ -19,7 +19,8 @@
 package appeng.menu.me.networktool;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
+
+import appeng.api.stacks.AEItemKey;
 
 /**
  * Represents the status of machines grouped by their item representation.
@@ -28,7 +29,7 @@ public class MachineGroup {
     /**
      * The item stack used for grouping machines together, which is also used for showing the group in the UI.
      */
-    private final ItemStack display;
+    private final AEItemKey display;
 
     /**
      * Summed up idle power usage of this machine group in AE/t.
@@ -40,7 +41,7 @@ public class MachineGroup {
      */
     private int count;
 
-    MachineGroup(ItemStack display) {
+    MachineGroup(AEItemKey display) {
         this.display = display;
     }
 
@@ -48,20 +49,19 @@ public class MachineGroup {
      * Reads back a machine group previously {@link #write(FriendlyByteBuf) written}.
      */
     static MachineGroup read(FriendlyByteBuf data) {
-        ItemStack stack = data.readItem();
-        MachineGroup entry = new MachineGroup(stack);
+        MachineGroup entry = new MachineGroup(AEItemKey.fromPacket(data));
         entry.idlePowerUsage = data.readDouble();
         entry.count = data.readVarInt();
         return entry;
     }
 
     void write(FriendlyByteBuf data) {
-        data.writeItem(display);
+        display.writeToPacket(data);
         data.writeDouble(idlePowerUsage);
         data.writeVarInt(count);
     }
 
-    public ItemStack getDisplay() {
+    public AEItemKey getDisplay() {
         return display;
     }
 

@@ -66,7 +66,6 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.DEBUG_CARD, "item/debug_card");
         flatSingleLayer(AEItems.DEBUG_ERASER, "item/debug/eraser");
         flatSingleLayer(AEItems.DEBUG_METEORITE_PLACER, "item/debug/meteorite_placer");
-        flatSingleLayer(AEItems.DEBUG_PART_PLACER, "item/debug/part_placer");
         flatSingleLayer(AEItems.DEBUG_REPLICATOR_CARD, "item/debug/replicator_card");
         flatSingleLayer(AEItems.ENDER_DUST, "item/ender_dust");
         flatSingleLayer(AEItems.ENGINEERING_PROCESSOR, "item/engineering_processor");

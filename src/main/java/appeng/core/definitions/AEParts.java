@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.ids.AEPartIds;
 import appeng.api.parts.IPart;
@@ -76,14 +75,14 @@ import appeng.parts.storagebus.StorageBusPart;
  */
 @SuppressWarnings("unused")
 public final class AEParts {
-    public static final List<ColoredItemDefinition> COLORED_PARTS = new ArrayList<>();
+    public static final List<ColoredItemDefinition<?>> COLORED_PARTS = new ArrayList<>();
 
     // spotless:off
-    public static final ColoredItemDefinition SMART_CABLE = constructColoredDefinition("smart_cable", SmartCablePart.class, SmartCablePart::new);
-    public static final ColoredItemDefinition COVERED_CABLE = constructColoredDefinition("covered_cable", CoveredCablePart.class, CoveredCablePart::new);
-    public static final ColoredItemDefinition GLASS_CABLE = constructColoredDefinition("glass_cable", GlassCablePart.class, GlassCablePart::new);
-    public static final ColoredItemDefinition COVERED_DENSE_CABLE = constructColoredDefinition("covered_dense_cable", CoveredDenseCablePart.class, CoveredDenseCablePart::new);
-    public static final ColoredItemDefinition SMART_DENSE_CABLE = constructColoredDefinition("smart_dense_cable", SmartDenseCablePart.class, SmartDenseCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<SmartCablePart>> SMART_CABLE = constructColoredDefinition("smart_cable", SmartCablePart.class, SmartCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<CoveredCablePart>> COVERED_CABLE = constructColoredDefinition("covered_cable", CoveredCablePart.class, CoveredCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<GlassCablePart>> GLASS_CABLE = constructColoredDefinition("glass_cable", GlassCablePart.class, GlassCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<CoveredDenseCablePart>> COVERED_DENSE_CABLE = constructColoredDefinition("covered_dense_cable", CoveredDenseCablePart.class, CoveredDenseCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<SmartDenseCablePart>> SMART_DENSE_CABLE = constructColoredDefinition("smart_dense_cable", SmartDenseCablePart.class, SmartDenseCablePart::new);
     public static final ItemDefinition<PartItem<QuartzFiberPart>> QUARTZ_FIBER = createPart(AEPartIds.QUARTZ_FIBER, QuartzFiberPart.class, QuartzFiberPart::new);
     public static final ItemDefinition<PartItem<ToggleBusPart>> TOGGLE_BUS = createPart(AEPartIds.TOGGLE_BUS, ToggleBusPart.class, ToggleBusPart::new);
     public static final ItemDefinition<PartItem<InvertedToggleBusPart>> INVERTED_TOGGLE_BUS = createPart(AEPartIds.INVERTED_TOGGLE_BUS, InvertedToggleBusPart.class, InvertedToggleBusPart::new);
@@ -118,23 +117,24 @@ public final class AEParts {
 
     private static <T extends IPart> ItemDefinition<PartItem<T>> createPart(ResourceLocation id,
             Class<T> partClass,
-            Function<ItemStack, T> factory) {
+            Function<PartItem<T>, T> factory) {
 
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(id, props -> new PartItem<>(props, partClass, factory));
     }
 
-    private static <T extends IPart> ColoredItemDefinition constructColoredDefinition(String idSuffix,
+    private static <T extends IPart> ColoredItemDefinition<ColoredPartItem<T>> constructColoredDefinition(
+            String idSuffix,
             Class<T> partClass,
-            Function<ItemStack, T> factory) {
+            Function<ColoredPartItem<T>, T> factory) {
 
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
-        var definition = new ColoredItemDefinition();
+        var definition = new ColoredItemDefinition<ColoredPartItem<T>>();
         for (final AEColor color : AEColor.values()) {
             String id = color.registryPrefix + '_' + idSuffix;
 
-            ItemDefinition<?> itemDef = item(AppEng.makeId(id),
+            var itemDef = item(AppEng.makeId(id),
                     props -> new ColoredPartItem<>(props, partClass, factory, color));
 
             definition.add(color, AppEng.makeId(id), itemDef);

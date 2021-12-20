@@ -54,6 +54,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuLocator;
@@ -77,7 +78,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     private IncludeExclude filterMode = IncludeExclude.WHITELIST;
     private IPartitionList filter;
 
-    public FormationPlanePart(ItemStack is) {
+    public FormationPlanePart(PartItem<?> is) {
         super(is);
         getMainNode().addService(IStorageProvider.class, this);
         this.config = ConfigInventory.configTypes(StackWorldBehaviors.hasPlacementStrategy(),
@@ -231,7 +232,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return getItemStack();
+        return new ItemStack(getPartItem());
     }
 
     private void openConfigMenu(Player player) {
@@ -274,7 +275,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
         @Override
         public Component getDescription() {
-            return getItemStack().getHoverName();
+            return getPartItem().getDescription();
         }
     }
 

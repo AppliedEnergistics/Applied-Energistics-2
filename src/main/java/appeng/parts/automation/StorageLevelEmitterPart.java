@@ -27,7 +27,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.FuzzyMode;
@@ -46,6 +45,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.AppEng;
 import appeng.helpers.IConfigInvHost;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
@@ -114,7 +114,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         }
     };
 
-    public StorageLevelEmitterPart(ItemStack is) {
+    public StorageLevelEmitterPart(PartItem<?> is) {
         super(is);
 
         getMainNode().addService(IStorageWatcherNode.class, stackWatcherNode);

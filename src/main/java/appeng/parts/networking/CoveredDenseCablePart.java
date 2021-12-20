@@ -18,13 +18,12 @@
 
 package appeng.parts.networking;
 
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.util.AECableType;
+import appeng.items.parts.ColoredPartItem;
 
 public class CoveredDenseCablePart extends DenseCablePart {
 
-    public CoveredDenseCablePart(ItemStack is) {
+    public CoveredDenseCablePart(ColoredPartItem<?> is) {
         super(is);
     }
 

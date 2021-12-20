@@ -38,7 +38,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.features.IPlayerRegistry;
@@ -47,6 +46,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 
 /**
@@ -63,7 +63,7 @@ public class ManagedGridNode implements IManagedGridNode {
         // The following values are used until the node is constructed, and then are applied to the node
         private AEColor gridColor = AEColor.TRANSPARENT;
         private Set<Direction> exposedOnSides = EnumSet.allOf(Direction.class);
-        private ItemStack visualRepresentation = ItemStack.EMPTY;
+        private AEItemKey visualRepresentation = null;
         private EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
         private double idlePowerUsage = 1.0;
         private int owner = -1; // ME player id of owner
@@ -264,7 +264,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public ManagedGridNode setVisualRepresentation(@Nonnull ItemStack visualRepresentation) {
+    public ManagedGridNode setVisualRepresentation(@Nullable AEItemKey visualRepresentation) {
         if (node == null) {
             getInitData().visualRepresentation = Objects.requireNonNull(visualRepresentation);
         } else {
@@ -286,11 +286,6 @@ public class ManagedGridNode implements IManagedGridNode {
     @Nonnegative
     public double getIdlePowerUsage() {
         return node != null ? node.getIdlePowerUsage() : getInitData().idlePowerUsage;
-    }
-
-    @Nonnull
-    public ItemStack getVisualRepresentation() {
-        return node != null ? node.getVisualRepresentation() : getInitData().visualRepresentation;
     }
 
     @Nonnull

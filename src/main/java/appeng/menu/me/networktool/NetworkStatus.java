@@ -61,12 +61,11 @@ public class NetworkStatus {
         Map<AEItemKey, MachineGroup> groupedMachines = new HashMap<>();
         for (var machineClass : grid.getMachineClasses()) {
             for (IGridNode machine : grid.getMachineNodes(machineClass)) {
-                var is = machine.getVisualRepresentation();
-                AEItemKey ais = AEItemKey.of(is);
+                var ais = machine.getVisualRepresentation();
                 if (ais != null) {
                     MachineGroup group = groupedMachines.get(ais);
                     if (group == null) {
-                        groupedMachines.put(ais, group = new MachineGroup(is));
+                        groupedMachines.put(ais, group = new MachineGroup(ais));
                     }
 
                     group.setCount(group.getCount() + 1);

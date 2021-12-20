@@ -19,10 +19,10 @@
 package appeng.parts.reporting;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -37,7 +37,7 @@ public class ItemTerminalPart extends AbstractTerminalPart {
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    public ItemTerminalPart(final ItemStack is) {
+    public ItemTerminalPart(PartItem<?> is) {
         super(is);
     }
 

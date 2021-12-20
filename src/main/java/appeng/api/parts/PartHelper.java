@@ -71,26 +71,23 @@ public final class PartHelper {
      * @param player The player is only used to set the ownership of the created grid node.
      */
     @Nullable
-    public static IPart setPart(ServerLevel level, BlockPos pos, @Nullable Direction side, @Nullable Player player,
-            ItemStack partStack) {
+    public static <T extends IPart> T setPart(ServerLevel level, BlockPos pos, @Nullable Direction side,
+            @Nullable Player player,
+            IPartItem<T> partItem) {
         Objects.requireNonNull(level, "level");
         Objects.requireNonNull(pos, "pos");
-
-        if (partStack.isEmpty()) {
-            return null;
-        }
 
         var host = getOrPlacePartHost(level, pos, true);
         if (host == null) {
             return null;
         }
 
-        var success = host.replacePart(partStack, side, player, null);
+        var part = host.replacePart(partItem, side, player, null);
         if (host.isEmpty()) {
             host.cleanup();
         }
 
-        return success ? host.getPart(side) : null;
+        return part;
     }
 
     /**

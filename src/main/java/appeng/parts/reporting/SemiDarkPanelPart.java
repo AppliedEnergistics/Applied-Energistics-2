@@ -19,10 +19,10 @@
 package appeng.parts.reporting;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -35,7 +35,7 @@ public class SemiDarkPanelPart extends AbstractPanelPart {
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);
 
-    public SemiDarkPanelPart(final ItemStack is) {
+    public SemiDarkPanelPart(PartItem<?> is) {
         super(is);
     }
 

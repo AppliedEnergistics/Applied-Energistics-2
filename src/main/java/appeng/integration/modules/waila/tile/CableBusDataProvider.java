@@ -41,7 +41,6 @@ import mcp.mobius.waila.api.TooltipPosition;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.block.networking.CableBusBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -85,8 +84,7 @@ public final class CableBusDataProvider {
             if (selected.facade != null) {
                 name = selected.facade.getItemStack().getHoverName();
             } else if (selected.part != null) {
-                var is = selected.part.getItemStack(PartItemStack.PICK);
-                name = is.getHoverName();
+                name = selected.part.getPartItem().asItem().getDescription();
             }
 
             // Replace the object name
@@ -114,10 +112,8 @@ public final class CableBusDataProvider {
             if (selected.facade != null) {
                 return selected.facade.getItemStack();
             } else if (selected.part != null) {
-                var item = selected.part.getItemStack(PartItemStack.PICK);
-                if (!item.isEmpty()) {
-                    return item;
-                }
+                var item = selected.part.getPartItem();
+                return new ItemStack(item);
             }
             return ItemStack.EMPTY;
         }
