@@ -25,7 +25,7 @@ public class NonNullArrayIterator<E> implements Iterator<E> {
     private final E[] g;
     private int offset = 0;
 
-    public NonNullArrayIterator(final E[] o) {
+    public NonNullArrayIterator(E[] o) {
         this.g = o;
     }
 

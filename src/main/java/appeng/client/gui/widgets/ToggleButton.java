@@ -40,8 +40,8 @@ public class ToggleButton extends Button implements ITooltip {
 
     private boolean isActive;
 
-    public ToggleButton(final Icon on, final Icon off, final Component displayName,
-            final Component displayHint, OnPress onPress) {
+    public ToggleButton(Icon on, Icon off, Component displayName,
+            Component displayHint, OnPress onPress) {
         super(0, 0, 16, 16, TextComponent.EMPTY, onPress);
         this.icon = on;
         this.iconDisabled = off;
@@ -49,12 +49,12 @@ public class ToggleButton extends Button implements ITooltip {
         this.displayHint = Objects.requireNonNull(displayHint);
     }
 
-    public void setState(final boolean isOn) {
+    public void setState(boolean isOn) {
         this.isActive = isOn;
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, final int mouseX, final int mouseY, final float partial) {
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         if (this.visible) {
             Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(poseStack, getBlitOffset());
             getIcon().getBlitter().dest(x, y).blit(poseStack, getBlitOffset());

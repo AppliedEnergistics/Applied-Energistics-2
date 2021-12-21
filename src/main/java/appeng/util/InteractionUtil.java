@@ -69,13 +69,13 @@ public final class InteractionUtil {
         return player.isShiftKeyDown();
     }
 
-    public static float getEyeOffset(final Player player) {
+    public static float getEyeOffset(Player player) {
         assert player.level.isClientSide : "Valid only on client";
         // FIXME: The entire premise of this seems broken
         return (float) (player.getY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight() */ 1.62F);
     }
 
-    public static LookDirection getPlayerRay(final Player playerIn) {
+    public static LookDirection getPlayerRay(Player playerIn) {
         // FIXME FABRIC 117 This can currently not be modded in API in Fabric
         double reachDistance = 36.0D;
         return getPlayerRay(playerIn, reachDistance);
@@ -103,7 +103,7 @@ public final class InteractionUtil {
         return new LookDirection(from, to);
     }
 
-    public static HitResult rayTrace(final Player p, final boolean hitBlocks, final boolean hitEntities) {
+    public static HitResult rayTrace(Player p, boolean hitBlocks, boolean hitEntities) {
         final Level level = p.getCommandSenderWorld();
 
         final float f = 1.0F;
@@ -132,7 +132,7 @@ public final class InteractionUtil {
         if (hitEntities) {
             final List<Entity> list = level.getEntities(p, bb);
 
-            for (final Entity entity1 : list) {
+            for (Entity entity1 : list) {
                 if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
                     // prevent killing / flying of mounts.
                     if (entity1.hasIndirectPassenger(p)) {

@@ -120,8 +120,8 @@ public final class StorageHelper {
      * @param src    Action source.
      * @return items not inserted or {@code null} if everything was inserted.
      */
-    public static long poweredInsert(final IEnergySource energy, final MEStorage inv,
-            AEKey input, long amount, final IActionSource src) {
+    public static long poweredInsert(IEnergySource energy, MEStorage inv,
+            AEKey input, long amount, IActionSource src) {
         return poweredInsert(energy, inv, input, amount, src, Actionable.MODULATE);
     }
 

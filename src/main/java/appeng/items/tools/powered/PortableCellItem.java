@@ -90,7 +90,7 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide()) {
             MenuOpener.open(getMenuType(), player, MenuLocator.forHand(player, hand));
         }
@@ -100,24 +100,24 @@ public class PortableCellItem extends AEBasePoweredItem
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
         addCellInformationToTooltip(stack, lines);
     }
 
     @Override
-    public int getBytes(final ItemStack cellItem) {
+    public int getBytes(ItemStack cellItem) {
         return this.tier.bytes();
     }
 
     @Override
-    public int getBytesPerType(final ItemStack cellItem) {
+    public int getBytesPerType(ItemStack cellItem) {
         return this.tier.bytesPerType();
     }
 
     @Override
-    public int getTotalTypes(final ItemStack cellItem) {
+    public int getTotalTypes(ItemStack cellItem) {
         return this.tier.types();
     }
 
@@ -127,32 +127,32 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(ItemStack is) {
         return true;
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public ConfigInventory getConfigInventory(final ItemStack is) {
+    public ConfigInventory getConfigInventory(ItemStack is) {
         return CellConfig.create(keyType.filter(), is);
     }
 
     @Override
-    public FuzzyMode getFuzzyMode(final ItemStack is) {
+    public FuzzyMode getFuzzyMode(ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
         try {
             return FuzzyMode.valueOf(fz);
-        } catch (final Throwable t) {
+        } catch (Throwable t) {
             return FuzzyMode.IGNORE_ALL;
         }
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 

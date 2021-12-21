@@ -68,8 +68,8 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
      * @param width        absolute width
      * @param height       absolute height
      */
-    public AETextField(final Font fontRenderer, final int xPos, final int yPos, final int width,
-            final int height) {
+    public AETextField(Font fontRenderer, int xPos, int yPos, int width,
+            int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING,
                 width - 2 * PADDING - fontRenderer.width("_"), height - 2 * PADDING,
                 TextComponent.EMPTY);

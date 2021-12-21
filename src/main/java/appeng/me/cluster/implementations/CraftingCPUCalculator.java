@@ -32,12 +32,12 @@ import appeng.me.cluster.MBCalculator;
 
 public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
 
-    public CraftingCPUCalculator(final CraftingBlockEntity t) {
+    public CraftingCPUCalculator(CraftingBlockEntity t) {
         super(t);
     }
 
     @Override
-    public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
+    public boolean checkMultiblockScale(BlockPos min, BlockPos max) {
         if (max.getX() - min.getX() > 16) {
             return false;
         }
@@ -54,12 +54,12 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public CraftingCPUCluster createCluster(final ServerLevel level, final BlockPos min, final BlockPos max) {
+    public CraftingCPUCluster createCluster(ServerLevel level, BlockPos min, BlockPos max) {
         return new CraftingCPUCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final ServerLevel level, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(ServerLevel level, BlockPos min, BlockPos max) {
         boolean storage = false;
 
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
@@ -78,8 +78,8 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public void updateBlockEntities(final CraftingCPUCluster c, final ServerLevel level, final BlockPos min,
-            final BlockPos max) {
+    public void updateBlockEntities(CraftingCPUCluster c, ServerLevel level, BlockPos min,
+            BlockPos max) {
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
             final CraftingBlockEntity te = (CraftingBlockEntity) level.getBlockEntity(blockPos);
             te.updateStatus(c);
@@ -101,7 +101,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, Cra
     }
 
     @Override
-    public boolean isValidBlockEntity(final BlockEntity te) {
+    public boolean isValidBlockEntity(BlockEntity te) {
         return te instanceof CraftingBlockEntity;
     }
 }

@@ -83,7 +83,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
 
     public final SkyChestType type;
 
-    public SkyChestBlock(final SkyChestType type, BlockBehaviour.Properties props) {
+    public SkyChestBlock(SkyChestType type, BlockBehaviour.Properties props) {
         super(props);
         this.type = type;
         registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
@@ -107,9 +107,9 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         if (!level.isClientSide()) {
             SkyChestBlockEntity blockEntity = getBlockEntity(level, pos);
             if (blockEntity != null) {

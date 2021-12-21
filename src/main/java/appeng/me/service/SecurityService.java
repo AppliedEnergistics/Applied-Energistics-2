@@ -53,7 +53,7 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
     private final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<>();
     private long securityKey = -1;
 
-    public SecurityService(final IGrid g) {
+    public SecurityService(IGrid g) {
         this.myGrid = g;
     }
 
@@ -71,7 +71,7 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode) {
+    public void removeNode(IGridNode gridNode) {
         var security = gridNode.getService(ISecurityProvider.class);
         if (security != null) {
             this.securityProvider.remove(security);
@@ -108,7 +108,7 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(final IGridNode gridNode) {
+    public void addNode(IGridNode gridNode) {
         var security = gridNode.getService(ISecurityProvider.class);
 
         if (security != null) {
@@ -142,7 +142,7 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
     }
 
     @Override
-    public boolean hasPermission(final int playerID, final SecurityPermissions perm) {
+    public boolean hasPermission(int playerID, SecurityPermissions perm) {
         if (this.isAvailable()) {
             var perms = this.playerPerms.get(playerID);
 

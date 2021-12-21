@@ -54,7 +54,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         return false;
     }
 
@@ -63,7 +63,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * internal count then calls onCrafting(item).
      */
     @Override
-    protected void onQuickCraft(final ItemStack par1ItemStack, final int par2) {
+    protected void onQuickCraft(ItemStack par1ItemStack, int par2) {
         this.amountCrafted += par2;
         this.checkTakeAchievements(par1ItemStack);
     }
@@ -72,13 +72,13 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
      */
     @Override
-    protected void checkTakeAchievements(final ItemStack par1ItemStack) {
+    protected void checkTakeAchievements(ItemStack par1ItemStack) {
         par1ItemStack.onCraftedBy(this.player.level, this.player, this.amountCrafted);
         this.amountCrafted = 0;
     }
 
     @Override
-    public void onTake(final Player playerIn, final ItemStack stack) {
+    public void onTake(Player playerIn, ItemStack stack) {
         CraftingEvent.fireCraftingEvent(playerIn, stack, this.craftingGrid.toContainer());
         this.checkTakeAchievements(stack);
         // FIXME FABRIC no crafting hooks
@@ -126,7 +126,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
      * stack.
      */
     @Override
-    public ItemStack remove(final int par1) {
+    public ItemStack remove(int par1) {
         if (this.hasItem()) {
             this.amountCrafted += Math.min(par1, this.getItem().getCount());
         }

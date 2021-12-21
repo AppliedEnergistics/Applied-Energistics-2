@@ -39,7 +39,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
 
     protected final TBlockEntity target;
 
-    public MBCalculator(final TBlockEntity t) {
+    public MBCalculator(TBlockEntity t) {
         this.target = t;
     }
 
@@ -58,7 +58,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
         return modificationInProgress.get() != null;
     }
 
-    public void updateMultiblockAfterNeighborUpdate(final ServerLevel level, final BlockPos loc, BlockPos changedPos) {
+    public void updateMultiblockAfterNeighborUpdate(ServerLevel level, BlockPos loc, BlockPos changedPos) {
         boolean recheck;
 
         TCluster cluster = target.getCluster();
@@ -83,7 +83,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
         }
     }
 
-    public void calculateMultiblock(final ServerLevel level, final BlockPos loc) {
+    public void calculateMultiblock(ServerLevel level, BlockPos loc) {
         if (isModificationInProgress()) {
             return;
         }
@@ -124,7 +124,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
                         this.disconnect();
                         return;
                     }
-                } catch (final Exception err) {
+                } catch (Exception err) {
                     this.disconnect();
                     return;
                 }
@@ -145,7 +145,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
                 cluster.updateStatus(updateGrid);
                 return;
             }
-        } catch (final Throwable err) {
+        } catch (Throwable err) {
             AELog.debug(err);
         } finally {
             setModificationInProgress(null);
@@ -162,7 +162,7 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
                 && y <= boundsMax.getY() && z <= boundsMax.getZ();
     }
 
-    private boolean isValidBlockEntityAt(final Level level, final int x, final int y, final int z) {
+    private boolean isValidBlockEntityAt(Level level, int x, int y, int z) {
         return this.isValidBlockEntity(level.getBlockEntity(new BlockPos(x, y, z)));
     }
 
@@ -175,8 +175,8 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
      */
     public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
 
-    private boolean verifyUnownedRegion(final ServerLevel level, final BlockPos min, final BlockPos max) {
-        for (final Direction side : Direction.values()) {
+    private boolean verifyUnownedRegion(ServerLevel level, BlockPos min, BlockPos max) {
+        for (Direction side : Direction.values()) {
             if (this.verifyUnownedRegionInner(level, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(),
                     max.getZ(),
                     side)) {
@@ -224,8 +224,8 @@ public abstract class MBCalculator<TBlockEntity extends IAEMultiBlock<TCluster>,
      */
     public abstract boolean isValidBlockEntity(BlockEntity te);
 
-    private boolean verifyUnownedRegionInner(final ServerLevel level, int minX, int minY, int minZ, int maxX, int maxY,
-            int maxZ, final Direction side) {
+    private boolean verifyUnownedRegionInner(ServerLevel level, int minX, int minY, int minZ, int maxX, int maxY,
+            int maxZ, Direction side) {
         switch (side) {
             case WEST:
                 minX -= 1;

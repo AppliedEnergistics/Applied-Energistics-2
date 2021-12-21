@@ -43,7 +43,7 @@ public class CableBusStorage {
         return this.center;
     }
 
-    protected void setCenter(final ICablePart center) {
+    protected void setCenter(ICablePart center) {
         this.center = center;
     }
 
@@ -56,7 +56,7 @@ public class CableBusStorage {
         return this.parts[index];
     }
 
-    protected void setPart(@Nonnull Direction side, final IPart part) {
+    protected void setPart(@Nonnull Direction side, IPart part) {
         if (this.parts == null) {
             this.parts = new IPart[Direction.values().length];
         }
@@ -87,7 +87,7 @@ public class CableBusStorage {
         return this.facades[index];
     }
 
-    public void setFacade(@Nonnull Direction side, @Nullable final IFacadePart facade) {
+    public void setFacade(@Nonnull Direction side, @Nullable IFacadePart facade) {
         if (facade == null) {
             removeFacade(side);
             return;

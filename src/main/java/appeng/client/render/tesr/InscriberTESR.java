@@ -201,7 +201,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
         vb.endVertex();
     }
 
-    private void renderItem(PoseStack ms, final ItemStack stack, final float o, MultiBufferSource buffers,
+    private void renderItem(PoseStack ms, ItemStack stack, float o, MultiBufferSource buffers,
             int combinedLight, int combinedOverlay) {
         if (!stack.isEmpty()) {
             ms.pushPose();

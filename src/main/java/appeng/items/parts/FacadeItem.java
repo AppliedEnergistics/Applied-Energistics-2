@@ -69,7 +69,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
             if (!in.isEmpty()) {
                 return super.getName(is).copy().append(" - ").append(in.getHoverName());
             }
-        } catch (final Throwable ignored) {
+        } catch (Throwable ignored) {
 
         }
 
@@ -80,7 +80,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
     }
 
-    public ItemStack createFacadeForItem(final ItemStack itemStack, final boolean returnItem) {
+    public ItemStack createFacadeForItem(ItemStack itemStack, boolean returnItem) {
         if (itemStack.isEmpty() || itemStack.hasTag() || !(itemStack.getItem() instanceof BlockItem blockItem)) {
             return ItemStack.EMPTY;
         }
@@ -114,7 +114,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         return ItemStack.EMPTY;
     }
 
-    public ItemStack createFacadeForItemUnchecked(final ItemStack itemStack) {
+    public ItemStack createFacadeForItemUnchecked(ItemStack itemStack) {
         final ItemStack is = new ItemStack(this);
         final CompoundTag data = new CompoundTag();
         data.putString(NBT_ITEM_ID, Registry.ITEM.getKey(itemStack.getItem()).toString());
@@ -163,7 +163,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         return block.defaultBlockState();
     }
 
-    public ItemStack createFromID(final int id) {
+    public ItemStack createFromID(int id) {
         ItemStack facadeStack = AEItems.FACADE.stack();
 
         // Convert back to a registry name...

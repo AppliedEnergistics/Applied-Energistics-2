@@ -38,51 +38,51 @@ public class WorldCoord {
     public int y;
     public int z;
 
-    public WorldCoord(final BlockEntity s) {
+    public WorldCoord(BlockEntity s) {
         this(s.getBlockPos());
     }
 
-    public WorldCoord(final int _x, final int _y, final int _z) {
+    public WorldCoord(int _x, int _y, int _z) {
         this.x = _x;
         this.y = _y;
         this.z = _z;
     }
 
-    public WorldCoord(final BlockPos pos) {
+    public WorldCoord(BlockPos pos) {
         this.x = pos.getX();
         this.y = pos.getY();
         this.z = pos.getZ();
     }
 
-    public WorldCoord subtract(final Direction direction, final int length) {
+    public WorldCoord subtract(Direction direction, int length) {
         this.x -= direction.getStepX() * length;
         this.y -= direction.getStepY() * length;
         this.z -= direction.getStepZ() * length;
         return this;
     }
 
-    public WorldCoord add(final int _x, final int _y, final int _z) {
+    public WorldCoord add(int _x, int _y, int _z) {
         this.x += _x;
         this.y += _y;
         this.z += _z;
         return this;
     }
 
-    public WorldCoord subtract(final int _x, final int _y, final int _z) {
+    public WorldCoord subtract(int _x, int _y, int _z) {
         this.x -= _x;
         this.y -= _y;
         this.z -= _z;
         return this;
     }
 
-    public WorldCoord multiple(final int _x, final int _y, final int _z) {
+    public WorldCoord multiple(int _x, int _y, int _z) {
         this.x *= _x;
         this.y *= _y;
         this.z *= _z;
         return this;
     }
 
-    public WorldCoord divide(final int _x, final int _y, final int _z) {
+    public WorldCoord divide(int _x, int _y, int _z) {
         this.x /= _x;
         this.y /= _y;
         this.z /= _z;
@@ -96,7 +96,7 @@ public class WorldCoord {
     /**
      * Will Return NULL if it's at some diagonal!
      */
-    public Direction directionTo(final WorldCoord loc) {
+    public Direction directionTo(WorldCoord loc) {
         final int ox = this.x - loc.x;
         final int oy = this.y - loc.y;
         final int oz = this.z - loc.z;
@@ -132,11 +132,11 @@ public class WorldCoord {
         return null;
     }
 
-    public boolean isEqual(final WorldCoord c) {
+    public boolean isEqual(WorldCoord c) {
         return this.x == c.x && this.y == c.y && this.z == c.z;
     }
 
-    public WorldCoord add(final Direction direction, final int length) {
+    public WorldCoord add(Direction direction, int length) {
         this.x += direction.getStepX() * length;
         this.y += direction.getStepY() * length;
         this.z += direction.getStepZ() * length;
@@ -153,7 +153,7 @@ public class WorldCoord {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         return obj instanceof WorldCoord && this.isEqual((WorldCoord) obj);
     }
 

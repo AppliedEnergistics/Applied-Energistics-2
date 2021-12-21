@@ -71,8 +71,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         return 1.0f;
     }
 
-    public TunnelCollection<T> getCollection(final Collection<P2PTunnelPart> collection,
-            final Class<? extends P2PTunnelPart> c) {
+    public TunnelCollection<T> getCollection(Collection<P2PTunnelPart> collection,
+            Class<? extends P2PTunnelPart> c) {
         if (this.type.matches(c)) {
             this.type.setSource(collection);
             return this.type;
@@ -108,7 +108,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(5, 5, 12, 11, 11, 13);
         bch.addBox(3, 3, 13, 13, 13, 14);
         bch.addBox(2, 2, 14, 14, 14, 16);
@@ -126,14 +126,14 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.setOutput(data.getBoolean("output"));
         this.freq = data.getShort("freq");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         data.putBoolean("output", this.isOutput());
         data.putShort("freq", this.getFrequency());
@@ -164,7 +164,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (isClientSide()) {
             return true;
         }
@@ -224,7 +224,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean onPartShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
         final ItemStack is = player.getInventory().getSelected();
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
             if (isClientSide()) {
@@ -316,14 +316,14 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     }
 
-    protected void queueTunnelDrain(final PowerUnits unit, final double f, TransactionContext transaction) {
+    protected void queueTunnelDrain(PowerUnits unit, double f, TransactionContext transaction) {
         final double ae_to_tax = unit.convertTo(PowerUnits.AE, f * AEConfig.TUNNEL_POWER_LOSS);
 
         energyDrainHandler.updateSnapshots(transaction);
         energyDrainHandler.pendingEnergy += ae_to_tax;
     }
 
-    protected void queueTunnelDrain(final PowerUnits unit, final double f) {
+    protected void queueTunnelDrain(PowerUnits unit, double f) {
         final double ae_to_tax = unit.convertTo(PowerUnits.AE, f * AEConfig.TUNNEL_POWER_LOSS);
 
         getMainNode().ifPresent(grid -> {
@@ -335,7 +335,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         return this.freq;
     }
 
-    public void setFrequency(final short freq) {
+    public void setFrequency(short freq) {
         final short oldf = this.freq;
         this.freq = freq;
         if (oldf != this.freq) {
@@ -347,7 +347,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         return this.output;
     }
 
-    void setOutput(final boolean output) {
+    void setOutput(boolean output) {
         this.output = output;
     }
 

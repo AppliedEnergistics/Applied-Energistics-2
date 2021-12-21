@@ -66,14 +66,14 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeInt(this.isOutput() ? this.lastValue : 0);
         data.writeInt(this.opacity);
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         boolean changed = super.readFromStream(data);
         final int oldValue = this.lastValue;
         final int oldOpacity = this.opacity;
@@ -97,7 +97,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
         if (this.lastValue != newLevel && this.getMainNode().isActive()) {
             this.lastValue = newLevel;
-            for (final LightP2PTunnelPart out : this.getOutputs()) {
+            for (LightP2PTunnelPart out : this.getOutputs()) {
                 out.setLightLevel(this.lastValue);
             }
             return true;
@@ -124,12 +124,12 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
         return 0;
     }
 
-    private void setLightLevel(final int out) {
+    private void setLightLevel(int out) {
         this.lastValue = out;
         this.getHost().markForUpdate();
     }
 
-    private int blockLight(final int emit) {
+    private int blockLight(int emit) {
         if (this.opacity < 0) {
             final BlockEntity te = this.getBlockEntity();
             this.opacity = 255
@@ -140,13 +140,13 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void readFromNBT(final CompoundTag tag) {
+    public void readFromNBT(CompoundTag tag) {
         super.readFromNBT(tag);
         this.lastValue = tag.getInt("lastValue");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag tag) {
+    public void writeToNBT(CompoundTag tag) {
         super.writeToNBT(tag);
         tag.putInt("lastValue", this.lastValue);
     }
@@ -171,12 +171,12 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
+    public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(TickRates.LightTunnel, false, false);
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         return this.doWork() ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
     }
 

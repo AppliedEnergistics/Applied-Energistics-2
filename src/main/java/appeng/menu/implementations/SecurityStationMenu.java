@@ -58,7 +58,7 @@ public class SecurityStationMenu extends MEStorageMenu implements InternalInvent
     @GuiSync(0)
     public int permissionMode = 0;
 
-    public SecurityStationMenu(int id, final Inventory ip, final ITerminalHost monitorable) {
+    public SecurityStationMenu(int id, Inventory ip, ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, true);
 
         this.securityBox = (SecurityStationBlockEntity) monitorable;
@@ -100,7 +100,7 @@ public class SecurityStationMenu extends MEStorageMenu implements InternalInvent
         final ItemStack a = this.configSlot.getItem();
         if (!a.isEmpty() && a.getItem() instanceof IBiometricCard bc) {
 
-            for (final SecurityPermissions sp : bc.getPermissions(a)) {
+            for (SecurityPermissions sp : bc.getPermissions(a)) {
                 this.setPermissionMode(this.getPermissionMode() | 1 << sp.ordinal());
             }
         }
@@ -111,7 +111,7 @@ public class SecurityStationMenu extends MEStorageMenu implements InternalInvent
     }
 
     @Override
-    public void removed(final Player player) {
+    public void removed(Player player) {
         super.removed(player);
 
         if (this.linkableIn.hasItem()) {
@@ -129,8 +129,8 @@ public class SecurityStationMenu extends MEStorageMenu implements InternalInvent
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removedStack, ItemStack newStack) {
         if (!this.linkableOut.hasItem() && this.linkableIn.hasItem()) {
             var term = this.linkableIn.getItem().copy();
 
@@ -149,7 +149,7 @@ public class SecurityStationMenu extends MEStorageMenu implements InternalInvent
         return this.permissionMode;
     }
 
-    private void setPermissionMode(final int permissionMode) {
+    private void setPermissionMode(int permissionMode) {
         this.permissionMode = permissionMode;
     }
 

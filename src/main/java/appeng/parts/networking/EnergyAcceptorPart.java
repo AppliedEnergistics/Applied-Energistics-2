@@ -52,7 +52,7 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(2, 2, 14, 14, 14, 16);
         bch.addBox(4, 4, 12, 12, 12, 14);
     }
@@ -68,12 +68,12 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     @Override
-    public final double getExternalPowerDemand(final PowerUnits externalUnit, final double maxPowerRequired) {
+    public final double getExternalPowerDemand(PowerUnits externalUnit, double maxPowerRequired) {
         return PowerUnits.AE.convertTo(externalUnit,
                 Math.max(0.0, this.getFunnelPowerDemand(externalUnit.convertTo(PowerUnits.AE, maxPowerRequired))));
     }
 
-    protected double getFunnelPowerDemand(final double maxRequired) {
+    protected double getFunnelPowerDemand(double maxRequired) {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             return grid.getEnergyService().getEnergyDemand(maxRequired);
@@ -83,11 +83,11 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     @Override
-    public final double injectExternalPower(final PowerUnits input, final double amt, Actionable mode) {
+    public final double injectExternalPower(PowerUnits input, double amt, Actionable mode) {
         return PowerUnits.AE.convertTo(input, this.funnelPowerIntoStorage(input.convertTo(PowerUnits.AE, amt), mode));
     }
 
-    protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
+    protected double funnelPowerIntoStorage(double power, Actionable mode) {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             return grid.getEnergyService().injectPower(power, mode);
@@ -97,7 +97,7 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     @Override
-    public final double injectAEPower(double amt, final Actionable mode) {
+    public final double injectAEPower(double amt, Actionable mode) {
         return amt;
     }
 
@@ -122,7 +122,7 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     }
 
     @Override
-    public final double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier multiplier) {
+    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier multiplier) {
         return 0;
     }
 }

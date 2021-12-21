@@ -61,7 +61,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
     private final Multimap<Short, P2PTunnelPart> outputs = LinkedHashMultimap.create();
     private final Random frequencyGenerator;
 
-    public P2PService(final IGrid g) {
+    public P2PService(IGrid g) {
         this.myGrid = g;
         this.frequencyGenerator = new Random(g.hashCode());
     }
@@ -76,7 +76,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
     }
 
     @Override
-    public void removeNode(final IGridNode node) {
+    public void removeNode(IGridNode node) {
         if (node.getOwner() instanceof P2PTunnelPart<?>tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
@@ -95,7 +95,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(final IGridNode node) {
+    public void addNode(IGridNode node) {
         if (node.getOwner() instanceof P2PTunnelPart<?>tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;
@@ -113,8 +113,8 @@ public class P2PService implements IGridService, IGridServiceProvider {
         }
     }
 
-    private void updateTunnel(final short freq, final boolean updateOutputs, final boolean configChange) {
-        for (final P2PTunnelPart p : this.outputs.get(freq)) {
+    private void updateTunnel(short freq, boolean updateOutputs, boolean configChange) {
+        for (P2PTunnelPart p : this.outputs.get(freq)) {
             if (configChange) {
                 p.onTunnelConfigChange();
             }
@@ -130,7 +130,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
         }
     }
 
-    public void updateFreq(final P2PTunnelPart t, final short newFrequency) {
+    public void updateFreq(P2PTunnelPart t, short newFrequency) {
         if (this.outputs.containsValue(t)) {
             this.outputs.remove(t.getFrequency(), t);
         }
@@ -168,7 +168,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
         return newFrequency;
     }
 
-    public TunnelCollection<P2PTunnelPart> getOutputs(final short freq, final Class<? extends P2PTunnelPart> c) {
+    public TunnelCollection<P2PTunnelPart> getOutputs(short freq, Class<? extends P2PTunnelPart> c) {
         final P2PTunnelPart in = this.inputs.get(freq);
 
         if (in == null) {
@@ -184,7 +184,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
         return out;
     }
 
-    public P2PTunnelPart getInput(final short freq) {
+    public P2PTunnelPart getInput(short freq) {
         return this.inputs.get(freq);
     }
 }

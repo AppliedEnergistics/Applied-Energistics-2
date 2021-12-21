@@ -51,19 +51,19 @@ public enum Commands {
     public boolean test;
     public final String literal;
 
-    Commands(final int level, final ISubCommand w) {
+    Commands(int level, ISubCommand w) {
         this(level, null, w, false);
     }
 
-    Commands(final int level, String literal, final ISubCommand w) {
+    Commands(int level, String literal, ISubCommand w) {
         this(level, literal, w, false);
     }
 
-    Commands(final int level, final ISubCommand w, boolean test) {
+    Commands(int level, ISubCommand w, boolean test) {
         this(level, null, w, test);
     }
 
-    Commands(final int level, String literal, final ISubCommand w, boolean test) {
+    Commands(int level, String literal, ISubCommand w, boolean test) {
         this.level = level;
         this.command = w;
         this.test = test;

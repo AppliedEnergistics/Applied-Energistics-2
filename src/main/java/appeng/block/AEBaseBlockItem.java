@@ -45,26 +45,26 @@ public class AEBaseBlockItem extends BlockItem {
 
     private final AEBaseBlock blockType;
 
-    public AEBaseBlockItem(final Block id, Item.Properties props) {
+    public AEBaseBlockItem(Block id, Item.Properties props) {
         super(id, props);
         this.blockType = (AEBaseBlock) id;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public final void appendHoverText(final ItemStack itemStack, final Level level, final List<Component> toolTip,
-            final TooltipFlag advancedTooltips) {
+    public final void appendHoverText(ItemStack itemStack, Level level, List<Component> toolTip,
+            TooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, level, toolTip, advancedTooltips);
     }
 
     @Environment(EnvType.CLIENT)
-    public void addCheckedInformation(final ItemStack itemStack, final Level level, final List<Component> toolTip,
-            final TooltipFlag advancedTooltips) {
+    public void addCheckedInformation(ItemStack itemStack, Level level, List<Component> toolTip,
+            TooltipFlag advancedTooltips) {
         this.blockType.appendHoverText(itemStack, level, toolTip, advancedTooltips);
     }
 
     @Override
-    public String getDescriptionId(final ItemStack is) {
+    public String getDescriptionId(ItemStack is) {
         return this.blockType.getDescriptionId();
     }
 

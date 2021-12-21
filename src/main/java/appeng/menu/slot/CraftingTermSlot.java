@@ -61,9 +61,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final MEStorage storage;
     private final IMenuCraftingPacket menu;
 
-    public CraftingTermSlot(final Player player, final IActionSource mySrc, final IEnergySource energySrc,
-            final MEStorage storage, final InternalInventory cMatrix, final InternalInventory secondMatrix,
-            final IMenuCraftingPacket ccp) {
+    public CraftingTermSlot(Player player, IActionSource mySrc, IEnergySource energySrc,
+            MEStorage storage, InternalInventory cMatrix, InternalInventory secondMatrix,
+            IMenuCraftingPacket ccp) {
         super(player, cMatrix);
         this.energySrc = energySrc;
         this.storage = storage;
@@ -74,15 +74,15 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     }
 
     @Override
-    public boolean mayPickup(final Player player) {
+    public boolean mayPickup(Player player) {
         return false;
     }
 
     @Override
-    public void onTake(final Player p, final ItemStack is) {
+    public void onTake(Player p, ItemStack is) {
     }
 
-    public void doClick(final InventoryAction action, final Player who) {
+    public void doClick(InventoryAction action, Player who) {
         if (this.getItem().isEmpty()) {
             return;
         }
@@ -168,7 +168,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return super.getRemainingItems(ic, level);
     }
 
-    private ItemStack craftItem(final Player p, ItemStack request, MEStorage inv,
+    private ItemStack craftItem(Player p, ItemStack request, MEStorage inv,
             KeyCounter all) {
         // update crafting matrix...
         var is = this.getItem();
@@ -240,17 +240,17 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         return ItemStack.EMPTY;
     }
 
-    private boolean preCraft(final Player p, final MEStorage inv, final ItemStack[] set,
-            final ItemStack result) {
+    private boolean preCraft(Player p, MEStorage inv, ItemStack[] set,
+            ItemStack result) {
         return true;
     }
 
-    private void makeItem(final Player p, final ItemStack is) {
+    private void makeItem(Player p, ItemStack is) {
         super.onTake(p, is);
     }
 
-    private void postCraft(final Player p, final MEStorage inv, final ItemStack[] set,
-            final ItemStack result) {
+    private void postCraft(Player p, MEStorage inv, ItemStack[] set,
+            ItemStack result) {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...

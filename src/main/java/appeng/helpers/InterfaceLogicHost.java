@@ -60,7 +60,7 @@ public interface InterfaceLogicHost extends IConfigurableObject, IUpgradeableObj
     }
 
     @Override
-    default void setPriority(final int newValue) {
+    default void setPriority(int newValue) {
         getInterfaceLogic().setPriority(newValue);
     }
 

@@ -50,7 +50,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         super(entityType, level);
     }
 
-    public ChargedQuartzEntity(final Level level, final double x, final double y, final double z, final ItemStack is) {
+    public ChargedQuartzEntity(Level level, double x, double y, double z, ItemStack is) {
         super(AEEntities.CHARGED_QUARTZ, level, x, y, z, is);
     }
 
@@ -99,7 +99,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
             ItemEntity redstone = null;
             ItemEntity netherQuartz = null;
 
-            for (final Entity e : l) {
+            for (Entity e : l) {
                 if (e instanceof ItemEntity && !e.isRemoved()) {
                     final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {

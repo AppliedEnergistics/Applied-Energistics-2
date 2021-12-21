@@ -29,7 +29,7 @@ public class TunnelIterator<T extends P2PTunnelPart> implements Iterator<T> {
     private final Class targetType;
     private T Next;
 
-    public TunnelIterator(final Collection<T> tunnelSources, final Class clz) {
+    public TunnelIterator(Collection<T> tunnelSources, Class clz) {
         this.wrapped = tunnelSources.iterator();
         this.targetType = clz;
         this.findNext();

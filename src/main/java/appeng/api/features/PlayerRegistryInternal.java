@@ -73,7 +73,7 @@ final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry 
 
     @Nullable
     @Override
-    public UUID getProfileId(final int playerId) {
+    public UUID getProfileId(int playerId) {
         return this.mapping.inverse().get(playerId);
     }
 

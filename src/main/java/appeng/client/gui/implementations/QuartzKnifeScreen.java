@@ -49,7 +49,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeMenu> {
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
         super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.name.render(poseStack, mouseX, mouseY, partialTicks);

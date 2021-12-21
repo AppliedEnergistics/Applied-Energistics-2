@@ -95,7 +95,7 @@ public class AEBaseBlockEntity extends BlockEntity
         super(blockEntityType, pos, blockState);
     }
 
-    public static void registerBlockEntityItem(BlockEntityType<?> type, final Item wat) {
+    public static void registerBlockEntityItem(BlockEntityType<?> type, Item wat) {
         REPRESENTATIVE_ITEMS.put(type, wat);
     }
 
@@ -148,7 +148,7 @@ public class AEBaseBlockEntity extends BlockEntity
                 this.forward = Direction.valueOf(data.getString("forward"));
                 this.up = Direction.valueOf(data.getString("up"));
             }
-        } catch (final IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException ignored) {
         }
     }
 
@@ -194,7 +194,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
         try {
             output = this.readFromStream(stream);
-        } catch (final Throwable t) {
+        } catch (Throwable t) {
             AELog.warn(t);
         }
 
@@ -270,7 +270,7 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(Direction inForward, Direction inUp) {
         this.forward = inForward;
         this.up = inUp;
         this.markForUpdate();
@@ -332,11 +332,11 @@ public class AEBaseBlockEntity extends BlockEntity
      * @param drops drops of block entity
      */
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
 
     }
 
-    public void getNoDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getNoDrops(Level level, BlockPos pos, List<ItemStack> drops) {
 
     }
 
@@ -387,13 +387,13 @@ public class AEBaseBlockEntity extends BlockEntity
         }
     }
 
-    private Object setChangedAtEndOfTick(final Level level) {
+    private Object setChangedAtEndOfTick(Level level) {
         this.setChanged();
         this.setChangedQueued = false;
         return null;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.customName = name;
     }
 

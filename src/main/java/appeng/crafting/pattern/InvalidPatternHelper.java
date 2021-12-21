@@ -36,7 +36,7 @@ class InvalidPatternHelper {
     private final boolean isCrafting;
     private final boolean canSubstitute;
 
-    public InvalidPatternHelper(final ItemStack is) {
+    public InvalidPatternHelper(ItemStack is) {
         var encodedValue = is.getTag();
 
         if (encodedValue == null) {

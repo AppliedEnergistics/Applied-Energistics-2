@@ -68,7 +68,7 @@ public class SpatialAnchorMenu extends AEBaseMenu {
     @GuiSync(21)
     public int allChunks;
 
-    public SpatialAnchorMenu(int id, final Inventory ip, final SpatialAnchorBlockEntity spatialAnchor) {
+    public SpatialAnchorMenu(int id, Inventory ip, SpatialAnchorBlockEntity spatialAnchor) {
         super(TYPE, id, ip, spatialAnchor);
     }
 
@@ -118,7 +118,7 @@ public class SpatialAnchorMenu extends AEBaseMenu {
         return this.overlayMode;
     }
 
-    public void setOverlayMode(final YesNo mode) {
+    public void setOverlayMode(YesNo mode) {
         this.overlayMode = mode;
     }
 }

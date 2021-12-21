@@ -40,7 +40,7 @@ public class ItemComparisonHelper {
      *
      * @return true, if both are equal.
      */
-    public boolean isEqualItemType(@Nonnull final ItemStack that, @Nonnull final ItemStack other) {
+    public boolean isEqualItemType(@Nonnull ItemStack that, @Nonnull ItemStack other) {
         return !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem();
     }
 

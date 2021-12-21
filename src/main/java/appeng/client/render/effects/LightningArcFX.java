@@ -37,8 +37,8 @@ public class LightningArcFX extends LightningFX {
     private final double ry;
     private final double rz;
 
-    public LightningArcFX(final ClientLevel level, final double x, final double y, final double z, final double ex,
-            final double ey, final double ez, final double r, final double g, final double b) {
+    public LightningArcFX(ClientLevel level, double x, double y, double z, double ex,
+            double ey, double ez, double r, double g, double b) {
         super(level, x, y, z, r, g, b, 6);
 
         this.rx = ex - x;

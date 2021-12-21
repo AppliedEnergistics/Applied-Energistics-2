@@ -34,7 +34,7 @@ public class AppEngCellInventory extends BaseInternalInventory {
      */
     private final ItemStack[] handlerStackForSlot;
 
-    public AppEngCellInventory(final InternalInventoryHost host, final int slots) {
+    public AppEngCellInventory(InternalInventoryHost host, int slots) {
         this.inv = new AppEngInternalInventory(host, slots, 1);
         this.handlerForSlot = new StorageCell[slots];
         this.handlerStackForSlot = new ItemStack[slots];

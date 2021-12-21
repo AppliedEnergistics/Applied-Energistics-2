@@ -60,7 +60,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
 
         var flags = this.calculateClientFlags();
@@ -86,7 +86,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         final boolean eh = super.readFromStream(data);
 
         final int old = this.getClientFlags();
@@ -109,7 +109,7 @@ public abstract class BasicStatePart extends AEBasePart implements IPowerChannel
         return this.clientFlags;
     }
 
-    private void setClientFlags(final int clientFlags) {
+    private void setClientFlags(int clientFlags) {
         this.clientFlags = clientFlags;
     }
 

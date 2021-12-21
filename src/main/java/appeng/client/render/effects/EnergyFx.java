@@ -38,8 +38,8 @@ public class EnergyFx extends TextureSheetParticle {
     private final int startBlkY;
     private final int startBlkZ;
 
-    public EnergyFx(final ClientLevel level, final double par2, final double par4, final double par6,
-            final SpriteSet sprite) {
+    public EnergyFx(ClientLevel level, double par2, double par4, double par6,
+            SpriteSet sprite) {
         super(level, par2, par4, par6);
         this.gravity = 0;
         this.bCol = 1;

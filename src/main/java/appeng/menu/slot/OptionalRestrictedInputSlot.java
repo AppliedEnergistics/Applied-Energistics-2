@@ -27,9 +27,9 @@ public class OptionalRestrictedInputSlot extends RestrictedInputSlot {
     private final int groupNum;
     private final IOptionalSlotHost host;
 
-    public OptionalRestrictedInputSlot(final PlacableItemType valid, final InternalInventory inv,
-            final IOptionalSlotHost host, final int invSlot, final int grpNum,
-            final Inventory invPlayer) {
+    public OptionalRestrictedInputSlot(PlacableItemType valid, InternalInventory inv,
+            IOptionalSlotHost host, int invSlot, int grpNum,
+            Inventory invPlayer) {
         super(valid, inv, invSlot);
         this.groupNum = grpNum;
         this.host = host;

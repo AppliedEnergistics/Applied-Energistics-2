@@ -19,7 +19,7 @@ public final class CraftingRemainders {
      * Gets the container item for the given item or EMPTY. A container item is what remains when the item is used for
      * crafting, i.E. the empty bucket for a bucket of water.
      */
-    public static ItemStack getRemainder(final ItemStack stackInSlot) {
+    public static ItemStack getRemainder(ItemStack stackInSlot) {
         if (stackInSlot == null) {
             return ItemStack.EMPTY;
         }

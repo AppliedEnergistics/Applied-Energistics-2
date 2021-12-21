@@ -38,7 +38,7 @@ public class SwitchGuisPacket extends BasePacket {
     @Nullable
     private final MenuType<?> newGui;
 
-    public SwitchGuisPacket(final FriendlyByteBuf stream) {
+    public SwitchGuisPacket(FriendlyByteBuf stream) {
         if (stream.readBoolean()) {
             this.newGui = Registry.MENU.get(stream.readResourceLocation());
         } else {

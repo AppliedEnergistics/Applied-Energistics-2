@@ -106,7 +106,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random rand) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, Random rand) {
         this.cb(level, pos).animateTick(level, pos, rand);
     }
 
@@ -116,14 +116,14 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public int getSignal(final BlockState state, final BlockGetter level, final BlockPos pos, final Direction side) {
+    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
         return this.cb(level, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
 
     @Override
-    public boolean isSignalSource(final BlockState state) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 
@@ -133,8 +133,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public int getDirectSignal(final BlockState state, final BlockGetter level, final BlockPos pos,
-            final Direction side) {
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos,
+            Direction side) {
         return this.cb(level, pos).isProvidingStrongPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
@@ -204,7 +204,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         }
     }
 
-    private ICableBusContainer cb(final BlockGetter level, final BlockPos pos) {
+    private ICableBusContainer cb(BlockGetter level, BlockPos pos) {
         final BlockEntity te = level.getBlockEntity(pos);
         ICableBusContainer out = null;
 
@@ -216,7 +216,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Nullable
-    private IFacadeContainer fc(final BlockGetter level, final BlockPos pos) {
+    private IFacadeContainer fc(BlockGetter level, BlockPos pos) {
         final BlockEntity te = level.getBlockEntity(pos);
         IFacadeContainer out = null;
 
@@ -228,9 +228,9 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         // Transform from world into block space
         Vec3 hitVec = hit.getLocation();
         Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
@@ -239,11 +239,11 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                 : InteractionResult.PASS;
     }
 
-    public boolean recolorBlock(final BlockGetter level, final BlockPos pos, final Direction side,
-            final DyeColor color, final Player who) {
+    public boolean recolorBlock(BlockGetter level, BlockPos pos, Direction side,
+            DyeColor color, Player who) {
         try {
             return this.cb(level, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
-        } catch (final Throwable ignored) {
+        } catch (Throwable ignored) {
         }
         return false;
     }
@@ -327,8 +327,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
     @Environment(EnvType.CLIENT)
     @Override
-    public boolean addHitEffects(final BlockState state, final Level level, final HitResult target,
-            final ParticleEngine effectRenderer) {
+    public boolean addHitEffects(BlockState state, Level level, HitResult target,
+            ParticleEngine effectRenderer) {
 
         // Half the particle rate. Since we're spawning concentrated on a specific spot,
         // our particle effect otherwise looks too strong

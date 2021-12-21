@@ -55,7 +55,7 @@ public class PriorityMenu extends AEBaseMenu implements ISubMenu {
         registerClientAction(ACTION_SET_PRIORITY, Integer.class, this::setPriority);
     }
 
-    public void setPriority(final int newValue) {
+    public void setPriority(int newValue) {
         if (newValue != priorityValue) {
             if (isClient()) {
                 // If for whatever reason the client enters the value first, do not update based

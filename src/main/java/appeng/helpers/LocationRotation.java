@@ -30,7 +30,7 @@ public class LocationRotation implements IOrientable {
     private final int y;
     private final int z;
 
-    public LocationRotation(final BlockGetter level, final int x, final int y, final int z) {
+    public LocationRotation(BlockGetter level, int x, int y, int z) {
         this.level = level;
         this.x = x;
         this.y = y;
@@ -57,7 +57,7 @@ public class LocationRotation implements IOrientable {
     }
 
     @Override
-    public void setOrientation(final Direction forward, final Direction up) {
+    public void setOrientation(Direction forward, Direction up) {
 
     }
 }

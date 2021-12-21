@@ -150,7 +150,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected void PowerEvent(final PowerEventType x) {
+    protected void PowerEvent(PowerEventType x) {
         if (x == PowerEventType.REQUEST_POWER) {
             this.getMainNode().ifPresent(
                     grid -> grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER)));
@@ -217,7 +217,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public CellState getCellStatus(final int slot) {
+    public CellState getCellStatus(int slot) {
         if (isClientSide()) {
             return CellState.values()[this.state >> slot * BIT_CELL_STATE_BITS & BIT_CELL_STATE_MASK];
         }
@@ -264,12 +264,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public boolean isCellBlinking(final int slot) {
+    public boolean isCellBlinking(int slot) {
         return false;
     }
 
     @Override
-    protected double extractAEPower(final double amt, final Actionable mode) {
+    protected double extractAEPower(double amt, Actionable mode) {
         double stash = 0.0;
 
         var grid = getMainNode().getGrid();
@@ -309,7 +309,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
 
         this.state = 0;
@@ -333,7 +333,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
 
         final int oldState = this.state;
@@ -347,7 +347,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
@@ -390,8 +390,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.
@@ -459,7 +459,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void setPriority(final int newValue) {
+    public void setPriority(int newValue) {
         this.priority = newValue;
         this.cellHandler = null;
         this.isCached = false; // recalculate the storage cell.
@@ -476,7 +476,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         return this.config;
     }
 
-    public boolean openGui(final Player p) {
+    public boolean openGui(Player p) {
         this.updateHandler();
         if (this.cellHandler != null) {
             var ch = StorageCells.getHandler(this.getCell());
@@ -499,7 +499,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final Player who) {
+    public boolean recolourBlock(Direction side, AEColor newPaintedColor, Player who) {
         if (this.paintedColor == newPaintedColor) {
             return false;
         }
@@ -537,7 +537,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             return super.insert(what, amount, mode, source);
         }
 
-        private boolean securityCheck(final Player player, final SecurityPermissions requiredPermission) {
+        private boolean securityCheck(Player player, SecurityPermissions requiredPermission) {
             return Platform.checkPermissions(player, ChestBlockEntity.this, requiredPermission, false, false);
         }
 

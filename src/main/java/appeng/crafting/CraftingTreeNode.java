@@ -125,7 +125,7 @@ public class CraftingTreeNode {
     /**
      * Return true if adding this pattern as a child would not cause recursion.
      */
-    boolean notRecursive(final IPatternDetails details) {
+    boolean notRecursive(IPatternDetails details) {
         for (var output : details.getOutputs()) {
             if (this.what.matches(output)) {
                 return false;
@@ -154,7 +154,7 @@ public class CraftingTreeNode {
      * @param containerItems  A list where produced container items are written if it's not null.
      * @throws CraftBranchFailure If the request failed.
      */
-    void request(final CraftingSimulationState inv, long requestedAmount,
+    void request(CraftingSimulationState inv, long requestedAmount,
             @Nullable KeyCounter containerItems)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
@@ -226,7 +226,7 @@ public class CraftingTreeNode {
             }
         } else if (this.nodes.size() > 1) {
             // Multiple branches: try as much as possible of one branch before moving to the next one.
-            for (final CraftingTreeProcess pro : this.nodes) {
+            for (CraftingTreeProcess pro : this.nodes) {
                 try {
                     while (pro.possible && totalRequestedItems > 0) {
                         final ChildCraftingSimulationState child = new ChildCraftingSimulationState(inv);
@@ -248,7 +248,7 @@ public class CraftingTreeNode {
                             pro.possible = false; // ;P
                         }
                     }
-                } catch (final CraftBranchFailure fail) {
+                } catch (CraftBranchFailure fail) {
                     // TODO: why try again after a failure? just in case we receive the right inputs by chance?
                     pro.possible = true;
                 }
@@ -287,7 +287,7 @@ public class CraftingTreeNode {
     long getNodeCount() {
         long tot = 1;
         if (this.nodes != null) {
-            for (final CraftingTreeProcess pro : this.nodes) {
+            for (CraftingTreeProcess pro : this.nodes) {
                 tot += pro.getNodeCount();
             }
         }

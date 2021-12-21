@@ -26,7 +26,7 @@ public class TunnelConnection {
     private final MEP2PTunnelPart tunnel;
     private final IGridConnection c;
 
-    public TunnelConnection(final MEP2PTunnelPart t, final IGridConnection con) {
+    public TunnelConnection(MEP2PTunnelPart t, IGridConnection con) {
         this.tunnel = t;
         this.c = con;
     }

@@ -45,7 +45,7 @@ public abstract class IconButton extends Button implements ITooltip {
         super(0, 0, 16, 16, TextComponent.EMPTY, onPress);
     }
 
-    public void setVisibility(final boolean vis) {
+    public void setVisibility(boolean vis) {
         this.visible = vis;
         this.active = vis;
     }
@@ -58,7 +58,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, final int mouseX, final int mouseY, float partial) {
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
 
         if (this.visible) {
             final Icon icon = this.getIcon();
@@ -125,7 +125,7 @@ public abstract class IconButton extends Button implements ITooltip {
         return this.halfSize;
     }
 
-    public void setHalfSize(final boolean halfSize) {
+    public void setHalfSize(boolean halfSize) {
         this.halfSize = halfSize;
     }
 

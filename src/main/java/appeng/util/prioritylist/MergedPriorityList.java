@@ -28,7 +28,7 @@ public final class MergedPriorityList implements IPartitionList {
     private final Collection<IPartitionList> positive = new ArrayList<>();
     private final Collection<IPartitionList> negative = new ArrayList<>();
 
-    public void addNewList(final IPartitionList list, final boolean isWhitelist) {
+    public void addNewList(IPartitionList list, boolean isWhitelist) {
         if (isWhitelist) {
             this.positive.add(list);
         } else {
@@ -37,15 +37,15 @@ public final class MergedPriorityList implements IPartitionList {
     }
 
     @Override
-    public boolean isListed(final AEKey input) {
-        for (final IPartitionList l : this.negative) {
+    public boolean isListed(AEKey input) {
+        for (IPartitionList l : this.negative) {
             if (l.isListed(input)) {
                 return false;
             }
         }
 
         if (!this.positive.isEmpty()) {
-            for (final IPartitionList l : this.positive) {
+            for (IPartitionList l : this.positive) {
                 if (l.isListed(input)) {
                     return true;
                 }

@@ -86,7 +86,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void setName(final String name) {
+    public void setName(String name) {
         super.setName(name);
         if (this.cluster != null) {
             this.cluster.updateName();
@@ -119,7 +119,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         }
     }
 
-    public void updateStatus(final CraftingCPUCluster c) {
+    public void updateStatus(CraftingCPUCluster c) {
         if (this.cluster != null && this.cluster != c) {
             this.cluster.breakCluster();
         }
@@ -128,7 +128,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         this.updateSubType(true);
     }
 
-    public void updateSubType(final boolean updateFormed) {
+    public void updateSubType(boolean updateFormed) {
         if (this.level == null || this.notLoaded() || this.isRemoved()) {
             return;
         }
@@ -181,7 +181,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.setCoreBlock(data.getBoolean("core"));
         if (this.isCoreBlock()) {
@@ -194,7 +194,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void disconnect(final boolean update) {
+    public void disconnect(boolean update) {
         if (this.cluster != null) {
             this.cluster.destroy();
             if (update) {
@@ -302,7 +302,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         return this.isCoreBlock;
     }
 
-    public void setCoreBlock(final boolean isCoreBlock) {
+    public void setCoreBlock(boolean isCoreBlock) {
         this.isCoreBlock = isCoreBlock;
     }
 
@@ -310,7 +310,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         return this.previousState;
     }
 
-    public void setPreviousState(final CompoundTag previousState) {
+    public void setPreviousState(CompoundTag previousState) {
         this.previousState = previousState;
     }
 

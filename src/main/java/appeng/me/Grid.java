@@ -68,7 +68,7 @@ public class Grid implements IGrid {
         return grid;
     }
 
-    private Grid(final GridNode center) {
+    private Grid(GridNode center) {
         this.pivot = Objects.requireNonNull(center);
         this.services = GridServicesInternal.createServices(this);
     }
@@ -90,7 +90,7 @@ public class Grid implements IGrid {
         return this.machines.size();
     }
 
-    void remove(final GridNode gridNode) {
+    void remove(GridNode gridNode) {
         for (var c : this.services.values()) {
             c.removeNode(gridNode);
         }
@@ -112,7 +112,7 @@ public class Grid implements IGrid {
         }
     }
 
-    void add(final GridNode gridNode) {
+    void add(GridNode gridNode) {
         // handle loading grid storages.
         if (gridNode.getGridStorage() != null) {
             final GridStorage gs = gridNode.getGridStorage();
@@ -162,7 +162,7 @@ public class Grid implements IGrid {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <C extends IGridService> C getService(final Class<C> iface) {
+    public <C extends IGridService> C getService(Class<C> iface) {
         var service = this.services.get(iface);
         if (service == null) {
             throw new IllegalArgumentException("Service " + iface + " is not registered");
@@ -171,7 +171,7 @@ public class Grid implements IGrid {
     }
 
     @Override
-    public <T extends GridEvent> T postEvent(final T ev) {
+    public <T extends GridEvent> T postEvent(T ev) {
         GridEventBus.postEvent(this, ev);
         return ev;
     }
@@ -227,7 +227,7 @@ public class Grid implements IGrid {
         return this.pivot;
     }
 
-    void setPivot(final GridNode pivot) {
+    void setPivot(GridNode pivot) {
         this.pivot = pivot;
     }
 
@@ -269,7 +269,7 @@ public class Grid implements IGrid {
         }
     }
 
-    public void setImportantFlag(final int i, final boolean publicHasPower) {
+    public void setImportantFlag(int i, boolean publicHasPower) {
         final int flag = 1 << i;
         this.priority = this.priority & ~flag | (publicHasPower ? flag : 0);
     }

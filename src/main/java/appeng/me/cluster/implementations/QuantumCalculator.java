@@ -31,12 +31,12 @@ import appeng.me.cluster.MBCalculator;
 
 public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, QuantumCluster> {
 
-    public QuantumCalculator(final QuantumBridgeBlockEntity t) {
+    public QuantumCalculator(QuantumBridgeBlockEntity t) {
         super(t);
     }
 
     @Override
-    public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
+    public boolean checkMultiblockScale(BlockPos min, BlockPos max) {
         if ((max.getX() - min.getX() + 1) * (max.getY() - min.getY() + 1) * (max.getZ() - min.getZ() + 1) == 9) {
             final int ones = (max.getX() - min.getX() == 0 ? 1 : 0) + (max.getY() - min.getY() == 0 ? 1 : 0)
                     + (max.getZ() - min.getZ() == 0 ? 1 : 0);
@@ -50,12 +50,12 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
     }
 
     @Override
-    public QuantumCluster createCluster(final ServerLevel level, final BlockPos min, final BlockPos max) {
+    public QuantumCluster createCluster(ServerLevel level, BlockPos min, BlockPos max) {
         return new QuantumCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final ServerLevel level, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(ServerLevel level, BlockPos min, BlockPos max) {
 
         byte num = 0;
 
@@ -79,8 +79,8 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
     }
 
     @Override
-    public void updateBlockEntities(final QuantumCluster c, final ServerLevel level, final BlockPos min,
-            final BlockPos max) {
+    public void updateBlockEntities(QuantumCluster c, ServerLevel level, BlockPos min,
+            BlockPos max) {
         byte num = 0;
         byte ringNum = 0;
 
@@ -107,11 +107,11 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, Qu
     }
 
     @Override
-    public boolean isValidBlockEntity(final BlockEntity te) {
+    public boolean isValidBlockEntity(BlockEntity te) {
         return te instanceof QuantumBridgeBlockEntity;
     }
 
-    private boolean isBlockAtLocation(final BlockGetter level, final BlockPos pos, final BlockDefinition<?> def) {
+    private boolean isBlockAtLocation(BlockGetter level, BlockPos pos, BlockDefinition<?> def) {
         return def.block() == level.getBlockState(pos).getBlock();
     }
 }

@@ -35,12 +35,12 @@ public class EnergyWatcher implements IEnergyWatcher {
     private final IEnergyWatcherNode watcherHost;
     private final Set<EnergyThreshold> myInterests = new HashSet<>();
 
-    public EnergyWatcher(final EnergyService service, final IEnergyWatcherNode host) {
+    public EnergyWatcher(EnergyService service, IEnergyWatcherNode host) {
         this.service = service;
         this.watcherHost = host;
     }
 
-    public void post(final EnergyService service) {
+    public void post(EnergyService service) {
         this.watcherHost.onThresholdPass(service);
     }
 
@@ -49,7 +49,7 @@ public class EnergyWatcher implements IEnergyWatcher {
     }
 
     @Override
-    public boolean add(final double amount) {
+    public boolean add(double amount) {
         final EnergyThreshold eh = new EnergyThreshold(amount, this);
 
         if (this.myInterests.contains(eh)) {
@@ -60,7 +60,7 @@ public class EnergyWatcher implements IEnergyWatcher {
     }
 
     @Override
-    public boolean remove(final double amount) {
+    public boolean remove(double amount) {
         final EnergyThreshold eh = new EnergyThreshold(amount, this);
 
         return this.myInterests.remove(eh) && this.service.unregisterEnergyInterest(eh);

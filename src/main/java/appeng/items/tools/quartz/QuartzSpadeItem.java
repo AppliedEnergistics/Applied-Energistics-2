@@ -22,7 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShovelItem;
 
 public class QuartzSpadeItem extends ShovelItem {
-    public QuartzSpadeItem(Item.Properties props, final QuartzToolType type) {
+    public QuartzSpadeItem(Item.Properties props, QuartzToolType type) {
         super(type.getToolTier(), 1.5F, -3.0F, props);
     }
 }

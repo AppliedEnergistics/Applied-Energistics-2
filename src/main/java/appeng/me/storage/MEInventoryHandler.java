@@ -54,7 +54,7 @@ public class MEInventoryHandler extends DelegatingMEInventory {
         return this.partitionListMode;
     }
 
-    public void setWhitelist(final IncludeExclude myWhitelist) {
+    public void setWhitelist(IncludeExclude myWhitelist) {
         this.partitionListMode = myWhitelist;
     }
 
@@ -62,7 +62,7 @@ public class MEInventoryHandler extends DelegatingMEInventory {
         return this.partitionList;
     }
 
-    public void setPartitionList(final IPartitionList myPartitionList) {
+    public void setPartitionList(IPartitionList myPartitionList) {
         this.partitionList = myPartitionList;
     }
 

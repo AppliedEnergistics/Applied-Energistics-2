@@ -63,7 +63,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
     private CraftingCPUCluster cpu = null;
     private final Consumer<AEKey> cpuChangeListener = incrementalUpdateHelper::addChange;
 
-    public CraftingCPUMenu(MenuType<?> menuType, int id, final Inventory ip, final Object te) {
+    public CraftingCPUMenu(MenuType<?> menuType, int id, Inventory ip, Object te) {
         super(menuType, id, ip, te);
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 
@@ -84,7 +84,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
         registerClientAction(ACTION_CANCEL_CRAFTING, this::cancelCrafting);
     }
 
-    protected void setCPU(final ICraftingCPU c) {
+    protected void setCPU(ICraftingCPU c) {
         if (c == this.cpu) {
             return;
         }

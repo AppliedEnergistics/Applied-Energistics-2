@@ -32,13 +32,13 @@ public class SwapSlotsPacket extends BasePacket {
     private final int slotA;
     private final int slotB;
 
-    public SwapSlotsPacket(final FriendlyByteBuf stream) {
+    public SwapSlotsPacket(FriendlyByteBuf stream) {
         this.slotA = stream.readInt();
         this.slotB = stream.readInt();
     }
 
     // api
-    public SwapSlotsPacket(final int slotA, final int slotB) {
+    public SwapSlotsPacket(int slotA, int slotB) {
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
@@ -49,7 +49,7 @@ public class SwapSlotsPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         if (player != null && player.containerMenu instanceof AEBaseMenu) {
             ((AEBaseMenu) player.containerMenu).swapSlotContents(this.slotA, this.slotB);
         }

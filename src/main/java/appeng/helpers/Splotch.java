@@ -31,7 +31,7 @@ public class Splotch {
     private final AEColor color;
     private final int pos;
 
-    public Splotch(final AEColor col, final boolean lit, final Direction side, final Vec3 position) {
+    public Splotch(AEColor col, boolean lit, Direction side, Vec3 position) {
         this.color = col;
         this.lumen = lit;
 
@@ -57,7 +57,7 @@ public class Splotch {
         this.side = side;
     }
 
-    public Splotch(final FriendlyByteBuf data) {
+    public Splotch(FriendlyByteBuf data) {
 
         this.pos = data.readByte();
         final int val = data.readByte();
@@ -67,7 +67,7 @@ public class Splotch {
         this.lumen = (val >> 7 & 0x01) > 0;
     }
 
-    public void writeToStream(final FriendlyByteBuf stream) {
+    public void writeToStream(FriendlyByteBuf stream) {
         stream.writeByte(this.pos);
         final int val = this.getSide().ordinal() | this.getColor().ordinal() << 3 | (this.isLumen() ? 0x80 : 0x00);
         stream.writeByte(val);

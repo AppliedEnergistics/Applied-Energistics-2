@@ -171,7 +171,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         });
     }
 
-    private void extractItem(final Player player, int count) {
+    private void extractItem(Player player, int count) {
         if (!(this.getDisplayed() instanceof AEItemKey itemKey)) {
             return;
         }

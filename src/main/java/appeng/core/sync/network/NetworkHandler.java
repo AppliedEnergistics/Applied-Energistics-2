@@ -29,14 +29,14 @@ public interface NetworkHandler {
         return NetworkHandlerHolder.INSTANCE;
     }
 
-    void sendToAll(final BasePacket message);
+    void sendToAll(BasePacket message);
 
-    void sendTo(final BasePacket message, final ServerPlayer player);
+    void sendTo(BasePacket message, ServerPlayer player);
 
-    void sendToAllAround(final BasePacket message, final TargetPoint point);
+    void sendToAllAround(BasePacket message, TargetPoint point);
 
-    void sendToDimension(final BasePacket message, final Level level);
+    void sendToDimension(BasePacket message, Level level);
 
-    void sendToServer(final BasePacket message);
+    void sendToServer(BasePacket message);
 
 }

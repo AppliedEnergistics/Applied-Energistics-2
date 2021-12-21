@@ -37,7 +37,7 @@ public class TabButton extends Button implements ITooltip {
     private Icon icon = null;
     private ItemStack item;
 
-    public TabButton(final Icon ico, final Component message, final ItemRenderer ir,
+    public TabButton(Icon ico, Component message, ItemRenderer ir,
             OnPress onPress) {
         super(0, 0, 22, 22, message, onPress);
 
@@ -52,7 +52,7 @@ public class TabButton extends Button implements ITooltip {
      * @param message mouse over message
      * @param ir      renderer
      */
-    public TabButton(final ItemStack ico, final Component message, final ItemRenderer ir,
+    public TabButton(ItemStack ico, Component message, ItemRenderer ir,
             OnPress onPress) {
         super(0, 0, 22, 22, message, onPress);
         this.item = ico;
@@ -60,7 +60,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, final int x, final int y, float partial) {
+    public void renderButton(PoseStack poseStack, int x, int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
@@ -106,7 +106,7 @@ public class TabButton extends Button implements ITooltip {
         return this.hideEdge;
     }
 
-    public void setHideEdge(final boolean hideEdge) {
+    public void setHideEdge(boolean hideEdge) {
         this.hideEdge = hideEdge;
     }
 }

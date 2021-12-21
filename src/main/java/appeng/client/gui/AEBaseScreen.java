@@ -203,7 +203,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    public void render(PoseStack poseStack, final int mouseX, final int mouseY, final float partialTicks) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         this.updateBeforeRender();
         this.widgets.updateBeforeRender();
 
@@ -344,7 +344,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected final void renderLabels(PoseStack poseStack, final int x, final int y) {
+    protected final void renderLabels(PoseStack poseStack, int x, int y) {
         final int ox = this.leftPos;
         final int oy = this.topPos;
 
@@ -394,14 +394,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected final void renderBg(PoseStack poseStack, final float f, final int x,
-            final int y) {
+    protected final void renderBg(PoseStack poseStack, float f, int x,
+            int y) {
 
         this.drawBG(poseStack, leftPos, topPos, x, y, f);
 
         widgets.drawBackgroundLayer(poseStack, getBlitOffset(), getBounds(true), new Point(x - leftPos, y - topPos));
 
-        for (final Slot slot : this.getInventorySlots()) {
+        for (Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
                 drawOptionalSlotBackground(poseStack, (IOptionalSlot) slot, false);
             }
@@ -437,7 +437,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
+    public boolean mouseClicked(double xCoord, double yCoord, int btn) {
         this.drag_click.clear();
 
         // Forward right-clicks as-if they were left-clicks
@@ -483,7 +483,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         if (slot instanceof FakeSlot && !itemstack.isEmpty()) {
             this.drag_click.add(slot);
             if (this.drag_click.size() > 1) {
-                for (final Slot dr : this.drag_click) {
+                for (Slot dr : this.drag_click) {
                     var p = new InventoryActionPacket(
                             mouseButton == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
                             dr.index, 0);
@@ -498,8 +498,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected void slotClicked(@Nullable Slot slot, final int slotIdx, final int mouseButton,
-            final ClickType clickType) {
+    protected void slotClicked(@Nullable Slot slot, int slotIdx, int mouseButton,
+            ClickType clickType) {
 
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
@@ -562,7 +562,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 // a replica of the weird broken vanilla feature.
 
                 final List<Slot> slots = this.getInventorySlots();
-                for (final Slot inventorySlot : slots) {
+                for (Slot inventorySlot : slots) {
                     if (inventorySlot != null && inventorySlot.mayPickup(getPlayer()) && inventorySlot.hasItem()
                             && isSameInventory(inventorySlot, slot)
                             && AbstractContainerMenu.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
@@ -600,14 +600,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return Objects.requireNonNull(getMinecraft().player);
     }
 
-    protected boolean checkHotbarKeys(final Key input) {
+    protected boolean checkHotbarKeys(Key input) {
         final Slot theSlot = this.getSlotUnderMouse();
 
         if (getMenu().getCarried().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
                 if (getMinecraft().options.keyHotbarSlots[j].matches(input.getValue(), -1)) {
                     final List<Slot> slots = this.getInventorySlots();
-                    for (final Slot s : slots) {
+                    for (Slot s : slots) {
                         if (s.slot == j && s.container == this.menu.getPlayerInventory()
                                 && !s.mayPickup(this.menu.getPlayerInventory().player)) {
                             return false;
@@ -618,7 +618,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                         this.slotClicked(theSlot, theSlot.index, j, ClickType.SWAP);
                         return true;
                     } else {
-                        for (final Slot s : slots) {
+                        for (Slot s : slots) {
                             if (s.slot == j
                                     && s.container == this.menu.getPlayerInventory()) {
                                 NetworkHandler.instance()
@@ -644,7 +644,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return super.isHovering(slot, x, y);
     }
 
-    protected Slot getSlot(final int mouseX, final int mouseY) {
+    protected Slot getSlot(int mouseX, int mouseY) {
         var slots = this.getInventorySlots();
         for (var slot : slots) {
             if (this.isHovering(slot, mouseX, mouseY)) {
@@ -662,13 +662,13 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
     }
 
-    public void drawItem(final int x, final int y, final ItemStack is) {
+    public void drawItem(int x, int y, ItemStack is) {
         this.itemRenderer.blitOffset = 100.0F;
         this.itemRenderer.renderAndDecorateItem(is, x, y);
         this.itemRenderer.blitOffset = 0.0F;
     }
 
-    protected Component getGuiDisplayName(final Component in) {
+    protected Component getGuiDisplayName(Component in) {
         return title.getString().isEmpty() ? in : title;
     }
 
@@ -680,7 +680,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         if (s instanceof AppEngSlot appEngSlot) {
             try {
                 renderAppEngSlot(poseStack, appEngSlot);
-            } catch (final Exception err) {
+            } catch (Exception err) {
                 AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
             }
         } else {
@@ -715,7 +715,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
     }
 
-    public void bindTexture(final String file) {
+    public void bindTexture(String file) {
         final ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
         RenderSystem.setShaderTexture(0, loc);
     }

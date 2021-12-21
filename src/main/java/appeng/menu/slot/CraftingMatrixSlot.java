@@ -28,7 +28,7 @@ public class CraftingMatrixSlot extends AppEngSlot {
     private final AEBaseMenu c;
     private final Container wrappedInventory;
 
-    public CraftingMatrixSlot(final AEBaseMenu c, final InternalInventory inv, final int invSlot) {
+    public CraftingMatrixSlot(AEBaseMenu c, InternalInventory inv, int invSlot) {
         super(inv, invSlot);
         this.c = c;
         this.wrappedInventory = inv.toContainer();
@@ -41,13 +41,13 @@ public class CraftingMatrixSlot extends AppEngSlot {
     }
 
     @Override
-    public void set(final ItemStack par1ItemStack) {
+    public void set(ItemStack par1ItemStack) {
         super.set(par1ItemStack);
         this.c.slotsChanged(this.wrappedInventory);
     }
 
     @Override
-    public ItemStack remove(final int par1) {
+    public ItemStack remove(int par1) {
         final ItemStack is = super.remove(par1);
         this.c.slotsChanged(this.wrappedInventory);
         return is;

@@ -66,7 +66,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     private int clientFlags = 0; // sent as byte.
     private int opacity = -1;
 
-    protected AbstractReportingPart(IPartItem<?> partItem, final boolean requireChannel) {
+    protected AbstractReportingPart(IPartItem<?> partItem, boolean requireChannel) {
         super(partItem);
 
         if (requireChannel) {
@@ -85,7 +85,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public final void getBoxes(final IPartCollisionHelper bch) {
+    public final void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(2, 2, 14, 14, 14, 16);
         bch.addBox(4, 4, 13, 12, 12, 14);
     }
@@ -99,19 +99,19 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.spin = data.getByte("spin");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         data.putByte("spin", this.getSpin());
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         this.clientFlags = this.getSpin() & 3;
 
@@ -135,7 +135,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         super.readFromStream(data);
         final int oldFlags = this.getClientFlags();
         final int oldOpacity = this.opacity;
@@ -156,7 +156,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (InteractionUtil.canWrenchRotate(player.getInventory().getSelected())) {
             if (!isClientSide()) {
                 this.spin = (byte) ((this.spin + 1) % 4);
@@ -179,7 +179,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         }
     }
 
-    private int blockLight(final int emit) {
+    private int blockLight(int emit) {
         if (this.opacity < 0) {
             final BlockEntity te = getHost().getBlockEntity();
             Level level = te.getLevel();

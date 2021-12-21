@@ -43,7 +43,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
 
     public final CraftingUnitType type;
 
-    public AbstractCraftingUnitBlock(BlockBehaviour.Properties props, final CraftingUnitType type) {
+    public AbstractCraftingUnitBlock(BlockBehaviour.Properties props, CraftingUnitType type) {
         super(props);
         this.type = type;
         this.registerDefaultState(defaultBlockState().setValue(FORMED, false).setValue(POWERED, false));
@@ -57,8 +57,8 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    public void neighborChanged(final BlockState state, final Level level, final BlockPos pos, final Block blockIn,
-            final BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn,
+            BlockPos fromPos, boolean isMoving) {
         final CraftingBlockEntity cp = this.getBlockEntity(level, pos);
         if (cp != null) {
             cp.updateMultiBlock(fromPos);

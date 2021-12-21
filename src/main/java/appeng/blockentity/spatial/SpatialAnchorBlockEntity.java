@@ -167,13 +167,13 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         return 0x80000000 | AEColor.TRANSPARENT.mediumVariant;
     }
 
-    public void chunkAdded(final GridChunkAdded changed) {
+    public void chunkAdded(GridChunkAdded changed) {
         if (changed.getLevel() == this.getServerLevel()) {
             this.force(changed.getChunkPos());
         }
     }
 
-    public void chunkRemoved(final GridChunkRemoved changed) {
+    public void chunkRemoved(GridChunkRemoved changed) {
         if (changed.getLevel() == this.getServerLevel()) {
             this.release(changed.getChunkPos(), true);
             // Need to wake up the anchor to potentially perform another cleanup

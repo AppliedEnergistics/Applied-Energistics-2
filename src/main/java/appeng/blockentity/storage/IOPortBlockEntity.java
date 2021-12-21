@@ -118,7 +118,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.manager.readFromNBT(data);
         this.upgrades.readFromNBT(data, "upgrades");
@@ -208,15 +208,15 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         if (this.inputCells == inv) {
             this.updateTask();
         }
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(final Direction facing) {
+    public InternalInventory getExposedInventoryForSide(Direction facing) {
         if (facing == this.getUp() || facing == this.getUp().getOpposite()) {
             return this.inputCellsExt;
         } else {
@@ -225,7 +225,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
+    public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(TickRates.IOPort, !this.hasWork(), false);
     }
 
@@ -345,7 +345,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         return itemsToMove;
     }
 
-    private boolean moveSlot(final int x) {
+    private boolean moveSlot(int x) {
         if (this.outputCells.addItems(this.inputCells.getStackInSlot(x)).isEmpty()) {
             this.inputCells.setItemDirect(x, ItemStack.EMPTY);
             return true;
@@ -361,7 +361,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
      * @param drops drops of block entity
      */
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         super.getDrops(level, pos, drops);
 
         for (var upgrade : upgrades) {

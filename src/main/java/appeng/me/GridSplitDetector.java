@@ -26,12 +26,12 @@ class GridSplitDetector implements IGridVisitor {
     private final IGridNode pivot;
     private boolean pivotFound;
 
-    public GridSplitDetector(final IGridNode pivot) {
+    public GridSplitDetector(IGridNode pivot) {
         this.pivot = pivot;
     }
 
     @Override
-    public boolean visitNode(final IGridNode n) {
+    public boolean visitNode(IGridNode n) {
         if (n == this.pivot) {
             this.setPivotFound(true);
         }
@@ -43,7 +43,7 @@ class GridSplitDetector implements IGridVisitor {
         return this.pivotFound;
     }
 
-    private void setPivotFound(final boolean pivotFound) {
+    private void setPivotFound(boolean pivotFound) {
         this.pivotFound = pivotFound;
     }
 }

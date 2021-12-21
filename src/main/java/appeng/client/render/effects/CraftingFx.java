@@ -43,8 +43,8 @@ public class CraftingFx extends TextureSheetParticle {
     private final float offsetY;
     private final float offsetZ;
 
-    public CraftingFx(final ClientLevel level, final double x, final double y, final double z,
-            final SpriteSet sprite) {
+    public CraftingFx(ClientLevel level, double x, double y, double z,
+            SpriteSet sprite) {
         super(level, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin

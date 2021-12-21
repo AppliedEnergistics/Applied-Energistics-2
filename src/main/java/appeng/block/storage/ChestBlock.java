@@ -71,9 +71,9 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         var be = this.getBlockEntity(level, pos);
         if (be != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {

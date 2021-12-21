@@ -125,17 +125,17 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public FuzzyMode getFuzzyMode(final ItemStack is) {
+    public FuzzyMode getFuzzyMode(ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
         try {
             return FuzzyMode.valueOf(fz);
-        } catch (final Throwable t) {
+        } catch (Throwable t) {
             return FuzzyMode.IGNORE_ALL;
         }
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 }

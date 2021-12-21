@@ -79,7 +79,7 @@ public class CombinedInternalInventory extends BaseInternalInventory {
 
     @Override
     @Nonnull
-    public ItemStack getStackInSlot(final int slot) {
+    public ItemStack getStackInSlot(int slot) {
         int index = this.getIndexForSlot(slot);
         var handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
@@ -88,7 +88,7 @@ public class CombinedInternalInventory extends BaseInternalInventory {
 
     @Override
     @Nonnull
-    public ItemStack insertItem(final int slot, @Nonnull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         int index = this.getIndexForSlot(slot);
         var handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);

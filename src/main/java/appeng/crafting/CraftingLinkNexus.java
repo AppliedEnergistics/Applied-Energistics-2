@@ -35,11 +35,11 @@ public class CraftingLinkNexus {
     @Nullable
     private CraftingLink cpu;
 
-    public CraftingLinkNexus(final String craftID) {
+    public CraftingLinkNexus(String craftID) {
         this.craftID = craftID;
     }
 
-    public boolean isDead(final IGrid g, final CraftingService craftingService) {
+    public boolean isDead(IGrid g, CraftingService craftingService) {
         if (this.canceled || this.done) {
             return true;
         }
@@ -80,7 +80,7 @@ public class CraftingLinkNexus {
         }
     }
 
-    void remove(final CraftingLink craftingLink) {
+    void remove(CraftingLink craftingLink) {
         if (this.getRequest() == craftingLink) {
             this.setRequest(null);
         } else if (this.cpu == craftingLink) {
@@ -88,7 +88,7 @@ public class CraftingLinkNexus {
         }
     }
 
-    void add(final CraftingLink craftingLink) {
+    void add(CraftingLink craftingLink) {
         if (craftingLink.getCpu() != null) {
             this.cpu = craftingLink;
         } else if (craftingLink.getRequester() != null) {
@@ -119,7 +119,7 @@ public class CraftingLinkNexus {
         }
     }
 
-    public boolean isRequester(final ICraftingRequester requester) {
+    public boolean isRequester(ICraftingRequester requester) {
         return req != null && req.getRequester() == requester;
     }
 
@@ -137,7 +137,7 @@ public class CraftingLinkNexus {
         return this.req;
     }
 
-    public void setRequest(final CraftingLink req) {
+    public void setRequest(CraftingLink req) {
         this.req = req;
     }
 }

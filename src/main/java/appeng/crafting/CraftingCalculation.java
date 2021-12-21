@@ -77,7 +77,7 @@ public class CraftingCalculation {
 
             try {
                 return computeCraft(false);
-            } catch (final CraftBranchFailure e) {
+            } catch (CraftBranchFailure e) {
                 return computeCraft(true);
             }
         } catch (Exception ex) {
@@ -102,7 +102,7 @@ public class CraftingCalculation {
         craftingInventory.addBytes(this.tree.getNodeCount() * 8);
 
         // TODO: log tree?
-        // for (final String s : this.opsAndMultiplier.keySet()) {
+        // for (String s : this.opsAndMultiplier.keySet()) {
         // final TwoIntegers ti = this.opsAndMultiplier.get(s);
         // AELog.crafting(s + " * " + ti.times + " = " + ti.perOp * ti.times);
         // }
@@ -171,7 +171,7 @@ public class CraftingCalculation {
      * @param micros microseconds of simulation
      * @return true if this needs more simulation
      */
-    public boolean simulateFor(final int micros) {
+    public boolean simulateFor(int micros) {
         this.time = micros;
 
         synchronized (this.monitor) {
@@ -190,7 +190,7 @@ public class CraftingCalculation {
             while (this.running) {
                 try {
                     this.monitor.wait();
-                } catch (final InterruptedException ignored) {
+                } catch (InterruptedException ignored) {
                 }
             }
 

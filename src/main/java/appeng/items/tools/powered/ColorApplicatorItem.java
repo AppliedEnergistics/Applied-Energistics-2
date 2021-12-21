@@ -172,7 +172,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public Component getName(final ItemStack is) {
+    public Component getName(ItemStack is) {
         Component extra = GuiText.Empty.text();
 
         final AEColor selected = this.getActiveColor(is);
@@ -184,11 +184,11 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return super.getName(is).copy().append(" - ").append(extra);
     }
 
-    public AEColor getActiveColor(final ItemStack tol) {
+    public AEColor getActiveColor(ItemStack tol) {
         return this.getColorFromItem(this.getColor(tol));
     }
 
-    private AEColor getColorFromItem(final ItemStack paintBall) {
+    private AEColor getColorFromItem(ItemStack paintBall) {
         if (paintBall.isEmpty()) {
             return null;
         }
@@ -214,7 +214,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return null;
     }
 
-    public ItemStack getColor(final ItemStack is) {
+    public ItemStack getColor(ItemStack is) {
         final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_COLOR)) {
             final CompoundTag color = c.getCompound(TAG_COLOR);
@@ -227,7 +227,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return this.findNextColor(is, ItemStack.EMPTY, 0);
     }
 
-    private ItemStack findNextColor(final ItemStack is, final ItemStack anchor, final int scrollOffset) {
+    private ItemStack findNextColor(ItemStack is, ItemStack anchor, int scrollOffset) {
         ItemStack newColor = ItemStack.EMPTY;
 
         var inv = StorageCells.getCellInventory(is, null);
@@ -286,7 +286,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return newColor;
     }
 
-    private void setColor(final ItemStack is, final ItemStack newColor) {
+    private void setColor(ItemStack is, ItemStack newColor) {
         final CompoundTag data = is.getOrCreateTag();
         if (newColor.isEmpty()) {
             data.remove(TAG_COLOR);
@@ -297,8 +297,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
     }
 
-    private boolean recolourBlock(final Block blk, final Direction side, final Level level, final BlockPos pos,
-            final AEColor newColor, @Nullable final Player p) {
+    private boolean recolourBlock(Block blk, Direction side, Level level, BlockPos pos,
+            AEColor newColor, @Nullable Player p) {
         final BlockState state = level.getBlockState(pos);
 
         Block recolored = BlockRecolorer.recolor(blk, newColor);
@@ -334,7 +334,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return newState;
     }
 
-    public void cycleColors(final ItemStack is, final ItemStack paintBall, final int i) {
+    public void cycleColors(ItemStack is, ItemStack paintBall, int i) {
         if (paintBall.isEmpty()) {
             this.setColor(is, this.getColor(is));
         } else {
@@ -344,24 +344,24 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
         addCellInformationToTooltip(stack, lines);
     }
 
     @Override
-    public int getBytes(final ItemStack cellItem) {
+    public int getBytes(ItemStack cellItem) {
         return 512;
     }
 
     @Override
-    public int getBytesPerType(final ItemStack cellItem) {
+    public int getBytesPerType(ItemStack cellItem) {
         return 8;
     }
 
     @Override
-    public int getTotalTypes(final ItemStack cellItem) {
+    public int getTotalTypes(ItemStack cellItem) {
         return 27;
     }
 
@@ -389,12 +389,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(ItemStack is) {
         return true;
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
@@ -404,25 +404,25 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public FuzzyMode getFuzzyMode(final ItemStack is) {
+    public FuzzyMode getFuzzyMode(ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
         if (fz.isEmpty()) {
             return FuzzyMode.IGNORE_ALL;
         }
         try {
             return FuzzyMode.valueOf(fz);
-        } catch (final Throwable t) {
+        } catch (Throwable t) {
             return FuzzyMode.IGNORE_ALL;
         }
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
     @Override
-    public void onWheel(final ItemStack is, final boolean up) {
+    public void onWheel(ItemStack is, boolean up) {
         this.cycleColors(is, this.getColor(is), up ? 1 : -1);
     }
 

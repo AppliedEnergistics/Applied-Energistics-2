@@ -44,8 +44,8 @@ public class NamePressItem extends AEBaseItem {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
         final CompoundTag c = stack.getOrCreateTag();

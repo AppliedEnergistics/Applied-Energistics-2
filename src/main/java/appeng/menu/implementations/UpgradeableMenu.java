@@ -130,7 +130,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
 
         this.checkToolbox();
 
-        for (final Object o : this.slots) {
+        for (Object o : this.slots) {
             if (o instanceof OptionalFakeSlot fs) {
                 if (!fs.isSlotEnabled() && !fs.getDisplayStack().isEmpty()) {
                     fs.clearStack();
@@ -141,7 +141,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         this.standardDetectAndSendChanges();
     }
 
-    protected void loadSettingsFromHost(final IConfigManager cm) {
+    protected void loadSettingsFromHost(IConfigManager cm) {
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_CONTROLLED));
         if (cm.hasSetting(Settings.CRAFT_ONLY)) {
@@ -176,7 +176,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
     }
 
     @Override
-    public boolean isSlotEnabled(final int idx) {
+    public boolean isSlotEnabled(int idx) {
         int capacityUpgrades = this.getHost().getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
         return idx == 1 && capacityUpgrades >= 1
                 || idx == 2 && capacityUpgrades >= 2;
@@ -186,7 +186,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         return this.fzMode;
     }
 
-    public void setFuzzyMode(final FuzzyMode fzMode) {
+    public void setFuzzyMode(FuzzyMode fzMode) {
         this.fzMode = fzMode;
     }
 
@@ -194,7 +194,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         return this.cMode;
     }
 
-    public void setCraftingMode(final YesNo cMode) {
+    public void setCraftingMode(YesNo cMode) {
         this.cMode = cMode;
     }
 
@@ -202,7 +202,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         return this.rsMode;
     }
 
-    public void setRedStoneMode(final RedstoneMode rsMode) {
+    public void setRedStoneMode(RedstoneMode rsMode) {
         this.rsMode = rsMode;
     }
 
@@ -210,7 +210,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         return this.schedulingMode;
     }
 
-    private void setSchedulingMode(final SchedulingMode schedulingMode) {
+    private void setSchedulingMode(SchedulingMode schedulingMode) {
         this.schedulingMode = schedulingMode;
     }
 

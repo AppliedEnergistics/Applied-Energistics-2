@@ -48,7 +48,7 @@ public class CondenserMenu extends AEBaseMenu implements IProgressProvider {
     @GuiSync(2)
     public CondenserOutput output = CondenserOutput.TRASH;
 
-    public CondenserMenu(int id, final Inventory ip, final CondenserBlockEntity condenser) {
+    public CondenserMenu(int id, Inventory ip, CondenserBlockEntity condenser) {
         super(TYPE, id, ip, condenser);
         this.condenser = condenser;
 

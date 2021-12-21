@@ -45,7 +45,7 @@ public class CreativeEnergyCellBlockEntity extends AENetworkBlockEntity implemen
     }
 
     @Override
-    public double injectAEPower(final double amt, final Actionable mode) {
+    public double injectAEPower(double amt, Actionable mode) {
         return 0;
     }
 
@@ -70,7 +70,7 @@ public class CreativeEnergyCellBlockEntity extends AENetworkBlockEntity implemen
     }
 
     @Override
-    public double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier pm) {
+    public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
         return amt;
     }
 

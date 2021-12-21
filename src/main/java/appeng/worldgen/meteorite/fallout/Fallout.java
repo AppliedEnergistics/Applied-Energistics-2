@@ -52,7 +52,7 @@ public class Fallout {
         return 0;
     }
 
-    public void getRandomFall(final LevelAccessor level, BlockPos pos) {
+    public void getRandomFall(LevelAccessor level, BlockPos pos) {
         var a = random.nextFloat();
         if (a > 0.9f) {
             this.putter.put(level, pos, Blocks.STONE.defaultBlockState());
@@ -65,7 +65,7 @@ public class Fallout {
         }
     }
 
-    public void getRandomInset(final LevelAccessor level, BlockPos pos) {
+    public void getRandomInset(LevelAccessor level, BlockPos pos) {
         var a = random.nextFloat();
         if (a > 0.9f) {
             this.putter.put(level, pos, Blocks.COBBLESTONE.defaultBlockState());

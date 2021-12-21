@@ -73,7 +73,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
         super.broadcastChanges();
     }
 
-    private boolean cpuMatches(final ICraftingCPU c) {
+    private boolean cpuMatches(ICraftingCPU c) {
         return c.isBusy();
     }
 

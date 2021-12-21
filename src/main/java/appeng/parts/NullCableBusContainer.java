@@ -37,27 +37,27 @@ import appeng.client.render.cablebus.CableBusRenderState;
 public class NullCableBusContainer implements ICableBusContainer {
 
     @Override
-    public int isProvidingStrongPower(final Direction opposite) {
+    public int isProvidingStrongPower(Direction opposite) {
         return 0;
     }
 
     @Override
-    public int isProvidingWeakPower(final Direction opposite) {
+    public int isProvidingWeakPower(Direction opposite) {
         return 0;
     }
 
     @Override
-    public boolean canConnectRedstone(final Direction opposite) {
+    public boolean canConnectRedstone(Direction opposite) {
         return false;
     }
 
     @Override
-    public void onEntityCollision(final Entity e) {
+    public void onEntityCollision(Entity e) {
 
     }
 
     @Override
-    public boolean activate(final Player player, final InteractionHand hand, final Vec3 vecFromPool) {
+    public boolean activate(Player player, InteractionHand hand, Vec3 vecFromPool) {
         return false;
     }
 
@@ -72,22 +72,22 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public SelectedPart selectPartLocal(final Vec3 v3) {
+    public SelectedPart selectPartLocal(Vec3 v3) {
         return new SelectedPart();
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor colour, final Player who) {
+    public boolean recolourBlock(Direction side, AEColor colour, Player who) {
         return false;
     }
 
     @Override
-    public boolean isLadder(final LivingEntity entity) {
+    public boolean isLadder(LivingEntity entity) {
         return false;
     }
 
     @Override
-    public void animateTick(final Level level, final BlockPos pos, final Random r) {
+    public void animateTick(Level level, BlockPos pos, Random r) {
 
     }
 

@@ -149,7 +149,7 @@ public final class CompassService {
     /**
      * Notifies the compass service that a skystone block has either been placed or replaced at the give position.
      */
-    public static void notifyBlockChange(final ServerLevel level, BlockPos pos) {
+    public static void notifyBlockChange(ServerLevel level, BlockPos pos) {
         ChunkAccess chunk = level.getChunk(pos);
         var compassRegion = CompassRegion.get(level, chunk.getPos());
         updateArea(compassRegion, chunk, level.getSectionIndex(pos.getY()));
@@ -176,14 +176,14 @@ public final class CompassService {
         compassRegion.setHasSkyStone(cx, cz, sectionIndex, blockCount.get() > 0);
     }
 
-    private static int dist(final int ax, final int az, final int bx, final int bz) {
+    private static int dist(int ax, int az, int bx, int bz) {
         final int up = (bz - az) * CHUNK_SIZE;
         final int side = (bx - ax) * CHUNK_SIZE;
 
         return up * up + side * side;
     }
 
-    private static double rad(final int ax, final int az, final int bx, final int bz) {
+    private static double rad(int ax, int az, int bx, int bz) {
         final int up = bz - az;
         final int side = bx - ax;
 

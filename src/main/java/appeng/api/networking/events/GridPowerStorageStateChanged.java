@@ -39,7 +39,7 @@ public class GridPowerStorageStateChanged extends GridEvent {
     public final IAEPowerStorage storage;
     public final PowerEventType type;
 
-    public GridPowerStorageStateChanged(final IAEPowerStorage t, final PowerEventType y) {
+    public GridPowerStorageStateChanged(IAEPowerStorage t, PowerEventType y) {
         this.storage = t;
         this.type = y;
     }

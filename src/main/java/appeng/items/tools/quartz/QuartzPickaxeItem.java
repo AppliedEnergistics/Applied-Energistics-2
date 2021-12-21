@@ -22,7 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.PickaxeItem;
 
 public class QuartzPickaxeItem extends PickaxeItem {
-    public QuartzPickaxeItem(Item.Properties props, final QuartzToolType type) {
+    public QuartzPickaxeItem(Item.Properties props, QuartzToolType type) {
         super(type.getToolTier(), 1, -2.8F, props);
     }
 }

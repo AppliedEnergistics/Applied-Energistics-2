@@ -67,9 +67,9 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
@@ -86,7 +86,7 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     }
 
     @Override
-    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }

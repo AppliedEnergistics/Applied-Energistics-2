@@ -79,8 +79,8 @@ public class PathingCalculation {
         final List<IPathItem> oldOpen = this.queue;
         this.queue = new ArrayList<>();
 
-        for (final IPathItem i : oldOpen) {
-            for (final IPathItem pi : i.getPossibleOptions()) {
+        for (IPathItem i : oldOpen) {
+            for (IPathItem pi : i.getPossibleOptions()) {
                 if (!this.visited.contains(pi)) {
                     // Set BFS parent.
                     pi.setControllerRoute(i);

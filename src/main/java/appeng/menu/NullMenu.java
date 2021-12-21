@@ -31,7 +31,7 @@ public class NullMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(final Player PlayerEntity) {
+    public boolean stillValid(Player PlayerEntity) {
         return false;
     }
 }

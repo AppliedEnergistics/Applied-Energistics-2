@@ -122,13 +122,13 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.upgrades.readFromNBT(data, "upgrades");
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         var c = super.readFromStream(data);
 
         var oldSmash = isSmash();
@@ -148,7 +148,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
 
         data.writeBoolean(isSmash());
@@ -164,14 +164,14 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(Direction inForward, Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
         this.setPowerSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         super.getDrops(level, pos, drops);
 
         for (var upgrade : upgrades) {
@@ -185,8 +185,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         if (slot == 0) {
             this.setProcessingTime(0);
         }
@@ -202,7 +202,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     //
     // @Override
     @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
+    public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(TickRates.Inscriber, !this.hasWork(), false);
     }
 
@@ -236,7 +236,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (this.isSmash()) {
             this.finalStep++;
             if (this.finalStep == 8) {
@@ -261,7 +261,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
             }
         } else {
             getMainNode().ifPresent(grid -> {
-                final IEnergyService eg = grid.getEnergyService();
+                IEnergyService eg = grid.getEnergyService();
                 IEnergySource src = this;
 
                 // Base 1, increase by 1 for each card
@@ -336,7 +336,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         return this.clientStart;
     }
 
-    private void setClientStart(final long clientStart) {
+    private void setClientStart(long clientStart) {
         this.clientStart = clientStart;
     }
 
@@ -344,7 +344,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         return this.smash;
     }
 
-    public void setSmash(final boolean smash) {
+    public void setSmash(boolean smash) {
         this.smash = smash;
     }
 
@@ -356,7 +356,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         return this.processingTime;
     }
 
-    private void setProcessingTime(final int processingTime) {
+    private void setProcessingTime(int processingTime) {
         this.processingTime = processingTime;
     }
 

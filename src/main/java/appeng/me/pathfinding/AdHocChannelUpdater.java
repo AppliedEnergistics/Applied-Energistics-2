@@ -28,12 +28,12 @@ public class AdHocChannelUpdater implements IGridConnectionVisitor {
 
     private final int usedChannels;
 
-    public AdHocChannelUpdater(final int used) {
+    public AdHocChannelUpdater(int used) {
         this.usedChannels = used;
     }
 
     @Override
-    public boolean visitNode(final IGridNode n) {
+    public boolean visitNode(IGridNode n) {
         final GridNode gn = (GridNode) n;
         gn.setControllerRoute(null);
         gn.incrementChannelCount(this.usedChannels);
@@ -42,7 +42,7 @@ public class AdHocChannelUpdater implements IGridConnectionVisitor {
     }
 
     @Override
-    public void visitConnection(final IGridConnection gcc) {
+    public void visitConnection(IGridConnection gcc) {
         final GridConnection gc = (GridConnection) gcc;
         gc.setControllerRoute(null);
         gc.incrementChannelCount(this.usedChannels);

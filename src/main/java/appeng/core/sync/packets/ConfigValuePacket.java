@@ -36,13 +36,13 @@ public class ConfigValuePacket extends BasePacket {
     private final String name;
     private final String value;
 
-    public ConfigValuePacket(final FriendlyByteBuf stream) {
+    public ConfigValuePacket(FriendlyByteBuf stream) {
         this.name = stream.readUtf();
         this.value = stream.readUtf();
     }
 
     // api
-    private ConfigValuePacket(final String name, final String value) {
+    private ConfigValuePacket(String name, String value) {
         this.name = name;
         this.value = value;
 
@@ -68,7 +68,7 @@ public class ConfigValuePacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         final AbstractContainerMenu c = player.containerMenu;
         if (c instanceof IConfigurableObject configurableObject) {
             loadSetting(configurableObject);
@@ -76,7 +76,7 @@ public class ConfigValuePacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(final INetworkInfo network, final Player player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         final AbstractContainerMenu c = player.containerMenu;
 
         if (c instanceof IConfigurableObject configurableObject) {

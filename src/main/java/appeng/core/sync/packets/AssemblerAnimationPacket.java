@@ -39,7 +39,7 @@ public class AssemblerAnimationPacket extends BasePacket {
     public final byte rate;
     public final AEKey what;
 
-    public AssemblerAnimationPacket(final FriendlyByteBuf stream) {
+    public AssemblerAnimationPacket(FriendlyByteBuf stream) {
         this.pos = stream.readBlockPos();
         this.rate = stream.readByte();
         this.what = AEKey.readKey(stream);
@@ -61,7 +61,7 @@ public class AssemblerAnimationPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final Player player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         BlockEntity te = player.getCommandSenderWorld().getBlockEntity(pos);
         if (te instanceof MolecularAssemblerBlockEntity ma) {
             ma.setAnimationStatus(new AssemblerAnimationStatus(rate, what.wrapForDisplayOrFilter()));

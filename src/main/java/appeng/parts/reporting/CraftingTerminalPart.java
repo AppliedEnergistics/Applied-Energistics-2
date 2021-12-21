@@ -61,10 +61,10 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+    public void getDrops(List<ItemStack> drops, boolean wrenched) {
         super.getDrops(drops, wrenched);
 
-        for (final ItemStack is : this.craftingGrid) {
+        for (ItemStack is : this.craftingGrid) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -72,19 +72,19 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.craftingGrid.readFromNBT(data, "craftingGrid");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         this.craftingGrid.writeToNBT(data, "craftingGrid");
     }
 
     @Override
-    public MenuType<?> getMenuType(final Player p) {
+    public MenuType<?> getMenuType(Player p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return CraftingTermMenu.TYPE;
         }

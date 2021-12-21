@@ -22,7 +22,7 @@ import appeng.api.inventories.InternalInventory;
 
 public class FakeCraftingMatrixSlot extends FakeSlot {
 
-    public FakeCraftingMatrixSlot(InternalInventory inv, final int invSlot) {
+    public FakeCraftingMatrixSlot(InternalInventory inv, int invSlot) {
         super(inv, invSlot);
     }
 }

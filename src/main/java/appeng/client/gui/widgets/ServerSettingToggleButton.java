@@ -27,7 +27,7 @@ import appeng.core.sync.packets.ConfigButtonPacket;
  */
 public class ServerSettingToggleButton<T extends Enum<T>> extends SettingToggleButton<T> {
 
-    public ServerSettingToggleButton(Setting<T> setting, final T val) {
+    public ServerSettingToggleButton(Setting<T> setting, T val) {
         super(setting, val, ServerSettingToggleButton::sendToServer);
     }
 

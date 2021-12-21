@@ -38,7 +38,7 @@ public abstract class BasePacket {
 
     private FriendlyByteBuf p;
 
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         throw new UnsupportedOperationException(
                 "This packet ( " + this.getPacketID() + " does not implement a server side handler.");
     }
@@ -47,12 +47,12 @@ public abstract class BasePacket {
         return BasePacketHandler.PacketTypes.getID(this.getClass()).ordinal();
     }
 
-    public void clientPacketData(final INetworkInfo network, final Player player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         throw new UnsupportedOperationException(
                 "This packet ( " + this.getPacketID() + " does not implement a client side handler.");
     }
 
-    protected void configureWrite(final FriendlyByteBuf data) {
+    protected void configureWrite(FriendlyByteBuf data) {
         data.capacity(data.readableBytes());
         this.p = data;
     }

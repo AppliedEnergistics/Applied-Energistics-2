@@ -55,15 +55,15 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
     private List<SpatialIOPortBlockEntity> ioPorts = new ArrayList<>();
     private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
 
-    public SpatialPylonService(final IGrid g) {
+    public SpatialPylonService(IGrid g) {
         this.myGrid = g;
     }
 
-    public void bootingRender(final GridBootingStatusChange c) {
+    public void bootingRender(GridBootingStatusChange c) {
         this.reset(this.myGrid);
     }
 
-    private void reset(final IGrid grid) {
+    private void reset(IGrid grid) {
 
         this.clusters = new HashMap<>();
         this.ioPorts = new ArrayList<>();
@@ -88,7 +88,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
         MutableBlockPos maxPoint = null;
 
         int pylonBlocks = 0;
-        for (final SpatialPylonCluster cl : this.clusters.values()) {
+        for (SpatialPylonCluster cl : this.clusters.values()) {
             if (this.captureLevel == null) {
                 this.captureLevel = cl.setLevel();
             } else if (this.captureLevel != cl.setLevel()) {
@@ -125,7 +125,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
                     && this.captureMax.getY() - this.captureMin.getY() > 1
                     && this.captureMax.getZ() - this.captureMin.getZ() > 1;
 
-            for (final SpatialPylonCluster cl : this.clusters.values()) {
+            for (SpatialPylonCluster cl : this.clusters.values()) {
                 switch (cl.getCurrentAxis()) {
                     case X -> this.isValid = this.isValid
                             && (this.captureMax.getY() == cl.getBoundsMin().getY()
@@ -179,7 +179,7 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
         final double affective_efficiency = Math.pow(this.efficiency, 0.25);
         this.powerRequired = (long) (affective_efficiency * minPower + (1.0 - affective_efficiency) * maxPower);
 
-        for (final SpatialPylonCluster cl : this.clusters.values()) {
+        for (SpatialPylonCluster cl : this.clusters.values()) {
             final boolean myWasValid = cl.isValid();
             cl.setValid(this.isValid);
             if (myWasValid != this.isValid) {

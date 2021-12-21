@@ -65,7 +65,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         }
     }
 
-    private void putInput(final Object o) {
+    private void putInput(Object o) {
         if (this.recursive) {
             return;
         }
@@ -87,7 +87,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         Platform.notifyBlocksOfNeighbors(level, this.getBlockEntity().getBlockPos());
 
         // and this cause sometimes it can go thought walls.
-        for (final Direction face : Direction.values()) {
+        for (Direction face : Direction.values()) {
             Platform.notifyBlocksOfNeighbors(level, this.getBlockEntity().getBlockPos().relative(face));
         }
     }
@@ -99,13 +99,13 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     @Override
-    public void readFromNBT(final CompoundTag tag) {
+    public void readFromNBT(CompoundTag tag) {
         super.readFromNBT(tag);
         this.power = tag.getInt("power");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag tag) {
+    public void writeToNBT(CompoundTag tag) {
         super.writeToNBT(tag);
         tag.putInt("power", this.power);
     }
@@ -153,8 +153,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
         return this.isOutput() ? this.power : 0;
     }
 
-    private void sendToOutput(final int power) {
-        for (final RedstoneP2PTunnelPart rs : this.getOutputs()) {
+    private void sendToOutput(int power) {
+        for (RedstoneP2PTunnelPart rs : this.getOutputs()) {
             rs.putInput(power);
         }
     }

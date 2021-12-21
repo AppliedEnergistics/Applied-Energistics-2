@@ -74,11 +74,11 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
     private final Map<PatternProviderLogicHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
 
-    public InterfaceTerminalMenu(int id, final Inventory ip, final PatternAccessTerminalPart anchor) {
+    public InterfaceTerminalMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
     }
 
-    public InterfaceTerminalMenu(MenuType<?> menuType, int id, final Inventory ip, final Object host,
+    public InterfaceTerminalMenu(MenuType<?> menuType, int id, Inventory ip, Object host,
             boolean bindInventory) {
         super(menuType, id, ip, host);
         if (bindInventory) {
@@ -146,7 +146,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
     }
 
     @Override
-    public void doAction(final ServerPlayer player, final InventoryAction action, final int slot, final long id) {
+    public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
         final InvTracker inv = this.byId.get(id);
         if (inv == null) {
             // Can occur if the client sent an interaction packet right before an inventory got removed
@@ -284,7 +284,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         }
     }
 
-    private boolean isDifferent(final ItemStack a, final ItemStack b) {
+    private boolean isDifferent(ItemStack a, ItemStack b) {
         if (a.isEmpty() && b.isEmpty()) {
             return false;
         }
@@ -296,7 +296,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         return !ItemStack.matches(a, b);
     }
 
-    private void addItems(CompoundTag tag, final InvTracker inv, final int offset, final int length) {
+    private void addItems(CompoundTag tag, InvTracker inv, int offset, int length) {
         if (tag.isEmpty()) {
             tag.putLong("sortBy", inv.sortBy);
             tag.putString("un", Serializer.toJson(inv.name));
@@ -328,7 +328,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         // This is a reference to the real inventory used by this machine
         private final InternalInventory server;
 
-        public InvTracker(final PatternProviderLogic dual, final InternalInventory patterns, final Component name) {
+        public InvTracker(PatternProviderLogic dual, InternalInventory patterns, Component name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(this.server.size());
             this.name = name;

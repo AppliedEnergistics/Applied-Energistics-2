@@ -43,7 +43,7 @@ public class ServerNetworkHandler implements NetworkHandler {
         registry.register(BasePacket.CHANNEL, this::handlePacketFromClient);
     }
 
-    public void sendToAll(final BasePacket message) {
+    public void sendToAll(BasePacket message) {
         MinecraftServer server = AppEng.instance().getCurrentServer();
         if (server != null) {
             var packet = message.toPacket(PacketFlow.CLIENTBOUND);
@@ -52,12 +52,12 @@ public class ServerNetworkHandler implements NetworkHandler {
         }
     }
 
-    public void sendTo(final BasePacket message, final ServerPlayer player) {
+    public void sendTo(BasePacket message, ServerPlayer player) {
         var packet = message.toPacket(PacketFlow.CLIENTBOUND);
         registry.sendToPlayer(player, packet);
     }
 
-    public void sendToAllAround(final BasePacket message, final TargetPoint point) {
+    public void sendToAllAround(BasePacket message, TargetPoint point) {
         var packet = message.toPacket(PacketFlow.CLIENTBOUND);
         PlayerStream.around(point.level, new Vec3(point.x, point.y, point.z), point.radius).forEach(player -> {
             if (player != point.excluded) {
@@ -66,7 +66,7 @@ public class ServerNetworkHandler implements NetworkHandler {
         });
     }
 
-    public void sendToDimension(final BasePacket message, final Level world) {
+    public void sendToDimension(BasePacket message, Level world) {
         var packet = message.toPacket(PacketFlow.CLIENTBOUND);
         PlayerStream.world(world).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet));
     }

@@ -82,7 +82,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public void wasExploded(final Level level, final BlockPos pos, final Explosion explosion) {
+    public void wasExploded(Level level, BlockPos pos, Explosion explosion) {
         // Don't explode.
     }
 

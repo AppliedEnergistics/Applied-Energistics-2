@@ -39,16 +39,16 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
     private static int randTickSeed = 0;
 
-    public SingularityEntity(EntityType<? extends SingularityEntity> entityType, final Level level) {
+    public SingularityEntity(EntityType<? extends SingularityEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    public SingularityEntity(final Level level, final double x, final double y, final double z, final ItemStack is) {
+    public SingularityEntity(Level level, double x, double y, double z, ItemStack is) {
         super(AEEntities.SINGULARITY, level, x, y, z, is);
     }
 
     @Override
-    public boolean hurt(final DamageSource src, final float dmg) {
+    public boolean hurt(DamageSource src, float dmg) {
         if (src.isExplosion()) {
             this.doExplosion();
             return false;
@@ -73,7 +73,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                     this.getX() + 4, this.getY() + 4, this.getZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
-            for (final Entity e : l) {
+            for (Entity e : l) {
                 if (e instanceof ItemEntity) {
                     final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {

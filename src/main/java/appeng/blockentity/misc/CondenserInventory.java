@@ -30,7 +30,7 @@ import appeng.api.storage.MEStorage;
 class CondenserInventory implements MEStorage {
     private final CondenserBlockEntity target;
 
-    CondenserInventory(final CondenserBlockEntity te) {
+    CondenserInventory(CondenserBlockEntity te) {
         this.target = te;
     }
 

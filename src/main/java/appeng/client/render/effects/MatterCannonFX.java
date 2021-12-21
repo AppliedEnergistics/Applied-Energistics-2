@@ -31,7 +31,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 
 public class MatterCannonFX extends TextureSheetParticle {
 
-    public MatterCannonFX(final ClientLevel level, final double x, final double y, final double z,
+    public MatterCannonFX(ClientLevel level, double x, double y, double z,
             SpriteSet sprite) {
         super(level, x, y, z);
         this.gravity = 0;
@@ -46,7 +46,7 @@ public class MatterCannonFX extends TextureSheetParticle {
         this.pickSprite(sprite);
     }
 
-    public void fromItem(final Direction d) {
+    public void fromItem(Direction d) {
         this.quadSize *= 1.2f;
     }
 

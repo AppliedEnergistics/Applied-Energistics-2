@@ -52,7 +52,7 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule, AEToo
     }
 
     @Override
-    public Upgrades getType(final ItemStack itemstack) {
+    public Upgrades getType(ItemStack itemstack) {
         return cardType;
     }
 

@@ -51,7 +51,7 @@ public class ItemDefinition<T extends Item> implements ItemLike {
         return stack(1);
     }
 
-    public ItemStack stack(final int stackSize) {
+    public ItemStack stack(int stackSize) {
         return new ItemStack(item, stackSize);
     }
 
@@ -66,7 +66,7 @@ public class ItemDefinition<T extends Item> implements ItemLike {
      *
      * @return true if the item stack is a matching item.
      */
-    public final boolean isSameAs(final ItemStack comparableStack) {
+    public final boolean isSameAs(ItemStack comparableStack) {
         return Platform.itemComparisons().isEqualItemType(comparableStack, this.stack());
     }
 

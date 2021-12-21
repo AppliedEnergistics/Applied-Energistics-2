@@ -83,7 +83,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
         return this.reportingValue;
     }
 
-    public final void setReportingValue(final long v) {
+    public final void setReportingValue(long v) {
         this.reportingValue = v;
         this.updateState();
     }
@@ -99,7 +99,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    public final void animateTick(final Level level, final BlockPos pos, final Random r) {
+    public final void animateTick(Level level, BlockPos pos, Random r) {
         if (this.isLevelEmitterOn()) {
             final Direction d = this.getSide();
 
@@ -163,7 +163,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    public final void getBoxes(final IPartCollisionHelper bch) {
+    public final void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(7, 7, 11, 9, 9, 16);
     }
 

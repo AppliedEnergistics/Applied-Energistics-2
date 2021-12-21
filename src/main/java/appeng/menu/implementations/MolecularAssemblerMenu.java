@@ -56,7 +56,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
         this.molecularAssembler = be;
     }
 
-    public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
+    public boolean isValidItemForSlot(int slotIndex, ItemStack i) {
         var details = molecularAssembler.getCurrentPattern();
         if (details != null) {
             return details.isItemValid(slotIndex, AEItemKey.of(i), molecularAssembler.getLevel());

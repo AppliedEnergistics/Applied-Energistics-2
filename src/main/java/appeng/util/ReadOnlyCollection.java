@@ -27,7 +27,7 @@ public class ReadOnlyCollection<T> implements IReadOnlyCollection<T> {
 
     private final Collection<T> c;
 
-    public ReadOnlyCollection(final Collection<T> in) {
+    public ReadOnlyCollection(Collection<T> in) {
         this.c = in;
     }
 
@@ -47,7 +47,7 @@ public class ReadOnlyCollection<T> implements IReadOnlyCollection<T> {
     }
 
     @Override
-    public boolean contains(final Object node) {
+    public boolean contains(Object node) {
         return this.c.contains(node);
     }
 }

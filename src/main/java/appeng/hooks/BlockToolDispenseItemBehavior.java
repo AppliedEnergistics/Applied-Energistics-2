@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.DispenserBlock;
 public final class BlockToolDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack execute(final BlockSource dispenser, final ItemStack dispensedItem) {
+    protected ItemStack execute(BlockSource dispenser, ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof IBlockTool tm) {
             final Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);

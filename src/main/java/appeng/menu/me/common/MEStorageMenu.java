@@ -658,7 +658,7 @@ public class MEStorageMenu extends AEBaseMenu
         return this.gui;
     }
 
-    public void setGui(@Nonnull final IConfigManagerListener gui) {
+    public void setGui(@Nonnull IConfigManagerListener gui) {
         this.gui = gui;
     }
 

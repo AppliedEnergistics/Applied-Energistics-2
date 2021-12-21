@@ -27,8 +27,8 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
 
     private final MolecularAssemblerMenu mac;
 
-    public MolecularAssemblerPatternSlot(final MolecularAssemblerMenu mac, final InternalInventory inv,
-            final int invSlot) {
+    public MolecularAssemblerPatternSlot(MolecularAssemblerMenu mac, InternalInventory inv,
+            int invSlot) {
         super(inv, invSlot);
         this.mac = mac;
     }

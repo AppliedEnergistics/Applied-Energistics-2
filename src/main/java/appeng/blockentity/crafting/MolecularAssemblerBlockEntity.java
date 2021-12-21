@@ -129,8 +129,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public boolean pushPattern(final IPatternDetails patternDetails, KeyCounter[] table,
-            final Direction where) {
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] table,
+            Direction where) {
         if (this.myPattern.isEmpty()) {
             boolean isEmpty = this.gridInv.isEmpty() && this.patternInv.isEmpty();
 
@@ -227,7 +227,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean oldPower = this.isPowered;
         this.isPowered = data.readBoolean();
@@ -235,7 +235,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.isPowered);
     }
@@ -258,7 +258,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
 
         // Reset current state back to defaults
@@ -355,8 +355,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
         }
@@ -367,7 +367,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         super.getDrops(level, pos, drops);
 
         for (var upgrade : upgrades) {
@@ -376,7 +376,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
+    public TickingRequest getTickingRequest(IGridNode node) {
         this.recalculatePlan();
         this.updateSleepiness();
         return new TickingRequest(1, 1, !this.isAwake, false);
@@ -480,7 +480,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
     }
 
-    private int userPower(final int ticksPassed, final int bonusValue, final double acceleratorTax) {
+    private int userPower(int ticksPassed, int bonusValue, double acceleratorTax) {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             return (int) (grid.getEnergyService().extractAEPower(ticksPassed * bonusValue * acceleratorTax,
@@ -492,7 +492,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     private void pushOut(ItemStack output) {
         if (this.pushDirection == null) {
-            for (final Direction d : Direction.values()) {
+            for (Direction d : Direction.values()) {
                 output = this.pushTo(output, d);
             }
         } else {
@@ -507,7 +507,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         this.gridInv.setItemDirect(9, output);
     }
 
-    private ItemStack pushTo(ItemStack output, final Direction d) {
+    private ItemStack pushTo(ItemStack output, Direction d) {
         if (output.isEmpty()) {
             return output;
         }

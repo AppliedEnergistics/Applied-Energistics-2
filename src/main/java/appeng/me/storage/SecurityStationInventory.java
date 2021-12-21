@@ -46,7 +46,7 @@ public class SecurityStationInventory implements MEStorage {
     private final Set<AEItemKey> storedItems = new HashSet<>();
     private final SecurityStationBlockEntity blockEntity;
 
-    public SecurityStationInventory(final SecurityStationBlockEntity ts) {
+    public SecurityStationInventory(SecurityStationBlockEntity ts) {
         this.blockEntity = ts;
     }
 
@@ -66,7 +66,7 @@ public class SecurityStationInventory implements MEStorage {
         return 0;
     }
 
-    private boolean hasPermission(final IActionSource src) {
+    private boolean hasPermission(IActionSource src) {
         if (src.player().isPresent()) {
             var grid = this.blockEntity.getMainNode().getGrid();
             if (grid != null) {

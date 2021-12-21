@@ -111,7 +111,7 @@ public class CraftingCpuLogic {
         }
     }
 
-    public void tickCraftingLogic(final IEnergyService eg, final CraftingService cc) {
+    public void tickCraftingLogic(IEnergyService eg, CraftingService cc) {
         // Don't tick if we're not active.
         if (!cluster.isActive())
             return;
@@ -459,7 +459,7 @@ public class CraftingCpuLogic {
         out.addAll(this.inventory.list);
         if (this.job != null) {
             out.addAll(job.waitingFor.list);
-            for (final var t : job.tasks.entrySet()) {
+            for (var t : job.tasks.entrySet()) {
                 for (var output : t.getKey().getOutputs()) {
                     out.add(output.what(), output.amount() * t.getValue().value);
                 }

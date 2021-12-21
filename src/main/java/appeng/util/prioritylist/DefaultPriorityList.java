@@ -26,7 +26,7 @@ public class DefaultPriorityList implements IPartitionList {
     public static final DefaultPriorityList INSTANCE = new DefaultPriorityList();
 
     @Override
-    public boolean isListed(final AEKey input) {
+    public boolean isListed(AEKey input) {
         return false;
     }
 

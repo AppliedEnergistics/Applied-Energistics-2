@@ -30,8 +30,8 @@ import appeng.server.ISubCommand;
 public class Supporters implements ISubCommand {
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> data,
-            final CommandSourceStack sender) {
+    public void call(MinecraftServer srv, CommandContext<CommandSourceStack> data,
+            CommandSourceStack sender) {
         final String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov",
                 "BevoLJ" };
         sender.sendSuccess(new TextComponent("Special thanks to " + Joiner.on(", ").join(who)), true);

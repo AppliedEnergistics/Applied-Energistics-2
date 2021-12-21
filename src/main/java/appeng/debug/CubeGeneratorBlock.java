@@ -38,9 +38,9 @@ public class CubeGeneratorBlock extends AEBaseEntityBlock<CubeGeneratorBlockEnti
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         final CubeGeneratorBlockEntity tcg = this.getBlockEntity(level, pos);
         if (tcg != null) {
             tcg.click(player);

@@ -61,8 +61,8 @@ public interface AppEng {
 
     void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level level, BasePacket packet);
 
-    void spawnEffect(final EffectType effect, final Level level, final double posX, final double posY,
-            final double posZ, final Object o);
+    void spawnEffect(EffectType effect, Level level, double posX, double posY,
+            double posZ, Object o);
 
     /**
      * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that

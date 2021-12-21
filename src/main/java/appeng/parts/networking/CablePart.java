@@ -104,7 +104,7 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public boolean changeColor(final AEColor newColor, final Player who) {
+    public boolean changeColor(AEColor newColor, Player who) {
         if (this.getCableColor() != newColor) {
             IPartItem<?> newPart = null;
 
@@ -140,12 +140,12 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void setExposedOnSides(final EnumSet<Direction> sides) {
+    public void setExposedOnSides(EnumSet<Direction> sides) {
         this.getMainNode().setExposedOnSides(sides);
     }
 
     @Override
-    public boolean isConnected(final Direction side) {
+    public boolean isConnected(Direction side) {
         return this.getConnections().contains(side);
     }
 
@@ -154,14 +154,14 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         updateConnections();
 
         bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
 
         final IPartHost ph = this.getHost();
         if (ph != null) {
-            for (final Direction dir : Direction.values()) {
+            for (Direction dir : Direction.values()) {
                 var p = ph.getPart(dir);
                 if (p != null) {
                     var dist = p.getCableConnectionLength(this.getCableConnectionType());
@@ -195,7 +195,7 @@ public class CablePart extends AEBasePart implements ICablePart {
             }
         }
 
-        for (final Direction of : this.getConnections()) {
+        for (Direction of : this.getConnections()) {
             switch (of) {
                 case DOWN:
                     bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
@@ -232,7 +232,7 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         int flags = 0;
         boolean[] writeSide = new boolean[Direction.values().length];
         byte[] channelsPerSide = new byte[Direction.values().length];
@@ -308,7 +308,7 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         int cs = data.readByte();
         // Save previous state for change-detection
         var previousConnections = this.getConnections();
@@ -345,7 +345,7 @@ public class CablePart extends AEBasePart implements ICablePart {
         return !previousConnections.equals(this.getConnections()) || wasPowered != this.powered || channelsChanged;
     }
 
-    int getChannelsOnSide(final int i) {
+    int getChannelsOnSide(int i) {
         return this.channelsOnSide[i];
     }
 
@@ -356,7 +356,7 @@ public class CablePart extends AEBasePart implements ICablePart {
         return this.channelsOnSide[side.ordinal()];
     }
 
-    void setChannelsOnSide(final int i, final int channels) {
+    void setChannelsOnSide(int i, int channels) {
         this.channelsOnSide[i] = channels;
     }
 
@@ -364,7 +364,7 @@ public class CablePart extends AEBasePart implements ICablePart {
         return this.connections;
     }
 
-    void setConnections(final Set<Direction> connections) {
+    void setConnections(Set<Direction> connections) {
         this.connections = connections;
     }
 

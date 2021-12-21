@@ -28,24 +28,24 @@ import appeng.me.cluster.MBCalculator;
 
 public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity, SpatialPylonCluster> {
 
-    public SpatialPylonCalculator(final SpatialPylonBlockEntity t) {
+    public SpatialPylonCalculator(SpatialPylonBlockEntity t) {
         super(t);
     }
 
     @Override
-    public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
+    public boolean checkMultiblockScale(BlockPos min, BlockPos max) {
         return min.getX() == max.getX() && min.getY() == max.getY() && min.getZ() != max.getZ()
                 || min.getX() == max.getX() && min.getY() != max.getY() && min.getZ() == max.getZ()
                 || min.getX() != max.getX() && min.getY() == max.getY() && min.getZ() == max.getZ();
     }
 
     @Override
-    public SpatialPylonCluster createCluster(ServerLevel level, final BlockPos min, final BlockPos max) {
+    public SpatialPylonCluster createCluster(ServerLevel level, BlockPos min, BlockPos max) {
         return new SpatialPylonCluster(level, min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(ServerLevel level, final BlockPos min, final BlockPos max) {
+    public boolean verifyInternalStructure(ServerLevel level, BlockPos min, BlockPos max) {
 
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
             final IAEMultiBlock<?> te = (IAEMultiBlock<?>) level.getBlockEntity(p);
@@ -59,8 +59,8 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
     }
 
     @Override
-    public void updateBlockEntities(final SpatialPylonCluster c, final ServerLevel level, final BlockPos min,
-            final BlockPos max) {
+    public void updateBlockEntities(SpatialPylonCluster c, ServerLevel level, BlockPos min,
+            BlockPos max) {
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
             final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) level.getBlockEntity(p);
             te.updateStatus(c);
@@ -69,7 +69,7 @@ public class SpatialPylonCalculator extends MBCalculator<SpatialPylonBlockEntity
     }
 
     @Override
-    public boolean isValidBlockEntity(final BlockEntity te) {
+    public boolean isValidBlockEntity(BlockEntity te) {
         return te instanceof SpatialPylonBlockEntity;
     }
 }

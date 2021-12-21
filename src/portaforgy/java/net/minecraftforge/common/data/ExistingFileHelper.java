@@ -108,7 +108,7 @@ public class ExistingFileHelper {
      * @param assetIndex
      * @param assetsDir
      */
-    public ExistingFileHelper(Collection<Path> existingPacks, final Set<String> existingMods, boolean enable, @Nullable final String assetIndex, @Nullable final File assetsDir) {
+    public ExistingFileHelper(Collection<Path> existingPacks, Set<String> existingMods, boolean enable, @Nullable String assetIndex, @Nullable File assetsDir) {
         this.clientResources = new SimpleReloadableResourceManager(PackType.CLIENT_RESOURCES);
         this.serverData = new SimpleReloadableResourceManager(PackType.SERVER_DATA);
 

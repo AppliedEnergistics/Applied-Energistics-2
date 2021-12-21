@@ -60,9 +60,9 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player p,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player p,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             return InteractionResult.PASS;
         }
@@ -83,7 +83,7 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
     }
 
     @Override
-    protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
+    protected void customRotateBlock(IOrientable rotatable, Direction axis) {
         if (rotatable instanceof PatternProviderBlockEntity patternProvider) {
             patternProvider.setSide(axis);
         }

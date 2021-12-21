@@ -52,20 +52,20 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      */
     private final Map<LevelAccessor, Multiset<ChunkPos>> chunks;
 
-    public StatisticsService(final IGrid g) {
+    public StatisticsService(IGrid g) {
         this.grid = g;
         this.chunks = new HashMap<>();
     }
 
     @Override
-    public void removeNode(final IGridNode node) {
+    public void removeNode(IGridNode node) {
         if (node instanceof InWorldGridNode inWorldNode) {
             this.removeChunk(inWorldNode.getLevel(), inWorldNode.getLocation());
         }
     }
 
     @Override
-    public void addNode(final IGridNode node) {
+    public void addNode(IGridNode node) {
         if (node instanceof InWorldGridNode inWorldNode) {
             this.addChunk(inWorldNode.getLevel(), inWorldNode.getLocation());
         }

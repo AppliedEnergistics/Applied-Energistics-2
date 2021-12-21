@@ -50,7 +50,7 @@ public class FalloutCopy extends Fallout {
     }
 
     @Override
-    public void getRandomFall(final LevelAccessor level, BlockPos pos) {
+    public void getRandomFall(LevelAccessor level, BlockPos pos) {
         var a = random.nextFloat();
         if (a > SPECIFIED_BLOCK_THRESHOLD) {
             this.putter.put(level, pos, this.block);
@@ -59,7 +59,7 @@ public class FalloutCopy extends Fallout {
         }
     }
 
-    public void getOther(final LevelAccessor level, BlockPos pos, float a) {
+    public void getOther(LevelAccessor level, BlockPos pos, float a) {
 
     }
 

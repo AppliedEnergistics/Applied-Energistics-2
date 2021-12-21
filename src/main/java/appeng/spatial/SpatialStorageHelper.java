@@ -58,14 +58,14 @@ public class SpatialStorageHelper {
      * @param link   destination
      * @return teleported entity
      */
-    private Entity teleportEntity(Entity entity, final TelDestination link) {
+    private Entity teleportEntity(Entity entity, TelDestination link) {
         final ServerLevel oldLevel;
         final ServerLevel newLevel;
 
         try {
             oldLevel = (ServerLevel) entity.level;
             newLevel = link.dim;
-        } catch (final Throwable e) {
+        } catch (Throwable e) {
             return entity;
         }
 
@@ -113,8 +113,8 @@ public class SpatialStorageHelper {
         return entity;
     }
 
-    private void transverseEdges(final int minX, final int minY, final int minZ, final int maxX, final int maxY,
-            final int maxZ, final ISpatialVisitor visitor) {
+    private void transverseEdges(int minX, int minY, int minZ, int maxX, int maxY,
+            int maxZ, ISpatialVisitor visitor) {
         for (int y = minY; y < maxY; y++) {
             for (int z = minZ; z < maxZ; z++) {
                 visitor.visit(new BlockPos(minX, y, z));
@@ -137,9 +137,9 @@ public class SpatialStorageHelper {
         }
     }
 
-    public void swapRegions(final ServerLevel srcLevel, final int srcX, final int srcY, final int srcZ,
-            final ServerLevel dstLevel, final int dstX, final int dstY, final int dstZ, final int scaleX,
-            final int scaleY, final int scaleZ) {
+    public void swapRegions(ServerLevel srcLevel, int srcX, int srcY, int srcZ,
+            ServerLevel dstLevel, int dstX, int dstY, int dstZ, int scaleX,
+            int scaleY, int scaleZ) {
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                 dstY + scaleY + 1, dstZ + scaleZ + 1,
@@ -162,21 +162,21 @@ public class SpatialStorageHelper {
         final List<Entity> srcE = srcLevel.getEntitiesOfClass(Entity.class, srcBox);
         final List<Entity> dstE = dstLevel.getEntitiesOfClass(Entity.class, dstBox);
 
-        for (final Entity e : dstE) {
+        for (Entity e : dstE) {
             this.teleportEntity(e, new TelDestination(srcLevel, srcBox, e.getX(), e.getY(), e.getZ(),
                     -dstX + srcX, -dstY + srcY, -dstZ + srcZ));
         }
 
-        for (final Entity e : srcE) {
+        for (Entity e : srcE) {
             this.teleportEntity(e, new TelDestination(dstLevel, dstBox, e.getX(), e.getY(), e.getZ(),
                     -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
         }
 
-        for (final WorldCoord wc : cDst.getUpdates()) {
+        for (WorldCoord wc : cDst.getUpdates()) {
             cSrc.getLevel().updateNeighborsAt(wc.getPos(), Blocks.AIR);
         }
 
-        for (final WorldCoord wc : cSrc.getUpdates()) {
+        for (WorldCoord wc : cSrc.getUpdates()) {
             cSrc.getLevel().updateNeighborsAt(wc.getPos(), Blocks.AIR);
         }
 
@@ -195,12 +195,12 @@ public class SpatialStorageHelper {
 
         private final Level dst;
 
-        public TriggerUpdates(final Level dst2) {
+        public TriggerUpdates(Level dst2) {
             this.dst = dst2;
         }
 
         @Override
-        public void visit(final BlockPos pos) {
+        public void visit(BlockPos pos) {
             final BlockState state = this.dst.getBlockState(pos);
             final Block blk = state.getBlock();
             blk.neighborChanged(state, this.dst, pos, blk, pos, false);
@@ -212,13 +212,13 @@ public class SpatialStorageHelper {
         private final Level dst;
         private final BlockState state;
 
-        public WrapInMatrixFrame(final BlockState state, final Level dst2) {
+        public WrapInMatrixFrame(BlockState state, Level dst2) {
             this.dst = dst2;
             this.state = state;
         }
 
         @Override
-        public void visit(final BlockPos pos) {
+        public void visit(BlockPos pos) {
             this.dst.setBlockAndUpdate(pos, this.state);
         }
     }
@@ -229,8 +229,8 @@ public class SpatialStorageHelper {
         private final double y;
         private final double z;
 
-        TelDestination(final ServerLevel dimension, final AABB srcBox, final double x, final double y,
-                final double z, final int blockEntityX, final int blockEntityY, final int blockEntityZ) {
+        TelDestination(ServerLevel dimension, AABB srcBox, double x, double y,
+                double z, int blockEntityX, int blockEntityY, int blockEntityZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + blockEntityX));
             this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + blockEntityY));

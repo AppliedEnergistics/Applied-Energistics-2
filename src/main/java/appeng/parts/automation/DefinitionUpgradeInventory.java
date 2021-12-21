@@ -27,15 +27,15 @@ import appeng.util.inv.InternalInventoryHost;
 public final class DefinitionUpgradeInventory extends UpgradeInventory {
     private final Item item;
 
-    public DefinitionUpgradeInventory(final ItemLike item, final InternalInventoryHost parent, final int s) {
+    public DefinitionUpgradeInventory(ItemLike item, InternalInventoryHost parent, int s) {
         super(parent, s);
 
         this.item = item.asItem();
     }
 
     @Override
-    public int getMaxInstalled(final Upgrades upgrades) {
-        for (final Upgrades.Supported supported : upgrades.getSupported()) {
+    public int getMaxInstalled(Upgrades upgrades) {
+        for (Upgrades.Supported supported : upgrades.getSupported()) {
             if (supported.isSupported(item)) {
                 return supported.getMaxCount();
             }

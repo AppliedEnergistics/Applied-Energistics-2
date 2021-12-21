@@ -98,8 +98,8 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private MenuLocator locator;
     private int ticksSinceCheck = 900;
 
-    public AEBaseMenu(MenuType<?> menuType, int id, final Inventory playerInventory,
-            final Object host) {
+    public AEBaseMenu(MenuType<?> menuType, int id, Inventory playerInventory,
+            Object host) {
         super(menuType, id);
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
@@ -155,7 +155,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return this.mySrc;
     }
 
-    public void verifyPermissions(final SecurityPermissions security, final boolean requirePower) {
+    public void verifyPermissions(SecurityPermissions security, boolean requirePower) {
         if (isClientSide()) {
             return;
         }
@@ -169,7 +169,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.setValidMenu(this.isValidMenu() && this.hasAccess(security, requirePower));
     }
 
-    protected final boolean hasAccess(final SecurityPermissions perm, final boolean requirePower) {
+    protected final boolean hasAccess(SecurityPermissions perm, boolean requirePower) {
         if (!isActionHost() && !requirePower) {
             return true; // Hosts that are not grid connected always give access
         }
@@ -186,7 +186,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return this.playerInventory;
     }
 
-    public void lockPlayerInventorySlot(final int invSlot) {
+    public void lockPlayerInventorySlot(int invSlot) {
         Preconditions.checkArgument(invSlot >= 0 && invSlot < playerInventory.items.size(),
                 "cannot lock player inventory slot: %s", invSlot);
         this.lockedPlayerInventorySlots.add(invSlot);
@@ -239,7 +239,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     @Override
-    protected Slot addSlot(final Slot newSlot) {
+    protected Slot addSlot(Slot newSlot) {
         if (newSlot instanceof AppEngSlot s) {
             s.setMenu(this);
         }
@@ -284,7 +284,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, final int idx) {
+    public ItemStack quickMoveStack(Player player, int idx) {
         if (isClientSide()) {
             return ItemStack.EMPTY;
         }
@@ -310,7 +310,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
                 if (!tis.isEmpty()) {
                     // target slots in the menu...
-                    for (final Slot cs : this.slots) {
+                    for (Slot cs : this.slots) {
                         if (!isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
                                 && cs.mayPlace(tis)) {
                             selectedSlots.add(cs);
@@ -321,7 +321,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 tis = tis.copy();
 
                 // target slots in the menu...
-                for (final Slot cs : this.slots) {
+                for (Slot cs : this.slots) {
                     if (isPlayerSideSlot(cs) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)
                             && cs.mayPlace(tis)) {
                         selectedSlots.add(cs);
@@ -332,7 +332,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             // Handle Fake Slot Shift clicking.
             if (selectedSlots.isEmpty() && playerSide && !tis.isEmpty()) {
                 // target slots in the menu...
-                for (final Slot cs : this.slots) {
+                for (Slot cs : this.slots) {
                     final ItemStack destination = cs.getItem();
 
                     if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
@@ -350,7 +350,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
             if (!tis.isEmpty()) {
                 // find slots to stack the item into
-                for (final Slot d : selectedSlots) {
+                for (Slot d : selectedSlots) {
                     if (d.mayPlace(tis) && d.hasItem() && x(clickSlot, tis, d)) {
                         return ItemStack.EMPTY;
                     }
@@ -358,7 +358,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
                 // FIXME figure out whats the difference between this and the one above ?!
                 // any match..
-                for (final Slot d : selectedSlots) {
+                for (Slot d : selectedSlots) {
                     if (d.mayPlace(tis)) {
                         if (d.hasItem()) {
                             if (x(clickSlot, tis, d)) {
@@ -439,7 +439,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(final Player PlayerEntity) {
+    public boolean stillValid(Player PlayerEntity) {
         if (this.isValidMenu()) {
             if (this.blockEntity instanceof Container) {
                 return ((Container) this.blockEntity).stillValid(PlayerEntity);
@@ -450,7 +450,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean canDragTo(final Slot s) {
+    public boolean canDragTo(Slot s) {
         if (s instanceof AppEngSlot) {
             return ((AppEngSlot) s).isDraggable();
         } else {
@@ -461,7 +461,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     /**
      * Sets a filter slot based on a <b>non-existent</b> item sent by the client.
      */
-    public void setFilter(final int slotIndex, ItemStack item) {
+    public void setFilter(int slotIndex, ItemStack item) {
         if (slotIndex < 0 || slotIndex >= this.slots.size()) {
             return;
         }
@@ -478,7 +478,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
     }
 
-    public void doAction(final ServerPlayer player, final InventoryAction action, final int slot, final long id) {
+    public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
         if (slot < 0 || slot >= this.slots.size()) {
             return;
         }
@@ -519,13 +519,13 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         if (action == InventoryAction.MOVE_REGION) {
             final List<Slot> from = new ArrayList<>();
 
-            for (final Slot j : this.slots) {
+            for (Slot j : this.slots) {
                 if (j != null && j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
                     from.add(j);
                 }
             }
 
-            for (final Slot fr : from) {
+            for (Slot fr : from) {
                 this.quickMoveStack(player, fr.index);
             }
         }
@@ -669,11 +669,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     /**
      * @return Returns the remainder.
      */
-    protected ItemStack transferStackToMenu(final ItemStack input) {
+    protected ItemStack transferStackToMenu(ItemStack input) {
         return input;
     }
 
-    public void swapSlotContents(final int slotA, final int slotB) {
+    public void swapSlotContents(int slotA, int slotB) {
         final Slot a = this.getSlot(slotA);
         final Slot b = this.getSlot(slotB);
 
@@ -749,11 +749,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     public void onServerDataSync() {
     }
 
-    public void onSlotChange(final Slot s) {
+    public void onSlotChange(Slot s) {
 
     }
 
-    public boolean isValidForSlot(final Slot s, final ItemStack i) {
+    public boolean isValidForSlot(Slot s, ItemStack i) {
         return true;
     }
 
@@ -761,7 +761,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return this.menuValid;
     }
 
-    public void setValidMenu(final boolean isContainerValid) {
+    public void setValidMenu(boolean isContainerValid) {
         this.menuValid = isContainerValid;
     }
 
@@ -769,7 +769,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return this.locator;
     }
 
-    public void setLocator(final MenuLocator locator) {
+    public void setLocator(MenuLocator locator) {
         this.locator = locator;
     }
 

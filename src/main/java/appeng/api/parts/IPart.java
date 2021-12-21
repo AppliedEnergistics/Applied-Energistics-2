@@ -388,7 +388,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param bch collision boxes
      */
-    void getBoxes(final IPartCollisionHelper bch);
+    void getBoxes(IPartCollisionHelper bch);
 
     /**
      * This will be used by the core to add information about this part to a crash report if it is attached to a host
@@ -396,7 +396,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param section The crash report section the information will be added to.
      */
-    default void addEntityCrashInfo(final CrashReportCategory section) {
+    default void addEntityCrashInfo(CrashReportCategory section) {
     }
 
     /**

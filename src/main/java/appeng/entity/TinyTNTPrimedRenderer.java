@@ -75,7 +75,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(final TinyTNTPrimedEntity entity) {
+    public ResourceLocation getTextureLocation(TinyTNTPrimedEntity entity) {
         return TextureAtlas.LOCATION_BLOCKS;
     }
 }

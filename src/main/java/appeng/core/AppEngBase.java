@@ -257,12 +257,12 @@ public abstract class AppEngBase implements AppEng {
     }
 
     @Override
-    public void sendToAllNearExcept(final Player p, final double x, final double y, final double z,
-            final double dist, final Level level, final BasePacket packet) {
+    public void sendToAllNearExcept(Player p, double x, double y, double z,
+            double dist, Level level, BasePacket packet) {
         if (level.isClientSide()) {
             return;
         }
-        for (final ServerPlayer o : getPlayers()) {
+        for (ServerPlayer o : getPlayers()) {
             if (o != p && o.level == level) {
                 final double dX = x - o.getX();
                 final double dY = y - o.getY();
@@ -275,7 +275,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     @Override
-    public void setPartInteractionPlayer(final Player player) {
+    public void setPartInteractionPlayer(Player player) {
         this.partInteractionPlayer.set(player);
     }
 
@@ -290,7 +290,7 @@ public abstract class AppEngBase implements AppEng {
         return currentServer;
     }
 
-    protected final CableRenderMode getCableRenderModeForPlayer(@Nullable final Player player) {
+    protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {
         if (player != null) {
             for (int x = 0; x < Inventory.getSelectionSize(); x++) {
                 final ItemStack is = player.getInventory().getItem(x);

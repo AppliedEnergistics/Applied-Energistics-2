@@ -57,8 +57,8 @@ public class SpatialPylonCluster implements IAECluster {
     }
 
     @Override
-    public void updateStatus(final boolean updateGrid) {
-        for (final SpatialPylonBlockEntity r : this.getLine()) {
+    public void updateStatus(boolean updateGrid) {
+        for (SpatialPylonBlockEntity r : this.getLine()) {
             r.recalculateDisplay();
         }
     }
@@ -78,7 +78,7 @@ public class SpatialPylonCluster implements IAECluster {
 
         MBCalculator.setModificationInProgress(this);
         try {
-            for (final SpatialPylonBlockEntity r : this.getLine()) {
+            for (SpatialPylonBlockEntity r : this.getLine()) {
                 r.updateStatus(null);
             }
         } finally {
@@ -99,7 +99,7 @@ public class SpatialPylonCluster implements IAECluster {
         return this.currentAxis;
     }
 
-    private void setCurrentAxis(final Axis currentAxis) {
+    private void setCurrentAxis(Axis currentAxis) {
         this.currentAxis = currentAxis;
     }
 
@@ -107,7 +107,7 @@ public class SpatialPylonCluster implements IAECluster {
         return this.isValid;
     }
 
-    public void setValid(final boolean isValid) {
+    public void setValid(boolean isValid) {
         this.isValid = isValid;
     }
 

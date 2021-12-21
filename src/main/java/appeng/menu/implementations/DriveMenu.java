@@ -35,7 +35,7 @@ public class DriveMenu extends AEBaseMenu {
             .create(DriveMenu::new, DriveBlockEntity.class)
             .build("drive");
 
-    public DriveMenu(int id, final Inventory ip, final DriveBlockEntity drive) {
+    public DriveMenu(int id, Inventory ip, DriveBlockEntity drive) {
         super(TYPE, id, ip, drive);
 
         for (int i = 0; i < 10; i++) {

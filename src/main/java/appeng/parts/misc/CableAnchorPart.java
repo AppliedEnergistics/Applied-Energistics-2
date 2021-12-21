@@ -59,7 +59,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         if (this.host != null && this.host.getFacadeContainer().getFacade(this.mySide) != null) {
             bch.addBox(7, 7, 10, 9, 9, 14);
         } else {
@@ -68,7 +68,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public boolean isLadder(final LivingEntity entity) {
+    public boolean isLadder(LivingEntity entity) {
         return this.mySide.getStepY() == 0 && (entity.horizontalCollision || !entity.isOnGround());
     }
 
@@ -78,7 +78,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(Direction side, IPartHost host, BlockEntity blockEntity) {
         this.host = host;
         this.mySide = side;
     }
@@ -89,7 +89,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public boolean canBePlacedOn(final BusSupport what) {
+    public boolean canBePlacedOn(BusSupport what) {
         return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
     }
 

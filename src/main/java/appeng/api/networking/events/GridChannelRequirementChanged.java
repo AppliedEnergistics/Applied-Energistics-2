@@ -33,7 +33,7 @@ public class GridChannelRequirementChanged extends GridEvent {
 
     public final IGridNode node;
 
-    public GridChannelRequirementChanged(final IGridNode n) {
+    public GridChannelRequirementChanged(IGridNode n) {
         this.node = n;
     }
 }

@@ -189,7 +189,7 @@ public final class AEConfig {
         this.colorApplicatorBattery = COMMON.colorApplicatorBattery.get();
         this.matterCannonBattery = COMMON.matterCannonBattery.get();
 
-        for (final TickRates tr : TickRates.values()) {
+        for (TickRates tr : TickRates.values()) {
             tr.setMin(COMMON.tickRateMin.get(tr).get());
             tr.setMax(COMMON.tickRateMax.get(tr).get());
         }
@@ -213,16 +213,16 @@ public final class AEConfig {
         return instance;
     }
 
-    public double wireless_getDrainRate(final double range) {
+    public double wireless_getDrainRate(double range) {
         return this.wirelessTerminalDrainMultiplier * range;
     }
 
-    public double wireless_getMaxRange(final int boosters) {
+    public double wireless_getMaxRange(int boosters) {
         return this.wirelessBaseRange
                 + this.wirelessBoosterRangeMultiplier * Math.pow(boosters, this.wirelessBoosterExp);
     }
 
-    public double wireless_getPowerDrain(final int boosters) {
+    public double wireless_getPowerDrain(int boosters) {
         return this.wirelessBaseCost
                 + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
     }
@@ -254,7 +254,7 @@ public final class AEConfig {
         return this.CLIENT.selectedPowerUnit.get();
     }
 
-    public void nextPowerUnit(final boolean backwards) {
+    public void nextPowerUnit(boolean backwards) {
         PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(getSelectedPowerUnit(), backwards,
                 Settings.POWER_UNITS.getValues());
         CLIENT.selectedPowerUnit.set(selectedPowerUnit);

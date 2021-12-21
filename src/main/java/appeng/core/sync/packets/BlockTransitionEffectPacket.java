@@ -81,7 +81,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public BlockTransitionEffectPacket(final FriendlyByteBuf stream) {
+    public BlockTransitionEffectPacket(FriendlyByteBuf stream) {
 
         this.pos = stream.readBlockPos();
         int blockStateId = stream.readInt();
@@ -97,7 +97,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final Player player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         spawnParticles();
 
         playBreakOrPickupSound();

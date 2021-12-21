@@ -59,7 +59,7 @@ public enum Upgrades {
     private final List<Supported> supported = new ArrayList<>();
     private List<Component> supportedTooltipLines;
 
-    Upgrades(final String translationKey, final int tier) {
+    Upgrades(String translationKey, int tier) {
         this.tier = tier;
         this.displayName = new TranslatableComponent(translationKey);
     }
@@ -75,7 +75,7 @@ public enum Upgrades {
         return this.supported;
     }
 
-    public void registerItem(final ItemLike item, final int maxSupported) {
+    public void registerItem(ItemLike item, int maxSupported) {
         this.registerItem(item, maxSupported, null);
     }
 
@@ -87,7 +87,7 @@ public enum Upgrades {
      * @param tooltipGroup If more than one item of the same group are supported, the tooltip will show this translation
      *                     key instead. If the items have different maxSupported values, the highest will be shown.
      */
-    public void registerItem(final ItemLike item, final int maxSupported, @Nullable String tooltipGroup) {
+    public void registerItem(ItemLike item, int maxSupported, @Nullable String tooltipGroup) {
         Objects.requireNonNull(item);
         this.supported.add(new Supported(item.asItem(), maxSupported, tooltipGroup));
         supportedTooltipLines = null; // Reset tooltip

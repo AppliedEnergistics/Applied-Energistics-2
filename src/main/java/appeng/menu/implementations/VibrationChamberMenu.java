@@ -43,8 +43,8 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
     @GuiSync(1)
     public int remainingBurnTime = 0;
 
-    public VibrationChamberMenu(int id, final Inventory ip,
-            final VibrationChamberBlockEntity vibrationChamber) {
+    public VibrationChamberMenu(int id, Inventory ip,
+            VibrationChamberBlockEntity vibrationChamber) {
         super(TYPE, id, ip, vibrationChamber);
         this.vibrationChamber = vibrationChamber;
 

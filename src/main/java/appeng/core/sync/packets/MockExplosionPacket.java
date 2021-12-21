@@ -36,14 +36,14 @@ public class MockExplosionPacket extends BasePacket {
     private final double y;
     private final double z;
 
-    public MockExplosionPacket(final FriendlyByteBuf stream) {
+    public MockExplosionPacket(FriendlyByteBuf stream) {
         this.x = stream.readDouble();
         this.y = stream.readDouble();
         this.z = stream.readDouble();
     }
 
     // api
-    public MockExplosionPacket(final double x, final double y, final double z) {
+    public MockExplosionPacket(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -60,7 +60,7 @@ public class MockExplosionPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final Player player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         final Level level = player.getCommandSenderWorld();
         level.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
     }

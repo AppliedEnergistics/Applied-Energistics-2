@@ -149,7 +149,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode) {
+    public void removeNode(IGridNode gridNode) {
         var tickable = gridNode.getService(IGridTickable.class);
         if (tickable != null) {
             this.alertable.remove(gridNode);
@@ -162,7 +162,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(final IGridNode gridNode) {
+    public void addNode(IGridNode gridNode) {
         var tickable = gridNode.getService(IGridTickable.class);
         if (tickable != null) {
             var tr = tickable.getTickingRequest(gridNode);
@@ -367,7 +367,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
             tt.getStatistics().accept(elapsedTime);
 
             return mod;
-        } catch (final Throwable t) {
+        } catch (Throwable t) {
             var report = CrashReport.forThrowable(t, "Ticking GridNode");
             var category = report
                     .addCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");

@@ -91,7 +91,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     private VoxelShape cachedCollisionShape;
     private VoxelShape cachedShape;
 
-    public CableBusContainer(final IPartHost host) {
+    public CableBusContainer(IPartHost host) {
         this.tcb = host;
     }
 
@@ -100,7 +100,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return is != null && is;
     }
 
-    public void setHost(final IPartHost host) {
+    public void setHost(IPartHost host) {
         this.tcb.clearContainer();
         this.tcb = host;
     }
@@ -124,7 +124,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean canAddPart(ItemStack is, final Direction side) {
+    public boolean canAddPart(ItemStack is, Direction side) {
         if (PartPlacement.createFacade(is, side) != null) {
             return true;
         }
@@ -186,7 +186,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                         if (existingPartNode != null) {
                             try {
                                 GridConnection.create(cableNode, existingPartNode, null);
-                            } catch (final FailedConnectionException e) {
+                            } catch (FailedConnectionException e) {
                                 AELog.warn(e);
 
                                 cablePart.removeFromWorld();
@@ -326,12 +326,12 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean isBlocked(final Direction side) {
+    public boolean isBlocked(Direction side) {
         return this.tcb.isBlocked(side);
     }
 
     @Override
-    public SelectedPart selectPartLocal(final Vec3 pos) {
+    public SelectedPart selectPartLocal(Vec3 pos) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var p = this.getPart(side);
             if (p != null) {
@@ -382,7 +382,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             var facades = new ArrayList<ItemStack>();
 
             var fc = this.getFacadeContainer();
-            for (final Direction d : Direction.values()) {
+            for (Direction d : Direction.values()) {
                 final IFacadePart fp = fc.getFacade(d);
                 if (fp != null) {
                     facades.add(fp.getItemStack());
@@ -460,7 +460,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     private void updateDynamicRender() {
         this.requiresDynamicRender = false;
-        for (final Direction s : Direction.values()) {
+        for (Direction s : Direction.values()) {
             final IPart p = this.getPart(s);
             if (p != null) {
                 this.setRequiresDynamicRender(this.isRequiresDynamicRender() || p.requireDynamicRender());
@@ -515,7 +515,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                             if (cn != null) {
                                 try {
                                     GridHelper.createGridConnection(cn, sn);
-                                } catch (final FailedConnectionException e) {
+                                } catch (FailedConnectionException e) {
                                     // ekk
                                     AELog.debug(e);
                                 }
@@ -538,7 +538,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
         this.inWorld = false;
 
-        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
+        for (Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 part.removeFromWorld();
@@ -550,7 +550,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public IGridNode getGridNode(final Direction side) {
+    public IGridNode getGridNode(Direction side) {
         final IPart part = this.getPart(side);
         if (part != null) {
             final IGridNode n = part.getExternalFacingNode();
@@ -589,26 +589,26 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public int isProvidingStrongPower(final Direction side) {
+    public int isProvidingStrongPower(Direction side) {
         final IPart part = this.getPart(side);
         return part != null ? part.isProvidingStrongPower() : 0;
     }
 
     @Override
-    public int isProvidingWeakPower(final Direction side) {
+    public int isProvidingWeakPower(Direction side) {
         final IPart part = this.getPart(side);
         return part != null ? part.isProvidingWeakPower() : 0;
     }
 
     @Override
-    public boolean canConnectRedstone(final Direction opposite) {
+    public boolean canConnectRedstone(Direction opposite) {
         final IPart part = this.getPart(opposite);
         return part != null && part.canConnectRedstone();
     }
 
     @Override
-    public void onEntityCollision(final Entity entity) {
-        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
+    public void onEntityCollision(Entity entity) {
+        for (Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPart part = this.getPart(s);
             if (part != null) {
                 part.onEntityCollision(entity);
@@ -617,7 +617,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean activate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean activate(Player player, InteractionHand hand, Vec3 pos) {
         final SelectedPart p = this.selectPartLocal(pos);
         if (p != null && p.part != null) {
             // forge sends activate even when sneaking in some cases (eg emtpy hand)
@@ -646,8 +646,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean isLadder(final LivingEntity entity) {
-        for (final Direction side : Platform.DIRECTIONS_WITH_NULL) {
+    public boolean isLadder(LivingEntity entity) {
+        for (Direction side : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(side);
             if (p != null && p.isLadder(entity)) {
                 return true;
@@ -658,8 +658,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public void animateTick(final Level level, final BlockPos pos, final Random r) {
-        for (final Direction side : Platform.DIRECTIONS_WITH_NULL) {
+    public void animateTick(Level level, BlockPos pos, Random r) {
+        for (Direction side : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(side);
             if (p != null) {
                 p.animateTick(level, pos, r);
@@ -671,7 +671,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     public int getLightValue() {
         int light = 0;
 
-        for (final Direction d : Platform.DIRECTIONS_WITH_NULL) {
+        for (Direction d : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(d);
             if (p != null) {
                 light = Math.max(p.getLightLevel(), light);
@@ -681,7 +681,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return light;
     }
 
-    public void writeToStream(final FriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         int sides = 0;
         for (int x = 0; x < Platform.DIRECTIONS_WITH_NULL.length; x++) {
             var p = this.getPart(Platform.DIRECTIONS_WITH_NULL[x]);
@@ -745,11 +745,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return updateBlock;
     }
 
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         data.putInt("hasRedstone", this.hasRedstone.ordinal());
 
         final IFacadeContainer fc = this.getFacadeContainer();
-        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
+        for (Direction s : Platform.DIRECTIONS_WITH_NULL) {
             fc.writeToNBT(data);
 
             var part = this.getPart(s);
@@ -770,11 +770,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         }
     }
 
-    private Direction getSide(final IPart part) {
+    private Direction getSide(IPart part) {
         if (this.storage.getCenter() == part) {
             return null;
         } else {
-            for (final Direction side : Direction.values()) {
+            for (Direction side : Direction.values()) {
                 if (this.getPart(side) == part) {
                     return side;
                 }
@@ -784,7 +784,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         throw new IllegalStateException("Uhh Bad Part (" + part + ") on Side.");
     }
 
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         invalidateShapes();
 
         if (data.contains("hasRedstone")) {
@@ -838,7 +838,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         this.getFacadeContainer().readFromNBT(data);
     }
 
-    public List<ItemStack> getDrops(final List<ItemStack> drops) {
+    public List<ItemStack> getDrops(List<ItemStack> drops) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(side);
             if (part != null) {
@@ -868,7 +868,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor colour, final Player who) {
+    public boolean recolourBlock(Direction side, AEColor colour, Player who) {
         final IPart cable = this.getPart(null);
         if (cable != null) {
             final ICablePart pc = (ICablePart) cable;
@@ -881,7 +881,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return this.requiresDynamicRender;
     }
 
-    private void setRequiresDynamicRender(final boolean requiresDynamicRender) {
+    private void setRequiresDynamicRender(boolean requiresDynamicRender) {
         this.requiresDynamicRender = requiresDynamicRender;
     }
 
@@ -1029,7 +1029,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         final List<AABB> boxes = new ArrayList<>();
 
         final IFacadeContainer fc = this.getFacadeContainer();
-        for (final Direction s : Platform.DIRECTIONS_WITH_NULL) {
+        for (Direction s : Platform.DIRECTIONS_WITH_NULL) {
             final IPartCollisionHelper bch = new BusCollisionHelper(boxes, s, !forCollision);
 
             final IPart part = this.getPart(s);

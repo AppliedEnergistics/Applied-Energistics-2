@@ -29,7 +29,7 @@ public class GridCraftingCpuChange extends GridEvent {
 
     public final IGridNode node;
 
-    public GridCraftingCpuChange(final IGridNode n) {
+    public GridCraftingCpuChange(IGridNode n) {
         this.node = n;
     }
 }

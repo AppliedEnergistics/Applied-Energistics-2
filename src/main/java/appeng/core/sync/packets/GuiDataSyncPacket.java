@@ -61,7 +61,7 @@ public class GuiDataSyncPacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(final INetworkInfo manager, final Player player) {
+    public void clientPacketData(INetworkInfo manager, Player player) {
         AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu && c.containerId == this.containerId) {
             ((AEBaseMenu) c).receiveServerSyncData(this);

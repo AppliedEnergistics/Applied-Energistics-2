@@ -47,8 +47,8 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addCheckedInformation(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void addCheckedInformation(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getMaxEnergyCapacity();
 
@@ -68,7 +68,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    public double injectAEPower(final ItemStack is, double amount, Actionable mode) {
+    public double injectAEPower(ItemStack is, double amount, Actionable mode) {
         final double internalCurrentPower = this.getInternal(is);
         final double internalMaxPower = this.getAEMaxPower(is);
         final double required = internalMaxPower - internalCurrentPower;
@@ -85,7 +85,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    public double extractAEPower(final ItemStack is, double amount, Actionable mode) {
+    public double extractAEPower(ItemStack is, double amount, Actionable mode) {
         final double internalCurrentPower = this.getInternal(is);
         final double fulfillable = Math.min(amount, internalCurrentPower);
 
@@ -99,17 +99,17 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    public double getAEMaxPower(final ItemStack is) {
+    public double getAEMaxPower(ItemStack is) {
         return this.getMaxEnergyCapacity();
     }
 
     @Override
-    public double getAECurrentPower(final ItemStack is) {
+    public double getAECurrentPower(ItemStack is) {
         return this.getInternal(is);
     }
 
     @Override
-    public AccessRestriction getPowerFlow(final ItemStack is) {
+    public AccessRestriction getPowerFlow(ItemStack is) {
         return AccessRestriction.WRITE;
     }
 
@@ -130,12 +130,12 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
         }
     }
 
-    private double getInternal(final ItemStack is) {
+    private double getInternal(ItemStack is) {
         final CompoundTag nbt = is.getOrCreateTag();
         return nbt.getDouble("internalCurrentPower");
     }
 
-    private void setInternal(final ItemStack is, final double amt) {
+    private void setInternal(ItemStack is, double amt) {
         final CompoundTag nbt = is.getOrCreateTag();
         nbt.putDouble("internalCurrentPower", amt);
     }

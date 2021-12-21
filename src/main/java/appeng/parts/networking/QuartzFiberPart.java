@@ -69,18 +69,18 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(6, 6, 10, 10, 10, 16);
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
         this.outerNode.loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         this.outerNode.saveToNBT(extra);
     }
@@ -98,7 +98,7 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(Direction side, IPartHost host, BlockEntity blockEntity) {
         super.setPartHostInfo(side, host, blockEntity);
         this.outerNode.setExposedOnSides(EnumSet.of(side));
     }
@@ -114,7 +114,7 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void onPlacement(final Player player) {
+    public void onPlacement(Player player) {
         super.onPlacement(player);
         this.outerNode.setOwningPlayer(player);
     }
@@ -147,17 +147,17 @@ public class QuartzFiberPart extends AEBasePart {
         }
 
         @Override
-        public double extractProviderPower(final double amt, final Actionable mode) {
+        public double extractProviderPower(double amt, Actionable mode) {
             return 0;
         }
 
         @Override
-        public double injectProviderPower(final double amt, final Actionable mode) {
+        public double injectProviderPower(double amt, Actionable mode) {
             return amt;
         }
 
         @Override
-        public double getProviderEnergyDemand(final double amt) {
+        public double getProviderEnergyDemand(double amt) {
             return 0;
         }
 

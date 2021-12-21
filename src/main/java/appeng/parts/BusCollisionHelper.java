@@ -35,8 +35,8 @@ public class BusCollisionHelper implements IPartCollisionHelper {
 
     private final boolean isVisual;
 
-    public BusCollisionHelper(final List<AABB> boxes, final Direction x, final Direction y, final Direction z,
-            final boolean visual) {
+    public BusCollisionHelper(List<AABB> boxes, Direction x, Direction y, Direction z,
+            boolean visual) {
         this.boxes = boxes;
         this.x = x;
         this.y = y;
@@ -44,7 +44,7 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         this.isVisual = visual;
     }
 
-    public BusCollisionHelper(final List<AABB> boxes, final Direction s, final boolean visual) {
+    public BusCollisionHelper(List<AABB> boxes, Direction s, boolean visual) {
         this.boxes = boxes;
         this.isVisual = visual;
 

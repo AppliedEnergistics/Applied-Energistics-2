@@ -210,7 +210,7 @@ public class Repo implements IClientRepo {
         return this.hasPower;
     }
 
-    public final void setPower(final boolean hasPower) {
+    public final void setPower(boolean hasPower) {
         this.hasPower = hasPower;
     }
 
@@ -218,7 +218,7 @@ public class Repo implements IClientRepo {
         return this.rowSize;
     }
 
-    public final void setRowSize(final int rowSize) {
+    public final void setRowSize(int rowSize) {
         this.rowSize = rowSize;
     }
 
@@ -226,7 +226,7 @@ public class Repo implements IClientRepo {
         return this.searchString;
     }
 
-    public final void setSearchString(@Nonnull final String searchString) {
+    public final void setSearchString(@Nonnull String searchString) {
         this.searchString = searchString;
     }
 

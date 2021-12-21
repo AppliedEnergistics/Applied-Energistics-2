@@ -42,12 +42,12 @@ public class MultiCraftingTracker {
     private Future<ICraftingPlan>[] jobs = null;
     private ICraftingLink[] links = null;
 
-    public MultiCraftingTracker(final ICraftingRequester o, final int size) {
+    public MultiCraftingTracker(ICraftingRequester o, int size) {
         this.owner = o;
         this.size = size;
     }
 
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(CompoundTag extra) {
         for (int x = 0; x < this.size; x++) {
             final CompoundTag link = extra.getCompound("links-" + x);
 
@@ -57,7 +57,7 @@ public class MultiCraftingTracker {
         }
     }
 
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(CompoundTag extra) {
         for (int x = 0; x < this.size; x++) {
             final ICraftingLink link = this.getLink(x);
 
@@ -96,9 +96,9 @@ public class MultiCraftingTracker {
                         return true;
                     }
                 }
-            } catch (final InterruptedException e) {
+            } catch (InterruptedException e) {
                 // :P
-            } catch (final ExecutionException e) {
+            } catch (ExecutionException e) {
                 // :P
             }
         } else if (this.getLink(x) == null) {
@@ -115,7 +115,7 @@ public class MultiCraftingTracker {
         return ImmutableSet.copyOf(new NonNullArrayIterator<>(this.links));
     }
 
-    public void jobStateChange(final ICraftingLink link) {
+    public void jobStateChange(ICraftingLink link) {
         if (this.links != null) {
             for (int x = 0; x < this.links.length; x++) {
                 if (this.links[x] == link) {
@@ -126,7 +126,7 @@ public class MultiCraftingTracker {
         }
     }
 
-    int getSlot(final ICraftingLink link) {
+    int getSlot(ICraftingLink link) {
         if (this.links != null) {
             for (int x = 0; x < this.links.length; x++) {
                 if (this.links[x] == link) {
@@ -140,7 +140,7 @@ public class MultiCraftingTracker {
 
     void cancel() {
         if (this.links != null) {
-            for (final ICraftingLink l : this.links) {
+            for (ICraftingLink l : this.links) {
                 if (l != null) {
                     l.cancel();
                 }
@@ -150,7 +150,7 @@ public class MultiCraftingTracker {
         }
 
         if (this.jobs != null) {
-            for (final Future<ICraftingPlan> l : this.jobs) {
+            for (Future<ICraftingPlan> l : this.jobs) {
                 if (l != null) {
                     l.cancel(true);
                 }
@@ -160,11 +160,11 @@ public class MultiCraftingTracker {
         }
     }
 
-    boolean isBusy(final int slot) {
+    boolean isBusy(int slot) {
         return this.getLink(slot) != null || this.getJob(slot) != null;
     }
 
-    private ICraftingLink getLink(final int slot) {
+    private ICraftingLink getLink(int slot) {
         if (this.links == null) {
             return null;
         }
@@ -172,7 +172,7 @@ public class MultiCraftingTracker {
         return this.links[slot];
     }
 
-    private void setLink(final int slot, final ICraftingLink l) {
+    private void setLink(int slot, ICraftingLink l) {
         if (this.links == null) {
             this.links = new ICraftingLink[this.size];
         }
@@ -195,7 +195,7 @@ public class MultiCraftingTracker {
         }
     }
 
-    private Future<ICraftingPlan> getJob(final int slot) {
+    private Future<ICraftingPlan> getJob(int slot) {
         if (this.jobs == null) {
             return null;
         }
@@ -203,7 +203,7 @@ public class MultiCraftingTracker {
         return this.jobs[slot];
     }
 
-    private void setJob(final int slot, final Future<ICraftingPlan> l) {
+    private void setJob(int slot, Future<ICraftingPlan> l) {
         if (this.jobs == null) {
             this.jobs = new Future[this.size];
         }
@@ -212,7 +212,7 @@ public class MultiCraftingTracker {
 
         boolean hasStuff = false;
 
-        for (final Future<ICraftingPlan> job : this.jobs) {
+        for (Future<ICraftingPlan> job : this.jobs) {
             if (job != null) {
                 hasStuff = true;
                 break;

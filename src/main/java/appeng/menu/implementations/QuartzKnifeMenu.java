@@ -114,7 +114,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
         }
 
         @Override
-        public void set(final ItemStack stack) {
+        public void set(ItemStack stack) {
             if (stack.isEmpty()) {
                 this.makePlate();
             }

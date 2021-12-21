@@ -138,7 +138,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     @Override
-    public boolean isSlotEnabled(final int idx) {
+    public boolean isSlotEnabled(int idx) {
         return idx < getUpgrades().size();
     }
 
@@ -209,7 +209,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         return this.copyMode;
     }
 
-    private void setCopyMode(final CopyMode copyMode) {
+    private void setCopyMode(CopyMode copyMode) {
         this.copyMode = copyMode;
     }
 }

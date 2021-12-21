@@ -84,7 +84,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     private boolean channelModeLocked;
     private ChannelMode channelMode = AEConfig.instance().getChannelMode();
 
-    public PathingService(final IGrid g) {
+    public PathingService(IGrid g) {
         this.grid = (Grid) g;
     }
 
@@ -169,7 +169,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     }
 
     @Override
-    public void removeNode(final IGridNode gridNode) {
+    public void removeNode(IGridNode gridNode) {
         if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.remove(controller);
             this.recalculateControllerNextTick = true;
@@ -187,7 +187,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(final IGridNode gridNode) {
+    public void addNode(IGridNode gridNode) {
         if (gridNode.getOwner() instanceof ControllerBlockEntity controller) {
             this.controllers.add(controller);
             this.recalculateControllerNextTick = true;
@@ -278,7 +278,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         this.lastChannels = this.channelsInUse;
     }
 
-    private IAdvancementTrigger getAchievementBracket(final int ch) {
+    private IAdvancementTrigger getAchievementBracket(int ch) {
         if (ch < 8) {
             return null;
         }
@@ -294,7 +294,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         return AdvancementTriggers.NETWORK_ADMIN;
     }
 
-    private void updateNodReq(final GridChannelRequirementChanged ev) {
+    private void updateNodReq(GridChannelRequirementChanged ev) {
         final IGridNode gridNode = ev.node;
 
         if (gridNode.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
@@ -333,7 +333,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         return this.channelPowerUsage;
     }
 
-    private void setChannelPowerUsage(final double channelPowerUsage) {
+    private void setChannelPowerUsage(double channelPowerUsage) {
         this.channelPowerUsage = channelPowerUsage;
     }
 

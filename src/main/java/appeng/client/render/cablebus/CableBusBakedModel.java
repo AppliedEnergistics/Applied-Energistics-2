@@ -285,7 +285,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         }
 
         // Render all outgoing connections using the appropriate type
-        for (final Entry<Direction, AECableType> connection : connectionTypes.entrySet()) {
+        for (Entry<Direction, AECableType> connection : connectionTypes.entrySet()) {
             final Direction facing = connection.getKey();
             final AECableType connectionType = connection.getValue();
             final boolean cableBusAdjacent = renderState.getCableBusAdjacent().contains(facing);

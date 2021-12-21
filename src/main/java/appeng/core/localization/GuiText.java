@@ -102,7 +102,7 @@ public enum GuiText {
         this.text = new TranslatableComponent(getTranslationKey());
     }
 
-    GuiText(final String r) {
+    GuiText(String r) {
         this.root = r;
         this.text = new TranslatableComponent(getTranslationKey());
     }

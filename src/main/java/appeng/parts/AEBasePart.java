@@ -139,7 +139,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
+    public void addEntityCrashInfo(CrashReportCategory crashreportcategory) {
         crashreportcategory.setDetail("Part Side", this.getSide());
         var beHost = getBlockEntity();
         if (beHost != null) {
@@ -157,12 +157,12 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         this.mainNode.loadFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         this.mainNode.saveToNBT(data);
     }
 
@@ -182,7 +182,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(Direction side, IPartHost host, BlockEntity blockEntity) {
         this.setSide(side);
         this.blockEntity = blockEntity;
         this.host = host;
@@ -232,7 +232,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         return true;
     }
 
-    private boolean useMemoryCard(final Player player) {
+    private boolean useMemoryCard(Player player) {
         final ItemStack memCardIS = player.getInventory().getSelected();
 
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard()
@@ -272,7 +272,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public final boolean onActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public final boolean onActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (this.useMemoryCard(player)) {
             return true;
         }
@@ -281,7 +281,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     @Override
-    public final boolean onShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public final boolean onShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (this.useMemoryCard(player)) {
             return true;
         }
@@ -289,11 +289,11 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         return this.onPartShiftActivate(player, hand, pos);
     }
 
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         return false;
     }
 
-    public boolean onPartShiftActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartShiftActivate(Player player, InteractionHand hand, Vec3 pos) {
         return false;
     }
 
@@ -306,7 +306,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         return this.side;
     }
 
-    private void setSide(final Direction side) {
+    private void setSide(Direction side) {
         this.side = side;
     }
 

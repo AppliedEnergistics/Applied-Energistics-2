@@ -54,15 +54,15 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     private final int maxRegion;
 
-    public SpatialStorageCellItem(Item.Properties props, final int spatialScale) {
+    public SpatialStorageCellItem(Item.Properties props, int spatialScale) {
         super(props);
         this.maxRegion = spatialScale;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
             lines.add(GuiText.Unformatted.text().copy().withStyle(ChatFormatting.ITALIC));
@@ -83,17 +83,17 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public boolean isSpatialStorage(final ItemStack is) {
+    public boolean isSpatialStorage(ItemStack is) {
         return true;
     }
 
     @Override
-    public int getMaxStoredDim(final ItemStack is) {
+    public int getMaxStoredDim(ItemStack is) {
         return this.maxRegion;
     }
 
     @Override
-    public int getAllocatedPlotId(final ItemStack is) {
+    public int getAllocatedPlotId(ItemStack is) {
         final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_PLOT_ID)) {
             try {
@@ -110,8 +110,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public boolean doSpatialTransition(final ItemStack is, final ServerLevel level, final BlockPos min,
-            final BlockPos max, int playerId) {
+    public boolean doSpatialTransition(ItemStack is, ServerLevel level, BlockPos min,
+            BlockPos max, int playerId) {
         final int targetX = max.getX() - min.getX() - 1;
         final int targetY = max.getY() - min.getY() - 1;
         final int targetZ = max.getZ() - min.getZ() - 1;
@@ -164,7 +164,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
     }
 
-    public void setStoredDimension(final ItemStack is, int plotId, BlockPos size) {
+    public void setStoredDimension(ItemStack is, int plotId, BlockPos size) {
         final CompoundTag c = is.getOrCreateTag();
         c.putInt(TAG_PLOT_ID, plotId);
         c.putLong(TAG_PLOT_SIZE, size.asLong());

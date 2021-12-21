@@ -36,7 +36,7 @@ public class CraftingLink implements ICraftingLink {
     private boolean done = false;
     private CraftingLinkNexus tie;
 
-    public CraftingLink(final CompoundTag data, final ICraftingRequester req) {
+    public CraftingLink(CompoundTag data, ICraftingRequester req) {
         this.CraftID = data.getString("CraftID");
         this.setCanceled(data.getBoolean("canceled"));
         this.setDone(data.getBoolean("done"));
@@ -50,7 +50,7 @@ public class CraftingLink implements ICraftingLink {
         this.cpu = null;
     }
 
-    public CraftingLink(final CompoundTag data, final ICraftingCPU cpu) {
+    public CraftingLink(CompoundTag data, ICraftingCPU cpu) {
         this.CraftID = data.getString("CraftID");
         this.setCanceled(data.getBoolean("canceled"));
         this.setDone(data.getBoolean("done"));
@@ -119,7 +119,7 @@ public class CraftingLink implements ICraftingLink {
     }
 
     @Override
-    public void writeToNBT(final CompoundTag tag) {
+    public void writeToNBT(CompoundTag tag) {
         tag.putString("CraftID", this.CraftID);
         tag.putBoolean("canceled", this.isCanceled());
         tag.putBoolean("done", this.isDone());
@@ -132,7 +132,7 @@ public class CraftingLink implements ICraftingLink {
         return this.CraftID;
     }
 
-    public void setNexus(final CraftingLinkNexus n) {
+    public void setNexus(CraftingLinkNexus n) {
         if (this.tie != null) {
             this.tie.remove(this);
         }
@@ -150,7 +150,7 @@ public class CraftingLink implements ICraftingLink {
         }
     }
 
-    public long insert(AEKey what, long amount, final Actionable mode) {
+    public long insert(AEKey what, long amount, Actionable mode) {
         if (this.tie == null || this.tie.getRequest() == null || this.tie.getRequest().getRequester() == null) {
             return 0;
         }
@@ -164,7 +164,7 @@ public class CraftingLink implements ICraftingLink {
         }
     }
 
-    void setCanceled(final boolean canceled) {
+    void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
 
@@ -176,7 +176,7 @@ public class CraftingLink implements ICraftingLink {
         return this.cpu;
     }
 
-    void setDone(final boolean done) {
+    void setDone(boolean done) {
         this.done = done;
     }
 }

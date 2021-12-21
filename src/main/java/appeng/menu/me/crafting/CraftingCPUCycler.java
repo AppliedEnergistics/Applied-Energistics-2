@@ -60,9 +60,9 @@ class CraftingCPUCycler {
         int matches = 0;
         boolean changed = !initialDataSent;
         initialDataSent = true;
-        for (final ICraftingCPU c : cpuSet) {
+        for (ICraftingCPU c : cpuSet) {
             boolean found = false;
-            for (final CraftingCPURecord ccr : this.cpus) {
+            for (CraftingCPURecord ccr : this.cpus) {
                 if (ccr.getCpu() == c) {
                     found = true;
                     break;
@@ -82,7 +82,7 @@ class CraftingCPUCycler {
 
         if (changed || this.cpus.size() != matches) {
             this.cpus.clear();
-            for (final ICraftingCPU c : cpuSet) {
+            for (ICraftingCPU c : cpuSet) {
                 if (this.cpuFilter.test(c)) {
                     this.cpus.add(new CraftingCPURecord(c.getAvailableStorage(), c.getCoProcessors(), c));
                 }
@@ -101,7 +101,7 @@ class CraftingCPUCycler {
         }
     }
 
-    public void cycleCpu(final boolean next) {
+    public void cycleCpu(boolean next) {
         if (next) {
             this.selectedCpu++;
         } else {

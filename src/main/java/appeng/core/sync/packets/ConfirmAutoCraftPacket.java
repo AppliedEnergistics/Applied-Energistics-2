@@ -32,12 +32,12 @@ public class ConfirmAutoCraftPacket extends BasePacket {
     private final int amount;
     private final boolean autoStart;
 
-    public ConfirmAutoCraftPacket(final FriendlyByteBuf stream) {
+    public ConfirmAutoCraftPacket(FriendlyByteBuf stream) {
         this.autoStart = stream.readBoolean();
         this.amount = stream.readInt();
     }
 
-    public ConfirmAutoCraftPacket(final int craftAmt, final boolean autoStart) {
+    public ConfirmAutoCraftPacket(int craftAmt, boolean autoStart) {
         this.amount = craftAmt;
         this.autoStart = autoStart;
 
@@ -49,7 +49,7 @@ public class ConfirmAutoCraftPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         if (player.containerMenu instanceof CraftAmountMenu menu) {
             menu.confirm(amount, autoStart);
         }

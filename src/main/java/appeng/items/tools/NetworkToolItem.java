@@ -59,7 +59,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
         if (!level.isClientSide()) {
             MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocator.forHand(p, hand));
         }

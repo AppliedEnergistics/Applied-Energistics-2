@@ -30,7 +30,7 @@ import appeng.entity.TinyTNTPrimedEntity;
 public final class TinyTNTDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
     @Override
-    protected ItemStack execute(final BlockSource dispenser, final ItemStack dispensedItem) {
+    protected ItemStack execute(BlockSource dispenser, ItemStack dispensedItem) {
         final Direction Direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
         final Level level = dispenser.getLevel();
         final int i = dispenser.getPos().getX() + Direction.getStepX();

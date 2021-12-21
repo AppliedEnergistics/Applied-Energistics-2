@@ -37,7 +37,7 @@ public class QNBMenu extends AEBaseMenu {
             .requirePermission(SecurityPermissions.BUILD)
             .build("qnb");
 
-    public QNBMenu(int id, final Inventory ip, final QuantumBridgeBlockEntity quantumBridge) {
+    public QNBMenu(int id, Inventory ip, QuantumBridgeBlockEntity quantumBridge) {
         super(TYPE, id, ip, quantumBridge);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,

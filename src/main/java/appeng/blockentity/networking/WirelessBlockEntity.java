@@ -58,7 +58,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(Direction inForward, Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
     }
@@ -69,7 +69,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int old = this.getClientFlags();
         this.setClientFlags(data.readByte());
@@ -78,7 +78,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         this.setClientFlags(0);
 
@@ -111,8 +111,8 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         // :P
     }
 
@@ -166,7 +166,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
         return this.clientFlags;
     }
 
-    private void setClientFlags(final int clientFlags) {
+    private void setClientFlags(int clientFlags) {
         this.clientFlags = clientFlags;
     }
 }

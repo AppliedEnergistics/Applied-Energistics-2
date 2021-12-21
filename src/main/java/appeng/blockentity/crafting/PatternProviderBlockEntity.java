@@ -56,7 +56,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
         this.logic.onMainNodeStateChanged();
     }
 
-    public void setSide(final Direction facing) {
+    public void setSide(Direction facing) {
         Direction newForward;
 
         if (!this.omniDirectional && this.getForward() == facing.getOpposite()) {
@@ -101,7 +101,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         this.logic.addDrops(drops);
     }
 
@@ -121,7 +121,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.omniDirectional = data.getBoolean("omniDirectional");
 
@@ -129,7 +129,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         boolean oldOmniDirectional = this.omniDirectional;
         this.omniDirectional = data.readBoolean();
@@ -137,7 +137,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.omniDirectional);
     }

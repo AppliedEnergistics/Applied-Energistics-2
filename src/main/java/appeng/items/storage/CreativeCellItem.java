@@ -46,7 +46,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(ItemStack is) {
         return true;
     }
 
@@ -56,12 +56,12 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public FuzzyMode getFuzzyMode(final ItemStack is) {
+    public FuzzyMode getFuzzyMode(ItemStack is) {
         return FuzzyMode.IGNORE_ALL;
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
     }
 
     @Environment(EnvType.CLIENT)

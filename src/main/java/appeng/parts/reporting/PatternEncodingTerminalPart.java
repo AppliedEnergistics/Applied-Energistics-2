@@ -70,10 +70,10 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     }
 
     @Override
-    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+    public void getDrops(List<ItemStack> drops, boolean wrenched) {
         super.getDrops(drops, wrenched);
 
-        for (final ItemStack is : this.pattern) {
+        for (ItemStack is : this.pattern) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -81,7 +81,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.setCraftingRecipe(data.getBoolean("craftingMode"));
         this.setSubstitution(data.getBoolean("substitute"));
@@ -92,7 +92,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         data.putBoolean("craftingMode", this.craftingMode);
         data.putBoolean("substitute", this.substitute);
@@ -103,7 +103,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     }
 
     @Override
-    public MenuType<?> getMenuType(final Player p) {
+    public MenuType<?> getMenuType(Player p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
             return PatternTermMenu.TYPE;
         }
@@ -111,8 +111,8 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removedStack, ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             var is = this.pattern.getStackInSlot(1);
             var details = PatternDetailsHelper.decodePattern(is,
@@ -141,7 +141,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
         return this.craftingMode;
     }
 
-    public void setCraftingRecipe(final boolean craftingMode) {
+    public void setCraftingRecipe(boolean craftingMode) {
         this.craftingMode = craftingMode;
         this.fixCraftingRecipes();
     }
@@ -150,7 +150,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
         return this.substitute;
     }
 
-    public void setSubstitution(final boolean canSubstitute) {
+    public void setSubstitution(boolean canSubstitute) {
         this.substitute = canSubstitute;
     }
 

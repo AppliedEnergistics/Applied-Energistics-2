@@ -220,7 +220,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public final void getBoxes(final IPartCollisionHelper bch) {
+    public final void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(3, 3, 15, 13, 13, 16);
         bch.addBox(2, 2, 14, 14, 14, 15);
         bch.addBox(5, 5, 12, 11, 11, 14);
@@ -256,7 +256,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public final TickRateModulation tickingRequest(IGridNode node, final int ticksSinceLastCall) {
+    public final TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (this.shouldUpdateTarget) {
             this.updateTarget(false);
             this.shouldUpdateTarget = false;
@@ -448,7 +448,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public final void setPriority(final int newValue) {
+    public final void setPriority(int newValue) {
         this.priority = newValue;
         this.getHost().markForSave();
         this.remountStorage();

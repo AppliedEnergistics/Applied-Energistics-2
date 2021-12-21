@@ -47,8 +47,8 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
         this(source, blitter, dir, null);
     }
 
-    public ProgressBar(final IProgressProvider source, Blitter blitter,
-            final Direction dir, final Component title) {
+    public ProgressBar(IProgressProvider source, Blitter blitter,
+            Direction dir, Component title) {
         super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), TextComponent.EMPTY);
         this.source = source;
         this.blitter = blitter.copy();
@@ -89,7 +89,7 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
         }
     }
 
-    public void setFullMsg(final Component msg) {
+    public void setFullMsg(Component msg) {
         this.fullMsg = msg;
     }
 

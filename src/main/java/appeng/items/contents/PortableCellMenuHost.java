@@ -66,7 +66,7 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     }
 
     @Override
-    public double extractAEPower(double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier) {
+    public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
         amt = usePowerMultiplier.multiply(amt);
 
         if (mode == Actionable.SIMULATE) {

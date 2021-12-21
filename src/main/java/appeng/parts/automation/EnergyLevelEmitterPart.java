@@ -120,7 +120,7 @@ public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
     }
 
     @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
             MenuOpener.open(EnergyLevelEmitterMenu.TYPE, player, MenuLocator.forPart(this));
         }

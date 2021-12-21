@@ -41,7 +41,7 @@ public class PhantomNodeBlockEntity extends AENetworkBlockEntity {
     }
 
     @Override
-    public IGridNode getGridNode(final Direction dir) {
+    public IGridNode getGridNode(Direction dir) {
         if (!this.crashMode) {
             return super.getGridNode(dir);
         }

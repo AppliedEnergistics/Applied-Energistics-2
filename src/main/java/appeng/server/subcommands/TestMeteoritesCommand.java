@@ -69,12 +69,12 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> ctx,
-            final CommandSourceStack sender) {
+    public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx,
+            CommandSourceStack sender) {
         test(srv, sender, false);
     }
 
-    private static void test(MinecraftServer srv, final CommandSourceStack sender, boolean force) {
+    private static void test(MinecraftServer srv, CommandSourceStack sender, boolean force) {
         int radius = 100;
 
         ServerPlayer player = null;

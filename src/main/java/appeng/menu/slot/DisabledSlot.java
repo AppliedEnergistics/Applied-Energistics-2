@@ -25,17 +25,17 @@ import net.minecraft.world.item.ItemStack;
 
 public class DisabledSlot extends Slot {
 
-    public DisabledSlot(Container inventory, final int invSlot) {
+    public DisabledSlot(Container inventory, int invSlot) {
         super(inventory, invSlot, 0, 0);
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         return false;
     }
 
     @Override
-    public boolean mayPickup(final Player player) {
+    public boolean mayPickup(Player player) {
         return false;
     }
 }

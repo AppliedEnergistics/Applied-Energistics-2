@@ -50,7 +50,7 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart {
     }
 
     @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
             MenuOpener.open(InterfaceTerminalMenu.TYPE, player, MenuLocator.forPart(this));
         }

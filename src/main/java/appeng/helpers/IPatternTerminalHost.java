@@ -31,11 +31,11 @@ public interface IPatternTerminalHost extends ITerminalHost, IActionHost, Intern
 
     boolean isCraftingRecipe();
 
-    void setCraftingRecipe(final boolean craftingMode);
+    void setCraftingRecipe(boolean craftingMode);
 
     boolean isSubstitution();
 
-    void setSubstitution(final boolean canSubstitute);
+    void setSubstitution(boolean canSubstitute);
 
     boolean isFluidSubstitution();
 

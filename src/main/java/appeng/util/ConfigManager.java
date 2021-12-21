@@ -82,7 +82,7 @@ public final class ConfigManager implements IConfigManager {
      * @param tagCompound to be written to compound
      */
     @Override
-    public void writeToNBT(final CompoundTag tagCompound) {
+    public void writeToNBT(CompoundTag tagCompound) {
         for (var entry : this.settings.entrySet()) {
             tagCompound.putString(entry.getKey().getName(), this.settings.get(entry.getKey()).toString());
         }
@@ -94,14 +94,14 @@ public final class ConfigManager implements IConfigManager {
      * @param tagCompound to be read from compound
      */
     @Override
-    public void readFromNBT(final CompoundTag tagCompound) {
+    public void readFromNBT(CompoundTag tagCompound) {
         for (var entry : this.settings.entrySet()) {
             try {
                 if (tagCompound.contains(entry.getKey().getName(), Tag.TAG_STRING)) {
                     String value = tagCompound.getString(entry.getKey().getName());
                     entry.getKey().setFromString(this, value);
                 }
-            } catch (final IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 AELog.debug(e);
             }
         }

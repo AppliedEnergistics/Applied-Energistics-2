@@ -63,8 +63,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+            int mouseY) {
         // Show the flame "burning down" as we burn through an item of fuel
         if (this.menu.getRemainingBurnTime() > 0) {
             int f = this.menu.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;

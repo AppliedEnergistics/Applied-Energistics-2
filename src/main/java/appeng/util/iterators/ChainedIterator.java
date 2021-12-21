@@ -25,7 +25,7 @@ public final class ChainedIterator<T> implements Iterator<T> {
 
     private int offset = 0;
 
-    public ChainedIterator(final T... list) {
+    public ChainedIterator(T... list) {
         this.list = list;
     }
 

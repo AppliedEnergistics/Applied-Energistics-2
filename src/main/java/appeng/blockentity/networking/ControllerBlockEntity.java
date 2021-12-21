@@ -102,7 +102,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    protected double getFunnelPowerDemand(final double maxReceived) {
+    protected double getFunnelPowerDemand(double maxReceived) {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             return grid.getEnergyService().getEnergyDemand(maxReceived);
@@ -113,7 +113,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
+    protected double funnelPowerIntoStorage(double power, Actionable mode) {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             return grid.getEnergyService().injectPower(power, mode);
@@ -124,7 +124,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    protected void PowerEvent(final PowerEventType x) {
+    protected void PowerEvent(PowerEventType x) {
         getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this, x)));
     }
 
@@ -134,8 +134,8 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
     }
 
     /**
@@ -143,7 +143,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
      *
      * @return true if there is a loaded controller
      */
-    private boolean checkController(final BlockPos pos) {
+    private boolean checkController(BlockPos pos) {
         return Platform.getTickingBlockEntity(getLevel(), pos) instanceof ControllerBlockEntity;
     }
 }

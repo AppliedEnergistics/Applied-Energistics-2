@@ -90,7 +90,7 @@ public final class StorageCells {
         if (is.isEmpty()) {
             return false;
         }
-        for (final ICellHandler ch : handlers) {
+        for (ICellHandler ch : handlers) {
             if (ch.isCell(is)) {
                 return true;
             }
@@ -109,7 +109,7 @@ public final class StorageCells {
         if (is.isEmpty()) {
             return null;
         }
-        for (final ICellHandler ch : handlers) {
+        for (ICellHandler ch : handlers) {
             if (ch.isCell(is)) {
                 return ch;
             }
@@ -127,7 +127,7 @@ public final class StorageCells {
     public static synchronized ICellGuiHandler getGuiHandler(ItemStack is) {
         ICellGuiHandler fallBack = null;
 
-        for (final ICellGuiHandler ch : guiHandlers) {
+        for (ICellGuiHandler ch : guiHandlers) {
             if (ch.isSpecializedFor(is)) {
                 return ch;
             }

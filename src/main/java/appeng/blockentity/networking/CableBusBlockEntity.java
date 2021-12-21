@@ -64,7 +64,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.getCableBus().readFromNBT(data);
     }
@@ -76,7 +76,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         boolean ret = this.getCableBus().readFromStream(data);
 
@@ -92,7 +92,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         this.getCableBus().writeToStream(data);
     }
@@ -117,7 +117,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public IGridNode getGridNode(final Direction dir) {
+    public IGridNode getGridNode(Direction dir) {
         return this.getCableBus().getGridNode(dir);
     }
 
@@ -158,12 +158,12 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         this.getCableBus().getDrops(drops);
     }
 
     @Override
-    public void getNoDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getNoDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         this.getCableBus().getNoDrops(drops);
     }
 
@@ -191,7 +191,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean canAddPart(final ItemStack is, final Direction side) {
+    public boolean canAddPart(ItemStack is, Direction side) {
         return this.getCableBus().canAddPart(is, side);
     }
 
@@ -230,13 +230,13 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean isBlocked(final Direction side) {
+    public boolean isBlocked(Direction side) {
         // TODO 1.10.2-R - Stuff.
         return false;
     }
 
     @Override
-    public SelectedPart selectPartLocal(final Vec3 pos) {
+    public SelectedPart selectPartLocal(Vec3 pos) {
         return this.getCableBus().selectPartLocal(pos);
     }
 
@@ -278,7 +278,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor colour, final Player who) {
+    public boolean recolourBlock(Direction side, AEColor colour, Player who) {
         return this.getCableBus().recolourBlock(side, colour, who);
     }
 
@@ -286,7 +286,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
         return this.cb;
     }
 
-    private void setCableBus(final CableBusContainer cb) {
+    private void setCableBus(CableBusContainer cb) {
         this.cb = cb;
     }
 

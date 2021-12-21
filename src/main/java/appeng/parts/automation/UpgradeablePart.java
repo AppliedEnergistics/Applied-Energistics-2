@@ -61,8 +61,8 @@ public abstract class UpgradeablePart extends BasicStatePart
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removedStack, ItemStack newStack) {
         if (inv == this.upgrades) {
             this.upgradesChanged();
         }
@@ -91,21 +91,21 @@ public abstract class UpgradeablePart extends BasicStatePart
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
         this.config.readFromNBT(extra);
         this.upgrades.readFromNBT(extra, "upgrades");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         this.config.writeToNBT(extra);
         this.upgrades.writeToNBT(extra, "upgrades");
     }
 
     @Override
-    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+    public void getDrops(List<ItemStack> drops, boolean wrenched) {
         super.getDrops(drops, wrenched);
 
         for (var is : this.upgrades) {

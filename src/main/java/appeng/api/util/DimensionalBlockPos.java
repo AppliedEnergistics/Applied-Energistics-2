@@ -80,7 +80,7 @@ public final class DimensionalBlockPos {
         return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getLevel().dimension().location();
     }
 
-    public boolean isInWorld(final LevelAccessor level) {
+    public boolean isInWorld(LevelAccessor level) {
         return this.level == level;
     }
 

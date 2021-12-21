@@ -73,7 +73,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean wasOn = this.isOn;
 
@@ -83,7 +83,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.getBurnTime() > 0);
     }
@@ -97,7 +97,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.setBurnTime(data.getDouble("burnTime"));
         this.setMaxBurnTime(data.getDouble("maxBurnTime"));
@@ -115,8 +115,8 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         if (this.getBurnTime() <= 0 && this.canEatFuel()) {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);
@@ -136,7 +136,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
+    public TickingRequest getTickingRequest(IGridNode node) {
         if (this.getBurnTime() <= 0) {
             this.eatFuel();
         }
@@ -146,7 +146,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (this.getBurnTime() <= 0) {
             this.eatFuel();
 
@@ -236,7 +236,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
         return this.burnSpeed;
     }
 
-    private void setBurnSpeed(final int burnSpeed) {
+    private void setBurnSpeed(int burnSpeed) {
         this.burnSpeed = burnSpeed;
     }
 
@@ -244,7 +244,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
         return this.maxBurnTime;
     }
 
-    private void setMaxBurnTime(final double maxBurnTime) {
+    private void setMaxBurnTime(double maxBurnTime) {
         this.maxBurnTime = maxBurnTime;
     }
 
@@ -252,7 +252,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
         return this.burnTime;
     }
 
-    private void setBurnTime(final double burnTime) {
+    private void setBurnTime(double burnTime) {
         this.burnTime = burnTime;
     }
 

@@ -35,7 +35,7 @@ public class MetaRotation implements IOrientable {
     private final BlockGetter level;
     private final BlockPos pos;
 
-    public MetaRotation(final BlockGetter level, final BlockPos pos, final Property<Direction> facingProp) {
+    public MetaRotation(BlockGetter level, BlockPos pos, Property<Direction> facingProp) {
         this.level = level;
         this.pos = pos;
         this.facingProp = facingProp;
@@ -76,7 +76,7 @@ public class MetaRotation implements IOrientable {
     }
 
     @Override
-    public void setOrientation(final Direction forward, final Direction up) {
+    public void setOrientation(Direction forward, Direction up) {
         if (this.level instanceof Level) {
             if (this.facingProp != null) {
                 ((Level) this.level).setBlockAndUpdate(this.pos,

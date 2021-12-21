@@ -43,7 +43,7 @@ public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    protected double getFunnelPowerDemand(final double maxRequired) {
+    protected double getFunnelPowerDemand(double maxRequired) {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             return grid.getEnergyService().getEnergyDemand(maxRequired);
@@ -53,7 +53,7 @@ public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
+    protected double funnelPowerIntoStorage(double power, Actionable mode) {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             return grid.getEnergyService().injectPower(power, mode);
@@ -68,8 +68,8 @@ public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
 
     }
 }

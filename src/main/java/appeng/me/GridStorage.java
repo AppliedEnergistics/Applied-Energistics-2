@@ -40,7 +40,7 @@ public class GridStorage implements IGridStorage {
      *
      * @param id ID of grid storage
      */
-    public GridStorage(final long id) {
+    public GridStorage(long id) {
         this.myID = id;
         this.data = new CompoundTag();
     }
@@ -51,7 +51,7 @@ public class GridStorage implements IGridStorage {
      * @param data The Grid data.
      * @param id   ID of grid storage
      */
-    public GridStorage(final long id, final CompoundTag data) {
+    public GridStorage(long id, CompoundTag data) {
         this.myID = id;
         this.data = data;
     }
@@ -75,7 +75,7 @@ public class GridStorage implements IGridStorage {
         return this.internalGrid == null ? null : this.internalGrid.get();
     }
 
-    void setGrid(final IGrid grid) {
+    void setGrid(IGrid grid) {
         this.internalGrid = new WeakReference<>(grid);
     }
 
@@ -89,11 +89,11 @@ public class GridStorage implements IGridStorage {
         return this.myID;
     }
 
-    void addDivided(final GridStorage gs) {
+    void addDivided(GridStorage gs) {
         this.divided.put(gs, true);
     }
 
-    boolean hasDivided(final GridStorage myStorage) {
+    boolean hasDivided(GridStorage myStorage) {
         return this.divided.containsKey(myStorage);
     }
 

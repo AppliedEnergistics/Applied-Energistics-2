@@ -86,7 +86,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
 
         // For collision, we're using a simplified bounding box
         if (bch.isBBCollision()) {
@@ -118,7 +118,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public void onEntityCollision(final Entity entity) {
+    public void onEntityCollision(Entity entity) {
         if (!entity.isAlive() || isClientSide() || !this.getMainNode().isActive()) {
             return;
         }
@@ -185,7 +185,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
+    public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(TickRates.AnnihilationPlane, false,
                 true);
     }

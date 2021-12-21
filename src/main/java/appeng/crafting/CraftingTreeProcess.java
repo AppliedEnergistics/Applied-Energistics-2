@@ -46,9 +46,9 @@ public class CraftingTreeProcess {
      */
     private boolean limitQty;
 
-    public CraftingTreeProcess(final ICraftingService cc, final CraftingCalculation job,
-            final IPatternDetails details,
-            final CraftingTreeNode craftingTreeNode) {
+    public CraftingTreeProcess(ICraftingService cc, CraftingCalculation job,
+            IPatternDetails details,
+            CraftingTreeNode craftingTreeNode) {
         this.parent = craftingTreeNode;
         this.details = details;
         this.job = job;
@@ -67,7 +67,7 @@ public class CraftingTreeProcess {
     /**
      * @see CraftingTreeNode#notRecursive
      */
-    boolean notRecursive(final IPatternDetails details) {
+    boolean notRecursive(IPatternDetails details) {
         return this.parent == null || this.parent.notRecursive(details);
     }
 
@@ -77,7 +77,7 @@ public class CraftingTreeProcess {
      */
     private void updateLimitQty() {
         // TODO: consider checking substitute inputs as well?
-        for (final IPatternDetails.IInput input : details.getInputs()) {
+        for (IPatternDetails.IInput input : details.getInputs()) {
             var primaryInput = input.getPossibleInputs()[0];
             boolean isAnInput = false;
 
@@ -102,7 +102,7 @@ public class CraftingTreeProcess {
         return this.limitQty;
     }
 
-    void request(final CraftingSimulationState inv, final long times)
+    void request(CraftingSimulationState inv, long times)
             throws CraftBranchFailure, InterruptedException {
         this.job.handlePausing();
 

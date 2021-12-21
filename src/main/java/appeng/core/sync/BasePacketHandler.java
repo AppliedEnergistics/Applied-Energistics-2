@@ -92,7 +92,7 @@ public class BasePacketHandler {
             REVERSE_LOOKUP.put(packetClass, this);
         }
 
-        public static PacketTypes getPacket(final int id) {
+        public static PacketTypes getPacket(int id) {
             return values()[id];
         }
 
@@ -100,11 +100,11 @@ public class BasePacketHandler {
             return ordinal();
         }
 
-        static PacketTypes getID(final Class<? extends BasePacket> c) {
+        static PacketTypes getID(Class<? extends BasePacket> c) {
             return REVERSE_LOOKUP.get(c);
         }
 
-        public BasePacket parsePacket(final FriendlyByteBuf in) throws IllegalArgumentException {
+        public BasePacket parsePacket(FriendlyByteBuf in) throws IllegalArgumentException {
             return this.factory.apply(in);
         }
     }

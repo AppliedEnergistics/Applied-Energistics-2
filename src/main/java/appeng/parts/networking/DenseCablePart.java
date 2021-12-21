@@ -39,7 +39,7 @@ public abstract class DenseCablePart extends CablePart {
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         updateConnections();
 
         final boolean noLadder = !bch.isBBCollision();
@@ -97,7 +97,7 @@ public abstract class DenseCablePart extends CablePart {
         }
     }
 
-    private boolean isDense(final Direction of) {
+    private boolean isDense(Direction of) {
         var adjacentHost = GridHelper.getNodeHost(getBlockEntity().getLevel(),
                 getBlockEntity().getBlockPos().relative(of));
 

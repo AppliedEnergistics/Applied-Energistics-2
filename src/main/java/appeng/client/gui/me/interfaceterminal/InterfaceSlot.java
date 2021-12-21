@@ -64,12 +64,12 @@ public class InterfaceSlot extends AppEngSlot {
     // The following methods are overridden to prevent client-side code from messing with the stack in the slot
     // Any interaction with the real content of this slot must go via a custom packet
     @Override
-    public final boolean mayPlace(final ItemStack stack) {
+    public final boolean mayPlace(ItemStack stack) {
         return false;
     }
 
     @Override
-    public final void set(final ItemStack stack) {
+    public final void set(ItemStack stack) {
     }
 
     @Override

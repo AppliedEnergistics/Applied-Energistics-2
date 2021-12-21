@@ -62,7 +62,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     private static final String TAG_GRID_KEY = "gridKey";
 
-    public WirelessTerminalItem(final DoubleSupplier powerCapacity, Item.Properties props) {
+    public WirelessTerminalItem(DoubleSupplier powerCapacity, Item.Properties props) {
         super(powerCapacity, props);
     }
 
@@ -103,8 +103,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
         if (getGridKey(stack).isEmpty()) {
@@ -208,7 +208,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
      *
      * @return config manager of wireless terminal
      */
-    public IConfigManager getConfigManager(final ItemStack target) {
+    public IConfigManager getConfigManager(ItemStack target) {
         var out = new ConfigManager((manager, settingName) -> {
             manager.writeToNBT(target.getOrCreateTag());
         });

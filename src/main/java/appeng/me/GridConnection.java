@@ -52,14 +52,14 @@ public class GridConnection implements IGridConnection, IPathItem {
     private Direction fromAtoB;
     private GridNode sideB;
 
-    private GridConnection(final GridNode aNode, final GridNode bNode, @Nullable Direction fromAtoB) {
+    private GridConnection(GridNode aNode, GridNode bNode, @Nullable Direction fromAtoB) {
         this.sideA = aNode;
         this.fromAtoB = fromAtoB;
         this.sideB = bNode;
     }
 
     @Override
-    public IGridNode getOtherSide(final IGridNode gridNode) {
+    public IGridNode getOtherSide(IGridNode gridNode) {
         if (gridNode == this.sideA) {
             return this.sideB;
         }
@@ -71,7 +71,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public Direction getDirection(final IGridNode side) {
+    public Direction getDirection(IGridNode side) {
         if (this.fromAtoB == null) {
             return null;
         }
@@ -160,7 +160,7 @@ public class GridConnection implements IGridConnection, IPathItem {
     }
 
     @Override
-    public void incrementChannelCount(final int usedChannels) {
+    public void incrementChannelCount(int usedChannels) {
         this.lastUsedChannels += usedChannels;
     }
 
@@ -192,11 +192,11 @@ public class GridConnection implements IGridConnection, IPathItem {
         return this.visitorIterationNumber;
     }
 
-    void setVisitorIterationNumber(final Object visitorIterationNumber) {
+    void setVisitorIterationNumber(Object visitorIterationNumber) {
         this.visitorIterationNumber = visitorIterationNumber;
     }
 
-    public static GridConnection create(final IGridNode aNode, final IGridNode bNode,
+    public static GridConnection create(IGridNode aNode, IGridNode bNode,
             @Nullable Direction externalDirection)
             throws FailedConnectionException {
         Objects.requireNonNull(aNode, "aNode");

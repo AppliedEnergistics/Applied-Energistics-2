@@ -63,7 +63,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
@@ -98,7 +98,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
         }
     }
 
-    private boolean isSpatialCell(final ItemStack cell) {
+    private boolean isSpatialCell(ItemStack cell) {
         if (!cell.isEmpty() && cell.getItem() instanceof ISpatialStorageCell sc) {
             return sc != null && sc.isSpatialStorage(cell);
         }
@@ -167,8 +167,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
 
     }
 

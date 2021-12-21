@@ -118,7 +118,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
         config.readFromChildTag(extra, "config");
         // Ensure the filter is rebuilt
@@ -127,7 +127,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         config.writeToChildTag(extra, "config");
         if (isInPulseMode() && pendingPulse) {
@@ -185,7 +185,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public final TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+    public final TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         // Sometimes between being woken up and actually doing work, the config/redstone mode may have changed
         // put us back to sleep if that was the case
         if (isSleeping()) {
@@ -263,7 +263,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public final boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public final boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
             MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
         }
@@ -271,7 +271,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public final TickingRequest getTickingRequest(final IGridNode node) {
+    public final TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(tickRates.getMin(), tickRates.getMax(), isSleeping(), true);
     }
 

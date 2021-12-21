@@ -211,7 +211,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    private void outputMsg(final Entity player, final String string) {
+    private void outputMsg(Entity player, String string) {
         player.sendMessage(new TextComponent(string), Util.NIL_UUID);
     }
 }

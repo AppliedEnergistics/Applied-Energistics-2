@@ -65,7 +65,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> 
     }
 
     @Override
-    protected Component getGuiDisplayName(final Component in) {
+    protected Component getGuiDisplayName(Component in) {
         return in; // the cpu name is on the button
     }
 

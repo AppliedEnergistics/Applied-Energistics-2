@@ -79,7 +79,7 @@ public class TinyTNTBlock extends AEBaseBlock {
         }
     }
 
-    public void startFuse(final Level level, final BlockPos pos, final LivingEntity igniter) {
+    public void startFuse(Level level, BlockPos pos, LivingEntity igniter) {
         if (!level.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
@@ -109,7 +109,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void stepOn(final Level level, final BlockPos pos, BlockState state, final Entity entity) {
+    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
         if (!level.isClientSide && entity instanceof AbstractArrow arrow) {
 
             if (arrow.isOnFire()) {
@@ -126,12 +126,12 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public boolean dropFromExplosion(final Explosion exp) {
+    public boolean dropFromExplosion(Explosion exp) {
         return false;
     }
 
     @Override
-    public void wasExploded(final Level level, final BlockPos pos, final Explosion exp) {
+    public void wasExploded(Level level, BlockPos pos, Explosion exp) {
         super.wasExploded(level, pos, exp);
         if (!level.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,

@@ -44,7 +44,7 @@ public class FalloutSnow extends FalloutCopy {
     }
 
     @Override
-    public void getOther(final LevelAccessor level, BlockPos pos, float a) {
+    public void getOther(LevelAccessor level, BlockPos pos, float a) {
         if (a > SNOW_THRESHOLD) {
             this.putter.put(level, pos, Blocks.SNOW.defaultBlockState());
         } else if (a > ICE_THRESHOLD) {

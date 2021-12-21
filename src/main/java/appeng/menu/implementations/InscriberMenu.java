@@ -52,7 +52,7 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     @GuiSync(3)
     public int processingTime = -1;
 
-    public InscriberMenu(int id, final Inventory ip, final InscriberBlockEntity host) {
+    public InscriberMenu(int id, Inventory ip, InscriberBlockEntity host) {
         super(TYPE, id, ip, host);
 
         var inv = host.getInternalInventory();
@@ -92,7 +92,7 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     }
 
     @Override
-    public boolean isValidForSlot(final Slot s, final ItemStack is) {
+    public boolean isValidForSlot(Slot s, ItemStack is) {
         final ItemStack top = getHost().getInternalInventory().getStackInSlot(0);
         final ItemStack bot = getHost().getInternalInventory().getStackInSlot(1);
 

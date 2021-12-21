@@ -64,7 +64,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         }
     }
 
-    private void writeBuffer(final FriendlyByteBuf out) {
+    private void writeBuffer(FriendlyByteBuf out) {
         if (this.dots == null) {
             out.writeByte(0);
             return;
@@ -72,20 +72,20 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
 
         out.writeByte(this.dots.size());
 
-        for (final Splotch s : this.dots) {
+        for (Splotch s : this.dots) {
             s.writeToStream(out);
         }
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         if (data.contains("dots")) {
             this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }
     }
 
-    private void readBuffer(final FriendlyByteBuf in) {
+    private void readBuffer(FriendlyByteBuf in) {
         final byte howMany = in.readByte();
 
         if (howMany == 0) {
@@ -100,13 +100,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         this.writeBuffer(data);
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         super.readFromStream(data);
         this.readBuffer(data);
         return true;
@@ -117,7 +117,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
             return;
         }
 
-        for (final Direction side : Direction.values()) {
+        for (Direction side : Direction.values()) {
             if (!this.isSideValid(side)) {
                 this.removeSide(side);
             }
@@ -126,13 +126,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         this.updateData();
     }
 
-    public boolean isSideValid(final Direction side) {
+    public boolean isSideValid(Direction side) {
         final BlockPos p = this.worldPosition.relative(side);
         final BlockState blk = this.level.getBlockState(p);
         return blk.isFaceSturdy(level, p, side.getOpposite());
     }
 
-    private void removeSide(final Direction side) {
+    private void removeSide(Direction side) {
         this.dots.removeIf(s -> s.getSide() == side);
 
         this.markForUpdate();
@@ -161,7 +161,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         }
     }
 
-    public void cleanSide(final Direction side) {
+    public void cleanSide(Direction side) {
         if (this.dots == null) {
             return;
         }
@@ -170,7 +170,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         this.updateData();
     }
 
-    public void addBlot(final ItemStack type, final Direction side, final Vec3 hitVec) {
+    public void addBlot(ItemStack type, Direction side, Vec3 hitVec) {
         final BlockPos p = this.worldPosition.relative(side);
 
         final BlockState blk = this.level.getBlockState(p);

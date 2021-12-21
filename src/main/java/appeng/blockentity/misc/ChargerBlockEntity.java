@@ -79,7 +79,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         var changed = super.readFromStream(data);
 
         this.working = data.readBoolean();
@@ -106,7 +106,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(Direction inForward, Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
         this.setPowerSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
@@ -118,8 +118,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().wakeDevice(node);
         });
@@ -127,7 +127,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         this.markForUpdate();
     }
 
-    public void activate(final Player player) {
+    public void activate(Player player) {
         if (!Platform.hasPermissions(new DimensionalBlockPos(this), player)) {
             return;
         }
@@ -221,7 +221,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         // charge from the network!
         if (this.getInternalCurrentPower() < POWER_THRESHOLD) {
             getMainNode().ifPresent(grid -> {
-                final double toExtract = Math.min(800.0, this.getInternalMaxPower() - this.getInternalCurrentPower());
+                double toExtract = Math.min(800.0, this.getInternalMaxPower() - this.getInternalCurrentPower());
                 final double extracted = grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
                         PowerMultiplier.ONE);
 
@@ -242,12 +242,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
 
     private static class ChargerInvFilter implements IAEItemFilter {
         @Override
-        public boolean allowInsert(InternalInventory inv, final int i, final ItemStack itemstack) {
+        public boolean allowInsert(InternalInventory inv, int i, ItemStack itemstack) {
             return Platform.isChargeable(itemstack) || AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(itemstack);
         }
 
         @Override
-        public boolean allowExtract(InternalInventory inv, final int slotIndex, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slotIndex, int amount) {
             ItemStack extractedItem = inv.getStackInSlot(slotIndex);
 
             if (Platform.isChargeable(extractedItem)) {

@@ -74,7 +74,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
 
         this.isLocked = data.getBoolean("isLocked");
@@ -83,7 +83,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
 
         data.putBoolean("isLocked", this.isLocked);
@@ -94,7 +94,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
 
         data.writeBoolean(this.isLocked);
@@ -106,7 +106,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         boolean needRedraw = super.readFromStream(data);
 
         var isLocked = data.readBoolean();
@@ -127,7 +127,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (isClientSide()) {
             return true;
         }
@@ -264,7 +264,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void updateWatcher(final IStackWatcher newWatcher) {
+    public void updateWatcher(IStackWatcher newWatcher) {
         this.myWatcher = newWatcher;
         this.configureWatchers();
     }

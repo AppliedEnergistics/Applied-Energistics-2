@@ -103,14 +103,14 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
         addCellInformationToTooltip(stack, lines);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
         var stack = p.getItemInHand(hand);
 
         var direction = InteractionUtil.getPlayerRay(p, 32);
@@ -187,8 +187,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         return true;
     }
 
-    private void shootPaintBalls(final ItemStack type, final Level level, @Nullable final Player p, final Vec3 Vector3d,
-            final Vec3 Vector3d1, final Vec3 direction, final double d0, final double d1, final double d2) {
+    private void shootPaintBalls(ItemStack type, Level level, @Nullable Player p, Vec3 Vector3d,
+            Vec3 Vector3d1, Vec3 direction, double d0, double d1, double d2) {
         final AABB bb = new AABB(Math.min(Vector3d.x, Vector3d1.x), Math.min(Vector3d.y, Vector3d1.y),
                 Math.min(Vector3d.z, Vector3d1.z), Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
                 Math.max(Vector3d.z, Vector3d1.z)).inflate(16, 16, 16);
@@ -237,7 +237,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
                             (byte) (pos.getType() == Type.MISS ? 32
                                     : pos.getLocation().distanceToSqr(vec) + 1)));
-        } catch (final Exception err) {
+        } catch (Exception err) {
             AELog.debug(err);
         }
 
@@ -276,8 +276,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
     }
 
-    private void standardAmmo(float penetration, final Level level, final Player p, final Vec3 Vector3d,
-            final Vec3 Vector3d1, final Vec3 direction, final double d0, final double d1, final double d2) {
+    private void standardAmmo(float penetration, Level level, Player p, Vec3 Vector3d,
+            Vec3 Vector3d1, Vec3 direction, double d0, double d1, double d2) {
         boolean hasDestroyed = true;
         while (penetration > 0 && hasDestroyed) {
             hasDestroyed = false;
@@ -329,7 +329,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                         new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
                                 (float) direction.z, (byte) (pos.getType() == Type.MISS ? 32
                                         : pos.getLocation().distanceToSqr(vec) + 1)));
-            } catch (final Exception err) {
+            } catch (Exception err) {
                 AELog.debug(err);
             }
 
@@ -378,47 +378,47 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(ItemStack is) {
         return true;
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(ItemStack is) {
         return new CellUpgrades(is, 4);
     }
 
     @Override
-    public ConfigInventory getConfigInventory(final ItemStack is) {
+    public ConfigInventory getConfigInventory(ItemStack is) {
         return CellConfig.create(AEItemKey.filter(), is);
     }
 
     @Override
-    public FuzzyMode getFuzzyMode(final ItemStack is) {
+    public FuzzyMode getFuzzyMode(ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
         try {
             return FuzzyMode.valueOf(fz);
-        } catch (final Throwable t) {
+        } catch (Throwable t) {
             return FuzzyMode.IGNORE_ALL;
         }
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
     @Override
-    public int getBytes(final ItemStack cellItem) {
+    public int getBytes(ItemStack cellItem) {
         return 512;
     }
 
     @Override
-    public int getBytesPerType(final ItemStack cellItem) {
+    public int getBytesPerType(ItemStack cellItem) {
         return 8;
     }
 
     @Override
-    public int getTotalTypes(final ItemStack cellItem) {
+    public int getTotalTypes(ItemStack cellItem) {
         return 1;
     }
 

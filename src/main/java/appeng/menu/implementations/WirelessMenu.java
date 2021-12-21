@@ -45,7 +45,7 @@ public class WirelessMenu extends AEBaseMenu {
     @GuiSync(2)
     public long drain = 0;
 
-    public WirelessMenu(int id, final Inventory ip, final WirelessBlockEntity te) {
+    public WirelessMenu(int id, Inventory ip, WirelessBlockEntity te) {
         super(TYPE, id, ip, te);
 
         this.addSlot(this.boosterSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.RANGE_BOOSTER,
@@ -68,7 +68,7 @@ public class WirelessMenu extends AEBaseMenu {
         return this.range;
     }
 
-    private void setRange(final long range) {
+    private void setRange(long range) {
         this.range = range;
     }
 
@@ -76,7 +76,7 @@ public class WirelessMenu extends AEBaseMenu {
         return this.drain;
     }
 
-    private void setDrain(final long drain) {
+    private void setDrain(long drain) {
         this.drain = drain;
     }
 }

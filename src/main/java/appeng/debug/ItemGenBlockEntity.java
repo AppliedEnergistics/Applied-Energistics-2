@@ -52,7 +52,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
     public ItemGenBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
-            for (final Item item : Registry.ITEM) {
+            for (Item item : Registry.ITEM) {
                 addPossibleItem(item, SHARED_POSSIBLE_ITEMS);
             }
         }

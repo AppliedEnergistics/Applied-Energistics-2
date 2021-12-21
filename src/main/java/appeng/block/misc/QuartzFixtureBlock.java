@@ -139,14 +139,14 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
-            final Direction up) {
+    public boolean isValidOrientation(LevelAccessor level, BlockPos pos, Direction forward,
+            Direction up) {
         // FIXME: I think this entire method -> not required, but not sure... are quartz
         // fixtures rotateable???
         return this.canPlaceAt(level, pos, up.getOpposite());
     }
 
-    private boolean canPlaceAt(final LevelReader level, final BlockPos pos, final Direction dir) {
+    private boolean canPlaceAt(LevelReader level, BlockPos pos, Direction dir) {
         final BlockPos test = pos.relative(dir);
         BlockState blockstate = level.getBlockState(test);
         return blockstate.isFaceSturdy(level, test, dir.getOpposite());
@@ -160,7 +160,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random r) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -191,7 +191,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         }
     }
 
-    private void dropTorch(final Level level, final BlockPos pos) {
+    private void dropTorch(Level level, BlockPos pos) {
         final BlockState prev = level.getBlockState(pos);
         level.destroyBlock(pos, true);
         level.sendBlockUpdated(pos, prev, level.getBlockState(pos), 3);
@@ -199,7 +199,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        for (final Direction dir : Direction.values()) {
+        for (Direction dir : Direction.values()) {
             if (this.canPlaceAt(level, pos, dir)) {
                 return true;
             }
@@ -208,7 +208,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     @Override
-    public IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
+    public IOrientable getOrientable(BlockGetter level, BlockPos pos) {
         return new MetaRotation(level, pos, FACING);
     }
 

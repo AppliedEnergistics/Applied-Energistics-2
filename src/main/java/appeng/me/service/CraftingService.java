@@ -113,7 +113,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         var previouslyCrafting = new HashSet<>(currentlyCrafting);
         this.currentlyCrafting.clear();
-        for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
+        for (CraftingCPUCluster cpu : this.craftingCPUClusters) {
             cpu.craftingLogic.tickCraftingLogic(energyGrid, this);
 
             cpu.craftingLogic.getAllWaitingFor(this.currentlyCrafting);
@@ -143,7 +143,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         var requester = gridNode.getService(ICraftingRequester.class);
         if (requester != null) {
-            for (final CraftingLinkNexus link : this.craftingLinks.values()) {
+            for (CraftingLinkNexus link : this.craftingLinks.values()) {
                 if (link.isRequester(requester)) {
                     link.removeNode();
                 }
@@ -174,7 +174,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         var craftingRequester = gridNode.getService(ICraftingRequester.class);
         if (craftingRequester != null) {
-            for (final ICraftingLink link : craftingRequester.getRequestedJobs()) {
+            for (ICraftingLink link : craftingRequester.getRequestedJobs()) {
                 if (link instanceof CraftingLink) {
                     this.addLink((CraftingLink) link);
                 }
@@ -208,7 +208,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     }
 
-    public void addLink(final CraftingLink link) {
+    public void addLink(CraftingLink link) {
         if (link.isStandalone()) {
             return;
         }
@@ -261,8 +261,8 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     @Override
-    public ICraftingLink submitJob(final ICraftingPlan job, final ICraftingRequester requestingMachine,
-            final ICraftingCPU target, final boolean prioritizePower, final IActionSource src) {
+    public ICraftingLink submitJob(ICraftingPlan job, ICraftingRequester requestingMachine,
+            ICraftingCPU target, boolean prioritizePower, IActionSource src) {
         if (job.simulation()) {
             return null;
         }
@@ -275,7 +275,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         if (target == null) {
             final List<CraftingCPUCluster> validCpusClusters = new ArrayList<>();
-            for (final CraftingCPUCluster cpu : this.craftingCPUClusters) {
+            for (CraftingCPUCluster cpu : this.craftingCPUClusters) {
                 if (cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.bytes()) {
                     validCpusClusters.add(cpu);
                 }
@@ -334,7 +334,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     public long getRequestedAmount(AEKey what) {
         long requested = 0;
 
-        for (final CraftingCPUCluster cluster : this.craftingCPUClusters) {
+        for (CraftingCPUCluster cluster : this.craftingCPUClusters) {
             requested += cluster.craftingLogic.getWaitingFor(what);
         }
 
@@ -350,7 +350,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         return craftingProviders.getMediums(key);
     }
 
-    public boolean hasCpu(final ICraftingCPU cpu) {
+    public boolean hasCpu(ICraftingCPU cpu) {
         return this.craftingCPUClusters.contains(cpu);
     }
 }

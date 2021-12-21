@@ -88,14 +88,14 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
         this.craftingTracker.readFromNBT(extra);
         this.nextSlot = extra.getInt("nextSlot");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         this.craftingTracker.writeToNBT(extra);
         extra.putInt("nextSlot", this.nextSlot);
@@ -209,7 +209,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     }
 
     @Override
-    public void jobStateChange(final ICraftingLink link) {
+    public void jobStateChange(ICraftingLink link) {
         this.craftingTracker.jobStateChange(link);
     }
 
@@ -218,7 +218,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
         return this.craftingTracker.getRequestedJobs();
     }
 
-    protected int getStartingSlot(final SchedulingMode schedulingMode, final int x) {
+    protected int getStartingSlot(SchedulingMode schedulingMode, int x) {
         if (schedulingMode == SchedulingMode.RANDOM) {
             return Platform.getRandom().nextInt(this.availableSlots());
         }
@@ -230,7 +230,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
         return x;
     }
 
-    protected void updateSchedulingMode(final SchedulingMode schedulingMode, final int x) {
+    protected void updateSchedulingMode(SchedulingMode schedulingMode, int x) {
         if (schedulingMode == SchedulingMode.ROUNDROBIN) {
             this.nextSlot = (this.nextSlot + x) % this.availableSlots();
         }
@@ -250,7 +250,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(4, 4, 12, 12, 12, 14);
         bch.addBox(5, 5, 14, 11, 11, 15);
         bch.addBox(6, 6, 15, 10, 10, 16);

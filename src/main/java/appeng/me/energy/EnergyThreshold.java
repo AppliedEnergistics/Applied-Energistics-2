@@ -26,7 +26,7 @@ public class EnergyThreshold implements Comparable<EnergyThreshold> {
     private final IEnergyWatcher watcher;
     private final int watcherHash;
 
-    public EnergyThreshold(final double lim, final IEnergyWatcher watcher) {
+    public EnergyThreshold(double lim, IEnergyWatcher watcher) {
         this.threshold = lim;
         this.watcher = watcher;
         this.watcherHash = watcher.hashCode();
@@ -38,7 +38,7 @@ public class EnergyThreshold implements Comparable<EnergyThreshold> {
      * @param lim
      * @param bound
      */
-    public EnergyThreshold(final double lim, final int bound) {
+    public EnergyThreshold(double lim, int bound) {
         this.threshold = lim;
         this.watcher = null;
         this.watcherHash = bound;

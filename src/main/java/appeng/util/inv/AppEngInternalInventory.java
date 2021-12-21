@@ -54,7 +54,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         Arrays.fill(this.maxStack, maxStack);
     }
 
-    public AppEngInternalInventory(@Nullable InternalInventoryHost inventory, final int size, final int maxStack) {
+    public AppEngInternalInventory(@Nullable InternalInventoryHost inventory, int size, int maxStack) {
         this(inventory, size, maxStack, null);
     }
 
@@ -189,7 +189,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         return this.host != null && !this.host.isClientSide() || this.isEnableClientEvents();
     }
 
-    public void setMaxStackSize(final int slot, final int size) {
+    public void setMaxStackSize(int slot, int size) {
         this.maxStack[slot] = size;
     }
 
@@ -239,7 +239,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         return this.enableClientEvents;
     }
 
-    public void setEnableClientEvents(final boolean enableClientEvents) {
+    public void setEnableClientEvents(boolean enableClientEvents) {
         this.enableClientEvents = enableClientEvents;
     }
 

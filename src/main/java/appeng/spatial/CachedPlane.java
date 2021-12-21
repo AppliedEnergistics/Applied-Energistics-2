@@ -64,8 +64,8 @@ public class CachedPlane {
     private final List<WorldCoord> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
 
-    public CachedPlane(final ServerLevel level, final int minX, final int minY, final int minZ, final int maxX,
-            final int maxY, final int maxZ) {
+    public CachedPlane(ServerLevel level, int minX, int minY, int minZ, int maxX,
+            int maxY, int maxZ) {
 
         Block matrixFrameBlock = AEBlocks.MATRIX_FRAME.block();
         if (matrixFrameBlock != null) {
@@ -161,7 +161,7 @@ public class CachedPlane {
         }
     }
 
-    void swap(final CachedPlane dst) {
+    void swap(CachedPlane dst) {
         if (dst.x_size == this.x_size && dst.y_size == this.y_size && dst.z_size == this.z_size) {
             AELog.info("Block Copy Scale: " + this.x_size + ", " + this.y_size + ", " + this.z_size);
 
@@ -238,9 +238,9 @@ public class CachedPlane {
         }
     }
 
-    private void markForUpdate(final int x, final int y, final int z) {
+    private void markForUpdate(int x, int y, int z) {
         this.updates.add(new WorldCoord(x, y, z));
-        for (final Direction d : Direction.values()) {
+        for (Direction d : Direction.values()) {
             this.updates.add(new WorldCoord(x + d.getStepX(), y + d.getStepY(), z + d.getStepZ()));
         }
     }
@@ -250,7 +250,7 @@ public class CachedPlane {
                 tick.type(), pos, tick.triggerTick(), tick.priority(), tick.subTickOrder()));
     }
 
-    private void addBlockEntity(final int x, final int y, final int z, BlockEntityMoveRecord moveRecord) {
+    private void addBlockEntity(int x, int y, int z, BlockEntityMoveRecord moveRecord) {
         try {
             var c = this.myColumns[x][z];
             if (!c.doNotSkip(y + this.y_offset)) {
@@ -273,7 +273,7 @@ public class CachedPlane {
             if (!success) {
                 attemptRecovery(x, y, z, moveRecord, c);
             }
-        } catch (final Throwable e) {
+        } catch (Throwable e) {
             AELog.warn(e);
         }
     }
@@ -348,7 +348,7 @@ public class CachedPlane {
         private final LevelChunk c;
         private List<Integer> skipThese = null;
 
-        public Column(final LevelChunk chunk, final int x, final int z) {
+        public Column(LevelChunk chunk, int x, int z) {
             this.x = x;
             this.z = z;
             this.c = chunk;

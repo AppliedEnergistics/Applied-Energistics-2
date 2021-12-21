@@ -68,7 +68,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
      */
     public final CraftingCpuLogic craftingLogic = new CraftingCpuLogic(this);
 
-    public CraftingCPUCluster(final BlockPos boundsMin, final BlockPos boundsMax) {
+    public CraftingCPUCluster(BlockPos boundsMin, BlockPos boundsMax) {
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
     }
@@ -89,8 +89,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     @Override
-    public void updateStatus(final boolean updateGrid) {
-        for (final CraftingBlockEntity r : this.blockEntities) {
+    public void updateStatus(boolean updateGrid) {
+        for (CraftingBlockEntity r : this.blockEntities) {
             r.updateSubType(true);
         }
     }
@@ -109,7 +109,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         try {
             boolean posted = false;
 
-            for (final CraftingBlockEntity r : this.blockEntities) {
+            for (CraftingBlockEntity r : this.blockEntities) {
                 final IGridNode n = r.getActionableNode();
                 if (n != null && !posted) {
                     n.getGrid().postEvent(new GridCraftingCpuChange(n));
@@ -130,7 +130,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return this.blockEntities.iterator();
     }
 
-    void addBlockEntity(final CraftingBlockEntity te) {
+    void addBlockEntity(CraftingBlockEntity te) {
         if (this.machineSrc == null || te.isCoreBlock()) {
             this.machineSrc = new MachineSource(te);
         }
@@ -164,7 +164,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             send = null;
         }
 
-        for (final CraftingMonitorBlockEntity t : this.status) {
+        for (CraftingMonitorBlockEntity t : this.status) {
             t.setJob(send);
         }
     }
@@ -190,8 +190,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         craftingLogic.cancel();
     }
 
-    public ICraftingLink submitJob(final IGrid g, final ICraftingPlan plan, final IActionSource src,
-            final ICraftingRequester requestingMachine) {
+    public ICraftingLink submitJob(IGrid g, ICraftingPlan plan, IActionSource src,
+            ICraftingRequester requestingMachine) {
         return craftingLogic.trySubmitJob(g, plan, src, requestingMachine);
     }
 
@@ -226,7 +226,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return node != null && node.isActive();
     }
 
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         this.craftingLogic.writeToNBT(data);
     }
 
@@ -243,13 +243,13 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.updateName();
     }
 
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         this.craftingLogic.readFromNBT(data);
     }
 
     public void updateName() {
         this.myName = null;
-        for (final CraftingBlockEntity te : this.blockEntities) {
+        for (CraftingBlockEntity te : this.blockEntities) {
 
             if (te.hasCustomInventoryName()) {
                 if (this.myName != null) {

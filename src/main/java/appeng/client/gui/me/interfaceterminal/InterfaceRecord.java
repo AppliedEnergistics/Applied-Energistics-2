@@ -66,7 +66,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     }
 
     @Override
-    public int compareTo(@Nonnull final InterfaceRecord o) {
+    public int compareTo(@Nonnull InterfaceRecord o) {
         return Long.compare(this.order, o.order);
     }
 

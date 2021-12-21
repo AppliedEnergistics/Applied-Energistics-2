@@ -68,7 +68,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         this.clearPattern(player.getItemInHand(hand), player);
 
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
@@ -82,7 +82,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
                 : InteractionResult.PASS;
     }
 
-    private boolean clearPattern(final ItemStack stack, final Player player) {
+    private boolean clearPattern(ItemStack stack, Player player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             if (player.getCommandSenderWorld().isClientSide()) {
                 return false;
@@ -106,8 +106,8 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         if (!stack.hasTag()) {
             // This can be called very early to index tooltips for search. In those cases,
             // there is no encoded pattern present.
@@ -135,7 +135,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
             }
 
             first = true;
-            for (final InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
+            for (InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
                 lines.add((first ? with : and).copy().append(input.getFormattedToolTip()));
                 first = false;
             }

@@ -90,7 +90,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));
@@ -106,7 +106,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return 0;
     }
 
-    public void addPower(final double rawPower) {
+    public void addPower(double rawPower) {
         this.setStoredPower(this.getStoredPower() + rawPower);
         this.setStoredPower(Math.max(0.0, Math.min(this.getStorage(), this.getStoredPower())));
 
@@ -122,7 +122,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         }
     }
 
-    private boolean canAddOutput(final ItemStack output) {
+    private boolean canAddOutput(ItemStack output) {
         return this.outputSlot.insertItem(0, output, true).isEmpty();
     }
 
@@ -131,7 +131,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
      *
      * @param output to be added output
      */
-    private void addOutput(final ItemStack output) {
+    private void addOutput(ItemStack output) {
         this.outputSlot.insertItem(0, output, false);
     }
 
@@ -158,8 +158,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
     }
 
     @Override
@@ -176,7 +176,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return this.storedPower;
     }
 
-    private void setStoredPower(final double storedPower) {
+    private void setStoredPower(double storedPower) {
         this.storedPower = storedPower;
     }
 

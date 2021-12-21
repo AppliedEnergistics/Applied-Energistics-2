@@ -71,7 +71,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
     private long otherSide;
     private QuantumBridgeBlockEntity center;
 
-    public QuantumCluster(final BlockPos min, final BlockPos max) {
+    public QuantumCluster(BlockPos min, BlockPos max) {
         this.boundsMin = min.immutable();
         this.boundsMax = max.immutable();
         this.setRing(new QuantumBridgeBlockEntity[8]);
@@ -85,7 +85,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
     }
 
     @Override
-    public void updateStatus(final boolean updateGrid) {
+    public void updateStatus(boolean updateGrid) {
 
         final long qe = this.center.getQEFrequency();
 
@@ -144,7 +144,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
 
                     sideA.connection = sideB.connection = new ConnectionWrapper(
                             GridHelper.createGridConnection(sideA.getNode(), sideB.getNode()));
-                } catch (final FailedConnectionException e) {
+                } catch (FailedConnectionException e) {
                     // :(
                     AELog.debug(e);
                 }
@@ -162,7 +162,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
         }
     }
 
-    private boolean canUseNode(final long qe) {
+    private boolean canUseNode(long qe) {
         var locatable = Locatables.quantumNetworkBridges().get(center.getLevel(), qe);
         if (locatable instanceof QuantumCluster qc) {
             var level = qc.center.getLevel();
@@ -252,7 +252,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
                 this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center);
     }
 
-    public boolean isCorner(final QuantumBridgeBlockEntity quantumBridge) {
+    public boolean isCorner(QuantumBridgeBlockEntity quantumBridge) {
         return this.getRing()[0] == quantumBridge || this.getRing()[2] == quantumBridge
                 || this.getRing()[4] == quantumBridge || this.getRing()[6] == quantumBridge;
     }
@@ -265,7 +265,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
         return this.center;
     }
 
-    void setCenter(final QuantumBridgeBlockEntity c) {
+    void setCenter(QuantumBridgeBlockEntity c) {
         this.registered = true;
         ACTIVE_CLUSTERS.add(this);
         this.center = c;
@@ -275,7 +275,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
         return this.updateStatus;
     }
 
-    public void setUpdateStatus(final boolean updateStatus) {
+    public void setUpdateStatus(boolean updateStatus) {
         this.updateStatus = updateStatus;
     }
 
@@ -283,7 +283,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
         return this.Ring;
     }
 
-    private void setRing(final QuantumBridgeBlockEntity[] ring) {
+    private void setRing(QuantumBridgeBlockEntity[] ring) {
         this.Ring = ring;
     }
 

@@ -41,15 +41,15 @@ public final class ColoredItemDefinition<T extends Item> {
         return ids.get(color);
     }
 
-    public T item(final AEColor color) {
+    public T item(AEColor color) {
         return this.items.get(color).asItem();
     }
 
-    public ItemStack stack(final AEColor color) {
+    public ItemStack stack(AEColor color) {
         return stack(color, 1);
     }
 
-    public ItemStack stack(AEColor color, final int stackSize) {
+    public ItemStack stack(AEColor color, int stackSize) {
         var item = item(color);
 
         if (item == null) {

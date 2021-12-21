@@ -190,7 +190,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.priority = data.getInt("priority");
         this.config.readFromChildTag(data, "config");
@@ -198,7 +198,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         data.putInt("priority", this.getPriority());
         this.config.writeToChildTag(data, "config");
@@ -210,7 +210,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     }
 
     @Override
-    public void setPriority(final int newValue) {
+    public void setPriority(int newValue) {
         this.priority = newValue;
         this.getHost().markForSave();
         this.remountStorage();
@@ -280,7 +280,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     }
 
     @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
             openConfigMenu(player);
         }

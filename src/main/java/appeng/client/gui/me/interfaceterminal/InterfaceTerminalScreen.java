@@ -163,8 +163,8 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+            int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof InterfaceSlot);
 
@@ -197,7 +197,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     }
 
     @Override
-    public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
+    public boolean mouseClicked(double xCoord, double yCoord, int btn) {
         if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
             this.searchField.setValue("");
             return true;
@@ -245,8 +245,8 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+            int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
 
         // Draw the top of the dialog
@@ -349,7 +349,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         final Set<Object> cachedSearch = this.getCacheForSearchTerm(searchFilterLowerCase);
         final boolean rebuild = cachedSearch.isEmpty();
 
-        for (final InterfaceRecord entry : this.byId.values()) {
+        for (InterfaceRecord entry : this.byId.values()) {
             // ignore inventory if not doing a full rebuild or cache already marks it as miss.
             if (!rebuild && !cachedSearch.contains(entry)) {
                 continue;
@@ -360,7 +360,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
             // Search if the current inventory holds a pattern containing the search term.
             if (!found) {
-                for (final ItemStack itemStack : entry.getInventory()) {
+                for (ItemStack itemStack : entry.getInventory()) {
                     found = this.itemStackMatchesSearchTerm(itemStack, searchFilterLowerCase);
                     if (found) {
                         break;
@@ -407,7 +407,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         scrollbar.setRange(0, this.lines.size() - this.numLines, 2);
     }
 
-    private boolean itemStackMatchesSearchTerm(final ItemStack itemStack, final String searchTerm) {
+    private boolean itemStackMatchesSearchTerm(ItemStack itemStack, String searchTerm) {
         if (itemStack.isEmpty()) {
             return false;
         }
@@ -445,7 +445,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
      * @param searchTerm the corresponding search
      * @return a Set matching a superset of the search term
      */
-    private Set<Object> getCacheForSearchTerm(final String searchTerm) {
+    private Set<Object> getCacheForSearchTerm(String searchTerm) {
         if (!this.cachedSearches.containsKey(searchTerm)) {
             this.cachedSearches.put(searchTerm, new HashSet<>());
         }
@@ -481,7 +481,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         return this.names.size() + this.byId.size();
     }
 
-    private InterfaceRecord getById(final long id, final long sortBy, final Component name) {
+    private InterfaceRecord getById(long id, long sortBy, Component name) {
         InterfaceRecord o = this.byId.get(id);
 
         if (o == null) {

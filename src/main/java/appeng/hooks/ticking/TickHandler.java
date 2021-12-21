@@ -97,7 +97,7 @@ public class TickHandler {
 
     }
 
-    public void addCallable(final LevelAccessor level, Runnable c) {
+    public void addCallable(LevelAccessor level, Runnable c) {
         addCallable(level, ignored -> c.run());
     }
 
@@ -151,7 +151,7 @@ public class TickHandler {
      *
      * @param grid the {@link Grid} to add, must be not null
      */
-    public void addNetwork(final Grid grid) {
+    public void addNetwork(Grid grid) {
         Platform.assertServerThread();
 
         this.grids.addNetwork(grid);
@@ -164,7 +164,7 @@ public class TickHandler {
      *
      * @param grid the {@link Grid} to remove, must be not null
      */
-    public void removeNetwork(final Grid grid) {
+    public void removeNetwork(Grid grid) {
         Platform.assertServerThread();
 
         this.grids.removeNetwork(grid);
@@ -208,7 +208,7 @@ public class TickHandler {
         var toDestroy = new ArrayList<GridNode>();
 
         this.grids.updateNetworks();
-        for (final Grid g : this.grids.getNetworks()) {
+        for (Grid g : this.grids.getNetworks()) {
             for (var n : g.getNodes()) {
                 if (n.getLevel() == level) {
                     toDestroy.add((GridNode) n);
@@ -306,7 +306,7 @@ public class TickHandler {
         tickCounter++;
     }
 
-    public void registerCraftingSimulation(final Level level, final CraftingCalculation craftingCalculation) {
+    public void registerCraftingSimulation(Level level, CraftingCalculation craftingCalculation) {
         Preconditions.checkArgument(!level.isClientSide, "Trying to register a crafting job for a client-level");
 
         synchronized (this.craftingJobs) {
@@ -387,7 +387,7 @@ public class TickHandler {
      * @param level the level in which the queue is processed or null for the server queue
      * @return the amount of remaining callbacks
      */
-    private int processQueue(final Queue<ILevelRunnable> queue, final Level level) {
+    private int processQueue(Queue<ILevelRunnable> queue, Level level) {
         if (queue == null) {
             return 0;
         }
@@ -404,7 +404,7 @@ public class TickHandler {
                 if (stopWatch.elapsed(TimeUnit.MILLISECONDS) > TIME_LIMIT_PROCESS_QUEUE_MILLISECONDS) {
                     break;
                 }
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 AELog.warn(e);
             }
         }

@@ -40,12 +40,12 @@ public class ClientReadOnlySlot extends Slot {
     }
 
     @Override
-    public final boolean mayPlace(final ItemStack stack) {
+    public final boolean mayPlace(ItemStack stack) {
         return false;
     }
 
     @Override
-    public final void set(final ItemStack stack) {
+    public final void set(ItemStack stack) {
     }
 
     @Override

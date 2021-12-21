@@ -75,7 +75,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         int out = this.constructed;
 
@@ -91,7 +91,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int oldValue = this.constructed;
         this.constructed = data.readByte();
@@ -104,8 +104,8 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);
         }
@@ -154,7 +154,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void disconnect(final boolean affectWorld) {
+    public void disconnect(boolean affectWorld) {
         if (this.cluster != null) {
             if (!affectWorld) {
                 this.cluster.setUpdateStatus(false);
@@ -180,7 +180,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         return !this.isRemoved();
     }
 
-    public void updateStatus(final QuantumCluster c, final byte flags, final boolean affectWorld) {
+    public void updateStatus(QuantumCluster c, byte flags, boolean affectWorld) {
         this.cluster = c;
 
         if (affectWorld) {
@@ -205,7 +205,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     public EnumSet<Direction> getAdjacentQuantumBridges() {
         final EnumSet<Direction> set = EnumSet.noneOf(Direction.class);
 
-        for (final Direction d : Direction.values()) {
+        for (Direction d : Direction.values()) {
             final BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(d));
             if (te instanceof QuantumBridgeBlockEntity) {
                 set.add(d);

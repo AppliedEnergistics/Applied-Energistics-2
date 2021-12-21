@@ -36,7 +36,7 @@ public class CompassRequestPacket extends BasePacket {
     final int cz;
     final int cdy;
 
-    public CompassRequestPacket(final FriendlyByteBuf stream) {
+    public CompassRequestPacket(FriendlyByteBuf stream) {
         this.attunement = stream.readLong();
         this.cx = stream.readInt();
         this.cz = stream.readInt();
@@ -44,7 +44,7 @@ public class CompassRequestPacket extends BasePacket {
     }
 
     // api
-    public CompassRequestPacket(final long attunement, final int cx, final int cz, final int cdy) {
+    public CompassRequestPacket(long attunement, int cx, int cz, int cdy) {
 
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
@@ -58,7 +58,7 @@ public class CompassRequestPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         var pos = new ChunkPos(this.cx, this.cz);
         var result = CompassService.getDirection(player.getLevel(), pos, 174);
 

@@ -75,7 +75,7 @@ public class PatternSlotPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         if (player.containerMenu instanceof PatternTermMenu patternTerminal) {
             patternTerminal.craftOrGetItem(this);
         }

@@ -41,8 +41,8 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
-            final Direction up) {
+    public boolean isValidOrientation(LevelAccessor level, BlockPos pos, Direction forward,
+            Direction up) {
         final SkyCompassBlockEntity sc = this.getBlockEntity(level, pos);
         if (sc != null) {
             return false;
@@ -50,7 +50,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
         return this.canPlaceAt(level, pos, forward.getOpposite());
     }
 
-    private boolean canPlaceAt(final BlockGetter level, final BlockPos pos, final Direction dir) {
+    private boolean canPlaceAt(BlockGetter level, BlockPos pos, Direction dir) {
         final BlockPos test = pos.relative(dir);
         BlockState blockstate = level.getBlockState(test);
         return blockstate.isFaceSturdy(level, test, dir.getOpposite());
@@ -66,7 +66,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
         }
     }
 
-    private void dropTorch(final Level level, final BlockPos pos) {
+    private void dropTorch(Level level, BlockPos pos) {
         final BlockState prev = level.getBlockState(pos);
         level.destroyBlock(pos, true);
         level.sendBlockUpdated(pos, prev, level.getBlockState(pos), 3);
@@ -74,7 +74,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> {
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        for (final Direction dir : Direction.values()) {
+        for (Direction dir : Direction.values()) {
             if (this.canPlaceAt(level, pos, dir)) {
                 return true;
             }

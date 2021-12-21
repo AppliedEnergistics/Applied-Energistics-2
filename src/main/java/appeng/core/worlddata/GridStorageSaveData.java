@@ -56,7 +56,7 @@ public final class GridStorageSaveData extends SavedData implements IGridStorage
      * @return corresponding grid storage
      */
     @Override
-    public GridStorage getGridStorage(final long storageID) {
+    public GridStorage getGridStorage(long storageID) {
         GridStorage result = storage.get(storageID);
 
         if (result == null) {
@@ -77,7 +77,7 @@ public final class GridStorageSaveData extends SavedData implements IGridStorage
     }
 
     @Override
-    public void destroyGridStorage(final long id) {
+    public void destroyGridStorage(long id) {
         this.storage.remove(id);
     }
 

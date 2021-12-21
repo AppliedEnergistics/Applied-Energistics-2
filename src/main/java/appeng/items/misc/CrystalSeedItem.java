@@ -82,7 +82,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
 
     @Nullable
     @Override
-    public ItemStack triggerGrowth(final ItemStack is) {
+    public ItemStack triggerGrowth(ItemStack is) {
         final int growthTicks = getGrowthTicks(is) + 1;
         if (growthTicks >= GROWTH_TICKS_REQUIRED) {
             return new ItemStack(grownItem, is.getCount());
@@ -125,8 +125,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.text());
         lines.add(getGrowthTooltipItem(stack));
 

@@ -60,7 +60,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public ItemTransitionEffectPacket(final FriendlyByteBuf stream) {
+    public ItemTransitionEffectPacket(FriendlyByteBuf stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
@@ -69,7 +69,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final Player player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         EnergyParticleData data = new EnergyParticleData(true, this.d);
         for (int zz = 0; zz < 8; zz++) {
             if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {

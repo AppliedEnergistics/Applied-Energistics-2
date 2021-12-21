@@ -22,7 +22,7 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
 
 public class QuartzAxeItem extends AxeItem {
-    public QuartzAxeItem(Item.Properties props, final QuartzToolType type) {
+    public QuartzAxeItem(Item.Properties props, QuartzToolType type) {
         super(type.getToolTier(), 6.0F, -3.1F, props);
     }
 }

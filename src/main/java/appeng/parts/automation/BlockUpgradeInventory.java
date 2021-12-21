@@ -26,14 +26,14 @@ import appeng.util.inv.InternalInventoryHost;
 public class BlockUpgradeInventory extends UpgradeInventory {
     private final Block block;
 
-    public BlockUpgradeInventory(final Block block, final InternalInventoryHost parent, final int s) {
+    public BlockUpgradeInventory(Block block, InternalInventoryHost parent, int s) {
         super(parent, s);
         this.block = block;
     }
 
     @Override
-    public int getMaxInstalled(final Upgrades upgrades) {
-        for (final Upgrades.Supported supported : upgrades.getSupported()) {
+    public int getMaxInstalled(Upgrades upgrades) {
+        for (Upgrades.Supported supported : upgrades.getSupported()) {
             if (supported.isSupported(block)) {
                 return supported.getMaxCount();
             }

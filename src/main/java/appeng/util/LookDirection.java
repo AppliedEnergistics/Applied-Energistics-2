@@ -25,7 +25,7 @@ public class LookDirection {
     private final Vec3 a;
     private final Vec3 b;
 
-    public LookDirection(final Vec3 a, final Vec3 b) {
+    public LookDirection(Vec3 a, Vec3 b) {
         this.a = a;
         this.b = b;
     }

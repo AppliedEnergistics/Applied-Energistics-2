@@ -32,7 +32,7 @@ public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
     private final Icon icon;
 
-    public ActionButton(final ActionItems action, Consumer<ActionItems> onPress) {
+    public ActionButton(ActionItems action, Consumer<ActionItems> onPress) {
         super(btn -> onPress.accept(action));
 
         ButtonToolTips displayName;

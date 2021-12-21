@@ -21,7 +21,7 @@ package appeng.crafting;
 import appeng.api.stacks.AEKey;
 
 public class CraftBranchFailure extends Exception {
-    public CraftBranchFailure(AEKey what, final long howMany) {
+    public CraftBranchFailure(AEKey what, long howMany) {
         super("Failed: " + what + " x " + howMany);
     }
 }

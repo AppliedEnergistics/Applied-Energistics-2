@@ -22,8 +22,8 @@ import appeng.api.inventories.InternalInventory;
 
 public class PatternOutputsSlot extends OptionalFakeSlot {
 
-    public PatternOutputsSlot(final InternalInventory inv, final IOptionalSlotHost containerBus, final int invSlot,
-            final int groupNum) {
+    public PatternOutputsSlot(InternalInventory inv, IOptionalSlotHost containerBus, int invSlot,
+            int groupNum) {
         super(inv, containerBus, invSlot, groupNum);
     }
 

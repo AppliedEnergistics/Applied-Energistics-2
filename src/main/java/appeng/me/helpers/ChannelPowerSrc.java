@@ -28,13 +28,13 @@ public class ChannelPowerSrc implements IEnergySource {
     private final IGridNode node;
     private final IEnergySource realSrc;
 
-    public ChannelPowerSrc(final IGridNode networkNode, final IEnergySource src) {
+    public ChannelPowerSrc(IGridNode networkNode, IEnergySource src) {
         this.node = networkNode;
         this.realSrc = src;
     }
 
     @Override
-    public double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier) {
+    public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
         if (this.node.isActive()) {
             return this.realSrc.extractAEPower(amt, mode, usePowerMultiplier);
         }

@@ -96,25 +96,25 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(2, 2, 14, 14, 14, 16);
         bch.addBox(5, 5, 12, 11, 11, 14);
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.logic.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         this.logic.writeToNBT(data);
     }
 
     @Override
-    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+    public void getDrops(List<ItemStack> drops, boolean wrenched) {
         super.getDrops(drops, wrenched);
 
         this.logic.addDrops(drops);
@@ -131,7 +131,7 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     }
 
     @Override
-    public boolean onPartActivate(final Player p, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
             openMenu(p, MenuLocator.forPart(this));
         }
@@ -149,7 +149,7 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     }
 
     @Override
-    public void setPriority(final int newValue) {
+    public void setPriority(int newValue) {
         this.logic.setPriority(newValue);
     }
 

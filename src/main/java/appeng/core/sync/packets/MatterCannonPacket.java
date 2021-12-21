@@ -40,7 +40,7 @@ public class MatterCannonPacket extends BasePacket {
     private final double dz;
     private final byte len;
 
-    public MatterCannonPacket(final FriendlyByteBuf stream) {
+    public MatterCannonPacket(FriendlyByteBuf stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
@@ -51,8 +51,8 @@ public class MatterCannonPacket extends BasePacket {
     }
 
     // api
-    public MatterCannonPacket(final double x, final double y, final double z, final float dx, final float dy,
-            final float dz, final byte len) {
+    public MatterCannonPacket(double x, double y, double z, float dx, float dy,
+            float dz, byte len) {
         final float dl = dx * dx + dy * dy + dz * dz;
         final float dlz = (float) Math.sqrt(dl);
 
@@ -80,13 +80,13 @@ public class MatterCannonPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final Player player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         try {
             for (int a = 1; a < this.len; a++) {
                 Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.MATTER_CANNON, this.x + this.dx * a,
                         this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
             }
-        } catch (final Exception ignored) {
+        } catch (Exception ignored) {
         }
     }
 }

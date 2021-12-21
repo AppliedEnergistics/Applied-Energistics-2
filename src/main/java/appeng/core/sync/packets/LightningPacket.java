@@ -36,14 +36,14 @@ public class LightningPacket extends BasePacket {
     private final double y;
     private final double z;
 
-    public LightningPacket(final FriendlyByteBuf stream) {
+    public LightningPacket(FriendlyByteBuf stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
     }
 
     // api
-    public LightningPacket(final double x, final double y, final double z) {
+    public LightningPacket(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -60,13 +60,13 @@ public class LightningPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(final INetworkInfo network, final Player player) {
+    public void clientPacketData(INetworkInfo network, Player player) {
         try {
             if (AEConfig.instance().isEnableEffects()) {
                 player.getCommandSenderWorld().addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,
                         0.0f);
             }
-        } catch (final Exception ignored) {
+        } catch (Exception ignored) {
         }
     }
 }

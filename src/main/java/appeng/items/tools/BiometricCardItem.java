@@ -54,7 +54,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
         if (InteractionUtil.isInAlternateUseMode(p)) {
             this.encode(p.getItemInHand(hand), p);
             p.swing(hand);
@@ -65,8 +65,8 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public InteractionResult interactLivingEntity(ItemStack is, final Player player, final LivingEntity target,
-            final InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack is, Player player, LivingEntity target,
+            InteractionHand hand) {
         if (target instanceof Player && !InteractionUtil.isInAlternateUseMode(player)) {
             if (player.isCreative()) {
                 is = player.getItemInHand(hand);
@@ -79,12 +79,12 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public Component getName(final ItemStack is) {
+    public Component getName(ItemStack is) {
         var profile = this.getProfile(is);
         return profile != null ? super.getName(is).copy().append(" - " + profile.getName()) : super.getName(is);
     }
 
-    private void encode(final ItemStack is, final Player p) {
+    private void encode(ItemStack is, Player p) {
         var profile = this.getProfile(is);
 
         if (profile != null && profile.equals(p.getGameProfile())) {
@@ -95,7 +95,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public void setProfile(final ItemStack itemStack, final GameProfile profile) {
+    public void setProfile(ItemStack itemStack, GameProfile profile) {
         final CompoundTag tag = itemStack.getOrCreateTag();
 
         if (profile != null) {
@@ -142,13 +142,13 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public boolean hasPermission(final ItemStack is, final SecurityPermissions permission) {
+    public boolean hasPermission(ItemStack is, SecurityPermissions permission) {
         final CompoundTag tag = is.getOrCreateTag();
         return tag.getBoolean(permission.name());
     }
 
     @Override
-    public void removePermission(final ItemStack itemStack, final SecurityPermissions permission) {
+    public void removePermission(ItemStack itemStack, SecurityPermissions permission) {
         final CompoundTag tag = itemStack.getOrCreateTag();
         if (tag.contains(permission.name())) {
             tag.remove(permission.name());
@@ -156,22 +156,22 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public void addPermission(final ItemStack itemStack, final SecurityPermissions permission) {
+    public void addPermission(ItemStack itemStack, SecurityPermissions permission) {
         var tag = itemStack.getOrCreateTag();
         tag.putBoolean(permission.name(), true);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {
             lines.add(new TranslatableComponent(GuiText.NoPermissions.getLocal()));
         } else {
             Component msg = null;
 
-            for (final SecurityPermissions sp : perms) {
+            for (SecurityPermissions sp : perms) {
                 if (msg == null) {
                     msg = sp.getDisplayName();
                 } else {

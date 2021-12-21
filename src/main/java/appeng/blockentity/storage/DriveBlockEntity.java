@@ -109,7 +109,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         this.state = calculateCurrentVisualState();
         data.writeInt(this.state);
@@ -145,7 +145,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         boolean c = super.readFromStream(data);
         final int oldState = this.state;
         this.state = data.readInt();
@@ -155,7 +155,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         return (this.state & BIT_STATE_MASK) != (oldState & BIT_STATE_MASK) || c;
     }
 
-    private boolean readCellItemIDs(final FriendlyByteBuf data) {
+    private boolean readCellItemIDs(FriendlyByteBuf data) {
         int uniqueStrCount = data.readByte();
         String[] uniqueStrs = new String[uniqueStrCount];
         for (int i = 0; i < uniqueStrCount; i++) {
@@ -203,7 +203,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CellState getCellStatus(final int slot) {
+    public CellState getCellStatus(int slot) {
         if (isClientSide()) {
             final int cellState = this.state >> slot * BIT_CELL_STATE_BITS & BIT_CELL_STATE_MASK;
             return CellState.values()[cellState];
@@ -227,12 +227,12 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public boolean isCellBlinking(final int slot) {
+    public boolean isCellBlinking(int slot) {
         return false;
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.isCached = false;
         this.priority = data.getInt("priority");
@@ -291,8 +291,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removed, ItemStack added) {
         if (this.isCached) {
             this.isCached = false; // recalculate the storage cell.
             this.updateState();
@@ -360,7 +360,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void setPriority(final int newValue) {
+    public void setPriority(int newValue) {
         this.priority = newValue;
         this.saveChanges();
 

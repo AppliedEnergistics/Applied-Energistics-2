@@ -43,9 +43,9 @@ public class CondenserBlock extends AEBaseEntityBlock<CondenserBlockEntity> {
     }
 
     @Override
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }

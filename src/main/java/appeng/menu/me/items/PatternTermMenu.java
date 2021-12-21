@@ -108,7 +108,7 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
      */
     public IntSet slotsSupportingFluidSubstitution = new IntArraySet();
 
-    public PatternTermMenu(int id, final Inventory ip, final ITerminalHost monitorable) {
+    public PatternTermMenu(int id, Inventory ip, ITerminalHost monitorable) {
         this(TYPE, id, ip, monitorable, true);
     }
 
@@ -347,7 +347,7 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
         }
     }
 
-    private boolean isPattern(final ItemStack output) {
+    private boolean isPattern(ItemStack output) {
         if (output.isEmpty()) {
             return false;
         }
@@ -356,7 +356,7 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
     }
 
     @Override
-    public boolean isSlotEnabled(final int idx) {
+    public boolean isSlotEnabled(int idx) {
         if (idx == 1) {
             return isServer() ? !this.getPatternTerminal().isCraftingRecipe() : !this.isCraftingMode();
         } else if (idx == 2) {
@@ -494,7 +494,7 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
     }
 
     @Override
-    public void onSlotChange(final Slot s) {
+    public void onSlotChange(Slot s) {
         if (s == this.encodedPatternSlot && isServer()) {
             this.broadcastChanges();
         }
@@ -510,11 +510,11 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
             return;
         }
 
-        for (final Slot s : this.craftingGridSlots) {
+        for (Slot s : this.craftingGridSlots) {
             s.set(ItemStack.EMPTY);
         }
 
-        for (final Slot s : this.processingOutputSlots) {
+        for (Slot s : this.processingOutputSlots) {
             s.set(ItemStack.EMPTY);
         }
 
@@ -552,7 +552,7 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
         return this.substitute;
     }
 
-    public void setSubstitute(final boolean substitute) {
+    public void setSubstitute(boolean substitute) {
         if (isClient()) {
             sendClientAction(ACTION_SET_SUBSTITUTION, substitute);
         } else {

@@ -162,7 +162,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
                         broadcastChanges();
                     }
                 }
-            } catch (final Throwable e) {
+            } catch (Throwable e) {
                 if (futureJob != null) {
                     futureJob.cancel(true);
                 }

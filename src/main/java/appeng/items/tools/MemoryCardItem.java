@@ -61,8 +61,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
         lines.add(new TranslatableComponent(firstLineKey));
@@ -88,14 +88,14 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
      * @param name possible names for the localized string
      * @return localized name
      */
-    private String getFirstValidTranslationKey(final String... name) {
-        for (final String n : name) {
+    private String getFirstValidTranslationKey(String... name) {
+        for (String n : name) {
             if (I18n.exists(n)) {
                 return n;
             }
         }
 
-        for (final String n : name) {
+        for (String n : name) {
             return n;
         }
 
@@ -103,21 +103,21 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
     }
 
     @Override
-    public void setMemoryCardContents(final ItemStack is, final String settingsName, final CompoundTag data) {
+    public void setMemoryCardContents(ItemStack is, String settingsName, CompoundTag data) {
         final CompoundTag c = is.getOrCreateTag();
         c.putString("Config", settingsName);
         c.put("Data", data);
     }
 
     @Override
-    public String getSettingsName(final ItemStack is) {
+    public String getSettingsName(ItemStack is) {
         final CompoundTag c = is.getOrCreateTag();
         final String name = c.getString("Config");
         return name.isEmpty() ? GuiText.Blank.getTranslationKey() : name;
     }
 
     @Override
-    public CompoundTag getData(final ItemStack is) {
+    public CompoundTag getData(ItemStack is) {
         final CompoundTag c = is.getOrCreateTag();
         CompoundTag o = c.getCompound("Data");
         return o.copy();
@@ -142,7 +142,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
     }
 
     @Override
-    public void notifyUser(final Player player, final MemoryCardMessages msg) {
+    public void notifyUser(Player player, MemoryCardMessages msg) {
         if (player.getCommandSenderWorld().isClientSide()) {
             return;
         }
@@ -190,7 +190,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         return InteractionResult.PASS;
     }
 
-    private void clearCard(final Player player, final Level level, final InteractionHand hand) {
+    private void clearCard(Player player, Level level, InteractionHand hand) {
         final IMemoryCard mem = (IMemoryCard) player.getItemInHand(hand).getItem();
         mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
         player.getItemInHand(hand).setTag(null);

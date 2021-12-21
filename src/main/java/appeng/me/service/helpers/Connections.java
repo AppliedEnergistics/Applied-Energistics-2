@@ -30,7 +30,7 @@ public class Connections implements Runnable {
     private boolean create = false;
     private boolean destroy = false;
 
-    public Connections(final MEP2PTunnelPart o) {
+    public Connections(MEP2PTunnelPart o) {
         this.me = o;
     }
 
@@ -57,7 +57,7 @@ public class Connections implements Runnable {
         return this.create;
     }
 
-    private void setCreate(final boolean create) {
+    private void setCreate(boolean create) {
         this.create = create;
     }
 
@@ -65,7 +65,7 @@ public class Connections implements Runnable {
         return this.destroy;
     }
 
-    private void setDestroy(final boolean destroy) {
+    private void setDestroy(boolean destroy) {
         this.destroy = destroy;
     }
 }

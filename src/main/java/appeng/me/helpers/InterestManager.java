@@ -35,11 +35,11 @@ public class InterestManager<T> {
         this.container = interests;
     }
 
-    public boolean put(final AEKey stack, final T iw) {
+    public boolean put(AEKey stack, T iw) {
         return this.container.put(stack, iw);
     }
 
-    public boolean remove(final AEKey stack, final T iw) {
+    public boolean remove(AEKey stack, T iw) {
         return this.container.remove(stack, iw);
     }
 
@@ -51,11 +51,11 @@ public class InterestManager<T> {
         }
     }
 
-    public boolean containsKey(final AEKey stack) {
+    public boolean containsKey(AEKey stack) {
         return this.container.containsKey(stack);
     }
 
-    public Collection<T> get(final AEKey stack) {
+    public Collection<T> get(AEKey stack) {
         return this.container.get(stack);
     }
 

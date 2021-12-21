@@ -67,12 +67,12 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         void handle(T button, boolean backwards);
     }
 
-    public SettingToggleButton(Setting<T> setting, final T val,
+    public SettingToggleButton(Setting<T> setting, T val,
             IHandler<SettingToggleButton<T>> onPress) {
         this(setting, val, t -> true, onPress);
     }
 
-    public SettingToggleButton(Setting<T> setting, final T val, Predicate<T> isValidValue,
+    public SettingToggleButton(Setting<T> setting, T val, Predicate<T> isValidValue,
             IHandler<SettingToggleButton<T>> onPress) {
         super(SettingToggleButton::onPress);
         this.onPress = onPress;
@@ -281,7 +281,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         onPress.handle(this, backwards);
     }
 
-    private static <T extends Enum<T>> void registerApp(final Icon icon, final Setting<T> setting, T val,
+    private static <T extends Enum<T>> void registerApp(Icon icon, Setting<T> setting, T val,
             ButtonToolTips title, Component... tooltipLines) {
         var lines = new ArrayList<Component>();
         lines.add(title.text());
@@ -292,8 +292,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                 new ButtonAppearance(icon, lines));
     }
 
-    private static <T extends Enum<T>> void registerApp(final Icon icon, final Setting<T> setting, T val,
-            final ButtonToolTips title, final ButtonToolTips hint) {
+    private static <T extends Enum<T>> void registerApp(Icon icon, Setting<T> setting, T val,
+            ButtonToolTips title, ButtonToolTips hint) {
         registerApp(icon, setting, val, title, hint.text());
     }
 
@@ -316,7 +316,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         return this.currentValue;
     }
 
-    public void set(final T e) {
+    public void set(T e) {
         if (this.currentValue != e) {
             this.currentValue = e;
         }
@@ -357,7 +357,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         }
 
         @Override
-        public boolean equals(final Object obj) {
+        public boolean equals(Object obj) {
             if (obj == null) {
                 return false;
             }

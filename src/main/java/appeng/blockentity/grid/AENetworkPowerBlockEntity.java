@@ -55,7 +55,7 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.getMainNode().loadFromNBT(data);
     }

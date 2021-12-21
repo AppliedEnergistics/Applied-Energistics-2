@@ -80,7 +80,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
             int grids = 0;
             int totalNodes = 0;
 
-            for (final Grid g : TickHandler.instance().getGridList()) {
+            for (Grid g : TickHandler.instance().getGridList()) {
                 grids++;
                 totalNodes += g.size();
             }
@@ -154,7 +154,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                             final Iterable<IGridNode> current = next;
                             next = new HashSet<>();
 
-                            for (final IGridNode n : current) {
+                            for (IGridNode n : current) {
                                 if (n.getOwner() instanceof ControllerBlockEntity) {
                                     break outer;
                                 }
@@ -216,23 +216,23 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    private void outputMessage(final Entity player, final String string, ChatFormatting... chatFormattings) {
+    private void outputMessage(Entity player, String string, ChatFormatting... chatFormattings) {
         player.sendMessage(new TextComponent(string).withStyle(chatFormattings), Util.NIL_UUID);
     }
 
-    private void outputMessage(final Entity player, final String string) {
+    private void outputMessage(Entity player, String string) {
         player.sendMessage(new TextComponent(string), Util.NIL_UUID);
     }
 
-    private void outputPrimaryMessage(final Entity player, String label, String value) {
+    private void outputPrimaryMessage(Entity player, String label, String value) {
         this.outputLabeledMessage(player, label, value, ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE);
     }
 
-    private void outputSecondaryMessage(final Entity player, String label, String value) {
+    private void outputSecondaryMessage(Entity player, String label, String value) {
         this.outputLabeledMessage(player, label, value, ChatFormatting.GRAY);
     }
 
-    private void outputLabeledMessage(final Entity player, String label, String value,
+    private void outputLabeledMessage(Entity player, String label, String value,
             ChatFormatting... chatFormattings) {
         player.sendMessage(new TextComponent("")
                 .append(new TextComponent(label + ": ").withStyle(chatFormattings))

@@ -25,13 +25,13 @@ import appeng.client.gui.Icon;
 
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final InternalInventory inv, final int invSlot, final Icon icon) {
+    public OutputSlot(InternalInventory inv, int invSlot, Icon icon) {
         super(inv, invSlot);
         this.setIcon(icon);
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         return false;
     }
 

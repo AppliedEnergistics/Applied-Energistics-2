@@ -42,7 +42,7 @@ public final class ConfigButtonPacket extends BasePacket {
     }
 
     // api
-    public ConfigButtonPacket(Setting<?> option, final boolean rotationDirection) {
+    public ConfigButtonPacket(Setting<?> option, boolean rotationDirection) {
         this.option = option;
         this.rotationDirection = rotationDirection;
 
@@ -56,7 +56,7 @@ public final class ConfigButtonPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         if (player.containerMenu instanceof AEBaseMenu baseMenu) {
             if (baseMenu.getTarget() instanceof IConfigurableObject configurableObject) {
                 var cm = configurableObject.getConfigManager();

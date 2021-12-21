@@ -42,7 +42,7 @@ public class NetworkToolMenu extends AEBaseMenu {
     @GuiSync(1)
     public boolean facadeMode;
 
-    public NetworkToolMenu(int id, final Inventory ip, NetworkToolMenuHost host) {
+    public NetworkToolMenu(int id, Inventory ip, NetworkToolMenuHost host) {
         super(TYPE, id, ip, host);
 
         for (int i = 0; i < 9; i++) {
@@ -80,7 +80,7 @@ public class NetworkToolMenu extends AEBaseMenu {
         return this.facadeMode;
     }
 
-    private void setFacadeMode(final boolean facadeMode) {
+    private void setFacadeMode(boolean facadeMode) {
         this.facadeMode = facadeMode;
     }
 }

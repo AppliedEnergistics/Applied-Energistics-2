@@ -100,7 +100,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.internalCurrentPower = data.getDouble("internalCurrentPower");
     }
@@ -130,7 +130,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public final double injectAEPower(double amt, final Actionable mode) {
+    public final double injectAEPower(double amt, Actionable mode) {
         if (mode == Actionable.SIMULATE) {
             final double fakeBattery = this.internalCurrentPower + amt;
             if (fakeBattery > this.getInternalMaxPower()) {
@@ -179,7 +179,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public final double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier pm) {
+    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
         return pm.divide(this.extractAEPower(pm.multiply(amt), mode));
     }
 
@@ -188,7 +188,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         return 200;
     }
 
-    private double extractAEPower(double amt, final Actionable mode) {
+    private double extractAEPower(double amt, Actionable mode) {
         if (mode == Actionable.SIMULATE) {
             if (this.internalCurrentPower > amt) {
                 return amt;
@@ -221,7 +221,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         return this.internalMaxPower;
     }
 
-    void setInternalMaxPower(final double internalMaxPower) {
+    void setInternalMaxPower(double internalMaxPower) {
         this.internalMaxPower = internalMaxPower;
     }
 

@@ -41,7 +41,7 @@ public class InterfaceTerminalPacket extends BasePacket {
     private long inventoryId;
     private CompoundTag in;
 
-    public InterfaceTerminalPacket(final FriendlyByteBuf stream) {
+    public InterfaceTerminalPacket(FriendlyByteBuf stream) {
         this.clearExistingData = stream.readBoolean();
         this.inventoryId = stream.readLong();
         this.in = stream.readNbt();

@@ -55,7 +55,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
@@ -67,7 +67,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeByte(this.paintedColor.ordinal());
 
@@ -75,7 +75,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         if (data.contains("paintedColor")) {
             this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
@@ -116,7 +116,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final Player who) {
+    public boolean recolourBlock(Direction side, AEColor newPaintedColor, Player who) {
         if (this.paintedColor == newPaintedColor) {
             return false;
         }
@@ -131,7 +131,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         return this.dspList;
     }
 
-    public void setDisplayList(final Integer dspList) {
+    public void setDisplayList(Integer dspList) {
         this.dspList = dspList;
     }
 
@@ -139,7 +139,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         return this.updateList;
     }
 
-    public void setUpdateList(final boolean updateList) {
+    public void setUpdateList(boolean updateList) {
         this.updateList = updateList;
     }
 

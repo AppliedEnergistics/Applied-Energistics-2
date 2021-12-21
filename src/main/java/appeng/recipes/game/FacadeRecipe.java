@@ -45,12 +45,12 @@ public final class FacadeRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(@Nonnull final CraftingContainer inv, @Nonnull final Level level) {
+    public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
         return !this.getOutput(inv, false).isEmpty();
     }
 
     @Nonnull
-    private ItemStack getOutput(final Container inv, final boolean createFacade) {
+    private ItemStack getOutput(Container inv, boolean createFacade) {
         if (inv.getItem(0).isEmpty() && inv.getItem(2).isEmpty() && inv.getItem(6).isEmpty()
                 && inv.getItem(8).isEmpty()) {
             if (this.anchor.isSameAs(inv.getItem(1)) && this.anchor.isSameAs(inv.getItem(3))
@@ -67,7 +67,7 @@ public final class FacadeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(@Nonnull final CraftingContainer inv) {
+    public ItemStack assemble(@Nonnull CraftingContainer inv) {
         return this.getOutput(inv, true);
     }
 

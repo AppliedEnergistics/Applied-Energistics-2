@@ -50,7 +50,7 @@ public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableB
     }
 
     @Override
-    public IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
+    public IOrientable getOrientable(BlockGetter level, BlockPos pos) {
         return new MetaRotation(level, pos, null);
     }
 

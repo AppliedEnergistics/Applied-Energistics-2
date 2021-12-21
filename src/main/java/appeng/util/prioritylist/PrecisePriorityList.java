@@ -30,7 +30,7 @@ public class PrecisePriorityList implements IPartitionList {
     }
 
     @Override
-    public boolean isListed(final AEKey input) {
+    public boolean isListed(AEKey input) {
         return this.list.get(input) > 0;
     }
 

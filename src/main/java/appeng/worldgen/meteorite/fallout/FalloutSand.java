@@ -43,7 +43,7 @@ public class FalloutSand extends FalloutCopy {
     }
 
     @Override
-    public void getOther(final LevelAccessor level, BlockPos pos, float a) {
+    public void getOther(LevelAccessor level, BlockPos pos, float a) {
         if (a > GLASS_THRESHOLD) {
             this.putter.put(level, pos, Blocks.GLASS.defaultBlockState());
         }

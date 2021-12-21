@@ -29,7 +29,7 @@ public class MachineSource implements IActionSource {
 
     private final IActionHost via;
 
-    public MachineSource(final IActionHost v) {
+    public MachineSource(IActionHost v) {
         this.via = v;
     }
 

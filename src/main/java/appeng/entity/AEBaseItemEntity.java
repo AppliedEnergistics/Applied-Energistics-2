@@ -33,12 +33,12 @@ import appeng.core.sync.packets.SpawnEntityPacket;
 
 public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEntity {
 
-    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level level) {
+    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final Level level, final double x,
-            final double y, final double z, final ItemStack stack) {
+    protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, Level level, double x,
+            double y, double z, ItemStack stack) {
         this(entityType, level);
         this.setPos(x, y, z);
         this.setYRot(this.random.nextFloat() * 360.0F);
@@ -46,7 +46,7 @@ public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEnti
         this.setItem(stack);
     }
 
-    protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final AABB region) {
+    protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(AABB region) {
         return this.level.getEntities(this, region);
     }
 

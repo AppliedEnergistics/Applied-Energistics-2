@@ -131,7 +131,7 @@ public class Platform {
      * @param isRate if true it adds a /t to the formatted string
      * @return formatted long value
      */
-    public static String formatPowerLong(final long n, final boolean isRate) {
+    public static String formatPowerLong(long n, boolean isRate) {
         return formatPower((double) n / 100, isRate);
     }
 
@@ -168,7 +168,7 @@ public class Platform {
         return ms + "ms";
     }
 
-    public static Direction crossProduct(final Direction forward, final Direction up) {
+    public static Direction crossProduct(Direction forward, Direction up) {
         final int west_x = forward.getStepY() * up.getStepZ() - forward.getStepZ() * up.getStepY();
         final int west_y = forward.getStepZ() * up.getStepX() - forward.getStepX() * up.getStepZ();
         final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
@@ -196,7 +196,7 @@ public class Platform {
         return currentServer == null || Thread.currentThread() != currentServer.getRunningThread();
     }
 
-    public static boolean hasPermissions(final DimensionalBlockPos dc, final Player player) {
+    public static boolean hasPermissions(DimensionalBlockPos dc, Player player) {
         if (!dc.isInWorld(player.level)) {
             return false;
         }
@@ -231,7 +231,7 @@ public class Platform {
         return true;
     }
 
-    public static ItemStack[] getBlockDrops(final Level level, final BlockPos pos) {
+    public static ItemStack[] getBlockDrops(Level level, BlockPos pos) {
         // FIXME: Check assumption here and if this could only EVER be called with a
         // server level
         if (!(level instanceof ServerLevel serverLevel)) {
@@ -249,9 +249,9 @@ public class Platform {
     /*
      * Generates Item entities in the level similar to how items are generally dropped.
      */
-    public static void spawnDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public static void spawnDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         if (!level.isClientSide()) {
-            for (final ItemStack i : drops) {
+            for (ItemStack i : drops) {
                 if (!i.isEmpty() && i.getCount() > 0) {
                     final double offset_x = (getRandomInt() % 32 - 16) / 82;
                     final double offset_y = (getRandomInt() % 32 - 16) / 82;
@@ -313,7 +313,7 @@ public class Platform {
                     ? Default.ADVANCED
                     : Default.NORMAL;
             return itemStack.getTooltipLines(Minecraft.getInstance().player, tooltipFlag);
-        } catch (final Exception errB) {
+        } catch (Exception errB) {
             return Collections.emptyList();
         }
     }
@@ -335,7 +335,7 @@ public class Platform {
         return new TranslatableComponent(getDescriptionId(o.toVariant()));
     }
 
-    public static boolean isChargeable(final ItemStack i) {
+    public static boolean isChargeable(ItemStack i) {
         if (i.isEmpty()) {
             return false;
         }
@@ -346,7 +346,7 @@ public class Platform {
         return false;
     }
 
-    public static Player getPlayer(final ServerLevel level) {
+    public static Player getPlayer(ServerLevel level) {
         Objects.requireNonNull(level);
 
         return FakePlayer.getOrCreate(level);
@@ -358,7 +358,7 @@ public class Platform {
      * @return null if the collection is empty
      */
     @Nullable
-    public static <T> T pickRandom(final Collection<T> outs) {
+    public static <T> T pickRandom(Collection<T> outs) {
         if (outs.isEmpty()) {
             return null;
         }
@@ -367,7 +367,7 @@ public class Platform {
         return Iterables.get(outs, index, null);
     }
 
-    public static Direction rotateAround(final Direction forward, final Direction axis) {
+    public static Direction rotateAround(Direction forward, Direction axis) {
         switch (forward) {
             case DOWN:
                 switch (axis) {
@@ -461,7 +461,7 @@ public class Platform {
         return forward;
     }
 
-    public static boolean securityCheck(final GridNode a, final GridNode b) {
+    public static boolean securityCheck(GridNode a, GridNode b) {
         if (a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1
                 || a.getLastSecurityKey() == b.getLastSecurityKey()) {
             return true;
@@ -496,7 +496,7 @@ public class Platform {
         return true;
     }
 
-    private static boolean checkPlayerPermissions(final IGrid grid, final int playerID) {
+    private static boolean checkPlayerPermissions(IGrid grid, int playerID) {
         if (grid == null) {
             return true;
         }
@@ -523,7 +523,7 @@ public class Platform {
                 yaw, pitch);
     }
 
-    public static boolean canAccess(final IManagedGridNode gridProxy, final IActionSource src) {
+    public static boolean canAccess(IManagedGridNode gridProxy, IActionSource src) {
         var grid = gridProxy.getGrid();
         if (grid == null) {
             return false;
@@ -597,7 +597,7 @@ public class Platform {
         return ItemStack.EMPTY;
     }
 
-    public static void notifyBlocksOfNeighbors(final Level level, final BlockPos pos) {
+    public static void notifyBlocksOfNeighbors(Level level, BlockPos pos) {
         if (level != null && !level.isClientSide) {
             TickHandler.instance().addCallable(level, new BlockUpdate(pos));
         }

@@ -74,12 +74,12 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     @Nullable
     private BlockEntityTicker<T> clientTicker;
 
-    public AEBaseEntityBlock(final BlockBehaviour.Properties props) {
+    public AEBaseEntityBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
     // TODO : Was this change needed?
-    public void setBlockEntity(final Class<T> blockEntityClass,
+    public void setBlockEntity(Class<T> blockEntityClass,
             BlockEntityType<T> blockEntityType,
             BlockEntityTicker<T> clientTicker,
             BlockEntityTicker<T> serverTicker) {
@@ -91,12 +91,12 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Nullable
-    public T getBlockEntity(final BlockGetter level, final int x, final int y, final int z) {
+    public T getBlockEntity(BlockGetter level, int x, int y, int z) {
         return this.getBlockEntity(level, new BlockPos(x, y, z));
     }
 
     @Nullable
-    public T getBlockEntity(final BlockGetter level, final BlockPos pos) {
+    public T getBlockEntity(BlockGetter level, BlockPos pos) {
         final BlockEntity te = level.getBlockEntity(pos);
         // FIXME: This gets called as part of building the block state cache
         if (this.blockEntityClass != null && this.blockEntityClass.isInstance(te)) {
@@ -149,7 +149,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, final Level level, final BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         final BlockEntity te = this.getBlockEntity(level, pos);
         if (te instanceof AEBaseInvBlockEntity invBlockEntity) {
             if (invBlockEntity.getInternalInventory().size() > 0) {
@@ -160,16 +160,16 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public boolean triggerEvent(final BlockState state, final Level level, final BlockPos pos, final int eventID,
-            final int eventParam) {
+    public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int eventID,
+            int eventParam) {
         super.triggerEvent(state, level, pos, eventID, eventParam);
         final BlockEntity blockEntity = level.getBlockEntity(pos);
         return blockEntity != null ? blockEntity.triggerEvent(eventID, eventParam) : false;
     }
 
     @Override
-    public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state, final LivingEntity placer,
-            final ItemStack is) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer,
+            ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string rather than a translation
         // component, since our custom naming cannot handle untranslated I18N strings and we would translate it using
         // the server's locale :-(
@@ -235,14 +235,14 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         return this.onActivated(level, pos, player, hand, player.getItemInHand(hand), hit);
     }
 
-    public InteractionResult onActivated(final Level level, final BlockPos pos, final Player player,
-            final InteractionHand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         return InteractionResult.PASS;
     }
 
     @Override
-    public IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
+    public IOrientable getOrientable(BlockGetter level, BlockPos pos) {
         return this.getBlockEntity(level, pos);
     }
 

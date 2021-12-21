@@ -163,7 +163,7 @@ public class InWorldGridNode extends GridNode {
                     () -> callListener(IGridNodeListener::onSecurityBreak));
 
             return false;
-        } catch (final FailedConnectionException e) {
+        } catch (FailedConnectionException e) {
             AELog.debug(e);
 
             return false;

@@ -31,7 +31,7 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     private final IOptionalSlotHost host;
     private boolean renderDisabled = true;
 
-    public OptionalFakeSlot(final InternalInventory inv, final IOptionalSlotHost containerBus, int invSlot,
+    public OptionalFakeSlot(InternalInventory inv, IOptionalSlotHost containerBus, int invSlot,
             int groupNum) {
         super(inv, invSlot);
         this.groupNum = groupNum;
@@ -62,7 +62,7 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
         return this.renderDisabled;
     }
 
-    public void setRenderDisabled(final boolean renderDisabled) {
+    public void setRenderDisabled(boolean renderDisabled) {
         this.renderDisabled = renderDisabled;
     }
 

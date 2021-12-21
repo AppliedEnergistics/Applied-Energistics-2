@@ -67,7 +67,7 @@ public class CraftingCpuHelper {
         return true;
     }
 
-    public static CompoundTag generateLinkData(final String craftingID, final boolean standalone, final boolean req) {
+    public static CompoundTag generateLinkData(String craftingID, boolean standalone, boolean req) {
         final CompoundTag tag = new CompoundTag();
 
         tag.putString("CraftID", craftingID);

@@ -30,7 +30,7 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
     private final int processors;
     private Component name;
 
-    public CraftingCPURecord(final long size, final int coProcessors, final ICraftingCPU server) {
+    public CraftingCPURecord(long size, int coProcessors, ICraftingCPU server) {
         this.size = size;
         this.processors = coProcessors;
         this.cpu = server;
@@ -38,7 +38,7 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
     }
 
     @Override
-    public int compareTo(@Nonnull final CraftingCPURecord o) {
+    public int compareTo(@Nonnull CraftingCPURecord o) {
         final int a = Long.compare(o.getProcessors(), this.getProcessors());
         if (a != 0) {
             return a;

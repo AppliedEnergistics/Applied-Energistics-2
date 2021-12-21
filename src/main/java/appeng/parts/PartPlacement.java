@@ -60,8 +60,8 @@ public class PartPlacement {
 
     private static float eyeHeight = 0.0f;
 
-    public static InteractionResult place(final ItemStack held, final BlockPos pos, Direction side,
-            final Player player, final InteractionHand hand, final Level level, PlaceType pass, final int depth) {
+    public static InteractionResult place(ItemStack held, BlockPos pos, Direction side,
+            Player player, InteractionHand hand, Level level, PlaceType pass, int depth) {
         if (depth > 3) {
             return InteractionResult.FAIL;
         }
@@ -259,7 +259,7 @@ public class PartPlacement {
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    private static float getEyeOffset(final Player p) {
+    private static float getEyeOffset(Player p) {
         if (p.level.isClientSide) {
             return InteractionUtil.getEyeOffset(p);
         }
@@ -267,7 +267,7 @@ public class PartPlacement {
         return getEyeHeight();
     }
 
-    private static SelectedPart selectPart(final Player player, final IPartHost host, final Vec3 pos) {
+    private static SelectedPart selectPart(Player player, IPartHost host, Vec3 pos) {
         AppEng.instance().setPartInteractionPlayer(player);
         try {
             return host.selectPartLocal(pos);
@@ -276,7 +276,7 @@ public class PartPlacement {
         }
     }
 
-    public static IFacadePart createFacade(final ItemStack held, final Direction side) {
+    public static IFacadePart createFacade(ItemStack held, Direction side) {
         if (held.getItem() instanceof IFacadeItem) {
             return ((IFacadeItem) held.getItem()).createPartFromItemStack(held, side);
         }
@@ -308,7 +308,7 @@ public class PartPlacement {
         return eyeHeight;
     }
 
-    public static void setEyeHeight(final float eyeHeight) {
+    public static void setEyeHeight(float eyeHeight) {
         PartPlacement.eyeHeight = eyeHeight;
     }
 

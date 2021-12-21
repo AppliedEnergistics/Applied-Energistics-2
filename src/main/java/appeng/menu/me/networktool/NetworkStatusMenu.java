@@ -58,7 +58,7 @@ public class NetworkStatusMenu extends AEBaseMenu {
         }
     }
 
-    private void findNode(final IInWorldGridNodeHost host, final Direction d) {
+    private void findNode(IInWorldGridNodeHost host, Direction d) {
         if (this.grid == null) {
             final IGridNode node = host.getGridNode(d);
             if (node != null) {

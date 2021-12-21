@@ -56,12 +56,12 @@ public enum FuzzyMode {
      */
     public final float percentage;
 
-    FuzzyMode(final float p) {
+    FuzzyMode(float p) {
         this.percentage = p;
         this.breakPoint = p / 100.0f;
     }
 
-    public int calculateBreakPoint(final int maxDamage) {
+    public int calculateBreakPoint(int maxDamage) {
         return (int) (this.percentage * maxDamage / 100.0f);
     }
 

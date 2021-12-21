@@ -85,7 +85,7 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
     }
 
     @Override
-    public boolean isSlotEnabled(final int idx) {
+    public boolean isSlotEnabled(int idx) {
         final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
         return upgrades > idx;
     }
@@ -94,7 +94,7 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
         return this.placeMode;
     }
 
-    private void setPlaceMode(final YesNo placeMode) {
+    private void setPlaceMode(YesNo placeMode) {
         this.placeMode = placeMode;
     }
 

@@ -208,7 +208,7 @@ public class ItemPickupStrategy implements PickupStrategy {
     /**
      * Checks if this plane can handle the block at the specific coordinates.
      */
-    private boolean canHandleBlock(final ServerLevel level, final BlockPos pos, final BlockState state) {
+    private boolean canHandleBlock(ServerLevel level, BlockPos pos, BlockState state) {
         if (state.isAir()) {
             return false;
         }
@@ -226,7 +226,7 @@ public class ItemPickupStrategy implements PickupStrategy {
                 && level.mayInteract(Platform.getPlayer(level), pos);
     }
 
-    protected List<ItemStack> obtainBlockDrops(final ServerLevel level, final BlockPos pos) {
+    protected List<ItemStack> obtainBlockDrops(ServerLevel level, BlockPos pos) {
         var fakePlayer = Platform.getPlayer(level);
         var state = level.getBlockState(pos);
         var blockEntity = level.getBlockEntity(pos);

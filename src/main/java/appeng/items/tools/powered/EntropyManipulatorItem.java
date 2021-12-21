@@ -95,7 +95,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not considered for onItemUse
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
         final BlockHitResult target = getPlayerPOVHitResult(level, p, Fluid.ANY);
 
         if (target.getType() != Type.BLOCK) {
@@ -228,7 +228,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         List<ItemStack> smeltedDrops = new ArrayList<>();
 
         CraftingContainer tempInv = new CraftingContainer(new NullMenu(), 1, 1);
-        for (final ItemStack i : stack) {
+        for (ItemStack i : stack) {
             tempInv.setItem(0, i);
             Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
                     level);

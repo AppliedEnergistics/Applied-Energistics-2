@@ -25,7 +25,7 @@ import appeng.parts.automation.StackUpgradeInventory;
 public final class CellUpgrades extends StackUpgradeInventory {
     private final ItemStack is;
 
-    public CellUpgrades(final ItemStack is, final int upgrades) {
+    public CellUpgrades(ItemStack is, int upgrades) {
         super(is, null, upgrades);
         this.is = is;
         this.readFromNBT(is.getOrCreateTag(), "upgrades");

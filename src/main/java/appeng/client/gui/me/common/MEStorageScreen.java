@@ -336,8 +336,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+            int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
@@ -354,7 +354,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
+    public boolean mouseClicked(double xCoord, double yCoord, int btn) {
         // Right-clicking on the search field should clear it
         if (this.searchField.isMouseOver(xCoord, yCoord) && btn == 1) {
             this.searchField.setValue("");
@@ -403,8 +403,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+            int mouseY, float partialTicks) {
 
         style.getHeader()
                 .dest(offsetX, offsetY)
@@ -451,7 +451,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                                 s.y,
                                 getBlitOffset(),
                                 entry.getWhat());
-                    } catch (final Exception err) {
+                    } catch (Exception err) {
                         AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
 

@@ -24,7 +24,7 @@ public class ConnectionWrapper {
 
     private IGridConnection connection;
 
-    public ConnectionWrapper(final IGridConnection gc) {
+    public ConnectionWrapper(IGridConnection gc) {
         this.setConnection(gc);
     }
 
@@ -32,7 +32,7 @@ public class ConnectionWrapper {
         return this.connection;
     }
 
-    public void setConnection(final IGridConnection connection) {
+    public void setConnection(IGridConnection connection) {
         this.connection = connection;
     }
 }

@@ -89,7 +89,7 @@ class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
         CubeBuilder builder = new CubeBuilder(context.getEmitter());
 
         float offsetConstant = 0.001f;
-        for (final Splotch s : splotches) {
+        for (Splotch s : splotches) {
 
             if (s.isLumen()) {
                 builder.setColorRGB(s.getColor().whiteVariant);

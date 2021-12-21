@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 public class BlockUpdate implements ILevelRunnable {
     private final BlockPos pos;
 
-    BlockUpdate(final BlockPos pos) {
+    BlockUpdate(BlockPos pos) {
         this.pos = pos;
     }
 

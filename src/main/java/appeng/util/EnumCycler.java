@@ -47,11 +47,11 @@ public final class EnumCycler {
         return ce;
     }
 
-    public static <T extends Enum<T>> T next(final T ce) {
+    public static <T extends Enum<T>> T next(T ce) {
         return rotateEnum(ce, false, EnumSet.allOf(ce.getDeclaringClass()));
     }
 
-    public static <T extends Enum<T>> T prev(final T ce) {
+    public static <T extends Enum<T>> T prev(T ce) {
         return rotateEnum(ce, true, EnumSet.allOf(ce.getDeclaringClass()));
     }
 }

@@ -48,7 +48,7 @@ public final class ReadableNumberConverter {
      * @param width  width limitation of the resulting number
      * @return formatted number restricted by the width limitation
      */
-    public static String format(final long number, final int width) {
+    public static String format(long number, int width) {
         Preconditions.checkArgument(number >= 0, "Non-negative numbers cannot be formatted by this method");
 
         // handles low numbers more efficiently since no format is needed

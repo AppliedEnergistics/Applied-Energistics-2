@@ -87,7 +87,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromChildTag(data, "config");
@@ -104,8 +104,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, final int slot, final ItemStack removedStack,
-            final ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack,
+            ItemStack newStack) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;
             try {
@@ -186,7 +186,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         super.getDrops(level, pos, drops);
 
         if (!this.cell.getStackInSlot(0).isEmpty()) {

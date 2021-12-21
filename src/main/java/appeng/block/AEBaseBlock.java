@@ -44,7 +44,7 @@ public abstract class AEBaseBlock extends Block {
 
     private boolean isInventory = false;
 
-    protected AEBaseBlock(final BlockBehaviour.Properties props) {
+    protected AEBaseBlock(BlockBehaviour.Properties props) {
         super(props);
     }
 
@@ -83,7 +83,7 @@ public abstract class AEBaseBlock extends Block {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, final Level level, final BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         return 0;
     }
 
@@ -116,7 +116,7 @@ public abstract class AEBaseBlock extends Block {
         return false;
     }
 
-    public final Direction mapRotation(final IOrientable ori, final Direction dir) {
+    public final Direction mapRotation(IOrientable ori, Direction dir) {
         // case DOWN: return bottomIcon;
         // case UP: return blockIcon;
         // case NORTH: return northIcon;
@@ -136,7 +136,7 @@ public abstract class AEBaseBlock extends Block {
         final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
 
         Direction west = null;
-        for (final Direction dx : Direction.values()) {
+        for (Direction dx : Direction.values()) {
             if (dx.getStepX() == west_x && dx.getStepY() == west_y && dx.getStepZ() == west_z) {
                 west = dx;
             }
@@ -186,19 +186,19 @@ public abstract class AEBaseBlock extends Block {
         return false;
     }
 
-    protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
+    protected void customRotateBlock(IOrientable rotatable, Direction axis) {
 
     }
 
-    protected IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
+    protected IOrientable getOrientable(BlockGetter level, BlockPos pos) {
         if (this instanceof IOrientableBlock orientable) {
             return orientable.getOrientable(level, pos);
         }
         return null;
     }
 
-    protected boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
-            final Direction up) {
+    protected boolean isValidOrientation(LevelAccessor level, BlockPos pos, Direction forward,
+            Direction up) {
         return true;
     }
 
@@ -206,7 +206,7 @@ public abstract class AEBaseBlock extends Block {
         return this.isInventory;
     }
 
-    protected void setInventory(final boolean isInventory) {
+    protected void setInventory(boolean isInventory) {
         this.isInventory = isInventory;
     }
 

@@ -96,7 +96,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
     }
 
     @Override
-    public void render(PoseStack poseStack, final int mouseX, final int mouseY, final float btn) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float btn) {
         this.cancel.active = !getVisualEntries().isEmpty();
 
         super.render(poseStack, mouseX, mouseY, btn);

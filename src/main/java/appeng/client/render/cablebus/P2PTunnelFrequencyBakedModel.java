@@ -54,7 +54,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
 
     private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
 
-    public P2PTunnelFrequencyBakedModel(final TextureAtlasSprite texture) {
+    public P2PTunnelFrequencyBakedModel(TextureAtlasSprite texture) {
         this.texture = texture;
     }
 
@@ -78,7 +78,7 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
         return ItemTransforms.NO_TRANSFORMS;
     }
 
-    private Mesh createFrequencyMesh(final short frequency, final boolean active) {
+    private Mesh createFrequencyMesh(short frequency, boolean active) {
 
         MeshBuilder meshBuilder = renderer.meshBuilder();
 

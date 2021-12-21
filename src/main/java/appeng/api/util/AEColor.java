@@ -127,8 +127,8 @@ public enum AEColor {
      */
     public final String registryPrefix;
 
-    AEColor(final String translationKey, final String registryPrefix, final DyeColor dye, final int blackHex,
-            final int medHex, final int whiteHex) {
+    AEColor(String translationKey, String registryPrefix, DyeColor dye, int blackHex,
+            int medHex, int whiteHex) {
         this.translationKey = translationKey;
         this.registryPrefix = registryPrefix;
         this.blackVariant = blackHex;

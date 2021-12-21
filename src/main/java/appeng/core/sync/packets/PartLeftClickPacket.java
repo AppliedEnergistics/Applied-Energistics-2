@@ -36,7 +36,7 @@ public class PartLeftClickPacket extends BasePacket {
     private BlockHitResult hitResult;
     private boolean alternateUseMode;
 
-    public PartLeftClickPacket(final FriendlyByteBuf stream) {
+    public PartLeftClickPacket(FriendlyByteBuf stream) {
         this.hitResult = stream.readBlockHitResult();
         this.alternateUseMode = stream.readBoolean();
     }

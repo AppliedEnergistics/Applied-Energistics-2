@@ -37,13 +37,13 @@ public class FacadeContainer implements IFacadeContainer {
     private final CableBusStorage storage;
     private final Runnable changeCallback;
 
-    public FacadeContainer(final CableBusStorage cbs, Runnable changeCallback) {
+    public FacadeContainer(CableBusStorage cbs, Runnable changeCallback) {
         this.storage = cbs;
         this.changeCallback = changeCallback;
     }
 
     @Override
-    public boolean addFacade(final IFacadePart a) {
+    public boolean addFacade(IFacadePart a) {
         if (this.getFacade(a.getSide()) == null) {
             this.storage.setFacade(a.getSide(), a);
             this.notifyChange();
@@ -53,7 +53,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void removeFacade(final IPartHost host, final Direction side) {
+    public void removeFacade(IPartHost host, Direction side) {
         if (side != null && this.storage.getFacade(side) != null) {
             this.storage.removeFacade(side);
             this.notifyChange();
@@ -64,7 +64,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public IFacadePart getFacade(final Direction side) {
+    public IFacadePart getFacade(Direction side) {
         return this.storage.getFacade(side);
     }
 
@@ -73,7 +73,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(final CompoundTag c) {
+    public void readFromNBT(CompoundTag c) {
         for (var side : Direction.values()) {
             this.storage.removeFacade(side);
 
@@ -90,7 +90,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToNBT(final CompoundTag c) {
+    public void writeToNBT(CompoundTag c) {
         for (var side : Direction.values()) {
             if (this.storage.getFacade(side) != null) {
                 var data = new CompoundTag();
@@ -101,7 +101,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf out) {
+    public boolean readFromStream(FriendlyByteBuf out) {
         final int facadeSides = out.readByte();
 
         boolean changed = false;
@@ -127,7 +127,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf out) {
+    public void writeToStream(FriendlyByteBuf out) {
         int facadeSides = 0;
         for (var side : Direction.values()) {
             if (this.getFacade(side) != null) {

@@ -81,14 +81,14 @@ public final class FacadeCreativeTab {
                 if (blockItem != Items.AIR && blockItem.getItemCategory() != null) {
                     final NonNullList<ItemStack> tmpList = NonNullList.create();
                     b.fillItemCategory(blockItem.getItemCategory(), tmpList);
-                    for (final ItemStack l : tmpList) {
+                    for (ItemStack l : tmpList) {
                         final ItemStack facade = itemFacade.createFacadeForItem(l, false);
                         if (!facade.isEmpty()) {
                             subTypes.add(facade);
                         }
                     }
                 }
-            } catch (final Throwable t) {
+            } catch (Throwable t) {
                 // just absorb..
             }
         }

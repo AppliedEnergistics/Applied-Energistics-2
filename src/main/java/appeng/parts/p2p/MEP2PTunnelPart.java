@@ -77,13 +77,13 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
         this.outerNode.loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         this.outerNode.saveToNBT(extra);
     }
@@ -116,7 +116,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(Direction side, IPartHost host, BlockEntity blockEntity) {
         super.setPartHostInfo(side, host, blockEntity);
         this.outerNode.setExposedOnSides(EnumSet.of(side));
     }
@@ -127,18 +127,18 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void onPlacement(final Player player) {
+    public void onPlacement(Player player) {
         super.onPlacement(player);
         this.outerNode.setOwningPlayer(player);
     }
 
     @Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
+    public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(TickRates.METunnel, true, false);
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         // just move on...
         if (node.hasGridBooted()) {
             if (!node.isPowered() || !node.isActive()) {
@@ -154,9 +154,9 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
         return TickRateModulation.IDLE;
     }
 
-    public void updateConnections(final Connections connections) {
+    public void updateConnections(Connections connections) {
         if (connections.isDestroy()) {
-            for (final TunnelConnection cw : this.connection.getConnections().values()) {
+            for (TunnelConnection cw : this.connection.getConnections().values()) {
                 cw.getConnection().destroy();
             }
 
@@ -178,17 +178,17 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
             final List<MEP2PTunnelPart> newSides = new ArrayList<>();
 
-            for (final MEP2PTunnelPart me : this.getOutputs()) {
+            for (MEP2PTunnelPart me : this.getOutputs()) {
                 if (me.getMainNode().isActive() && connections.getConnections().get(me.getGridNode()) == null) {
                     newSides.add(me);
                 }
             }
 
-            for (final MEP2PTunnelPart me : newSides) {
+            for (MEP2PTunnelPart me : newSides) {
                 try {
                     connections.getConnections().put(me.getGridNode(), new TunnelConnection(me,
                             GridHelper.createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
-                } catch (final FailedConnectionException e) {
+                } catch (FailedConnectionException e) {
                     final BlockEntity start = this.getBlockEntity();
                     final BlockEntity end = me.getBlockEntity();
 

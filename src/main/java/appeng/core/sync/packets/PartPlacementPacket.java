@@ -40,7 +40,7 @@ public class PartPlacementPacket extends BasePacket {
     private float eyeHeight;
     private InteractionHand hand;
 
-    public PartPlacementPacket(final FriendlyByteBuf stream) {
+    public PartPlacementPacket(FriendlyByteBuf stream) {
         this.x = stream.readInt();
         this.y = stream.readInt();
         this.z = stream.readInt();
@@ -50,8 +50,8 @@ public class PartPlacementPacket extends BasePacket {
     }
 
     // api
-    public PartPlacementPacket(final BlockPos pos, final Direction face, final float eyeHeight,
-            final InteractionHand hand) {
+    public PartPlacementPacket(BlockPos pos, Direction face, float eyeHeight,
+            InteractionHand hand) {
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
@@ -66,7 +66,7 @@ public class PartPlacementPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         AppEng.instance().setPartInteractionPlayer(player);
         try {
             PartPlacement.setEyeHeight(this.eyeHeight);

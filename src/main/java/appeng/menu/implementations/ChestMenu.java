@@ -37,7 +37,7 @@ public class ChestMenu extends AEBaseMenu {
             .requirePermission(SecurityPermissions.BUILD)
             .build("chest");
 
-    public ChestMenu(int id, final Inventory ip, final ChestBlockEntity chest) {
+    public ChestMenu(int id, Inventory ip, ChestBlockEntity chest) {
         super(TYPE, id, ip, chest);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS,

@@ -84,7 +84,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public boolean mayPlace(@Nonnull final ItemStack stack) {
+    public boolean mayPlace(@Nonnull ItemStack stack) {
         if (containsWrapperItem()) {
             return false;
         }
@@ -151,7 +151,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public boolean mayPickup(final Player player) {
+    public boolean mayPickup(Player player) {
         if (containsWrapperItem()) {
             return false;
         }
@@ -227,7 +227,7 @@ public class AppEngSlot extends Slot {
      * Indicate that this slot is currently being rendered, which is used to provide a slot with the ability to return a
      * different stack for rendering purposes by overriding {@link #getDisplayStack()}.
      */
-    public void setRendering(final boolean rendering) {
+    public void setRendering(boolean rendering) {
         this.rendering = rendering;
     }
 
@@ -235,7 +235,7 @@ public class AppEngSlot extends Slot {
         return this.isDraggable;
     }
 
-    private void setDraggable(final boolean isDraggable) {
+    private void setDraggable(boolean isDraggable) {
         this.isDraggable = isDraggable;
     }
 
@@ -243,7 +243,7 @@ public class AppEngSlot extends Slot {
         return this.menu;
     }
 
-    public void setMenu(final AEBaseMenu menu) {
+    public void setMenu(AEBaseMenu menu) {
         this.menu = menu;
     }
 

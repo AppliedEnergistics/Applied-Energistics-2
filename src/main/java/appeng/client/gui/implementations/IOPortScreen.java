@@ -65,8 +65,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY, float partialTicks) {
+    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+            int mouseY, float partialTicks) {
         super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         this.drawItem(offsetX + 66 - 8, offsetY + 17, AEItems.ITEM_CELL_1K.stack());

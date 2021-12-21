@@ -27,13 +27,13 @@ public class FuzzyPriorityList implements IPartitionList {
     private final KeyCounter list;
     private final FuzzyMode mode;
 
-    public FuzzyPriorityList(KeyCounter in, final FuzzyMode mode) {
+    public FuzzyPriorityList(KeyCounter in, FuzzyMode mode) {
         this.list = in;
         this.mode = mode;
     }
 
     @Override
-    public boolean isListed(final AEKey input) {
+    public boolean isListed(AEKey input) {
         return !this.list.findFuzzy(input, this.mode).isEmpty();
     }
 

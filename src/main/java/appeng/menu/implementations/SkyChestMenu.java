@@ -38,7 +38,7 @@ public class SkyChestMenu extends AEBaseMenu {
 
     private final SkyChestBlockEntity chest;
 
-    public SkyChestMenu(int id, final Inventory ip, final SkyChestBlockEntity chest) {
+    public SkyChestMenu(int id, Inventory ip, SkyChestBlockEntity chest) {
         super(TYPE, id, ip, chest);
 
         this.chest = chest;

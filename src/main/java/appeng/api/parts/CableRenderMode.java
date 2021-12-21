@@ -31,7 +31,7 @@ public enum CableRenderMode {
     public final boolean transparentFacades;
     public final boolean opaqueFacades;
 
-    CableRenderMode(final boolean hideFacades) {
+    CableRenderMode(boolean hideFacades) {
         this.transparentFacades = hideFacades;
         this.opaqueFacades = !hideFacades;
     }

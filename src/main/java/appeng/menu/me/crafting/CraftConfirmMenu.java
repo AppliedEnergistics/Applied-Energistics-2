@@ -144,7 +144,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
                 this.plan = CraftingPlanSummary.fromJob(getGrid(), getActionSrc(), this.result);
 
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
-            } catch (final Throwable e) {
+            } catch (Throwable e) {
                 this.getPlayerInventory().player.sendMessage(new TextComponent("Error: " + e),
                         Util.NIL_UUID);
                 AELog.debug(e);
@@ -163,7 +163,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         return a != null ? a.getGrid() : null;
     }
 
-    private boolean cpuMatches(final ICraftingCPU c) {
+    private boolean cpuMatches(ICraftingCPU c) {
         if (this.plan == null) {
             return true;
         }
@@ -191,7 +191,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     @Override
-    public void removed(final Player par1PlayerEntity) {
+    public void removed(Player par1PlayerEntity) {
         super.removed(par1PlayerEntity);
         if (this.job != null) {
             this.job.cancel(true);
@@ -223,7 +223,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         return this.autoStart;
     }
 
-    public void setAutoStart(final boolean autoStart) {
+    public void setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
     }
 
@@ -248,7 +248,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         this.amount = amount;
     }
 
-    public void setJob(final Future<ICraftingPlan> job) {
+    public void setJob(Future<ICraftingPlan> job) {
         this.job = job;
     }
 

@@ -64,7 +64,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     private final CraftingTermSlot outputSlot;
     private Recipe<CraftingContainer> currentRecipe;
 
-    public CraftingTermMenu(int id, final Inventory ip, final ITerminalHost host) {
+    public CraftingTermMenu(int id, Inventory ip, ITerminalHost host) {
         this(TYPE, id, ip, host, true);
     }
 

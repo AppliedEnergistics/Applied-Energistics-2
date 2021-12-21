@@ -39,7 +39,7 @@ public class ChunkLogger implements ISubCommand {
     private void displayStack() {
         if (AEConfig.instance().isChunkLoggerTraceEnabled()) {
             boolean output = false;
-            for (final StackTraceElement e : Thread.currentThread().getStackTrace()) {
+            for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
                 if (output) {
                     AELog.info(
                             "		" + e.getClassName() + '.' + e.getMethodName() + " (" + e.getLineNumber() + ')');
@@ -65,8 +65,8 @@ public class ChunkLogger implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> data,
-            final CommandSourceStack sender) {
+    public void call(MinecraftServer srv, CommandContext<CommandSourceStack> data,
+            CommandSourceStack sender) {
         if (!eventsRegistered) {
             ServerChunkEvents.CHUNK_LOAD.register(this::onChunkLoadEvent);
             ServerChunkEvents.CHUNK_UNLOAD.register(this::onChunkUnloadEvent);

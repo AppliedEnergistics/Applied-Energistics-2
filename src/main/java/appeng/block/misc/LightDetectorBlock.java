@@ -74,7 +74,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public int getSignal(final BlockState state, final BlockGetter level, final BlockPos pos, final Direction side) {
+    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
         if (level instanceof Level && this.getBlockEntity(level, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
             return ((Level) level).getMaxLocalRawBrightness(pos) - 6;
@@ -92,17 +92,17 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public void animateTick(final BlockState state, final Level level, final BlockPos pos, final Random rand) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, Random rand) {
         // cancel out lightning
     }
 
     @Override
-    public boolean isValidOrientation(final LevelAccessor level, final BlockPos pos, final Direction forward,
-            final Direction up) {
+    public boolean isValidOrientation(LevelAccessor level, BlockPos pos, Direction forward,
+            Direction up) {
         return this.canPlaceAt(level, pos, up.getOpposite());
     }
 
-    private boolean canPlaceAt(final BlockGetter level, final BlockPos pos, final Direction dir) {
+    private boolean canPlaceAt(BlockGetter level, BlockPos pos, Direction dir) {
         final BlockPos test = pos.relative(dir);
         BlockState blockstate = level.getBlockState(test);
         return blockstate.isFaceSturdy(level, test, dir.getOpposite());
@@ -137,7 +137,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
         }
     }
 
-    private void dropTorch(final Level level, final BlockPos pos) {
+    private void dropTorch(Level level, BlockPos pos) {
         final BlockState prev = level.getBlockState(pos);
         level.destroyBlock(pos, true);
         level.sendBlockUpdated(pos, prev, level.getBlockState(pos), 3);
@@ -145,7 +145,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        for (final Direction dir : Direction.values()) {
+        for (Direction dir : Direction.values()) {
             if (this.canPlaceAt(level, pos, dir)) {
                 return true;
             }
@@ -154,7 +154,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     }
 
     @Override
-    public IOrientable getOrientable(final BlockGetter level, final BlockPos pos) {
+    public IOrientable getOrientable(BlockGetter level, BlockPos pos) {
         return new MetaRotation(level, pos, BlockStateProperties.FACING);
     }
 

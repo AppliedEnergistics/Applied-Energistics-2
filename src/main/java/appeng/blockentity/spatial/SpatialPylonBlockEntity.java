@@ -96,7 +96,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    public void disconnect(final boolean b) {
+    public void disconnect(boolean b) {
         if (this.cluster != null) {
             this.cluster.destroy();
             this.updateStatus(null);
@@ -113,7 +113,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         return true;
     }
 
-    public void updateStatus(final SpatialPylonCluster c) {
+    public void updateStatus(SpatialPylonCluster c) {
         if (this.isRemoved()) {
             // Prevent updating the display, the block state or the node if the block entity was removed.
             // Otherwise, setting the block state will restore the block we just destroyed.
@@ -168,7 +168,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final int old = this.displayBits;
         this.displayBits = data.readByte();
@@ -176,7 +176,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeByte(this.displayBits);
     }

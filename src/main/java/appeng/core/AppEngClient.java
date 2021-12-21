@@ -241,7 +241,7 @@ public class AppEngClient extends AppEngBase {
         return this.bindings.get(key).matches(pressedKey.getValue(), -1);
     }
 
-    public boolean shouldAddParticles(final Random r) {
+    public boolean shouldAddParticles(Random r) {
         return switch (Minecraft.getInstance().options.particles) {
             case ALL -> true;
             case DECREASED -> r.nextBoolean();
@@ -257,8 +257,8 @@ public class AppEngClient extends AppEngBase {
     // FIXME: Instead of doing a custom packet and this dispatcher, we can use the
     // vanilla particle system
     @Override
-    public void spawnEffect(final EffectType effect, final Level level, final double posX, final double posY,
-            final double posZ, final Object o) {
+    public void spawnEffect(EffectType effect, Level level, double posX, double posY,
+            double posZ, Object o) {
         if (AEConfig.instance().isEnableEffects()) {
             switch (effect) {
                 case Vibrant:
@@ -275,7 +275,7 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    private void spawnVibrant(final Level level, final double x, final double y, final double z) {
+    private void spawnVibrant(Level level, double x, double y, double z) {
         if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
             final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
@@ -287,7 +287,7 @@ public class AppEngClient extends AppEngBase {
         }
     }
 
-    private void spawnEnergy(final Level level, final double posX, final double posY, final double posZ) {
+    private void spawnEnergy(Level level, double posX, double posY, double posZ) {
         final float x = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float y = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
         final float z = (float) (Platform.getRandomInt() % 100 * 0.01 - 0.5) * 0.7f;
@@ -297,7 +297,7 @@ public class AppEngClient extends AppEngBase {
                 -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
-    private void spawnLightning(final Level level, final double posX, final double posY, final double posZ) {
+    private void spawnLightning(Level level, double posX, double posY, double posZ) {
         Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f,
                 0.0f,
                 0.0f);

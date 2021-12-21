@@ -190,13 +190,13 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     private class Ticker implements IGridTickable {
         @Override
-        public TickingRequest getTickingRequest(final IGridNode node) {
+        public TickingRequest getTickingRequest(IGridNode node) {
             return new TickingRequest(TickRates.Interface, !hasWorkToDo(),
                     true);
         }
 
         @Override
-        public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLastCall) {
+        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
             if (!mainNode.isActive()) {
                 return TickRateModulation.SLEEP;
             }
@@ -361,7 +361,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     }
 
     @Override
-    public void jobStateChange(final ICraftingLink link) {
+    public void jobStateChange(ICraftingLink link) {
         this.craftingTracker.jobStateChange(link);
     }
 
@@ -530,7 +530,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         return level == null || level.isClientSide();
     }
 
-    public void addDrops(final List<ItemStack> drops) {
+    public void addDrops(List<ItemStack> drops) {
         for (var is : this.upgrades) {
             if (!is.isEmpty()) {
                 drops.add(is);

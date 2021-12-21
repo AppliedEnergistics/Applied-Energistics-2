@@ -80,8 +80,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+            int mouseY) {
         int x = 0;
         int y = 0;
         final int viewStart = scrollbar.getCurrentScroll() * COLUMNS;

@@ -49,7 +49,7 @@ public class TickTracker implements Comparable<TickTracker> {
     }
 
     @Override
-    public int compareTo(@Nonnull final TickTracker t) {
+    public int compareTo(@Nonnull TickTracker t) {
         int next = Long.compare(this.getNextTick(), t.getNextTick());
 
         if (next != 0) {
@@ -79,7 +79,7 @@ public class TickTracker implements Comparable<TickTracker> {
         return this.currentRate;
     }
 
-    public void setCurrentRate(final int currentRate) {
+    public void setCurrentRate(int currentRate) {
         this.currentRate = Mth.clamp(currentRate, request.minTickRate(), request.maxTickRate());
     }
 
@@ -95,7 +95,7 @@ public class TickTracker implements Comparable<TickTracker> {
         return this.lastTick;
     }
 
-    public void setLastTick(final long lastTick) {
+    public void setLastTick(long lastTick) {
         this.lastTick = lastTick;
     }
 

@@ -66,7 +66,7 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         return this.internalPowerSides;
     }
 
-    protected void setPowerSides(final Set<Direction> sides) {
+    protected void setPowerSides(Set<Direction> sides) {
         this.internalPowerSides = ImmutableSet.copyOf(sides);
     }
 
@@ -77,32 +77,32 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
 
     @Override
-    public final double getExternalPowerDemand(final PowerUnits externalUnit, final double maxPowerRequired) {
+    public final double getExternalPowerDemand(PowerUnits externalUnit, double maxPowerRequired) {
         return PowerUnits.AE.convertTo(externalUnit,
                 Math.max(0.0, this.getFunnelPowerDemand(externalUnit.convertTo(PowerUnits.AE, maxPowerRequired))));
     }
 
-    protected double getFunnelPowerDemand(final double maxRequired) {
+    protected double getFunnelPowerDemand(double maxRequired) {
         return this.getInternalMaxPower() - this.getInternalCurrentPower();
     }
 
     @Override
-    public final double injectExternalPower(final PowerUnits input, final double amt, Actionable mode) {
+    public final double injectExternalPower(PowerUnits input, double amt, Actionable mode) {
         return PowerUnits.AE.convertTo(input, this.funnelPowerIntoStorage(input.convertTo(PowerUnits.AE, amt), mode));
     }
 
-    protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
+    protected double funnelPowerIntoStorage(double power, Actionable mode) {
         return this.injectAEPower(power, mode);
     }
 
     @Override
-    public final double injectAEPower(double amt, final Actionable mode) {
+    public final double injectAEPower(double amt, Actionable mode) {
         if (amt < 0.000001) {
             return 0;
         }
@@ -121,7 +121,7 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         return amt - insertable;
     }
 
-    protected void PowerEvent(final PowerEventType x) {
+    protected void PowerEvent(PowerEventType x) {
         // nothing.
     }
 
@@ -146,11 +146,11 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public final double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier multiplier) {
+    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier multiplier) {
         return multiplier.divide(this.extractAEPower(multiplier.multiply(amt), mode));
     }
 
-    protected double extractAEPower(double amt, final Actionable mode) {
+    protected double extractAEPower(double amt, Actionable mode) {
         if (mode == Actionable.SIMULATE) {
             if (this.getInternalCurrentPower() > amt) {
                 return amt;
@@ -177,7 +177,7 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         return this.internalCurrentPower;
     }
 
-    public void setInternalCurrentPower(final double internalCurrentPower) {
+    public void setInternalCurrentPower(double internalCurrentPower) {
         this.internalCurrentPower = internalCurrentPower;
     }
 
@@ -185,7 +185,7 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         return this.internalMaxPower;
     }
 
-    public void setInternalMaxPower(final double internalMaxPower) {
+    public void setInternalMaxPower(double internalMaxPower) {
         this.internalMaxPower = internalMaxPower;
     }
 
@@ -193,7 +193,7 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         return this.internalPublicPowerStorage;
     }
 
-    public void setInternalPublicPowerStorage(final boolean internalPublicPowerStorage) {
+    public void setInternalPublicPowerStorage(boolean internalPublicPowerStorage) {
         this.internalPublicPowerStorage = internalPublicPowerStorage;
     }
 
@@ -201,7 +201,7 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         return this.internalPowerFlow;
     }
 
-    public void setInternalPowerFlow(final AccessRestriction internalPowerFlow) {
+    public void setInternalPowerFlow(AccessRestriction internalPowerFlow) {
         this.internalPowerFlow = internalPowerFlow;
     }
 

@@ -95,7 +95,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
+    public void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(6, 6, 11, 10, 10, 16);
     }
 
@@ -111,13 +111,13 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void readFromNBT(final CompoundTag extra) {
+    public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
         this.getOuterNode().loadFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundTag extra) {
+    public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         this.getOuterNode().saveToNBT(extra);
     }
@@ -137,7 +137,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void setPartHostInfo(final Direction side, final IPartHost host, final BlockEntity blockEntity) {
+    public void setPartHostInfo(Direction side, IPartHost host, BlockEntity blockEntity) {
         super.setPartHostInfo(side, host, blockEntity);
         this.outerNode.setExposedOnSides(EnumSet.of(side));
     }
@@ -153,7 +153,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onPlacement(final Player player) {
+    public void onPlacement(Player player) {
         super.onPlacement(player);
         this.getOuterNode().setOwningPlayer(player);
     }
@@ -166,7 +166,7 @@ public class ToggleBusPart extends BasicStatePart {
                 try {
                     this.connection = GridHelper.createGridConnection(this.getMainNode().getNode(),
                             this.getOuterNode().getNode());
-                } catch (final FailedConnectionException e) {
+                } catch (FailedConnectionException e) {
                     // :(
                     AELog.debug(e);
                 }

@@ -56,7 +56,7 @@ public class SpatialIOPortMenu extends AEBaseMenu {
     @GuiSync(33)
     public int zSize;
 
-    public SpatialIOPortMenu(int id, final Inventory ip, final SpatialIOPortBlockEntity spatialIOPort) {
+    public SpatialIOPortMenu(int id, Inventory ip, SpatialIOPortBlockEntity spatialIOPort) {
         super(TYPE, id, ip, spatialIOPort);
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.SPATIAL_STORAGE_CELLS,
@@ -109,7 +109,7 @@ public class SpatialIOPortMenu extends AEBaseMenu {
         return this.currentPower;
     }
 
-    private void setCurrentPower(final long currentPower) {
+    private void setCurrentPower(long currentPower) {
         this.currentPower = currentPower;
     }
 
@@ -117,7 +117,7 @@ public class SpatialIOPortMenu extends AEBaseMenu {
         return this.maxPower;
     }
 
-    private void setMaxPower(final long maxPower) {
+    private void setMaxPower(long maxPower) {
         this.maxPower = maxPower;
     }
 
@@ -125,7 +125,7 @@ public class SpatialIOPortMenu extends AEBaseMenu {
         return this.reqPower;
     }
 
-    private void setRequiredPower(final long reqPower) {
+    private void setRequiredPower(long reqPower) {
         this.reqPower = reqPower;
     }
 
@@ -133,7 +133,7 @@ public class SpatialIOPortMenu extends AEBaseMenu {
         return this.eff;
     }
 
-    private void setEfficency(final long eff) {
+    private void setEfficency(long eff) {
         this.eff = eff;
     }
 }

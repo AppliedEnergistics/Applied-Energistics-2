@@ -39,7 +39,7 @@ import appeng.menu.implementations.QuartzKnifeMenu;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
-    public QuartzCuttingKnifeItem(Item.Properties props, final QuartzToolType type) {
+    public QuartzCuttingKnifeItem(Item.Properties props, QuartzToolType type) {
         super(props);
         // TODO FABRIC 117 This means knife doesnt lose durability when used in normal crafting
         this.craftingRemainingItem = this;
@@ -57,7 +57,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player p, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
         if (!level.isClientSide()) {
             MenuOpener.open(QuartzKnifeMenu.TYPE, p, MenuLocator.forHand(p, hand));
         }
@@ -68,7 +68,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
     // TODO FABRIC 117 recipe remainders
 //    @Override
-//    public ItemStack getContainerItem(final ItemStack itemStack) {
+//    public ItemStack getContainerItem(ItemStack itemStack) {
 //        ItemStack damagedStack = itemStack.copy();
 //        if (damagedStack.hurt(1, random, null)) {
 //            return ItemStack.EMPTY;
@@ -78,7 +78,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 //    }
 //
 //    @Override
-//    public boolean hasContainerItem(final ItemStack stack) {
+//    public boolean hasContainerItem(ItemStack stack) {
 //        return true;
 //    }
 

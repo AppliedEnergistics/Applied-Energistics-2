@@ -73,7 +73,7 @@ public final class InscriberRecipes {
             }
         }
 
-        for (final InscriberRecipe recipe : getRecipes(level)) {
+        for (InscriberRecipe recipe : getRecipes(level)) {
             // The recipe can be flipped at will
             final boolean matchA = recipe.getTopOptional().test(plateA) && recipe.getBottomOptional().test(plateB);
             final boolean matchB = recipe.getTopOptional().test(plateB) && recipe.getBottomOptional().test(plateA);

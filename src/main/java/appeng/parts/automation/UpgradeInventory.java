@@ -41,7 +41,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     private int inverterUpgrades = 0;
     private int craftingUpgrades = 0;
 
-    public UpgradeInventory(InternalInventoryHost parent, final int slots) {
+    public UpgradeInventory(InternalInventoryHost parent, int slots) {
         super(null, slots, 1);
         this.setHost(this);
         this.parent = parent;
@@ -59,7 +59,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     }
 
     @Override
-    public int getInstalledUpgrades(final Upgrades u) {
+    public int getInstalledUpgrades(Upgrades u) {
         if (!this.cached) {
             this.updateUpgradeInfo();
         }
@@ -134,8 +134,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removedStack, ItemStack newStack) {
         this.cached = false;
         if (!isClientSide()) {
             this.parent.onChangeInventory(inv, slot, removedStack, newStack);

@@ -37,8 +37,8 @@ public class AEAxisAlignedBB {
         return new AABB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
-    public AEAxisAlignedBB(final double a, final double b, final double c, final double d, final double e,
-            final double f) {
+    public AEAxisAlignedBB(double a, double b, double c, double d, double e,
+            double f) {
         this.minX = a;
         this.minY = b;
         this.minZ = c;
@@ -47,12 +47,12 @@ public class AEAxisAlignedBB {
         this.maxZ = f;
     }
 
-    public static AEAxisAlignedBB fromBounds(final double a, final double b, final double c, final double d,
-            final double e, final double f) {
+    public static AEAxisAlignedBB fromBounds(double a, double b, double c, double d,
+            double e, double f) {
         return new AEAxisAlignedBB(a, b, c, d, e, f);
     }
 
-    public static AEAxisAlignedBB fromBounds(final AABB bb) {
+    public static AEAxisAlignedBB fromBounds(AABB bb) {
         return new AEAxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
     }
 }

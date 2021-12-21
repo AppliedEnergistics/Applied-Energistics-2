@@ -33,12 +33,12 @@ public class StorageComponentItem extends AEBaseItem implements IStorageComponen
     }
 
     @Override
-    public int getBytes(final ItemStack is) {
+    public int getBytes(ItemStack is) {
         return this.storageInKb * 1024;
     }
 
     @Override
-    public boolean isStorageComponent(final ItemStack is) {
+    public boolean isStorageComponent(ItemStack is) {
         return true;
     }
 }

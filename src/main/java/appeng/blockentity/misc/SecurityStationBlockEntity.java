@@ -94,13 +94,13 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removedStack, ItemStack newStack) {
 
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         if (!this.getConfigSlot().isEmpty()) {
             drops.add(this.getConfigSlot().getStackInSlot(0));
         }
@@ -111,7 +111,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected boolean readFromStream(final FriendlyByteBuf data) {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean wasActive = this.isActive;
         this.isActive = data.readBoolean();
@@ -123,7 +123,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    protected void writeToStream(final FriendlyByteBuf data) {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.getMainNode().isActive());
         data.writeByte(this.paintedColor.ordinal());
@@ -233,7 +233,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void readPermissions(final Map<Integer, EnumSet<SecurityPermissions>> playerPerms) {
+    public void readPermissions(Map<Integer, EnumSet<SecurityPermissions>> playerPerms) {
         var pr = IPlayerRegistry.getMapping(getLevel());
         if (pr == null) {
             return;
@@ -273,7 +273,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final Player who) {
+    public boolean recolourBlock(Direction side, AEColor newPaintedColor, Player who) {
         if (this.paintedColor == newPaintedColor) {
             return false;
         }

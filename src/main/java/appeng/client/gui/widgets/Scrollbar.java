@@ -43,17 +43,17 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     /**
      * Width of the scrollbar handle sprite in the source texture.
      */
-    private static final int HANDLE_WIDTH = 12;
+    private static int HANDLE_WIDTH = 12;
 
     /**
      * Height of the scrollbar handle sprite in the source texture.
      */
-    private static final int HANDLE_HEIGHT = 15;
+    private static int HANDLE_HEIGHT = 15;
 
     /**
      * Texture containing the scrollbar handle sprites.
      */
-    private static final ResourceLocation TEXTURE = new ResourceLocation("minecraft",
+    private static ResourceLocation TEXTURE = new ResourceLocation("minecraft",
             "textures/gui/container/creative_inventory/tabs.png");
 
     /**
@@ -149,7 +149,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         return this.maxScroll - this.minScroll;
     }
 
-    public Scrollbar setHeight(final int v) {
+    public Scrollbar setHeight(int v) {
         this.height = v;
         return this;
     }
@@ -170,7 +170,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         }
     }
 
-    public void setRange(final int min, final int max, final int pageSize) {
+    public void setRange(int min, int max, int pageSize) {
         this.minScroll = min;
         this.maxScroll = max;
         this.pageSize = pageSize;

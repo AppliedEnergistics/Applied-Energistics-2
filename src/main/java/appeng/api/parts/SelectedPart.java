@@ -56,13 +56,13 @@ public class SelectedPart {
         this.side = null;
     }
 
-    public SelectedPart(final IPart part, final Direction side) {
+    public SelectedPart(IPart part, Direction side) {
         this.part = part;
         this.facade = null;
         this.side = side;
     }
 
-    public SelectedPart(final IFacadePart facade, @Nonnull Direction side) {
+    public SelectedPart(IFacadePart facade, @Nonnull Direction side) {
         this.part = null;
         this.facade = facade;
         this.side = side;

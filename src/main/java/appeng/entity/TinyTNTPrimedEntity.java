@@ -62,8 +62,8 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
         this.blocksBuilding = true;
     }
 
-    public TinyTNTPrimedEntity(final Level level, final double x, final double y, final double z,
-            final LivingEntity igniter) {
+    public TinyTNTPrimedEntity(Level level, double x, double y, double z,
+            LivingEntity igniter) {
         super(AEEntities.TINY_TNT_PRIMED, level);
         this.setPos(x, y, z);
         double d0 = level.random.nextDouble() * ((float) Math.PI * 2F);
@@ -146,7 +146,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
                 this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
         final List<Entity> list = this.level.getEntities(this, area);
 
-        for (final Entity e : list) {
+        for (Entity e : list) {
             e.hurt(DamageSource.explosion(ex), 6);
         }
 

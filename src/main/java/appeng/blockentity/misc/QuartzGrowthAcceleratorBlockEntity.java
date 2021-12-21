@@ -57,7 +57,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public boolean readFromStream(final FriendlyByteBuf data) {
+    public boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
         final boolean hadPower = this.isPowered();
         this.setPowered(data.readBoolean());
@@ -65,13 +65,13 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void writeToStream(final FriendlyByteBuf data) {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.getMainNode().isPowered());
     }
 
     @Override
-    public void setOrientation(final Direction inForward, final Direction inUp) {
+    public void setOrientation(Direction inForward, Direction inUp) {
         super.setOrientation(inForward, inUp);
         this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
     }
@@ -96,7 +96,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
         return this.isPowered();
     }
 
-    private void setPowered(final boolean hasPower) {
+    private void setPowered(boolean hasPower) {
         this.hasPower = hasPower;
     }
 }

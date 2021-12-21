@@ -48,7 +48,7 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
     @GuiSync(3)
     public OperationMode opMode = OperationMode.EMPTY;
 
-    public IOPortMenu(int id, final Inventory ip, final IOPortBlockEntity host) {
+    public IOPortMenu(int id, Inventory ip, IOPortBlockEntity host) {
         super(TYPE, id, ip, host);
     }
 
@@ -85,7 +85,7 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
         return this.fMode;
     }
 
-    private void setFullMode(final FullnessMode fMode) {
+    private void setFullMode(FullnessMode fMode) {
         this.fMode = fMode;
     }
 
@@ -93,7 +93,7 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
         return this.opMode;
     }
 
-    private void setOperationMode(final OperationMode opMode) {
+    private void setOperationMode(OperationMode opMode) {
         this.opMode = opMode;
     }
 }

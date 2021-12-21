@@ -73,7 +73,7 @@ public class JEIRecipePacket extends BasePacket {
     @Nullable
     private Recipe<?> recipe;
 
-    public JEIRecipePacket(final FriendlyByteBuf stream) {
+    public JEIRecipePacket(FriendlyByteBuf stream) {
         this.recipeId = new ResourceLocation(stream.readUtf());
 
         var inlineRecipeType = stream.readVarInt();
@@ -124,7 +124,7 @@ public class JEIRecipePacket extends BasePacket {
      * in general these cases should never happen except in an error case and should be logged then.
      */
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         // Setup and verification
         final var con = player.containerMenu;
         Preconditions.checkArgument(con instanceof IMenuCraftingPacket);

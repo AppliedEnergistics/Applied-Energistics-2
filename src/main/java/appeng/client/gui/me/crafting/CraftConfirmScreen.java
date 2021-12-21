@@ -118,8 +118,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, final int offsetX, final int offsetY, final int mouseX,
-            final int mouseY) {
+    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+            int mouseY) {
 
         CraftingPlanSummary plan = menu.getPlan();
         if (plan != null) {

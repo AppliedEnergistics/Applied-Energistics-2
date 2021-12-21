@@ -68,7 +68,7 @@ public enum TickRates {
         return this.max;
     }
 
-    public void setMax(final int max) {
+    public void setMax(int max) {
         this.max = max;
     }
 
@@ -76,7 +76,7 @@ public enum TickRates {
         return this.min;
     }
 
-    public void setMin(final int min) {
+    public void setMin(int min) {
         this.min = min;
     }
 

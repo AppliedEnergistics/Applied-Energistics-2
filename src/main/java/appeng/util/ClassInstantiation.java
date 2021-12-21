@@ -28,7 +28,7 @@ public class ClassInstantiation<T> {
     private final Class<? extends T> template;
     private final Object[] args;
 
-    public ClassInstantiation(final Class<? extends T> template, final Object... args) {
+    public ClassInstantiation(Class<? extends T> template, Object... args) {
         this.template = template;
         this.args = args;
     }
@@ -37,7 +37,7 @@ public class ClassInstantiation<T> {
         @SuppressWarnings("unchecked")
         final Constructor<T>[] constructors = (Constructor<T>[]) this.template.getConstructors();
 
-        for (final Constructor<T> constructor : constructors) {
+        for (Constructor<T> constructor : constructors) {
             final Class<?>[] paramTypes = constructor.getParameterTypes();
             if (paramTypes.length == this.args.length) {
                 boolean valid = true;
@@ -52,11 +52,11 @@ public class ClassInstantiation<T> {
                 if (valid) {
                     try {
                         return Optional.of(constructor.newInstance(this.args));
-                    } catch (final InstantiationException e) {
+                    } catch (InstantiationException e) {
                         e.printStackTrace();
-                    } catch (final IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         e.printStackTrace();
-                    } catch (final InvocationTargetException e) {
+                    } catch (InvocationTargetException e) {
                         e.printStackTrace();
                     }
                     break;
@@ -67,7 +67,7 @@ public class ClassInstantiation<T> {
         return Optional.empty();
     }
 
-    private boolean isClassMatch(Class<?> expected, Class<?> got, final Object value) {
+    private boolean isClassMatch(Class<?> expected, Class<?> got, Object value) {
         if (value == null && !expected.isPrimitive()) {
             return true;
         }
@@ -80,14 +80,14 @@ public class ClassInstantiation<T> {
         return expected == got || expected.isAssignableFrom(got);
     }
 
-    private Class<?> condense(final Class<?> expected, final Class<?>... wrappers) {
+    private Class<?> condense(Class<?> expected, Class<?>... wrappers) {
         if (expected.isPrimitive()) {
-            for (final Class clz : wrappers) {
+            for (Class clz : wrappers) {
                 try {
                     if (expected == clz.getField("TYPE").get(null)) {
                         return clz;
                     }
-                } catch (final Throwable t) {
+                } catch (Throwable t) {
                     AELog.debug(t);
                 }
             }

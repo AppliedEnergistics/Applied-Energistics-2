@@ -132,7 +132,7 @@ public final class AEParts {
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
         var definition = new ColoredItemDefinition<ColoredPartItem<T>>();
-        for (final AEColor color : AEColor.values()) {
+        for (AEColor color : AEColor.values()) {
             String id = color.registryPrefix + '_' + idSuffix;
 
             var itemDef = item(AppEng.makeId(id),

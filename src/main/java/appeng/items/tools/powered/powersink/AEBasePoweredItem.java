@@ -52,8 +52,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(final ItemStack stack, final Level level, final List<Component> lines,
-            final TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
+            TooltipFlag advancedTooltips) {
         final CompoundTag tag = stack.getTag();
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getAEMaxPower(stack);
@@ -99,7 +99,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double injectAEPower(final ItemStack is, final double amount, Actionable mode) {
+    public double injectAEPower(ItemStack is, double amount, Actionable mode) {
         final double maxStorage = this.getAEMaxPower(is);
         final double currentStorage = this.getAECurrentPower(is);
         final double required = maxStorage - currentStorage;
@@ -116,7 +116,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double extractAEPower(final ItemStack is, final double amount, Actionable mode) {
+    public double extractAEPower(ItemStack is, double amount, Actionable mode) {
         final double currentStorage = this.getAECurrentPower(is);
         final double fulfillable = Math.min(amount, currentStorage);
 
@@ -130,19 +130,19 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double getAEMaxPower(final ItemStack is) {
+    public double getAEMaxPower(ItemStack is) {
         return this.powerCapacity.getAsDouble();
     }
 
     @Override
-    public double getAECurrentPower(final ItemStack is) {
+    public double getAECurrentPower(ItemStack is) {
         final CompoundTag data = is.getOrCreateTag();
 
         return data.getDouble(CURRENT_POWER_NBT_KEY);
     }
 
     @Override
-    public AccessRestriction getPowerFlow(final ItemStack is) {
+    public AccessRestriction getPowerFlow(ItemStack is) {
         return AccessRestriction.WRITE;
     }
 

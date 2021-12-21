@@ -239,7 +239,7 @@ public class NetworkStorage implements MEStorage {
         return s;
     }
 
-    public long extract(AEKey what, long amount, final Actionable mode, final IActionSource source) {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (this.diveList(mode)) {
             return 0;
         }

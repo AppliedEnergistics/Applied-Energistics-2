@@ -75,7 +75,7 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void getDrops(final Level level, final BlockPos pos, final List<ItemStack> drops) {
+    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         this.logic.addDrops(drops);
     }
 
@@ -86,7 +86,7 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.logic.readFromNBT(data);
     }

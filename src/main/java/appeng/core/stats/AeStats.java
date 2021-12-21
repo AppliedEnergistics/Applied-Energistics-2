@@ -37,7 +37,7 @@ public enum AeStats {
         this.registryName = new ResourceLocation(AppEng.MOD_ID, id);
     }
 
-    public void addToPlayer(final Player player, final int howMany) {
+    public void addToPlayer(Player player, int howMany) {
         player.awardStat(this.registryName, howMany);
     }
 

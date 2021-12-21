@@ -27,12 +27,12 @@ public class InaccessibleSlot extends AppEngSlot {
 
     private ItemStack dspStack = ItemStack.EMPTY;
 
-    public InaccessibleSlot(final InternalInventory i, final int invSlot) {
+    public InaccessibleSlot(InternalInventory i, int invSlot) {
         super(i, invSlot);
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         return false;
     }
 
@@ -43,7 +43,7 @@ public class InaccessibleSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPickup(final Player player) {
+    public boolean mayPickup(Player player) {
         return false;
     }
 

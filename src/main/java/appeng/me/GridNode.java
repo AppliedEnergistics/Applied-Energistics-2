@@ -139,7 +139,7 @@ public class GridNode implements IGridNode, IPathItem {
         callListener((listener, owner, node) -> listener.onStateChanged(owner, node, reason));
     }
 
-    void addConnection(final IGridConnection gridConnection) {
+    void addConnection(IGridConnection gridConnection) {
         connections.add((GridConnection) gridConnection);
         if (gridConnection.isInWorld()) {
             callListener(IGridNodeListener::onInWorldConnectionChanged);
@@ -148,15 +148,15 @@ public class GridNode implements IGridNode, IPathItem {
         connections.sort(new ConnectionComparator(this));
     }
 
-    void removeConnection(final IGridConnection gridConnection) {
+    void removeConnection(IGridConnection gridConnection) {
         connections.remove((GridConnection) gridConnection);
         if (gridConnection.isInWorld()) {
             callListener(IGridNodeListener::onInWorldConnectionChanged);
         }
     }
 
-    boolean hasConnection(final IGridNode otherSide) {
-        for (final IGridConnection gc : this.connections) {
+    boolean hasConnection(IGridNode otherSide) {
+        for (IGridConnection gc : this.connections) {
             if (gc.a() == otherSide || gc.b() == otherSide) {
                 return true;
             }
@@ -187,7 +187,7 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public void beginVisit(final IGridVisitor g) {
+    public void beginVisit(IGridVisitor g) {
         final Object tracker = new Object();
 
         Deque<GridNode> nextRun = new ArrayDeque<>();
@@ -206,7 +206,7 @@ public class GridNode implements IGridNode, IPathItem {
                 final Iterable<GridNode> thisRun = nextRun;
                 nextRun = new ArrayDeque<>();
 
-                for (final GridNode n : thisRun) {
+                for (GridNode n : thisRun) {
                     n.visitorConnection(tracker, g, nextRun, nextConn);
                 }
             }
@@ -286,7 +286,7 @@ public class GridNode implements IGridNode, IPathItem {
         return this.myGrid;
     }
 
-    void setGrid(final Grid grid) {
+    void setGrid(Grid grid) {
         if (this.myGrid == grid) {
             return;
         }
@@ -420,7 +420,7 @@ public class GridNode implements IGridNode, IPathItem {
         return myGrid.getEnergyService().isNetworkPowered();
     }
 
-    public void loadFromNBT(final String name, final CompoundTag nodeData) {
+    public void loadFromNBT(String name, CompoundTag nodeData) {
         Preconditions.checkState(!ready, "Cannot load NBT when the node was marked as ready.");
         if (this.myGrid != null) {
             throw new IllegalStateException("Loading data after part of a grid, this is invalid.");
@@ -441,7 +441,7 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    public void saveToNBT(final String name, final CompoundTag nodeData) {
+    public void saveToNBT(String name, CompoundTag nodeData) {
         if (this.myStorage != null) {
             final CompoundTag node = new CompoundTag();
 
@@ -461,7 +461,7 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public boolean hasFlag(final GridFlags flag) {
+    public boolean hasFlag(GridFlags flag) {
         return flags.contains(flag);
     }
 
@@ -495,10 +495,10 @@ public class GridNode implements IGridNode, IPathItem {
     protected void findInWorldConnections() {
     }
 
-    private void visitorConnection(final Object tracker, final IGridVisitor g, final Deque<GridNode> nextRun,
-            final Deque<IGridConnection> nextConnections) {
+    private void visitorConnection(Object tracker, IGridVisitor g, Deque<GridNode> nextRun,
+            Deque<IGridConnection> nextConnections) {
         if (g.visitNode(this)) {
-            for (final IGridConnection gc : this.getConnections()) {
+            for (IGridConnection gc : this.getConnections()) {
                 final GridNode gn = (GridNode) gc.getOtherSide(this);
                 final GridConnection gcc = (GridConnection) gc;
 
@@ -518,7 +518,7 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    private void visitorNode(final Object tracker, final IGridVisitor g, final Deque<GridNode> nextRun) {
+    private void visitorNode(Object tracker, IGridVisitor g, Deque<GridNode> nextRun) {
         if (g.visitNode(this)) {
             for (var gc : this.getConnections()) {
                 var gn = (GridNode) gc.getOtherSide(this);
@@ -538,7 +538,7 @@ public class GridNode implements IGridNode, IPathItem {
         return this.myStorage;
     }
 
-    void setGridStorage(final GridStorage s) {
+    void setGridStorage(GridStorage s) {
         this.myStorage = s;
         this.usedChannels = 0;
         this.lastUsedChannels = 0;
@@ -554,7 +554,7 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public void setControllerRoute(final IPathItem fast) {
+    public void setControllerRoute(IPathItem fast) {
         this.usedChannels = 0;
 
         GridConnection connection = (GridConnection) fast;
@@ -600,7 +600,7 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public void incrementChannelCount(final int usedChannels) {
+    public void incrementChannelCount(int usedChannels) {
         this.usedChannels += usedChannels;
     }
 
@@ -623,7 +623,7 @@ public class GridNode implements IGridNode, IPathItem {
         return this.lastSecurityKey;
     }
 
-    public void setLastSecurityKey(final long lastSecurityKey) {
+    public void setLastSecurityKey(long lastSecurityKey) {
         this.lastSecurityKey = lastSecurityKey;
     }
 
@@ -631,19 +631,19 @@ public class GridNode implements IGridNode, IPathItem {
         return this.previousDraw;
     }
 
-    public void setPreviousDraw(final double previousDraw) {
+    public void setPreviousDraw(double previousDraw) {
         this.previousDraw = previousDraw;
     }
 
     private static class ConnectionComparator implements Comparator<IGridConnection> {
         private final IGridNode gn;
 
-        public ConnectionComparator(final IGridNode gn) {
+        public ConnectionComparator(IGridNode gn) {
             this.gn = gn;
         }
 
         @Override
-        public int compare(final IGridConnection o1, final IGridConnection o2) {
+        public int compare(IGridConnection o1, IGridConnection o2) {
             final boolean preferredA = o1.getOtherSide(this.gn).hasFlag(GridFlags.PREFERRED);
             final boolean preferredB = o2.getOtherSide(this.gn).hasFlag(GridFlags.PREFERRED);
 

@@ -41,7 +41,7 @@ public class TickMonitoring implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSourceStack> data,
-            final CommandSourceStack sender) {
+    public void call(MinecraftServer srv, CommandContext<CommandSourceStack> data,
+            CommandSourceStack sender) {
     }
 }

@@ -54,7 +54,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     private boolean allowEdit = true;
     private int stackLimit = -1;
 
-    public RestrictedInputSlot(PlacableItemType valid, InternalInventory inv, final int invSlot) {
+    public RestrictedInputSlot(PlacableItemType valid, InternalInventory inv, int invSlot) {
         super(inv, invSlot);
         this.which = valid;
         this.setIcon(valid.icon);
@@ -68,7 +68,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         return super.getMaxStackSize();
     }
 
-    public Slot setStackLimit(final int i) {
+    public Slot setStackLimit(int i) {
         this.stackLimit = i;
         return this;
     }
@@ -78,7 +78,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPlace(final ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         if (!this.getMenu().isValidForSlot(this, stack)) {
             return false;
         }
@@ -174,7 +174,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     @Override
-    public boolean mayPickup(final Player player) {
+    public boolean mayPickup(Player player) {
         return this.isAllowEdit();
     }
 
@@ -201,7 +201,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         return this.allowEdit;
     }
 
-    public void setAllowEdit(final boolean allowEdit) {
+    public void setAllowEdit(boolean allowEdit) {
         this.allowEdit = allowEdit;
     }
 
@@ -243,7 +243,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         public final Icon icon;
 
-        PlacableItemType(final Icon o) {
+        PlacableItemType(Icon o) {
             this.icon = o;
         }
     }

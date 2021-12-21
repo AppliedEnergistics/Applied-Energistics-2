@@ -37,7 +37,7 @@ public class InventoryActionPacket extends BasePacket {
     private final long id;
     private final ItemStack slotItem;
 
-    public InventoryActionPacket(final FriendlyByteBuf stream) {
+    public InventoryActionPacket(FriendlyByteBuf stream) {
         this.action = InventoryAction.values()[stream.readInt()];
         this.slot = stream.readInt();
         this.id = stream.readLong();
@@ -45,7 +45,7 @@ public class InventoryActionPacket extends BasePacket {
     }
 
     // api
-    public InventoryActionPacket(final InventoryAction action, final int slot, final ItemStack slotItem) {
+    public InventoryActionPacket(InventoryAction action, int slot, ItemStack slotItem) {
 
         if (Platform.isClient() && action != InventoryAction.SET_FILTER) {
             throw new IllegalStateException("invalid packet, client cannot post inv actions with stacks.");
@@ -68,7 +68,7 @@ public class InventoryActionPacket extends BasePacket {
     }
 
     // api
-    public InventoryActionPacket(final InventoryAction action, final int slot, final long id) {
+    public InventoryActionPacket(InventoryAction action, int slot, long id) {
         this.action = action;
         this.slot = slot;
         this.id = id;
@@ -86,7 +86,7 @@ public class InventoryActionPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(final INetworkInfo manager, final ServerPlayer player) {
+    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         if (player.containerMenu instanceof AEBaseMenu baseMenu) {
             if (action == InventoryAction.SET_FILTER) {
                 baseMenu.setFilter(this.slot, this.slotItem);

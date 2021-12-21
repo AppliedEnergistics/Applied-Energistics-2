@@ -26,7 +26,7 @@ public class CompassResult {
     private final long time;
     private boolean requested = false;
 
-    public CompassResult(final boolean hasResult, final boolean spin, final double rad) {
+    public CompassResult(boolean hasResult, boolean spin, double rad) {
         this.hasResult = hasResult;
         this.spin = spin;
         this.rad = rad;
@@ -49,7 +49,7 @@ public class CompassResult {
         return this.requested;
     }
 
-    void setRequested(final boolean requested) {
+    void setRequested(boolean requested) {
         this.requested = requested;
     }
 

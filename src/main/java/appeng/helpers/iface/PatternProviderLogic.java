@@ -446,7 +446,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                         // what = g;
                         // }
                     }
-                } catch (final Throwable t) {
+                } catch (Throwable t) {
                     BAD_BLOCKS.add(directedBlock); // nope!
                 }
 

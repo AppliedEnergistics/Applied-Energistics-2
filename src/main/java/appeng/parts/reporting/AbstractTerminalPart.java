@@ -71,7 +71,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+    public void getDrops(List<ItemStack> drops, boolean wrenched) {
         super.getDrops(drops, wrenched);
 
         for (var is : this.viewCell) {
@@ -92,21 +92,21 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(final CompoundTag data) {
+    public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
         this.cm.readFromNBT(data);
         this.viewCell.readFromNBT(data, "viewCell");
     }
 
     @Override
-    public void writeToNBT(final CompoundTag data) {
+    public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         this.cm.writeToNBT(data);
         this.viewCell.writeToNBT(data, "viewCell");
     }
 
     @Override
-    public boolean onPartActivate(final Player player, final InteractionHand hand, final Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!super.onPartActivate(player, hand, pos) && !player.level.isClientSide) {
             MenuOpener.open(getMenuType(player), player, MenuLocator.forPart(this));
         }
@@ -123,7 +123,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
         return new ItemStack(getPartItem());
     }
 
-    public MenuType<?> getMenuType(final Player player) {
+    public MenuType<?> getMenuType(Player player) {
         return MEStorageMenu.TYPE;
     }
 
@@ -142,8 +142,8 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void onChangeInventory(final InternalInventory inv, final int slot,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot,
+            ItemStack removedStack, ItemStack newStack) {
         this.getHost().markForSave();
     }
 }

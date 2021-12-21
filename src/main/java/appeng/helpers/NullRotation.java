@@ -44,7 +44,7 @@ public class NullRotation implements IOrientable {
     }
 
     @Override
-    public void setOrientation(final Direction forward, final Direction up) {
+    public void setOrientation(Direction forward, Direction up) {
 
     }
 }

@@ -53,7 +53,7 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
     }
 
     @Override
-    public void loadTag(final CompoundTag data) {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.getMainNode().loadFromNBT(data);
     }
@@ -74,7 +74,7 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
     }
 
     @Override
-    public IGridNode getGridNode(final Direction dir) {
+    public IGridNode getGridNode(Direction dir) {
         var node = this.getMainNode().getNode();
 
         // Check if the proxy exposes the node on this side

@@ -120,7 +120,7 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
     }
 
     @Override
-    public boolean isSlotEnabled(final int idx) {
+    public boolean isSlotEnabled(int idx) {
         final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
 
         return upgrades > idx;
@@ -170,7 +170,7 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
         return this.rwMode;
     }
 
-    private void setReadWriteMode(final AccessRestriction rwMode) {
+    private void setReadWriteMode(AccessRestriction rwMode) {
         this.rwMode = rwMode;
     }
 
@@ -178,7 +178,7 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
         return this.storageFilter;
     }
 
-    private void setStorageFilter(final StorageFilter storageFilter) {
+    private void setStorageFilter(StorageFilter storageFilter) {
         this.storageFilter = storageFilter;
     }
 

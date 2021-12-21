@@ -92,12 +92,12 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public int getBytes(final ItemStack cellItem) {
+    public int getBytes(ItemStack cellItem) {
         return this.totalBytes;
     }
 
     @Override
-    public int getTotalTypes(final ItemStack cellItem) {
+    public int getTotalTypes(ItemStack cellItem) {
         return totalTypes;
     }
 
@@ -112,46 +112,46 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public boolean isEditable(final ItemStack is) {
+    public boolean isEditable(ItemStack is) {
         return true;
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(final ItemStack is) {
+    public UpgradeInventory getUpgradesInventory(ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public ConfigInventory getConfigInventory(final ItemStack is) {
+    public ConfigInventory getConfigInventory(ItemStack is) {
         return CellConfig.create(keyType.filter(), is);
     }
 
     @Override
-    public FuzzyMode getFuzzyMode(final ItemStack is) {
+    public FuzzyMode getFuzzyMode(ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
         if (fz.isEmpty()) {
             return FuzzyMode.IGNORE_ALL;
         }
         try {
             return FuzzyMode.valueOf(fz);
-        } catch (final Throwable t) {
+        } catch (Throwable t) {
             return FuzzyMode.IGNORE_ALL;
         }
     }
 
     @Override
-    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+    public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         this.disassembleDrive(player.getItemInHand(hand), level, player);
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
     }
 
-    private boolean disassembleDrive(final ItemStack stack, final Level level, final Player player) {
+    private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             if (level.isClientSide()) {
                 return false;

@@ -47,7 +47,7 @@ public class ClientNetworkHandler extends ServerNetworkHandler {
         packetContext.getTaskQueue().execute(() -> {
             try {
                 packet.clientPacketData(null, packetContext.getPlayer());
-            } catch (final IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 AELog.debug(e);
             }
         });

@@ -35,7 +35,7 @@ public class GridPowerIdleChange extends GridEvent {
 
     public final IGridNode node;
 
-    public GridPowerIdleChange(final IGridNode nodeThatChanged) {
+    public GridPowerIdleChange(IGridNode nodeThatChanged) {
         this.node = nodeThatChanged;
     }
 }
