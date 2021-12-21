@@ -32,9 +32,9 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.EnergyLevelEmitterMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 
 public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
@@ -120,7 +120,7 @@ public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
     @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
-            MenuOpener.open(EnergyLevelEmitterMenu.TYPE, player, MenuLocator.forPart(this));
+            MenuOpener.open(EnergyLevelEmitterMenu.TYPE, player, MenuLocators.forPart(this));
         }
         return true;
     }

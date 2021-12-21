@@ -54,9 +54,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.definitions.AEBlockEntities;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.SkyChestMenu;
+import appeng.menu.locator.MenuLocators;
 
 public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implements SimpleWaterloggedBlock {
 
@@ -115,7 +115,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
             if (blockEntity != null) {
                 blockEntity.unpackLootTable(player);
                 MenuOpener.open(SkyChestMenu.TYPE, player,
-                        MenuLocator.forBlockEntity(blockEntity));
+                        MenuLocators.forBlockEntity(blockEntity));
             }
         }
 

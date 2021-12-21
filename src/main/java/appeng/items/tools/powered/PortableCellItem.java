@@ -46,8 +46,8 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 
@@ -83,7 +83,7 @@ public class PortableCellItem extends AEBasePoweredItem
     public boolean openFromInventory(Player player, int inventorySlot) {
         var is = player.getInventory().getItem(inventorySlot);
         if (is.getItem() == this) {
-            return MenuOpener.open(getMenuType(), player, MenuLocator.forInventorySlot(inventorySlot));
+            return MenuOpener.open(getMenuType(), player, MenuLocators.forInventorySlot(inventorySlot));
         } else {
             return false;
         }
@@ -92,7 +92,7 @@ public class PortableCellItem extends AEBasePoweredItem
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide()) {
-            MenuOpener.open(getMenuType(), player, MenuLocator.forHand(player, hand));
+            MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand));
         }
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));

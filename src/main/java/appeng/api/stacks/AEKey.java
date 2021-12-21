@@ -79,12 +79,12 @@ public abstract class AEKey {
     @Nullable
     public static AEKey readKey(FriendlyByteBuf buffer) {
         var id = buffer.readVarInt();
-        var channel = AEKeyType.fromRawId(id);
-        if (channel == null) {
+        var type = AEKeyType.fromRawId(id);
+        if (type == null) {
             AELog.error("Received unknown key space id %d", id);
             return null;
         }
-        return channel.readFromPacket(buffer);
+        return type.readFromPacket(buffer);
     }
 
     /**

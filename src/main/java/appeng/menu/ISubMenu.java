@@ -1,6 +1,7 @@
 package appeng.menu;
 
 import appeng.api.storage.ISubMenuHost;
+import appeng.menu.locator.MenuLocator;
 
 /**
  * A menu that is usually opened from another menu, and that offers a way to return to that main menu.

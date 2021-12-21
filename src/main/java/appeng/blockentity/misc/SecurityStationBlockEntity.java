@@ -57,9 +57,9 @@ import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.items.tools.BiometricCardItem;
 import appeng.me.storage.SecurityStationInventory;
 import appeng.menu.ISubMenu;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.SecurityStationMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
@@ -299,6 +299,6 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     public void openMenu(Player p) {
-        MenuOpener.open(SecurityStationMenu.TYPE, p, MenuLocator.forBlockEntitySide(this, getUp()));
+        MenuOpener.open(SecurityStationMenu.TYPE, p, MenuLocators.forBlockEntity(this));
     }
 }

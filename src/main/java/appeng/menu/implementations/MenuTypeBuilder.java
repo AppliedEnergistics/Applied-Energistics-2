@@ -27,7 +27,6 @@ import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -38,21 +37,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.helpers.ICustomNameObject;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.Platform;
 
 /**
@@ -135,8 +128,8 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      * buffer.
      */
     private M fromNetwork(int containerId, Inventory inv, FriendlyByteBuf packetBuf) {
-        var locator = MenuLocator.read(packetBuf);
-        I host = getHostFromLocator(inv.player, locator);
+        var locator = MenuLocators.readFromPacket(packetBuf);
+        I host = locator.locate(inv.player, hostInterface);
         if (host == null) {
             var connection = Minecraft.getInstance().getConnection();
             if (connection != null) {
@@ -159,7 +152,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
             return false;
         }
 
-        I accessInterface = getHostFromLocator(player, locator);
+        var accessInterface = locator.locate(player, hostInterface);
 
         if (accessInterface == null) {
             return false;
@@ -196,7 +189,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
         @Override
         public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-            locator.write(buf);
+            MenuLocators.writeToPacket(buf, locator);
             if (initialDataSerializer != null) {
                 initialDataSerializer.serializeInitialData(accessInterface, buf);
             }
@@ -217,68 +210,6 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
             return m;
         }
 
-    }
-
-    private I getHostFromLocator(Player player, MenuLocator locator) {
-        if (locator.hasItemIndex()) {
-            return getHostFromPlayerInventory(player, locator);
-        }
-
-        if (!locator.hasBlockPos()) {
-            return null; // No block was clicked
-        }
-
-        BlockEntity blockEntity = player.level.getBlockEntity(locator.getBlockPos());
-
-        // The block entity itself can host a terminal (i.e. Chest!)
-        if (hostInterface.isInstance(blockEntity)) {
-            return hostInterface.cast(blockEntity);
-        }
-
-        if (!locator.hasSide()) {
-            return null;
-        }
-
-        if (blockEntity instanceof IPartHost partHost) {
-            // But it could also be a part attached to the block entity
-            IPart part = partHost.getPart(locator.getSide());
-            if (part == null) {
-                return null;
-            }
-
-            if (hostInterface.isInstance(part)) {
-                return hostInterface.cast(part);
-            } else {
-                AELog.debug("Trying to open a menu @ %s for a %s, but the menu requires %s", locator,
-                        part.getClass(), hostInterface);
-                return null;
-            }
-        } else {
-            // FIXME: Logging? Dont know how to obtain the terminal host
-            return null;
-        }
-    }
-
-    private I getHostFromPlayerInventory(Player player, MenuLocator locator) {
-
-        ItemStack it = player.getInventory().getItem(locator.getItemIndex());
-
-        if (it.isEmpty()) {
-            AELog.debug("Cannot open menu for player %s since they no longer hold the item in slot %d", player,
-                    locator.hasItemIndex());
-            return null;
-        }
-
-        if (it.getItem() instanceof IMenuItem guiItem) {
-            // Optionally contains the block the item was used on to open the menu
-            BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
-            ItemMenuHost menuHost = guiItem.getMenuHost(player, locator.getItemIndex(), it, blockPos);
-            if (hostInterface.isInstance(menuHost)) {
-                return hostInterface.cast(menuHost);
-            }
-        }
-
-        return null;
     }
 
     /**

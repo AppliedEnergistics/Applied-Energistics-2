@@ -47,9 +47,9 @@ import appeng.api.stacks.KeyCounter;
 import appeng.core.AppEng;
 import appeng.helpers.IConfigInvHost;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 
@@ -260,7 +260,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
-            MenuOpener.open(StorageLevelEmitterMenu.TYPE, player, MenuLocator.forPart(this));
+            MenuOpener.open(StorageLevelEmitterMenu.TYPE, player, MenuLocators.forPart(this));
         }
         return true;
     }

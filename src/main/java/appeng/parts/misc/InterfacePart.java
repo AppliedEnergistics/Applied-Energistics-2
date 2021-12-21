@@ -43,7 +43,7 @@ import appeng.core.AppEng;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuLocator;
+import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -133,7 +133,7 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     @Override
     public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            openMenu(p, MenuLocator.forPart(this));
+            openMenu(p, MenuLocators.forPart(this));
         }
         return true;
     }

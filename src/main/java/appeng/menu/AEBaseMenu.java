@@ -66,6 +66,7 @@ import appeng.helpers.InventoryAction;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
+import appeng.menu.locator.MenuLocator;
 import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
@@ -109,7 +110,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             throw new IllegalArgumentException("Must have a valid host, instead " + host + " in " + playerInventory);
         }
 
-        if (itemMenuHost != null) {
+        if (itemMenuHost != null && itemMenuHost.getSlot() != null) {
             lockPlayerInventorySlot(itemMenuHost.getSlot());
         }
 

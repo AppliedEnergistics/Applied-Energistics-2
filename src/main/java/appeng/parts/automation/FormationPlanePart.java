@@ -56,9 +56,9 @@ import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.FormationPlaneMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -235,7 +235,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     }
 
     private void openConfigMenu(Player player) {
-        MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+        MenuOpener.open(getMenuType(), player, MenuLocators.forPart(this));
     }
 
     protected MenuType<?> getMenuType() {

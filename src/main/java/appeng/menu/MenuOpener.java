@@ -28,6 +28,7 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.core.AELog;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.locator.MenuLocator;
 
 /**
  * Forwards a menu open request to the {@link MenuTypeBuilder} that was used to build a {@link MenuType}.

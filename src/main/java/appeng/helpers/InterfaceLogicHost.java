@@ -27,9 +27,9 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.ISubMenu;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InterfaceMenu;
+import appeng.menu.locator.MenuLocator;
 
 /**
  * Interface that must be implemented by machines hosting {@link InterfaceLogic}.

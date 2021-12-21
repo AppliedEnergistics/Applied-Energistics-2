@@ -31,9 +31,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.CellWorkbenchMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
 public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEntity> {
@@ -53,7 +53,7 @@ public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEnti
         final CellWorkbenchBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
-                MenuOpener.open(CellWorkbenchMenu.TYPE, p, MenuLocator.forBlockEntity(tg));
+                MenuOpener.open(CellWorkbenchMenu.TYPE, p, MenuLocators.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

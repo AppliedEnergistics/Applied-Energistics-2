@@ -54,9 +54,9 @@ import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.storage.DriveWatcher;
 import appeng.menu.ISubMenu;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.DriveMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class DriveBlockEntity extends AENetworkInvBlockEntity
@@ -402,7 +402,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     public void openMenu(Player player) {
-        MenuOpener.open(DriveMenu.TYPE, player, MenuLocator.forBlockEntity(this));
+        MenuOpener.open(DriveMenu.TYPE, player, MenuLocators.forBlockEntity(this));
     }
 
     @Override

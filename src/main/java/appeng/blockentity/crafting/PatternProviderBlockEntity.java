@@ -38,9 +38,9 @@ import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.helpers.iface.PatternProviderLogicHost;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternProviderMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.Platform;
 
 public class PatternProviderBlockEntity extends AENetworkBlockEntity implements PatternProviderLogicHost {
@@ -165,6 +165,6 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     }
 
     public void openMenu(Player player) {
-        MenuOpener.open(PatternProviderMenu.TYPE, player, MenuLocator.forBlockEntitySide(this, getForward()));
+        MenuOpener.open(PatternProviderMenu.TYPE, player, MenuLocators.forBlockEntity(this));
     }
 }

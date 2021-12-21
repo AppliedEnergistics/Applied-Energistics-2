@@ -37,7 +37,8 @@ public class NetworkToolMenuHost extends ItemMenuHost implements InternalInvento
     @Nullable
     private final IInWorldGridNodeHost host;
 
-    public NetworkToolMenuHost(Player player, int slot, ItemStack is, @Nullable IInWorldGridNodeHost host) {
+    public NetworkToolMenuHost(Player player, @Nullable Integer slot, ItemStack is,
+            @Nullable IInWorldGridNodeHost host) {
         super(player, slot, is);
         this.host = host;
         this.inv = new AppEngInternalInventory(this, 9);

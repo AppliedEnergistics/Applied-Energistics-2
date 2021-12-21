@@ -37,9 +37,9 @@ import appeng.core.AppEng;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.helpers.iface.PatternProviderLogicHost;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternProviderMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
@@ -118,7 +118,7 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
     }
 
     private void openMenu(Player p) {
-        MenuOpener.open(PatternProviderMenu.TYPE, p, MenuLocator.forPart(this));
+        MenuOpener.open(PatternProviderMenu.TYPE, p, MenuLocators.forPart(this));
     }
 
     @Override
