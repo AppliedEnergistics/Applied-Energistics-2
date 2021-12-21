@@ -21,6 +21,7 @@ package appeng.client.gui.me.common;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -73,7 +74,6 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
-import appeng.integration.abstraction.JEIFacade;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
@@ -124,11 +124,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.repo.setUpdateViewListener(this::updateScrollbar);
         updateScrollbar();
 
-        this.searchField.setResponder(text -> {
-            repo.setSearchString(text);
-            repo.updateView();
-            updateScrollbar();
-        });
+        this.searchField.setResponder(this::setSearchText);
 
         this.imageWidth = this.style.getScreenWidth();
         this.imageHeight = this.style.getScreenHeight(0);
@@ -299,28 +295,17 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         super.init();
 
-        SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
-        this.isAutoFocus = SearchBoxMode.AUTOSEARCH == searchMode || SearchBoxMode.JEI_AUTOSEARCH == searchMode
-                || SearchBoxMode.AUTOSEARCH_KEEP == searchMode || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchMode;
-        final boolean isKeepFilter = SearchBoxMode.AUTOSEARCH_KEEP == searchMode
-                || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchMode || SearchBoxMode.MANUAL_SEARCH_KEEP == searchMode
-                || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchMode;
-        final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchMode
-                || SearchBoxMode.JEI_MANUAL_SEARCH == searchMode;
+        var searchMode = AEConfig.instance().getTerminalSearchMode();
+        this.isAutoFocus = searchMode.isAutoFocus();
 
         if (this.isAutoFocus) {
             setInitialFocus(this.searchField);
         }
 
-        if (isJEIEnabled) {
-            memoryText = JEIFacade.instance().getSearchText();
-        }
-
-        if (isKeepFilter && memoryText != null && !memoryText.isEmpty()) {
+        if (searchMode.isRememberSearch() && memoryText != null && !memoryText.isEmpty()) {
             this.searchField.setValue(memoryText);
             this.searchField.selectAll();
-            this.repo.setSearchString(memoryText);
-            this.repo.updateView();
+            setSearchText(memoryText);
         }
 
         this.updateScrollbar();
@@ -329,6 +314,17 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
+
+        var searchMode = AEConfig.instance().getTerminalSearchMode();
+        if (searchMode.shouldUseExternalSearchBox()) {
+            this.searchField.setVisible(false);
+            var externalSearchText = Platform.getExternalSearchText(searchMode);
+            if (!Objects.equals(repo.getSearchString(), externalSearchText)) {
+                setSearchText(externalSearchText);
+            }
+        } else {
+            this.searchField.setVisible(true);
+        }
 
         // Override the dialog title found in the screen JSON with the user-supplied name
         if (!this.title.getString().isEmpty()) {
@@ -362,9 +358,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         // Right-clicking on the search field should clear it
         if (this.searchField.isMouseOver(xCoord, yCoord) && btn == 1) {
             this.searchField.setValue("");
-            this.repo.setSearchString("");
-            this.repo.updateView();
-            this.updateScrollbar();
+            setSearchText("");
             return true;
         }
 
@@ -664,6 +658,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
         SE next = btn.getNextValue(backwards);
         NetworkHandler.instance().sendToServer(new ConfigValuePacket(btn.getSetting(), next));
         btn.set(next);
+    }
+
+    private void setSearchText(String text) {
+        repo.setSearchString(text);
+        repo.updateView();
+        updateScrollbar();
     }
 
     private void reinitalize() {

@@ -59,7 +59,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
-import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.abstraction.REIFacade;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
 import appeng.recipes.handlers.InscriberRecipe;
@@ -72,7 +72,7 @@ public class ReiPlugin implements REIClientPlugin {
     private List<Predicate<ItemStack>> coloredCables;
 
     public ReiPlugin() {
-        JEIFacade.setInstance(new ReiRuntimeAdapter());
+        REIFacade.setInstance(new ReiRuntimeAdapter());
     }
 
     @Override

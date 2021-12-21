@@ -31,7 +31,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -41,7 +40,6 @@ import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.integration.abstraction.JEIFacade;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
 import appeng.util.Platform;
@@ -70,12 +68,10 @@ public class Repo implements IClientRepo {
 
     private final IScrollSource src;
     private final ISortSource sortSrc;
-    private boolean synchronizeWithJEI;
 
     public Repo(IScrollSource src, ISortSource sortSrc) {
         this.src = src;
         this.sortSrc = sortSrc;
-        setSynchronizeWithJEI(true);
     }
 
     public void setPartitionList(IPartitionList partitionList) {
@@ -132,8 +128,6 @@ public class Repo implements IClientRepo {
         this.view.clear();
 
         this.view.ensureCapacity(this.entries.size());
-
-        this.updateJEI(this.searchString);
 
         SearchMode searchMode = SearchMode.NAME;
         if (AEConfig.instance().getSearchTooltips() != YesNo.NO) {
@@ -234,17 +228,6 @@ public class Repo implements IClientRepo {
 
     public final void setSearchString(@Nonnull final String searchString) {
         this.searchString = searchString;
-    }
-
-    private void updateJEI(String filter) {
-        SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
-        if (synchronizeWithJEI && searchMode.isRequiresJei()) {
-            JEIFacade.instance().setSearchText(filter);
-        }
-    }
-
-    protected final void setSynchronizeWithJEI(boolean enable) {
-        this.synchronizeWithJEI = enable;
     }
 
     protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, AEKey what) {

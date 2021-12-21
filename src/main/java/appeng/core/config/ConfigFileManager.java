@@ -37,6 +37,9 @@ public class ConfigFileManager {
             rootSection.read(rootObj);
         } catch (FileNotFoundException ignored) {
         } catch (Exception e) {
+            if (e instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
             throw new RuntimeException("Failed to load AE2 config: " + file, e);
         } finally {
             loading = false;

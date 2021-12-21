@@ -37,10 +37,9 @@ public enum ButtonToolTips {
 
     EmitLevelsBelow, EmitLevelAbove, MatchingExact, TransferToNetwork,
 
-    TransferToStorageCell, ToggleSortDirection,
+    TransferToStorageCell, Ascending, Descending,
 
-    SearchMode_Auto, SearchMode_Standard, SearchMode_JEIAuto, SearchMode_JEIStandard, SearchMode_AutoKeep,
-    SearchMode_StandardKeep, SearchMode_JEIAutoKeep, SearchMode_JEIStandardKeep,
+    SearchMode_RememberSearch, SearchMode_AutoFocus, SearchMode_JEI, SearchMode_REI,
 
     SearchMode, ItemName, NumberOfItems, PartitionStorageHint,
 
@@ -48,7 +47,7 @@ public enum ButtonToolTips {
 
     FZPercent_25, FZPercent_50, FZPercent_75, FZPercent_99, FZIgnoreAll,
 
-    MoveWhenEmpty, MoveWhenWorkIsDone, MoveWhenFull, Disabled, Enable,
+    MoveWhenEmpty, MoveWhenWorkIsDone, MoveWhenFull, Off, On,
 
     Blocking, NonBlocking,
 
