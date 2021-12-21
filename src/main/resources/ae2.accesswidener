@@ -29,6 +29,9 @@ accessible method net/minecraft/data/worldgen/placement/OrePlacements commonOreP
 # For overlay rendering
 accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
 
+# Rendering voxel shape outlines
+accessible method net/minecraft/client/renderer/LevelRenderer renderShape (Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/phys/shapes/VoxelShape;DDDFFFF)V
+
 # For Encoded Pattern Rendering
 accessible method net/minecraft/client/renderer/entity/ItemRenderer renderGuiItem (Lnet/minecraft/world/item/ItemStack;IILnet/minecraft/client/resources/model/BakedModel;)V
 

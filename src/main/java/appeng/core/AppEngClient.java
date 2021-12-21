@@ -71,6 +71,7 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
 import appeng.hooks.ICustomPickBlock;
 import appeng.hooks.MouseWheelScrolled;
+import appeng.hooks.RenderBlockOutlineHook;
 import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitAutoRotatingModel;
 import appeng.init.client.InitBlockColors;
@@ -119,6 +120,7 @@ public class AppEngClient extends AppEngBase {
 
         InitAutoRotatingModel.init();
         BlockAttackHook.install();
+        RenderBlockOutlineHook.install();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
 
