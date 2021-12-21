@@ -31,7 +31,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.InterfaceBlockEntity;
-import appeng.menu.MenuLocator;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
 public class InterfaceBlock extends AEBaseEntityBlock<InterfaceBlockEntity> {
@@ -50,7 +50,8 @@ public class InterfaceBlock extends AEBaseEntityBlock<InterfaceBlockEntity> {
         var be = this.getBlockEntity(level, pos);
         if (be != null) {
             if (!level.isClientSide()) {
-                be.openMenu(p, MenuLocator.forBlockEntitySide(be, hit.getDirection()));
+                hit.getDirection();
+                be.openMenu(p, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

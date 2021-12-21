@@ -18,6 +18,8 @@
 
 package appeng.api.implementations.menuobjects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,12 +35,13 @@ import appeng.api.networking.energy.IEnergySource;
 public class ItemMenuHost {
 
     private final Player player;
-    private final int slot;
+    @Nullable
+    private final Integer slot;
     private final ItemStack itemStack;
     private int powerTicks = 0;
     private double powerDrainPerTick = 0.5;
 
-    public ItemMenuHost(Player player, int slot, ItemStack itemStack) {
+    public ItemMenuHost(Player player, @Nullable Integer slot, ItemStack itemStack) {
         this.player = player;
         this.slot = slot;
         this.itemStack = itemStack;
@@ -52,9 +55,11 @@ public class ItemMenuHost {
     }
 
     /**
-     * @return The index of the item hosting the menu in the {@link #getPlayer() players} inventory.
+     * @return The index of the item hosting the menu in the {@link #getPlayer() players} inventory. Null if the item is
+     *         not directly accessible via the inventory.
      */
-    public int getSlot() {
+    @Nullable
+    public Integer getSlot() {
         return slot;
     }
 
@@ -88,11 +93,14 @@ public class ItemMenuHost {
      *
      * @return True if {@link #getItemStack()} is still in the expected slot.
      */
-    protected final boolean ensureItemStillInSlot() {
+    protected boolean ensureItemStillInSlot() {
+        if (slot == null) {
+            return true;
+        }
+
         ItemStack expectedItem = getItemStack();
 
         Inventory inventory = getPlayer().getInventory();
-        int slot = getSlot();
         ItemStack currentItem = inventory.getItem(slot);
         if (!currentItem.isEmpty() && !expectedItem.isEmpty()) {
             if (currentItem == expectedItem) {

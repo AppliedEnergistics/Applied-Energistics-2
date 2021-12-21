@@ -33,9 +33,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.InscriberBlockEntity;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InscriberMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
 public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
@@ -58,8 +58,9 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> {
             final InscriberBlockEntity tg = this.getBlockEntity(level, pos);
             if (tg != null) {
                 if (!level.isClientSide()) {
+                    hit.getDirection();
                     MenuOpener.open(InscriberMenu.TYPE, p,
-                            MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
+                            MenuLocators.forBlockEntity(tg));
                 }
                 return InteractionResult.sidedSuccess(level.isClientSide());
             }

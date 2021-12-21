@@ -19,7 +19,7 @@ public class WirelessCraftingTerminalMenuHost extends WirelessTerminalMenuHost
         implements ISegmentedInventory, InternalInventoryHost {
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
-    public WirelessCraftingTerminalMenuHost(Player player, int slot, ItemStack itemStack,
+    public WirelessCraftingTerminalMenuHost(Player player, @Nullable Integer slot, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(player, slot, itemStack, returnToMainMenu);
         craftingGrid.readFromNBT(getItemStack().getOrCreateTag(), "craftingGrid");

@@ -23,6 +23,8 @@ import java.util.function.BiConsumer;
 
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +52,7 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     private final MEStorage cellStorage;
     private final PortableCellItem item;
 
-    public PortableCellMenuHost(Player player, int slot, PortableCellItem item, ItemStack itemStack,
+    public PortableCellMenuHost(Player player, @Nullable Integer slot, PortableCellItem item, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(player, slot, itemStack);
         Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");

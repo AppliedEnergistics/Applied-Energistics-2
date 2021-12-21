@@ -27,9 +27,9 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InterfaceTerminalMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 
 public class PatternAccessTerminalPart extends AbstractDisplayPart {
@@ -52,7 +52,7 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart {
     @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
-            MenuOpener.open(InterfaceTerminalMenu.TYPE, player, MenuLocator.forPart(this));
+            MenuOpener.open(InterfaceTerminalMenu.TYPE, player, MenuLocators.forPart(this));
         }
         return true;
     }

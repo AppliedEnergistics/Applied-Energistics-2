@@ -83,9 +83,9 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
 import appeng.menu.ISubMenu;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.ChestMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
@@ -517,7 +517,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     public void openCellInventoryMenu(Player player) {
-        MenuOpener.open(ChestMenu.TYPE, player, MenuLocator.forBlockEntitySide(this, getForward()));
+        MenuOpener.open(ChestMenu.TYPE, player, MenuLocators.forBlockEntity(this));
     }
 
     private class ChestMonitorHandler extends DelegatingMEInventory {

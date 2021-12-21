@@ -20,6 +20,8 @@ package appeng.helpers;
 
 import java.util.function.BiConsumer;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -56,7 +58,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
      */
     private double currentDistanceFromGrid = Double.MAX_VALUE;
 
-    public WirelessTerminalMenuHost(Player player, int slot, ItemStack itemStack,
+    public WirelessTerminalMenuHost(Player player, @Nullable Integer slot, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(player, slot, itemStack);
         if (!(itemStack.getItem() instanceof WirelessTerminalItem wirelessTerminalItem)) {

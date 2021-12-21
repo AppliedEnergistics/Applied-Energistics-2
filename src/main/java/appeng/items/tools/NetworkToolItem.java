@@ -36,8 +36,8 @@ import appeng.api.util.INetworkToolAware;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolMenuHost;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 import appeng.util.Platform;
@@ -61,7 +61,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
         if (!level.isClientSide()) {
-            MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocator.forHand(p, hand));
+            MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocators.forHand(p, hand));
         }
 
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
@@ -119,9 +119,9 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
         var nodeHost = GridHelper.getNodeHost(level, pos);
 
         if (nodeHost != null) {
-            MenuOpener.open(NetworkStatusMenu.TYPE, p, MenuLocator.forItemUseContext(useContext));
+            MenuOpener.open(NetworkStatusMenu.TYPE, p, MenuLocators.forItemUseContext(useContext));
         } else {
-            MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocator.forHand(p, hand));
+            MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocators.forHand(p, hand));
         }
 
         return true;

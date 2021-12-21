@@ -72,13 +72,26 @@ public final class PartHelper {
     @Nullable
     public static <T extends IPart> T getPart(IPartItem<T> partItem, BlockGetter level, BlockPos pos,
             @Nullable Direction side) {
-        var be = level.getBlockEntity(pos);
-        if (be instanceof IPartHost partHost) {
-            var part = partHost.getPart(side);
+        var part = getPart(level, pos, side);
+        if (part != null) {
             var partClass = partItem.getPartClass();
             if (partClass.isInstance(part)) {
                 return partClass.cast(part);
             }
+        }
+        return null;
+    }
+
+    /**
+     * Tries to retrieve a part from the world, and returns it.
+     *
+     * @param side Null will retrieve the part at the center (the cable).
+     */
+    @Nullable
+    public static IPart getPart(BlockGetter level, BlockPos pos, @Nullable Direction side) {
+        var be = level.getBlockEntity(pos);
+        if (be instanceof IPartHost partHost) {
+            return partHost.getPart(side);
         }
         return null;
     }

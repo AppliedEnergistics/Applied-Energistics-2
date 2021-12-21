@@ -75,9 +75,9 @@ import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.NullInventory;
 import appeng.menu.ISubMenu;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.StorageBusMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartAdjacentApi;
 import appeng.parts.PartModel;
 import appeng.parts.automation.ExternalStorageStrategy;
@@ -202,7 +202,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     protected final void openConfigMenu(Player player) {
-        MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+        MenuOpener.open(getMenuType(), player, MenuLocators.forPart(this));
     }
 
     @Override

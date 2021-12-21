@@ -27,8 +27,8 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
 
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
@@ -40,7 +40,8 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 
     @Override
     public void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler, ItemStack cell) {
+        chest.getUp();
         MenuOpener.open(MEStorageMenu.TYPE, player,
-                MenuLocator.forBlockEntitySide((BlockEntity) chest, chest.getUp()));
+                MenuLocators.forBlockEntity((BlockEntity) chest));
     }
 }

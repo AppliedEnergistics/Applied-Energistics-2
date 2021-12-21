@@ -33,9 +33,9 @@ import net.minecraft.world.level.Level;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.items.AEBaseItem;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QuartzKnifeMenu;
+import appeng.menu.locator.MenuLocators;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
 
@@ -51,7 +51,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
         Level level = context.getLevel();
         if (!level.isClientSide() && player != null) {
             MenuOpener.open(QuartzKnifeMenu.TYPE, context.getPlayer(),
-                    MenuLocator.forItemUseContext(context));
+                    MenuLocators.forItemUseContext(context));
         }
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
@@ -59,7 +59,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
         if (!level.isClientSide()) {
-            MenuOpener.open(QuartzKnifeMenu.TYPE, p, MenuLocator.forHand(p, hand));
+            MenuOpener.open(QuartzKnifeMenu.TYPE, p, MenuLocators.forHand(p, hand));
         }
         p.swing(hand);
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),

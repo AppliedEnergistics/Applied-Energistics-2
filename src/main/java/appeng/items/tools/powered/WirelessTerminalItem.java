@@ -51,8 +51,8 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.util.ConfigManager;
 
@@ -80,7 +80,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
         var is = player.getInventory().getItem(inventorySlot);
 
         if (checkPreconditions(is, player)) {
-            return MenuOpener.open(getMenuType(), player, MenuLocator.forInventorySlot(inventorySlot));
+            return MenuOpener.open(getMenuType(), player, MenuLocators.forInventorySlot(inventorySlot));
         }
         return false;
     }
@@ -93,7 +93,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
         var is = player.getItemInHand(hand);
 
         if (checkPreconditions(is, player)) {
-            if (MenuOpener.open(getMenuType(), player, MenuLocator.forHand(player, hand))) {
+            if (MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand))) {
                 return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), is);
             }
         }

@@ -35,9 +35,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.SpatialAnchorMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
 /**
@@ -74,8 +74,9 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
         final SpatialAnchorBlockEntity tg = this.getBlockEntity(level, pos);
         if (tg != null) {
             if (!level.isClientSide()) {
+                hit.getDirection();
                 MenuOpener.open(SpatialAnchorMenu.TYPE, p,
-                        MenuLocator.forBlockEntitySide(tg, hit.getDirection()));
+                        MenuLocators.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }

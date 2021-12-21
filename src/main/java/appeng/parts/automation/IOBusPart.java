@@ -49,8 +49,8 @@ import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigInvHost;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
-import appeng.menu.MenuLocator;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 import appeng.util.Platform;
@@ -265,7 +265,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     @Override
     public final boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!isClientSide()) {
-            MenuOpener.open(getMenuType(), player, MenuLocator.forPart(this));
+            MenuOpener.open(getMenuType(), player, MenuLocators.forPart(this));
         }
         return true;
     }
