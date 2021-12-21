@@ -42,6 +42,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
+import appeng.client.gui.style.Blitter;
 
 /**
  * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click
@@ -50,6 +51,8 @@ import appeng.client.Point;
  * The rendering does pay attention to the size of the '_' caret.
  */
 public class AETextField extends EditBox implements IResizableWidget, ITooltip {
+    private static final Blitter BLITTER = Blitter.texture("guis/text_field.png", 128, 128);
+
     private static final int PADDING = 2;
 
     private final int _fontPad;
@@ -109,15 +112,29 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         if (this.isVisible()) {
-            if (this.isFocused()) {
-                fill(poseStack, this.x - PADDING + 1, this.y - PADDING + 1,
-                        this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
-                        0xFF606060);
-            } else {
-                fill(poseStack, this.x - PADDING + 1, this.y - PADDING + 1,
-                        this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
-                        0xFFA8A8A8);
+            var yOffset = 0;
+            if (!this.isEditable()) {
+                yOffset = 12;
+            } else if (isFocused()) {
+                yOffset = 24;
             }
+
+            // Render background
+            int left = x - PADDING;
+            int top = y - PADDING;
+            int right = left + width + 2 * PADDING + _fontPad;
+
+            BLITTER.src(0, yOffset, 1, 12)
+                    .dest(left, top)
+                    .blit(poseStack, getBlitOffset());
+            var backgroundWidth = Math.min(126, right - left - 2);
+            BLITTER.src(1, yOffset, backgroundWidth, 12)
+                    .dest(left + 1, top)
+                    .blit(poseStack, getBlitOffset());
+            BLITTER.src(127, yOffset, 1, 12)
+                    .dest(right - 1, top)
+                    .blit(poseStack, getBlitOffset());
+
             super.renderButton(poseStack, mouseX, mouseY, partial);
         }
     }

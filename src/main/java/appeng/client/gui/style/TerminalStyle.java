@@ -151,7 +151,7 @@ public class TerminalStyle {
      * Gets the position of one of the network grid slots. The returned position is within the slots 1px border.
      */
     public Point getSlotPos(int row, int col) {
-        int x = 8 + col * 18;
+        int x = 7 + col * 18;
 
         int y = header.getSrcHeight();
         if (row > 0) {

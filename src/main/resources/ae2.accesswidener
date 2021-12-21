@@ -4,6 +4,7 @@ accessWidener	v1	named
 extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen renderSlot (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/inventory/Slot;)V
 extendable method net/minecraft/client/gui/components/EditBox renderHighlight (IIII)V
 accessible method net/minecraft/client/gui/components/EditBox getMaxLength ()I
+accessible method net/minecraft/client/gui/components/EditBox isEditable ()Z
 accessible field net/minecraft/client/gui/components/AbstractWidget height I
 extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen isHovering (Lnet/minecraft/world/inventory/Slot;DD)Z
 
