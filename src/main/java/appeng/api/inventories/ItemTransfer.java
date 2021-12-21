@@ -25,7 +25,6 @@ package appeng.api.inventories;
 
 import java.util.function.Predicate;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
@@ -69,7 +68,7 @@ public interface ItemTransfer {
      * @param stack The stack to insert. Will not be mutated.
      * @return The overflow, which can be the same object as stack.
      */
-    @Nonnull
+
     ItemStack addItems(ItemStack stack, boolean simulate);
 
     /**

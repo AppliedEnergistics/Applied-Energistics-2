@@ -20,8 +20,6 @@ package appeng.blockentity;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +51,6 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
         }
     }
 
-    @Nonnull
     public abstract InternalInventory getInternalInventory();
 
     @Override
@@ -90,8 +87,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     public abstract void onChangeInventory(InternalInventory inv, int slot, ItemStack removed,
             ItemStack added);
 
-    @Nonnull
-    public InternalInventory getExposedInventoryForSide(@Nonnull Direction side) {
+    public InternalInventory getExposedInventoryForSide(Direction side) {
         return this.getInternalInventory();
     }
 

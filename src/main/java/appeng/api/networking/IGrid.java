@@ -25,8 +25,6 @@ package appeng.api.networking;
 
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridEvent;
@@ -49,8 +47,8 @@ public interface IGrid {
      * @param iface face
      * @return the IGridCache you requested.
      */
-    @Nonnull
-    <C extends IGridService> C getService(@Nonnull Class<C> iface);
+
+    <C extends IGridService> C getService(Class<C> iface);
 
     /**
      * Post an event into the network event bus.
@@ -58,8 +56,8 @@ public interface IGrid {
      * @param ev - event to post
      * @return returns ev back to original poster
      */
-    @Nonnull
-    <T extends GridEvent> T postEvent(@Nonnull T ev);
+
+    <T extends GridEvent> T postEvent(T ev);
 
     /**
      * get a list of the diversity of classes, you can use this to better detect which machines your interested in,
@@ -67,7 +65,7 @@ public interface IGrid {
      *
      * @return IReadOnlyCollection of all available host types (Of Type IGridHost).
      */
-    @Nonnull
+
     Iterable<Class<?>> getMachineClasses();
 
     /**
@@ -76,8 +74,8 @@ public interface IGrid {
      * @param machineClass class of the machine associated with a grid node
      * @return all nodes belonging to machines of specified class. keep in mind that machines can have multiple nodes.
      */
-    @Nonnull
-    Iterable<IGridNode> getMachineNodes(@Nonnull Class<?> machineClass);
+
+    Iterable<IGridNode> getMachineNodes(Class<?> machineClass);
 
     /**
      * Get machines connected to the network via grid nodes.
@@ -86,8 +84,8 @@ public interface IGrid {
      * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes, this
      *         will only return the machine once.
      */
-    @Nonnull
-    <T> Set<T> getMachines(@Nonnull Class<T> machineClass);
+
+    <T> Set<T> getMachines(Class<T> machineClass);
 
     /**
      * Get machines connected to the network via grid nodes that are powered and have their needed channels.
@@ -96,13 +94,13 @@ public interface IGrid {
      * @return all unique machines of specified class. if a machine is connected to the grid with multiple nodes, this
      *         will only return the machine once.
      */
-    @Nonnull
-    <T> Set<T> getActiveMachines(@Nonnull Class<T> machineClass);
+
+    <T> Set<T> getActiveMachines(Class<T> machineClass);
 
     /**
      * @return IReadOnlyCollection for all nodes on the network, node visitors are preferred.
      */
-    @Nonnull
+
     Iterable<IGridNode> getNodes();
 
     /**
@@ -113,7 +111,7 @@ public interface IGrid {
     /**
      * @return the node considered the pivot point of the grid.
      */
-    @Nonnull
+
     IGridNode getPivot();
 
     /**
@@ -126,7 +124,7 @@ public interface IGrid {
      *
      * @see #getService(Class)
      */
-    @Nonnull
+
     default ITickManager getTickManager() {
         return getService(ITickManager.class);
     }
@@ -136,7 +134,7 @@ public interface IGrid {
      *
      * @see #getService(Class)
      */
-    @Nonnull
+
     default IStorageService getStorageService() {
         return getService(IStorageService.class);
     }
@@ -146,7 +144,7 @@ public interface IGrid {
      *
      * @see #getService(Class)
      */
-    @Nonnull
+
     default IEnergyService getEnergyService() {
         return getService(IEnergyService.class);
     }
@@ -156,7 +154,7 @@ public interface IGrid {
      *
      * @see #getService(Class)
      */
-    @Nonnull
+
     default ICraftingService getCraftingService() {
         return getService(ICraftingService.class);
     }
@@ -166,7 +164,7 @@ public interface IGrid {
      *
      * @see #getService(Class)
      */
-    @Nonnull
+
     default ISecurityService getSecurityService() {
         return getService(ISecurityService.class);
     }
@@ -176,7 +174,7 @@ public interface IGrid {
      *
      * @see #getService(Class)
      */
-    @Nonnull
+
     default IPathingService getPathingService() {
         return getService(IPathingService.class);
     }
@@ -186,7 +184,7 @@ public interface IGrid {
      *
      * @see #getService(Class)
      */
-    @Nonnull
+
     default ISpatialService getSpatialService() {
         return getService(ISpatialService.class);
     }

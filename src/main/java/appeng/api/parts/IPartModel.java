@@ -26,8 +26,6 @@ package appeng.api.parts;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -52,7 +50,7 @@ public interface IPartModel {
      *
      * @return a collection of models, never null.
      */
-    @Nonnull
+
     default List<ResourceLocation> getModels() {
         return Collections.emptyList();
     }

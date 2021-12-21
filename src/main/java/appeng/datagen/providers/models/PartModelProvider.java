@@ -2,8 +2,6 @@ package appeng.datagen.providers.models;
 
 import java.util.function.BiFunction;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
@@ -17,7 +15,6 @@ public class PartModelProvider extends ModelProvider<BlockModelBuilder> {
         super(generator, AppEng.MOD_ID, "part", BlockModelBuilder::new, existingFileHelper);
     }
 
-    @Nonnull
     @Override
     public String getName() {
         return "Part Models: " + modid;

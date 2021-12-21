@@ -18,8 +18,6 @@
 
 package appeng.parts.automation;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -68,13 +66,13 @@ public class EnergyLevelEmitterPart extends AbstractLevelEmitterPart {
 
     private final IEnergyWatcherNode energyWatcherNode = new IEnergyWatcherNode() {
         @Override
-        public void updateWatcher(@Nonnull IEnergyWatcher newWatcher) {
+        public void updateWatcher(IEnergyWatcher newWatcher) {
             energyWatcher = newWatcher;
             configureWatchers();
         }
 
         @Override
-        public void onThresholdPass(@Nonnull IEnergyService energyGrid) {
+        public void onThresholdPass(IEnergyService energyGrid) {
             lastReportedValue = (long) energyGrid.getStoredPower();
             updateState();
         }

@@ -23,8 +23,6 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.collect.Iterators;
 
 import net.minecraft.core.BlockPos;
@@ -314,7 +312,6 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         this.previousState = previousState;
     }
 
-    @Nonnull
     @Override
     public Object getRenderAttachmentData() {
         return new CraftingCubeModelData(getUp(), getForward(), getConnections());
@@ -341,7 +338,6 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         return level.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
     }
 
-    @Nonnull
     private Iterator<IGridNode> getMultiblockNodes() {
         if (this.getCluster() == null) {
             return new ChainedIterator<>();

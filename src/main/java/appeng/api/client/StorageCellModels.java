@@ -28,7 +28,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -71,7 +70,7 @@ public final class StorageCellModels {
      * @param itemLike The cell item
      * @param model    The {@link ResourceLocation} representing the model.
      */
-    public synchronized static void registerModel(@Nonnull ItemLike itemLike, @Nonnull ResourceLocation model) {
+    public synchronized static void registerModel(ItemLike itemLike, ResourceLocation model) {
         Objects.requireNonNull(itemLike, "itemLike");
         var item = Objects.requireNonNull(itemLike.asItem(), "item.asItem()");
         Objects.requireNonNull(model, "model");
@@ -88,7 +87,7 @@ public final class StorageCellModels {
      * @return null, if no model is registered.
      */
     @Nullable
-    public synchronized static ResourceLocation model(@Nonnull ItemLike itemLike) {
+    public synchronized static ResourceLocation model(ItemLike itemLike) {
         Objects.requireNonNull(itemLike, "itemLike");
         var item = Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
 
@@ -98,7 +97,7 @@ public final class StorageCellModels {
     /**
      * A copy of all registered mappings.
      */
-    @Nonnull
+
     public synchronized static Map<Item, ResourceLocation> models() {
         return new HashMap<>(registry);
     }
@@ -106,7 +105,7 @@ public final class StorageCellModels {
     /**
      * Returns the default model, which can be used when no explicit model is registered.
      */
-    @Nonnull
+
     public static ResourceLocation getDefaultModel() {
         return MODEL_CELL_DEFAULT;
     }

@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
@@ -47,7 +46,7 @@ public class CableBusStorage {
         this.center = center;
     }
 
-    protected IPart getPart(@Nonnull Direction side) {
+    protected IPart getPart(Direction side) {
         if (this.parts == null) {
             return null;
         }
@@ -56,7 +55,7 @@ public class CableBusStorage {
         return this.parts[index];
     }
 
-    protected void setPart(@Nonnull Direction side, IPart part) {
+    protected void setPart(Direction side, IPart part) {
         if (this.parts == null) {
             this.parts = new IPart[Direction.values().length];
         }
@@ -65,7 +64,7 @@ public class CableBusStorage {
         this.parts[index] = part;
     }
 
-    protected void removePart(@Nonnull Direction side) {
+    protected void removePart(Direction side) {
         if (this.parts == null) {
             return;
         }
@@ -78,7 +77,7 @@ public class CableBusStorage {
         }
     }
 
-    public IFacadePart getFacade(@Nonnull Direction side) {
+    public IFacadePart getFacade(Direction side) {
         if (this.facades == null) {
             return null;
         }
@@ -87,7 +86,7 @@ public class CableBusStorage {
         return this.facades[index];
     }
 
-    public void setFacade(@Nonnull Direction side, @Nullable IFacadePart facade) {
+    public void setFacade(Direction side, @Nullable IFacadePart facade) {
         if (facade == null) {
             removeFacade(side);
             return;
@@ -101,7 +100,7 @@ public class CableBusStorage {
         this.facades[index] = facade;
     }
 
-    public void removeFacade(@Nonnull Direction side) {
+    public void removeFacade(Direction side) {
         if (this.facades == null) {
             return;
         }

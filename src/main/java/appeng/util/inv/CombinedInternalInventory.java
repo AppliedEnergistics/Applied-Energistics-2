@@ -18,8 +18,6 @@
 
 package appeng.util.inv;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.BaseInternalInventory;
@@ -78,7 +76,7 @@ public class CombinedInternalInventory extends BaseInternalInventory {
     }
 
     @Override
-    @Nonnull
+
     public ItemStack getStackInSlot(int slot) {
         int index = this.getIndexForSlot(slot);
         var handler = this.getHandlerFromIndex(index);
@@ -87,8 +85,8 @@ public class CombinedInternalInventory extends BaseInternalInventory {
     }
 
     @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         int index = this.getIndexForSlot(slot);
         var handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
@@ -96,7 +94,7 @@ public class CombinedInternalInventory extends BaseInternalInventory {
     }
 
     @Override
-    @Nonnull
+
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         int index = this.getIndexForSlot(slot);
         var handler = this.getHandlerFromIndex(index);

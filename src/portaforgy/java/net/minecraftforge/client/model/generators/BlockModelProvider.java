@@ -34,7 +34,6 @@ public abstract class BlockModelProvider extends ModelProvider<BlockModelBuilder
         super(generator, modid, BLOCK_FOLDER, BlockModelBuilder::new, existingFileHelper);
     }
 
-    @Nonnull
     @Override
     public String getName() {
         return "Block Models: " + modid;

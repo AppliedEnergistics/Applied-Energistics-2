@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -136,7 +135,6 @@ public final class GridServices {
                     .collect(Collectors.toSet());
         }
 
-        @Nonnull
         public IGridServiceProvider construct(IGrid g, Map<Class<?>, IGridServiceProvider> createdServices) {
             // Fill the constructor arguments
             var ctorArgs = new Object[constructorParameterTypes.length];

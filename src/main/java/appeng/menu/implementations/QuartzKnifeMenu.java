@@ -18,8 +18,6 @@
 
 package appeng.menu.implementations;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -104,7 +102,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
         }
 
         @Override
-        @Nonnull
+
         public ItemStack remove(int amount) {
             ItemStack ret = this.getItem();
             if (!ret.isEmpty()) {

@@ -1,7 +1,5 @@
 package appeng.me;
 
-import javax.annotation.Nonnull;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -12,7 +10,7 @@ import appeng.api.networking.energy.IAEPowerStorage;
  */
 public class InfinitePowerStorage implements IAEPowerStorage {
     @Override
-    public double injectAEPower(double amt, @Nonnull Actionable mode) {
+    public double injectAEPower(double amt, Actionable mode) {
         return 0;
     }
 
@@ -31,14 +29,13 @@ public class InfinitePowerStorage implements IAEPowerStorage {
         return true;
     }
 
-    @Nonnull
     @Override
     public AccessRestriction getPowerFlow() {
         return AccessRestriction.READ;
     }
 
     @Override
-    public double extractAEPower(double amt, @Nonnull Actionable mode, @Nonnull PowerMultiplier usePowerMultiplier) {
+    public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
         return amt;
     }
 }

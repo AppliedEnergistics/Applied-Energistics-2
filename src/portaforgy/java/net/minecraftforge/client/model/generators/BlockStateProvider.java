@@ -568,7 +568,7 @@ public abstract class BlockStateProvider implements DataProvider {
         }
     }
 
-    @Nonnull
+
     @Override
     public String getName() {
         return "Block States: " + modid;

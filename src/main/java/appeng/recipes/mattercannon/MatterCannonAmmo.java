@@ -20,8 +20,6 @@ package appeng.recipes.mattercannon;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.NonNullList;
@@ -45,10 +43,8 @@ public class MatterCannonAmmo implements Recipe<Container> {
 
     public static final RecipeType<MatterCannonAmmo> TYPE = RecipeType.register(TYPE_ID.toString());
 
-    @Nonnull
     private final ResourceLocation id;
 
-    @Nonnull
     private final Ingredient ammo;
 
     private final float weight;
@@ -100,7 +96,6 @@ public class MatterCannonAmmo implements Recipe<Container> {
         return NonNullList.create();
     }
 
-    @Nonnull
     public Ingredient getAmmo() {
         return ammo;
     }

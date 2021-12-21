@@ -18,8 +18,6 @@
 
 package appeng.blockentity.spatial;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -156,8 +154,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
     }
 
     @Override
-    @Nonnull
-    public InternalInventory getExposedInventoryForSide(@Nonnull Direction side) {
+
+    public InternalInventory getExposedInventoryForSide(Direction side) {
         return this.invExt;
     }
 

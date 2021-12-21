@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
@@ -365,7 +364,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.craftingTracker.jobStateChange(link);
     }
 
-    @Nonnull
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;

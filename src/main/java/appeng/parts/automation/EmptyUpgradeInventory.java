@@ -21,8 +21,6 @@ package appeng.parts.automation;
 import java.util.Collections;
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
-
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.world.item.ItemStack;
@@ -64,22 +62,19 @@ public final class EmptyUpgradeInventory implements IUpgradeInventory {
     }
 
     @Override
-    public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+    public void setItemDirect(int slotIndex, ItemStack stack) {
     }
 
-    @Nonnull
     @Override
     public Iterator<ItemStack> iterator() {
         return Collections.emptyIterator();
     }
 
-    @Nonnull
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return stack;
     }
 
-    @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return ItemStack.EMPTY;

@@ -21,8 +21,6 @@ package appeng.blockentity.spatial;
 import java.util.EnumSet;
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.collect.Iterators;
 
 import net.minecraft.core.BlockPos;
@@ -195,7 +193,6 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         return getDisplayBits();
     }
 
-    @Nonnull
     private Iterator<IGridNode> getMultiblockNodes() {
         if (this.getCluster() == null) {
             return new ChainedIterator<>();

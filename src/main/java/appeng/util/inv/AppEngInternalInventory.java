@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -81,7 +80,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     }
 
     @Override
-    public void setItemDirect(int slot, @Nonnull ItemStack stack) {
+    public void setItemDirect(int slot, ItemStack stack) {
         var previousStack = stacks.get(slot).copy();
         stacks.set(slot, stack);
         if (!ItemStack.matches(previousStack, stack)) {
@@ -126,7 +125,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     }
 
     @Override
-    @Nonnull
+
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         Preconditions.checkArgument(slot >= 0 && slot < size(), "slot out of range");
 

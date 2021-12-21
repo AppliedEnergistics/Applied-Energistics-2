@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
@@ -152,9 +151,8 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
         // Not intended to be used as an item model.
     }
 
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
         // Can only sensibly render using the new API
         return Collections.emptyList();
     }

@@ -18,8 +18,6 @@
 
 package appeng.client.gui.me.interfaceterminal;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.network.chat.Component;
 
 import appeng.helpers.iface.PatternProviderLogic;
@@ -66,7 +64,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     }
 
     @Override
-    public int compareTo(@Nonnull InterfaceRecord o) {
+    public int compareTo(InterfaceRecord o) {
         return Long.compare(this.order, o.order);
     }
 

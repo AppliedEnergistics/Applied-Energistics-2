@@ -18,8 +18,6 @@
 
 package appeng.recipes.game;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -45,11 +43,10 @@ public final class FacadeRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
+    public boolean matches(CraftingContainer inv, Level level) {
         return !this.getOutput(inv, false).isEmpty();
     }
 
-    @Nonnull
     private ItemStack getOutput(Container inv, boolean createFacade) {
         if (inv.getItem(0).isEmpty() && inv.getItem(2).isEmpty() && inv.getItem(6).isEmpty()
                 && inv.getItem(8).isEmpty()) {
@@ -67,7 +64,7 @@ public final class FacadeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(@Nonnull CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         return this.getOutput(inv, true);
     }
 
@@ -76,7 +73,6 @@ public final class FacadeRecipe extends CustomRecipe {
         return false;
     }
 
-    @Nonnull
     @Override
     public RecipeSerializer<FacadeRecipe> getSerializer() {
         return getSerializer(facade);

@@ -18,8 +18,6 @@
 
 package appeng.util.inv;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -49,7 +47,7 @@ public class CarriedItemInventory implements InternalInventory {
     }
 
     @Override
-    public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+    public void setItemDirect(int slotIndex, ItemStack stack) {
         Preconditions.checkArgument(slotIndex == 0);
         menu.setCarried(stack);
     }

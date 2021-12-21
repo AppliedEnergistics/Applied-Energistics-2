@@ -25,8 +25,6 @@ package appeng.api.networking;
 
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
-
 /**
  * An extension of IGridHost, only means something when your getFlags() contains REQUIRE_CHANNEL, when done properly it
  * will call the method to get a list of all related nodes and give each of them a channel simultaneously for the entire
@@ -39,6 +37,6 @@ public interface IGridMultiblock extends IGridNodeService {
      *
      * @return an iterator that will iterate all the nodes for the multiblock. ( read-only iterator expected. )
      */
-    @Nonnull
+
     Iterator<IGridNode> getMultiblockNodes();
 }

@@ -18,8 +18,6 @@
 
 package appeng.menu.slot;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
@@ -39,7 +37,7 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     }
 
     @Override
-    @Nonnull
+
     public ItemStack getItem() {
         if (!this.isSlotEnabled() && !this.getDisplayStack().isEmpty()) {
             this.clearStack();

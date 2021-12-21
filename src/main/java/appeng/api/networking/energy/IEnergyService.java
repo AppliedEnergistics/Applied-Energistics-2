@@ -24,7 +24,6 @@
 package appeng.api.networking.energy;
 
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridService;
@@ -89,7 +88,7 @@ public interface IEnergyService extends IGridService, IEnergySource {
      * @return the amount of power that the network has OVER the limit.
      */
     @Nonnegative
-    double injectPower(@Nonnegative double amt, @Nonnull Actionable mode);
+    double injectPower(@Nonnegative double amt, Actionable mode);
 
     /**
      * this is should be considered an estimate, and not relied upon for real calculations.

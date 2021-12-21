@@ -21,8 +21,6 @@ package appeng.datagen.providers.loot;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import javax.annotation.Nonnull;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -70,7 +68,7 @@ public class ChestDropProvider implements IAE2DataProvider {
     }
 
     @Override
-    public void run(@Nonnull HashCache cache) throws IOException {
+    public void run(HashCache cache) throws IOException {
         var meteoriteChestTable = LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(1, 3))
@@ -120,12 +118,10 @@ public class ChestDropProvider implements IAE2DataProvider {
         return LootTables.serialize(finishBuilding(builder));
     }
 
-    @Nonnull
     public LootTable finishBuilding(LootTable.Builder builder) {
         return builder.setParamSet(LootContextParamSets.CHEST).build();
     }
 
-    @Nonnull
     @Override
     public String getName() {
         return AppEng.MOD_NAME + " Chest Drops";

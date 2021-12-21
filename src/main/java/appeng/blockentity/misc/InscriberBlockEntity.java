@@ -21,7 +21,6 @@ package appeng.blockentity.misc;
 import java.util.EnumSet;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -316,7 +315,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(@Nonnull Direction facing) {
+    public InternalInventory getExposedInventoryForSide(Direction facing) {
         if (facing == this.getUp()) {
             return this.topItemHandlerExtern;
         } else if (facing == this.getUp().getOpposite()) {
@@ -326,7 +325,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         }
     }
 
-    @Nonnull
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;

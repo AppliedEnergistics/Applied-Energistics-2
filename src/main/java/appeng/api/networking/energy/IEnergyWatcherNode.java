@@ -23,8 +23,6 @@
 
 package appeng.api.networking.energy;
 
-import javax.annotation.Nonnull;
-
 import appeng.api.networking.IGridNodeService;
 
 public interface IEnergyWatcherNode extends IGridNodeService {
@@ -35,12 +33,12 @@ public interface IEnergyWatcherNode extends IGridNodeService {
      *
      * @param newWatcher new watcher
      */
-    void updateWatcher(@Nonnull IEnergyWatcher newWatcher);
+    void updateWatcher(IEnergyWatcher newWatcher);
 
     /**
      * Called when a threshold is crossed.
      *
      * @param energyGrid grid
      */
-    void onThresholdPass(@Nonnull IEnergyService energyGrid);
+    void onThresholdPass(IEnergyService energyGrid);
 }

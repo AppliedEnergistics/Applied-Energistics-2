@@ -18,8 +18,6 @@
 
 package appeng.menu.implementations;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.Container;
@@ -95,7 +93,6 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         return this.tbInventory != null;
     }
 
-    @Nonnull
     public Component getToolboxName() {
         return this.tbInventory != null ? this.tbInventory.getItemStack().getHoverName()
                 : TextComponent.EMPTY;

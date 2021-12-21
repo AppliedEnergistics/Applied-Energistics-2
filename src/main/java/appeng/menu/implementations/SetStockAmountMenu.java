@@ -2,7 +2,6 @@ package appeng.menu.implementations;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.primitives.Ints;
@@ -97,7 +96,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
         return this.getPlayerInventory().player.level;
     }
 
-    private void setWhatToStock(int slot, @Nonnull AEKey whatToStock, int initialAmount) {
+    private void setWhatToStock(int slot, AEKey whatToStock, int initialAmount) {
         this.slot = slot;
         this.whatToStock = Objects.requireNonNull(whatToStock, "whatToStock");
         this.initialAmount = initialAmount;

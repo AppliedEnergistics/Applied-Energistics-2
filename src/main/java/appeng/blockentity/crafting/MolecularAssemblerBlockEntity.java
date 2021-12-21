@@ -21,7 +21,6 @@ package appeng.blockentity.crafting;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
@@ -572,7 +571,6 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return this.animationStatus;
     }
 
-    @Nonnull
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;

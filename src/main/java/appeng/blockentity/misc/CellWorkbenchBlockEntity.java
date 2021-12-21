@@ -20,8 +20,6 @@ package appeng.blockentity.misc;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -204,7 +202,6 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         return config;
     }
 
-    @Nonnull
     @Override
     public IUpgradeInventory getUpgrades() {
         if (this.cacheUpgrades == null) {

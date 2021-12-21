@@ -23,8 +23,6 @@
 
 package appeng.api.parts;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +51,7 @@ public interface IFacadePart {
     /**
      * @return The side the facade is attached to.
      */
-    @Nonnull
+
     Direction getSide();
 
     Item getItem();

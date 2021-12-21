@@ -18,8 +18,6 @@
 
 package appeng.menu.me.crafting;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.network.chat.Component;
 
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -38,7 +36,7 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
     }
 
     @Override
-    public int compareTo(@Nonnull CraftingCPURecord o) {
+    public int compareTo(CraftingCPURecord o) {
         final int a = Long.compare(o.getProcessors(), this.getProcessors());
         if (a != 0) {
             return a;

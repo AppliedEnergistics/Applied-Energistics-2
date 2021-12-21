@@ -27,8 +27,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-
 import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.fabricmc.api.EnvType;
@@ -140,7 +138,6 @@ public class AppEngClient extends AppEngBase {
         return Minecraft.getInstance().level;
     }
 
-    @Nonnull
     public static AppEngClient instance() {
         return Objects.requireNonNull(INSTANCE, "AppEngClient is not initialized");
     }

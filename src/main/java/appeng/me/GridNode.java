@@ -30,7 +30,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -69,9 +68,9 @@ public class GridNode implements IGridNode, IPathItem {
      * This is the logical host of the node, which could be any object. In many cases this will be a block entity or
      * part.
      */
-    @Nonnull
+
     private final Object owner;
-    @Nonnull
+
     protected final IGridNodeListener<?> listener;
 
     /**
@@ -85,7 +84,7 @@ public class GridNode implements IGridNode, IPathItem {
     private double idlePowerUsage = 1.0;
     @Nullable
     private AEItemKey visualRepresentation = null;
-    @Nonnull
+
     private AEColor gridColor = AEColor.TRANSPARENT;
     private long lastSecurityKey = -1;
     private int owningPlayerId = -1;
@@ -99,9 +98,9 @@ public class GridNode implements IGridNode, IPathItem {
     protected final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(Direction.class);
     private ClassToInstanceMap<IGridNodeService> services;
 
-    public <T> GridNode(@Nonnull ServerLevel level,
-            @Nonnull T owner,
-            @Nonnull IGridNodeListener<T> listener,
+    public <T> GridNode(ServerLevel level,
+            T owner,
+            IGridNodeListener<T> listener,
             Set<GridFlags> flags) {
         this.level = level;
         this.owner = owner;
@@ -273,7 +272,7 @@ public class GridNode implements IGridNode, IPathItem {
      * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the
      * node will connect to nodes of any color.
      */
-    public void setGridColor(@Nonnull AEColor color) {
+    public void setGridColor(AEColor color) {
         this.gridColor = Objects.requireNonNull(color);
         this.updateState();
     }
@@ -382,7 +381,6 @@ public class GridNode implements IGridNode, IPathItem {
         return result;
     }
 
-    @Nonnull
     @Override
     public Map<Direction, IGridConnection> getInWorldConnections() {
         var result = new EnumMap<Direction, IGridConnection>(Direction.class);
@@ -476,14 +474,13 @@ public class GridNode implements IGridNode, IPathItem {
         return visualRepresentation;
     }
 
-    @Nonnull
     @Override
     public AEColor getGridColor() {
         return gridColor;
     }
 
     @Override
-    public boolean isExposedOnSide(@Nonnull Direction side) {
+    public boolean isExposedOnSide(Direction side) {
         return myGrid != null && exposedOnSides.contains(side);
     }
 
@@ -664,13 +661,11 @@ public class GridNode implements IGridNode, IPathItem {
         services.putInstance(serviceClass, service);
     }
 
-    @Nonnull
     @Override
     public Object getOwner() {
         return owner;
     }
 
-    @Nonnull
     @Override
     public ServerLevel getLevel() {
         return level;

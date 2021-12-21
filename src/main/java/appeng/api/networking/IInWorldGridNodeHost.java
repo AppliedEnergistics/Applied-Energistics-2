@@ -23,7 +23,6 @@
 
 package appeng.api.networking;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
@@ -45,15 +44,15 @@ public interface IInWorldGridNodeHost {
      * @return a IGridNode, create these with IAppEngApi.instance().createGridNode( MyIGridBlock )
      */
     @Nullable
-    IGridNode getGridNode(@Nonnull Direction dir);
+    IGridNode getGridNode(Direction dir);
 
     /**
      * Determines how cables render when they connect to this block. Priority is Smart &gt; Covered &gt; Glass
      *
      * @param dir direction
      */
-    @Nonnull
-    default AECableType getCableConnectionType(@Nonnull Direction dir) {
+
+    default AECableType getCableConnectionType(Direction dir) {
         return AECableType.GLASS;
     }
 

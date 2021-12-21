@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
@@ -146,7 +145,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     /**
      * Convenience method to get the player owning this menu.
      */
-    @Nonnull
+
     public Player getPlayer() {
         return getPlayerInventory().player;
     }

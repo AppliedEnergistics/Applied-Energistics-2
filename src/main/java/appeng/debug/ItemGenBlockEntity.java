@@ -21,8 +21,6 @@ package appeng.debug;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import javax.annotation.Nonnull;
-
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
@@ -110,23 +108,23 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
     class QueuedItemHandler extends BaseInternalInventory {
         @Override
-        public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+        public void setItemDirect(int slotIndex, ItemStack stack) {
         }
 
         @Override
-        @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
-        @Nonnull
+
         public ItemStack getStackInSlot(int slot) {
             return getPossibleItems().peek() != null ? getPossibleItems().peek().copy() : ItemStack.EMPTY;
         }
 
         @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        public boolean isItemValid(int slot, ItemStack stack) {
             return false;
         }
 
@@ -141,7 +139,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         }
 
         @Override
-        @Nonnull
+
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             final ItemStack is = getPossibleItems().peek();
 

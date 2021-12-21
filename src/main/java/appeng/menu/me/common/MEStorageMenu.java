@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -658,7 +657,7 @@ public class MEStorageMenu extends AEBaseMenu
         return this.gui;
     }
 
-    public void setGui(@Nonnull IConfigManagerListener gui) {
+    public void setGui(IConfigManagerListener gui) {
         this.gui = gui;
     }
 

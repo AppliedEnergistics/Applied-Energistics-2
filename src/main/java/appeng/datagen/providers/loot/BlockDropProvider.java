@@ -23,8 +23,6 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -73,7 +71,7 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
     }
 
     @Override
-    public void run(@Nonnull HashCache cache) throws IOException {
+    public void run(HashCache cache) throws IOException {
         for (Map.Entry<ResourceKey<Block>, Block> entry : Registry.BLOCK.entrySet()) {
             LootTable.Builder builder;
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
@@ -133,12 +131,10 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
         return LootTables.serialize(finishBuilding(builder));
     }
 
-    @Nonnull
     public LootTable finishBuilding(LootTable.Builder builder) {
         return builder.setParamSet(LootContextParamSets.BLOCK).build();
     }
 
-    @Nonnull
     @Override
     public String getName() {
         return AppEng.MOD_NAME + " Block Drops";

@@ -20,8 +20,6 @@ package appeng.client.render.overlay;
 
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -35,7 +33,7 @@ public interface IOverlayDataSource {
     /**
      * @return A set of chunks to display
      */
-    @Nonnull
+
     Set<ChunkPos> getOverlayChunks();
 
     /**
@@ -43,7 +41,7 @@ public interface IOverlayDataSource {
      *
      * @return the block entity providing the data
      */
-    @Nonnull
+
     BlockEntity getOverlayBlockEntity();
 
     /**
@@ -55,7 +53,7 @@ public interface IOverlayDataSource {
      *
      * @return the location of this source.
      */
-    @Nonnull
+
     DimensionalBlockPos getOverlaySourceLocation();
 
     /**

@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -122,8 +121,8 @@ public final class GridHelper {
      * @see #getNodeHost(LevelAccessor, BlockPos)
      */
     @Nullable
-    public static IGridNode getExposedNode(@Nonnull LevelAccessor level, @Nonnull BlockPos pos,
-            @Nonnull Direction side) {
+    public static IGridNode getExposedNode(LevelAccessor level, BlockPos pos,
+            Direction side) {
         var host = getNodeHost(level, pos);
         if (host == null) {
             return null;
@@ -147,8 +146,8 @@ public final class GridHelper {
      * @param <T>      The type of the owner.
      * @return The managed grid node.
      */
-    @Nonnull
-    public static <T> IManagedGridNode createManagedNode(@Nonnull T owner, @Nonnull IGridNodeListener<T> listener) {
+
+    public static <T> IManagedGridNode createManagedNode(T owner, IGridNodeListener<T> listener) {
         return new ManagedGridNode(owner, listener);
     }
 

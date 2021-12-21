@@ -23,8 +23,6 @@
 
 package appeng.api.networking;
 
-import javax.annotation.Nonnull;
-
 /**
  * Simple Visitor pattern access to network nodes.
  */
@@ -39,5 +37,5 @@ public interface IGridVisitor {
      *
      * @return true to continue visiting nodes beyond this node.
      */
-    boolean visitNode(@Nonnull IGridNode n);
+    boolean visitNode(IGridNode n);
 }

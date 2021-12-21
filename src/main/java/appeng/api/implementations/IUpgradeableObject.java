@@ -23,8 +23,6 @@
 
 package appeng.api.implementations;
 
-import javax.annotation.Nonnull;
-
 /**
  * Implemented by {@link net.minecraft.world.level.block.entity.BlockEntity block entities} and
  * {@link appeng.api.parts.IPart parts} that are upgradable through upgrade cards.
@@ -33,6 +31,6 @@ public interface IUpgradeableObject {
     /**
      * Gets the inventory that contains the upgrade cards for this upgradable object.
      */
-    @Nonnull
+
     IUpgradeInventory getUpgrades();
 }

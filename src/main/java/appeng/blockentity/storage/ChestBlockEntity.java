@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -410,7 +409,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(@Nonnull Direction side) {
+    public InternalInventory getExposedInventoryForSide(Direction side) {
         if (side == this.getForward()) {
             return this.cellInventory;
         } else {

@@ -25,8 +25,6 @@ package appeng.api.util;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -37,10 +35,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  */
 public final class DimensionalBlockPos {
 
-    @Nonnull
     private final Level level;
 
-    @Nonnull
     private final BlockPos pos;
 
     public DimensionalBlockPos(DimensionalBlockPos coordinate) {
@@ -84,12 +80,10 @@ public final class DimensionalBlockPos {
         return this.level == level;
     }
 
-    @Nonnull
     public Level getLevel() {
         return this.level;
     }
 
-    @Nonnull
     public BlockPos getPos() {
         return pos;
     }

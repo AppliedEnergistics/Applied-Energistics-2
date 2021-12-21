@@ -21,7 +21,6 @@ package appeng.recipes.entropy;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -54,33 +53,31 @@ public class EntropyRecipe implements Recipe<Container> {
 
     public static final RecipeType<EntropyRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
-    @Nonnull
     private final ResourceLocation id;
-    @Nonnull
+
     private final EntropyMode mode;
 
     @Nullable
     private final Block inputBlock;
-    @Nonnull
+
     private final List<StateMatcher> inputBlockMatchers;
 
     @Nullable
     private final Fluid inputFluid;
-    @Nonnull
+
     private final List<StateMatcher> inputFluidMatchers;
 
     @Nullable
     private final Block outputBlock;
-    @Nonnull
+
     private final List<StateApplier<?>> outputBlockStateAppliers;
     private final boolean outputBlockKeep;
     @Nullable
     private final Fluid outputFluid;
-    @Nonnull
+
     private final List<StateApplier<?>> outputFluidStateAppliers;
     private final boolean outputFluidKeep;
 
-    @Nonnull
     private final List<ItemStack> drops;
 
     public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
@@ -152,7 +149,6 @@ public class EntropyRecipe implements Recipe<Container> {
         return NonNullList.create();
     }
 
-    @Nonnull
     public EntropyMode getMode() {
         return this.mode;
     }
@@ -227,7 +223,6 @@ public class EntropyRecipe implements Recipe<Container> {
         return state;
     }
 
-    @Nonnull
     public List<ItemStack> getDrops() {
         return this.drops;
     }
@@ -254,22 +249,18 @@ public class EntropyRecipe implements Recipe<Container> {
         return isValid;
     }
 
-    @Nonnull
     List<StateMatcher> getInputBlockMatchers() {
         return inputBlockMatchers;
     }
 
-    @Nonnull
     List<StateMatcher> getInputFluidMatchers() {
         return inputFluidMatchers;
     }
 
-    @Nonnull
     List<StateApplier<?>> getOutputBlockStateAppliers() {
         return outputBlockStateAppliers;
     }
 
-    @Nonnull
     List<StateApplier<?>> getOutputFluidStateAppliers() {
         return outputFluidStateAppliers;
     }

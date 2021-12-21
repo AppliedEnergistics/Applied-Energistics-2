@@ -21,7 +21,6 @@ package appeng.block;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -63,9 +62,8 @@ import appeng.util.SettingsFrom;
  */
 public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEBaseBlock implements EntityBlock {
 
-    @Nonnull
     private Class<T> blockEntityClass;
-    @Nonnull
+
     private BlockEntityType<T> blockEntityType;
 
     @Nullable
@@ -106,7 +104,6 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         return null;
     }
 
-    @Nonnull
     public BlockEntityType<T> getBlockEntityType() {
         return blockEntityType;
     }

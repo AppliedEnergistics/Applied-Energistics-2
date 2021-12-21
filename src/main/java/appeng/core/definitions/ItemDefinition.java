@@ -20,8 +20,6 @@ package appeng.core.definitions;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +40,6 @@ public class ItemDefinition<T extends Item> implements ItemLike {
         this.item = item;
     }
 
-    @Nonnull
     public ResourceLocation id() {
         return this.id;
     }

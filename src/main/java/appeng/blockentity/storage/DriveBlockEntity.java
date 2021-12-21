@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -397,7 +396,6 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     }
 
-    @Nonnull
     @Override
     public DriveModelData getRenderAttachmentData() {
         return new DriveModelData(getUp(), getForward(), DriveSlotsState.fromChestOrDrive(this));

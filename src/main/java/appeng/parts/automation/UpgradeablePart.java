@@ -20,7 +20,6 @@ package appeng.parts.automation;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -130,7 +129,6 @@ public abstract class UpgradeablePart extends BasicStatePart
         }
     }
 
-    @Nonnull
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;

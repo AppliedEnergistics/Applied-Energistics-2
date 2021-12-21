@@ -23,8 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.collect.Iterators;
 
 import org.jetbrains.annotations.NotNull;
@@ -188,7 +186,6 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         this.broadcastChanges();
     }
 
-    @Nonnull
     private GenericStackInv getConfigInventory() {
         return Objects.requireNonNull(this.getHost().getConfig());
     }

@@ -18,8 +18,6 @@
 
 package appeng.blockentity.misc;
 
-import javax.annotation.Nonnull;
-
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -105,7 +103,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(@Nonnull Direction facing) {
+    public InternalInventory getExposedInventoryForSide(Direction facing) {
         return this.invExt;
     }
 

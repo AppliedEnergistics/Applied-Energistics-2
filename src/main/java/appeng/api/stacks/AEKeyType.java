@@ -25,7 +25,6 @@ package appeng.api.stacks;
 
 import java.text.NumberFormat;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -59,7 +58,7 @@ public abstract class AEKeyType {
     /**
      * @return AE2's key space for {@link AEItemKey}.
      */
-    @Nonnull
+
     public static AEKeyType items() {
         return AEItemKeys.INSTANCE;
     }
@@ -76,7 +75,7 @@ public abstract class AEKeyType {
     /**
      * @return AE2's key space for {@link AEFluidKey}.
      */
-    @Nonnull
+
     public static AEKeyType fluids() {
         return AEFluidKeys.INSTANCE;
     }

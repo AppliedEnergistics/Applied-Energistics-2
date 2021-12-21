@@ -26,7 +26,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
@@ -275,7 +274,6 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
         return offset;
     }
 
-    @Nonnull
     private static GlassState getGlassState(BlockAndTintGetter level, BlockPos pos) {
         EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
         // Test every direction for another glass block

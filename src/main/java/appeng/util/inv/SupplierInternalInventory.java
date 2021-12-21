@@ -21,8 +21,6 @@ package appeng.util.inv;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-import javax.annotation.Nonnull;
-
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.world.Container;
@@ -72,7 +70,7 @@ public class SupplierInternalInventory implements InternalInventory {
     }
 
     @Override
-    public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+    public void setItemDirect(int slotIndex, ItemStack stack) {
         delegate.get().setItemDirect(slotIndex, stack);
     }
 
@@ -97,7 +95,7 @@ public class SupplierInternalInventory implements InternalInventory {
     }
 
     @Override
-    public @Nonnull Iterator<ItemStack> iterator() {
+    public Iterator<ItemStack> iterator() {
         return delegate.get().iterator();
     }
 
@@ -112,13 +110,13 @@ public class SupplierInternalInventory implements InternalInventory {
     }
 
     @Override
-    @Nonnull
+
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return delegate.get().insertItem(slot, stack, simulate);
     }
 
     @Override
-    @Nonnull
+
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return delegate.get().extractItem(slot, amount, simulate);
     }

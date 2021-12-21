@@ -28,7 +28,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -67,7 +66,7 @@ public interface IManagedGridNode {
      *
      * @param nodeData to be loaded data
      */
-    void loadFromNBT(@Nonnull CompoundTag nodeData);
+    void loadFromNBT(CompoundTag nodeData);
 
     /**
      * this should be called for each node you maintain, you can save all your nodes to the same tag with different
@@ -75,7 +74,7 @@ public interface IManagedGridNode {
      *
      * @param nodeData to be saved data
      */
-    void saveToNBT(@Nonnull CompoundTag nodeData);
+    void saveToNBT(CompoundTag nodeData);
 
     /**
      * Call the given function on the grid this node is connected to. Will do nothing if the grid node isn't initialized
@@ -120,7 +119,7 @@ public interface IManagedGridNode {
     /**
      * Changes the sides of the node's host this node is exposed on.
      */
-    IManagedGridNode setExposedOnSides(@Nonnull Set<Direction> directions);
+    IManagedGridNode setExposedOnSides(Set<Direction> directions);
 
     /**
      * @param usagePerTick The power in AE/t that will be drained by this node.
@@ -155,7 +154,7 @@ public interface IManagedGridNode {
      * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the
      * node will connect to nodes of any color.
      */
-    IManagedGridNode setGridColor(@Nonnull AEColor gridColor);
+    IManagedGridNode setGridColor(AEColor gridColor);
 
     <T extends IGridNodeService> IManagedGridNode addService(Class<T> serviceClass, T service);
 

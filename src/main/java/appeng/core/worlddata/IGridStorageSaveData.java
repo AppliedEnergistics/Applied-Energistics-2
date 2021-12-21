@@ -18,8 +18,6 @@
 
 package appeng.core.worlddata;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.me.GridStorage;
@@ -47,7 +45,6 @@ public interface IGridStorageSaveData {
 
     GridStorage getGridStorage(long storageID);
 
-    @Nonnull
     GridStorage getNewGridStorage();
 
     void destroyGridStorage(long id);

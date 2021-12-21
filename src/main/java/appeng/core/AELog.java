@@ -18,8 +18,6 @@
 
 package appeng.core;
 
-import javax.annotation.Nonnull;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,7 +79,7 @@ public final class AELog {
      * @param message the message to be formatted.
      * @param params  the parameters used for {@link String#format(String, Object...)}.
      */
-    public static void log(@Nonnull Level level, @Nonnull String message, Object... params) {
+    public static void log(Level level, String message, Object... params) {
         if (AELog.isLogEnabled()) {
             final String formattedMessage = String.format(message, params);
             final Logger logger = getLogger();
@@ -101,7 +99,7 @@ public final class AELog {
      * @param params    the parameters used for {@link String#format(String, Object...)}.
      * @see AELog#log(Level, String, Object...)
      */
-    public static void log(@Nonnull Level level, @Nonnull Throwable exception, @Nonnull String message,
+    public static void log(Level level, Throwable exception, String message,
             Object... params) {
         if (AELog.isLogEnabled()) {
             final String formattedMessage = String.format(message, params);
@@ -116,7 +114,7 @@ public final class AELog {
      * @param params
      * @see AELog#log(Level, String, Object...)
      */
-    public static void info(@Nonnull String format, Object... params) {
+    public static void info(String format, Object... params) {
         log(Level.INFO, format, params);
     }
 
@@ -126,7 +124,7 @@ public final class AELog {
      * @param exception
      * @see AELog#log(Level, Throwable, String, Object...)
      */
-    public static void info(@Nonnull Throwable exception) {
+    public static void info(Throwable exception) {
         log(Level.INFO, exception, DEFAULT_EXCEPTION_MESSAGE);
     }
 
@@ -137,7 +135,7 @@ public final class AELog {
      * @param message
      * @see AELog#log(Level, Throwable, String, Object...)
      */
-    public static void info(@Nonnull Throwable exception, @Nonnull String message) {
+    public static void info(Throwable exception, String message) {
         log(Level.INFO, exception, message);
     }
 
@@ -146,7 +144,7 @@ public final class AELog {
      * @param params
      * @see AELog#log(Level, String, Object...)
      */
-    public static void warn(@Nonnull String format, Object... params) {
+    public static void warn(String format, Object... params) {
         log(Level.WARN, format, params);
     }
 
@@ -156,7 +154,7 @@ public final class AELog {
      * @param exception
      * @see AELog#log(Level, Throwable, String, Object...)
      */
-    public static void warn(@Nonnull Throwable exception) {
+    public static void warn(Throwable exception) {
         log(Level.WARN, exception, DEFAULT_EXCEPTION_MESSAGE);
     }
 
@@ -167,7 +165,7 @@ public final class AELog {
      * @param message
      * @see AELog#log(Level, Throwable, String, Object...)
      */
-    public static void warn(@Nonnull Throwable exception, @Nonnull String message) {
+    public static void warn(Throwable exception, String message) {
         log(Level.WARN, exception, message);
     }
 
@@ -176,7 +174,7 @@ public final class AELog {
      * @param params
      * @see AELog#log(Level, String, Object...)
      */
-    public static void error(@Nonnull String format, Object... params) {
+    public static void error(String format, Object... params) {
         log(Level.ERROR, format, params);
     }
 
@@ -186,7 +184,7 @@ public final class AELog {
      * @param exception
      * @see AELog#log(Level, Throwable, String, Object...)
      */
-    public static void error(@Nonnull Throwable exception) {
+    public static void error(Throwable exception) {
         log(Level.ERROR, exception, DEFAULT_EXCEPTION_MESSAGE);
     }
 
@@ -197,7 +195,7 @@ public final class AELog {
      * @param message
      * @see AELog#log(Level, Throwable, String, Object...)
      */
-    public static void error(@Nonnull Throwable exception, @Nonnull String message) {
+    public static void error(Throwable exception, String message) {
         log(Level.ERROR, exception, message);
     }
 
@@ -208,7 +206,7 @@ public final class AELog {
      * @param data
      * @see AELog#log(Level, String, Object...)
      */
-    public static void debug(@Nonnull String format, Object... data) {
+    public static void debug(String format, Object... data) {
         if (AELog.isDebugLogEnabled()) {
             log(Level.DEBUG, format, data);
         }
@@ -220,7 +218,7 @@ public final class AELog {
      * @param exception
      * @see AELog#log(Level, Throwable, String, Object...)
      */
-    public static void debug(@Nonnull Throwable exception) {
+    public static void debug(Throwable exception) {
         if (AELog.isDebugLogEnabled()) {
             log(Level.DEBUG, exception, DEFAULT_EXCEPTION_MESSAGE);
         }
@@ -233,7 +231,7 @@ public final class AELog {
      * @param message
      * @see AELog#log(Level, Throwable, String, Object...)
      */
-    public static void debug(@Nonnull Throwable exception, @Nonnull String message) {
+    public static void debug(Throwable exception, String message) {
         if (AELog.isDebugLogEnabled()) {
             log(Level.DEBUG, exception, message);
         }
@@ -265,8 +263,8 @@ public final class AELog {
      * @param blockEntity
      * @see AELog#log(Level, String, Object...)
      */
-    public static void blockUpdate(@Nonnull BlockPos pos, @Nonnull BlockState currentState,
-            @Nonnull BlockState newState, @Nonnull AEBaseBlockEntity blockEntity) {
+    public static void blockUpdate(BlockPos pos, BlockState currentState,
+            BlockState newState, AEBaseBlockEntity blockEntity) {
         if (AEConfig.instance().isBlockUpdateLogEnabled()) {
             info(BLOCK_UPDATE, blockEntity.getClass().getName(), pos, currentState, newState);
         }
@@ -292,7 +290,7 @@ public final class AELog {
      * @param params
      * @see AELog#log(Level, String, Object...)
      */
-    public static void crafting(@Nonnull String message, Object... params) {
+    public static void crafting(String message, Object... params) {
         if (AELog.isCraftingLogEnabled()) {
             log(Level.INFO, message, params);
         }
@@ -318,7 +316,7 @@ public final class AELog {
      * @param params
      * @see AELog#log(Level, String, Object...)
      */
-    public static void craftingDebug(@Nonnull String message, Object... params) {
+    public static void craftingDebug(String message, Object... params) {
         if (AELog.isCraftingDebugLogEnabled()) {
             log(Level.DEBUG, message, params);
         }

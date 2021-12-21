@@ -21,7 +21,6 @@ package appeng.blockentity.misc;
 import java.util.Collections;
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -206,13 +205,12 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         }
 
         @Override
-        public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+        public void setItemDirect(int slotIndex, ItemStack stack) {
             if (!stack.isEmpty()) {
                 CondenserBlockEntity.this.addPower(stack.getCount());
             }
         }
 
-        @Nonnull
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             if (!simulate && !stack.isEmpty()) {
@@ -221,7 +219,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
             return ItemStack.EMPTY;
         }
 
-        @Nonnull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;

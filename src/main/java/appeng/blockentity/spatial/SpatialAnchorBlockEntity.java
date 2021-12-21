@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.collect.Multiset;
 
 import net.minecraft.core.BlockPos;
@@ -220,14 +218,14 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    @Nonnull
-    public TickingRequest getTickingRequest(@Nonnull IGridNode node) {
+
+    public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(20, 20, false, true);
     }
 
     @Override
-    @Nonnull
-    public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
+
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         // Initialize once the network is ready and there are no entries marked as loaded.
         if (!this.initialized && this.getMainNode().isActive() && this.getMainNode().isPowered()) {
             this.forceAll();

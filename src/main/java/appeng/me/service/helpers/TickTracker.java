@@ -20,8 +20,6 @@ package appeng.me.service.helpers;
 
 import java.util.LongSummaryStatistics;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.CrashReportCategory;
 import net.minecraft.util.Mth;
 
@@ -49,7 +47,7 @@ public class TickTracker implements Comparable<TickTracker> {
     }
 
     @Override
-    public int compareTo(@Nonnull TickTracker t) {
+    public int compareTo(TickTracker t) {
         int next = Long.compare(this.getNextTick(), t.getNextTick());
 
         if (next != 0) {

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -62,7 +61,7 @@ public final class StorageCells {
      *
      * @param handler cell handler
      */
-    public static synchronized void addCellHandler(@Nonnull ICellHandler handler) {
+    public static synchronized void addCellHandler(ICellHandler handler) {
         Objects.requireNonNull(handler, "Called before FMLCommonSetupEvent.");
         Preconditions.checkArgument(!handlers.contains(handler),
                 "Tried to register the same handler instance twice.");
@@ -75,7 +74,7 @@ public final class StorageCells {
      *
      * @param handler cell gui handler
      */
-    public static synchronized void addCellGuiHandler(@Nonnull ICellGuiHandler handler) {
+    public static synchronized void addCellGuiHandler(ICellGuiHandler handler) {
         guiHandlers.add(handler);
     }
 

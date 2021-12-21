@@ -21,8 +21,6 @@ package appeng.core.worlddata;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
 
@@ -70,7 +68,7 @@ public final class GridStorageSaveData extends SavedData implements IGridStorage
     /**
      * create a new storage
      */
-    @Nonnull
+
     @Override
     public GridStorage getNewGridStorage() {
         return getGridStorage(nextGridId++);

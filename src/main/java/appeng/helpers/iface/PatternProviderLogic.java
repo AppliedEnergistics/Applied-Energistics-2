@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -368,15 +367,13 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     private class Ticker implements IGridTickable {
 
-        @Nonnull
         @Override
-        public TickingRequest getTickingRequest(@Nonnull IGridNode node) {
+        public TickingRequest getTickingRequest(IGridNode node) {
             return new TickingRequest(TickRates.Interface, !hasWorkToDo(), true);
         }
 
-        @Nonnull
         @Override
-        public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
+        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
             if (!mainNode.isActive()) {
                 return TickRateModulation.SLEEP;
             }

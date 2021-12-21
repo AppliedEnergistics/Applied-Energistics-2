@@ -18,8 +18,6 @@
 
 package appeng.parts.reporting;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -222,7 +220,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    @Nonnull
+
     public Object getRenderAttachmentData() {
         return new ReportingModelData(getSpin());
     }

@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
 import com.google.common.base.Preconditions;
@@ -99,7 +98,7 @@ public final class P2PTunnelAttunement {
      * @param trigger    - the item which triggers attunement
      * @param tunnelPart The P2P-tunnel part item.
      */
-    public synchronized static void addItem(@Nonnull ItemLike trigger, @Nonnull ItemLike tunnelPart) {
+    public synchronized static void addItem(ItemLike trigger, ItemLike tunnelPart) {
         Objects.requireNonNull(trigger, "trigger");
         Item triggerItem = trigger.asItem();
         Objects.requireNonNull(triggerItem, "trigger.asItem()");
@@ -113,7 +112,7 @@ public final class P2PTunnelAttunement {
      * @param modId      The mod-id that triggers attunement into the given tunnel part.
      * @param tunnelPart The P2P-tunnel part item.
      */
-    public synchronized static void addItemByMod(@Nonnull String modId, @Nonnull ItemLike tunnelPart) {
+    public synchronized static void addItemByMod(String modId, ItemLike tunnelPart) {
         Objects.requireNonNull(modId, "modId");
         modIdTunnels.put(modId, validateTunnelPartItem(tunnelPart));
     }
@@ -157,7 +156,7 @@ public final class P2PTunnelAttunement {
      * @param trigger attunement trigger
      * @return The part item for a P2P-Tunnel that should handle the given attunement, or an empty item stack.
      */
-    @Nonnull
+
     public synchronized static ItemStack getTunnelPartByTriggerItem(ItemStack trigger) {
         if (trigger.isEmpty()) {
             return ItemStack.EMPTY;

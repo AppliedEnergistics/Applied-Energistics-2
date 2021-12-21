@@ -18,7 +18,6 @@
 
 package appeng.util.helpers;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -40,7 +39,7 @@ public class ItemComparisonHelper {
      *
      * @return true, if both are equal.
      */
-    public boolean isEqualItemType(@Nonnull ItemStack that, @Nonnull ItemStack other) {
+    public boolean isEqualItemType(ItemStack that, ItemStack other) {
         return !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem();
     }
 

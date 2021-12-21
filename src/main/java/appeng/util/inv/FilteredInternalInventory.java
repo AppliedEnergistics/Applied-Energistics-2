@@ -20,8 +20,6 @@ package appeng.util.inv;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.BaseInternalInventory;
@@ -32,7 +30,7 @@ public class FilteredInternalInventory extends BaseInternalInventory {
     private final InternalInventory delegate;
     private final IAEItemFilter filter;
 
-    public FilteredInternalInventory(@Nonnull InternalInventory delegate, @Nonnull IAEItemFilter filter) {
+    public FilteredInternalInventory(InternalInventory delegate, IAEItemFilter filter) {
         this.delegate = Objects.requireNonNull(delegate);
         this.filter = Objects.requireNonNull(filter);
     }

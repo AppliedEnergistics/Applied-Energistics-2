@@ -21,7 +21,6 @@ package appeng.menu.slot;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
@@ -84,7 +83,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public boolean mayPlace(@Nonnull ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         if (containsWrapperItem()) {
             return false;
         }
@@ -95,7 +94,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    @Nonnull
+
     public ItemStack getItem() {
         if (!this.isSlotEnabled()) {
             return ItemStack.EMPTY;
@@ -146,7 +145,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    public int getMaxStackSize(@Nonnull ItemStack stack) {
+    public int getMaxStackSize(ItemStack stack) {
         return Math.min(this.getMaxStackSize(), stack.getMaxStackSize());
     }
 
@@ -162,7 +161,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    @Nonnull
+
     public ItemStack remove(int amount) {
         if (containsWrapperItem()) {
             return ItemStack.EMPTY;

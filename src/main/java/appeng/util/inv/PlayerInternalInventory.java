@@ -18,8 +18,6 @@
 
 package appeng.util.inv;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,7 +44,7 @@ public class PlayerInternalInventory implements InternalInventory {
     }
 
     @Override
-    public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+    public void setItemDirect(int slotIndex, ItemStack stack) {
         inventory.setItem(slotIndex, stack);
         if (!stack.isEmpty()) {
             inventory.getItem(slotIndex).setPopTime(5);

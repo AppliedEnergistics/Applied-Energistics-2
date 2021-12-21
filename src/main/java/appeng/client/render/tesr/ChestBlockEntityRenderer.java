@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -134,9 +133,8 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
             this.r = r;
         }
 
-        @Nonnull
         @Override
-        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand) {
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
             if (side != null) {
                 side = r.resultingRotate(side); // This fixes the incorrect lightmap position
             }

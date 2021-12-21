@@ -23,8 +23,6 @@
 
 package appeng.api.networking;
 
-import javax.annotation.Nonnull;
-
 public interface IGridConnectionVisitor extends IGridVisitor {
 
     /**
@@ -32,5 +30,5 @@ public interface IGridConnectionVisitor extends IGridVisitor {
      *
      * @param n the connection.
      */
-    void visitConnection(@Nonnull IGridConnection n);
+    void visitConnection(IGridConnection n);
 }

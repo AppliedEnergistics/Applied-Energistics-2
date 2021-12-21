@@ -21,8 +21,6 @@ package appeng.client.gui.widgets;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
@@ -36,7 +34,7 @@ public interface ITooltip {
      *
      * @return tooltip message or an empty list to not show a tooltip
      */
-    @Nonnull
+
     default List<Component> getTooltipMessage() {
         return Collections.emptyList();
     }

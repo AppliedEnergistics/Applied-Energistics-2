@@ -20,8 +20,6 @@ package appeng.facade;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +35,7 @@ public class FacadePart implements IFacadePart {
     private final ItemStack facade;
     private final Direction side;
 
-    public FacadePart(@Nonnull ItemStack facade, @Nonnull Direction side) {
+    public FacadePart(ItemStack facade, Direction side) {
         Objects.requireNonNull(side, "side");
         Objects.requireNonNull(facade, "facade");
         this.facade = facade.copy();

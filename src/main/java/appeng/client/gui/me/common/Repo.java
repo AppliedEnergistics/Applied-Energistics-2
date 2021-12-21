@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.BiMap;
@@ -226,7 +225,7 @@ public class Repo implements IClientRepo {
         return this.searchString;
     }
 
-    public final void setSearchString(@Nonnull String searchString) {
+    public final void setSearchString(String searchString) {
         this.searchString = searchString;
     }
 

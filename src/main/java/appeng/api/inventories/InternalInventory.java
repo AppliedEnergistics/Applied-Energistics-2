@@ -26,7 +26,6 @@ package appeng.api.inventories;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -47,7 +46,7 @@ import appeng.api.config.FuzzyMode;
 public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
 
     @Nullable
-    static ItemTransfer wrapExternal(@Nullable BlockEntity be, @Nonnull Direction side) {
+    static ItemTransfer wrapExternal(@Nullable BlockEntity be, Direction side) {
         if (be == null) {
             return null;
         }
@@ -61,7 +60,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
     }
 
     @Nullable
-    static ItemTransfer wrapExternal(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Direction side) {
+    static ItemTransfer wrapExternal(Level level, BlockPos pos, Direction side) {
         return wrapExternal(level.getBlockEntity(pos), side);
     }
 
@@ -92,7 +91,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
     /**
      * Puts the given stack in the given slot and circumvents any potential filters.
      */
-    void setItemDirect(int slotIndex, @Nonnull ItemStack stack);
+    void setItemDirect(int slotIndex, ItemStack stack);
 
     default boolean isItemValid(int slot, ItemStack stack) {
         return true;
@@ -115,7 +114,6 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         return AbstractContainerMenu.getRedstoneSignalFromContainer(adapter);
     }
 
-    @Nonnull
     @Override
     default Iterator<ItemStack> iterator() {
         return new InternalInventoryIterator(this);
@@ -141,7 +139,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
      * @param stack The stack to insert. Will not be mutated.
      * @return The overflow, which can be the same object as stack.
      */
-    @Nonnull
+
     default ItemStack addItems(ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -361,7 +359,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
     /**
      * @return The overflow
      */
-    @Nonnull
+
     default ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         Preconditions.checkArgument(slot >= 0 && slot < size(), "slot out of range");
 
@@ -398,7 +396,6 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         }
     }
 
-    @Nonnull
     default ItemStack extractItem(int slot, int amount, boolean simulate) {
         var item = getStackInSlot(slot);
         if (item.isEmpty()) {

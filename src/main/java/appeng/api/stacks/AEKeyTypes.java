@@ -25,7 +25,6 @@ package appeng.api.stacks;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
 import net.minecraft.resources.ResourceLocation;
@@ -56,7 +55,7 @@ public final class AEKeyTypes {
      * Caching the factory instance in a field or local variable is perfectly for performance reasons. But do not use
      * any AE2 internal field as they can change randomly between releases.
      */
-    public static synchronized void register(@Nonnull AEKeyType keyType) {
+    public static synchronized void register(AEKeyType keyType) {
         Objects.requireNonNull(keyType, "keyType");
         AEKeyTypesInternal.register(keyType);
     }
@@ -68,8 +67,8 @@ public final class AEKeyTypes {
      * @return The storage channel implementation.
      * @throws IllegalArgumentException when fetching an unregistered channel.
      */
-    @Nonnull
-    public static AEKeyType get(@Nonnull ResourceLocation id) {
+
+    public static AEKeyType get(ResourceLocation id) {
         var result = AEKeyTypesInternal.getRegistry().get(id);
         if (result == null) {
             throw new IllegalArgumentException("No key type registered for id " + id);
@@ -82,7 +81,7 @@ public final class AEKeyTypes {
      * <p>
      * This is mainly used as helper to let storage grids construct their internal storage for each type.
      */
-    @Nonnull
+
     public static Iterable<AEKeyType> getAll() {
         return AEKeyTypesInternal.getRegistry();
     }

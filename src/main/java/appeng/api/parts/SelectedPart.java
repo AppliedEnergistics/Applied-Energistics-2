@@ -23,7 +23,6 @@
 
 package appeng.api.parts;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
@@ -62,7 +61,7 @@ public class SelectedPart {
         this.side = side;
     }
 
-    public SelectedPart(IFacadePart facade, @Nonnull Direction side) {
+    public SelectedPart(IFacadePart facade, Direction side) {
         this.part = null;
         this.facade = facade;
         this.side = side;

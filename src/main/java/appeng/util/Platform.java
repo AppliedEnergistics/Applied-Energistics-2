@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
@@ -657,7 +656,7 @@ public class Platform {
         return Transaction.openNested(Transaction.getCurrentUnsafe());
     }
 
-    public static boolean canItemStacksStack(@Nonnull ItemStack a, @Nonnull ItemStack b) {
+    public static boolean canItemStacksStack(ItemStack a, ItemStack b) {
         if (a.isEmpty() || !a.sameItem(b) || a.hasTag() != b.hasTag())
             return false;
 

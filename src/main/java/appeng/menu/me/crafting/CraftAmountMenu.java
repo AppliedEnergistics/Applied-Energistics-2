@@ -21,7 +21,6 @@ package appeng.menu.me.crafting;
 import java.util.Objects;
 import java.util.concurrent.Future;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -114,7 +113,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
         return new PlayerSource(this.getPlayerInventory().player, (IActionHost) this.getTarget());
     }
 
-    private void setWhatToCraft(@Nonnull AEKey whatToCraft, int initialAmount) {
+    private void setWhatToCraft(AEKey whatToCraft, int initialAmount) {
         this.whatToCraft = Objects.requireNonNull(whatToCraft, "whatToCraft");
         this.craftingItem.set(whatToCraft.wrap(initialAmount));
     }

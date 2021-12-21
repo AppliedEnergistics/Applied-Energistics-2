@@ -23,8 +23,6 @@
 
 package appeng.api.inventories;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +61,7 @@ final class SubInventoryProxy extends BaseInternalInventory {
     }
 
     @Override
-    public void setItemDirect(int slotIndex, @Nonnull ItemStack stack) {
+    public void setItemDirect(int slotIndex, ItemStack stack) {
         delegate.setItemDirect(translateSlot(slotIndex), stack);
     }
 
@@ -80,13 +78,13 @@ final class SubInventoryProxy extends BaseInternalInventory {
     }
 
     @Override
-    @Nonnull
+
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return delegate.insertItem(translateSlot(slot), stack, simulate);
     }
 
     @Override
-    @Nonnull
+
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return delegate.extractItem(translateSlot(slot), amount, simulate);
     }

@@ -34,7 +34,7 @@ public abstract class ItemModelProvider extends ModelProvider<ItemModelBuilder> 
         super(generator, modid, ITEM_FOLDER, ItemModelBuilder::new, existingFileHelper);
     }
 
-    @Nonnull
+    
     @Override
     public String getName() {
         return "Item Models: " + modid;

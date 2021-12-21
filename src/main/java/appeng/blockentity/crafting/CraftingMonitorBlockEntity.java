@@ -20,7 +20,6 @@ package appeng.blockentity.crafting;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
@@ -148,7 +147,6 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         return AEBlocks.CRAFTING_MONITOR.asItem();
     }
 
-    @Nonnull
     @Override
     public Object getRenderAttachmentData() {
         return new CraftingMonitorModelData(getUp(), getForward(), getConnections(), getColor());

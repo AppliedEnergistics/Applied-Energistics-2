@@ -25,8 +25,6 @@ package appeng.api.networking.security;
 
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -46,7 +44,7 @@ public interface IActionSource {
      *
      * @return An optional player issuing the action.
      */
-    @Nonnull
+
     Optional<Player> player();
 
     /**
@@ -58,7 +56,7 @@ public interface IActionSource {
      *
      * @return An optional machine issuing the action or acting as proxy for a player.
      */
-    @Nonnull
+
     Optional<IActionHost> machine();
 
     /**
@@ -69,6 +67,6 @@ public interface IActionSource {
      * Currently there are no public contexts made available by AE. An example would be the context interfaces use
      * internally to avoid looping items between each other.
      */
-    @Nonnull
-    <T> Optional<T> context(@Nonnull Class<T> key);
+
+    <T> Optional<T> context(Class<T> key);
 }

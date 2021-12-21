@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -229,7 +228,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void setOwningPlayer(@Nonnull Player player) {
+    public void setOwningPlayer(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             setOwningPlayerId(IPlayerRegistry.getPlayerId(serverPlayer));
         }
@@ -244,7 +243,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public ManagedGridNode setExposedOnSides(@Nonnull Set<Direction> directions) {
+    public ManagedGridNode setExposedOnSides(Set<Direction> directions) {
         if (node == null) {
             getInitData().exposedOnSides = ImmutableSet.copyOf(directions);
         } else {
@@ -274,7 +273,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public ManagedGridNode setGridColor(@Nonnull AEColor gridColor) {
+    public ManagedGridNode setGridColor(AEColor gridColor) {
         if (this.node == null) {
             getInitData().gridColor = gridColor;
         } else {
@@ -288,7 +287,6 @@ public class ManagedGridNode implements IManagedGridNode {
         return node != null ? node.getIdlePowerUsage() : getInitData().idlePowerUsage;
     }
 
-    @Nonnull
     private InitData<?> getInitData() {
         if (initData == null) {
             throw new IllegalStateException(

@@ -20,8 +20,6 @@ package appeng.helpers.iface;
 
 import java.util.EnumSet;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -43,7 +41,6 @@ public interface PatternProviderLogicHost extends IConfigurableObject {
 
     void saveChanges();
 
-    @Nonnull
     @Override
     default IConfigManager getConfigManager() {
         return getLogic().getConfigManager();

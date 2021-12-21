@@ -20,7 +20,6 @@ package appeng.blockentity.storage;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -175,7 +174,6 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         return this.manager;
     }
 
-    @Nonnull
     @Override
     public IUpgradeInventory getUpgrades() {
         return this.upgrades;

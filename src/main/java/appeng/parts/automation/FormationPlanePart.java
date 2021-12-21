@@ -20,7 +20,6 @@ package appeng.parts.automation;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -302,7 +301,6 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
-    @Nonnull
     @Override
     public Object getRenderAttachmentData() {
         return getConnections();

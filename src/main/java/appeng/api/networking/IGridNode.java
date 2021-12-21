@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.CrashReportCategory;
@@ -62,7 +61,7 @@ public interface IGridNode {
      * cases, this will be the game object that has created the node, for example a {@link BlockEntity} or
      * {@link appeng.api.parts.IPart}, but may also represent something entirely different.
      */
-    @Nonnull
+
     Object getOwner();
 
     /**
@@ -71,7 +70,7 @@ public interface IGridNode {
      *
      * @param visitor visitor
      */
-    void beginVisit(@Nonnull IGridVisitor visitor);
+    void beginVisit(IGridVisitor visitor);
 
     /**
      * get the grid for the node, this can change at a moments notice.
@@ -84,20 +83,20 @@ public interface IGridNode {
     /**
      * @return the level the node is located in
      */
-    @Nonnull
+
     ServerLevel getLevel();
 
     /**
      * @return The externally accessible sides of the host that this grid node has formed a connection through.
      */
-    @Nonnull
+
     Set<Direction> getConnectedSides();
 
     /**
      * lets you iterate a nodes connections that have been made via the grid host's exposed sides to other adjacent grid
      * nodes.
      */
-    @Nonnull
+
     Map<Direction, IGridConnection> getInWorldConnections();
 
     /**
@@ -105,7 +104,7 @@ public interface IGridNode {
      * other grid hosts, including connections made through the hosts sides and indirectly (QNB, tunnels). Includes
      * connections from {@link #getInWorldConnections()}.
      */
-    @Nonnull
+
     List<IGridConnection> getConnections();
 
     /**
@@ -141,7 +140,7 @@ public interface IGridNode {
      * @param flag flags
      * @return true if has flag
      */
-    boolean hasFlag(@Nonnull GridFlags flag);
+    boolean hasFlag(GridFlags flag);
 
     /**
      * @return the ownerID this represents the person who placed the node.
@@ -158,7 +157,7 @@ public interface IGridNode {
     /**
      * @return True if the grid node is accessible on the given side of the host.
      */
-    boolean isExposedOnSide(@Nonnull Direction side);
+    boolean isExposedOnSide(Direction side);
 
     /**
      * @return An item that will only be used to represent this grid node in user interfaces. Can return an
@@ -171,7 +170,7 @@ public interface IGridNode {
      * Colors can be used to prevent adjacent grid nodes from connecting. {@link AEColor#TRANSPARENT} indicates that the
      * node will connect to nodes of any color.
      */
-    @Nonnull
+
     AEColor getGridColor();
 
     /**

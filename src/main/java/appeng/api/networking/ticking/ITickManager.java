@@ -23,8 +23,6 @@
 
 package appeng.api.networking.ticking;
 
-import javax.annotation.Nonnull;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridService;
 
@@ -41,7 +39,7 @@ public interface ITickManager extends IGridService {
      *
      * @param node gridnode
      */
-    boolean alertDevice(@Nonnull IGridNode node);
+    boolean alertDevice(IGridNode node);
 
     /**
      * disables ticking for your device.
@@ -50,7 +48,7 @@ public interface ITickManager extends IGridService {
      *
      * @return if the call was successful.
      */
-    boolean sleepDevice(@Nonnull IGridNode node);
+    boolean sleepDevice(IGridNode node);
 
     /**
      * enables ticking for your device, undoes a sleepDevice call.
@@ -59,5 +57,5 @@ public interface ITickManager extends IGridService {
      *
      * @return if the call was successful.
      */
-    boolean wakeDevice(@Nonnull IGridNode node);
+    boolean wakeDevice(IGridNode node);
 }
