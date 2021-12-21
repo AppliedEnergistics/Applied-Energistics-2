@@ -25,7 +25,7 @@ A Mod about Matter, Energy and using them to conquer the world..
 ## Contacts
 
 * [Website](https://appliedenergistics.github.io/)
-* [Discord](https://discord.gg/GygKjjm)
+* [Discord](https://discord.gg/Zd6t9ka7ne)
 * [GitHub](https://github.com/AppliedEnergistics/Applied-Energistics-2)
 
 ## License
