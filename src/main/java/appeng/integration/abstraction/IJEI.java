@@ -29,9 +29,6 @@ public interface IJEI extends IIntegrationModule {
         return "";
     }
 
-    default void setSearchText(String searchText) {
-    }
-
     class Stub extends IIntegrationModule.Stub implements IJEI {
     }
 }

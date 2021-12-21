@@ -18,8 +18,10 @@
 
 package appeng.core;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,7 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.config.BooleanOption;
 import appeng.core.config.ConfigFileManager;
 import appeng.core.config.ConfigSection;
+import appeng.core.config.ConfigValidationException;
 import appeng.core.config.DoubleOption;
 import appeng.core.config.EnumOption;
 import appeng.core.config.IntegerOption;
@@ -54,6 +57,8 @@ import appeng.util.EnumCycler;
 
 public final class AEConfig {
 
+    public static final String CLIENT_CONFIG_PATH = "appliedenergistics2/client.json";
+    public static final String COMMON_CONFIG_PATH = "appliedenergistics2/common.json";
     public final ClientConfig CLIENT;
     public final ConfigFileManager clientConfigManager;
     public final CommonConfig COMMON;
@@ -62,11 +67,11 @@ public final class AEConfig {
     AEConfig(Path configDir) {
         ConfigSection clientRoot = ConfigSection.createRoot();
         CLIENT = new ClientConfig(clientRoot);
-        clientConfigManager = createConfigFileManager(clientRoot, configDir, "appliedenergistics2/client.json");
+        clientConfigManager = createConfigFileManager(clientRoot, configDir, CLIENT_CONFIG_PATH);
 
         ConfigSection commonRoot = ConfigSection.createRoot();
         COMMON = new CommonConfig(commonRoot);
-        commonConfigManager = createConfigFileManager(commonRoot, configDir, "appliedenergistics2/common.json");
+        commonConfigManager = createConfigFileManager(commonRoot, configDir, COMMON_CONFIG_PATH);
 
         syncClientConfig();
         syncCommonConfig();
@@ -79,7 +84,14 @@ public final class AEConfig {
         if (!Files.exists(configFile)) {
             result.save(); // Save a default file
         } else {
-            result.load();
+            try {
+                result.load();
+            } catch (ConfigValidationException e) {
+                AELog.error("Failed to load AE2 Config. Making backup", e);
+
+                // Backup and delete config files to reset them
+                makeBackupAndReset(configDir, filename);
+            }
 
             // Re-save immediately to write-out new defaults
             try {
@@ -102,6 +114,16 @@ public final class AEConfig {
             throw new IllegalStateException("Config is already loaded");
         }
         instance = new AEConfig(configFolder);
+    }
+
+    private static void makeBackupAndReset(Path configFolder, String configFile) {
+        var backupFile = configFolder.resolve(configFile + ".bak");
+        var originalFile = configFolder.resolve(configFile);
+        try {
+            Files.move(originalFile, backupFile, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            AELog.warn("Failed to backup config file %s: %s!", originalFile, e);
+        }
     }
 
     // Misc
@@ -426,7 +448,7 @@ public final class AEConfig {
             this.searchTooltips = terminals.addEnum("searchTooltips", YesNo.YES,
                     "Should tooltips be searched. Performance impact");
             this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
-            this.terminalSearchMode = terminals.addEnum("terminalSearchMode", SearchBoxMode.AUTOSEARCH);
+            this.terminalSearchMode = terminals.addEnum("terminalSearchMode", SearchBoxMode.DEFAULT);
         }
 
     }

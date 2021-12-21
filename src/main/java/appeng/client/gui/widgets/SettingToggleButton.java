@@ -18,16 +18,13 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -150,32 +147,33 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.TransferToNetwork);
 
             registerApp(Icon.ARROW_UP, Settings.SORT_DIRECTION, SortDir.ASCENDING, ButtonToolTips.SortOrder,
-                    ButtonToolTips.ToggleSortDirection);
+                    ButtonToolTips.Ascending);
             registerApp(Icon.ARROW_DOWN, Settings.SORT_DIRECTION, SortDir.DESCENDING, ButtonToolTips.SortOrder,
-                    ButtonToolTips.ToggleSortDirection);
+                    ButtonToolTips.Descending);
 
-            registerApp(Icon.SEARCH_AUTO, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH, ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_Auto);
-            registerApp(Icon.SEARCH_MANUAL, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH,
+            registerApp(Icon.SEARCH_DEFAULT, Settings.SEARCH_MODE, SearchBoxMode.DEFAULT,
                     ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_Standard);
-            registerApp(Icon.SEARCH_AUTO_JEI, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH,
+                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.Off),
+                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.Off));
+            registerApp(Icon.SEARCH_REMEMBER, Settings.SEARCH_MODE, SearchBoxMode.REMEMBER_SEARCH,
                     ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_JEIAuto);
-            registerApp(Icon.SEARCH_MANUAL_JEI, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH,
+                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.On),
+                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.Off));
+            registerApp(Icon.SEARCH_AUTO_FOCUS, Settings.SEARCH_MODE, SearchBoxMode.AUTO_FOCUS,
                     ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_JEIStandard);
-            registerApp(Icon.SEARCH_AUTO_KEEP, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH_KEEP,
+                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.Off),
+                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.On));
+            registerApp(Icon.SEARCH_AUTO_FOCUS_REMEMBER, Settings.SEARCH_MODE,
+                    SearchBoxMode.AUTO_FOCUS_AND_REMEMBER_SEARCH,
                     ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_AutoKeep);
-            registerApp(Icon.SEARCH_MANUAL_KEEP, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH_KEEP,
+                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.On),
+                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.On));
+            registerApp(Icon.SEARCH_JEI, Settings.SEARCH_MODE, SearchBoxMode.JEI,
                     ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_StandardKeep);
-            registerApp(Icon.SEARCH_AUTO_JEI_KEEP, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH_KEEP,
+                    ButtonToolTips.SearchMode_JEI.text());
+            registerApp(Icon.SEARCH_REI, Settings.SEARCH_MODE, SearchBoxMode.REI,
                     ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_JEIAutoKeep);
-            registerApp(Icon.SEARCH_MANUAL_JEI_KEEP, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP,
-                    ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_JEIStandardKeep);
+                    ButtonToolTips.SearchMode_REI.text());
 
             registerApp(Icon.TERMINAL_STYLE_TALL, Settings.TERMINAL_STYLE, TerminalStyle.TALL,
                     ButtonToolTips.TerminalStyle,
@@ -284,13 +282,14 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     private static <T extends Enum<T>> void registerApp(final Icon icon, final Setting<T> setting, T val,
-            final ButtonToolTips title, final Component hint) {
+            ButtonToolTips title, Component... tooltipLines) {
+        var lines = new ArrayList<Component>();
+        lines.add(title.text());
+        Collections.addAll(lines, tooltipLines);
+
         appearances.put(
                 new EnumPair<>(setting, val),
-                new ButtonAppearance(
-                        icon,
-                        title.text(),
-                        hint));
+                new ButtonAppearance(icon, lines));
     }
 
     private static <T extends Enum<T>> void registerApp(final Icon icon, final Setting<T> setting, T val,
@@ -301,7 +300,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     @Override
     protected Icon getIcon() {
         if (this.buttonSetting != null && this.currentValue != null) {
-            final ButtonAppearance app = appearances.get(new EnumPair<>(this.buttonSetting, this.currentValue));
+            var app = appearances.get(new EnumPair<>(this.buttonSetting, this.currentValue));
             if (app != null) {
                 return app.icon;
             }
@@ -334,13 +333,12 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             return Collections.emptyList();
         }
 
-        final ButtonAppearance buttonAppearance = appearances
-                .get(new EnumPair(this.buttonSetting, this.currentValue));
+        var buttonAppearance = appearances.get(new EnumPair<>(this.buttonSetting, this.currentValue));
         if (buttonAppearance == null) {
             return Collections.singletonList(new TextComponent("No Such Message"));
         }
 
-        return Arrays.asList(buttonAppearance.displayName, buttonAppearance.hint);
+        return buttonAppearance.tooltipLines;
     }
 
     private static final class EnumPair<T extends Enum<T>> {
@@ -371,18 +369,6 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         }
     }
 
-    private static class ButtonAppearance {
-        @Nonnull
-        public final Icon icon;
-        @Nonnull
-        public final Component displayName;
-        @Nonnull
-        public final Component hint;
-
-        public ButtonAppearance(Icon icon, Component displayName, Component hint) {
-            this.icon = Objects.requireNonNull(icon);
-            this.displayName = Objects.requireNonNull(displayName);
-            this.hint = Objects.requireNonNull(hint);
-        }
+    private record ButtonAppearance(Icon icon, List<Component> tooltipLines) {
     }
 }

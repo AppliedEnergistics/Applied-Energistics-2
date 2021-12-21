@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,36 +16,23 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.jei;
+package appeng.integration.abstraction;
 
 import java.util.Objects;
 
-import com.google.common.base.Strings;
+public final class REIFacade {
 
-import me.shedaniel.rei.api.client.REIRuntime;
-
-import appeng.integration.abstraction.IREI;
-
-class ReiRuntimeAdapter implements IREI {
-
-    private final REIRuntime runtime;
-
-    ReiRuntimeAdapter() {
-        this.runtime = Objects.requireNonNull(REIRuntime.getInstance(), "REI helper was null");
+    private REIFacade() {
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
+    private static IREI instance = new IREI.Stub();
+
+    public static IREI instance() {
+        return instance;
     }
 
-    @Override
-    public String getSearchText() {
-        var searchField = this.runtime.getSearchTextField();
-        if (searchField == null) {
-            return "";
-        }
-        return Strings.nullToEmpty(searchField.getText());
+    public static void setInstance(IREI jei) {
+        instance = Objects.requireNonNull(jei);
     }
 
 }

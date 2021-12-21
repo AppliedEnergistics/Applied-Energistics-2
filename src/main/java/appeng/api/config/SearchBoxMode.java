@@ -24,17 +24,34 @@
 package appeng.api.config;
 
 public enum SearchBoxMode {
-    AUTOSEARCH(false), AUTOSEARCH_KEEP(false), MANUAL_SEARCH(false), MANUAL_SEARCH_KEEP(false), JEI_AUTOSEARCH(true),
-    JEI_AUTOSEARCH_KEEP(true), JEI_MANUAL_SEARCH(true), JEI_MANUAL_SEARCH_KEEP(true);
+    DEFAULT(false, false, false),
+    REMEMBER_SEARCH(true, false, false),
+    AUTO_FOCUS(false, true, false),
+    AUTO_FOCUS_AND_REMEMBER_SEARCH(true, true, false),
+    JEI(false, false, true),
+    REI(false, false, true);
 
-    private final boolean requiresJei;
+    private final boolean rememberSearch;
 
-    SearchBoxMode(boolean requiresJei) {
-        this.requiresJei = requiresJei;
+    private final boolean autoFocus;
+
+    private final boolean useExternalSearchBox;
+
+    SearchBoxMode(boolean rememberSearch, boolean autoFocus, boolean useExternalSearchBox) {
+        this.rememberSearch = rememberSearch;
+        this.autoFocus = autoFocus;
+        this.useExternalSearchBox = useExternalSearchBox;
     }
 
-    public boolean isRequiresJei() {
-        return requiresJei;
+    public boolean shouldUseExternalSearchBox() {
+        return useExternalSearchBox;
     }
 
+    public boolean isRememberSearch() {
+        return rememberSearch;
+    }
+
+    public boolean isAutoFocus() {
+        return autoFocus;
+    }
 }
