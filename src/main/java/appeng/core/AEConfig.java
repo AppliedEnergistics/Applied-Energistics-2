@@ -418,6 +418,13 @@ public final class AEConfig {
         return COMMON.pathfindingStepsPerTick.get();
     }
 
+    /**
+     * @return True if an in-world preview of parts and facade placement should be shown when holding one in hand.
+     */
+    public boolean isPlacementPreviewEnabled() {
+        return CLIENT.showPlacementPreview.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -429,6 +436,7 @@ public final class AEConfig {
         public final BooleanOption disableColoredCableRecipesInJEI;
         public final EnumOption<PowerUnits> selectedPowerUnit;
         public final BooleanOption debugGuiOverlays;
+        public final BooleanOption showPlacementPreview;
 
         // Terminal Settings
         public final EnumOption<YesNo> searchTooltips;
@@ -443,6 +451,8 @@ public final class AEConfig {
             this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
             this.selectedPowerUnit = client.addEnum("PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
             this.debugGuiOverlays = client.addBoolean("showDebugGuiOverlays", false, "Show debugging GUI overlays");
+            this.showPlacementPreview = client.addBoolean("showPlacementPreview", true,
+                    "Show a preview of part and facade placement");
 
             ConfigSection terminals = root.subsection("terminals");
             this.searchTooltips = terminals.addEnum("searchTooltips", YesNo.YES,

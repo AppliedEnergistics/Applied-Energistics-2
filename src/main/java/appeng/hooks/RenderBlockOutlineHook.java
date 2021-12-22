@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,10 +28,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
+import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
 import appeng.facade.IFacadeItem;
 import appeng.items.parts.FacadeItem;
 import appeng.parts.BusCollisionHelper;
+import appeng.parts.PartPlacement;
 
 public class RenderBlockOutlineHook {
     private RenderBlockOutlineHook() {
@@ -46,7 +50,12 @@ public class RenderBlockOutlineHook {
                 return true;
             }
 
-            return !replaceBlockOutline(level, poseStack, buffers, camera, hitResult);
+            if (!(hitResult instanceof BlockHitResult blockHitResult)
+                    || blockHitResult.getType() != HitResult.Type.BLOCK) {
+                return true;
+            }
+
+            return !replaceBlockOutline(level, poseStack, buffers, camera, blockHitResult);
         });
     }
 
@@ -57,30 +66,37 @@ public class RenderBlockOutlineHook {
             PoseStack poseStack,
             MultiBufferSource buffers,
             Camera camera,
-            HitResult hitResult) {
-        if (hitResult instanceof BlockHitResult blockHitResult) {
-            // Hit test against all attached parts to highlight the part that is relevant
-            var pos = blockHitResult.getBlockPos();
-            if (level.getBlockEntity(pos) instanceof IPartHost partHost) {
+            BlockHitResult hitResult) {
 
-                // Rendering a preview of what is currently in hand has priority
-                // If the item in hand is a facade and a block is hit, attempt facade placement
-                if (camera.getEntity() instanceof Player player) {
-                    var itemInHand = player.getItemInHand(InteractionHand.MAIN_HAND);
-                    if (showFacadePlacementPreview(poseStack, buffers, camera, blockHitResult, partHost, itemInHand)) {
-                        return true;
-                    }
-                }
+        var player = Minecraft.getInstance().player;
+        if (player == null) {
+            return false;
+        }
 
-                var selectedPart = partHost.selectPartWorld(hitResult.getLocation());
-                if (selectedPart.facade != null) {
-                    renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false);
-                    return true;
-                }
-                if (selectedPart.part != null) {
-                    renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false);
-                    return true;
-                }
+        if (AEConfig.instance().isPlacementPreviewEnabled()) {
+            var itemInHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+            showPartPlacementPreview(player, poseStack, buffers, camera, hitResult, itemInHand);
+        }
+
+        // Hit test against all attached parts to highlight the part that is relevant
+        var pos = hitResult.getBlockPos();
+        if (level.getBlockEntity(pos) instanceof IPartHost partHost) {
+
+            // Rendering a preview of what is currently in hand has priority
+            // If the item in hand is a facade and a block is hit, attempt facade placement
+            if (AEConfig.instance().isPlacementPreviewEnabled()) {
+                var itemInHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+                showFacadePlacementPreview(poseStack, buffers, camera, hitResult, partHost, itemInHand);
+            }
+
+            var selectedPart = partHost.selectPartWorld(hitResult.getLocation());
+            if (selectedPart.facade != null) {
+                renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false);
+                return true;
+            }
+            if (selectedPart.part != null) {
+                renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false);
+                return true;
             }
         }
 
@@ -111,6 +127,27 @@ public class RenderBlockOutlineHook {
             }
         }
         return false;
+    }
+
+    private static void showPartPlacementPreview(
+            Player player,
+            PoseStack poseStack,
+            MultiBufferSource buffers,
+            Camera camera,
+            BlockHitResult blockHitResult,
+            ItemStack itemInHand) {
+        if (itemInHand.getItem() instanceof IPartItem<?>partItem) {
+            var placement = PartPlacement.getPartPlacement(player,
+                    player.level,
+                    itemInHand,
+                    blockHitResult.getBlockPos(),
+                    blockHitResult.getDirection());
+
+            if (placement != null) {
+                var part = partItem.createPart();
+                renderPart(poseStack, buffers, camera, placement.pos(), part, placement.side(), true);
+            }
+        }
     }
 
     private static void renderPart(PoseStack poseStack,
