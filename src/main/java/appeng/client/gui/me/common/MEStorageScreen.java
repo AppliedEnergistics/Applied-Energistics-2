@@ -80,7 +80,6 @@ import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.menu.me.interaction.StackInteractions;
-import appeng.mixins.AbstractContainerScreenAccessor;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
@@ -365,7 +364,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // handler for middle mouse button crafting in survival mode
         if (this.minecraft.options.keyPickItem.matchesMouse(btn)) {
-            Slot slot = ((AbstractContainerScreenAccessor) this).callFindSlot(xCoord, yCoord);
+            Slot slot = this.findSlot(xCoord, yCoord);
             if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
                 handleGridInventoryEntryMouseClick(repoSlot.getEntry(), btn, ClickType.CLONE);
                 return true;
@@ -378,7 +377,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
         if (wheelDelta != 0 && hasShiftDown()) {
-            if (((AbstractContainerScreenAccessor) this).callFindSlot(x, y) instanceof RepoSlot repoSlot) {
+            if (this.findSlot(x, y) instanceof RepoSlot repoSlot) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 long serial = entry != null ? entry.getSerial() : -1;
                 final InventoryAction direction = wheelDelta > 0 ? InventoryAction.ROLL_DOWN

@@ -86,7 +86,6 @@ import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
-import appeng.mixins.AbstractContainerScreenAccessor;
 import appeng.util.ConfigMenuInventory;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
@@ -473,7 +472,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
-        final Slot slot = ((AbstractContainerScreenAccessor) this).callFindSlot(mouseX, mouseY);
+        final Slot slot = this.findSlot(mouseX, mouseY);
         var itemstack = getMenu().getCarried();
 
         Point mousePos = new Point((int) Math.round(mouseX - leftPos), (int) Math.round(mouseY - topPos));
