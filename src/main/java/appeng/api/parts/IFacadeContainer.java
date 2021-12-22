@@ -37,6 +37,13 @@ import net.minecraft.network.FriendlyByteBuf;
 public interface IFacadeContainer {
 
     /**
+     * Checks if the {@link IFacadePart} can be added to the given side.
+     *
+     * @return true if the facade can be successfully added.
+     */
+    boolean canAddFacade(IFacadePart a);
+
+    /**
      * Attempts to add the {@link IFacadePart} to the given side.
      *
      * @return true if the facade as successfully added.

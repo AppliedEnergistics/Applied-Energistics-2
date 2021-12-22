@@ -71,6 +71,7 @@ import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiBlockEntity;
+import appeng.items.parts.FacadeItem;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.parts.networking.CablePart;
@@ -125,7 +126,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     public boolean canAddPart(ItemStack is, Direction side) {
-        if (PartPlacement.createFacade(is, side) != null) {
+        if (FacadeItem.createFacade(is, side) != null) {
             return true;
         }
 

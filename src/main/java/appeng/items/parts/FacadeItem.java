@@ -33,12 +33,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.ids.AETags;
+import appeng.api.parts.IFacadePart;
+import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
@@ -57,9 +60,63 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        return PartHelper.usePartItem(stack, context.getClickedPos(), context.getClickedFace(),
-                context.getPlayer(),
-                context.getHand(), context.getLevel());
+        if (stack.getItem() != this) {
+            return InteractionResult.PASS;
+        }
+
+        var level = context.getLevel();
+        var pos = context.getClickedPos();
+        var player = context.getPlayer();
+
+        var facade = createPartFromItemStack(stack, context.getClickedFace());
+        if (!placeFacade(facade, level, pos)) {
+            return InteractionResult.FAIL;
+        }
+
+        if (!level.isClientSide && player != null && !player.isCreative()) {
+            stack.grow(-1);
+            if (stack.isEmpty()) {
+                player.setItemInHand(context.getHand(), ItemStack.EMPTY);
+            }
+        }
+
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    public static boolean canPlaceFacade(IPartHost host, FacadePart facade) {
+        // Can only place a facade on cables if there's actually a cable at the center to hold them
+        if (host.getPart(null) == null) {
+            return false;
+        }
+
+        return host.getFacadeContainer().canAddFacade(facade);
+    }
+
+    private static boolean placeFacade(FacadePart facade, Level level, BlockPos blockPos) {
+        var host = PartHelper.getPartHost(level, blockPos);
+        if (host == null) {
+            return false;
+        }
+
+        if (!canPlaceFacade(host, facade)) {
+            return false;
+        }
+
+        if (!host.getFacadeContainer().addFacade(facade)) {
+            return false;
+        }
+
+        host.markForSave();
+        host.markForUpdate();
+        return true;
+    }
+
+    public static IFacadePart createFacade(ItemStack held, Direction side) {
+        if (held.getItem() instanceof IFacadeItem) {
+            return ((IFacadeItem) held.getItem()).createPartFromItemStack(held, side);
+        }
+
+        return null;
     }
 
     @Override

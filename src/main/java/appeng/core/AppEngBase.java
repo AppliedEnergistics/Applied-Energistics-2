@@ -80,7 +80,6 @@ import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitFeatures;
 import appeng.init.worldgen.InitStructures;
 import appeng.items.tools.NetworkToolItem;
-import appeng.parts.PartPlacement;
 import appeng.server.AECommand;
 import appeng.server.testworld.GameTestPlotAdapter;
 import appeng.services.ChunkLoadingService;
@@ -154,7 +153,6 @@ public abstract class AppEngBase implements AppEng {
 
         UseBlockCallback.EVENT.register(WrenchHook::onPlayerUseBlock);
         UseBlockCallback.EVENT.register(ToolItemHook::onPlayerUseBlock);
-        UseBlockCallback.EVENT.register(PartPlacement::onPlayerUseBlock);
         InitBiomeModifications.init();
     }
 
