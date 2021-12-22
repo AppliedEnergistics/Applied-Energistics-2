@@ -249,13 +249,13 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Override
     public Future<ICraftingPlan> beginCraftingCalculation(Level level, ICraftingSimulationRequester simRequester,
-            AEKey what, long amount) {
+            AEKey what, long amount, CalculationStrategy strategy) {
         if (level == null || simRequester == null) {
             throw new IllegalArgumentException("Invalid Crafting Job Request");
         }
 
         final CraftingCalculation job = new CraftingCalculation(level, grid, simRequester,
-                new GenericStack(what, amount));
+                new GenericStack(what, amount), strategy);
 
         return CRAFTING_POOL.submit(job::run);
     }

@@ -15,12 +15,13 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.networking.crafting.CalculationStrategy;
+import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.AELog;
-import appeng.crafting.CraftingPlan;
 import appeng.crafting.inv.CraftingSimulationState;
 import appeng.crafting.simulation.helpers.ProcessingPatternBuilder;
 import appeng.crafting.simulation.helpers.SimulationEnv;
@@ -46,7 +47,7 @@ public class CraftingSimulationTest {
         var bToC = env.addPattern(new ProcessingPatternBuilder(c).addPreciseInput(1, b).build());
 
         // First plan should go through all the patterns because some items are missing.
-        var firstPlan = env.runSimulation(c);
+        var firstPlan = env.runSimulation(c, CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(firstPlan)
                 .failed()
                 .patternsMatch(aToB, 1, bToC, 1)
@@ -58,7 +59,7 @@ public class CraftingSimulationTest {
         // Now, add some of b in the network. The plan should never explore a -> b, because it already has enough of b.
         // Notice the smaller node count for the bytes.
         env.addStoredItem(b);
-        var secondPlan = env.runSimulation(c);
+        var secondPlan = env.runSimulation(c, CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(secondPlan)
                 .succeeded()
                 .patternsMatch(bToC, 1)
@@ -92,7 +93,7 @@ public class CraftingSimulationTest {
         env.addStoredItem(fluid(Fluids.WATER, 3500));
 
         // Crafting should use the water bucket from the network and then the water directly.
-        var plan = env.runSimulation(new GenericStack(grass.what(), 2));
+        var plan = env.runSimulation(new GenericStack(grass.what(), 2), CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(plan)
                 .succeeded()
                 .patternsMatch(grassPattern, 2)
@@ -126,7 +127,8 @@ public class CraftingSimulationTest {
         var successEnv = env.copy();
         successEnv.addStoredItem(acaciaLog);
 
-        var successPlan = successEnv.runSimulation(new GenericStack(craftingTable.what(), 2));
+        var successPlan = successEnv.runSimulation(new GenericStack(craftingTable.what(), 2),
+                CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(successPlan)
                 .succeeded()
                 .patternsMatch(tablePattern, 2, acaciaPattern, 1)
@@ -136,7 +138,8 @@ public class CraftingSimulationTest {
         // That's because the simulation sees it can extract 5 planks before it attempts to craft more.
 
         // Network only has 2 acacia planks, 1 birch plank, 2 oak planks for two tables. 1 acacia log is missing.
-        var failurePlan = env.runSimulation(new GenericStack(craftingTable.what(), 2));
+        var failurePlan = env.runSimulation(new GenericStack(craftingTable.what(), 2),
+                CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(failurePlan)
                 .failed()
                 .patternsMatch(tablePattern, 2, acaciaPattern, 1)
@@ -168,7 +171,7 @@ public class CraftingSimulationTest {
         env.addStoredItem(mult(dirt, 10000));
         env.addEmitable(water1000mb.what());
 
-        var plan = env.runSimulation(mult(grass, 100));
+        var plan = env.runSimulation(mult(grass, 100), CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(plan)
                 .succeeded()
                 .patternsMatch(grassPattern, 100, bucketFilling, 100)
@@ -196,7 +199,7 @@ public class CraftingSimulationTest {
 
         env.addStoredItem(water1B);
 
-        var plan = env.runSimulation(water1B);
+        var plan = env.runSimulation(water1B, CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(plan).failed();
     }
 
@@ -234,7 +237,7 @@ public class CraftingSimulationTest {
         env.addStoredItem(mult(diamond, 3));
         env.addStoredItem(mult(stick, 2));
 
-        var plan = env.runSimulation(mult(cobble, 100));
+        var plan = env.runSimulation(mult(cobble, 100), CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(plan)
                 .succeeded()
                 .patternsMatch(cobblePattern, 100, pickaxePattern, 1)
@@ -267,7 +270,7 @@ public class CraftingSimulationTest {
         env.addStoredItem(damagedOutput.what(), damagedOutput.amount());
 
         // Make sure this doesn't crash.
-        var plan = env.runSimulation(undamagedOutput);
+        var plan = env.runSimulation(undamagedOutput, CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(plan)
                 .failed()
                 .patternsMatch(pattern, 1)
@@ -294,13 +297,43 @@ public class CraftingSimulationTest {
         env.addStoredItem(input1.what(), 5);
         env.addStoredItem(input2.what(), 3);
 
-        var plan = env.runSimulation(mult(output, 8)); // should be able to make 3+5 = 8 items
+        // should be able to make 3+5 = 8 items
+        var plan = env.runSimulation(mult(output, 8), CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(plan)
                 .succeeded()
                 .patternsMatch(pattern1, 5, pattern2, 3)
                 .emittedMatch()
                 .missingMatch()
                 .usedMatch(mult(input1, 5), mult(input2, 3));
+    }
+
+    /**
+     * Basic test for {@link CalculationStrategy#CRAFT_LESS}.
+     */
+    @Test
+    public void testAdaptiveOrder() {
+        var env = new SimulationEnv();
+
+        var input = item(Items.COBBLESTONE);
+        var output = item(Items.STONE);
+
+        var pattern = env.addPattern(new ProcessingPatternBuilder(output).addPreciseInput(1, input).build());
+
+        // should fallback to REPORT_MISSING_ITEMS since not even 1 can be crafted
+        var plan1 = env.runSimulation(mult(output, 1000), CalculationStrategy.CRAFT_LESS);
+        assertThatPlan(plan1)
+                .failed()
+                .patternsMatch(pattern, 1000)
+                .outputMatches(mult(output, 1000));
+
+        // should succeed with exactly 547 crafted
+        env.addStoredItem(mult(input, 547));
+        var plan2 = env.runSimulation(mult(output, 1000), CalculationStrategy.CRAFT_LESS);
+        assertThatPlan(plan2)
+                .succeeded()
+                .patternsMatch(pattern, 547)
+                .outputMatches(mult(output, 547))
+                .usedMatch(mult(input, 547));
     }
 
     private static GenericStack item(Item item) {
@@ -316,14 +349,14 @@ public class CraftingSimulationTest {
         return new GenericStack(template.what(), template.amount() * multiplier);
     }
 
-    private static CraftingPlanAssert assertThatPlan(CraftingPlan plan) {
+    private static CraftingPlanAssert assertThatPlan(ICraftingPlan plan) {
         return new CraftingPlanAssert(plan);
     }
 
     private static class CraftingPlanAssert {
-        private final CraftingPlan plan;
+        private final ICraftingPlan plan;
 
-        private CraftingPlanAssert(CraftingPlan plan) {
+        private CraftingPlanAssert(ICraftingPlan plan) {
             this.plan = Objects.requireNonNull(plan);
         }
 
@@ -388,6 +421,11 @@ public class CraftingSimulationTest {
             long patternBytes = plan.patternTimes().values().stream().reduce(0L, Long::sum);
             long totalBytes = nodeCount * 8 + patternBytes + nodeRequests + containerItems;
             assertThat(plan.bytes()).isEqualTo(totalBytes);
+            return this;
+        }
+
+        public CraftingPlanAssert outputMatches(GenericStack output) {
+            assertThat(plan.finalOutput()).isEqualTo(output);
             return this;
         }
     }

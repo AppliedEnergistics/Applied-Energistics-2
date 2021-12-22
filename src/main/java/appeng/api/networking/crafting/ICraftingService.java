@@ -78,12 +78,13 @@ public interface ICraftingService extends IGridService {
      * @param level        crafting level
      * @param simRequester source
      * @param craftWhat    result
+     * @param strategy     usually {@link CalculationStrategy#REPORT_MISSING_ITEMS} for player requests
      *
      * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan} do not wait
      *         on this, your be waiting forever.
      */
     Future<ICraftingPlan> beginCraftingCalculation(Level level, ICraftingSimulationRequester simRequester,
-            AEKey craftWhat, long amount);
+            AEKey craftWhat, long amount, CalculationStrategy strategy);
 
     /**
      * Submit the job to the Crafting system for processing.

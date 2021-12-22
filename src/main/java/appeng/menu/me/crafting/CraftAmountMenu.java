@@ -32,6 +32,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -147,7 +148,8 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
             try {
                 var cg = g.getCraftingService();
                 var actionSource = getActionSrc();
-                futureJob = cg.beginCraftingCalculation(getLevel(), () -> actionSource, whatToCraft, amount);
+                futureJob = cg.beginCraftingCalculation(getLevel(), () -> actionSource, whatToCraft, amount,
+                        CalculationStrategy.REPORT_MISSING_ITEMS);
 
                 var locator = getLocator();
                 if (locator != null) {
