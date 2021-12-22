@@ -50,6 +50,7 @@ public class CraftingCalculation {
     private final Stopwatch watch = Stopwatch.createUnstarted();
     private final CraftingTreeNode tree;
     private final AEKey output;
+    // The initially requested amount of "output", may be reduced depending on the strategy used
     private final long requestedAmount;
     private final CalculationStrategy strategy;
     private boolean simulate = false;
