@@ -18,13 +18,20 @@
 
 package appeng.crafting;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGrid;
+import appeng.api.networking.crafting.CalculationStrategy;
+import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -36,50 +43,51 @@ import appeng.crafting.inv.NetworkCraftingSimulationState;
 import appeng.hooks.ticking.TickHandler;
 
 public class CraftingCalculation {
-    private static final String LOG_CRAFTING_JOB = "CraftingCalculation (%s) issued by %s requesting [%s] using %s bytes took %s ms";
-    private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s, %s]";
-
     private final NetworkCraftingSimulationState networkInv;
     private final Level level;
     private final KeyCounter missing = new KeyCounter();
     private final Object monitor = new Object();
     private final Stopwatch watch = Stopwatch.createUnstarted();
     private final CraftingTreeNode tree;
-    private final GenericStack output;
+    private final AEKey output;
+    // The initially requested amount of "output", may be reduced depending on the strategy used
+    private final long requestedAmount;
+    private final CalculationStrategy strategy;
     private boolean simulate = false;
     final ICraftingSimulationRequester simRequester;
     private boolean running = false;
     private boolean done = false;
     private int time = 5;
     private int incTime = Integer.MAX_VALUE;
+    private final List<CraftAttempt> attempts = AELog.isCraftingLogEnabled() ? new ArrayList<>() : null;
 
     public CraftingCalculation(Level level, IGrid grid, ICraftingSimulationRequester simRequester,
-            GenericStack output) {
+            GenericStack output, CalculationStrategy strategy) {
         this.level = level;
-        this.output = output;
+        this.output = output.what();
+        this.requestedAmount = output.amount();
+        this.strategy = strategy;
         this.simRequester = simRequester;
 
         var storage = grid.getStorageService();
         var craftingService = grid.getCraftingService();
         this.networkInv = new NetworkCraftingSimulationState(storage, simRequester.getActionSource());
 
-        this.tree = new CraftingTreeNode(craftingService, this, output.what(), 1, null, -1);
+        this.tree = new CraftingTreeNode(craftingService, this, this.output, 1, null, -1);
     }
 
     void addMissing(AEKey what, long amount) {
         missing.add(what, amount);
     }
 
-    public CraftingPlan run() {
+    public ICraftingPlan run() {
         try {
             TickHandler.instance().registerCraftingSimulation(this.level, this);
             this.handlePausing();
 
-            try {
-                return computeCraft(false);
-            } catch (CraftBranchFailure e) {
-                return computeCraft(true);
-            }
+            var plan = computePlan();
+            this.logCraftingJob(plan);
+            return plan;
         } catch (Exception ex) {
             AELog.info(ex, "Exception during crafting calculation.");
             throw new RuntimeException(ex);
@@ -88,16 +96,61 @@ public class CraftingCalculation {
         }
     }
 
-    private CraftingPlan computeCraft(boolean simulate) throws CraftBranchFailure, InterruptedException {
+    private ICraftingPlan computePlan() throws InterruptedException {
+        var fullAmountPlan = runCraftAttempt(false, requestedAmount);
+        if (fullAmountPlan != null) {
+            // Success with full amount!
+            return fullAmountPlan;
+        }
+
+        if (strategy == CalculationStrategy.CRAFT_LESS) {
+            // Try crafting less if possible using binary search.
+            long successfulAmount = 0;
+            ICraftingPlan successfulPlan = null;
+            for (long increment = Long.highestOneBit(requestedAmount); increment > 0; increment /= 2) {
+                long testAmount = successfulAmount + increment;
+                if (testAmount < requestedAmount) {
+                    var plan = runCraftAttempt(false, testAmount);
+                    if (plan != null) {
+                        // Success! :)
+                        successfulAmount = testAmount;
+                        successfulPlan = plan;
+                    }
+                }
+            }
+
+            // Found a successful plan! :)
+            if (successfulPlan != null) {
+                return successfulPlan;
+            }
+        }
+
+        // Couldn't find a successful plan -> simulate.
+        return runCraftAttempt(true, requestedAmount);
+    }
+
+    /**
+     * @return null on failure
+     */
+    @Nullable
+    @Contract("true, _ -> !null") // the calculation can't fail if simulated
+    private CraftingPlan runCraftAttempt(boolean simulate, long amount) throws InterruptedException {
         this.simulate = simulate;
 
         final Stopwatch timer = Stopwatch.createStarted();
 
         ChildCraftingSimulationState craftingInventory = new ChildCraftingSimulationState(networkInv);
-        craftingInventory.ignore(this.output.what());
+        craftingInventory.ignore(this.output);
 
         // Do the crafting. Throws in case of failure.
-        this.tree.request(craftingInventory, output.amount(), null);
+        try {
+            this.tree.request(craftingInventory, amount, null);
+        } catch (CraftBranchFailure failure) {
+            if (AELog.isCraftingLogEnabled()) {
+                this.attempts.add(new CraftAttempt(amount + " failed", timer));
+            }
+            return null;
+        }
         // Add bytes for the tree size.
         craftingInventory.addBytes(this.tree.getNodeCount() * 8);
 
@@ -107,8 +160,11 @@ public class CraftingCalculation {
         // AELog.crafting(s + " * " + ti.times + " = " + ti.perOp * ti.times);
         // }
 
-        var plan = CraftingSimulationState.buildCraftingPlan(craftingInventory, this);
-        this.logCraftingJob(plan, timer);
+        var plan = CraftingSimulationState.buildCraftingPlan(craftingInventory, this, amount);
+        if (AELog.isCraftingLogEnabled()) {
+            String type = simulate ? "simulated" : "succeeded";
+            this.attempts.add(new CraftAttempt("%d %s (%d bytes)".formatted(amount, type, plan.bytes()), timer));
+        }
         return plan;
     }
 
@@ -153,8 +209,8 @@ public class CraftingCalculation {
         return this.simulate;
     }
 
-    public GenericStack getOutput() {
-        return this.output;
+    public AEKey getOutput() {
+        return output;
     }
 
     public KeyCounter getMissingItems() {
@@ -200,10 +256,9 @@ public class CraftingCalculation {
         return true;
     }
 
-    private void logCraftingJob(CraftingPlan plan, Stopwatch timer) {
+    private void logCraftingJob(ICraftingPlan plan) {
         if (AELog.isCraftingLogEnabled()) {
-            String itemToOutput = this.output.toString();
-            long elapsedTime = timer.elapsed(TimeUnit.MILLISECONDS);
+            ;
             var actionSource = this.simRequester.getActionSource();
             String actionSourceName;
 
@@ -218,12 +273,23 @@ public class CraftingCalculation {
                 actionSourceName = "[unknown source]";
             }
 
-            String type = plan.simulation() ? "simulation" : "real";
-            AELog.crafting(LOG_CRAFTING_JOB, type, actionSourceName, itemToOutput, plan.bytes(), elapsedTime);
+            StringBuilder message = new StringBuilder();
+            message.append("CraftingCalculation issued by %s requesting [%dx%s] breakdown:\n".formatted(
+                    actionSourceName, this.requestedAmount, this.output));
+            for (var attempt : this.attempts) {
+                message.append(" - %s in %d ms\n".formatted(
+                        attempt.description, attempt.stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+            }
+            message.append(" - final plan: %d (%d bytes)".formatted(plan.finalOutput().amount(), plan.bytes()));
+
+            AELog.crafting(message.toString());
         }
     }
 
     public boolean hasMultiplePaths() {
         return this.tree.hasMultiplePaths();
+    }
+
+    private record CraftAttempt(String description, Stopwatch stopwatch) {
     }
 }

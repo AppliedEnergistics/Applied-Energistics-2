@@ -39,7 +39,6 @@ import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import appeng.crafting.CraftingCalculation;
-import appeng.crafting.CraftingPlan;
 import appeng.me.helpers.BaseActionSource;
 
 public class SimulationEnv {
@@ -83,8 +82,8 @@ public class SimulationEnv {
         return copy;
     }
 
-    public CraftingPlan runSimulation(GenericStack what) {
-        var calculation = new CraftingCalculation(mock(Level.class), gridMock, simulationRequester, what);
+    public ICraftingPlan runSimulation(GenericStack what, CalculationStrategy strategy) {
+        var calculation = new CraftingCalculation(mock(Level.class), gridMock, simulationRequester, what, strategy);
         try {
             var calculationFuture = Executors.newSingleThreadExecutor().submit(calculation::run);
             calculation.simulateFor(1000000000);
@@ -141,7 +140,8 @@ public class SimulationEnv {
 
             @Override
             public Future<ICraftingPlan> beginCraftingCalculation(Level level,
-                    ICraftingSimulationRequester simRequester, AEKey craftWhat, long amount) {
+                    ICraftingSimulationRequester simRequester, AEKey craftWhat, long amount,
+                    CalculationStrategy strat) {
                 throw new UnsupportedOperationException();
             }
 

@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
+import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
@@ -102,7 +103,8 @@ public class MultiCraftingTracker {
                 // :P
             }
         } else if (this.getLink(x) == null) {
-            this.setJob(x, cg.beginCraftingCalculation(level, () -> mySrc, what, amount));
+            this.setJob(x,
+                    cg.beginCraftingCalculation(level, () -> mySrc, what, amount, CalculationStrategy.CRAFT_LESS));
         }
         return false;
     }
