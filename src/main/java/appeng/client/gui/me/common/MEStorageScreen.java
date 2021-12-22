@@ -362,6 +362,15 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return true;
         }
 
+        // handler for middle mouse button crafting in survival mode
+        if (this.minecraft.options.keyPickItem.matchesMouse(btn)) {
+            Slot slot = this.getSlot((int) xCoord, (int) yCoord);
+            if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
+                handleGridInventoryEntryMouseClick(repoSlot.getEntry(), btn, ClickType.CLONE);
+                return true;
+            }
+        }
+
         return super.mouseClicked(xCoord, yCoord, btn);
     }
 
