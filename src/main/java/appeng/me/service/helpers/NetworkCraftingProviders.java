@@ -162,15 +162,21 @@ public class NetworkCraftingProviders {
                 methods.emitableItems.compute(emitable, (key, cnt) -> cnt == 1 ? null : cnt - 1);
             }
             for (var pattern : patterns) {
-                // can in theory leak a bit of memory over time if never cleaned up, but it shouldn't be too bad.
                 var primaryOutput = pattern.getPrimaryOutput();
 
                 methods.craftableItemsList.remove(primaryOutput.what(), 1);
 
-                var patternMap = methods.craftableItems.get(primaryOutput.what());
-                patternMap.compute(pattern, (pat, cnt) -> cnt == 1 ? null : cnt - 1);
+                methods.craftableItems.computeIfPresent(primaryOutput.what(), (key, map) -> {
+                    map.computeIfPresent(pattern, (pat, cnt) -> {
+                        return cnt == 1 ? null : cnt - 1;
+                    });
+                    return map.isEmpty() ? null : map;
+                });
 
-                methods.craftingMethods.get(pattern).remove(provider);
+                methods.craftingMethods.computeIfPresent(pattern, (pat, list) -> {
+                    list.remove(provider);
+                    return list.providers.isEmpty() ? null : list;
+                });
             }
         }
     }

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import appeng.api.crafting.IPatternDetails;
@@ -26,7 +25,8 @@ class NetworkCraftingProvidersTest {
     @Test
     void basicTest() {
         var craftingProviders = new NetworkCraftingProviders();
-        var pattern = new ProcessingPatternBuilder(GenericStack.fromItemStack(new ItemStack(Items.ANDESITE))).build();
+        var andesite = AEItemKey.of(Items.ANDESITE);
+        var pattern = new ProcessingPatternBuilder(new GenericStack(andesite, 1)).build();
         var diamond = AEItemKey.of(Items.DIAMOND);
         var testProvider = new ICraftingProvider() {
             @Override
@@ -56,6 +56,8 @@ class NetworkCraftingProvidersTest {
         var testNode3 = mock(IGridNode.class);
         when(testNode3.getService(ICraftingProvider.class)).thenReturn(testProvider);
 
+        assertThat(craftingProviders.getCraftingFor(andesite)).isEmpty();
+        assertThat(craftingProviders.getCraftables(k -> true)).isEmpty();
         assertThat(craftingProviders.canEmitFor(diamond)).isFalse();
         assertThat(craftingProviders.getMediums(pattern)).isEmpty();
 
@@ -65,6 +67,8 @@ class NetworkCraftingProvidersTest {
 
         craftingProviders.getMediums(pattern).iterator().next();
 
+        assertThat(craftingProviders.getCraftingFor(andesite)).isNotEmpty();
+        assertThat(craftingProviders.getCraftables(k -> true)).isNotEmpty();
         assertThat(craftingProviders.canEmitFor(diamond)).isTrue();
         assertThat(craftingProviders.getMediums(pattern)).isNotEmpty();
 
@@ -76,6 +80,8 @@ class NetworkCraftingProvidersTest {
         craftingProviders.removeProvider(testNode2);
         craftingProviders.removeProvider(testNode3);
 
+        assertThat(craftingProviders.getCraftingFor(andesite)).isEmpty();
+        assertThat(craftingProviders.getCraftables(k -> true)).isEmpty();
         assertThat(craftingProviders.canEmitFor(diamond)).isFalse();
         assertThat(craftingProviders.getMediums(pattern)).isEmpty();
     }
