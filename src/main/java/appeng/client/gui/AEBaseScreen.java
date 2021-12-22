@@ -86,6 +86,7 @@ import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
+import appeng.mixins.AbstractContainerScreenAccessor;
 import appeng.util.ConfigMenuInventory;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
@@ -472,7 +473,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
-        final Slot slot = this.getSlot((int) mouseX, (int) mouseY);
+        final Slot slot = ((AbstractContainerScreenAccessor) this).callFindSlot(mouseX, mouseY);
         var itemstack = getMenu().getCarried();
 
         Point mousePos = new Point((int) Math.round(mouseX - leftPos), (int) Math.round(mouseY - topPos));
@@ -642,17 +643,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return this.isHovering(slot.x, slot.y, width, height, x, y);
         }
         return super.isHovering(slot, x, y);
-    }
-
-    protected Slot getSlot(int mouseX, int mouseY) {
-        var slots = this.getInventorySlots();
-        for (var slot : slots) {
-            if (this.isHovering(slot, mouseX, mouseY)) {
-                return slot;
-            }
-        }
-
-        return null;
     }
 
     public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY,
