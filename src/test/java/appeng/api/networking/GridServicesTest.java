@@ -21,6 +21,7 @@ package appeng.api.networking;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -35,16 +36,23 @@ class GridServicesTest {
     @Mock
     IGrid grid;
 
+    private List<?> servicesBefore;
+
     @BeforeEach
     void clearRegistry() throws Exception {
         var field = GridServices.class.getDeclaredField("registry");
         field.setAccessible(true);
-        ((List<?>) field.get(null)).clear();
+        servicesBefore = new ArrayList<>(((List<?>) field.get(null)));
     }
 
     @AfterEach
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     void restoreRegistry() throws Exception {
-        clearRegistry();
+        var field = GridServices.class.getDeclaredField("registry");
+        field.setAccessible(true);
+        var list = (List) field.get(null);
+        list.clear();
+        list.addAll(servicesBefore);
     }
 
     @Test
