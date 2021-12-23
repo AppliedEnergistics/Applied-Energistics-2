@@ -29,20 +29,14 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class AppEngCellInventory extends BaseInternalInventory {
     private final AppEngInternalInventory inv;
     private final StorageCell[] handlerForSlot;
-    /**
-     * Remembers for which itemstack the handler in handlerForSlot[] was queried.
-     */
-    private final ItemStack[] handlerStackForSlot;
 
     public AppEngCellInventory(InternalInventoryHost host, int slots) {
         this.inv = new AppEngInternalInventory(host, slots, 1);
         this.handlerForSlot = new StorageCell[slots];
-        this.handlerStackForSlot = new ItemStack[slots];
     }
 
     public void setHandler(int slot, StorageCell handler) {
         this.handlerForSlot[slot] = handler;
-        this.handlerStackForSlot[slot] = inv.getStackInSlot(slot);
     }
 
     public void setFilter(IAEItemFilter filter) {
@@ -53,7 +47,6 @@ public class AppEngCellInventory extends BaseInternalInventory {
     public void setItemDirect(int slot, ItemStack stack) {
         this.persist(slot);
         this.inv.setItemDirect(slot, stack);
-        this.cleanup(slot);
     }
 
     @Override
@@ -70,17 +63,13 @@ public class AppEngCellInventory extends BaseInternalInventory {
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         this.persist(slot);
-        final ItemStack ret = this.inv.insertItem(slot, stack, simulate);
-        this.cleanup(slot);
-        return ret;
+        return this.inv.insertItem(slot, stack, simulate);
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         this.persist(slot);
-        final ItemStack ret = this.inv.extractItem(slot, amount, simulate);
-        this.cleanup(slot);
-        return ret;
+        return this.inv.extractItem(slot, amount, simulate);
     }
 
     @Override
@@ -102,12 +91,6 @@ public class AppEngCellInventory extends BaseInternalInventory {
     private void persist(int slot) {
         if (this.handlerForSlot[slot] != null) {
             this.handlerForSlot[slot].persist();
-        }
-    }
-
-    private void cleanup(int slot) {
-        if (this.handlerForSlot[slot] != null && this.handlerStackForSlot[slot] != this.inv.getStackInSlot(slot)) {
-            this.handlerForSlot[slot] = null;
         }
     }
 }

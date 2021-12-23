@@ -317,6 +317,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     // Returns idle power draw of slot
     private double updateStateForSlot(int slot) {
         this.invBySlot[slot] = null;
+        this.inv.setHandler(slot, null);
 
         var is = this.inv.getStackInSlot(slot);
         if (!is.isEmpty()) {
