@@ -84,8 +84,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public abstract void onChangeInventory(InternalInventory inv, int slot, ItemStack removed,
-            ItemStack added);
+    public abstract void onChangeInventory(InternalInventory inv, int slot);
 
     public InternalInventory getExposedInventoryForSide(Direction side) {
         return this.getInternalInventory();

@@ -1,9 +1,11 @@
 package appeng.api.inventories;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
+
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -15,8 +17,11 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.core.definitions.AEItems;
 
-class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> implements Storage<ItemVariant> {
+class InternalInventoryStorage extends SnapshotParticipant<InternalInventoryStorage.Snapshot>
+        implements Storage<ItemVariant> {
     private final InternalInventory inventory;
+    @Nullable
+    private Snapshot lastReleasedSnapshot;
 
     public InternalInventoryStorage(InternalInventory inventory) {
         this.inventory = inventory;
@@ -82,7 +87,6 @@ class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> impl
                         return 0;
                     }
 
-                    // TODO FABRIC 117: DISGUSTING. Must update snapshot only for this slot.
                     updateSnapshots(transaction);
 
                     return inventory.extractItem(currentSlot, (int) Math.min(Integer.MAX_VALUE, maxAmount), false)
@@ -113,19 +117,64 @@ class InternalInventoryStorage extends SnapshotParticipant<List<ItemStack>> impl
     }
 
     @Override
-    protected List<ItemStack> createSnapshot() {
-        // TODO FABRIC 117: DISGUSTING.
-        List<ItemStack> snapshot = new ArrayList<>(inventory.size());
+    protected Snapshot createSnapshot() {
+        Snapshot snapshot;
+        if (this.lastReleasedSnapshot != null && this.lastReleasedSnapshot.items.length == inventory.size()) {
+            snapshot = this.lastReleasedSnapshot;
+            this.lastReleasedSnapshot = null;
+        } else {
+            snapshot = new Snapshot();
+        }
+
         for (int i = 0; i < inventory.size(); i++) {
-            snapshot.add(inventory.getStackInSlot(i));
+            var stack = inventory.getStackInSlot(i);
+            snapshot.items[i] = stack;
+            snapshot.counts[i] = stack.getCount();
         }
         return snapshot;
     }
 
     @Override
-    protected void readSnapshot(List<ItemStack> snapshot) {
-        for (int i = 0; i < snapshot.size(); i++) {
-            inventory.setItemDirect(i, snapshot.get(i));
+    protected void readSnapshot(Snapshot snapshot) {
+        var items = snapshot.items;
+        var counts = snapshot.counts;
+        for (int i = 0; i < items.length; i++) {
+            var stack = items[i];
+            // Restore the previous count as well, the inventory might mutate the stack count for extract/insert
+            // We do not restore NBT since the Storage API does not give access to the original NBT and the inventory
+            // doesn't mutate it itself
+            if (stack.getCount() != counts[i]) {
+                stack.setCount(counts[i]);
+            }
+            inventory.setItemDirect(i, stack);
+        }
+    }
+
+    @Override
+    protected void releaseSnapshot(Snapshot snapshot) {
+        this.lastReleasedSnapshot = snapshot;
+    }
+
+    public class Snapshot {
+        ItemStack[] items;
+        int[] counts;
+
+        public Snapshot() {
+            this.items = new ItemStack[inventory.size()];
+            this.counts = new int[inventory.size()];
+        }
+    }
+
+    @Override
+    protected void onFinalCommit() {
+        // Diff the last snapshot against the inventory to collect change notifications
+        Preconditions.checkState(lastReleasedSnapshot != null, "There should have been at least one snapshot");
+
+        for (int i = 0; i < lastReleasedSnapshot.items.length; i++) {
+            var current = inventory.getStackInSlot(i);
+            if (current != lastReleasedSnapshot.items[i] || current.getCount() != lastReleasedSnapshot.counts[i]) {
+                inventory.sendChangeNotification(i);
+            }
         }
     }
 }

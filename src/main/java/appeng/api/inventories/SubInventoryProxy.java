@@ -84,9 +84,12 @@ final class SubInventoryProxy extends BaseInternalInventory {
     }
 
     @Override
-
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return delegate.extractItem(translateSlot(slot), amount, simulate);
     }
 
+    @Override
+    public void sendChangeNotification(int slot) {
+        delegate.sendChangeNotification(translateSlot(slot));
+    }
 }

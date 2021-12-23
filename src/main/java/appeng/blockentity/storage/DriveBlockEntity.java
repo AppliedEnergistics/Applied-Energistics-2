@@ -290,8 +290,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removed, ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (this.isCached) {
             this.isCached = false; // recalculate the storage cell.
             this.updateState();

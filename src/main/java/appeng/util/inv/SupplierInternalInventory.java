@@ -116,8 +116,12 @@ public class SupplierInternalInventory implements InternalInventory {
     }
 
     @Override
-
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return delegate.get().extractItem(slot, amount, simulate);
+    }
+
+    @Override
+    public void sendChangeNotification(int slot) {
+        delegate.get().sendChangeNotification(slot);
     }
 }

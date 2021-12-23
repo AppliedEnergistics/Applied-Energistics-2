@@ -55,8 +55,7 @@ public class NetworkToolMenuHost extends ItemMenuHost implements InternalInvento
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack,
-            ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
     }
 
     private static class NetworkToolInventoryFilter implements IAEItemFilter {

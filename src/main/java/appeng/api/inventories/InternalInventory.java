@@ -30,6 +30,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -427,4 +429,11 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         return size() > 0;
     }
 
+    /**
+     * Forces a change notification to any listeners for the given slot. For internal use only. This should also cause
+     * the inventory to be saved.
+     */
+    @ApiStatus.Internal
+    default void sendChangeNotification(int slot) {
+    }
 }

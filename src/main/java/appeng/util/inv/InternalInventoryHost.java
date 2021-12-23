@@ -18,17 +18,15 @@
 
 package appeng.util.inv;
 
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.inventories.InternalInventory;
 
 /**
- * Interface that allows listening to events of {@link AppEngInternalInventory} and {@link AppEngInternalAEInventory}.
+ * Interface that allows listening to events of {@link AppEngInternalInventory}
  */
 public interface InternalInventoryHost {
     void saveChanges();
 
-    void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack, ItemStack newStack);
+    void onChangeInventory(InternalInventory inv, int slot);
 
     boolean isClientSide();
 }

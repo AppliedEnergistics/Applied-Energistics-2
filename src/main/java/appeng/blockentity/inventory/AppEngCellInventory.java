@@ -93,4 +93,9 @@ public class AppEngCellInventory extends BaseInternalInventory {
             this.handlerForSlot[slot].persist();
         }
     }
+
+    @Override
+    public void sendChangeNotification(int slot) {
+        inv.sendChangeNotification(slot);
+    }
 }

@@ -125,4 +125,12 @@ public class CombinedInternalInventory extends BaseInternalInventory {
         int targetSlot = this.getSlotFromIndex(slot, index);
         return handler.isItemValid(targetSlot, stack);
     }
+
+    @Override
+    public void sendChangeNotification(int slot) {
+        int index = this.getIndexForSlot(slot);
+        var handler = this.getHandlerFromIndex(index);
+        int targetSlot = this.getSlotFromIndex(slot, index);
+        handler.sendChangeNotification(targetSlot);
+    }
 }
