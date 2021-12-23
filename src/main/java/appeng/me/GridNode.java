@@ -229,9 +229,11 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     public void setExposedOnSides(Set<Direction> directions) {
-        exposedOnSides.clear();
-        exposedOnSides.addAll(directions);
-        updateState();
+        if (!exposedOnSides.equals(directions)) {
+            exposedOnSides.clear();
+            exposedOnSides.addAll(directions);
+            updateState();
+        }
     }
 
     /**
