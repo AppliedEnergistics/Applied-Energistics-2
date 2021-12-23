@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -164,7 +165,7 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
     }
 
     private TagsProvider.TagAppender<Block> tag(String name) {
-        return tag(BlockTags.bind(name));
+        return tag(TagFactory.BLOCK.create(new ResourceLocation(name)));
     }
 
     @Override
