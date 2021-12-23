@@ -50,6 +50,6 @@ final class AEItemKeys extends AEKeyType {
 
     @Override
     public boolean supportsFuzzyRangeSearch() {
-        return false;
+        return true;
     }
 }

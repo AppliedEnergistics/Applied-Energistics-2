@@ -199,11 +199,6 @@ public final class AEItemKey extends AEKey {
     }
 
     @Override
-    public boolean supportsFuzzyRangeSearch() {
-        return true;
-    }
-
-    @Override
     public Component getDisplayName() {
         return toStack().getHoverName();
     }

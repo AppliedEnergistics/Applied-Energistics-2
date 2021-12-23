@@ -70,6 +70,7 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.util.CustomNameUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory,
@@ -420,7 +421,7 @@ public class AEBaseBlockEntity extends BlockEntity
         var op = new ItemStack(getBlockState().getBlock());
 
         for (var ol : itemDropCandidates) {
-            if (Platform.itemComparisons().isEqualItemType(ol, op)) {
+            if (ItemComparisonHelper.isEqualItemType(ol, op)) {
                 var tag = new CompoundTag();
                 exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
                 if (!tag.isEmpty()) {

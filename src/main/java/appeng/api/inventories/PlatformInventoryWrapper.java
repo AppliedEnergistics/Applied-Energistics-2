@@ -34,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.Platform;
+import appeng.util.helpers.ItemComparisonHelper;
 
 /**
  * Wraps an inventory implementing the platforms standard inventory interface (i.e. IItemHandler on Forge) such that it
@@ -153,7 +154,7 @@ class PlatformInventoryWrapper implements ItemTransfer {
                 continue;
             }
 
-            if (!filter.isEmpty() && !isFuzzyEqualItem(is.toStack(), filter, fuzzyMode)) {
+            if (!filter.isEmpty() && !ItemComparisonHelper.isFuzzyEqualItem(is.toStack(), filter, fuzzyMode)) {
                 continue; // Doesn't match ItemStack template
             }
 
@@ -199,40 +200,6 @@ class PlatformInventoryWrapper implements ItemTransfer {
             remainder.shrink((int) inserted);
             return remainder.isEmpty() ? ItemStack.EMPTY : remainder;
         }
-    }
-
-    // TODO: Move back to platform
-    /**
-     * Similar to {@link ItemStack#isSameItemSameTags}, but it can further check, if both are equal considering a
-     * {@link FuzzyMode}.
-     *
-     * @param mode how to compare the two {@link ItemStack}s
-     * @return true, if both are matching the mode
-     */
-    private boolean isFuzzyEqualItem(ItemStack a, ItemStack b, FuzzyMode mode) {
-        if (a.isEmpty() && b.isEmpty()) {
-            return true;
-        }
-
-        if (a.isEmpty() || b.isEmpty()) {
-            return false;
-        }
-
-        // test damageable items..
-        if (a.getItem() == b.getItem() && a.getItem().canBeDepleted()) {
-            if (mode == FuzzyMode.IGNORE_ALL) {
-                return true;
-            } else if (mode == FuzzyMode.PERCENT_99) {
-                return a.getDamageValue() > 1 == b.getDamageValue() > 1;
-            } else {
-                final float percentDamagedOfA = (float) a.getDamageValue() / a.getMaxDamage();
-                final float percentDamagedOfB = (float) b.getDamageValue() / b.getMaxDamage();
-
-                return percentDamagedOfA > mode.breakPoint == percentDamagedOfB > mode.breakPoint;
-            }
-        }
-
-        return a.sameItem(b);
     }
 
 }
