@@ -28,7 +28,7 @@ import net.minecraft.world.level.ItemLike;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.util.Platform;
+import appeng.util.helpers.ItemComparisonHelper;
 
 public class ItemDefinition<T extends Item> implements ItemLike {
     private final ResourceLocation id;
@@ -64,7 +64,7 @@ public class ItemDefinition<T extends Item> implements ItemLike {
      * @return true if the item stack is a matching item.
      */
     public final boolean isSameAs(ItemStack comparableStack) {
-        return Platform.itemComparisons().isEqualItemType(comparableStack, this.stack());
+        return ItemComparisonHelper.isEqualItemType(comparableStack, this.stack());
     }
 
     /**

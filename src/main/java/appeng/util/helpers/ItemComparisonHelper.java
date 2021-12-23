@@ -24,10 +24,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.config.FuzzyMode;
+
 /**
  * A helper class for comparing {@link Item}, {@link ItemStack} or NBT
  */
-public class ItemComparisonHelper {
+public final class ItemComparisonHelper {
+
+    private ItemComparisonHelper() {
+    }
 
     /**
      * Compare the two {@link ItemStack}s based on the same {@link Item} and damage value.
@@ -39,7 +44,7 @@ public class ItemComparisonHelper {
      *
      * @return true, if both are equal.
      */
-    public boolean isEqualItemType(ItemStack that, ItemStack other) {
+    public static boolean isEqualItemType(ItemStack that, ItemStack other) {
         return !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem();
     }
 
@@ -66,4 +71,38 @@ public class ItemComparisonHelper {
 
         return left.equals(right);
     }
+
+    /**
+     * Similar to {@link ItemStack#isSameItemSameTags}, but it can further check, if both are equal considering a
+     * {@link FuzzyMode}.
+     *
+     * @param mode how to compare the two {@link ItemStack}s
+     * @return true, if both are matching the mode
+     */
+    public static boolean isFuzzyEqualItem(ItemStack a, ItemStack b, FuzzyMode mode) {
+        if (a.isEmpty() && b.isEmpty()) {
+            return true;
+        }
+
+        if (a.isEmpty() || b.isEmpty()) {
+            return false;
+        }
+
+        // test damageable items..
+        if (a.getItem() == b.getItem() && a.getItem().canBeDepleted()) {
+            if (mode == FuzzyMode.IGNORE_ALL) {
+                return true;
+            } else if (mode == FuzzyMode.PERCENT_99) {
+                return a.getDamageValue() > 0 == b.getDamageValue() > 0;
+            } else {
+                final float percentDamagedOfA = (float) a.getDamageValue() / a.getMaxDamage();
+                final float percentDamagedOfB = (float) b.getDamageValue() / b.getMaxDamage();
+
+                return percentDamagedOfA > mode.breakPoint == percentDamagedOfB > mode.breakPoint;
+            }
+        }
+
+        return a.sameItem(b);
+    }
+
 }

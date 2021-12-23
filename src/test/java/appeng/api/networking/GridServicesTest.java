@@ -29,8 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import appeng.init.internal.InitGridServices;
-
 @MockitoSettings
 class GridServicesTest {
 
@@ -47,7 +45,6 @@ class GridServicesTest {
     @AfterEach
     void restoreRegistry() throws Exception {
         clearRegistry();
-        InitGridServices.init();
     }
 
     @Test

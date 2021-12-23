@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.config.FuzzyMode;
 import appeng.core.AELog;
 
 /**
@@ -168,6 +169,34 @@ public abstract class AEKey {
     }
 
     /**
+     * Tests if this and the given AE key are in the same fuzzy partition given a specific fuzzy matching mode.
+     */
+    public final boolean fuzzyEquals(AEKey other, FuzzyMode fuzzyMode) {
+        if (other == null || other.getClass() != getClass()) {
+            return false;
+        }
+
+        // For any fuzzy mode, the primary key (item, fluid) must still match
+        if (getPrimaryKey() != other.getPrimaryKey()) {
+            return false;
+        }
+
+        // If the type doesn't support fuzzy range search, it always behaves like IGNORE_ALL, which just ignores NBT
+        if (!supportsFuzzyRangeSearch()) {
+            return true;
+        } else if (fuzzyMode == FuzzyMode.IGNORE_ALL) {
+            return true;
+        } else if (fuzzyMode == FuzzyMode.PERCENT_99) {
+            return getFuzzySearchValue() > 0 == other.getFuzzySearchValue() > 0;
+        } else {
+            final float percentA = (float) getFuzzySearchValue() / getFuzzySearchMaxValue();
+            final float percentB = (float) other.getFuzzySearchValue() / other.getFuzzySearchMaxValue();
+
+            return percentA > fuzzyMode.breakPoint == percentB > fuzzyMode.breakPoint;
+        }
+    }
+
+    /**
      * Checks if the given stack has the same key as this.
      * 
      * @return False if stack is null, otherwise true iff the stacks key is equal to this.
@@ -197,8 +226,8 @@ public abstract class AEKey {
      * <p/>
      * For items this is used for damage-based search and filtering.
      */
-    public boolean supportsFuzzyRangeSearch() {
-        return false;
+    public final boolean supportsFuzzyRangeSearch() {
+        return getType().supportsFuzzyRangeSearch();
     }
 
     public abstract Component getDisplayName();

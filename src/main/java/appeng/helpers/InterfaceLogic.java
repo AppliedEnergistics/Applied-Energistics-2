@@ -38,6 +38,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeInventory;
 import appeng.api.implementations.IUpgradeableObject;
@@ -47,6 +49,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
@@ -140,6 +143,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         gridNode.addService(ICraftingRequester.class, this);
         this.upgrades = new StackUpgradeInventory(is, this, 1);
         this.craftingTracker = new MultiCraftingTracker(this, 9);
+        this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
 
         getConfig().setCapacity(AEKeyType.items(), Container.LARGE_MAX_STACK_SIZE);
         getStorage().setCapacity(AEKeyType.items(), Container.LARGE_MAX_STACK_SIZE);
@@ -411,7 +415,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             if (stored == null) {
                 // Nothing stored, request from network
                 this.plannedWork[slot] = req;
-            } else if (req.what().equals(stored.what())) {
+            } else if (storedRequestEquals(req.what(), stored.what())) {
                 if (req.amount() != stored.amount()) {
                     // Already correct type, but incorrect amount, equilize the difference
                     this.plannedWork[slot] = new GenericStack(req.what(), req.amount() - stored.amount());
@@ -425,6 +429,14 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         } else {
             // Slot matches desired state
             this.plannedWork[slot] = null;
+        }
+    }
+
+    private boolean storedRequestEquals(AEKey request, AEKey stored) {
+        if (upgrades.getInstalledUpgrades(Upgrades.FUZZY) > 0 && request.supportsFuzzyRangeSearch()) {
+            return request.fuzzyEquals(stored, cm.getSetting(Settings.FUZZY_MODE));
+        } else {
+            return request.equals(stored);
         }
     }
 
@@ -472,21 +484,46 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
                 return true;
             }
 
-            var acquired = (int) StorageHelper.poweredExtraction(energySrc, networkInv, what, amount,
-                    this.interfaceRequestSource);
-            if (acquired > 0) {
-                var inserted = storage.insert(slot, what, acquired, Actionable.MODULATE);
-                if (inserted < acquired) {
-                    throw new IllegalStateException("bad attempt at managing inventory. Voided items: " + inserted);
-                }
+            // Try to pull the exact item
+            if (acquireFromNetwork(energySrc, networkInv, slot, what, amount)) {
                 return true;
-            } else {
-                return this.handleCrafting(slot, what, amount);
             }
+
+            // Try a fuzzy import from network instead if we don't have stacks in stock yet
+            if (storage.getStack(slot) == null && upgrades.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+                FuzzyMode fuzzyMode = getConfigManager().getSetting(Settings.FUZZY_MODE);
+                for (var entry : grid.getStorageService().getCachedInventory().findFuzzy(what, fuzzyMode)) {
+                    // Simulate insertion first in case the stack size is different
+                    long maxAmount = storage.insert(slot, entry.getKey(), amount, Actionable.SIMULATE);
+                    if (acquireFromNetwork(energySrc, networkInv, slot, entry.getKey(), maxAmount)) {
+                        return true;
+                    }
+                }
+            }
+
+            return this.handleCrafting(slot, what, amount);
         }
 
         // else wtf?
         return false;
+    }
+
+    /**
+     * @return true if something was acquired
+     */
+    private boolean acquireFromNetwork(IEnergyService energySrc, MEStorage networkInv, int slot, AEKey what,
+            long amount) {
+        var acquired = StorageHelper.poweredExtraction(energySrc, networkInv, what, amount,
+                this.interfaceRequestSource);
+        if (acquired > 0) {
+            var inserted = storage.insert(slot, what, acquired, Actionable.MODULATE);
+            if (inserted < acquired) {
+                throw new IllegalStateException("bad attempt at managing inventory. Voided items: " + inserted);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean handleCrafting(int x, AEKey key, long amount) {
@@ -507,6 +544,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     private void onConfigChanged() {
         this.host.saveChanges();
+        updatePlan(); // update plan in case fuzzy mode changed
     }
 
     @Override
@@ -516,9 +554,13 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
-        // Cancel crafting if the crafting card is removed
-        if (inv == upgrades && upgrades.getInstalledUpgrades(Upgrades.CRAFTING) == 0) {
-            this.cancelCrafting();
+        if (inv == upgrades) {
+            if (upgrades.getInstalledUpgrades(Upgrades.CRAFTING) == 0) {
+                // Cancel crafting if the crafting card is removed
+                this.cancelCrafting();
+            }
+            // Update plan in case fuzzy card was inserted or removed
+            updatePlan();
         }
     }
 

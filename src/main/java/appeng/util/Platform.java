@@ -87,7 +87,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.abstraction.REIFacade;
 import appeng.me.GridNode;
-import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -99,12 +98,6 @@ public class Platform {
      * random source, use it for item drop locations...
      */
     private static final Random RANDOM_GENERATOR = new Random();
-
-    private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
-
-    public static ItemComparisonHelper itemComparisons() {
-        return ITEM_COMPARISON_HELPER;
-    }
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
