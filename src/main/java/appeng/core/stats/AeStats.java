@@ -25,10 +25,8 @@ import appeng.core.AppEng;
 
 public enum AeStats {
 
-    // done
     ItemsInserted("items_inserted"),
 
-    // done
     ItemsExtracted("items_extracted");
 
     private final ResourceLocation registryName;

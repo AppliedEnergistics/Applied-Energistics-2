@@ -25,6 +25,8 @@ package appeng.api.storage;
 
 import java.util.Objects;
 
+import com.google.common.primitives.Ints;
+
 import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.Actionable;
@@ -33,6 +35,7 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.core.stats.AeStats;
 import appeng.crafting.CraftingLink;
@@ -98,9 +101,10 @@ public final class StorageHelper {
                 energy.extractAEPower(retrieved / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
                 var ret = inv.extract(request, itemToExtract, Actionable.MODULATE, src);
 
-                if (ret != 0) {
-                    src.player()
-                            .ifPresent(player -> AeStats.ItemsExtracted.addToPlayer(player, (int) ret));
+                if (ret != 0 && request instanceof AEItemKey) {
+                    src.player().ifPresent(player -> {
+                        AeStats.ItemsExtracted.addToPlayer(player, Ints.saturatedCast(ret));
+                    });
                 }
                 return ret;
             } else {
@@ -161,9 +165,11 @@ public final class StorageHelper {
             energy.extractAEPower(amount / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
             var inserted = inv.insert(input, amount, Actionable.MODULATE, src);
 
-            src.player().ifPresent(player -> {
-                AeStats.ItemsInserted.addToPlayer(player, (int) inserted);
-            });
+            if (input instanceof AEItemKey) {
+                src.player().ifPresent(player -> {
+                    AeStats.ItemsInserted.addToPlayer(player, Ints.saturatedCast(inserted));
+                });
+            }
 
             return inserted;
         } else {
