@@ -1,5 +1,7 @@
 package appeng.api.stacks;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Contract;
@@ -11,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.config.FuzzyMode;
 import appeng.core.AELog;
 
 /**
@@ -165,6 +168,14 @@ public abstract class AEKey {
      */
     public int getFuzzySearchMaxValue() {
         return 0;
+    }
+
+    public final boolean fuzzyEquals(AEKey other, FuzzyMode fuzzyMode) {
+        Objects.requireNonNull(other);
+        // TODO: this is very ugly and needs proper implementation
+        var counter = new KeyCounter();
+        counter.add(this, 1);
+        return counter.findFuzzy(other, fuzzyMode).size() == 1;
     }
 
     /**

@@ -39,6 +39,8 @@ public final class InitUpgrades {
         // Interface
         Upgrades.CRAFTING.registerItem(AEParts.INTERFACE, 1, interfaceGroup);
         Upgrades.CRAFTING.registerItem(AEBlocks.INTERFACE, 1, interfaceGroup);
+        Upgrades.FUZZY.registerItem(AEParts.INTERFACE, 1, interfaceGroup);
+        Upgrades.FUZZY.registerItem(AEBlocks.INTERFACE, 1, interfaceGroup);
 
         // IO Port!
         Upgrades.SPEED.registerItem(AEBlocks.IO_PORT, 3);

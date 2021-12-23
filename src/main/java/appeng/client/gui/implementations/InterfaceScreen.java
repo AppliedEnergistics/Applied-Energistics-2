@@ -26,19 +26,28 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IconButton;
+import appeng.client.gui.widgets.ServerSettingToggleButton;
+import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.InterfaceMenu;
 
 public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
 
+    private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final List<Button> amountButtons = new ArrayList<>();
 
     public InterfaceScreen(InterfaceMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
+
+        this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        addToLeftToolbar(this.fuzzyMode);
 
         widgets.addOpenPriorityButton();
 
@@ -59,6 +68,9 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
+
+        this.fuzzyMode.set(menu.getFuzzyMode());
+        this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
 
         var configSlots = menu.getSlots(SlotSemantics.CONFIG);
         for (int i = 0; i < amountButtons.size(); i++) {

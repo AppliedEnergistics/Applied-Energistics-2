@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.InterfaceScreen;
 import appeng.helpers.InterfaceLogicHost;
@@ -62,6 +63,7 @@ public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
 
     @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
+        this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
     }
 
     @Override
