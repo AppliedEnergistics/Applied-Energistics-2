@@ -95,18 +95,20 @@ public final class ReadableNumberConverter {
     public static String format(double number, int width) {
         Preconditions.checkArgument(number >= 0, "Non-negative numbers cannot be formatted by this method");
 
-        // In cases where we have more integer digits than we have space, we can directly go into the integer-formatter.
-        // We have to take the decimal point into account which we'd need if we would show the fractional.
         var integerDigits = (int) Math.max(0, Math.log10(number) + 1);
-        if (integerDigits > width - 1) {
+        var fractionalDigits = width - integerDigits - 1;
+        var minFractional = Math.pow(10, -fractionalDigits);
+        var fractional = number - Math.floor(number);
+
+        // In cases where we have more integer digits than we have space, or when the fractional part is zero,
+        // we can go to the integer-formatter.
+        // We have to take the decimal point into account which we'd need if we would show the fractional.
+        if (fractional < 1e-9 || integerDigits > width - 1) {
             return format((long) number, width);
         }
 
         // If the fractional is smaller than the amount of fractional space we have, we omit
         // the fractional and instead prefix "~"
-        var fractionalDigits = width - integerDigits - 1;
-        var minFractional = Math.pow(10, -fractionalDigits);
-        var fractional = number - Math.floor(number);
         if (fractional + 1e-9 < minFractional && integerDigits - 1 <= width) {
             return "~" + format((long) number, width - 1);
         }
