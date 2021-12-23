@@ -30,11 +30,9 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 
@@ -52,16 +50,11 @@ public final class PartHelper {
      * {@link net.minecraft.world.item.Item#useOn} of your parts item (if you're not using AE2s internal PartItem class)
      * to implement part placement.
      *
-     * @param is     ItemStack of an item which implements {@link IPartItem}
-     * @param pos    pos of part
-     * @param side   side which the part should be on
-     * @param player player placing part
-     * @param level  part in level
-     * @return true if placing was successful
+     * @return The result of placement suitable for returning from
+     *         {@link net.minecraft.world.item.Item#useOn(UseOnContext)}.
      */
-    public static InteractionResult usePartItem(ItemStack is, BlockPos pos, Direction side,
-            Player player, InteractionHand hand, Level level) {
-        return PartPlacement.place(is, pos, side, player, hand, level, PartPlacement.PlaceType.PLACE_ITEM, 0);
+    public static InteractionResult usePartItem(UseOnContext context) {
+        return PartPlacement.place(context);
     }
 
     /**
@@ -109,7 +102,7 @@ public final class PartHelper {
         Objects.requireNonNull(level, "level");
         Objects.requireNonNull(pos, "pos");
 
-        var host = getOrPlacePartHost(level, pos, true);
+        var host = getOrPlacePartHost(level, pos, true, null);
         if (host == null) {
             return null;
         }
@@ -128,26 +121,63 @@ public final class PartHelper {
      * <p/>
      * Use {@link IPartHost#isEmpty()} and {@link IPartHost#cleanup()}.
      *
-     * @param force If true, an existing non-cable-bus block will be unconditionally replaced.
+     * @param force  If true, an existing non-cable-bus block will be unconditionally replaced.
+     * @param player The player trying to place the cable bus. Will be used to check if the player can actually place it
+     *               if force is not true.
      */
     @Nullable
-    public static IPartHost getOrPlacePartHost(ServerLevel level, BlockPos pos, boolean force) {
+    public static IPartHost getOrPlacePartHost(Level level, BlockPos pos, boolean force, @Nullable Player player) {
         // Get or place part host
         var blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof IPartHost partHost) {
             return partHost;
         } else {
-            if (!force) {
-                var whatToPlace = AEBlocks.CABLE_BUS.stack();
-                var ctx = new DirectionalPlaceContext(level, pos, Direction.DOWN, whatToPlace, Direction.UP);
-                if (!level.getBlockState(pos).canBeReplaced(ctx)) {
-                    return null;
-                }
+            if (!force && !canPlacePartHost(player, level, pos)) {
+                return null;
             }
 
-            level.setBlockAndUpdate(pos, AEBlocks.CABLE_BUS.block().defaultBlockState());
+            var state = AEBlocks.CABLE_BUS.block().getStateForPlacement(level, pos);
+            level.setBlockAndUpdate(pos, state);
             return level.getBlockEntity(pos, AEBlockEntities.CABLE_BUS).orElse(null);
         }
+    }
+
+    /**
+     * Tries placing a new part host at the given location as a player.
+     *
+     * @return null if placing a new bus fails (even if a bus already is at that location)
+     */
+    @Nullable
+    public static IPartHost placePartHost(@Nullable Player player, Level level, BlockPos pos) {
+        // Get or place part host
+        if (!canPlacePartHost(player, level, pos)) {
+            return null;
+        }
+
+        var state = AEBlocks.CABLE_BUS.block().getStateForPlacement(level, pos);
+        level.setBlockAndUpdate(pos, state);
+        return level.getBlockEntity(pos, AEBlockEntities.CABLE_BUS).orElse(null);
+    }
+
+    public static boolean canPlacePartHost(@Nullable Player player, Level level, BlockPos pos) {
+        if (player != null && !level.mayInteract(player, pos)) {
+            return false;
+        }
+
+        return level.isEmptyBlock(pos) || level.getBlockState(pos).getMaterial().isReplaceable();
+    }
+
+    /**
+     * Gets a part host at the given position.
+     */
+    @Nullable
+    public static IPartHost getPartHost(Level level, BlockPos pos) {
+        var blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof IPartHost partHost) {
+            return partHost;
+        }
+
+        return null;
     }
 
     /**

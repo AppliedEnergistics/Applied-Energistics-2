@@ -44,8 +44,6 @@ public class BasePacketHandler {
 
         CONFIG_BUTTON(ConfigButtonPacket.class, ConfigButtonPacket::new),
 
-        PART_PLACEMENT(PartPlacementPacket.class, PartPlacementPacket::new),
-
         LIGHTNING(LightningPacket.class, LightningPacket::new),
 
         MATTER_CANNON(MatterCannonPacket.class, MatterCannonPacket::new),

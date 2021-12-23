@@ -22,7 +22,6 @@ import java.util.function.Function;
 
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
 import appeng.api.parts.IPart;
@@ -43,13 +42,7 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        ItemStack held = context.getItemInHand();
-        if (held.getItem() != this || context.getPlayer() == null) {
-            return InteractionResult.PASS;
-        }
-
-        return PartHelper.usePartItem(held, context.getClickedPos(), context.getClickedFace(),
-                context.getPlayer(), context.getHand(), context.getLevel());
+        return PartHelper.usePartItem(context);
     }
 
     @Override

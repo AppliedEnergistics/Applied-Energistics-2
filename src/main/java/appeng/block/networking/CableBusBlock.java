@@ -300,12 +300,12 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos pos = context.getClickedPos();
-        FluidState fluidState = context.getLevel().getFluidState(pos);
-        BlockState blockState = this.defaultBlockState()
-                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+        return getStateForPlacement(context.getLevel(), context.getClickedPos());
+    }
 
-        return blockState;
+    public BlockState getStateForPlacement(Level level, BlockPos pos) {
+        var fluidState = level.getFluidState(pos);
+        return this.defaultBlockState().setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
     @Override
