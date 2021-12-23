@@ -129,8 +129,7 @@ public class SecurityStationMenu extends MEStorageMenu implements InternalInvent
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removedStack, ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (!this.linkableOut.hasItem() && this.linkableIn.hasItem()) {
             var term = this.linkableIn.getItem().copy();
 

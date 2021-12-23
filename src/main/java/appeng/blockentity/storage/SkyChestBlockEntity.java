@@ -139,8 +139,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removed, ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
 
     }
 

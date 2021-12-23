@@ -111,8 +111,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removed, ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         // :P
     }
 

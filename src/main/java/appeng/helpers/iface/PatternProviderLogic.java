@@ -158,7 +158,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack, ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         this.saveChanges();
         this.updatePatterns();
     }

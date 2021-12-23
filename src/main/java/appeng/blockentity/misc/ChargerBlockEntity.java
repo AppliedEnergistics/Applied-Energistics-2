@@ -118,8 +118,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removed, ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().wakeDevice(node);
         });

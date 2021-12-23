@@ -389,8 +389,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removed, ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.
@@ -403,7 +402,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 this.markForUpdate();
             }
         }
-        if (inv == this.inputInventory && !added.isEmpty()) {
+        if (inv == this.inputInventory && !inv.getStackInSlot(slot).isEmpty()) {
             this.tryToStoreContents();
         }
     }

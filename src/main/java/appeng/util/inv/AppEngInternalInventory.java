@@ -19,15 +19,14 @@
 package appeng.util.inv;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -81,51 +80,28 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
     @Override
     public void setItemDirect(int slot, ItemStack stack) {
-        var previousStack = stacks.get(slot).copy();
+        var previousStack = stacks.get(slot);
         stacks.set(slot, stack);
-        if (!ItemStack.matches(previousStack, stack)) {
-            notifyContentsChanged(slot, previousStack);
+        if (previousStack != stack) {
+            notifyContentsChanged(slot);
         }
     }
 
-    // Fabric-specific logic to defer notification after a transaction is closed.
-    /**
-     * Stores the "original" stack, i.e. the stack before the first change.
-     */
-    private final Map<Integer, ItemStack> pendingChangeNotifications = new HashMap<>();
-    private boolean outerCallbackRegistered = false;
-    private final TransactionContext.OuterCloseCallback outerCallback = result -> {
-        outerCallbackRegistered = false;
-        if (result.wasCommitted()) {
-            for (var entry : pendingChangeNotifications.entrySet()) {
-                onContentsChanged(entry.getKey(), entry.getValue());
-            }
-        }
-        pendingChangeNotifications.clear();
-    };
-
-    private void notifyContentsChanged(int slot, ItemStack previousStack) {
-        if (outerCallbackRegistered) {
-            pendingChangeNotifications.putIfAbsent(slot, previousStack);
+    private void notifyContentsChanged(int slot) {
+        if (Transaction.isOpen()) {
+            // Notifications during transactions are handled in the adapter
             return;
-        } else {
-            try {
-                var tx = Transaction.getCurrentUnsafe();
-                if (tx != null) {
-                    tx.addOuterCloseCallback(outerCallback);
-                    outerCallbackRegistered = true;
-                    pendingChangeNotifications.putIfAbsent(slot, previousStack);
-                    return;
-                }
-            } catch (IllegalStateException ise) {
-                // Caught from the outer callback, just send the change notification.
-            }
         }
-        onContentsChanged(slot, previousStack);
+
+        onContentsChanged(slot);
     }
 
     @Override
+    public void sendChangeNotification(int slot) {
+        onContentsChanged(slot);
+    }
 
+    @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         Preconditions.checkArgument(slot >= 0 && slot < size(), "slot out of range");
 
@@ -144,7 +120,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         if (stack.getCount() <= toExtract) {
             if (!simulate) {
                 setItemDirect(slot, ItemStack.EMPTY);
-                notifyContentsChanged(slot, stack);
+                notifyContentsChanged(slot);
                 return stack;
             } else {
                 return stack.copy();
@@ -153,9 +129,8 @@ public class AppEngInternalInventory extends BaseInternalInventory {
             var result = stack.copy();
 
             if (!simulate) {
-                var prev = stack.copy();
                 stack.shrink(toExtract);
-                notifyContentsChanged(slot, prev);
+                notifyContentsChanged(slot);
             }
 
             result.setCount(toExtract);
@@ -163,22 +138,10 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         }
     }
 
-    protected void onContentsChanged(int slot, ItemStack oldStack) {
+    protected void onContentsChanged(int slot) {
         if (this.host != null && this.eventsEnabled() && !this.notifyingChanges) {
             this.notifyingChanges = true;
-            ItemStack newStack = this.getStackInSlot(slot).copy();
-
-            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.isSame(newStack, oldStack)) {
-                if (newStack.getCount() > oldStack.getCount()) {
-                    newStack.shrink(oldStack.getCount());
-                    oldStack = ItemStack.EMPTY;
-                } else {
-                    oldStack.shrink(newStack.getCount());
-                    newStack = ItemStack.EMPTY;
-                }
-            }
-
-            this.host.onChangeInventory(this, slot, oldStack, newStack);
+            this.host.onChangeInventory(this, slot);
             this.host.saveChanges();
             this.notifyingChanges = false;
         }
@@ -240,6 +203,11 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
     public void setEnableClientEvents(boolean enableClientEvents) {
         this.enableClientEvents = enableClientEvents;
+    }
+
+    @ApiStatus.Internal
+    public InternalInventoryHost getHost() {
+        return host;
     }
 
     protected final void setHost(InternalInventoryHost host) {

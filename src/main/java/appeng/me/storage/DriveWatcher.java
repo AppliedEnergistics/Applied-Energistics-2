@@ -32,6 +32,7 @@ public class DriveWatcher extends MEInventoryHandler {
     public DriveWatcher(StorageCell i, Runnable activityCallback) {
         super(i);
         this.activityCallback = activityCallback;
+        this.oldStatus = getStatus();
     }
 
     public CellState getStatus() {

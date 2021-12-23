@@ -111,8 +111,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removedStack, ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (inv == this.pattern && slot == 1) {
             var is = this.pattern.getStackInSlot(1);
             var details = PatternDetailsHelper.decodePattern(is,

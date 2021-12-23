@@ -20,7 +20,6 @@ package appeng.blockentity.networking;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -134,8 +133,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removed, ItemStack added) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
     }
 
     /**

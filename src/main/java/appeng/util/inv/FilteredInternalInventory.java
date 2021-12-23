@@ -80,4 +80,9 @@ public class FilteredInternalInventory extends BaseInternalInventory {
         }
         return this.delegate.isItemValid(slot, stack);
     }
+
+    @Override
+    public void sendChangeNotification(int slot) {
+        delegate.sendChangeNotification(slot);
+    }
 }

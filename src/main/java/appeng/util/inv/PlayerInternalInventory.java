@@ -50,5 +50,4 @@ public class PlayerInternalInventory implements InternalInventory {
             inventory.getItem(slotIndex).setPopTime(5);
         }
     }
-
 }

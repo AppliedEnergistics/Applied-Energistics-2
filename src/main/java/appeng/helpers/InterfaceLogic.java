@@ -515,7 +515,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot, ItemStack removedStack, ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         // Cancel crafting if the crafting card is removed
         if (inv == upgrades && upgrades.getInstalledUpgrades(Upgrades.CRAFTING) == 0) {
             this.cancelCrafting();

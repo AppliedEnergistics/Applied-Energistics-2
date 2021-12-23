@@ -60,8 +60,7 @@ public abstract class UpgradeablePart extends BasicStatePart
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removedStack, ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         if (inv == this.upgrades) {
             this.upgradesChanged();
         }

@@ -134,12 +134,17 @@ public abstract class UpgradeInventory extends AppEngInternalInventory
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot,
-            ItemStack removedStack, ItemStack newStack) {
+    public void onChangeInventory(InternalInventory inv, int slot) {
         this.cached = false;
         if (!isClientSide()) {
-            this.parent.onChangeInventory(inv, slot, removedStack, newStack);
+            this.parent.onChangeInventory(inv, slot);
         }
+    }
+
+    @Override
+    public void sendChangeNotification(int slot) {
+        this.cached = false;
+        super.sendChangeNotification(slot);
     }
 
     private class UpgradeInvFilter implements IAEItemFilter {
