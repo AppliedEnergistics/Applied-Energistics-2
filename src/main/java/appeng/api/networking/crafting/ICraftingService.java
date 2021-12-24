@@ -27,9 +27,9 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.level.Level;
 
@@ -102,7 +102,8 @@ public interface ICraftingService extends IGridService {
      *         {@link ICraftingRequester} methods. if you send null, this object should be discarded after verifying the
      *         return state.
      */
-    ICraftingLink submitJob(ICraftingPlan job, ICraftingRequester requestingMachine, ICraftingCPU target,
+    ICraftingLink submitJob(ICraftingPlan job, @Nullable ICraftingRequester requestingMachine,
+            @Nullable ICraftingCPU target,
             boolean prioritizePower, IActionSource src);
 
     /**

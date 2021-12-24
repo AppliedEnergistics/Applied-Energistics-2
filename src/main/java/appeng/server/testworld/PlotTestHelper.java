@@ -64,7 +64,7 @@ public class PlotTestHelper extends GameTestHelper {
                 }
             }
         }
-        throw new IllegalStateException("No grid @ " + pos);
+        throw new GameTestAssertException("No grid @ " + pos);
     }
 
     public void assertContains(IGrid grid, Item item) {
@@ -88,6 +88,12 @@ public class PlotTestHelper extends GameTestHelper {
         var counter = storage.getAvailableStacks();
         for (var key : counter.keySet()) {
             storage.extract(key, Long.MAX_VALUE, Actionable.MODULATE, new BaseActionSource());
+        }
+    }
+
+    public void check(boolean test, String errorMessage) throws GameTestAssertException {
+        if (!test) {
+            throw new GameTestAssertException(errorMessage);
         }
     }
 }

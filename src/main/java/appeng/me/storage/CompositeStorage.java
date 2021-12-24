@@ -14,7 +14,7 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.core.localization.GuiText;
-import appeng.helpers.iface.PatternProviderLogic;
+import appeng.helpers.iface.PatternProviderLogicHost;
 
 /**
  * Combines several ME storages that each handle only a given key-space.
@@ -65,8 +65,8 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
             return false;
         }
         var machineNode = source.machine().get().getActionableNode();
-        if (machineNode != null && machineNode.getOwner() instanceof PatternProviderLogic logic) {
-            return logic.isBlocking();
+        if (machineNode != null && machineNode.getOwner() instanceof PatternProviderLogicHost host) {
+            return host.getLogic().isBlocking();
         }
         return false;
     }

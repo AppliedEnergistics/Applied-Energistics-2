@@ -7,16 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -38,6 +42,9 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.networking.crafting.CalculationStrategy;
+import appeng.api.networking.crafting.ICraftingPlan;
+import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.PartHelper;
 import appeng.api.stacks.AEFluidKey;
@@ -55,6 +62,7 @@ import appeng.items.storage.CreativeCellItem;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
+import appeng.me.helpers.MachineSource;
 import appeng.me.service.PathingService;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.util.CraftingRecipeUtil;
@@ -78,6 +86,7 @@ public final class TestPlots {
             .put(AppEng.makeId("mattercannonrange"), TestPlots::matterCannonRange)
             .put(AppEng.makeId("insertfluidintomechest"), TestPlots::testInsertFluidIntoMEChest)
             .put(AppEng.makeId("maxchannelsadhoctest"), TestPlots::maxChannelsAdHocTest)
+            .put(AppEng.makeId("blockingmodesubnetworkchesttest"), TestPlots::blockingModeSubnetworkChestTest)
             .build();
 
     private TestPlots() {
@@ -701,4 +710,80 @@ public final class TestPlots {
         });
     }
 
+    /**
+     * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5860.
+     */
+    public static void blockingModeSubnetworkChestTest(PlotBuilder plot) {
+        // Network itself
+        plot.creativeEnergyCell("0 -1 0");
+        plot.block("[0,1] [0,1] [0,1]", AEBlocks.CRAFTING_ACCELERATOR);
+        plot.block("0 0 0", AEBlocks.CRAFTING_STORAGE_64K);
+        var input = GenericStack.fromItemStack(new ItemStack(Items.GOLD_INGOT));
+        var output = GenericStack.fromItemStack(new ItemStack(Items.DIAMOND));
+        plot.cable("2 0 0")
+                .part(Direction.EAST, AEParts.PATTERN_PROVIDER, pp -> {
+                    pp.getLogic().getPatternInv().addItems(
+                            PatternDetailsHelper.encodeProcessingPattern(
+                                    new GenericStack[] { input },
+                                    new GenericStack[] { output }));
+                    pp.getLogic().getConfigManager().putSetting(Settings.BLOCKING_MODE, YesNo.YES);
+                });
+        plot.blockEntity("2 0 -1", AEBlocks.DRIVE, drive -> {
+            var creativeCell = AEItems.ITEM_CELL_CREATIVE.stack();
+            var configInventory = AEItems.ITEM_CELL_CREATIVE.asItem().getConfigInventory(creativeCell);
+            configInventory.setStack(0, input);
+
+            drive.getInternalInventory().addItems(creativeCell);
+        });
+        // Subnetwork
+        plot.creativeEnergyCell("3 -1 0");
+        plot.cable("3 0 0")
+                .part(Direction.WEST, AEParts.INTERFACE)
+                .part(Direction.EAST, AEParts.STORAGE_BUS);
+        plot.block("4 0 0", Blocks.CHEST);
+        // Crafting operation
+        plot.test(helper -> {
+            var craftingJob = new MutableObject<Future<ICraftingPlan>>();
+            helper.startSequence()
+                    .thenIdle(5)
+                    .thenExecute(() -> {
+                        var grid = helper.getGrid(BlockPos.ZERO);
+                        helper.check(!grid.getStorageService().getCachedInventory().isEmpty(), "storage is empty");
+                        var src = new MachineSource(grid::getPivot);
+                        var craftingService = grid.getCraftingService();
+                        ICraftingSimulationRequester simRequester = () -> src;
+                        var future = craftingService.beginCraftingCalculation(grid.getPivot().getLevel(), simRequester,
+                                output.what(), 64, CalculationStrategy.REPORT_MISSING_ITEMS);
+                        craftingJob.setValue(future);
+                    })
+                    // Wait until the crafting job plan has arrived
+                    .thenWaitUntil(() -> {
+                        helper.check(craftingJob.getValue() != null && craftingJob.getValue().isDone(),
+                                "crafting job not done");
+                    })
+                    // Submit job
+                    .thenExecute(() -> {
+                        try {
+                            var plan = craftingJob.getValue().get();
+                            var grid = helper.getGrid(BlockPos.ZERO);
+                            var link = grid.getCraftingService().submitJob(plan, null, null, true,
+                                    new BaseActionSource());
+                            helper.check(link != null, "failed to submit job");
+                        } catch (InterruptedException | ExecutionException e) {
+                            throw new GameTestAssertException("failed to get crafting plan: " + e.getMessage());
+                        }
+                    })
+                    .thenWaitUntil(() -> {
+                        var grid = helper.getGrid(BlockPos.ZERO);
+                        long requesting = grid.getCraftingService().getRequestedAmount(output.what());
+                        helper.check(requesting > 0, "not yet requesting items");
+                        if (requesting == 1) {
+                            helper.succeed(); // blocking mode succeeded
+                        } else {
+                            helper.testInfo.fail(
+                                    new GameTestAssertException("blocking mode failed, requesting: " + requesting));
+                        }
+                    });
+        });
+    }
 }
