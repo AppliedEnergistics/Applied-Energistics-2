@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.util.BootstrapMinecraft;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 @MockitoSettings
+@BootstrapMinecraft
 class GridServicesTest {
 
     @Mock
@@ -42,7 +44,9 @@ class GridServicesTest {
     void clearRegistry() throws Exception {
         var field = GridServices.class.getDeclaredField("registry");
         field.setAccessible(true);
-        servicesBefore = new ArrayList<>(((List<?>) field.get(null)));
+        List<?> list = (List<?>) field.get(null);
+        servicesBefore = new ArrayList<>(list);
+        list.clear();
     }
 
     @AfterEach
