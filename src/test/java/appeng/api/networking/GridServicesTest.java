@@ -24,12 +24,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.util.BootstrapMinecraft;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
+
+import appeng.util.BootstrapMinecraft;
 
 @MockitoSettings
 @BootstrapMinecraft
