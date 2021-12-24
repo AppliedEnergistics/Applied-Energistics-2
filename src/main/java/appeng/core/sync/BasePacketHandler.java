@@ -66,7 +66,7 @@ public class BasePacketHandler {
 
         PATTERN_SLOT(PatternSlotPacket.class, PatternSlotPacket::new),
 
-        RECIPE_JEI(JEIRecipePacket.class, JEIRecipePacket::new),
+        RECIPE_JEI(UseRecipePacket.class, UseRecipePacket::new),
 
         CONFIRM_AUTO_CRAFT(ConfirmAutoCraftPacket.class, ConfirmAutoCraftPacket::new),
 
