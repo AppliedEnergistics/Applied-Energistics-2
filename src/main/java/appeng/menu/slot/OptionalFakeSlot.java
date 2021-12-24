@@ -37,7 +37,6 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     }
 
     @Override
-
     public ItemStack getItem() {
         if (!this.isSlotEnabled() && !this.getDisplayStack().isEmpty()) {
             this.clearStack();

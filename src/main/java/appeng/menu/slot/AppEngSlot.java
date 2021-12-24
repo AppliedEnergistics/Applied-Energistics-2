@@ -94,7 +94,6 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-
     public ItemStack getItem() {
         if (!this.isSlotEnabled()) {
             return ItemStack.EMPTY;
@@ -161,7 +160,6 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-
     public ItemStack remove(int amount) {
         if (containsWrapperItem()) {
             return ItemStack.EMPTY;

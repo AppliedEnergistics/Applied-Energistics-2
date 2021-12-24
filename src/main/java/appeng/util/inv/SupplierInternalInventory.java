@@ -110,7 +110,6 @@ public class SupplierInternalInventory implements InternalInventory {
     }
 
     @Override
-
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return delegate.get().insertItem(slot, stack, simulate);
     }

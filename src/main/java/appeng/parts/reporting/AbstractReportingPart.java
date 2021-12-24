@@ -220,7 +220,6 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-
     public Object getRenderAttachmentData() {
         return new ReportingModelData(getSpin());
     }

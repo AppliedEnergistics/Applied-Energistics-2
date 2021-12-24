@@ -102,7 +102,6 @@ public class QuartzKnifeMenu extends AEBaseMenu {
         }
 
         @Override
-
         public ItemStack remove(int amount) {
             ItemStack ret = this.getItem();
             if (!ret.isEmpty()) {

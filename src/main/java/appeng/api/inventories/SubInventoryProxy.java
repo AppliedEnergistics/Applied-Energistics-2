@@ -78,7 +78,6 @@ final class SubInventoryProxy extends BaseInternalInventory {
     }
 
     @Override
-
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return delegate.insertItem(translateSlot(slot), stack, simulate);
     }

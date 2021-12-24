@@ -112,13 +112,11 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         }
 
         @Override
-
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
-
         public ItemStack getStackInSlot(int slot) {
             return getPossibleItems().peek() != null ? getPossibleItems().peek().copy() : ItemStack.EMPTY;
         }
@@ -139,7 +137,6 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         }
 
         @Override
-
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             final ItemStack is = getPossibleItems().peek();
 
