@@ -31,7 +31,6 @@ import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.KeyCounter;
 import appeng.crafting.inv.ICraftingInventory;
@@ -95,7 +94,6 @@ public class CraftingCpuHelper {
     public static KeyCounter[] extractPatternInputs(
             IPatternDetails details,
             ICraftingInventory sourceInv,
-            IEnergyService energyService,
             Level level,
             KeyCounter expectedOutputs) {
 
