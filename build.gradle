@@ -425,7 +425,8 @@ if (!version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
         token = System.getenv("MODRINTH")
         changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
         projectId = 'XxWD5pD3'
-        versionNumber = project.version
+        versionName = project.version + " [FABRIC]"
+        versionNumber = "fabric-" + project.version
         versionType = mrVersionType
         uploadFile = remapJar
         addGameVersion(project.minecraft_version)
