@@ -212,9 +212,9 @@ public class JEIPlugin implements IModPlugin {
                             var stack = baseScreen.getStackUnderMouse(mouseX, mouseY);
                             if (stack != null) {
                                 if (stack.what() instanceof AEItemKey itemKey) {
-                                    return itemKey.toStack(Ints.saturatedCast(stack.amount()));
+                                    return itemKey.toStack();
                                 } else if (stack.what() instanceof AEFluidKey fluidKey) {
-                                    return fluidKey.toStack(Ints.saturatedCast(stack.amount()));
+                                    return fluidKey.toStack(1);
                                 }
                             }
                         }
