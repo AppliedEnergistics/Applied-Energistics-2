@@ -1,3 +1,10 @@
+---
+title: Addon and Mod API
+# Note that this file is automatically included into the Website and is available at https://appliedenergistics.github.io/api.html
+---
+
+The Javadocs of the latest unreleased version are available at https://appliedenergistics.github.io/javadoc/.
+
 ## Mod Initialization
 
 AE2 offers various extension points for your mod to hook into. The following table lists the API classes that are most
