@@ -345,7 +345,7 @@
   "gui.tooltips.ae2.BlockPlacement": "Block Placement",
   "gui.tooltips.ae2.BlockPlacementNo": "Blocks will be dropped as item.",
   "gui.tooltips.ae2.BlockPlacementYes": "Blocks will be placed as block.",
-  "gui.tooltips.ae2.Blocking": "Do not push crafting items if inventory contains items.",
+  "gui.tooltips.ae2.Blocking": "Do not push crafting ingredients if inventory contains a pattern input.",
   "gui.tooltips.ae2.Clear": "Clear",
   "gui.tooltips.ae2.ClearSettings": "Clear Config/Settings",
   "gui.tooltips.ae2.CondenserOutput": "ME Condenser - Output",

@@ -115,6 +115,8 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
                 }
             }
 
+            frontBuffer.removeZeros();
+
             return changed;
         }
 
