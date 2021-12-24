@@ -31,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -167,7 +168,6 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         }
     }
 
-    // TODO FABRIC 117 need to test this actually clears the card in all cases
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         var player = context.getPlayer();
@@ -188,6 +188,15 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         }
 
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
+            this.clearCard(player, level, hand);
+        }
+
+        return super.use(level, player, hand);
     }
 
     private void clearCard(Player player, Level level, InteractionHand hand) {
