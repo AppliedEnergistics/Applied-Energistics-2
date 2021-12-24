@@ -620,16 +620,6 @@ public class PatternTermMenu extends MEStorageMenu implements IOptionalSlotHost,
         return FluidContainerHelper.getContainedStack(slot.getItem()) != null;
     }
 
-    public void setProcessingResult(ItemStack resultItem) {
-        for (int i = 0; i < processingOutputSlots.length; i++) {
-            if (i == 0) {
-                processingOutputSlots[i].set(resultItem);
-            } else {
-                processingOutputSlots[i].set(ItemStack.EMPTY);
-            }
-        }
-    }
-
     @Override
     protected ItemStack transferStackToMenu(ItemStack input) {
         // try refilling the blank pattern slot

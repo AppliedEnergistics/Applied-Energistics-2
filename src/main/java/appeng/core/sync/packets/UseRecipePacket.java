@@ -18,7 +18,9 @@
 
 package appeng.core.sync.packets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
@@ -42,6 +44,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.core.sync.BasePacket;
@@ -53,7 +56,7 @@ import appeng.menu.me.items.PatternTermMenu;
 import appeng.util.CraftingRecipeUtil;
 import appeng.util.prioritylist.IPartitionList;
 
-public class JEIRecipePacket extends BasePacket {
+public class UseRecipePacket extends BasePacket {
 
     /**
      * Transmit only a recipe ID.
@@ -61,19 +64,35 @@ public class JEIRecipePacket extends BasePacket {
     private static final int INLINE_RECIPE_NONE = 1;
 
     /**
+     * Transmit the inputs and outputs for encoding a processing recipe with specific generic stacks. This allows
+     * encoding with arbitrary amounts and keys.
+     */
+    private static final int INLINE_RECIPE_ENCODE_PROCESSING = 2;
+
+    /**
      * Transmit the information about the recipe we actually need. This is explicitly limited since this is untrusted
      * client->server info.
      */
-    private static final int INLINE_RECIPE_SHAPED = 2;
+    private static final int INLINE_RECIPE_SHAPED = 3;
 
     private ResourceLocation recipeId;
+
     /**
      * This is optional, in case the client already knows it could not resolve the recipe id.
      */
     @Nullable
     private Recipe<?> recipe;
 
-    public JEIRecipePacket(FriendlyByteBuf stream) {
+    /**
+     * For encoding processing patterns, we send along extra inputs that are not part of the recipe's reported
+     * ingredients or result.
+     */
+    @Nullable
+    private List<GenericStack> extraInputs;
+    @Nullable
+    private List<GenericStack> extraOutputs;
+
+    public UseRecipePacket(FriendlyByteBuf stream) {
         this.recipeId = new ResourceLocation(stream.readUtf());
 
         var inlineRecipeType = stream.readVarInt();
@@ -83,16 +102,56 @@ public class JEIRecipePacket extends BasePacket {
             case INLINE_RECIPE_SHAPED:
                 recipe = RecipeSerializer.SHAPED_RECIPE.fromNetwork(this.recipeId, stream);
                 break;
+            case INLINE_RECIPE_ENCODE_PROCESSING:
+                readEncodingInputAndOutput(stream);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid inline recipe type.");
+        }
+    }
+
+    private void readEncodingInputAndOutput(FriendlyByteBuf stream) {
+        extraInputs = new ArrayList<>();
+        extraOutputs = new ArrayList<>();
+        var count = stream.readInt();
+        for (int i = 0; i < count; i++) {
+            var stack = GenericStack.readBuffer(stream);
+            if (stack != null) {
+                extraInputs.add(stack);
+            }
+        }
+        count = stream.readInt();
+        for (int i = 0; i < count; i++) {
+            var stack = GenericStack.readBuffer(stream);
+            if (stack != null) {
+                extraOutputs.add(stack);
+            }
         }
     }
 
     /**
      * Sends a recipe identified by the given recipe ID to the server for either filling a crafting grid or a pattern.
      */
-    public JEIRecipePacket(ResourceLocation recipeId) {
+    public UseRecipePacket(ResourceLocation recipeId) {
         var data = createCommonHeader(recipeId, INLINE_RECIPE_NONE);
+        this.configureWrite(data);
+    }
+
+    /**
+     * Sends a list of inputs and outputs to the server for encoding a pattern. It still has to be based on a recipe,
+     * however.
+     */
+    public UseRecipePacket(ResourceLocation recipeId, List<GenericStack> extraInputs, List<GenericStack> extraOutputs) {
+        var data = createCommonHeader(recipeId, INLINE_RECIPE_ENCODE_PROCESSING);
+
+        data.writeInt(extraInputs.size());
+        for (var input : extraInputs) {
+            GenericStack.writeBuffer(input, data);
+        }
+        data.writeInt(extraOutputs.size());
+        for (var output : extraOutputs) {
+            GenericStack.writeBuffer(output, data);
+        }
         this.configureWrite(data);
     }
 
@@ -101,7 +160,7 @@ public class JEIRecipePacket extends BasePacket {
      * <p>
      * Prefer the id-based constructor above whereever possible.
      */
-    public JEIRecipePacket(ShapedRecipe recipe) {
+    public UseRecipePacket(ShapedRecipe recipe) {
         var data = createCommonHeader(recipe.getId(), INLINE_RECIPE_SHAPED);
         RecipeSerializer.SHAPED_RECIPE.toNetwork(data, recipe);
         this.configureWrite(data);
@@ -126,8 +185,8 @@ public class JEIRecipePacket extends BasePacket {
     @Override
     public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
         // Setup and verification
-        final var con = player.containerMenu;
-        Preconditions.checkArgument(con instanceof IMenuCraftingPacket);
+        final var menu = player.containerMenu;
+        Preconditions.checkArgument(menu instanceof IMenuCraftingPacket);
 
         var recipe = player.getCommandSenderWorld().getRecipeManager().byKey(this.recipeId).orElse(null);
         if (recipe == null && this.recipe != null) {
@@ -140,7 +199,7 @@ public class JEIRecipePacket extends BasePacket {
             throw new IllegalArgumentException("Client is requesting to craft unknown recipe " + this.recipeId);
         }
 
-        var cct = (IMenuCraftingPacket) con;
+        var cct = (IMenuCraftingPacket) menu;
         var node = cct.getNetworkNode();
 
         Preconditions.checkArgument(node != null);
@@ -152,6 +211,9 @@ public class JEIRecipePacket extends BasePacket {
         var energy = grid.getEnergyService();
         var crafting = grid.getCraftingService();
         var craftMatrix = cct.getCraftingMatrix();
+
+        // For normal crafting or for patterns derived from standard vanilla recipes, we'll still
+        // try to use the best possible ingredients based on what's available in the network
 
         var storage = inv.getInventory();
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
@@ -230,9 +292,9 @@ public class JEIRecipePacket extends BasePacket {
             craftMatrix.setItemDirect(x, currentItem);
         }
 
-        handleProcessing(con, recipe);
+        handleProcessing(menu, recipe);
 
-        con.slotsChanged(craftMatrix.toContainer());
+        menu.slotsChanged(craftMatrix.toContainer());
     }
 
     /**
@@ -289,10 +351,32 @@ public class JEIRecipePacket extends BasePacket {
 
     private void handleProcessing(AbstractContainerMenu con, Recipe<?> recipe) {
         if (con instanceof PatternTermMenu patternTerm) {
-            if (!patternTerm.craftingMode) {
-                patternTerm.setProcessingResult(recipe.getResultItem());
+            if (!patternTerm.craftingMode && this.extraInputs != null && this.extraOutputs != null) {
+                // Fill in blank slots with extra inputs
+                var craftingMatrix = patternTerm.getCraftingMatrix();
+                var extraInputs = this.extraInputs.iterator();
+                for (int i = 0; i < craftingMatrix.size() && extraInputs.hasNext(); i++) {
+                    if (craftingMatrix.getStackInSlot(i).isEmpty()) {
+                        craftingMatrix.setItemDirect(i, GenericStack.wrapInItemStack(extraInputs.next()));
+                    }
+                }
+
+                var processingResults = patternTerm.getProcessingOutputSlots();
+                // Fill in any empty result slots with extra outputs if possible, otherwise clear them
+                var extraOutputs = this.extraOutputs.iterator();
+                for (int i = 0; i < processingResults.length; i++) {
+                    var slot = processingResults[i];
+                    if (i == 0 && !recipe.getResultItem().isEmpty()) {
+                        // Prioritize the output reported by the vanilla recipe as the primary output
+                        slot.set(recipe.getResultItem());
+                    } else if (extraOutputs.hasNext()) {
+                        // Then fill in slots with extra outputs
+                        slot.set(GenericStack.wrapInItemStack(extraOutputs.next()));
+                    } else {
+                        slot.set(ItemStack.EMPTY);
+                    }
+                }
             }
         }
     }
-
 }

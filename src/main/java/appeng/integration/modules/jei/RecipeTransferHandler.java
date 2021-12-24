@@ -23,6 +23,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
@@ -31,9 +32,11 @@ import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
+import appeng.api.stacks.AEItemKey;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.JEIRecipePacket;
+import appeng.core.sync.packets.UseRecipePacket;
 import appeng.helpers.IMenuCraftingPacket;
+import appeng.menu.me.items.PatternTermMenu;
 
 abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraftingPacket>
         implements TransferHandler {
@@ -59,9 +62,11 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
         // Check that the recipe can actually be looked up via the manager, i.e. our
         // facade recipes
         // have an ID, but are never registered with the recipe manager.
-        boolean canSendReference = true;
-        if (recipeId == null || context.getMinecraft().level.getRecipeManager().byKey(recipeId).isEmpty()) {
-            canSendReference = false;
+        Recipe<?> vanillaRecipe;
+        if (recipeId != null) {
+            vanillaRecipe = context.getMinecraft().level.getRecipeManager().byKey(recipeId).orElse(null);
+        } else {
+            vanillaRecipe = null;
         }
 
         if (recipe instanceof SimpleGridMenuDisplay gridDisplay) {
@@ -79,14 +84,41 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
         }
 
         if (context.isActuallyCrafting()) {
-            if (canSendReference) {
-                NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipeId));
+            if (vanillaRecipe != null) {
+                // When encoding a pattern, send along any extra inputs and outputs that might not be reported by
+                // the Vanilla crafting recipe as we're not limited here by what can actually be crafted in Vanilla
+                if (menu instanceof PatternTermMenu patternTermMenu && !patternTermMenu.isCraftingMode()) {
+                    var inputs = GenericEntryStackHelper.of(recipe.getInputEntries());
+                    var outputs = GenericEntryStackHelper.of(recipe.getOutputEntries());
+
+                    // Remove any inputs that are already listed in the Vanilla recipe, and yeah, we can't
+                    // handle duplicates here, sadly.
+                    inputs.removeIf(stack -> {
+                        if (stack.what() instanceof AEItemKey itemKey) {
+                            var itemStack = itemKey.toStack();
+                            for (var ingredient : vanillaRecipe.getIngredients()) {
+                                if (ingredient.test(itemStack)) {
+                                    // This generic stack is listed in the standard ingredients, so don't send it as
+                                    // extra
+                                    return true;
+                                }
+                            }
+                        }
+                        return false;
+                    });
+
+                    // Remove any outputs that match the output reported by vanilla
+                    outputs.removeIf(stack -> stack.what() instanceof AEItemKey itemKey
+                            && itemKey.matches(vanillaRecipe.getResultItem()));
+
+                    NetworkHandler.instance().sendToServer(new UseRecipePacket(recipeId, inputs, outputs));
+                } else {
+                    NetworkHandler.instance().sendToServer(new UseRecipePacket(recipeId));
+                }
             } else {
                 // To avoid earlier problems of too large packets being sent that crashed the
-                // client,
-                // as a fallback when the recipe ID could not be resolved, we'll just send the
-                // displayed
-                // items.
+                // client, as a fallback when the recipe ID could not be resolved, we'll just send the
+                // displayed items.
                 NonNullList<Ingredient> flatIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
                 ItemStack output = null;
                 for (EntryStack<?> entryStack : recipe.getOutputEntries().get(0)) {
@@ -114,7 +146,7 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
                 }
 
                 ShapedRecipe fallbackRecipe = new ShapedRecipe(recipeId, "", 3, 3, flatIngredients, output);
-                NetworkHandler.instance().sendToServer(new JEIRecipePacket(fallbackRecipe));
+                NetworkHandler.instance().sendToServer(new UseRecipePacket(fallbackRecipe));
             }
         }
 
