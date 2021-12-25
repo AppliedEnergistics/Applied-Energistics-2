@@ -329,7 +329,8 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
             // Only drop items if the part is still attached at that side
             if (nodeOwner.getHost().getPart(nodeOwner.getSide()) == nodeOwner) {
                 var items = new ArrayList<ItemStack>();
-                nodeOwner.getDrops(items, false);
+                nodeOwner.addPartDrop(items, false);
+                nodeOwner.addAdditionalDrops(items, false);
                 nodeOwner.getHost().removePart(nodeOwner.getSide());
                 if (!items.isEmpty()) {
                     var be = nodeOwner.getHost().getBlockEntity();

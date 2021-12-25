@@ -158,13 +158,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
-        this.getCableBus().getDrops(drops);
-    }
-
-    @Override
-    public void getNoDrops(Level level, BlockPos pos, List<ItemStack> drops) {
-        this.getCableBus().getNoDrops(drops);
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        this.getCableBus().addAdditionalDrops(drops);
     }
 
     @Override
@@ -319,7 +314,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
 
             // SelectedPart contains either a facade or a part. Never both.
             if (sp.part != null) {
-                sp.part.getDrops(is, true);
+                sp.part.addPartDrop(is, true);
+                sp.part.addAdditionalDrops(is, true);
                 cb.removePart(sp.side);
             }
 

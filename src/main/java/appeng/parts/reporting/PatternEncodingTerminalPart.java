@@ -70,9 +70,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     }
 
     @Override
-    public void getDrops(List<ItemStack> drops, boolean wrenched) {
-        super.getDrops(drops, wrenched);
-
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
         for (ItemStack is : this.pattern) {
             if (!is.isEmpty()) {
                 drops.add(is);

@@ -18,7 +18,6 @@
 
 package appeng.blockentity;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.util.IBlockEntityDrops;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
@@ -73,7 +71,7 @@ import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
-        implements IOrientable, IBlockEntityDrops, ICustomNameObject, ISegmentedInventory,
+        implements IOrientable, ICustomNameObject, ISegmentedInventory,
         RenderAttachmentBlockEntity {
 
     static {
@@ -83,7 +81,6 @@ public class AEBaseBlockEntity extends BlockEntity
     protected void onChunkUnloaded() {
     }
 
-    private static final ThreadLocal<WeakReference<AEBaseBlockEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     @Nullable
     private String customName;
@@ -97,11 +94,6 @@ public class AEBaseBlockEntity extends BlockEntity
 
     public static void registerBlockEntityItem(BlockEntityType<?> type, Item wat) {
         REPRESENTATIVE_ITEMS.put(type, wat);
-    }
-
-    public boolean dropItems() {
-        final WeakReference<AEBaseBlockEntity> what = DROP_NO_ITEMS.get();
-        return what == null || what.get() != this;
     }
 
     public boolean notLoaded() {
@@ -324,19 +316,13 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     /**
-     * returns the contents of the block entity, into the world, defaults to dropping everything in the inventory.
+     * returns the contents of the block entity but not the block itself, to drop into the world
      *
      * @param level level
      * @param pos   block position
      * @param drops drops of block entity
      */
-    @Override
-    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
-
-    }
-
-    public void getNoDrops(Level level, BlockPos pos, List<ItemStack> drops) {
-
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
     }
 
     @Override
@@ -352,7 +338,6 @@ public class AEBaseBlockEntity extends BlockEntity
 
     public void securityBreak() {
         this.level.destroyBlock(this.worldPosition, true);
-        this.disableDrops();
     }
 
     /**
@@ -361,10 +346,6 @@ public class AEBaseBlockEntity extends BlockEntity
     public boolean isClientSide() {
         Level level = getLevel();
         return level == null || level.isClientSide();
-    }
-
-    public void disableDrops() {
-        DROP_NO_ITEMS.set(new WeakReference<>(this));
     }
 
     public void saveChanges() {

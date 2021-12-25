@@ -131,11 +131,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         final AEBaseBlockEntity te = this.getBlockEntity(level, pos);
         if (te != null) {
             final ArrayList<ItemStack> drops = new ArrayList<>();
-            if (te.dropItems()) {
-                te.getDrops(level, pos, drops);
-            } else {
-                te.getNoDrops(level, pos, drops);
-            }
+            te.addAdditionalDrops(level, pos, drops);
 
             // Cry ;_; ...
             Platform.spawnDrops(level, pos, drops);

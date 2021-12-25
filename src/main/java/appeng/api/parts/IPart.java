@@ -295,13 +295,11 @@ public interface IPart extends ICustomCableConnection {
     }
 
     /**
-     * Add drops to the items being dropped into the world, if your item stores its contents when wrenched use the
-     * wrenched boolean to control what data is saved vs dropped when it is broken.
+     * Add the stack of the part itself to the drop list.
      *
-     * @param drops    item drops if wrenched
      * @param wrenched control flag for wrenched vs broken
      */
-    default void getDrops(List<ItemStack> drops, boolean wrenched) {
+    default void addPartDrop(List<ItemStack> drops, boolean wrenched) {
         var stack = new ItemStack(getPartItem());
         var tag = new CompoundTag();
         exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
@@ -309,6 +307,14 @@ public interface IPart extends ICustomCableConnection {
             stack.setTag(tag);
         }
         drops.add(stack);
+    }
+
+    /**
+     * Add additional drops to the drop list (the contents of the part, but not the part itself).
+     *
+     * @param wrenched control flag for wrenched vs broken
+     */
+    default void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
     }
 
     /**

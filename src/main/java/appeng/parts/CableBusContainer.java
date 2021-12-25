@@ -839,11 +839,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         this.getFacadeContainer().readFromNBT(data);
     }
 
-    public List<ItemStack> getDrops(List<ItemStack> drops) {
+    public List<ItemStack> addPartDrops(List<ItemStack> drops) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(side);
             if (part != null) {
-                part.getDrops(drops, false);
+                part.addPartDrop(drops, false);
             }
 
             if (side != null) {
@@ -857,11 +857,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return drops;
     }
 
-    public List<ItemStack> getNoDrops(List<ItemStack> drops) {
+    public List<ItemStack> addAdditionalDrops(List<ItemStack> drops) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(side);
             if (part != null) {
-                part.getDrops(drops, false);
+                part.addAdditionalDrops(drops, false);
             }
         }
 

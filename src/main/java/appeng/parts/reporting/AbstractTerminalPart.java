@@ -71,9 +71,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void getDrops(List<ItemStack> drops, boolean wrenched) {
-        super.getDrops(drops, wrenched);
-
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
         for (var is : this.viewCell) {
             if (!is.isEmpty()) {
                 drops.add(is);

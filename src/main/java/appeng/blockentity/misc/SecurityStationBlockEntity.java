@@ -99,7 +99,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         if (!this.getConfigSlot().isEmpty()) {
             drops.add(this.getConfigSlot().getStackInSlot(0));
         }
