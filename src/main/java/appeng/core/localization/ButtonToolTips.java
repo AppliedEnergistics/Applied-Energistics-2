@@ -63,7 +63,8 @@ public enum ButtonToolTips {
     FindContainedFluidsDesc("Replace items that contain a fluid (such as buckets) by their contained fluid."),
     FluidSubstitutions("Fluid Substitutions"),
     FluidSubstitutionsDescDisabled("Don't use fluids."),
-    FluidSubstitutionsDescEnabled("Try to use fluids instead of items.\nSubstitutable ingredients are marked in green."),
+    FluidSubstitutionsDescEnabled(
+            "Try to use fluids instead of items.\nSubstitutable ingredients are marked in green."),
     FuzzyMode("Fuzzy Comparison"),
     IOMode("Input/Output Mode"),
     InterfaceBlockingMode("Blocking Mode"),

@@ -41,7 +41,6 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import appeng.datagen.providers.localization.LocalizationProvider;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -54,7 +53,6 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -66,6 +64,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.datagen.providers.IAE2DataProvider;
+import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.loot.NeededPressType;
 import appeng.loot.NeedsPressCondition;
@@ -125,7 +124,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .display(
                         AEItems.CERTUS_QUARTZ_CRYSTAL,
                         localization.component("achievement.ae2.QuartzCrystal", "Applied Energistics 2"),
-                        localization.component("achievement.ae2.QuartzCrystal.desc", "Obtain your first Certus Quartz Crystal."),
+                        localization.component("achievement.ae2.QuartzCrystal.desc",
+                                "Obtain your first Certus Quartz Crystal."),
                         null /* background */,
                         FrameType.TASK,
                         true /* showToast */,
@@ -270,7 +270,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .display(
                         AEParts.PATTERN_ENCODING_TERMINAL,
                         localization.component("achievement.ae2.PatternTerminal", "Crafting Maestro"),
-                        localization.component("achievement.ae2.PatternTerminal.desc", "Craft a Pattern Encoding Terminal"),
+                        localization.component("achievement.ae2.PatternTerminal.desc",
+                                "Craft a Pattern Encoding Terminal"),
                         null /* background */,
                         FrameType.TASK,
                         true /* showToast */,
@@ -350,8 +351,10 @@ public class AdvancementGenerator implements IAE2DataProvider {
         var growthAccelerator = Advancement.Builder.advancement()
                 .display(
                         AEBlocks.QUARTZ_GROWTH_ACCELERATOR,
-                        localization.component("achievement.ae2.CrystalGrowthAccelerator", "Accelerator is an understatement"),
-                        localization.component("achievement.ae2.CrystalGrowthAccelerator.desc", "Craft a Crystal Growth Accelerator"),
+                        localization.component("achievement.ae2.CrystalGrowthAccelerator",
+                                "Accelerator is an understatement"),
+                        localization.component("achievement.ae2.CrystalGrowthAccelerator.desc",
+                                "Craft a Crystal Growth Accelerator"),
                         null /* background */,
                         FrameType.TASK,
                         true /* showToast */,
@@ -367,7 +370,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .display(
                         AEParts.COVERED_CABLE.item(AEColor.TRANSPARENT),
                         localization.component("achievement.ae2.Networking1", "Network Apprentice"),
-                        localization.component("achievement.ae2.Networking1.desc", "Reach 8 channels using devices on a network."),
+                        localization.component("achievement.ae2.Networking1.desc",
+                                "Reach 8 channels using devices on a network."),
                         null /* background */,
                         FrameType.TASK,
                         true /* showToast */,
@@ -382,7 +386,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .display(
                         AEParts.SMART_CABLE.item(AEColor.TRANSPARENT),
                         localization.component("achievement.ae2.Networking2", "Network Engineer"),
-                        localization.component("achievement.ae2.Networking2.desc", "Reach 128 channels using devices on a network."),
+                        localization.component("achievement.ae2.Networking2.desc",
+                                "Reach 128 channels using devices on a network."),
                         null /* background */,
                         FrameType.TASK,
                         true /* showToast */,
@@ -397,7 +402,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .display(
                         AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT),
                         localization.component("achievement.ae2.Networking3", "Network Administrator"),
-                        localization.component("achievement.ae2.Networking3.desc", "Reach 2048 channels using devices on a network."),
+                        localization.component("achievement.ae2.Networking3.desc",
+                                "Reach 2048 channels using devices on a network."),
                         null /* background */,
                         FrameType.TASK,
                         true /* showToast */,
@@ -490,7 +496,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .display(
                         AEItems.SPATIAL_128_CELL_COMPONENT,
                         localization.component("achievement.ae2.SpatialIOExplorer", "To boldly go"),
-                        localization.component("achievement.ae2.SpatialIOExplorer.desc", "Get stored in a spatial storage cell"),
+                        localization.component("achievement.ae2.SpatialIOExplorer.desc",
+                                "Get stored in a spatial storage cell"),
                         null /* background */,
                         FrameType.TASK,
                         false,
@@ -519,7 +526,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .display(
                         AEBlocks.INTERFACE,
                         localization.component("achievement.ae2.Recursive", "Recursive Networking"),
-                        localization.component("achievement.ae2.Recursive.desc", "Place a Storage Bus on an Interface."),
+                        localization.component("achievement.ae2.Recursive.desc",
+                                "Place a Storage Bus on an Interface."),
                         null /* background */,
                         FrameType.TASK,
                         true /* showToast */,

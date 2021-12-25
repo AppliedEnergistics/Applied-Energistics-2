@@ -34,6 +34,12 @@ jobs:
         run: ./gradlew build --no-daemon --info
       - name: Run Game Tests
         run: ./gradlew runGametest --no-daemon --info
+      - name: Upload new Source Text Strings to Crowdin
+        run: ./gradlew uploadToCrowdin --no-daemon --info
+        env:
+          GIT_BRANCH: master
+          CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
+        continue-on-error: true
       - uses: actions/upload-artifact@v2
         with:
           name: dist

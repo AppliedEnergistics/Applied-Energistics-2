@@ -358,7 +358,7 @@ public class Crowdin {
     private HttpResponse<JsonObject> sendJsonRequest(HttpRequest request, boolean allowUnmodified) throws Exception {
         System.out.println(request.method() + " " + request.uri());
         var response = httpClient.send(request, jsonHandler());
-        if (allowUnmodified && response.statusCode() == 301) {
+        if (allowUnmodified && response.statusCode() == 304) {
             return null;
         }
         if (response.statusCode() < 200 || response.statusCode() > 201) {

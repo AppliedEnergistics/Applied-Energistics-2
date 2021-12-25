@@ -260,7 +260,8 @@ public final class AEItems {
         return Collections.unmodifiableList(ITEMS);
     }
 
-    private static ColoredItemDefinition<PaintBallItem> createPaintBalls(String name, Map<AEColor, ResourceLocation> ids, boolean lumen) {
+    private static ColoredItemDefinition<PaintBallItem> createPaintBalls(String name,
+            Map<AEColor, ResourceLocation> ids, boolean lumen) {
         var colors = new ColoredItemDefinition<PaintBallItem>();
         for (AEColor color : AEColor.values()) {
             ResourceLocation id = ids.get(color);
@@ -275,11 +276,13 @@ public final class AEItems {
         return colors;
     }
 
-    static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id, Function<FabricItemSettings, T> factory) {
+    static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
+            Function<FabricItemSettings, T> factory) {
         return item(name, id, factory, CreativeTab.INSTANCE);
     }
 
-    static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id, Function<FabricItemSettings, T> factory,
+    static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
+            Function<FabricItemSettings, T> factory,
             CreativeModeTab group) {
 
         FabricItemSettings p = new FabricItemSettings().group(group);
