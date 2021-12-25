@@ -72,7 +72,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         for (var stack : getInternalInventory()) {
             // Wrapped fluid stacks are internal implementation details and should NEVER drop
             if (GenericStack.isWrapped(stack)) {

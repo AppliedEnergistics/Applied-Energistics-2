@@ -75,7 +75,7 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         this.logic.addDrops(drops);
     }
 

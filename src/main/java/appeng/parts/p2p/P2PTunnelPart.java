@@ -20,7 +20,6 @@ package appeng.parts.p2p;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -46,7 +45,6 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
 import appeng.core.AEConfig;
-import appeng.core.definitions.AEParts;
 import appeng.me.service.P2PService;
 import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.BasicStatePart;
@@ -112,17 +110,6 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         bch.addBox(5, 5, 12, 11, 11, 13);
         bch.addBox(3, 3, 13, 13, 13, 14);
         bch.addBox(2, 2, 14, 14, 14, 16);
-    }
-
-    @Override
-    public void getDrops(List<ItemStack> drops, boolean wrenched) {
-        var stack = AEParts.ME_P2P_TUNNEL.stack();
-        var tag = new CompoundTag();
-        exportSettings(SettingsFrom.DISMANTLE_ITEM, tag);
-        if (!tag.isEmpty()) {
-            stack.setTag(tag);
-        }
-        drops.add(stack);
     }
 
     @Override

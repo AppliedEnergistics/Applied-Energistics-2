@@ -214,9 +214,9 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
-    public void getDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         unpackLootTable(null);
-        super.getDrops(level, pos, drops);
+        super.addAdditionalDrops(level, pos, drops);
     }
 
     @Override

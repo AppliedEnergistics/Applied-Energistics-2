@@ -18,6 +18,7 @@
 
 package appeng.block.networking;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -57,6 +58,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -70,7 +73,6 @@ import appeng.api.parts.IFacadePart;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
@@ -103,6 +105,17 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        if (builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof CableBusBlockEntity bus) {
+            var drops = new ArrayList<ItemStack>();
+            bus.getCableBus().addPartDrops(drops);
+            return drops;
+        } else {
+            return List.of();
+        }
     }
 
     @Override
@@ -156,19 +169,6 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         // FIXME: Potentially check the fluid one too
         return super.canBeReplaced(state, useContext)
                 && this.cb(useContext.getLevel(), useContext.getClickedPos()).isEmpty();
-    }
-
-    @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        super.playerWillDestroy(level, pos, state, player);
-
-        if (player.getAbilities().instabuild) {
-            final AEBaseBlockEntity blockEntity = this.getBlockEntity(level, pos);
-            if (blockEntity != null) {
-                blockEntity.disableDrops();
-            }
-            // maybe ray trace?
-        }
     }
 
     // TODO-1.17 This hook was removed from Forge with replacement and may be unnecessary
