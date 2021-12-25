@@ -1,0 +1,31 @@
+name: 'Update translations'
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Download new translations from crowdin
+        run: ./gradlew downloadFromCrowdin --no-daemon --info
+        env:
+          GIT_BRANCH: master
+          CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
+      - name: Commit updated translations (if any)
+        uses: test-room-7/action-update-file@v1
+        with:
+          file-path: src/main/resources/assets/ae2/lang/*
+          commit-msg: Update translations
+          github-token: ${{ secrets.GITHUB_TOKEN }}
