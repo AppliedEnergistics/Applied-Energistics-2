@@ -11,11 +11,14 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.parts.IPartHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.IGridConnectedBlockEntity;
+import appeng.parts.AEBasePart;
+import appeng.util.Platform;
 
 public class PlotTestHelper extends GameTestHelper {
     private final BlockPos plotTranslation;
@@ -53,6 +56,8 @@ public class PlotTestHelper extends GameTestHelper {
      * Find all grids in the area and return the biggest one.
      */
     public IGrid getGrid(BlockPos pos) {
+        checkAllInitialized();
+
         var be = getBlockEntity(pos);
         if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
             return gridConnectedBlockEntity.getMainNode().getGrid();
@@ -64,7 +69,27 @@ public class PlotTestHelper extends GameTestHelper {
                 }
             }
         }
-        throw new IllegalStateException("No grid @ " + pos);
+        throw new GameTestAssertException("No grid @ " + pos);
+    }
+
+    /**
+     * Checks that everything is initialized
+     */
+    public void checkAllInitialized() {
+        forEveryBlockInStructure(blockPos -> {
+            var be = getBlockEntity(blockPos);
+            if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
+                check(gridConnectedBlockEntity.getMainNode().isReady(), "BE " + be + " is not ready");
+            } else if (be instanceof IPartHost partHost) {
+                for (var side : Platform.DIRECTIONS_WITH_NULL) {
+                    var part = partHost.getPart(side);
+                    if (part instanceof AEBasePart basePart) {
+                        var mainNode = basePart.getMainNode();
+                        check(mainNode.isReady(), "Part " + part + " is not ready");
+                    }
+                }
+            }
+        });
     }
 
     public void assertContains(IGrid grid, Item item) {
@@ -88,6 +113,12 @@ public class PlotTestHelper extends GameTestHelper {
         var counter = storage.getAvailableStacks();
         for (var key : counter.keySet()) {
             storage.extract(key, Long.MAX_VALUE, Actionable.MODULATE, new BaseActionSource());
+        }
+    }
+
+    public void check(boolean test, String errorMessage) throws GameTestAssertException {
+        if (!test) {
+            throw new GameTestAssertException(errorMessage);
         }
     }
 }

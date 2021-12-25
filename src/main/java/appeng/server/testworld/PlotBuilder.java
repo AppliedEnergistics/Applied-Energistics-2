@@ -1,5 +1,6 @@
 package appeng.server.testworld;
 
+import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -267,6 +268,22 @@ public interface PlotBuilder {
             cells.addItems(AEItems.ITEM_CELL_64K.stack());
             cells.addItems(AEItems.FLUID_CELL_64K.stack());
         });
+    }
+
+    /**
+     * Creates a drive with an empty item and fluid cell.
+     */
+    default DriveBuilder drive(BlockPos pos) {
+        var cells = new ArrayList<ItemStack>(10);
+
+        blockEntity(posToBb(pos), AEBlocks.DRIVE, drive -> {
+            var cellInv = drive.getInternalInventory();
+            for (ItemStack cell : cells) {
+                cellInv.addItems(cell);
+            }
+        });
+
+        return new DriveBuilder(cells);
     }
 
     Test test(Consumer<PlotTestHelper> assertion);

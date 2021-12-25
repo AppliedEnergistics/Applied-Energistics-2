@@ -78,6 +78,7 @@ public final class TestPlots {
             .put(AppEng.makeId("mattercannonrange"), TestPlots::matterCannonRange)
             .put(AppEng.makeId("insertfluidintomechest"), TestPlots::testInsertFluidIntoMEChest)
             .put(AppEng.makeId("maxchannelsadhoctest"), TestPlots::maxChannelsAdHocTest)
+            .put(AppEng.makeId("blockingmodesubnetworkchesttest"), TestPlots::blockingModeSubnetworkChestTest)
             .build();
 
     private TestPlots() {
@@ -701,4 +702,47 @@ public final class TestPlots {
         });
     }
 
+    /**
+     * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5860.
+     */
+    public static void blockingModeSubnetworkChestTest(PlotBuilder plot) {
+        // Network itself
+        plot.creativeEnergyCell("0 -1 0");
+        plot.block("[0,1] [0,1] [0,1]", AEBlocks.CRAFTING_ACCELERATOR);
+        plot.block("0 0 0", AEBlocks.CRAFTING_STORAGE_64K);
+        var input = GenericStack.fromItemStack(new ItemStack(Items.GOLD_INGOT));
+        var output = GenericStack.fromItemStack(new ItemStack(Items.DIAMOND));
+        plot.cable("2 0 0")
+                .part(Direction.EAST, AEParts.PATTERN_PROVIDER, pp -> {
+                    pp.getLogic().getPatternInv().addItems(
+                            PatternDetailsHelper.encodeProcessingPattern(
+                                    new GenericStack[] { input },
+                                    new GenericStack[] { output }));
+                    pp.getLogic().getConfigManager().putSetting(Settings.BLOCKING_MODE, YesNo.YES);
+                });
+        plot.drive(new BlockPos(2, 0, -1))
+                .addCreativeCell()
+                .add(input);
+        // Subnetwork
+        plot.creativeEnergyCell("3 -1 0");
+        plot.cable("3 0 0")
+                .part(Direction.WEST, AEParts.INTERFACE)
+                .part(Direction.EAST, AEParts.STORAGE_BUS);
+        plot.block("4 0 0", Blocks.CHEST);
+        // Crafting operation
+        plot.test(helper -> {
+            var craftingJob = new TestCraftingJob(helper, BlockPos.ZERO, output.what(), 64);
+            helper.startSequence()
+                    .thenWaitUntil(craftingJob::tickUntilStarted)
+                    .thenWaitUntil(() -> {
+                        var grid = helper.getGrid(BlockPos.ZERO);
+                        var requesting = grid.getCraftingService().getRequestedAmount(output.what());
+                        helper.check(requesting > 0, "not yet requesting items");
+                        if (requesting != 1) {
+                            helper.fail("blocking mode failed, requesting: " + requesting);
+                        }
+                    })
+                    .thenSucceed();
+        });
+    }
 }
