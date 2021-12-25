@@ -18,6 +18,7 @@
 
 package appeng.menu.implementations;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -27,6 +28,7 @@ import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
+import appeng.core.localization.Tooltips;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
@@ -59,6 +61,7 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
 
         RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0);
         top.setStackLimit(1);
+        top.setEmptyTooltip(Tooltips.inputSlot(Direction.UP));
         this.top = this.addSlot(top, SlotSemantics.INSCRIBER_PLATE_TOP);
         RestrictedInputSlot bottom = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv,
                 1);

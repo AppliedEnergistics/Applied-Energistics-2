@@ -79,52 +79,55 @@ public final class AEParts {
     public static final List<ColoredItemDefinition<?>> COLORED_PARTS = new ArrayList<>();
 
     // spotless:off
-    public static final ColoredItemDefinition<ColoredPartItem<SmartCablePart>> SMART_CABLE = constructColoredDefinition("smart_cable", SmartCablePart.class, SmartCablePart::new);
-    public static final ColoredItemDefinition<ColoredPartItem<CoveredCablePart>> COVERED_CABLE = constructColoredDefinition("covered_cable", CoveredCablePart.class, CoveredCablePart::new);
-    public static final ColoredItemDefinition<ColoredPartItem<GlassCablePart>> GLASS_CABLE = constructColoredDefinition("glass_cable", GlassCablePart.class, GlassCablePart::new);
-    public static final ColoredItemDefinition<ColoredPartItem<CoveredDenseCablePart>> COVERED_DENSE_CABLE = constructColoredDefinition("covered_dense_cable", CoveredDenseCablePart.class, CoveredDenseCablePart::new);
-    public static final ColoredItemDefinition<ColoredPartItem<SmartDenseCablePart>> SMART_DENSE_CABLE = constructColoredDefinition("smart_dense_cable", SmartDenseCablePart.class, SmartDenseCablePart::new);
-    public static final ItemDefinition<PartItem<QuartzFiberPart>> QUARTZ_FIBER = createPart(AEPartIds.QUARTZ_FIBER, QuartzFiberPart.class, QuartzFiberPart::new);
-    public static final ItemDefinition<PartItem<ToggleBusPart>> TOGGLE_BUS = createPart(AEPartIds.TOGGLE_BUS, ToggleBusPart.class, ToggleBusPart::new);
-    public static final ItemDefinition<PartItem<InvertedToggleBusPart>> INVERTED_TOGGLE_BUS = createPart(AEPartIds.INVERTED_TOGGLE_BUS, InvertedToggleBusPart.class, InvertedToggleBusPart::new);
-    public static final ItemDefinition<PartItem<CableAnchorPart>> CABLE_ANCHOR = createPart(AEPartIds.CABLE_ANCHOR, CableAnchorPart.class, CableAnchorPart::new);
-    public static final ItemDefinition<PartItem<PanelPart>> MONITOR = createPart(AEPartIds.MONITOR, PanelPart.class, PanelPart::new);
-    public static final ItemDefinition<PartItem<SemiDarkPanelPart>> SEMI_DARK_MONITOR = createPart(AEPartIds.SEMI_DARK_MONITOR, SemiDarkPanelPart.class, SemiDarkPanelPart::new);
-    public static final ItemDefinition<PartItem<DarkPanelPart>> DARK_MONITOR = createPart(AEPartIds.DARK_MONITOR, DarkPanelPart.class, DarkPanelPart::new);
-    public static final ItemDefinition<PartItem<StorageBusPart>> STORAGE_BUS = createPart(AEPartIds.STORAGE_BUS, StorageBusPart.class, StorageBusPart::new);
-    public static final ItemDefinition<PartItem<ImportBusPart>> IMPORT_BUS = createPart(AEPartIds.IMPORT_BUS, ImportBusPart.class, ImportBusPart::new);
-    public static final ItemDefinition<PartItem<ExportBusPart>> EXPORT_BUS = createPart(AEPartIds.EXPORT_BUS, ExportBusPart.class, ExportBusPart::new);
-    public static final ItemDefinition<PartItem<StorageLevelEmitterPart>> LEVEL_EMITTER = createPart(AEPartIds.LEVEL_EMITTER, StorageLevelEmitterPart.class, StorageLevelEmitterPart::new);
-    public static final ItemDefinition<PartItem<EnergyLevelEmitterPart>> ENERGY_LEVEL_EMITTER = createPart(AEPartIds.ENERGY_LEVEL_EMITTER, EnergyLevelEmitterPart.class, EnergyLevelEmitterPart::new);
-    public static final ItemDefinition<PartItem<AnnihilationPlanePart>> ANNIHILATION_PLANE = createPart(AEPartIds.ANNIHILATION_PLANE, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
-    public static final ItemDefinition<PartItem<IdentityAnnihilationPlanePart>> IDENTITY_ANNIHILATION_PLANE = createPart(AEPartIds.IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart.class, IdentityAnnihilationPlanePart::new);
-    public static final ItemDefinition<PartItem<FormationPlanePart>> FORMATION_PLANE = createPart(AEPartIds.FORMATION_PLANE, FormationPlanePart.class, FormationPlanePart::new);
-    public static final ItemDefinition<PartItem<PatternEncodingTerminalPart>> PATTERN_ENCODING_TERMINAL = createPart(AEPartIds.PATTERN_ENCODING_TERMINAL, PatternEncodingTerminalPart.class, PatternEncodingTerminalPart::new);
-    public static final ItemDefinition<PartItem<CraftingTerminalPart>> CRAFTING_TERMINAL = createPart(AEPartIds.CRAFTING_TERMINAL, CraftingTerminalPart.class, CraftingTerminalPart::new);
-    public static final ItemDefinition<PartItem<ItemTerminalPart>> TERMINAL = createPart(AEPartIds.TERMINAL, ItemTerminalPart.class, ItemTerminalPart::new);
-    public static final ItemDefinition<PartItem<StorageMonitorPart>> STORAGE_MONITOR = createPart(AEPartIds.STORAGE_MONITOR, StorageMonitorPart.class, StorageMonitorPart::new);
-    public static final ItemDefinition<PartItem<ConversionMonitorPart>> CONVERSION_MONITOR = createPart(AEPartIds.CONVERSION_MONITOR, ConversionMonitorPart.class, ConversionMonitorPart::new);
-    public static final ItemDefinition<PartItem<PatternProviderPart>> PATTERN_PROVIDER = createPart(AEPartIds.PATTERN_PROVIDER, PatternProviderPart.class, PatternProviderPart::new);
-    public static final ItemDefinition<PartItem<InterfacePart>> INTERFACE = createPart(AEPartIds.INTERFACE, InterfacePart.class, InterfacePart::new);
-    public static final ItemDefinition<PartItem<PatternAccessTerminalPart>> PATTERN_ACCESS_TERMINAL = createPart(AEPartIds.PATTERN_ACCESS_TERMINAL, PatternAccessTerminalPart.class, PatternAccessTerminalPart::new);
-    public static final ItemDefinition<PartItem<EnergyAcceptorPart>> ENERGY_ACCEPTOR = createPart(AEPartIds.ENERGY_ACCEPTOR, EnergyAcceptorPart.class, EnergyAcceptorPart::new);
-    public static final ItemDefinition<PartItem<MEP2PTunnelPart>> ME_P2P_TUNNEL = createPart(AEPartIds.ME_P2P_TUNNEL, MEP2PTunnelPart.class, MEP2PTunnelPart::new);
-    public static final ItemDefinition<PartItem<RedstoneP2PTunnelPart>> REDSTONE_P2P_TUNNEL = createPart(AEPartIds.REDSTONE_P2P_TUNNEL, RedstoneP2PTunnelPart.class, RedstoneP2PTunnelPart::new);
-    public static final ItemDefinition<PartItem<ItemP2PTunnelPart>> ITEM_P2P_TUNNEL = createPart(AEPartIds.ITEM_P2P_TUNNEL, ItemP2PTunnelPart.class, ItemP2PTunnelPart::new);
-    public static final ItemDefinition<PartItem<FluidP2PTunnelPart>> FLUID_P2P_TUNNEL = createPart(AEPartIds.FLUID_P2P_TUNNEL, FluidP2PTunnelPart.class, FluidP2PTunnelPart::new);
-    public static final ItemDefinition<PartItem<FEP2PTunnelPart>> FE_P2P_TUNNEL = createPart(AEPartIds.FE_P2P_TUNNEL, FEP2PTunnelPart.class, FEP2PTunnelPart::new);
-    public static final ItemDefinition<PartItem<LightP2PTunnelPart>> LIGHT_P2P_TUNNEL = createPart(AEPartIds.LIGHT_P2P_TUNNEL, LightP2PTunnelPart.class, LightP2PTunnelPart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<SmartCablePart>> SMART_CABLE = constructColoredDefinition("ME Smart Cable", "smart_cable", SmartCablePart.class, SmartCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<CoveredCablePart>> COVERED_CABLE = constructColoredDefinition("ME Covered Cable", "covered_cable", CoveredCablePart.class, CoveredCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<GlassCablePart>> GLASS_CABLE = constructColoredDefinition("ME Glass Cable", "glass_cable", GlassCablePart.class, GlassCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<CoveredDenseCablePart>> COVERED_DENSE_CABLE = constructColoredDefinition("ME Dense Covered Cable", "covered_dense_cable", CoveredDenseCablePart.class, CoveredDenseCablePart::new);
+    public static final ColoredItemDefinition<ColoredPartItem<SmartDenseCablePart>> SMART_DENSE_CABLE = constructColoredDefinition("ME Dense Smart Cable", "smart_dense_cable", SmartDenseCablePart.class, SmartDenseCablePart::new);
+    public static final ItemDefinition<PartItem<QuartzFiberPart>> QUARTZ_FIBER = createPart("Quartz Fiber", AEPartIds.QUARTZ_FIBER, QuartzFiberPart.class, QuartzFiberPart::new);
+    public static final ItemDefinition<PartItem<ToggleBusPart>> TOGGLE_BUS = createPart("ME Toggle Bus", AEPartIds.TOGGLE_BUS, ToggleBusPart.class, ToggleBusPart::new);
+    public static final ItemDefinition<PartItem<InvertedToggleBusPart>> INVERTED_TOGGLE_BUS = createPart("ME Inverted Toggle Bus", AEPartIds.INVERTED_TOGGLE_BUS, InvertedToggleBusPart.class, InvertedToggleBusPart::new);
+    public static final ItemDefinition<PartItem<CableAnchorPart>> CABLE_ANCHOR = createPart("Cable Anchor", AEPartIds.CABLE_ANCHOR, CableAnchorPart.class, CableAnchorPart::new);
+    public static final ItemDefinition<PartItem<PanelPart>> MONITOR = createPart("Bright Illuminated Panel", AEPartIds.MONITOR, PanelPart.class, PanelPart::new);
+    public static final ItemDefinition<PartItem<SemiDarkPanelPart>> SEMI_DARK_MONITOR = createPart("Illuminated Panel", AEPartIds.SEMI_DARK_MONITOR, SemiDarkPanelPart.class, SemiDarkPanelPart::new);
+    public static final ItemDefinition<PartItem<DarkPanelPart>> DARK_MONITOR = createPart("Dark Illuminated Panel", AEPartIds.DARK_MONITOR, DarkPanelPart.class, DarkPanelPart::new);
+    public static final ItemDefinition<PartItem<StorageBusPart>> STORAGE_BUS = createPart("ME Storage Bus", AEPartIds.STORAGE_BUS, StorageBusPart.class, StorageBusPart::new);
+    public static final ItemDefinition<PartItem<ImportBusPart>> IMPORT_BUS = createPart("ME Import Bus", AEPartIds.IMPORT_BUS, ImportBusPart.class, ImportBusPart::new);
+    public static final ItemDefinition<PartItem<ExportBusPart>> EXPORT_BUS = createPart("ME Export Bus", AEPartIds.EXPORT_BUS, ExportBusPart.class, ExportBusPart::new);
+    public static final ItemDefinition<PartItem<StorageLevelEmitterPart>> LEVEL_EMITTER = createPart("ME Level Emitter", AEPartIds.LEVEL_EMITTER, StorageLevelEmitterPart.class, StorageLevelEmitterPart::new);
+    public static final ItemDefinition<PartItem<EnergyLevelEmitterPart>> ENERGY_LEVEL_EMITTER = createPart("ME Energy Level Emitter", AEPartIds.ENERGY_LEVEL_EMITTER, EnergyLevelEmitterPart.class, EnergyLevelEmitterPart::new);
+    public static final ItemDefinition<PartItem<AnnihilationPlanePart>> ANNIHILATION_PLANE = createPart("ME Annihilation Plane", AEPartIds.ANNIHILATION_PLANE, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
+    public static final ItemDefinition<PartItem<IdentityAnnihilationPlanePart>> IDENTITY_ANNIHILATION_PLANE = createPart("ME Identity Annihilation Plane", AEPartIds.IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart.class, IdentityAnnihilationPlanePart::new);
+    public static final ItemDefinition<PartItem<FormationPlanePart>> FORMATION_PLANE = createPart("ME Formation Plane", AEPartIds.FORMATION_PLANE, FormationPlanePart.class, FormationPlanePart::new);
+    public static final ItemDefinition<PartItem<PatternEncodingTerminalPart>> PATTERN_ENCODING_TERMINAL = createPart("ME Pattern Encoding Terminal", AEPartIds.PATTERN_ENCODING_TERMINAL, PatternEncodingTerminalPart.class, PatternEncodingTerminalPart::new);
+    public static final ItemDefinition<PartItem<CraftingTerminalPart>> CRAFTING_TERMINAL = createPart("ME Crafting Terminal", AEPartIds.CRAFTING_TERMINAL, CraftingTerminalPart.class, CraftingTerminalPart::new);
+    public static final ItemDefinition<PartItem<ItemTerminalPart>> TERMINAL = createPart("ME Terminal", AEPartIds.TERMINAL, ItemTerminalPart.class, ItemTerminalPart::new);
+    public static final ItemDefinition<PartItem<StorageMonitorPart>> STORAGE_MONITOR = createPart("ME Storage Monitor", AEPartIds.STORAGE_MONITOR, StorageMonitorPart.class, StorageMonitorPart::new);
+    public static final ItemDefinition<PartItem<ConversionMonitorPart>> CONVERSION_MONITOR = createPart("ME Conversion Monitor", AEPartIds.CONVERSION_MONITOR, ConversionMonitorPart.class, ConversionMonitorPart::new);
+    public static final ItemDefinition<PartItem<PatternProviderPart>> PATTERN_PROVIDER = createPart("ME Pattern Provider", AEPartIds.PATTERN_PROVIDER, PatternProviderPart.class, PatternProviderPart::new);
+    public static final ItemDefinition<PartItem<InterfacePart>> INTERFACE = createPart("ME Interface", AEPartIds.INTERFACE, InterfacePart.class, InterfacePart::new);
+    public static final ItemDefinition<PartItem<PatternAccessTerminalPart>> PATTERN_ACCESS_TERMINAL = createPart("ME Pattern Access Terminal", AEPartIds.PATTERN_ACCESS_TERMINAL, PatternAccessTerminalPart.class, PatternAccessTerminalPart::new);
+    public static final ItemDefinition<PartItem<EnergyAcceptorPart>> ENERGY_ACCEPTOR = createPart("Energy Acceptor", AEPartIds.ENERGY_ACCEPTOR, EnergyAcceptorPart.class, EnergyAcceptorPart::new);
+    public static final ItemDefinition<PartItem<MEP2PTunnelPart>> ME_P2P_TUNNEL = createPart("ME P2P Tunnel", AEPartIds.ME_P2P_TUNNEL, MEP2PTunnelPart.class, MEP2PTunnelPart::new);
+    public static final ItemDefinition<PartItem<RedstoneP2PTunnelPart>> REDSTONE_P2P_TUNNEL = createPart("Redstone P2P Tunnel", AEPartIds.REDSTONE_P2P_TUNNEL, RedstoneP2PTunnelPart.class, RedstoneP2PTunnelPart::new);
+    public static final ItemDefinition<PartItem<ItemP2PTunnelPart>> ITEM_P2P_TUNNEL = createPart("Item P2P Tunnel", AEPartIds.ITEM_P2P_TUNNEL, ItemP2PTunnelPart.class, ItemP2PTunnelPart::new);
+    public static final ItemDefinition<PartItem<FluidP2PTunnelPart>> FLUID_P2P_TUNNEL = createPart("Fluid P2P Tunnel", AEPartIds.FLUID_P2P_TUNNEL, FluidP2PTunnelPart.class, FluidP2PTunnelPart::new);
+    public static final ItemDefinition<PartItem<FEP2PTunnelPart>> FE_P2P_TUNNEL = createPart("Energy P2P Tunnel", AEPartIds.FE_P2P_TUNNEL, FEP2PTunnelPart.class, FEP2PTunnelPart::new);
+    public static final ItemDefinition<PartItem<LightP2PTunnelPart>> LIGHT_P2P_TUNNEL = createPart("Light P2P Tunnel", AEPartIds.LIGHT_P2P_TUNNEL, LightP2PTunnelPart.class, LightP2PTunnelPart::new);
     // spotless:on
 
-    private static <T extends IPart> ItemDefinition<PartItem<T>> createPart(ResourceLocation id,
+    private static <T extends IPart> ItemDefinition<PartItem<T>> createPart(
+            String englishName,
+            ResourceLocation id,
             Class<T> partClass,
             Function<IPartItem<T>, T> factory) {
 
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
-        return item(id, props -> new PartItem<>(props, partClass, factory));
+        return item(englishName, id, props -> new PartItem<>(props, partClass, factory));
     }
 
     private static <T extends IPart> ColoredItemDefinition<ColoredPartItem<T>> constructColoredDefinition(
+            String nameSuffix,
             String idSuffix,
             Class<T> partClass,
             Function<ColoredPartItem<T>, T> factory) {
@@ -133,9 +136,10 @@ public final class AEParts {
 
         var definition = new ColoredItemDefinition<ColoredPartItem<T>>();
         for (AEColor color : AEColor.values()) {
-            String id = color.registryPrefix + '_' + idSuffix;
+            var id = color.registryPrefix + '_' + idSuffix;
+            var name = color.englishName + " " + nameSuffix;
 
-            var itemDef = item(AppEng.makeId(id),
+            var itemDef = item(name, AppEng.makeId(id),
                     props -> new ColoredPartItem<>(props, partClass, factory, color));
 
             definition.add(color, AppEng.makeId(id), itemDef);

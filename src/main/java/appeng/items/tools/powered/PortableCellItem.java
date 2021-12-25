@@ -54,10 +54,10 @@ import appeng.util.ConfigInventory;
 public class PortableCellItem extends AEBasePoweredItem
         implements IBasicCellItem, IMenuItem {
 
-    public static final StorageTier SIZE_1K = new StorageTier(512, 54, 8);
-    public static final StorageTier SIZE_4K = new StorageTier(2048, 45, 32);
-    public static final StorageTier SIZE_16K = new StorageTier(8192, 36, 128);
-    public static final StorageTier SIZE_64K = new StorageTier(16834, 27, 512);
+    public static final StorageTier SIZE_1K = new StorageTier("1k", 512, 54, 8);
+    public static final StorageTier SIZE_4K = new StorageTier("4k", 2048, 45, 32);
+    public static final StorageTier SIZE_16K = new StorageTier("16k", 8192, 36, 128);
+    public static final StorageTier SIZE_64K = new StorageTier("64k", 16834, 27, 512);
 
     private final StorageTier tier;
     private final AEKeyType keyType;
@@ -196,7 +196,7 @@ public class PortableCellItem extends AEBasePoweredItem
         return 0;
     }
 
-    public record StorageTier(int bytes, int types, int bytesPerType) {
+    public record StorageTier(String namePrefix, int bytes, int types, int bytesPerType) {
     }
 
     @Override

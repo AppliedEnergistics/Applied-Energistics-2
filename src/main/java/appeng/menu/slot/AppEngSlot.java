@@ -43,6 +43,11 @@ public class AppEngSlot extends Slot {
     private final InternalInventory inventory;
     private final int invSlot;
     private boolean hideAmount;
+    /**
+     * Tooltip for this slot if the slot is empty.
+     */
+    @Nullable
+    private List<Component> emptyTooltip;
 
     private boolean isDraggable = true;
     private AEBaseMenu menu = null;
@@ -79,6 +84,9 @@ public class AppEngSlot extends Slot {
     @Nullable
     public List<Component> getCustomTooltip(Function<ItemStack, List<Component>> getItemTooltip,
             ItemStack carriedItem) {
+        if (getDisplayStack().isEmpty() && emptyTooltip != null) {
+            return emptyTooltip;
+        }
         return null;
     }
 
@@ -290,4 +298,12 @@ public class AppEngSlot extends Slot {
         this.hideAmount = hideAmount;
     }
 
+    @Nullable
+    public List<Component> getEmptyTooltip() {
+        return emptyTooltip;
+    }
+
+    public void setEmptyTooltip(@Nullable List<Component> emptyTooltip) {
+        this.emptyTooltip = emptyTooltip;
+    }
 }

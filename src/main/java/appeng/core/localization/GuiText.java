@@ -22,89 +22,200 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
+import javax.annotation.Nullable;
+
 public enum GuiText {
-    inventory("container"), // mc's default Inventory localization.
-
-    TankAmount, TankCapacity,
-
-    Chest, StoredEnergy, Of, Condenser, Drive, SkyChest,
-
-    VibrationChamber, SpatialIOPort, SpatialAnchor, LevelEmitter, Terminal, TerminalViewCellsTooltip,
-
-    Interface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ExportBus,
-
-    CompatibleUpgrades, CompatibleUpgrade, UpgradeToolbelt,
-
-    CellWorkbench, NetworkDetails, StorageCells, Interfaces, IOBuses,
-
-    IOPort, BytesUsed, Types, QuantumLinkChamber, PortableCell,
-
-    NetworkTool, PowerUsageRate, PowerInputRate, Installed, EnergyDrain, ChannelEnergyDrain,
-
-    StorageBus, StorageBusFluids, Priority, Security, Encoded, Blank, Unlinked, Linked,
-
-    SecurityCardEditor, NoPermissions, WirelessTerminal, Wireless,
-
-    CraftingTerminal, FormationPlane, FluidFormationPlane, Inscriber, QuartzCuttingKnife,
-
-    // spatial
-    SpatialCapacity, StoredSize, Unformatted, SerialNumber,
-
-    // spatial anchor
-
-    SpatialAnchorUsedPower, SpatialAnchorLoadedChunks,
-    SpatialAnchorStatistics, SpatialAnchorAll, SpatialAnchorAllLoaded,
-
-    CopyMode, CopyModeDesc, PatternEncoding,
-
-    // Pattern tooltips
-    CraftingPattern, ProcessingPattern, Crafts, Produces, And, With, Substitute, Yes, No,
-
-    MolecularAssembler,
-
-    StoredPower, MaxPower, RequiredPower, Efficiency, SCSSize, SCSInvalid, InWorldCrafting,
-
-    inWorldSingularity, ChargedQuartz,
-
-    NoSecondOutput, OfSecondOutput, MultipleOutputs,
-
-    Stores, Next, Set, SelectAmount, Lumen, Empty,
-
-    ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel, ETA, ETAFormat,
-
-    FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start,
-
-    SelectedCraftingCPU, Automatic, PartialPlan, Missing, ConfirmCraftCpuStatus, ConfirmCraftNoCpu,
-
-    InterfaceTerminal, NoCraftingCPUs, Clean, InvalidPattern,
-
-    InterfaceTerminalHint, WirelessRange, TransparentFacades, TransparentFacadesHint,
-
-    NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses,
-
-    Included, Excluded, Partitioned, Precise, Fuzzy,
-
+    inventory(null, "container"), // mc's default Inventory localization.
+    And("and"),
+    AttachedTo("Attached to: %s"),
+    Automatic("Automatic"),
+    Black("Black"),
+    Blank("Blank"),
+    Blue("Blue"),
+    Brown("Brown"),
+    BytesUsed("%s Bytes Used"),
+    CPUs("CPU"),
+    CalculatingWait("Calculating Please Wait..."),
+    Cancel("Cancel"),
+    CellWorkbench("Cell Workbench"),
+    ChannelEnergyDrain("Channel Passive Drain: %s"),
+    ChargedQuartz("Charged Certus Quartz is crafted by inserting an uncharged Certus Quartz Crystal into the Charger, and powering it."),
+    Chest("ME Chest"),
+    Clean("Clean"),
+    CompatibleUpgrade("%s (%s)"),
+    CompatibleUpgrades("Compatible Upgrades:"),
+    Condenser("Matter Condenser"),
+    Config("Config"),
+    ConfirmCraftCpuStatus("Storage: %s : Co Processors: %s"),
+    ConfirmCraftNoCpu("Storage: N/A : Co Processors: N/A"),
+    CopyMode("Copy Mode"),
+    CopyModeDesc("Controls if the contents of the configuration pane are cleared when you remove the cell."),
+    Crafting("Crafting: %s"),
+    CraftingInterface("ME Pattern Provider"),
+    CraftingPattern("Crafting Pattern"),
+    CraftingPlan("Crafting Plan - %s"),
+    CraftingStatus("Crafting Status"),
+    CraftingTerminal("Crafting Terminal"),
+    Crafts("Crafts"),
+    Cyan("Cyan"),
+    Drive("ME Drive"),
+    ETAFormat("HH:mm:ss"),
+    Efficiency("Efficiency: %s%%"),
+    Empty("Empty"),
+    Encoded("Encoded"),
+    EnergyDrain("Passive Drain: %s"),
+    EnergyLevelEmitter("ME Energy Level Emitter"),
+    Excluded("Excluded"),
+    ExportBus("ME Export Bus"),
+    ExportBusFluids("ME Fluid Export Bus"),
+    ExternalStorage("External Storage (%s)"),
+    FacadeCrafting("Facade Crafting"),
+    Fluids("Fluids"),
+    Fluix("Fluix"),
+    FormationPlane("Formation Plane"),
+    FromStorage("Available: %s"),
+    Fuzzy("Fuzzy"),
+    Gray("Gray"),
+    Green("Green"),
+    IOBuses("ME Import/Export Bus"),
+    IOPort("ME IO Port"),
+    ImportBus("ME Import Bus"),
+    ImportBusFluids("ME Fluid Import Bus"),
+    InWorldCrafting("AE2 In World Crafting"),
+    Included("Included"),
+    Inscriber("Inscriber"),
+    Installed("Installed: %s"),
+    Interface("ME Interface"),
+    InterfaceTerminal("Interface Terminal"),
+    InterfaceTerminalHint("Show Or Hide on Interface Terminal."),
+    Interfaces("ME Interfaces"),
+    InvalidPattern("Invalid Pattern"),
+    Items("Items"),
     // Used in a terminal to indicate that an item is craftable
-    SmallFontCraft, LargeFontCraft,
-
-    // Used by storage bus for attached storage types
-    AttachedTo, Unattached, MENetworkStorage, ExternalStorage, Items, Fluids,
-
-    // Used in a ME Interface when no appropriate block entity was detected near it
-    Nothing;
+    LargeFontCraft("+"),
+    LevelEmitter("ME Level Emitter"),
+    LightBlue("Light Blue"),
+    LightGray("Light Gray"),
+    Lime("Lime"),
+    Linked("Linked"),
+    Lumen("Lumen"),
+    MENetworkStorage("ME Network Storage"),
+    Magenta("Magenta"),
+    MaxPower("Max Power: %s"),
+    Missing("Missing: %s"),
+    MolecularAssembler("Molecular Assembler"),
+    MultipleOutputs("%1$d%% second, %2$d%% third output."),
+    NetworkDetails("Network Details (%d Channels)"),
+    NetworkTool("Network Tool"),
+    Next("Next"),
+    No("No"),
+    NoCraftingCPUs("No Crafting CPUs are Available"),
+    NoCraftingJobs("No Crafting Job Active"),
+    NoPermissions("No Permissions Selected"),
+    NoSecondOutput("No Secondary Output"),
+    Nothing("Nothing"),
+    OCTunnel("OpenComputers"),
+    Of("of"),
+    OfSecondOutput("%1$d%% Chance for second output."),
+    Orange("Orange"),
+    PartialPlan("Partial Plan (Missing Ingredients)"),
+    Partitioned("Partitioned"),
+    PatternEncoding("Pattern Encoding"),
+    Patterns("Patterns"),
+    Pink("Pink"),
+    PortableCell("Portable Cell"),
+    PowerInputRate("Energy Generation: %s"),
+    PowerUsageRate("Energy Usage: %s"),
+    Precise("Precise"),
+    PressureTunnel("Pressure"),
+    Priority("Priority"),
+    PriorityExtractionHint("Extraction: Lower priority first"),
+    PriorityInsertionHint("Insertion: Higher priority first"),
+    ProcessingPattern("Processing Pattern"),
+    Produces("Produces"),
+    Purple("Purple"),
+    QuantumLinkChamber("Quantum Link Chamber"),
+    QuartzCuttingKnife("Quartz Cutting Knife"),
+    Red("Red"),
+    RequiredPower("Required Power: %s"),
+    ReturnInventory("Return Inventory"),
+    SCSInvalid("SCS Size: Invalid"),
+    SCSSize("SCS Size: %sx%sx%s"),
+    Scheduled("Scheduled: %s"),
+    Security("Security Term"),
+    SecurityCardEditor("Biometric Card Editor"),
+    SelectAmount("Select Amount"),
+    SelectedCraftingCPU("Crafting CPU: %s"),
+    SerialNumber("Serial Number: %s"),
+    Set("Set"),
+    SkyChest("Sky Stone Chest"),
+    // Used in a terminal to indicate that an item is craftable
+    SmallFontCraft("Craft"),
+    SpatialAnchor("Spatial Anchor"),
+    SpatialAnchorAll("Spanning: %d chunks in %d worlds"),
+    SpatialAnchorAllLoaded("Loading: %d chunks in %d worlds"),
+    SpatialAnchorLoadedChunks("Chunks loaded: %s"),
+    SpatialAnchorStatistics("Network Statistics"),
+    SpatialAnchorUsedPower("Energy Usage: %s"),
+    SpatialCapacity("Capacity: %dx%dx%d"),
+    SpatialIOPort("Spatial IO Port"),
+    Start("Start"),
+    StorageBus("Storage Bus"),
+    StorageBusFluids("Fluid Storage Bus"),
+    StorageCells("ME Storage Cells"),
+    Stored("Stored"),
+    StoredEnergy("Stored Energy"),
+    StoredFluids("Stored Fluids"),
+    StoredItems("Stored Items"),
+    StoredPower("Stored Power: %s"),
+    StoredSize("Stored Size: %dx%dx%d"),
+    Stores("Stores"),
+    Substitute("Using Substitutions:"),
+    TankAmount("Amount: %d"),
+    TankCapacity("Capacity: %d"),
+    Terminal("Terminal"),
+    TerminalViewCellsTooltip("View Cells"),
+    ToCraft("To Craft: %s"),
+    TransparentFacades("Transparent Facades"),
+    TransparentFacadesHint("Controls visibility of facades while the network tool is on your toolbar."),
+    Types("Types"),
+    Unattached("Unattached"),
+    Unformatted("Unformatted"),
+    Unlinked("Unlinked"),
+    UpgradeToolbelt("Upgrade Toolbelt"),
+    VibrationChamber("Vibration Chamber"),
+    White("White"),
+    Wireless("Wireless Access Point"),
+    WirelessRange("Range: %s m"),
+    WirelessTerminal("Wireless Term"),
+    With("with"),
+    Yellow("Yellow"),
+    Yes("Yes"),
+    inWorldCraftingPresses("Crafting Presses are found in the center of meteorites which can be found in around the world, they can be located by using a meteorite compass."),
+    inWorldSingularity("To create drop 1 Singularity and 1 Ender Dust and cause an explosion within range of the items.");
 
     private final String root;
 
+    @Nullable
+    private final String englishText;
+
     private final Component text;
 
-    GuiText() {
+    GuiText(@Nullable String englishText) {
         this.root = "gui.ae2";
+        this.englishText = englishText;
         this.text = new TranslatableComponent(getTranslationKey());
     }
 
-    GuiText(String r) {
+    GuiText(@Nullable String englishText, String r) {
         this.root = r;
+        this.englishText = englishText;
         this.text = new TranslatableComponent(getTranslationKey());
+    }
+
+    @Nullable
+    public String getEnglishText() {
+        return englishText;
     }
 
     public String getLocal() {
