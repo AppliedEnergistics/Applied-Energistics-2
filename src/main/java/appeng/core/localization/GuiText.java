@@ -27,6 +27,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 public enum GuiText {
     inventory(null, "container"), // mc's default Inventory localization.
     And("and"),
+    Or("or"),
     AttachedTo("Attached to: %s"),
     Automatic("Automatic"),
     Black("Black"),

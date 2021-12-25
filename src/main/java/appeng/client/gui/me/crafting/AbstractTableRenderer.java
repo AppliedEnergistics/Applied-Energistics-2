@@ -136,7 +136,7 @@ public abstract class AbstractTableRenderer<T> {
         hoveredStack = hovered;
 
         if (tooltipLines != null) {
-            screen.drawTooltip(poseStack, mouseX, mouseY, tooltipLines);
+            screen.drawTooltipWithHeader(poseStack, mouseX, mouseY, tooltipLines);
         }
     }
 

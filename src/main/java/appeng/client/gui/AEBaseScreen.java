@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -276,7 +275,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         } else if (this.hoveredSlot instanceof AppEngSlot appEngSlot) {
             var customTooltip = appEngSlot.getCustomTooltip(this::getTooltipFromItem, menu.getCarried());
             if (customTooltip != null) {
-                this.renderTooltip(poseStack, customTooltip, Optional.empty(), mouseX, mouseY);
+                drawTooltip(poseStack, mouseX, mouseY, customTooltip);
             }
         }
 
@@ -300,7 +299,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                         && mouseY < area.getY() + area.getHeight()) {
                     var tooltip = new Tooltip(tooltipWidget.getTooltipMessage());
                     if (!tooltip.getContent().isEmpty()) {
-                        drawTooltip(poseStack, tooltip, mouseX, mouseY);
+                        drawTooltipWithHeader(poseStack, tooltip, mouseX, mouseY);
                     }
                 }
             }
@@ -309,18 +308,21 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         // Widget-container uses screen-relative coordinates while the rest uses window-relative
         Tooltip tooltip = this.widgets.getTooltip(mouseX - leftPos, mouseY - topPos);
         if (tooltip != null) {
-            drawTooltip(poseStack, tooltip, mouseX, mouseY);
+            drawTooltipWithHeader(poseStack, tooltip, mouseX, mouseY);
         }
     }
 
-    private void drawTooltip(PoseStack poseStack, Tooltip tooltip, int mouseX, int mouseY) {
-        drawTooltip(poseStack, mouseX, mouseY, tooltip.getContent());
+    private void drawTooltipWithHeader(PoseStack poseStack, Tooltip tooltip, int mouseX, int mouseY) {
+        drawTooltipWithHeader(poseStack, mouseX, mouseY, tooltip.getContent());
     }
 
     // FIXME FABRIC: move out to json (?)
     private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormat(ChatFormatting.WHITE);
     private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormat(ChatFormatting.GRAY);
 
+    /**
+     * Draws a tooltip and word-wraps it to a maximum width.
+     */
     public void drawTooltip(PoseStack poseStack, int x, int y, List<Component> lines) {
         if (lines.isEmpty()) {
             return;
@@ -328,19 +330,33 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         // Max width should be half screen with some padding.
         // Vanilla will place the tooltip on the right or left of the cursor
-        // automatically, but uses a 12px offset (we use 20px for some extra space)
-        int maxWidth = width / 2 - 20;
+        // automatically, but uses a 12px offset (we use 40px for some extra space)
+        int maxWidth = width / 2 - 40;
 
         // Make the first line white
         // All lines after the first are colored gray
         List<FormattedCharSequence> styledLines = new ArrayList<>(lines.size());
-        for (int i = 0; i < lines.size(); i++) {
-            Style style = i == 0 ? TOOLTIP_HEADER : TOOLTIP_BODY;
-            styledLines.addAll(
-                    ComponentRenderUtils.wrapComponents(lines.get(i).copy().withStyle(s -> style), maxWidth, font));
+        for (Component line : lines) {
+            styledLines.addAll(ComponentRenderUtils.wrapComponents(line, maxWidth, font));
         }
         this.renderTooltip(poseStack, styledLines, x, y);
 
+    }
+
+    /**
+     * Draws a tooltip and word-wraps it to a maximum width.
+     */
+    public void drawTooltipWithHeader(PoseStack poseStack, int x, int y, List<Component> lines) {
+        if (lines.isEmpty()) {
+            return;
+        }
+
+        var formattedLines = new ArrayList<Component>(lines.size());
+        for (int i = 0; i < lines.size(); i++) {
+            Style style = i == 0 ? TOOLTIP_HEADER : TOOLTIP_BODY;
+            formattedLines.add(lines.get(i).copy().withStyle(s -> style));
+        }
+        drawTooltip(poseStack, x, y, formattedLines);
     }
 
     @Override
