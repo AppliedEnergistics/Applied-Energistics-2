@@ -17,17 +17,22 @@ import net.minecraft.core.Direction;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartItem;
+import appeng.api.stacks.AEKeyType;
 
 /**
  * Base class for P2P tunnels that work with {@code Storage<T>}.
  */
 public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>, T extends TransferVariant<?>>
         extends CapabilityP2PTunnelPart<P, Storage<T>> {
-    public StorageP2PTunnelPart(IPartItem<?> partItem, BlockApiLookup<Storage<T>, Direction> api) {
+
+    private AEKeyType keyType;
+
+    public StorageP2PTunnelPart(IPartItem<?> partItem, BlockApiLookup<Storage<T>, Direction> api, AEKeyType keyType) {
         super(partItem, api);
         this.inputHandler = new InputStorage();
         this.outputHandler = new OutputStorage();
         this.emptyHandler = Storage.empty();
+        this.keyType = keyType;
     }
 
     private class InputStorage implements InsertionOnlyStorage<T> {
@@ -58,7 +63,8 @@ public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>,
                 }
             }
 
-            queueTunnelDrain(PowerUnits.TR, total, transaction);
+            var energyDrain = ((double) total) / ((double) keyType.getAmountPerOperation());
+            queueTunnelDrain(PowerUnits.AE, energyDrain, transaction);
 
             return total;
         }
@@ -75,7 +81,8 @@ public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>,
             try (CapabilityGuard input = getInputCapability()) {
                 long extracted = input.get().extract(resource, maxAmount, transaction);
 
-                queueTunnelDrain(PowerUnits.TR, extracted, transaction);
+                var energyDrain = ((double) extracted) / ((double) keyType.getAmountPerOperation());
+                queueTunnelDrain(PowerUnits.AE, energyDrain, transaction);
 
                 return extracted;
             }
@@ -105,7 +112,8 @@ public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>,
         public long extract(T resource, long maxAmount, TransactionContext transaction) {
             long extracted = delegate.extract(resource, maxAmount, transaction);
 
-            queueTunnelDrain(PowerUnits.TR, extracted, transaction);
+            var energyDrain = ((double) extracted) / ((double) keyType.getAmountPerOperation());
+            queueTunnelDrain(PowerUnits.AE, energyDrain, transaction);
 
             return extracted;
         }
