@@ -46,11 +46,16 @@ public final class FluidContainerHelper {
         return ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
     }
 
-    public static void extractFromPlayerCursorSlot(Player player, AEFluidKey key, long amount) {
+    public static boolean extractFromPlayerCursorSlot(Player player, AEFluidKey key, long amount) {
         try (Transaction tx = Transaction.openOuter()) {
-            ContainerItemContext.ofPlayerCursor(player, player.containerMenu).find(FluidStorage.ITEM).extract(
-                    key.toVariant(), amount, tx);
-            tx.commit();
+            long extracted = ContainerItemContext.ofPlayerCursor(player, player.containerMenu).find(FluidStorage.ITEM)
+                    .extract(
+                            key.toVariant(), amount, tx);
+            if (extracted == amount) {
+                tx.commit();
+                return true;
+            }
+            return false;
         }
     }
 
