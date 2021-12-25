@@ -18,11 +18,11 @@
 
 package appeng.core.localization;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-
-import javax.annotation.Nullable;
 
 public enum GuiText {
     inventory(null, "container"), // mc's default Inventory localization.
@@ -39,7 +39,8 @@ public enum GuiText {
     Cancel("Cancel"),
     CellWorkbench("Cell Workbench"),
     ChannelEnergyDrain("Channel Passive Drain: %s"),
-    ChargedQuartz("Charged Certus Quartz is crafted by inserting an uncharged Certus Quartz Crystal into the Charger, and powering it."),
+    ChargedQuartz(
+            "Charged Certus Quartz is crafted by inserting an uncharged Certus Quartz Crystal into the Charger, and powering it."),
     Chest("ME Chest"),
     Clean("Clean"),
     CompatibleUpgrade("%s (%s)"),
@@ -191,8 +192,10 @@ public enum GuiText {
     With("with"),
     Yellow("Yellow"),
     Yes("Yes"),
-    inWorldCraftingPresses("Crafting Presses are found in the center of meteorites which can be found in around the world, they can be located by using a meteorite compass."),
-    inWorldSingularity("To create drop 1 Singularity and 1 Ender Dust and cause an explosion within range of the items.");
+    inWorldCraftingPresses(
+            "Crafting Presses are found in the center of meteorites which can be found in around the world, they can be located by using a meteorite compass."),
+    inWorldSingularity(
+            "To create drop 1 Singularity and 1 Ender Dust and cause an explosion within range of the items.");
 
     private final String root;
 

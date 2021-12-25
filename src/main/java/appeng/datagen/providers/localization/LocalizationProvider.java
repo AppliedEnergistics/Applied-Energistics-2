@@ -1,23 +1,25 @@
 package appeng.datagen.providers.localization;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.localization.ButtonToolTips;
-import appeng.core.localization.GuiText;
-import appeng.datagen.providers.IAE2DataProvider;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.network.chat.TextComponent;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.localization.ButtonToolTips;
+import appeng.core.localization.GuiText;
+import appeng.datagen.providers.IAE2DataProvider;
 
 public class LocalizationProvider implements IAE2DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -85,13 +87,17 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("commands.ae2.ChunkLoggerOff", "Chunk Logging is now off");
         add("commands.ae2.ChunkLoggerOn", "Chunk Logging is now on");
         add("commands.ae2.permissions", "You do not have adequate permissions to run this command.");
-        add("commands.ae2.usage", "Commands provided by Applied Energistics 2 - use /ae2 list for a list, and /ae2 help _____ for help with a command.");
-        add("gui.ae2.PatternEncoding.primary_processing_result_hint", "Can be requested through the automated crafting system.");
+        add("commands.ae2.usage",
+                "Commands provided by Applied Energistics 2 - use /ae2 list for a list, and /ae2 help _____ for help with a command.");
+        add("gui.ae2.PatternEncoding.primary_processing_result_hint",
+                "Can be requested through the automated crafting system.");
         add("gui.ae2.PatternEncoding.primary_processing_result_tooltip", "Primary Processing Result");
-        add("gui.ae2.PatternEncoding.secondary_processing_result_hint", "Can not be directly requested through the automated crafting system, but will be used before stored items in multi-step recipes.");
+        add("gui.ae2.PatternEncoding.secondary_processing_result_hint",
+                "Can not be directly requested through the automated crafting system, but will be used before stored items in multi-step recipes.");
         add("gui.ae2.PatternEncoding.secondary_processing_result_tooltip", "Secondary Processing Result");
         add("gui.ae2.security.build.name", "Build");
-        add("gui.ae2.security.build.tip", "User can modify the physical structure of the network, and make configuration changes.");
+        add("gui.ae2.security.build.tip",
+                "User can modify the physical structure of the network, and make configuration changes.");
         add("gui.ae2.security.craft.name", "Craft");
         add("gui.ae2.security.craft.tip", "User can initiate new crafting jobs.");
         add("gui.ae2.security.extract.name", "Withdraw");

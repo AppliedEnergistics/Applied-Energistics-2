@@ -342,43 +342,9 @@ spotless {
         targetExclude 'src/generated/resources/**'
         prettier().config(['parser': 'json'])
     }
-
-    format 'langJsonOrder', {
-        target 'src/**/lang/*.json'
-        addStep(LangJsonOrderStep.create())
-    }
 }
 
-
-import com.diffplug.spotless.FormatterFunc
-import com.diffplug.spotless.FormatterStep
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.modrinth.minotaur.TaskModrinthUpload
-
-/**
- * Enforce key ordering in the lang files by parsing the JSON to a TreeMap and writing it back.
- */
-final class LangJsonOrderStep {
-    private LangJsonOrderStep() {}
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setLenient().setPrettyPrinting().create();
-
-    static FormatterStep create() {
-        return FormatterStep.createNeverUpToDate(
-                'langJsonOrderStep',
-                new FormatterFunc() {
-                    String apply(String input) {
-                        TreeMap<String, Object> jsonMap = GSON.fromJson(input, TreeMap.class);
-                        String sortedJson = GSON.toJson(jsonMap);
-                        // Unescape ' (the apostrophe character). GSON escapes it by default.
-                        String prettyPrinted = sortedJson.replace('\\u0027', '\'');
-                        // Add a return after the last line to respect prettier's formatting of the json files.
-                        return prettyPrinted + "\n";
-                    }
-                },
-        );
-    }
-}
 
 ////////////////
 // Crowdin
