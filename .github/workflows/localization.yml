@@ -23,9 +23,10 @@ jobs:
         env:
           GIT_BRANCH: master
           CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
-      - name: Commit updated translations (if any)
-        uses: test-room-7/action-update-file@v1
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3.12.0
         with:
-          file-path: src/main/resources/assets/ae2/lang/*
-          commit-msg: Update translations
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Updated Translations from Crowdin
+          delete-branch: true
+          title: Updated Crowdin Translations
+          body: Updated Translations from Crowdin https://appliedenergistics2.crowdin.com/

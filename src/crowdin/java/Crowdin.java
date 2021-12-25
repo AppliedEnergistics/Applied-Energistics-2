@@ -29,7 +29,7 @@ import java.util.TreeMap;
 public class Crowdin {
 
     /**
-     * Key is the lang-code in Minecrafat, Value is the lang-code in Crowdin.
+     * Key is the lang-code in Minecraft, Value is the lang-code in Crowdin.
      */
     private static final Map<String, String> LANG_MAPPING = new HashMap<>();
 
