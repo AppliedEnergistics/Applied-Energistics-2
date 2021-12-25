@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
@@ -171,7 +172,7 @@ public class CraftingCpuLogic {
             // Contains the inputs for the pattern.
             @Nullable
             var craftingContainer = CraftingCpuHelper.extractPatternInputs(
-                    details, inventory, energyService, level, expectedOutputs);
+                    details, inventory, level, expectedOutputs);
 
             // Try to push to each provider.
             for (var provider : craftingService.getProviders(details)) {
@@ -180,8 +181,14 @@ public class CraftingCpuLogic {
                 if (provider.isBusy())
                     continue;
 
+                var patternPower = CraftingCpuHelper.calculatePatternPower(craftingContainer);
+
+                if (energyService.extractAEPower(patternPower, Actionable.SIMULATE,
+                        PowerMultiplier.CONFIG) < patternPower - 0.01)
+                    break;
+
                 if (provider.pushPattern(details, craftingContainer)) {
-                    CraftingCpuHelper.extractPatternPower(details, energyService, Actionable.MODULATE);
+                    energyService.extractAEPower(patternPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
                     pushedPatterns++;
 
                     for (var expectedOutput : expectedOutputs) {
@@ -203,7 +210,7 @@ public class CraftingCpuLogic {
 
                     // Prepare next inputs.
                     expectedOutputs.reset();
-                    craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory, energyService,
+                    craftingContainer = CraftingCpuHelper.extractPatternInputs(details, inventory,
                             level, expectedOutputs);
                 }
             }

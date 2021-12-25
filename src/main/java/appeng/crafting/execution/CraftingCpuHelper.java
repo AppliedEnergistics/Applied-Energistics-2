@@ -28,11 +28,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.KeyCounter;
 import appeng.crafting.inv.ICraftingInventory;
@@ -79,32 +77,25 @@ public class CraftingCpuHelper {
         return tag;
     }
 
-    public static boolean extractPatternPower(
-            IPatternDetails details,
-            IEnergyService energyService,
-            Actionable type) {
-        // Consume power.
+    public static double calculatePatternPower(KeyCounter[] craftingContainer) {
+        // Calculate power.
         double sum = 0;
 
-        for (var anInput : details.getInputs()) {
-            if (anInput != null) {
-                sum += anInput.getMultiplier();
+        for (var itemHolder : craftingContainer) {
+            for (var anInput : itemHolder) {
+                sum += ((double) anInput.getLongValue()) / ((double) anInput.getKey().getAmountPerOperation());
             }
         }
 
-        return energyService.extractAEPower(sum, type, PowerMultiplier.CONFIG) >= sum - 0.01;
+        return sum;
     }
 
     @Nullable
     public static KeyCounter[] extractPatternInputs(
             IPatternDetails details,
             ICraftingInventory sourceInv,
-            IEnergyService energyService,
             Level level,
             KeyCounter expectedOutputs) {
-        // Check energy first.
-        if (!extractPatternPower(details, energyService, Actionable.SIMULATE))
-            return null;
 
         // Extract inputs into the container.
         var inputs = details.getInputs();
