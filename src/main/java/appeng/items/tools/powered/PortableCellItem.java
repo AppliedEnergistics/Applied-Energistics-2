@@ -254,9 +254,10 @@ public class PortableCellItem extends AEBasePoweredItem
                     if (fluidStack != null) {
                         if (insert(player, stack, fluidStack.what(), fluidStack.amount(),
                                 Actionable.SIMULATE) == fluidStack.amount()) {
-                            FluidContainerHelper.extractFromPlayerCursorSlot(player, (AEFluidKey) fluidStack.what(),
-                                    fluidStack.amount());
-                            insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.MODULATE);
+                            if (FluidContainerHelper.extractFromPlayerCursorSlot(player, (AEFluidKey) fluidStack.what(),
+                                    fluidStack.amount())) {
+                                insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.MODULATE);
+                            }
                         }
                     }
                 }
