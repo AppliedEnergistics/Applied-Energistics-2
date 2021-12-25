@@ -22,6 +22,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.datagen.providers.advancements.AdvancementGenerator;
+import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.loot.BlockDropProvider;
 import appeng.datagen.providers.loot.ChestDropProvider;
 import appeng.datagen.providers.models.BlockModelProvider;
@@ -43,6 +44,8 @@ import appeng.datagen.providers.tags.ItemTagsProvider;
 public class AE2DataGenerators {
 
     public static void onGatherData(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+        var localization = new LocalizationProvider(generator);
+
         // Loot
         generator.addProvider(new BlockDropProvider(generator.getOutputFolder()));
         generator.addProvider(new ChestDropProvider(generator.getOutputFolder()));
@@ -61,7 +64,7 @@ public class AE2DataGenerators {
         generator.addProvider(new PartModelProvider(generator, existingFileHelper));
 
         // Misc
-        generator.addProvider(new AdvancementGenerator(generator));
+        generator.addProvider(new AdvancementGenerator(generator, localization));
 
         // Recipes
         generator.addProvider(new DecorationRecipes(generator));
@@ -71,6 +74,9 @@ public class AE2DataGenerators {
         generator.addProvider(new InscriberRecipes(generator));
         generator.addProvider(new SmeltingRecipes(generator));
         generator.addProvider(new CraftingRecipes(generator));
+
+        // Must run last
+        generator.addProvider(localization);
     }
 
 }

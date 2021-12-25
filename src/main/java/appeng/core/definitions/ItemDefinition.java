@@ -32,12 +32,18 @@ import appeng.util.helpers.ItemComparisonHelper;
 
 public class ItemDefinition<T extends Item> implements ItemLike {
     private final ResourceLocation id;
+    private final String englishName;
     private final T item;
 
-    public ItemDefinition(ResourceLocation id, T item) {
+    public ItemDefinition(String englishName, ResourceLocation id, T item) {
         Objects.requireNonNull(id, "id");
         this.id = id;
+        this.englishName = englishName;
         this.item = item;
+    }
+
+    public String getEnglishName() {
+        return englishName;
     }
 
     public ResourceLocation id() {

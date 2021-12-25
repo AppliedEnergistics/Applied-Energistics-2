@@ -88,6 +88,7 @@ dependencies {
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
     testImplementation("org.mockito:mockito-inline:4.0.0")
+
 }
 
 group = artifact_group
@@ -155,6 +156,7 @@ sourceSets {
         compileClasspath += sourceSets.portaforgy.output
         runtimeClasspath += sourceSets.portaforgy.output
     }
+    crowdin
 }
 
 configurations {
@@ -163,6 +165,11 @@ configurations {
 
 test {
     useJUnitPlatform()
+}
+
+dependencies {
+    crowdinImplementation 'de.siegmar:fastcsv:2.1.0'
+    crowdinImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
 ////////////////////
@@ -371,6 +378,27 @@ final class LangJsonOrderStep {
                 },
         );
     }
+}
+
+////////////////
+// Crowdin
+task uploadToCrowdin(type: JavaExec) {
+    classpath = sourceSets.crowdin.runtimeClasspath
+    mainClass = 'Crowdin'
+    args 'upload_source'
+    workingDir "."
+}
+task uploadTranslations(type: JavaExec) {
+    classpath = sourceSets.crowdin.runtimeClasspath
+    mainClass = 'Crowdin'
+    args 'upload_translations'
+    workingDir "."
+}
+task downloadFromCrowdin(type: JavaExec) {
+    classpath = sourceSets.crowdin.runtimeClasspath
+    mainClass = 'Crowdin'
+    args 'update_translations'
+    workingDir "."
 }
 
 ////////////////

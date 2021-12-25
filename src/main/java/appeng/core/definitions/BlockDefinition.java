@@ -30,8 +30,8 @@ import net.minecraft.world.level.block.Block;
 public class BlockDefinition<T extends Block> extends ItemDefinition<BlockItem> {
     private final T block;
 
-    public BlockDefinition(ResourceLocation id, T block, BlockItem item) {
-        super(id, item);
+    public BlockDefinition(String englishName, ResourceLocation id, T block, BlockItem item) {
+        super(englishName, id, item);
         this.block = Objects.requireNonNull(block, "block");
     }
 
