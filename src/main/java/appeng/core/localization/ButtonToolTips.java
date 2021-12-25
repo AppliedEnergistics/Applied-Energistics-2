@@ -133,7 +133,15 @@ public enum ButtonToolTips {
     Trash("Destroy Items"),
     TrashController("Deletion via Shift / Space Clicking."),
     View("View"),
-    Write("Insert Only");
+    Write("Insert Only"),
+    CanInsertFrom("Can insert from %s"),
+    CanExtractFrom("Can extract from %s"),
+    SideTop("top"),
+    SideBottom("bottom"),
+    SideLeft("left"),
+    SideRight("right"),
+    SideFront("front"),
+    SideBack("back");
 
     private final TranslatableComponent text;
 
