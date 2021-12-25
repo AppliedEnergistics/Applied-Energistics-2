@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.stacks.AEKeyType;
 import appeng.items.parts.PartModels;
 
 public class FluidP2PTunnelPart extends StorageP2PTunnelPart<FluidP2PTunnelPart, FluidVariant> {
@@ -37,7 +38,7 @@ public class FluidP2PTunnelPart extends StorageP2PTunnelPart<FluidP2PTunnelPart,
     }
 
     public FluidP2PTunnelPart(IPartItem<?> partItem) {
-        super(partItem, FluidStorage.SIDED);
+        super(partItem, FluidStorage.SIDED, AEKeyType.fluids());
     }
 
     @Override

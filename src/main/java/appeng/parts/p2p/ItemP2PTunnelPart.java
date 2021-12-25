@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.stacks.AEKeyType;
 import appeng.items.parts.PartModels;
 
 public class ItemP2PTunnelPart extends StorageP2PTunnelPart<ItemP2PTunnelPart, ItemVariant> {
@@ -37,7 +38,7 @@ public class ItemP2PTunnelPart extends StorageP2PTunnelPart<ItemP2PTunnelPart, I
     }
 
     public ItemP2PTunnelPart(IPartItem<?> partItem) {
-        super(partItem, ItemStorage.SIDED);
+        super(partItem, ItemStorage.SIDED, AEKeyType.items());
     }
 
     @Override
