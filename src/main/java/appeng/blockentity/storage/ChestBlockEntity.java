@@ -532,7 +532,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             if (source.player().map(player -> !this.securityCheck(player, SecurityPermissions.INJECT)).orElse(false)) {
                 return 0;
             }
-            return super.insert(what, amount, mode, source);
+            var inserted = super.insert(what, amount, mode, source);
+            if (inserted > 0 && mode == Actionable.MODULATE) {
+                blinkCell(0);
+            }
+            return inserted;
         }
 
         private boolean securityCheck(Player player, SecurityPermissions requiredPermission) {
@@ -544,7 +548,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             if (source.player().map(player -> !this.securityCheck(player, SecurityPermissions.EXTRACT)).orElse(false)) {
                 return 0;
             }
-            return super.extract(what, amount, mode, source);
+            var extracted = super.extract(what, amount, mode, source);
+            if (extracted > 0 && mode == Actionable.MODULATE) {
+                blinkCell(0);
+            }
+            return extracted;
         }
     }
 
