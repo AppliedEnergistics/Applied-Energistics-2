@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
+import appeng.api.storage.cells.CellState;
 import appeng.block.storage.DriveSlotState;
 
 /**
@@ -44,11 +45,18 @@ class CellLedRenderer {
 
     static {
         STATE_COLORS = new EnumMap<>(DriveSlotState.class);
-        STATE_COLORS.put(DriveSlotState.OFFLINE, new Vector3f(0, 0, 0));
-        STATE_COLORS.put(DriveSlotState.ONLINE, new Vector3f(0, 1, 0));
-        STATE_COLORS.put(DriveSlotState.NOT_EMPTY, new Vector3f(0f, 0.667f, 1));
-        STATE_COLORS.put(DriveSlotState.TYPES_FULL, new Vector3f(1, 0.667f, 0));
-        STATE_COLORS.put(DriveSlotState.FULL, new Vector3f(1, 0, 0));
+
+        for (var cellState : CellState.values()) {
+            var color = cellState.getStateColor();
+            var colorVector = new Vector3f(
+                    ((color >> 16) & 0xFF) / 255.0f,
+                    ((color >> 8) & 0xFF) / 255.0f,
+                    (color & 0xFF) / 255.0f);
+
+            STATE_COLORS.put(
+                    DriveSlotState.fromCellStatus(cellState),
+                    colorVector);
+        }
     }
 
     // The positions are based on the upper left slot in a drive

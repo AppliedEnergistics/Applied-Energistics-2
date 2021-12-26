@@ -456,7 +456,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false)
                 .parent(storageCell)
                 .addCriterion("pc_1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL1K))
-                .addCriterion("pc_4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL4k))
+                .addCriterion("pc_4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL4K))
                 .addCriterion("pc_16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL16K))
                 .addCriterion("pc_64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL64K))
                 .requirements(RequirementsStrategy.OR)

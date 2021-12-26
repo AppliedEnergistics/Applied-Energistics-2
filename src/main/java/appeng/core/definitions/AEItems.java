@@ -136,12 +136,12 @@ public final class AEItems {
     }
 
     public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL1K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL1K, PortableCellItem.SIZE_1K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL4k = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL4K, PortableCellItem.SIZE_4K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL4K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL4K, PortableCellItem.SIZE_4K);
     public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL16K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL16K, PortableCellItem.SIZE_16K);
     public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL64K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL64K, PortableCellItem.SIZE_64K);
 
     public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL1K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL1K, PortableCellItem.SIZE_1K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL4k = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL4K, PortableCellItem.SIZE_4K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL4K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL4K, PortableCellItem.SIZE_4K);
     public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL16K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL16K, PortableCellItem.SIZE_16K);
     public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL64K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL64K, PortableCellItem.SIZE_64K);
 

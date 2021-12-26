@@ -38,6 +38,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
+import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
@@ -187,5 +188,17 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         return this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
                 ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
                 : InteractionResult.PASS;
+    }
+
+    public static int getColor(ItemStack stack, int tintIndex) {
+        if (tintIndex == 1) {
+            // Determine LED color
+            var cellInv = StorageCells.getCellInventory(stack, null);
+            var cellStatus = cellInv != null ? cellInv.getStatus() : CellState.EMPTY;
+            return cellStatus.getStateColor();
+        } else {
+            // White
+            return 0xFFFFFF;
+        }
     }
 }

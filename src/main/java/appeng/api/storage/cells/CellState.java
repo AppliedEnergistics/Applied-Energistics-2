@@ -30,25 +30,41 @@ public enum CellState {
     /**
      * No cell at all
      */
-    ABSENT,
+    ABSENT(0),
 
     /**
      * A cell without anything stored
      */
-    EMPTY,
+    EMPTY(0x00FF00),
 
     /**
      * Stored something, but neither types nor totally full
      */
-    NOT_EMPTY,
+    NOT_EMPTY(0x00AAFF),
 
     /**
      * Available types exhausted
      */
-    TYPES_FULL,
+    TYPES_FULL(0xFFAA00),
 
     /**
      * Full cell, technically could have free types
      */
-    FULL;
+    FULL(0xFF0000);
+
+    /**
+     * A color indicating this state.
+     */
+    private final int stateColor;
+
+    CellState(int stateColor) {
+        this.stateColor = stateColor;
+    }
+
+    /**
+     * @return A color representative of this state. Used for the drive LEDs for example.
+     */
+    public int getStateColor() {
+        return stateColor;
+    }
 }

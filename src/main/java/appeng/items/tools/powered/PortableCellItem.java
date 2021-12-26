@@ -55,6 +55,7 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
+import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.core.AEConfig;
@@ -374,5 +375,22 @@ public class PortableCellItem extends AEBasePoweredItem
 
     public StorageTier getTier() {
         return tier;
+    }
+
+    public static int getColor(ItemStack stack, int tintIndex) {
+        if (tintIndex == 1 && stack.getItem() instanceof PortableCellItem portableCellItem) {
+            // If the cell is out of power, always display empty
+            if (portableCellItem.getAECurrentPower(stack) <= 0) {
+                return CellState.ABSENT.getStateColor();
+            }
+
+            // Determine LED color
+            var cellInv = StorageCells.getCellInventory(stack, null);
+            var cellStatus = cellInv != null ? cellInv.getStatus() : CellState.EMPTY;
+            return cellStatus.getStateColor();
+        } else {
+            // White
+            return 0xFFFFFF;
+        }
     }
 }
