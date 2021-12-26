@@ -1,25 +1,22 @@
 package appeng.blockentity.storage;
 
-import appeng.blockentity.AEBaseBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.blockentity.AEBaseBlockEntity;
 
 public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
 
@@ -41,7 +38,6 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
         }
     };
 
-
     public SkyStoneTankBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
     }
@@ -61,7 +57,8 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     }
 
     public boolean onPlayerUse(Player player) {
-        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND).find(FluidStorage.ITEM);
+        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND)
+                .find(FluidStorage.ITEM);
         if (handIo != null) {
             // move from hand into this tank
             if (StorageUtil.move(handIo, storage, f -> true, Long.MAX_VALUE, null) > 0)
@@ -79,5 +76,19 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
 
     public SingleVariantStorage<FluidVariant> getStorage() {
         return storage;
+    }
+
+    protected boolean readFromStream(FriendlyByteBuf data) {
+        boolean ret = super.readFromStream(data);
+        storage.amount = data.readLong();
+        storage.variant = FluidVariant.fromNbt(data.readNbt());
+        return ret;
+    }
+
+    protected void writeToStream(FriendlyByteBuf data) {
+        super.writeToStream(data);
+        data.writeLong(storage.amount);
+        data.writeNbt(storage.getResource().toNbt());
+
     }
 }

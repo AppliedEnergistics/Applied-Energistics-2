@@ -123,6 +123,15 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('a', AEBlocks.SMOOTH_SKY_STONE_BLOCK)
                 .unlockedBy("has_smooth_sky_stone_block", has(AEBlocks.SMOOTH_SKY_STONE_BLOCK))
                 .save(consumer, AppEng.makeId("misc/chests_smooth_sky_stone"));
+        ShapedRecipeBuilder.shaped(AEBlocks.SKY_STONE_TANK)
+                .pattern("aaa")
+                .pattern("aba")
+                .pattern("aaa")
+                .define('a', AEBlocks.SKY_STONE_BLOCK)
+                .define('b', AEBlocks.QUARTZ_GLASS)
+                .unlockedBy("has_sky_stone_block", has(AEBlocks.SKY_STONE_BLOCK))
+                .save(consumer, AppEng.makeId("misc/tank_sky_stone"));
+
         ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
                 .requires(AEBlocks.CHISELED_QUARTZ_BLOCK)
                 .unlockedBy("has_chiseled_quartz_block", has(AEBlocks.CHISELED_QUARTZ_BLOCK))

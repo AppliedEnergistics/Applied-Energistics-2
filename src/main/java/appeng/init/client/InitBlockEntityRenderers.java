@@ -18,8 +18,6 @@
 
 package appeng.init.client;
 
-import appeng.blockentity.storage.SkyStoneTankBlockEntity;
-import appeng.client.render.tesr.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
@@ -30,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
+import appeng.client.render.tesr.*;
 import appeng.core.definitions.AEBlockEntities;
 
 @Environment(EnvType.CLIENT)

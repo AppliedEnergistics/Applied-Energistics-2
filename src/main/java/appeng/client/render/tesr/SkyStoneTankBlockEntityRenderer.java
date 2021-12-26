@@ -18,9 +18,9 @@
 
 package appeng.client.render.tesr;
 
-import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -40,6 +40,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.blockentity.storage.SkyStoneTankBlockEntity;
+
 @Environment(EnvType.CLIENT)
 public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRenderer<SkyStoneTankBlockEntity> {
 
@@ -48,21 +50,33 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
     }
 
     @Override
-    public void render(SkyStoneTankBlockEntity tank, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
+    public void render(SkyStoneTankBlockEntity tank, float tickDelta, PoseStack ms, MultiBufferSource vertexConsumers,
+            int light, int overlay) {
         if (!tank.getStorage().variant.isBlank() && tank.getStorage().amount > 0) {
-            drawFluidInTank(tank, matrices, vertexConsumers, tank.getStorage().variant,
+
+            /*
+             * 
+             * // Uncomment to allow the liquid to rotate with the tank ms.pushPose(); ms.translate(0.5, 0.5, 0.5);
+             * FacingToRotation.get(tank.getForward(), tank.getUp()).push(ms); ms.translate(-0.5, -0.5, -0.5);
+             */
+
+            drawFluidInTank(tank, ms, vertexConsumers, tank.getStorage().variant,
                     (float) tank.getStorage().amount / tank.getStorage().getCapacity());
+
+            // ms.popPose();
         }
     }
 
-    private static final float TANK_W = 1/16f + 0.001f; // avoiding Z-fighting
+    private static final float TANK_W = 1 / 16f + 0.001f; // avoiding Z-fighting
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
-    public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
+    public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid,
+            float fill) {
         drawFluidInTank(be.getLevel(), be.getBlockPos(), ms, vcp, fluid, fill);
     }
 
-    public static void drawFluidInTank(Level level, BlockPos pos, PoseStack ps, MultiBufferSource mbs, FluidVariant fluid, float fill) {
+    public static void drawFluidInTank(Level level, BlockPos pos, PoseStack ps, MultiBufferSource mbs,
+            FluidVariant fluid, float fill) {
         // From Modern Industrialization
         VertexConsumer vc = mbs.getBuffer(RenderType.translucent());
         TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
@@ -73,7 +87,7 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
         float g = ((color >> 8) & 255) / 256f;
         float b = (color & 255) / 256f;
 
-        fill = TANK_W + (1 - 2*TANK_W)*Math.min(1, Math.max(fill, 0));
+        fill = TANK_W + (1 - 2 * TANK_W) * Math.min(1, Math.max(fill, 0));
 
         // Top and bottom positions of the fluid inside the tank
         float topHeight = fill;
@@ -90,16 +104,17 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
             QuadEmitter emitter = renderer.meshBuilder().getEmitter();
 
             if (direction.getAxis().isVertical()) {
-                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - topHeight : bottomHeight);
+                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W,
+                        direction == Direction.UP ? 1 - topHeight : bottomHeight);
             } else {
                 emitter.square(direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
             }
 
             emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
             emitter.spriteColor(0, -1, -1, -1, -1);
-            vc.putBulkData(ps.last(), emitter.toBakedQuad(0, sprite, false), r, g, b, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+            vc.putBulkData(ps.last(), emitter.toBakedQuad(0, sprite, false), r, g, b, FULL_LIGHT,
+                    OverlayTexture.NO_OVERLAY);
         }
     }
-
 
 }
