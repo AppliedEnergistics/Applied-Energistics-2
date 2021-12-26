@@ -27,7 +27,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import appeng.core.definitions.AEBlocks;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.fabricmc.api.EnvType;
@@ -67,6 +66,7 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MouseWheelPacket;

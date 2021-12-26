@@ -28,7 +28,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import appeng.block.storage.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
@@ -80,6 +79,7 @@ import appeng.block.spatial.MatrixFrameBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.spatial.SpatialPylonBlock;
+import appeng.block.storage.*;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.debug.ChunkLoaderBlock;
