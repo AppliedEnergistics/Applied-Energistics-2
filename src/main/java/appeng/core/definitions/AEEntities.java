@@ -39,6 +39,7 @@ import appeng.entity.TinyTNTPrimedEntity;
 public final class AEEntities {
 
     private static final Map<ResourceLocation, EntityType<?>> ENTITY_TYPES = new HashMap<>();
+    public static final Map<String, String> ENTITY_ENGLISH_NAMES = new HashMap<>();
 
     public static Map<ResourceLocation, EntityType<?>> getEntityTypes() {
         return Collections.unmodifiableMap(ENTITY_TYPES);
@@ -46,33 +47,40 @@ public final class AEEntities {
 
     public static final EntityType<SingularityEntity> SINGULARITY = create(
             "singularity",
+            "Singularity",
             SingularityEntity::new,
             MobCategory.MISC,
             builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
 
     public static final EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
             "charged_quartz",
+            "Charged Quartz",
             ChargedQuartzEntity::new,
             MobCategory.MISC,
             builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
 
     public static final EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
             "tiny_tnt_primed",
+            "Tiny TNT Primed",
             TinyTNTPrimedEntity::new,
             MobCategory.MISC,
             builder -> builder.clientTrackingRange(16).updateInterval(4));
 
     public static EntityType<GrowingCrystalEntity> GROWING_CRYSTAL = create(
             "growing_crystal",
+            "Growing Crystal",
             GrowingCrystalEntity::new,
             MobCategory.MISC,
             builder -> builder.sized(0.25F, 0.4F));
 
     private static <T extends Entity> EntityType<T> create(String id,
+            String englishName,
             EntityFactory<T> entityFactory,
             MobCategory classification,
             Consumer<Builder<T>> customizer) {
+
         String registryLoc = "ae2:" + id;
+        ENTITY_ENGLISH_NAMES.put(id, englishName);
         Builder<T> builder = Builder.of(entityFactory, classification);
         customizer.accept(builder);
         // Temporarily disable the data fixer check to avoid the annoying "no data fixer registered for ae2:xxx".

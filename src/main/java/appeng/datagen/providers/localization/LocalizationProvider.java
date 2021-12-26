@@ -16,6 +16,7 @@ import net.minecraft.data.HashCache;
 import net.minecraft.network.chat.TextComponent;
 
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
@@ -47,6 +48,10 @@ public class LocalizationProvider implements IAE2DataProvider {
         }
         for (var text : ButtonToolTips.values()) {
             add("gui.tooltips.ae2." + text.name(), text.getEnglishText());
+        }
+
+        for (var entry : AEEntities.ENTITY_ENGLISH_NAMES.entrySet()) {
+            add("entity.ae2." + entry.getKey(), entry.getValue());
         }
 
         generateLocalizations();
