@@ -52,10 +52,10 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.CALCULATION_PROCESSOR_PRESS, "item/calculation_processor_press");
         flatSingleLayer(AEItems.CALCULATION_PROCESSOR_PRINT, "item/printed_calculation_processor");
         flatSingleLayer(AEItems.CAPACITY_CARD, "item/card_capacity");
-        flatSingleLayer(AEItems.ITEM_CELL_1K, "item/item_storage_cell_1k");
-        flatSingleLayer(AEItems.ITEM_CELL_4K, "item/item_storage_cell_4k");
-        flatSingleLayer(AEItems.ITEM_CELL_16K, "item/item_storage_cell_16k");
-        flatSingleLayer(AEItems.ITEM_CELL_64K, "item/item_storage_cell_64k");
+        storageCell(AEItems.ITEM_CELL_1K, "item/item_storage_cell_1k");
+        storageCell(AEItems.ITEM_CELL_4K, "item/item_storage_cell_4k");
+        storageCell(AEItems.ITEM_CELL_16K, "item/item_storage_cell_16k");
+        storageCell(AEItems.ITEM_CELL_64K, "item/item_storage_cell_64k");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL, "item/certus_quartz_crystal");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, "item/certus_quartz_crystal_charged");
         flatSingleLayer(AEItems.CERTUS_QUARTZ_DUST, "item/certus_quartz_dust");
@@ -71,10 +71,10 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.ENGINEERING_PROCESSOR, "item/engineering_processor");
         flatSingleLayer(AEItems.ENGINEERING_PROCESSOR_PRESS, "item/engineering_processor_press");
         flatSingleLayer(AEItems.ENGINEERING_PROCESSOR_PRINT, "item/printed_engineering_processor");
-        flatSingleLayer(AEItems.FLUID_CELL_1K, "item/fluid_storage_cell_1k");
-        flatSingleLayer(AEItems.FLUID_CELL_4K, "item/fluid_storage_cell_4k");
-        flatSingleLayer(AEItems.FLUID_CELL_16K, "item/fluid_storage_cell_16k");
-        flatSingleLayer(AEItems.FLUID_CELL_64K, "item/fluid_storage_cell_64k");
+        storageCell(AEItems.FLUID_CELL_1K, "item/fluid_storage_cell_1k");
+        storageCell(AEItems.FLUID_CELL_4K, "item/fluid_storage_cell_4k");
+        storageCell(AEItems.FLUID_CELL_16K, "item/fluid_storage_cell_16k");
+        storageCell(AEItems.FLUID_CELL_64K, "item/fluid_storage_cell_64k");
         flatSingleLayer(AEItems.FLUID_CELL_CREATIVE, "item/creative_fluid_cell");
         flatSingleLayer(AEItems.FLUID_CELL_HOUSING, "item/fluid_cell_housing");
         flatSingleLayer(AEItems.FLUIX_CRYSTAL, "item/fluix_crystal");
@@ -97,14 +97,14 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.NETHER_QUARTZ_KNIFE, "item/nether_quartz_cutting_knife");
         flatSingleLayer(AEItems.NETHER_QUARTZ_WRENCH, "item/nether_quartz_wrench");
         flatSingleLayer(AEItems.NETWORK_TOOL, "item/network_tool");
-        flatSingleLayer(AEItems.PORTABLE_ITEM_CELL1K, "item/portable_item_cell_1k");
-        flatSingleLayer(AEItems.PORTABLE_ITEM_CELL4k, "item/portable_item_cell_4k");
-        flatSingleLayer(AEItems.PORTABLE_ITEM_CELL16K, "item/portable_item_cell_16k");
-        flatSingleLayer(AEItems.PORTABLE_ITEM_CELL64K, "item/portable_item_cell_64k");
-        flatSingleLayer(AEItems.PORTABLE_FLUID_CELL1K, "item/portable_fluid_cell_1k");
-        flatSingleLayer(AEItems.PORTABLE_FLUID_CELL4k, "item/portable_fluid_cell_4k");
-        flatSingleLayer(AEItems.PORTABLE_FLUID_CELL16K, "item/portable_fluid_cell_16k");
-        flatSingleLayer(AEItems.PORTABLE_FLUID_CELL64K, "item/portable_fluid_cell_64k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL1K, "item/portable_item_cell_1k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL4K, "item/portable_item_cell_4k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL16K, "item/portable_item_cell_16k");
+        portableCell(AEItems.PORTABLE_ITEM_CELL64K, "item/portable_item_cell_64k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL1K, "item/portable_fluid_cell_1k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL4K, "item/portable_fluid_cell_4k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL16K, "item/portable_fluid_cell_16k");
+        portableCell(AEItems.PORTABLE_FLUID_CELL64K, "item/portable_fluid_cell_64k");
         flatSingleLayer(AEItems.PROCESSING_PATTERN, "item/processing_pattern");
         flatSingleLayer(AEItems.QUANTUM_ENTANGLED_SINGULARITY, "item/quantum_entangled_singularity");
         flatSingleLayer(AEItems.REDSTONE_CARD, "item/card_redstone");
@@ -128,6 +128,26 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         registerEmptyModel(AEItems.WRAPPED_GENERIC_STACK);
         registerEmptyModel(AEBlocks.CABLE_BUS);
         registerHandheld();
+    }
+
+    private void storageCell(ItemDefinition<?> item, String background) {
+        String id = item.id().getPath();
+        singleTexture(
+                id,
+                mcLoc("item/generated"),
+                "layer0",
+                makeId(background))
+                        .texture("layer1", "item/storage_cell_led");
+    }
+
+    private void portableCell(ItemDefinition<?> item, String background) {
+        String id = item.id().getPath();
+        singleTexture(
+                id,
+                mcLoc("item/generated"),
+                "layer0",
+                makeId(background))
+                        .texture("layer1", "item/portable_cell_led");
     }
 
     /**

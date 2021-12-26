@@ -839,11 +839,11 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("tools/misctools_entropy_manipulator"));
 
         portableCell(consumer, AEItems.PORTABLE_ITEM_CELL1K);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4k);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4K);
         portableCell(consumer, AEItems.PORTABLE_ITEM_CELL16K);
         portableCell(consumer, AEItems.PORTABLE_ITEM_CELL64K);
         portableCell(consumer, AEItems.PORTABLE_FLUID_CELL1K);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4k);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4K);
         portableCell(consumer, AEItems.PORTABLE_FLUID_CELL16K);
         portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K);
 
