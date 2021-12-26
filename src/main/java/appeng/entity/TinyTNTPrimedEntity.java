@@ -166,7 +166,11 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
                                             + (y + 0.5f - this.getY()) * (y + 0.5f - this.getY())
                                             + (z + 0.5f - this.getZ()) * (z + 0.5f - this.getZ())));
 
-                            final float resistance = block.getExplosionResistance();
+                            final float fluidResistance = !state.getFluidState().isEmpty()
+                                    ? state.getFluidState().getExplosionResistance()
+                                    : 0f;
+                            final float resistance = Math.max(block.getExplosionResistance(), fluidResistance);
+
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01 && state.getMaterial() != Material.AIR) {
