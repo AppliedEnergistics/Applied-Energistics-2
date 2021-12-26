@@ -64,6 +64,7 @@ import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
+import appeng.client.gui.style.TextAlignment;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.VerticalButtonBar;
@@ -388,22 +389,40 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         // Allow overrides for which content is shown
         Component content = text.getText();
         if (override != null && override.getContent() != null) {
-            content = override.getContent();
+            content = override.getContent().copy().withStyle(content.getStyle());
         }
 
         Point pos = text.getPosition().resolve(getBounds(false));
 
-        if (text.isCenterHorizontally()) {
-            int textWidth = this.font.width(content);
+        float scale = text.getScale();
+
+        if (text.getAlign() == TextAlignment.CENTER) {
+            int textWidth = Math.round(this.font.width(content) * scale);
             pos = pos.move(-textWidth / 2, 0);
+        } else if (text.getAlign() == TextAlignment.RIGHT) {
+            int textWidth = Math.round(this.font.width(content) * scale);
+            pos = pos.move(-textWidth, 0);
         }
 
-        this.font.draw(
-                poseStack,
-                content,
-                pos.getX(),
-                pos.getY(),
-                color);
+        if (text.getScale() == 1) {
+            this.font.draw(
+                    poseStack,
+                    content,
+                    pos.getX(),
+                    pos.getY(),
+                    color);
+        } else {
+            poseStack.pushPose();
+            poseStack.translate(pos.getX(), pos.getY(), 0);
+            poseStack.scale(text.getScale(), text.getScale(), 1);
+            this.font.draw(
+                    poseStack,
+                    content,
+                    0,
+                    0,
+                    color);
+            poseStack.popPose();
+        }
     }
 
     public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY) {

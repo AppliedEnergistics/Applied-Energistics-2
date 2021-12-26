@@ -87,6 +87,8 @@ import appeng.util.prioritylist.IPartitionList;
 public class MEStorageScreen<C extends MEStorageMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
 
+    private static final String TEXT_ID_ENTRIES_SHOWN = "entriesShown";
+
     private static final int MIN_ROWS = 3;
 
     private static String memoryText = "";
@@ -315,16 +317,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        var searchMode = AEConfig.instance().getTerminalSearchMode();
-        if (searchMode.shouldUseExternalSearchBox()) {
-            this.searchField.setVisible(false);
-            var externalSearchText = Platform.getExternalSearchText(searchMode);
-            if (!Objects.equals(repo.getSearchString(), externalSearchText)) {
-                setSearchText(externalSearchText);
-            }
-        } else {
-            this.searchField.setVisible(true);
-        }
+        updateSearch();
 
         // Override the dialog title found in the screen JSON with the user-supplied name
         if (!this.title.getString().isEmpty()) {
@@ -332,6 +325,29 @@ public class MEStorageScreen<C extends MEStorageMenu>
         } else if (this.menu.getTarget() instanceof IMEChest) {
             // ME Chest uses Item Terminals, but overrides the title
             setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.Chest.text());
+        }
+    }
+
+    private void updateSearch() {
+        var searchMode = AEConfig.instance().getTerminalSearchMode();
+        if (searchMode.shouldUseExternalSearchBox()) {
+            this.searchField.setVisible(false);
+            var externalSearchText = Platform.getExternalSearchText(searchMode);
+            if (!Objects.equals(repo.getSearchString(), externalSearchText)) {
+                setSearchText(externalSearchText);
+            }
+
+            var allEntries = repo.getAllEntries().size();
+            var visibleEntries = repo.size();
+            if (allEntries != visibleEntries) {
+                setTextHidden(TEXT_ID_ENTRIES_SHOWN, false);
+                setTextContent(TEXT_ID_ENTRIES_SHOWN, GuiText.ShowingOf.text(visibleEntries, allEntries));
+            } else {
+                setTextHidden(TEXT_ID_ENTRIES_SHOWN, true);
+            }
+        } else {
+            this.searchField.setVisible(true);
+            setTextHidden(TEXT_ID_ENTRIES_SHOWN, true);
         }
     }
 
