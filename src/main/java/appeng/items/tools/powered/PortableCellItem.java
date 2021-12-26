@@ -19,13 +19,16 @@
 package appeng.items.tools.powered;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -37,6 +40,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -48,10 +53,16 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
+import appeng.block.AEBaseBlockItemChargeable;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.localization.PlayerMessages;
 import appeng.helpers.FluidContainerHelper;
+import appeng.hooks.AEToolItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellMenuHost;
@@ -61,9 +72,10 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
+import appeng.util.InteractionUtil;
 
 public class PortableCellItem extends AEBasePoweredItem
-        implements IBasicCellItem, IMenuItem {
+        implements IBasicCellItem, IMenuItem, AEToolItem {
 
     public static final StorageTier SIZE_1K = new StorageTier("1k", 512, 54, 8,
             () -> Registry.ITEM.get(AEItemIds.CELL_COMPONENT_1K));
@@ -73,6 +85,13 @@ public class PortableCellItem extends AEBasePoweredItem
             () -> Registry.ITEM.get(AEItemIds.CELL_COMPONENT_16K));
     public static final StorageTier SIZE_64K = new StorageTier("64k", 16834, 27, 512,
             () -> Registry.ITEM.get(AEItemIds.CELL_COMPONENT_64K));
+
+    /**
+     * Gets the recipe ID for crafting this particular cell.
+     */
+    public ResourceLocation getRecipeId() {
+        return AppEng.makeId("tools/" + Objects.requireNonNull(getRegistryName()).getPath());
+    }
 
     private final StorageTier tier;
     private final AEKeyType keyType;
@@ -105,12 +124,71 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        return context.isSecondaryUseActive()
+                && this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
+                        ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                        : InteractionResult.PASS;
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (!level.isClientSide()) {
-            MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand));
+        if (!InteractionUtil.isInAlternateUseMode(player)
+                || !disassembleDrive(player.getItemInHand(hand), level, player)) {
+            if (!level.isClientSide()) {
+                MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand));
+            }
         }
         return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
                 player.getItemInHand(hand));
+    }
+
+    private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
+        if (AEConfig.instance().isPortableCellDisassemblyEnabled()) {
+            return false;
+        }
+
+        // We refund the crafting recipe ingredients (the first one each)
+        var recipe = level.getRecipeManager().byKey(getRecipeId()).orElse(null);
+        if (!(recipe instanceof CraftingRecipe craftingRecipe)) {
+            AELog.debug("Cannot disassemble portable cell because it's crafting recipe doesn't exist: %s",
+                    getRecipeId());
+            return false;
+        }
+
+        if (level.isClientSide()) {
+            return true;
+        }
+
+        var playerInventory = player.getInventory();
+        if (playerInventory.getSelected() != stack) {
+            return false;
+        }
+
+        var inv = StorageCells.getCellInventory(stack, null);
+        if (inv == null) {
+            return false;
+        }
+
+        if (inv.getAvailableStacks().isEmpty()) {
+            playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
+
+            var remainingEnergy = getAECurrentPower(stack);
+            for (var ingredient : craftingRecipe.getIngredients()) {
+                var ingredientStack = ingredient.getItems()[0].copy();
+
+                // Dump remaining energy into whatever can accept it
+                if (remainingEnergy > 0 && ingredientStack.getItem() instanceof AEBaseBlockItemChargeable chargeable) {
+                    remainingEnergy = chargeable.injectAEPower(ingredientStack, remainingEnergy, Actionable.MODULATE);
+                }
+
+                playerInventory.placeItemBackInInventory(ingredientStack);
+            }
+        } else {
+            player.sendMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.get(), Util.NIL_UUID);
+        }
+
+        return true;
     }
 
     @Override

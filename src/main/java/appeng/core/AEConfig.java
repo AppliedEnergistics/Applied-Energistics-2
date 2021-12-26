@@ -425,6 +425,10 @@ public final class AEConfig {
         return CLIENT.showPlacementPreview.get();
     }
 
+    public boolean isPortableCellDisassemblyEnabled() {
+        return COMMON.portableCellDisassembly.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -523,6 +527,9 @@ public final class AEConfig {
         public final DoubleOption wirelessBoosterExp;
         public final DoubleOption wirelessHighWirelessCount;
 
+        // Portable Cells
+        public final BooleanOption portableCellDisassembly;
+
         // Power Ratios
         public final DoubleOption powerRatioTechReborn;
         public final DoubleOption powerUsageMultiplier;
@@ -619,6 +626,10 @@ public final class AEConfig {
             this.wirelessBoosterExp = wireless.addDouble("wirelessBoosterExp", 1.5);
             this.wirelessHighWirelessCount = wireless.addDouble("wirelessHighWirelessCount", 64.0);
             this.wirelessTerminalDrainMultiplier = wireless.addDouble("wirelessTerminalDrainMultiplier", 1.0);
+
+            ConfigSection portableCells = root.subsection("PortableCells");
+            portableCellDisassembly = portableCells.addBoolean("allowDisassembly", true,
+                    "Allow disassembly of portable cells into the recipe ingredients using shift+right-click");
 
             ConfigSection PowerRatios = root.subsection("PowerRatios");
             powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);

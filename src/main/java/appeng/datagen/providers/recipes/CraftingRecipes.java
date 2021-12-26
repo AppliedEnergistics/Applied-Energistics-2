@@ -898,7 +898,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(housing)
                 .unlockedBy("has_" + housing.id().getPath(), has(housing))
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
-                .save(consumer, AppEng.makeId("tools/" + cell.id().getPath()));
+                .save(consumer, cell.asItem().getRecipeId());
     }
 
     private void addSpatialCells(Consumer<FinishedRecipe> consumer) {
