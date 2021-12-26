@@ -20,6 +20,7 @@ import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.InGameTooltip;
 import appeng.core.localization.PlayerMessages;
 import appeng.datagen.providers.IAE2DataProvider;
 
@@ -45,15 +46,17 @@ public class LocalizationProvider implements IAE2DataProvider {
             add("item.ae2." + item.id().getPath(), item.getEnglishName());
         }
         for (var text : GuiText.values()) {
-            add("gui.ae2." + text.name(), text.getEnglishText());
+            add(text.getTranslationKey(), text.getEnglishText());
         }
         for (var text : ButtonToolTips.values()) {
-            add("gui.tooltips.ae2." + text.name(), text.getEnglishText());
+            add(text.getTranslationKey(), text.getEnglishText());
         }
         for (var text : PlayerMessages.values()) {
             add(text.getTranslationKey(), text.getEnglishText());
         }
-
+        for (var text : InGameTooltip.values()) {
+            add(text.getTranslationKey(), text.getEnglishText());
+        }
         for (var entry : AEEntities.ENTITY_ENGLISH_NAMES.entrySet()) {
             add("entity.ae2." + entry.getKey(), entry.getValue());
         }
@@ -135,26 +138,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("theoneprobe.ae2.showing", "Showing");
         add("theoneprobe.ae2.stored_energy", "%1$d / %2$d");
         add("theoneprobe.ae2.unlocked", "Unlocked");
-        add("waila.ae2.Channels", "%1$d Channels");
-        add("waila.ae2.ChannelsOf", "%1$d of %2$d Channels");
-        add("waila.ae2.Charged", "%d%% charged");
-        add("waila.ae2.Contains", "Contains: %s");
-        add("waila.ae2.Crafting", "Crafting: %s");
-        add("waila.ae2.DeviceMissingChannel", "Device Missing Channel");
-        add("waila.ae2.DeviceOffline", "Device Offline");
-        add("waila.ae2.DeviceOnline", "Device Online");
-        add("waila.ae2.ErrorControllerConflict", "Error: Controller Conflict");
-        add("waila.ae2.ErrorNestedP2PTunnel", "Error: Nested P2P Tunnel");
-        add("waila.ae2.ErrorTooManyChannels", "Error: Too Many Channels");
-        add("waila.ae2.Locked", "Locked");
-        add("waila.ae2.NetworkBooting", "Network Booting");
-        add("waila.ae2.P2PInputManyOutputs", "Linked (Input Side) - %d Outputs");
-        add("waila.ae2.P2PInputOneOutput", "Linked (Input Side)");
-        add("waila.ae2.P2POutput", "Linked (Output Side)");
-        add("waila.ae2.P2PUnlinked", "Unlinked");
-        add("waila.ae2.Showing", "Showing");
-        add("waila.ae2.Stored", "Stored: %s / %s");
-        add("waila.ae2.Unlocked", "Unlocked");
     }
 
     private void save(HashCache cache, Map<String, String> localizations) {

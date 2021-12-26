@@ -27,7 +27,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.parts.IPart;
-import appeng.integration.modules.waila.WailaText;
+import appeng.core.localization.InGameTooltip;
 import appeng.me.service.PathingService;
 import appeng.parts.networking.IUsedChannelProvider;
 
@@ -52,9 +52,9 @@ public final class ChannelDataProvider implements IPartDataProvider {
             var maxChannels = partTag.getInt(TAG_MAX_CHANNELS);
             // Even in the maxChannels=0 case, we'll show as infinite
             if (maxChannels <= 0) {
-                tooltip.add(WailaText.Channels.textComponent(usedChannels));
+                tooltip.add(InGameTooltip.Channels.textComponent(usedChannels));
             } else {
-                tooltip.add(WailaText.ChannelsOf.textComponent(usedChannels, maxChannels));
+                tooltip.add(InGameTooltip.ChannelsOf.textComponent(usedChannels, maxChannels));
             }
         }
     }
@@ -85,13 +85,13 @@ public final class ChannelDataProvider implements IPartDataProvider {
     }
 
     enum ChannelError {
-        AD_HOC_NESTED_P2P_TUNNEL(WailaText.ErrorNestedP2PTunnel),
-        AD_HOC_TOO_MANY_CHANNELS(WailaText.ErrorTooManyChannels),
-        CONTROLLER_CONFLICT(WailaText.ErrorControllerConflict);
+        AD_HOC_NESTED_P2P_TUNNEL(InGameTooltip.ErrorNestedP2PTunnel),
+        AD_HOC_TOO_MANY_CHANNELS(InGameTooltip.ErrorTooManyChannels),
+        CONTROLLER_CONFLICT(InGameTooltip.ErrorControllerConflict);
 
-        final WailaText text;
+        final InGameTooltip text;
 
-        ChannelError(WailaText text) {
+        ChannelError(InGameTooltip text) {
             this.text = text;
         }
     }

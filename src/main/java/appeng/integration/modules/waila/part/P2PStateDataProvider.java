@@ -27,7 +27,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import appeng.api.parts.IPart;
-import appeng.integration.modules.waila.WailaText;
+import appeng.core.localization.InGameTooltip;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.Platform;
 
@@ -50,8 +50,8 @@ public final class P2PStateDataProvider implements IPartDataProvider {
             var outputs = partTag.getInt(TAG_P2P_OUTPUTS);
 
             switch (state) {
-                case STATE_UNLINKED -> tooltip.add(WailaText.P2PUnlinked.textComponent());
-                case STATE_OUTPUT -> tooltip.add(WailaText.P2POutput.textComponent());
+                case STATE_UNLINKED -> tooltip.add(InGameTooltip.P2PUnlinked.textComponent());
+                case STATE_OUTPUT -> tooltip.add(InGameTooltip.P2POutput.textComponent());
                 case STATE_INPUT -> tooltip.add(getOutputText(outputs));
             }
 
@@ -92,9 +92,9 @@ public final class P2PStateDataProvider implements IPartDataProvider {
 
     private static Component getOutputText(int outputs) {
         if (outputs <= 1) {
-            return WailaText.P2PInputOneOutput.textComponent();
+            return InGameTooltip.P2PInputOneOutput.textComponent();
         } else {
-            return WailaText.P2PInputManyOutputs.textComponent(outputs);
+            return InGameTooltip.P2PInputManyOutputs.textComponent(outputs);
         }
     }
 

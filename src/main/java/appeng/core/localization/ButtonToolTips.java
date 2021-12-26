@@ -149,8 +149,12 @@ public enum ButtonToolTips {
     private final String englishText;
 
     ButtonToolTips(String englishText) {
-        this.text = new TranslatableComponent("gui.tooltips.ae2." + this.name());
+        this.text = new TranslatableComponent(getTranslationKey());
         this.englishText = englishText;
+    }
+
+    public String getTranslationKey() {
+        return "gui.tooltips.ae2." + name();
     }
 
     public String getEnglishText() {

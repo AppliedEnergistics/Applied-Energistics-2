@@ -23,16 +23,17 @@ import javax.annotation.Nullable;
 import net.minecraft.network.chat.MutableComponent;
 
 import appeng.api.networking.IGridNode;
+import appeng.core.localization.InGameTooltip;
 
 public enum GridNodeState {
-    OFFLINE(WailaText.DeviceOffline),
-    NETWORK_BOOTING(WailaText.NetworkBooting),
-    MISSING_CHANNEL(WailaText.DeviceMissingChannel),
-    ONLINE(WailaText.DeviceOnline);
+    OFFLINE(InGameTooltip.DeviceOffline),
+    NETWORK_BOOTING(InGameTooltip.NetworkBooting),
+    MISSING_CHANNEL(InGameTooltip.DeviceMissingChannel),
+    ONLINE(InGameTooltip.DeviceOnline);
 
-    private final WailaText text;
+    private final InGameTooltip text;
 
-    GridNodeState(WailaText text) {
+    GridNodeState(InGameTooltip text) {
         this.text = text;
     }
 

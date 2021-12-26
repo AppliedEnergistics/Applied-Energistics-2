@@ -24,7 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.parts.IPart;
-import appeng.integration.modules.waila.WailaText;
+import appeng.core.localization.InGameTooltip;
 import appeng.parts.reporting.AbstractMonitorPart;
 
 /**
@@ -39,11 +39,11 @@ public final class StorageMonitorDataProvider implements IPartDataProvider {
             var isLocked = monitor.isLocked();
 
             if (displayed != null) {
-                tooltip.add(WailaText.Showing.textComponent().append(": ")
+                tooltip.add(InGameTooltip.Showing.textComponent().append(": ")
                         .append(displayed.getDisplayName()));
             }
 
-            tooltip.add(isLocked ? WailaText.Locked.textComponent() : WailaText.Unlocked.textComponent());
+            tooltip.add(isLocked ? InGameTooltip.Locked.textComponent() : InGameTooltip.Unlocked.textComponent());
         }
     }
 

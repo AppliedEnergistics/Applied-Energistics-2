@@ -227,7 +227,7 @@ public enum GuiText {
     }
 
     public String getTranslationKey() {
-        return this.root + '.' + this.toString();
+        return this.root + '.' + name();
     }
 
     public Component text() {

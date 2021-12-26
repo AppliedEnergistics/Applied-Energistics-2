@@ -31,8 +31,8 @@ import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.core.localization.InGameTooltip;
 import appeng.integration.modules.waila.BaseDataProvider;
-import appeng.integration.modules.waila.WailaText;
 import appeng.util.Platform;
 
 /**
@@ -55,7 +55,7 @@ public final class PowerStorageDataProvider extends BaseDataProvider {
             var formatCurrentPower = Platform.formatPower(currentPower, false);
             var formatMaxPower = Platform.formatPower(maxPower, false);
 
-            tooltip.add(WailaText.Stored.textComponent(formatCurrentPower, formatMaxPower));
+            tooltip.add(InGameTooltip.Stored.textComponent(formatCurrentPower, formatMaxPower));
         }
     }
 

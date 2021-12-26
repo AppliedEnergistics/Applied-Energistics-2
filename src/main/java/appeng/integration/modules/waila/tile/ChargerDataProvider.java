@@ -29,8 +29,8 @@ import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.blockentity.misc.ChargerBlockEntity;
+import appeng.core.localization.InGameTooltip;
 import appeng.integration.modules.waila.BaseDataProvider;
-import appeng.integration.modules.waila.WailaText;
 import appeng.util.Platform;
 
 /**
@@ -46,14 +46,14 @@ public final class ChargerDataProvider extends BaseDataProvider {
             var chargingItem = chargerInventory.getStackInSlot(0);
 
             if (!chargingItem.isEmpty()) {
-                tooltip.add(WailaText.Contains.textComponent(
+                tooltip.add(InGameTooltip.Contains.textComponent(
                         chargingItem.getHoverName().copy().withStyle(ChatFormatting.WHITE)));
 
                 if (chargingItem.getItem() instanceof IAEItemPowerStorage powerStorage
                         && Platform.isChargeable(chargingItem)) {
                     var fillRate = Mth.floor(powerStorage.getAECurrentPower(chargingItem) * 100 /
                             powerStorage.getAEMaxPower(chargingItem));
-                    tooltip.add(WailaText.Charged.textComponent(
+                    tooltip.add(InGameTooltip.Charged.textComponent(
                             fillRate));
                 }
             }
