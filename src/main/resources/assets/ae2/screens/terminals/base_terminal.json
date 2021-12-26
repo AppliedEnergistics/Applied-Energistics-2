@@ -24,6 +24,17 @@
       "srcRect": [0, 71, 195, 97]
     }
   },
+  "text": {
+    "entriesShown": {
+      "color": "DEFAULT_TEXT_COLOR",
+      "align": "RIGHT",
+      "scale": 0.6,
+      "position": {
+        "right": 26,
+        "top": 8
+      }
+    }
+  },
   "widgets": {
     "scrollbar": {
       "left": 175,

@@ -42,9 +42,14 @@ public class Text {
     private Position position;
 
     /**
-     * Center on the computed x position.
+     * Alignment relative to the computed x position.
      */
-    private boolean centerHorizontally;
+    private TextAlignment align = TextAlignment.LEFT;
+
+    /**
+     * Allows text to be scaled.
+     */
+    private float scale = 1.0f;
 
     public Component getText() {
         return text;
@@ -70,11 +75,24 @@ public class Text {
         this.position = position;
     }
 
-    public boolean isCenterHorizontally() {
-        return centerHorizontally;
+    public TextAlignment getAlign() {
+        return align;
     }
 
-    public void setCenterHorizontally(boolean centerHorizontally) {
-        this.centerHorizontally = centerHorizontally;
+    public void setAlign(TextAlignment align) {
+        this.align = align;
+    }
+
+    @Deprecated(forRemoval = true, since = "1.18")
+    public void setCenterHorizontally(boolean enable) {
+        align = enable ? TextAlignment.CENTER : TextAlignment.LEFT;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 }

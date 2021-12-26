@@ -359,9 +359,17 @@
           "position": {
             "$ref": "#/definitions/position"
           },
-          "centerHorizontally": {
-            "type": "boolean",
-            "default": false
+          "scale": {
+            "type": "number",
+            "default": 1,
+            "minimum": 0.1,
+            "maximum": 4,
+            "$comment": "Can be used to display smaller text, 0.5 works well, usually"
+          },
+          "align": {
+            "type": "string",
+            "default": "LEFT",
+            "enum": ["LEFT", "CENTER", "RIGHT"]
           }
         }
       }

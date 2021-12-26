@@ -26,14 +26,14 @@
         "left": 88,
         "top": 20
       },
-      "centerHorizontally": true
+      "align": "CENTER"
     },
     "energy_use": {
       "position": {
         "left": 88,
         "top": 32
       },
-      "centerHorizontally": true
+      "align": "CENTER"
     }
   }
 }

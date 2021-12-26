@@ -150,6 +150,7 @@ public enum GuiText {
     SelectedCraftingCPU("Crafting CPU: %s"),
     SerialNumber("Serial Number: %s"),
     Set("Set"),
+    ShowingOf("Showing %d of %d"),
     SkyChest("Sky Stone Chest"),
     // Used in a terminal to indicate that an item is craftable
     SmallFontCraft("Craft"),

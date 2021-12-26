@@ -17,7 +17,7 @@
         "left": 109,
         "top": 165
       },
-      "centerHorizontally": true
+      "align": "CENTER"
     }
   },
   "widgets": {
