@@ -37,6 +37,7 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
         @Override
         protected void onFinalCommit() {
             SkyStoneTankBlockEntity.this.markForUpdate();
+            SkyStoneTankBlockEntity.this.setChanged();
         }
     };
 
