@@ -18,6 +18,8 @@
 
 package appeng.init.client;
 
+import appeng.blockentity.storage.SkyStoneTankBlockEntity;
+import appeng.client.render.tesr.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
@@ -28,12 +30,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
-import appeng.client.render.tesr.ChargerBlockEntityRenderer;
-import appeng.client.render.tesr.ChestBlockEntityRenderer;
-import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
-import appeng.client.render.tesr.InscriberTESR;
-import appeng.client.render.tesr.SkyChestTESR;
-import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.core.definitions.AEBlockEntities;
 
 @Environment(EnvType.CLIENT)
@@ -53,6 +49,7 @@ public final class InitBlockEntityRenderers {
         register(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
         register(AEBlockEntities.CABLE_BUS, CableBusTESR::new);
         register(AEBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
+        register(AEBlockEntities.SKY_STONE_TANK, SkyStoneTankBlockEntityRenderer::new);
 
     }
 

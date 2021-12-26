@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import appeng.block.storage.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
@@ -79,10 +80,6 @@ import appeng.block.spatial.MatrixFrameBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.spatial.SpatialPylonBlock;
-import appeng.block.storage.ChestBlock;
-import appeng.block.storage.DriveBlock;
-import appeng.block.storage.IOPortBlock;
-import appeng.block.storage.SkyChestBlock;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.debug.ChunkLoaderBlock;
@@ -138,6 +135,9 @@ public final class AEBlocks {
 
     public static final BlockDefinition<SkyChestBlock> SKY_STONE_CHEST = block("Sky Stone Chest", AEBlockIds.SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.STONE, SKY_STONE_CHEST_PROPS));
     public static final BlockDefinition<SkyChestBlock> SMOOTH_SKY_STONE_CHEST = block("Sky Stone Block Chest", AEBlockIds.SMOOTH_SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, SKY_STONE_CHEST_PROPS));
+
+    public static final BlockDefinition<SkyStoneTankBlock> SKY_STONE_TANK = block("Sky Stone Tank", AEBlockIds.SKY_STONE_TANK, () -> new SkyStoneTankBlock(SKY_STONE_CHEST_PROPS));
+
 
     public static final BlockDefinition<SkyCompassBlock> SKY_COMPASS = block("Meteorite Compass", AEBlockIds.SKY_COMPASS, () -> new SkyCompassBlock(defaultProps(Material.DECORATION)));
     public static final BlockDefinition<InscriberBlock> INSCRIBER = block("Inscriber", AEBlockIds.INSCRIBER, () -> new InscriberBlock(defaultProps(Material.METAL).noOcclusion()));

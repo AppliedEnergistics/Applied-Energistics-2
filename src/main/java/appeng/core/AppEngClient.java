@@ -27,10 +27,12 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import appeng.core.definitions.AEBlocks;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -43,6 +45,7 @@ import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -178,6 +181,8 @@ public class AppEngClient extends AppEngBase {
 
         MouseWheelScrolled.EVENT.register(this::wheelEvent);
         WorldRenderEvents.LAST.register(OverlayManager.getInstance()::renderWorldLastEvent);
+
+        BlockRenderLayerMap.INSTANCE.putBlock(AEBlocks.SKY_STONE_TANK.block(), RenderType.cutoutMipped());
 
         for (var key : ActionKey.values()) {
             var binding = new KeyMapping(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);

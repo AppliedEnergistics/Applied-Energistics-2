@@ -1,5 +1,6 @@
 package appeng.init;
 
+import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 
@@ -127,6 +128,7 @@ public final class InitApiLookup {
             return blockEntity.getItemHandler();
         }, AEBlockEntities.DEBUG_ITEM_GEN);
         EnergyStorage.SIDED.registerSelf(AEBlockEntities.DEBUG_ENERGY_GEN);
+        FluidStorage.SIDED.registerForBlockEntity(SkyStoneTankBlockEntity::getStorage, AEBlockEntities.SKY_STONE_TANK);
     }
 
     private static void initPoweredItem() {

@@ -40,6 +40,7 @@ public final class AEBlockIds {
     public static final ResourceLocation QUARTZ_FIXTURE = id("quartz_fixture");
     public static final ResourceLocation SKY_STONE_CHEST = id("sky_stone_chest");
     public static final ResourceLocation SMOOTH_SKY_STONE_CHEST = id("smooth_sky_stone_chest");
+    public static final ResourceLocation SKY_STONE_TANK = id("sky_stone_tank");
     public static final ResourceLocation SKY_COMPASS = id("sky_compass");
     public static final ResourceLocation LIGHT_DETECTOR = id("light_detector");
     public static final ResourceLocation PAINT = id("paint");
