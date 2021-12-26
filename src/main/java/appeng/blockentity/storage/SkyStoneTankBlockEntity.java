@@ -20,6 +20,8 @@ import appeng.blockentity.AEBaseBlockEntity;
 
 public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
 
+    public static final int BUCKET_CAPACITY = 32;
+
     private final SingleVariantStorage<FluidVariant> storage = new SingleVariantStorage<FluidVariant>() {
 
         @Override
@@ -29,7 +31,7 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
 
         @Override
         protected long getCapacity(FluidVariant variant) {
-            return FluidConstants.BUCKET * 32;
+            return FluidConstants.BUCKET * BUCKET_CAPACITY;
         }
 
         @Override

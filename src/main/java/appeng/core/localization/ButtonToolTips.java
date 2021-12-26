@@ -111,6 +111,7 @@ public enum ButtonToolTips {
     SearchMode_REI("Use REI Search"),
     SearchMode_RememberSearch("Remember Search: %s"),
     Singularity("Condense Into Singularities\n%s per item"),
+    TankBucketCapacity("Can Store up to %d Buckets"),
     SortBy("Sort By"),
     SortOrder("Sort Order"),
     Stash("Store Items"),
