@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import appeng.blockentity.storage.*;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
@@ -64,10 +65,6 @@ import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
-import appeng.blockentity.storage.ChestBlockEntity;
-import appeng.blockentity.storage.DriveBlockEntity;
-import appeng.blockentity.storage.IOPortBlockEntity;
-import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.AppEng;
 import appeng.debug.ChunkLoaderBlockEntity;
 import appeng.debug.CubeGeneratorBlockEntity;
@@ -152,6 +149,9 @@ public final class AEBlockEntities {
             SkyChestBlockEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
     public static final BlockEntityType<SkyCompassBlockEntity> SKY_COMPASS = create("sky_compass",
             SkyCompassBlockEntity.class, SkyCompassBlockEntity::new, AEBlocks.SKY_COMPASS);
+    
+    public static final BlockEntityType<SkyStoneTankBlockEntity> SKY_STONE_TANK = create("sky_tank", SkyStoneTankBlockEntity.class,
+            SkyStoneTankBlockEntity::new, AEBlocks.SKY_STONE_TANK);
 
     public static final BlockEntityType<ItemGenBlockEntity> DEBUG_ITEM_GEN = create("debug_item_gen",
             ItemGenBlockEntity.class, ItemGenBlockEntity::new, AEBlocks.DEBUG_ITEM_GEN);
