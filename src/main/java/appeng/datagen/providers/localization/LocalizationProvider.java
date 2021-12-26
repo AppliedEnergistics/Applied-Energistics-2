@@ -20,6 +20,7 @@ import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.PlayerMessages;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class LocalizationProvider implements IAE2DataProvider {
@@ -49,6 +50,9 @@ public class LocalizationProvider implements IAE2DataProvider {
         for (var text : ButtonToolTips.values()) {
             add("gui.tooltips.ae2." + text.name(), text.getEnglishText());
         }
+        for (var text : PlayerMessages.values()) {
+            add(text.getTranslationKey(), text.getEnglishText());
+        }
 
         for (var entry : AEEntities.ENTITY_ENGLISH_NAMES.entrySet()) {
             add("entity.ae2." + entry.getKey(), entry.getValue());
@@ -74,21 +78,6 @@ public class LocalizationProvider implements IAE2DataProvider {
 
     private void generateLocalizations() {
         add("ae2.permission_denied", "You lack permission to access this.");
-        add("chat.ae2.AmmoDepleted", "Ammo Depleted.");
-        add("chat.ae2.ChestCannotReadStorageCell", "ME Chest cannot read storage cell.");
-        add("chat.ae2.CommunicationError", "Error Communicating with Network.");
-        add("chat.ae2.DeviceNotLinked", "Device is not linked.");
-        add("chat.ae2.DeviceNotPowered", "Device is low on power.");
-        add("chat.ae2.InvalidMachine", "Invalid Machine.");
-        add("chat.ae2.LoadedSettings", "Loaded device configuration from memory card.");
-        add("chat.ae2.MachineNotPowered", "Machine is not powered.");
-        add("chat.ae2.OutOfRange", "Wireless Out Of Range.");
-        add("chat.ae2.ResetSettings", "New device configuration created and copied to memory card.");
-        add("chat.ae2.SavedSettings", "Copied current device configuration to memory card.");
-        add("chat.ae2.SettingCleared", "Memory card cleared.");
-        add("chat.ae2.StationCanNotBeLocated", "Station can not be located.");
-        add("chat.ae2.isNowLocked", "Monitor is now Locked.");
-        add("chat.ae2.isNowUnlocked", "Monitor is now Unlocked.");
         add("commands.ae2.ChunkLoggerOff", "Chunk Logging is now off");
         add("commands.ae2.ChunkLoggerOn", "Chunk Logging is now on");
         add("commands.ae2.permissions", "You do not have adequate permissions to run this command.");
