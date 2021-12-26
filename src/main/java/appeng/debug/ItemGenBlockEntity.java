@@ -34,21 +34,30 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.InternalInventoryHost;
 
-public class ItemGenBlockEntity extends AEBaseBlockEntity {
+public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInventoryHost {
 
     private static final Queue<ItemStack> SHARED_POSSIBLE_ITEMS = new ArrayDeque<>();
 
-    private final InternalInventory handler = new QueuedItemHandler();
+    private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 16, 64);
 
     private Item filter = Items.AIR;
+
     private final Queue<ItemStack> possibleItems = new ArrayDeque<>();
 
     public ItemGenBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
+        if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
+            initGlobalPossibleItems();
+        }
+        refillInv();
+    }
+
+    private synchronized static void initGlobalPossibleItems() {
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
             for (Item item : Registry.ITEM) {
                 addPossibleItem(item, SHARED_POSSIBLE_ITEMS);
@@ -72,7 +81,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
     }
 
     public Storage<ItemVariant> getItemHandler() {
-        return this.handler.toStorage();
+        return this.inv.toStorage();
     }
 
     public void setItem(Item item) {
@@ -80,6 +89,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         this.possibleItems.clear();
 
         addPossibleItem(this.filter, this.possibleItems);
+        refillInv();
     }
 
     private Queue<ItemStack> getPossibleItems() {
@@ -106,52 +116,26 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         }
     }
 
-    class QueuedItemHandler extends BaseInternalInventory {
-        @Override
-        public void setItemDirect(int slotIndex, ItemStack stack) {
+    @Override
+    public void onChangeInventory(InternalInventory inv, int slot) {
+        if (inv.getStackInSlot(slot).isEmpty()) {
+            refillSlot(slot);
         }
+    }
 
-        @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return stack;
+    private void refillInv() {
+        for (int slot = 0; slot < inv.size(); slot++) {
+            refillSlot(slot);
         }
+    }
 
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return getPossibleItems().peek() != null ? getPossibleItems().peek().copy() : ItemStack.EMPTY;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            return false;
-        }
-
-        @Override
-        public int size() {
-            return 1;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return 1;
-        }
-
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            final ItemStack is = getPossibleItems().peek();
-
-            if (is == null) {
-                return ItemStack.EMPTY;
-            }
-
-            return simulate ? is.copy() : this.getNextItem();
-        }
-
-        private ItemStack getNextItem() {
-            var is = getPossibleItems().poll();
-
-            getPossibleItems().add(is);
-            return is.copy();
+    private void refillSlot(int slot) {
+        var stack = getPossibleItems().poll();
+        if (stack != null) {
+            var copy = stack.copy();
+            copy.setCount(stack.getMaxStackSize());
+            inv.setItemDirect(slot, copy);
+            getPossibleItems().add(stack);
         }
     }
 }
