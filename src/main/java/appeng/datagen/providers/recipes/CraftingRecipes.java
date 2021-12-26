@@ -11,6 +11,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import appeng.api.ids.AETags;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -18,6 +19,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
+import appeng.items.tools.powered.PortableCellItem;
 
 public class CraftingRecipes extends AE2RecipeProvider {
     public CraftingRecipes(DataGenerator generator) {
@@ -827,14 +829,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_engineering_processor", has(AEItems.ENGINEERING_PROCESSOR))
                 .save(consumer, AppEng.makeId("tools/misctools_entropy_manipulator"));
 
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL1K, AEItems.ITEM_CELL_1K);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4k, AEItems.ITEM_CELL_4K);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL16K, AEItems.ITEM_CELL_16K);
-        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL64K, AEItems.ITEM_CELL_64K);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL1K, AEItems.FLUID_CELL_1K);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4k, AEItems.FLUID_CELL_4K);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL16K, AEItems.FLUID_CELL_16K);
-        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K, AEItems.FLUID_CELL_64K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL1K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL4k);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL16K);
+        portableCell(consumer, AEItems.PORTABLE_ITEM_CELL64K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL1K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL4k);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL16K);
+        portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K);
 
         ShapedRecipeBuilder.shaped(AEItems.BIOMETRIC_CARD)
                 .pattern("abb")
@@ -878,15 +880,23 @@ public class CraftingRecipes extends AE2RecipeProvider {
 
     }
 
-    private void portableCell(Consumer<FinishedRecipe> consumer,
-            ItemDefinition<?> cell,
-            ItemDefinition<?> component) {
-        ShapedRecipeBuilder.shaped(cell)
-                .pattern("abc")
-                .define('a', AEBlocks.CHEST)
-                .define('b', component)
-                .define('c', AEBlocks.ENERGY_CELL)
-                .unlockedBy("has_" + component.id().getPath(), has(component))
+    private void portableCell(Consumer<FinishedRecipe> consumer, ItemDefinition<PortableCellItem> cell) {
+        ItemDefinition<?> housing;
+        if (cell.asItem().getKeyType() == AEKeyType.items()) {
+            housing = AEItems.ITEM_CELL_HOUSING;
+        } else if (cell.asItem().getKeyType() == AEKeyType.fluids()) {
+            housing = AEItems.FLUID_CELL_HOUSING;
+        } else {
+            throw new RuntimeException("No housing known for " + cell.asItem().getKeyType());
+        }
+
+        var component = cell.asItem().getTier().componentSupplier().get();
+        ShapelessRecipeBuilder.shapeless(cell)
+                .requires(AEBlocks.CHEST)
+                .requires(component)
+                .requires(AEBlocks.ENERGY_CELL)
+                .requires(housing)
+                .unlockedBy("has_" + housing.id().getPath(), has(housing))
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
                 .save(consumer, AppEng.makeId("tools/" + cell.id().getPath()));
     }
