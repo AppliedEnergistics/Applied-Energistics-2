@@ -39,7 +39,11 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.stacks.*;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.core.AEConfig;
@@ -213,58 +217,72 @@ public class PortableCellItem extends AEBasePoweredItem
 
     @Override
     public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
-        if (action != ClickAction.SECONDARY) {
+        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
             return false;
-        } else {
-            ItemStack other = slot.getItem();
-            if (!other.isEmpty()) {
-                if (keyType == AEKeyType.items()) {
-                    AEKey key = AEItemKey.of(other);
-                    int inserted = (int) insert(player, stack, key, other.getCount(), Actionable.MODULATE);
-                    other.shrink(inserted);
+        }
 
-                } else if (keyType == AEKeyType.fluids()) {
-                    GenericStack fluidStack = FluidContainerHelper.getContainedStack(other);
-                    if (fluidStack != null) {
-                        if (insert(player, stack, fluidStack.what(), fluidStack.amount(),
-                                Actionable.SIMULATE) == fluidStack.amount()) {
-                            if (FluidContainerHelper.extractFromPlayerStack(player, (AEFluidKey) fluidStack.what(),
-                                    fluidStack.amount(), other)) {
-                                insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.MODULATE);
-                            }
-                        }
+        var other = slot.getItem();
+        if (other.isEmpty()) {
+            return true;
+        }
+
+        if (keyType == AEKeyType.items()) {
+            AEKey key = AEItemKey.of(other);
+            int inserted = (int) insert(player, stack, key, other.getCount(), Actionable.MODULATE);
+            other.shrink(inserted);
+
+        } else if (keyType == AEKeyType.fluids()) {
+            GenericStack fluidStack = FluidContainerHelper.getContainedStack(other);
+            if (fluidStack != null) {
+                if (insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.SIMULATE) == fluidStack
+                        .amount()) {
+                    var extracted = FluidContainerHelper.extractFromPlayerInventory(player,
+                            (AEFluidKey) fluidStack.what(),
+                            fluidStack.amount(),
+                            other);
+                    if (extracted > 0) {
+                        insert(player, stack, fluidStack.what(), extracted, Actionable.MODULATE);
                     }
                 }
             }
-            return true;
         }
+        return true;
     }
 
+    /**
+     * Allows directly inserting items and fluids into portable cells by right-clicking the cell with the item or bucket
+     * in hand.
+     */
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action,
             Player player, SlotAccess access) {
-        if (action == ClickAction.SECONDARY && slot.allowModification(player)) {
-            if (!other.isEmpty()) {
-                if (keyType == AEKeyType.items()) {
-                    AEKey key = AEItemKey.of(other);
-                    int inserted = (int) insert(player, stack, key, other.getCount(), Actionable.MODULATE);
-                    other.shrink(inserted);
-                } else if (keyType == AEKeyType.fluids()) {
-                    GenericStack fluidStack = FluidContainerHelper.getContainedStack(other);
-                    if (fluidStack != null) {
-                        if (insert(player, stack, fluidStack.what(), fluidStack.amount(),
-                                Actionable.SIMULATE) == fluidStack.amount()) {
-                            if (FluidContainerHelper.extractFromPlayerCursorSlot(player, (AEFluidKey) fluidStack.what(),
-                                    fluidStack.amount())) {
-                                insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.MODULATE);
-                            }
-                        }
+        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
+            return false;
+        }
+
+        if (other.isEmpty()) {
+            return false;
+        }
+
+        if (keyType == AEKeyType.items()) {
+            AEKey key = AEItemKey.of(other);
+            int inserted = (int) insert(player, stack, key, other.getCount(), Actionable.MODULATE);
+            other.shrink(inserted);
+
+        } else if (keyType == AEKeyType.fluids()) {
+            GenericStack fluidStack = FluidContainerHelper.getContainedStack(other);
+            if (fluidStack != null) {
+                if (insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.SIMULATE) == fluidStack
+                        .amount()) {
+                    var extracted = FluidContainerHelper.extractFromCarried(player, (AEFluidKey) fluidStack.what(),
+                            fluidStack.amount(), stack);
+                    if (extracted > 0) {
+                        insert(player, stack, fluidStack.what(), extracted, Actionable.MODULATE);
                     }
                 }
-                return true;
             }
         }
-        return false;
+        return true;
     }
 
 }
