@@ -31,7 +31,6 @@ import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -44,7 +43,6 @@ import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -66,7 +64,6 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MouseWheelPacket;
