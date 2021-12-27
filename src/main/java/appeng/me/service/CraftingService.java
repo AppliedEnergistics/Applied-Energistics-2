@@ -276,7 +276,8 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         if (target == null) {
             final List<CraftingCPUCluster> validCpusClusters = new ArrayList<>();
             for (CraftingCPUCluster cpu : this.craftingCPUClusters) {
-                if (cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.bytes()) {
+                if (cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.bytes()
+                        && cpu.canAccept(prioritizePower)) {
                     validCpusClusters.add(cpu);
                 }
             }

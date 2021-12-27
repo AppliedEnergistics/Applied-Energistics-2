@@ -31,6 +31,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.CraftingSchedulingMode;
+import appeng.api.config.Settings;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -41,12 +43,14 @@ import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.api.util.IConfigManager;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.crafting.execution.CraftingCpuLogic;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
+import appeng.util.ConfigManager;
 
 public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
@@ -58,6 +62,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private final List<CraftingBlockEntity> blockEntities = new ArrayList<>();
     private final List<CraftingBlockEntity> storage = new ArrayList<>();
     private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
+    private final ConfigManager configManager = new ConfigManager();
     private Component myName = null;
     private boolean isDestroyed = false;
     private long availableStorage = 0;
@@ -71,6 +76,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     public CraftingCPUCluster(BlockPos boundsMin, BlockPos boundsMax) {
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
+
+        this.configManager.registerSetting(Settings.CRAFTING_SCHEDULING_MODE, CraftingSchedulingMode.ALL);
     }
 
     @Override
@@ -228,6 +235,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     public void writeToNBT(CompoundTag data) {
         this.craftingLogic.writeToNBT(data);
+        this.configManager.writeToNBT(data);
     }
 
     void done() {
@@ -245,6 +253,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     public void readFromNBT(CompoundTag data) {
         this.craftingLogic.readFromNBT(data);
+        this.configManager.readFromNBT(data);
     }
 
     public void updateName() {
@@ -271,5 +280,23 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         if (t != null) {
             t.breakCluster();
         }
+    }
+
+    public CraftingSchedulingMode getSchedulingMode() {
+        return this.configManager.getSetting(Settings.CRAFTING_SCHEDULING_MODE);
+    }
+
+    public boolean canAccept(boolean playerQueued) {
+        var mode = this.getSchedulingMode();
+
+        if (mode == CraftingSchedulingMode.ALL) {
+            return true;
+        } else {
+            return (mode == CraftingSchedulingMode.PLAYER_ONLY) == playerQueued;
+        }
+    }
+
+    public IConfigManager getConfigManager() {
+        return configManager;
     }
 }

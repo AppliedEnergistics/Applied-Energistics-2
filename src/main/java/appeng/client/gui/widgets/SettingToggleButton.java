@@ -32,24 +32,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.FullnessMode;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.OperationMode;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.RelativeDirection;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Setting;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.core.localization.ButtonToolTips;
@@ -261,6 +244,14 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.FilterOnExtract, ButtonToolTips.FilterOnExtractEnabled);
             registerApp(Icon.FILTER_ON_EXTRACT_DISABLED, Settings.FILTER_ON_EXTRACT, YesNo.NO,
                     ButtonToolTips.FilterOnExtract, ButtonToolTips.FilterOnExtractDisabled);
+
+            // TODO: Icons
+            registerApp(Icon.VALID, Settings.CRAFTING_SCHEDULING_MODE, CraftingSchedulingMode.ALL,
+                    ButtonToolTips.CraftableBy, ButtonToolTips.CraftableByAll);
+            registerApp(Icon.WHITELIST, Settings.CRAFTING_SCHEDULING_MODE, CraftingSchedulingMode.PLAYER_ONLY,
+                    ButtonToolTips.CraftableBy, ButtonToolTips.CraftableByPlayers);
+            registerApp(Icon.BLACKLIST, Settings.CRAFTING_SCHEDULING_MODE, CraftingSchedulingMode.AUTOMATION_ONLY,
+                    ButtonToolTips.CraftableBy, ButtonToolTips.CraftableByAutomation);
         }
     }
 

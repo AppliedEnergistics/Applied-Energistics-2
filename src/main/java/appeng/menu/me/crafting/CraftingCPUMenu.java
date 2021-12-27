@@ -25,6 +25,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
+import appeng.api.config.CraftingSchedulingMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -35,6 +36,7 @@ import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 
@@ -62,6 +64,9 @@ public class CraftingCPUMenu extends AEBaseMenu {
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
     private final Consumer<AEKey> cpuChangeListener = incrementalUpdateHelper::addChange;
+
+    @GuiSync(0)
+    public CraftingSchedulingMode schedulingMode = CraftingSchedulingMode.ALL;
 
     public CraftingCPUMenu(MenuType<?> menuType, int id, Inventory ip, Object te) {
         super(menuType, id, ip, te);
@@ -133,13 +138,26 @@ public class CraftingCPUMenu extends AEBaseMenu {
 
     @Override
     public void broadcastChanges() {
-        if (isServer() && this.cpu != null && this.incrementalUpdateHelper.hasChanges()) {
-            CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);
-            this.incrementalUpdateHelper.commitChanges();
+        if (isServer() && this.cpu != null) {
+            this.schedulingMode = this.cpu.getSchedulingMode();
 
-            sendPacketToClient(new CraftingStatusPacket(status));
+            if (this.incrementalUpdateHelper.hasChanges()) {
+                CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);
+                this.incrementalUpdateHelper.commitChanges();
+
+                sendPacketToClient(new CraftingStatusPacket(status));
+            }
         }
+
         super.broadcastChanges();
+    }
+
+    public CraftingSchedulingMode getSchedulingMode() {
+        return schedulingMode;
+    }
+
+    public boolean allowConfiguration() {
+        return true;
     }
 
     IGrid getGrid() {

@@ -33,10 +33,14 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.config.CraftingSchedulingMode;
+import appeng.api.config.Settings;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.ServerSettingToggleButton;
+import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatus;
@@ -53,6 +57,8 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
 
     private final Scrollbar scrollbar;
 
+    private final SettingToggleButton<CraftingSchedulingMode> schedulingModeButton;
+
     private CraftingStatus status;
 
     public CraftingCPUScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
@@ -63,6 +69,13 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
         this.cancel = this.widgets.addButton("cancel", GuiText.Cancel.text(), menu::cancelCrafting);
+
+        this.schedulingModeButton = new ServerSettingToggleButton<>(Settings.CRAFTING_SCHEDULING_MODE,
+                CraftingSchedulingMode.ALL);
+
+        if (menu.allowConfiguration()) {
+            this.addToLeftToolbar(this.schedulingModeButton);
+        }
     }
 
     @Override
@@ -89,6 +102,8 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
 
         final int size = this.status != null ? this.status.getEntries().size() : 0;
         scrollbar.setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
+
+        this.schedulingModeButton.set(this.menu.getSchedulingMode());
     }
 
     private List<CraftingStatusEntry> getVisualEntries() {

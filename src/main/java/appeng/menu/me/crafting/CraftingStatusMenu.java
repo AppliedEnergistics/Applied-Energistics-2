@@ -73,6 +73,11 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
         super.broadcastChanges();
     }
 
+    @Override
+    public boolean allowConfiguration() {
+        return false;
+    }
+
     private boolean cpuMatches(ICraftingCPU c) {
         return c.isBusy();
     }
