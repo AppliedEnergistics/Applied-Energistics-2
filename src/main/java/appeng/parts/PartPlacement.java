@@ -17,6 +17,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public class PartPlacement {
@@ -42,6 +43,10 @@ public class PartPlacement {
         // Then try to place it
         var part = placePart(player, level, partItem, partStack.getTag(), placement.pos(), placement.side());
         if (part == null) {
+            // Resend the host to the client. Failure to connect for security reasons is only possible to know
+            // server-side, and this will cause ghost parts on the client.
+            Platform.sendImmediateBlockEntityUpdate(player, pos);
+
             return InteractionResult.FAIL;
         }
 
