@@ -41,6 +41,8 @@ import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
@@ -53,7 +55,7 @@ import appeng.util.Platform;
 import appeng.util.iterators.ChainedIterator;
 
 public class CraftingBlockEntity extends AENetworkBlockEntity
-        implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState {
+        implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState, IConfigurableObject {
 
     private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);
     private CompoundTag previousState = null;
@@ -343,4 +345,14 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         return Iterators.transform(this.getCluster().getBlockEntities(), CraftingBlockEntity::getGridNode);
     }
 
+    @Override
+    public IConfigManager getConfigManager() {
+        var cluster = this.getCluster();
+
+        if (cluster != null) {
+            return this.getCluster().getConfigManager();
+        } else {
+            throw new IllegalStateException("Cannot access CPU config without a cluster");
+        }
+    }
 }

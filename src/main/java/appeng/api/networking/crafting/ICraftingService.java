@@ -93,7 +93,8 @@ public interface ICraftingService extends IGridService {
      * @param requestingMachine - a machine if its being requested via automation, may be null.
      * @param target            - can be null
      * @param prioritizePower   - if cpu is null, this determine if the system should prioritize power, or if it should
-     *                          find the lower end cpus, automatic processes generally should pick lower end cpus.
+     *                          find the lower end cpus, automatic processes generally should pick lower end cpus. This
+     *                          will filter out CPUs which automation or players should or should not use
      * @param src               - the action source to use when starting the job, this will be used for extracting
      *                          items, should usually be the same as the one provided to beginCraftingJob.
      *
@@ -146,7 +147,7 @@ public interface ICraftingService extends IGridService {
 
     /**
      * Returns true if anything is currently being requested as part of a crafting job in this grid.
-     * 
+     *
      * @see #isRequesting(AEKey)
      */
     boolean isRequestingAny();
