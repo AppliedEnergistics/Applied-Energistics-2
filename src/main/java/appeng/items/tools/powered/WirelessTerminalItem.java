@@ -49,6 +49,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.util.IConfigManager;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
+import appeng.core.localization.Tooltips;
 import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.MenuOpener;
@@ -108,9 +109,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
         if (getGridKey(stack).isEmpty()) {
-            lines.add(GuiText.Unlinked.text());
+            lines.add(Tooltips.of(GuiText.Unlinked, Tooltips.RED));
         } else {
-            lines.add(GuiText.Linked.text());
+            lines.add(Tooltips.of(GuiText.Linked, Tooltips.GREEN));
         }
     }
 

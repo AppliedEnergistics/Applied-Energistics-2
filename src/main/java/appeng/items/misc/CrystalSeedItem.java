@@ -29,7 +29,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -49,6 +48,7 @@ import net.minecraft.world.level.material.Fluid;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
+import appeng.core.localization.Tooltips;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.hooks.AECustomEntityItem;
 import appeng.items.AEBaseItem;
@@ -127,15 +127,11 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
     @Environment(EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        lines.add(ButtonToolTips.DoesntDespawn.text());
-        lines.add(getGrowthTooltipItem(stack));
+
+        lines.add(Tooltips.of(ButtonToolTips.DoesntDespawn));
+        lines.add(Tooltips.ofPercent((double) getGrowthTicks(stack) / GROWTH_TICKS_REQUIRED));
 
         super.appendHoverText(stack, level, lines, advancedTooltips);
-    }
-
-    public Component getGrowthTooltipItem(ItemStack stack) {
-        final int progress = getGrowthTicks(stack);
-        return new TextComponent(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
     }
 
     @Override

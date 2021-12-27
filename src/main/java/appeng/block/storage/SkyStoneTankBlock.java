@@ -18,7 +18,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
-import appeng.core.localization.ButtonToolTips;
+import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 
 public class SkyStoneTankBlock extends AEBaseEntityBlock<SkyStoneTankBlockEntity> {
 
@@ -43,6 +44,6 @@ public class SkyStoneTankBlock extends AEBaseEntityBlock<SkyStoneTankBlockEntity
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
             TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        tooltip.add(ButtonToolTips.TankBucketCapacity.text(SkyStoneTankBlockEntity.BUCKET_CAPACITY));
+        tooltip.add(Tooltips.of(GuiText.TankBucketCapacity, SkyStoneTankBlockEntity.BUCKET_CAPACITY));
     }
 }

@@ -176,6 +176,7 @@ public enum GuiText {
     Substitute("Using Substitutions:"),
     TankAmount("Amount: %d"),
     TankCapacity("Capacity: %d"),
+    TankBucketCapacity("Can Store up to %d Buckets"),
     Terminal("Terminal"),
     TerminalViewCellsTooltip("View Cells"),
     ToCraft("To Craft: %s"),

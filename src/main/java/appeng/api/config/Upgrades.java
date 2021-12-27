@@ -39,6 +39,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
+import appeng.core.localization.Tooltips;
+
 public enum Upgrades {
     /**
      * Gold Tier Upgrades.
@@ -124,10 +126,15 @@ public enum Upgrades {
 
                 if (namesAdded.add(name)) {
                     // append the supported count only if its > 1
+                    Component base = (name.copy().withStyle(Tooltips.GRAY_TEXT));
+                    Component main = base;
+
                     if (supported.maxCount > 1) {
-                        name = name.copy().append(" (" + supported.maxCount + ")");
+                        main = Tooltips.of(base, Tooltips.of(" ("),
+                                Tooltips.ofUnformattedNumber(supported.maxCount), Tooltips.of(")"));
+
                     }
-                    supportedTooltipLines.add(name);
+                    supportedTooltipLines.add(main);
                 }
             }
         }

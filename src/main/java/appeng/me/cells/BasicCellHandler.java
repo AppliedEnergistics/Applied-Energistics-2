@@ -21,13 +21,13 @@ package appeng.me.cells;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.IncludeExclude;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.ISaveProvider;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 
 /**
  * Cell handler that manages all normal storage cells (items, fluids).
@@ -51,11 +51,8 @@ public class BasicCellHandler implements ICellHandler {
             return;
         }
 
-        lines.add(new TextComponent(handler.getUsedBytes() + " ").append(GuiText.Of.text())
-                .append(" " + handler.getTotalBytes() + " ").append(GuiText.BytesUsed.text()));
-
-        lines.add(new TextComponent(handler.getStoredItemTypes() + " ").append(GuiText.Of.text())
-                .append(" " + handler.getTotalItemTypes() + " ").append(GuiText.Types.text()));
+        lines.add(Tooltips.bytesUsed(handler.getUsedBytes(), handler.getTotalBytes()));
+        lines.add(Tooltips.typesUsed(handler.getStoredItemTypes(), handler.getTotalItemTypes()));
 
         if (handler.isPreformatted()) {
             var list = (handler.getPartitionListMode() == IncludeExclude.WHITELIST ? GuiText.Included

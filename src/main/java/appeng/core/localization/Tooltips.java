@@ -1,5 +1,8 @@
 package appeng.core.localization;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,8 +11,9 @@ import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.*;
+
+import appeng.api.config.PowerUnits;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEItemKey;
@@ -23,6 +27,10 @@ import appeng.menu.me.interaction.EmptyingAction;
  * Static utilities for constructing tooltips in various places.
  */
 public final class Tooltips {
+
+    private static final DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
+    private static final DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+    private static final char SEP = symbols.getDecimalSeparator();
 
     public static final ChatFormatting MUTED_COLOR = ChatFormatting.DARK_GRAY;
     public static final ChatFormatting NORMAL_TOOLTIP_TEXT = ChatFormatting.GRAY;
@@ -138,4 +146,237 @@ public final class Tooltips {
         var amountText = what.formatAmount(amount, AmountFormat.FULL);
         return baseText.text(amountText).withStyle(MUTED_COLOR);
     }
+    public record Amount(String digit, String unit) {
+    }
+
+    ;
+
+    public record MaxedAmount(String digit, String maxDigit, String unit) {
+    }
+
+    ;
+
+    public static final String[] units = new String[] { "k", "M", "G", "T", "P", "E" };
+    public static final long[] nums = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L,
+            1000_000_000_000_000L,
+            1000_000_000_000_000_000L };
+
+    public static String getAmount(double amount, long num) {
+        double fract = amount / num;
+        String returned;
+        if (fract < 10) {
+            returned = String.format("%.3f", fract);
+        } else if (fract < 100) {
+            returned = String.format("%.2f", fract);
+        } else {
+            returned = String.format("%.1f", fract);
+        }
+        while (returned.endsWith("0")) {
+            returned = returned.substring(0, returned.length() - 1);
+        }
+        if (returned.endsWith(String.valueOf(SEP))) {
+            returned = returned.substring(0, returned.length() - 1);
+        }
+        return returned;
+
+    }
+
+    public static Amount getAmount(double amount) {
+        if (amount < 10000) {
+            return new Amount(getAmount(amount, 1), "");
+        } else {
+            int i = 0;
+            while (amount / nums[i] >= 1000) {
+                i++;
+            }
+            return new Amount(getAmount(amount, nums[i]), units[i]);
+        }
+    }
+
+    public static MaxedAmount getMaxedAmount(double amount, double max) {
+        if (max < 10000) {
+            return new MaxedAmount(getAmount(amount, 1), getAmount(max, 1), "");
+        } else {
+            int i = 0;
+            while (max / nums[i] >= 1000) {
+                i++;
+            }
+            return new MaxedAmount(getAmount(amount, nums[i]), getAmount(max, nums[i]), units[i]);
+        }
+    }
+
+    public static Amount getAmount(long amount) {
+        if (amount < 10000) {
+            return new Amount(String.valueOf(amount), "");
+        } else {
+            int i = 0;
+            while (amount / nums[i] >= 1000) {
+                i++;
+            }
+            return new Amount(getAmount(amount, nums[i]), units[i]);
+        }
+    }
+
+    public static MaxedAmount getMaxedAmount(long amount, long max) {
+        if (max < 10000) {
+            return new MaxedAmount(String.valueOf(amount), String.valueOf(max), "");
+        } else {
+            int i = 0;
+            while (max / nums[i] >= 1000) {
+                i++;
+            }
+            return new MaxedAmount(getAmount(amount, nums[i]), getAmount(max, nums[i]), units[i]);
+        }
+    }
+
+    public static final Style GRAY_TEXT = Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false);
+    public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x886eff)).withItalic(false);
+    public static final Style UNIT_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
+
+    public static final Style RED = Style.EMPTY.withColor(ChatFormatting.RED);
+    public static final Style GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
+
+    public static MutableComponent of(TranslatableComponent component) {
+        return component.copy().withStyle(GRAY_TEXT);
+    }
+
+    public static MutableComponent of(ButtonToolTips buttonToolTips, Object... args) {
+        return of(buttonToolTips, GRAY_TEXT, args);
+    }
+
+    public static MutableComponent of(ButtonToolTips buttonToolTips, Style style, Object... args) {
+        return buttonToolTips.text(args).copy().withStyle(style);
+    }
+
+    public static MutableComponent of(GuiText guiText, Object... args) {
+        return of(guiText, GRAY_TEXT, args);
+    }
+
+    public static MutableComponent of(GuiText guiText, Style style, Object... args) {
+
+        if (args.length > 0 && args[0] instanceof Integer) {
+            return guiText.text(Arrays.stream(args).map((o) -> ofUnformattedNumber((Integer) o)).toArray()).copy()
+                    .withStyle(style);
+        } else if (args.length > 0 && args[0] instanceof Long) {
+            return guiText.text(Arrays.stream(args).map((o) -> ofUnformattedNumber((Long) o)).toArray()).copy()
+                    .withStyle(style);
+        }
+        return guiText.text(args).copy().withStyle(style);
+
+    }
+
+    public static MutableComponent of(String s) {
+        return new TextComponent(s).withStyle(GRAY_TEXT);
+    }
+
+    public static MutableComponent of(PowerUnits pU) {
+        return pU.textComponent().copy().withStyle(UNIT_TEXT);
+    }
+
+    public static MutableComponent ofPercent(double percent, boolean oneIsGreen) {
+        return new TextComponent(MessageFormat.format("{0,number,#.##%}", percent))
+                .withStyle(colorFromRatio(percent, oneIsGreen));
+    }
+
+    public static Style colorFromRatio(double ratio, boolean oneIsGreen) {
+        double p = ratio;
+
+        if (!oneIsGreen) {
+            p = 1 - p;
+        }
+
+        int r = (int) (255d * (Math.max(0, Math.min(2 - 2 * p, 1))));
+        int g = (int) (255d * (Math.max(0, Math.min(2 * p, 1))));
+        int rgb = 0xFF000000 + (r << 16) + (g << 8);
+
+        return Style.EMPTY.withItalic(false).withColor(TextColor.fromRgb(rgb));
+    }
+
+    public static MutableComponent ofPercent(double percent) {
+        return ofPercent(percent, true);
+
+    }
+
+    public static MutableComponent ofUnformattedNumber(long number) {
+        return new TextComponent(String.valueOf(number)).withStyle(NUMBER_TEXT);
+    }
+
+    public static MutableComponent ofUnformattedNumberWithRatioColor(long number, double ratio, boolean oneIsGreen) {
+        return new TextComponent(String.valueOf(number)).withStyle(colorFromRatio(ratio, oneIsGreen));
+    }
+
+    public static MutableComponent ofNumber(long number) {
+        Amount amount = getAmount(number);
+        return ofNumber(amount);
+    }
+
+    public static MutableComponent ofNumber(double number) {
+        Amount amount = getAmount(number);
+        return ofNumber(amount);
+    }
+
+    private static MutableComponent ofNumber(Amount number) {
+        return new TextComponent(number.digit() + number.unit()).withStyle(NUMBER_TEXT);
+    }
+
+    public static MutableComponent ofNumber(long number, long max) {
+        MaxedAmount amount = getMaxedAmount(number, max);
+        return ofNumber(amount);
+    }
+
+    public static MutableComponent ofNumber(double number, double max) {
+        MaxedAmount amount = getMaxedAmount(number, max);
+        return ofNumber(amount);
+    }
+
+    private static MutableComponent ofNumber(MaxedAmount number) {
+        boolean numberUnit = !number.digit().equals("0");
+        return new TextComponent(number.digit() + (numberUnit ? number.unit() : "")).withStyle(NUMBER_TEXT)
+                .append(new TextComponent("/")
+                        .withStyle(GRAY_TEXT))
+                .append(number.maxDigit() + number.unit()).withStyle(NUMBER_TEXT);
+    }
+
+    public static MutableComponent of(Component... components) {
+        MutableComponent s = new TextComponent("");
+        for (var c : components) {
+            s = s.append(c);
+        }
+        return s;
+    }
+
+    public static Component energyStorageComponent(double energy, double max) {
+        return Tooltips.of(
+                Tooltips.of(GuiText.StoredEnergy),
+                Tooltips.of(": "),
+                Tooltips.ofNumber(energy, max),
+                Tooltips.of(" "),
+                Tooltips.of(PowerUnits.AE),
+                Tooltips.of(" ("),
+                Tooltips.ofPercent(energy / max),
+                Tooltips.of(")"));
+    }
+
+    public static Component bytesUsed(long bytes, long max) {
+        return Tooltips.of(
+                ofUnformattedNumberWithRatioColor(bytes, (double) bytes / max, false),
+                of(" "),
+                of(GuiText.Of),
+                of(" "),
+                ofUnformattedNumber(max),
+                of(" "),
+                of(GuiText.BytesUsed));
+    }
+
+    public static Component typesUsed(long types, long max) {
+        return Tooltips.of(
+                ofUnformattedNumberWithRatioColor(types, (double) types / max, false),
+                of(" "),
+                of(GuiText.Of),
+                of(" "),
+                ofUnformattedNumber(max),
+                of(" "),
+                of(GuiText.Types));
+    }
+
 }
