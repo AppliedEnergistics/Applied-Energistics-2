@@ -51,7 +51,8 @@ import appeng.util.prioritylist.IPartitionList;
 public class Repo implements IClientRepo {
 
     public static final Comparator<GridInventoryEntry> AMOUNT_ASC = Comparator
-            .comparingLong(GridInventoryEntry::getStoredAmount);
+            .comparingDouble((GridInventoryEntry entry) -> ((double) entry.getStoredAmount())
+                    / ((double) entry.getWhat().getAmountPerUnit()));
 
     public static final Comparator<GridInventoryEntry> AMOUNT_DESC = AMOUNT_ASC.reversed();
 
