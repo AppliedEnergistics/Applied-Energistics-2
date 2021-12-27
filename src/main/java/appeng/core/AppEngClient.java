@@ -182,8 +182,6 @@ public class AppEngClient extends AppEngBase {
         MouseWheelScrolled.EVENT.register(this::wheelEvent);
         WorldRenderEvents.LAST.register(OverlayManager.getInstance()::renderWorldLastEvent);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(AEBlocks.SKY_STONE_TANK.block(), RenderType.cutoutMipped());
-
         for (var key : ActionKey.values()) {
             var binding = new KeyMapping(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
             KeyBindingHelper.registerKeyBinding(binding);

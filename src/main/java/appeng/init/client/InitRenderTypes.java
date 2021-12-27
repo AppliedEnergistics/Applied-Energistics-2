@@ -57,6 +57,7 @@ public final class InitRenderTypes {
             AEBlocks.CRAFTING_STORAGE_16K,
             AEBlocks.CRAFTING_STORAGE_64K,
             AEBlocks.SPATIAL_PYLON,
+            AEBlocks.SKY_STONE_TANK
     };
 
     private InitRenderTypes() {
@@ -64,7 +65,6 @@ public final class InitRenderTypes {
 
     public static void init() {
         for (var definition : CUTOUT_BLOCKS) {
-
             BlockRenderLayerMap.INSTANCE.putBlock(definition.block(), RenderType.cutout());
         }
 
