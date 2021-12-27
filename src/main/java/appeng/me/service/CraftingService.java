@@ -326,7 +326,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             }
 
             if (prioritizePower) {
-                return FAST_FIRST_COMPARATOR.compare(b, a);
+                return FAST_FIRST_COMPARATOR.compare(a, b);
             } else {
                 return FAST_LAST_COMPARATOR.compare(a, b);
             }
