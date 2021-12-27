@@ -46,6 +46,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -678,5 +679,21 @@ public class Platform {
         ItemStack copy = itemStack.copy();
         copy.setCount(size);
         return copy;
+    }
+
+    /**
+     * Send an update packet for the block entity at the given position to the player immediately, if they're a server
+     * player.
+     */
+    public static void sendImmediateBlockEntityUpdate(Player player, BlockPos pos) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            var be = player.getLevel().getBlockEntity(pos);
+            if (be != null) {
+                var packet = be.getUpdatePacket();
+                if (packet != null) {
+                    serverPlayer.connection.send(packet);
+                }
+            }
+        }
     }
 }
