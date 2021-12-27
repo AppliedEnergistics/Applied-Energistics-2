@@ -144,4 +144,9 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     private boolean checkController(BlockPos pos) {
         return Platform.getTickingBlockEntity(getLevel(), pos) instanceof ControllerBlockEntity;
     }
+
+    @Override
+    public boolean canBeRotated() {
+        return false;
+    }
 }

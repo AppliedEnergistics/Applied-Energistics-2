@@ -22,8 +22,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -40,12 +38,6 @@ import appeng.core.definitions.AEBlocks;
 
 public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements IColorableBlockEntity {
 
-    @Environment(EnvType.CLIENT)
-    private Integer dspList;
-
-    @Environment(EnvType.CLIENT)
-    private boolean updateList;
-
     private GenericStack display;
     private AEColor paintedColor = AEColor.TRANSPARENT;
 
@@ -61,8 +53,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
 
         this.display = GenericStack.readBuffer(data);
 
-        this.setUpdateList(true);
-        return oldPaintedColor != this.paintedColor || c; // tesr!
+        return oldPaintedColor != this.paintedColor || c; // Block Entity Renderer takes care of display
     }
 
     @Override
@@ -126,22 +117,6 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         return true;
     }
 
-    public Integer getDisplayList() {
-        return this.dspList;
-    }
-
-    public void setDisplayList(Integer dspList) {
-        this.dspList = dspList;
-    }
-
-    public boolean isUpdateList() {
-        return this.updateList;
-    }
-
-    public void setUpdateList(boolean updateList) {
-        this.updateList = updateList;
-    }
-
     @Override
     protected Item getItemFromBlockEntity() {
         return AEBlocks.CRAFTING_MONITOR.asItem();
@@ -152,4 +127,8 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         return new CraftingMonitorModelData(getUp(), getForward(), getConnections(), getColor());
     }
 
+    @Override
+    public boolean canBeRotated() {
+        return true;
+    }
 }
