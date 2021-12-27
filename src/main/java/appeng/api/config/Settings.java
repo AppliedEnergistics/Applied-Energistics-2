@@ -82,8 +82,8 @@ public final class Settings {
     public static final Setting<SchedulingMode> SCHEDULING_MODE = register("scheduling_mode", SchedulingMode.class);
     public static final Setting<YesNo> OVERLAY_MODE = register("overlay_mode", YesNo.YES, YesNo.NO);
     public static final Setting<YesNo> FILTER_ON_EXTRACT = register("filter_on_extract", YesNo.YES, YesNo.NO);
-    public static final Setting<CraftingSchedulingMode> CRAFTING_SCHEDULING_MODE = register("crafting_scheduling_mode",
-            CraftingSchedulingMode.class);
+    public static final Setting<CpuSelectionMode> CPU_SELECTION_MODE = register("crafting_scheduling_mode",
+            CpuSelectionMode.class);
 
     public static Setting<?> getOrThrow(String name) {
         var setting = SETTINGS.get(name);

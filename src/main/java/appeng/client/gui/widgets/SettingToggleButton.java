@@ -26,15 +26,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.api.config.*;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
+import appeng.core.definitions.AEParts;
 import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
 
@@ -245,13 +250,12 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.FILTER_ON_EXTRACT_DISABLED, Settings.FILTER_ON_EXTRACT, YesNo.NO,
                     ButtonToolTips.FilterOnExtract, ButtonToolTips.FilterOnExtractDisabled);
 
-            // TODO: Icons
-            registerApp(Icon.VALID, Settings.CRAFTING_SCHEDULING_MODE, CraftingSchedulingMode.ALL,
-                    ButtonToolTips.CraftableBy, ButtonToolTips.CraftableByAll);
-            registerApp(Icon.WHITELIST, Settings.CRAFTING_SCHEDULING_MODE, CraftingSchedulingMode.PLAYER_ONLY,
-                    ButtonToolTips.CraftableBy, ButtonToolTips.CraftableByPlayers);
-            registerApp(Icon.BLACKLIST, Settings.CRAFTING_SCHEDULING_MODE, CraftingSchedulingMode.AUTOMATION_ONLY,
-                    ButtonToolTips.CraftableBy, ButtonToolTips.CraftableByAutomation);
+            registerApp(Icon.PERMISSION_CRAFT, Settings.CPU_SELECTION_MODE, CpuSelectionMode.ANY,
+                    ButtonToolTips.CpuSelectionMode, ButtonToolTips.CpuSelectionModeAny);
+            registerApp(AEParts.TERMINAL, Settings.CPU_SELECTION_MODE, CpuSelectionMode.PLAYER_ONLY,
+                    ButtonToolTips.CpuSelectionMode, ButtonToolTips.CpuSelectionModePlayersOnly.text());
+            registerApp(AEParts.EXPORT_BUS, Settings.CPU_SELECTION_MODE, CpuSelectionMode.MACHINE_ONLY,
+                    ButtonToolTips.CpuSelectionMode, ButtonToolTips.CpuSelectionModeAutomationOnly.text());
         }
     }
 
@@ -280,7 +284,18 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
         appearances.put(
                 new EnumPair<>(setting, val),
-                new ButtonAppearance(icon, lines));
+                new ButtonAppearance(icon, null, lines));
+    }
+
+    private static <T extends Enum<T>> void registerApp(ItemLike item, Setting<T> setting, T val,
+            ButtonToolTips title, Component... tooltipLines) {
+        var lines = new ArrayList<Component>();
+        lines.add(title.text());
+        Collections.addAll(lines, tooltipLines);
+
+        appearances.put(
+                new EnumPair<>(setting, val),
+                new ButtonAppearance(null, item.asItem(), lines));
     }
 
     private static <T extends Enum<T>> void registerApp(Icon icon, Setting<T> setting, T val,
@@ -288,15 +303,30 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         registerApp(icon, setting, val, title, hint.text());
     }
 
+    @Nullable
+    private ButtonAppearance getApperance() {
+        if (this.buttonSetting != null && this.currentValue != null) {
+            return appearances.get(new EnumPair<>(this.buttonSetting, this.currentValue));
+        }
+        return null;
+    }
+
     @Override
     protected Icon getIcon() {
-        if (this.buttonSetting != null && this.currentValue != null) {
-            var app = appearances.get(new EnumPair<>(this.buttonSetting, this.currentValue));
-            if (app != null) {
-                return app.icon;
-            }
+        var app = getApperance();
+        if (app != null && app.icon != null) {
+            return app.icon;
         }
         return Icon.TOOLBAR_BUTTON_BACKGROUND;
+    }
+
+    @Override
+    protected Item getItemOverlay() {
+        var app = getApperance();
+        if (app != null && app.item != null) {
+            return app.item;
+        }
+        return null;
     }
 
     public Setting<T> getSetting() {
@@ -360,6 +390,6 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
         }
     }
 
-    private record ButtonAppearance(Icon icon, List<Component> tooltipLines) {
+    private record ButtonAppearance(@Nullable Icon icon, @Nullable Item item, List<Component> tooltipLines) {
     }
 }

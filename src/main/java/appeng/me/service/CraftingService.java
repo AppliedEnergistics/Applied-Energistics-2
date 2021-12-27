@@ -20,9 +20,9 @@ package appeng.me.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -45,7 +45,15 @@ import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.crafting.*;
+import appeng.api.networking.crafting.CalculationStrategy;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingPlan;
+import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.crafting.ICraftingSimulationRequester;
+import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
@@ -65,6 +73,22 @@ import appeng.me.service.helpers.CraftingServiceStorage;
 import appeng.me.service.helpers.NetworkCraftingProviders;
 
 public class CraftingService implements ICraftingService, IGridServiceProvider {
+
+    /**
+     * Sorts Crafting CPUs by Co-Processors in descending order ("fast first"), and storage in ascending order (to
+     * minimize the storage waste for jobs.).
+     */
+    private static final Comparator<CraftingCPUCluster> FAST_FIRST_COMPARATOR = Comparator
+            .comparingInt(CraftingCPUCluster::getCoProcessors)
+            .reversed()
+            .thenComparingLong(CraftingCPUCluster::getAvailableStorage);
+    /**
+     * Sorts Crafting CPUs by Co-Processors in ascending order ("fast last"), and storage in ascending order (to
+     * minimize the storage waste for jobs.).
+     */
+    private static final Comparator<CraftingCPUCluster> FAST_LAST_COMPARATOR = Comparator
+            .comparingInt(CraftingCPUCluster::getCoProcessors)
+            .thenComparingLong(CraftingCPUCluster::getAvailableStorage);
 
     private static final ExecutorService CRAFTING_POOL;
 
@@ -267,40 +291,12 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             return null;
         }
 
-        CraftingCPUCluster cpuCluster = null;
+        CraftingCPUCluster cpuCluster;
 
         if (target instanceof CraftingCPUCluster) {
             cpuCluster = (CraftingCPUCluster) target;
-        }
-
-        if (target == null) {
-            final List<CraftingCPUCluster> validCpusClusters = new ArrayList<>();
-            for (CraftingCPUCluster cpu : this.craftingCPUClusters) {
-                if (cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.bytes()
-                        && cpu.canAccept(prioritizePower)) {
-                    validCpusClusters.add(cpu);
-                }
-            }
-
-            validCpusClusters.sort((firstCluster, nextCluster) -> {
-                if (prioritizePower) {
-                    final int comparison1 = Long.compare(nextCluster.getCoProcessors(), firstCluster.getCoProcessors());
-                    if (comparison1 != 0) {
-                        return comparison1;
-                    }
-                    return Long.compare(nextCluster.getAvailableStorage(), firstCluster.getAvailableStorage());
-                }
-
-                final int comparison2 = Long.compare(firstCluster.getCoProcessors(), nextCluster.getCoProcessors());
-                if (comparison2 != 0) {
-                    return comparison2;
-                }
-                return Long.compare(firstCluster.getAvailableStorage(), nextCluster.getAvailableStorage());
-            });
-
-            if (!validCpusClusters.isEmpty()) {
-                cpuCluster = validCpusClusters.get(0);
-            }
+        } else {
+            cpuCluster = findSuitableCraftingCPU(job, prioritizePower, src);
         }
 
         if (cpuCluster != null) {
@@ -308,6 +304,39 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         }
 
         return null;
+    }
+
+    @Nullable
+    private CraftingCPUCluster findSuitableCraftingCPU(ICraftingPlan job, boolean prioritizePower, IActionSource src) {
+        var validCpusClusters = new ArrayList<CraftingCPUCluster>(this.craftingCPUClusters.size());
+        for (var cpu : this.craftingCPUClusters) {
+            if (cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.bytes()
+                    && cpu.canBeAutoSelectedFor(src)) {
+                validCpusClusters.add(cpu);
+            }
+        }
+
+        validCpusClusters.sort((a, b) -> {
+            // Prioritize sorting by selected mode
+            var firstPreferred = a.isPreferredFor(src);
+            var secondPreferred = b.isPreferredFor(src);
+            if (firstPreferred != secondPreferred) {
+                // Sort such that preferred comes first, not preferred second
+                return Boolean.compare(secondPreferred, firstPreferred);
+            }
+
+            if (prioritizePower) {
+                return FAST_FIRST_COMPARATOR.compare(b, a);
+            } else {
+                return FAST_LAST_COMPARATOR.compare(a, b);
+            }
+        });
+
+        if (!validCpusClusters.isEmpty()) {
+            return validCpusClusters.get(0);
+        } else {
+            return null;
+        }
     }
 
     @Override

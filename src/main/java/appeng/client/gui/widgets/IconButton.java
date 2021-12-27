@@ -21,14 +21,19 @@ package appeng.client.gui.widgets;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
@@ -61,7 +66,7 @@ public abstract class IconButton extends Button implements ITooltip {
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
 
         if (this.visible) {
-            final Icon icon = this.getIcon();
+            var icon = this.getIcon();
 
             Blitter blitter = icon.getBlitter();
             if (!this.active) {
@@ -97,10 +102,23 @@ public abstract class IconButton extends Button implements ITooltip {
                 icon.getBlitter().dest(x, y).blit(poseStack, getBlitOffset());
             }
             RenderSystem.enableDepthTest();
+
+            var item = this.getItemOverlay();
+            if (item != null) {
+                Minecraft.getInstance().getItemRenderer().renderGuiItem(new ItemStack(item), x, y);
+            }
         }
     }
 
     protected abstract Icon getIcon();
+
+    /**
+     * Prioritized over {@link #getIcon()} if not null.
+     */
+    @Nullable
+    protected Item getItemOverlay() {
+        return null;
+    }
 
     @Override
     public List<Component> getTooltipMessage() {

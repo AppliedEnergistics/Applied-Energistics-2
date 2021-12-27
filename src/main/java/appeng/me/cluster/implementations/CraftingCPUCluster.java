@@ -31,7 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.CraftingSchedulingMode;
+import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.Settings;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -77,7 +77,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.boundsMin = boundsMin.immutable();
         this.boundsMax = boundsMax.immutable();
 
-        this.configManager.registerSetting(Settings.CRAFTING_SCHEDULING_MODE, CraftingSchedulingMode.ALL);
+        this.configManager.registerSetting(Settings.CPU_SELECTION_MODE, CpuSelectionMode.ANY);
     }
 
     @Override
@@ -282,21 +282,33 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    public CraftingSchedulingMode getSchedulingMode() {
-        return this.configManager.getSetting(Settings.CRAFTING_SCHEDULING_MODE);
-    }
-
-    public boolean canAccept(boolean playerQueued) {
-        var mode = this.getSchedulingMode();
-
-        if (mode == CraftingSchedulingMode.ALL) {
-            return true;
-        } else {
-            return (mode == CraftingSchedulingMode.PLAYER_ONLY) == playerQueued;
-        }
+    public CpuSelectionMode getSchedulingMode() {
+        return this.configManager.getSetting(Settings.CPU_SELECTION_MODE);
     }
 
     public IConfigManager getConfigManager() {
         return configManager;
+    }
+
+    /**
+     * Checks if this CPU cluster can be automatically selected for a crafting request by the given action source.
+     */
+    public boolean canBeAutoSelectedFor(IActionSource source) {
+        return switch (getSchedulingMode()) {
+            case ANY -> true;
+            case PLAYER_ONLY -> source.player().isPresent();
+            case MACHINE_ONLY -> source.player().isEmpty();
+        };
+    }
+
+    /**
+     * Checks if this CPU cluster is preferred for crafting requests by the given action source.
+     */
+    public boolean isPreferredFor(IActionSource source) {
+        return switch (getSchedulingMode()) {
+            case ANY -> false;
+            case PLAYER_ONLY -> source.player().isPresent();
+            case MACHINE_ONLY -> source.player().isEmpty();
+        };
     }
 }
