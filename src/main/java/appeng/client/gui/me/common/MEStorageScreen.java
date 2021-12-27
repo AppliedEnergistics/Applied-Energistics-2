@@ -666,10 +666,16 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private void toggleTerminalSearchMode(SettingToggleButton<SearchBoxMode> btn, boolean backwards) {
+        var currentMode = AEConfig.instance().getTerminalSearchMode();
         SearchBoxMode next = btn.getNextValue(backwards);
         AEConfig.instance().setTerminalSearchMode(next);
         btn.set(next);
         this.reinitalize();
+
+        var newMode = AEConfig.instance().getTerminalSearchMode();
+        if (!newMode.shouldUseExternalSearchBox()) {
+            setSearchText(searchField.getValue());
+        }
     }
 
     private void toggleTerminalStyle(SettingToggleButton<appeng.api.config.TerminalStyle> btn, boolean backwards) {
