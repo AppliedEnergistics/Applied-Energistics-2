@@ -78,9 +78,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     public boolean canBeRotated() {
-        return true;// return BlockCraftingUnit.checkType( level.getBlockMetadata( xCoord, yCoord,
-        // zCoord ),
-        // BlockCraftingUnit.BASE_MONITOR );
+        return false;
     }
 
     @Override
