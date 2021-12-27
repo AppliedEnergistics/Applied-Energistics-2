@@ -51,6 +51,7 @@ import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.util.NullConfigManager;
 import appeng.util.Platform;
 import appeng.util.iterators.ChainedIterator;
 
@@ -352,7 +353,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         if (cluster != null) {
             return this.getCluster().getConfigManager();
         } else {
-            throw new IllegalStateException("Cannot access CPU config without a cluster");
+            return NullConfigManager.INSTANCE;
         }
     }
 }

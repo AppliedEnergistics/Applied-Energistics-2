@@ -24,13 +24,12 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.UnsupportedSettingException;
 import appeng.core.AELog;
 
 public final class ConfigManager implements IConfigManager {
@@ -38,8 +37,8 @@ public final class ConfigManager implements IConfigManager {
     @Nullable
     private final IConfigManagerListener listener;
 
-    public ConfigManager(IConfigManagerListener blockEntity) {
-        this.listener = blockEntity;
+    public ConfigManager(IConfigManagerListener listener) {
+        this.listener = listener;
     }
 
     public ConfigManager() {
@@ -58,18 +57,20 @@ public final class ConfigManager implements IConfigManager {
 
     @Override
     public <T extends Enum<T>> T getSetting(Setting<T> setting) {
-        final Enum<?> oldValue = this.settings.get(setting);
+        var oldValue = this.settings.get(setting);
 
-        if (oldValue != null) {
-            return setting.getEnumClass().cast(oldValue);
+        if (oldValue == null) {
+            throw new UnsupportedSettingException("Setting " + setting.getName() + " is not supported.");
         }
 
-        throw new IllegalStateException("Invalid Config setting. Expected a non-null value for " + setting.getName());
+        return setting.getEnumClass().cast(oldValue);
     }
 
     @Override
     public <T extends Enum<T>> void putSetting(Setting<T> setting, T newValue) {
-        Preconditions.checkState(settings.containsKey(setting), "Setting %s not supported", setting);
+        if (!settings.containsKey(setting)) {
+            throw new UnsupportedSettingException("Setting " + setting.getName() + " is not supported.");
+        }
         this.settings.put(setting, newValue);
         if (this.listener != null) {
             this.listener.onSettingChanged(this, setting);
@@ -95,11 +96,11 @@ public final class ConfigManager implements IConfigManager {
      */
     @Override
     public void readFromNBT(CompoundTag tagCompound) {
-        for (var entry : this.settings.entrySet()) {
+        for (var setting : this.settings.keySet()) {
             try {
-                if (tagCompound.contains(entry.getKey().getName(), Tag.TAG_STRING)) {
-                    String value = tagCompound.getString(entry.getKey().getName());
-                    entry.getKey().setFromString(this, value);
+                if (tagCompound.contains(setting.getName(), Tag.TAG_STRING)) {
+                    String value = tagCompound.getString(setting.getName());
+                    setting.setFromString(this, value);
                 }
             } catch (IllegalArgumentException e) {
                 AELog.debug(e);

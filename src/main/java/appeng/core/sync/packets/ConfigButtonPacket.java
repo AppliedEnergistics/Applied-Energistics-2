@@ -27,6 +27,7 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.AEBaseMenu;
@@ -60,7 +61,12 @@ public final class ConfigButtonPacket extends BasePacket {
         if (player.containerMenu instanceof AEBaseMenu baseMenu) {
             if (baseMenu.getTarget() instanceof IConfigurableObject configurableObject) {
                 var cm = configurableObject.getConfigManager();
-                cycleSetting(cm, option);
+                if (cm.hasSetting(option)) {
+                    cycleSetting(cm, option);
+                } else {
+                    AELog.info("Ignoring unsupported setting %s sent by client on %s", option,
+                            baseMenu.getTarget());
+                }
             }
         }
     }

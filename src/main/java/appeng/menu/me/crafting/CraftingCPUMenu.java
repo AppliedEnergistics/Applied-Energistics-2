@@ -25,7 +25,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.CraftingSchedulingMode;
+import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -66,7 +66,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
     private final Consumer<AEKey> cpuChangeListener = incrementalUpdateHelper::addChange;
 
     @GuiSync(0)
-    public CraftingSchedulingMode schedulingMode = CraftingSchedulingMode.ALL;
+    public CpuSelectionMode schedulingMode = CpuSelectionMode.ANY;
 
     public CraftingCPUMenu(MenuType<?> menuType, int id, Inventory ip, Object te) {
         super(menuType, id, ip, te);
@@ -152,7 +152,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
         super.broadcastChanges();
     }
 
-    public CraftingSchedulingMode getSchedulingMode() {
+    public CpuSelectionMode getSchedulingMode() {
         return schedulingMode;
     }
 

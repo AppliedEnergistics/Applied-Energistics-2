@@ -33,7 +33,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.config.CraftingSchedulingMode;
+import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.Settings;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
@@ -57,7 +57,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
 
     private final Scrollbar scrollbar;
 
-    private final SettingToggleButton<CraftingSchedulingMode> schedulingModeButton;
+    private final SettingToggleButton<CpuSelectionMode> schedulingModeButton;
 
     private CraftingStatus status;
 
@@ -70,9 +70,10 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
 
         this.cancel = this.widgets.addButton("cancel", GuiText.Cancel.text(), menu::cancelCrafting);
 
-        this.schedulingModeButton = new ServerSettingToggleButton<>(Settings.CRAFTING_SCHEDULING_MODE,
-                CraftingSchedulingMode.ALL);
+        this.schedulingModeButton = new ServerSettingToggleButton<>(Settings.CPU_SELECTION_MODE,
+                CpuSelectionMode.ANY);
 
+        // This screen is reused for the crafting status in Terminals, where it should not show the config buttons
         if (menu.allowConfiguration()) {
             this.addToLeftToolbar(this.schedulingModeButton);
         }
