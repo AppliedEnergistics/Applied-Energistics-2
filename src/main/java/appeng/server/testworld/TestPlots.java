@@ -81,6 +81,7 @@ public final class TestPlots {
             .put(AppEng.makeId("maxchannelsadhoctest"), TestPlots::maxChannelsAdHocTest)
             .put(AppEng.makeId("blockingmodesubnetworkchesttest"), TestPlots::blockingModeSubnetworkChestTest)
             .put(AppEng.makeId("cancelingjobsfrominterfacecrash"), TestPlots::cancelingJobsFromInterfaceCrash)
+            .put(AppEng.makeId("terminalfullofenchanteditems"), TestPlots::terminalFullOfEnchantedItems)
             .build();
 
     private TestPlots() {
@@ -786,5 +787,25 @@ public final class TestPlots {
                     })
                     .thenSucceed();
         }).maxTicks(300 /* interface takes a while to request */);
+    }
+
+    /**
+     * Simple terminal full of enchanted items to test rendering performance.
+     */
+    public static void terminalFullOfEnchantedItems(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.creativeEnergyCell(origin.below());
+        plot.cable(origin).part(Direction.NORTH, AEParts.TERMINAL);
+        var drive = plot.drive(origin.east());
+
+        var pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+        pickaxe.enchant(Enchantments.BLOCK_FORTUNE, 1);
+        for (var i = 0; i < 10; i++) {
+            var cell = drive.addItemCell64k();
+            for (var j = 0; j < 63; j++) {
+                pickaxe.setDamageValue(pickaxe.getDamageValue() + 1);
+                cell.add(AEItemKey.of(pickaxe), 2);
+            }
+        }
     }
 }
