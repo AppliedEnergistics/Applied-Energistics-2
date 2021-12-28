@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.me.items.PatternEncodingTermMenu;
 
 /**
  * Grabs or crafts an item from network content and puts it into the players hand. Used for crafting in the pattern
@@ -76,7 +76,7 @@ public class PatternSlotPacket extends BasePacket {
 
     @Override
     public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
-        if (player.containerMenu instanceof PatternTermMenu patternTerminal) {
+        if (player.containerMenu instanceof PatternEncodingTermMenu patternTerminal) {
             patternTerminal.craftOrGetItem(this);
         }
     }

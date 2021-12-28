@@ -23,6 +23,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public enum ButtonToolTips {
+    Amount("Amount: %d"),
     ActiveOnPulse("Activate once per pulse"),
     ActiveWithSignal("Active with signal"),
     ActiveWithoutSignal("Active without signal"),
@@ -63,8 +64,6 @@ public enum ButtonToolTips {
     FilterOnExtract("Filtered Operations"),
     FilterOnExtractDisabled("Filter on insertion only."),
     FilterOnExtractEnabled("Filter on insert and extract."),
-    FindContainedFluids("Replace items by contained fluid."),
-    FindContainedFluidsDesc("Replace items that contain a fluid (such as buckets) by their contained fluid."),
     FluidSubstitutions("Fluid Substitutions"),
     FluidSubstitutionsDescDisabled("Don't use fluids."),
     FluidSubstitutionsDescEnabled(
@@ -146,7 +145,14 @@ public enum ButtonToolTips {
     SideLeft("left"),
     SideRight("right"),
     SideFront("front"),
-    SideBack("back");
+    SideBack("back"),
+    LeftClick("Left-Click"),
+    MiddleClick("Middle-Click"),
+    RightClick("Right-Click"),
+    StoreAction("%s: Store %s"),
+    SetAction("%s: Set %s"),
+    ModifyAmountAction("%s: Modify Amount"),
+    ;
 
     private final TranslatableComponent text;
 

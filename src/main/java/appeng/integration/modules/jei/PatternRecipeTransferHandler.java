@@ -23,17 +23,18 @@ import net.minecraft.network.chat.TranslatableComponent;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.plugin.common.DefaultPlugin;
 
-import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.parts.encoding.EncodingMode;
 
-public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternTermMenu> {
+public class PatternRecipeTransferHandler extends RecipeTransferHandler<PatternEncodingTermMenu> {
 
     public PatternRecipeTransferHandler() {
-        super(PatternTermMenu.class);
+        super(PatternEncodingTermMenu.class);
     }
 
-    protected Result doTransferRecipe(PatternTermMenu container, Display recipe, Context context) {
+    protected Result doTransferRecipe(PatternEncodingTermMenu menu, Display recipe, Context context) {
 
-        if (container.isCraftingMode() && recipe.getCategoryIdentifier() != DefaultPlugin.CRAFTING) {
+        if (menu.getMode() != EncodingMode.PROCESSING && recipe.getCategoryIdentifier() != DefaultPlugin.CRAFTING) {
             return Result.createFailed(new TranslatableComponent("jei.ae2.requires_processing_mode"));
         }
 

@@ -20,6 +20,7 @@ package appeng.client.gui.widgets;
 
 import java.time.Duration;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.Rect2i;
@@ -193,7 +194,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
 
     @Override
     public boolean onMouseDown(Point mousePos, int button) {
-        if (button != BUTTON_LEFT) {
+        if (button != InputConstants.MOUSE_BUTTON_LEFT) {
             return false; // Only handle left mouse button
         }
 
@@ -228,7 +229,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
 
     @Override
     public boolean onMouseUp(Point mousePos, int button) {
-        if (button == BUTTON_LEFT) {
+        if (button == InputConstants.MOUSE_BUTTON_LEFT) {
             this.dragging = false;
             this.eventRepeater.stop();
         }

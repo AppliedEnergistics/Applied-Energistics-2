@@ -184,6 +184,10 @@ public class AppEngSlot extends Slot {
         return other instanceof AppEngSlot && ((AppEngSlot) other).inventory == this.inventory;
     }
 
+    public InternalInventory getSlotInv() {
+        return inventory.getSlotInv(invSlot);
+    }
+
     @Override
     @Environment(EnvType.CLIENT)
     public boolean isActive() {

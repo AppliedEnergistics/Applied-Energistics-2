@@ -36,7 +36,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.UseRecipePacket;
 import appeng.helpers.IMenuCraftingPacket;
-import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.parts.encoding.EncodingMode;
 
 abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraftingPacket>
         implements TransferHandler {
@@ -87,7 +88,8 @@ abstract class RecipeTransferHandler<T extends AbstractContainerMenu & IMenuCraf
             if (vanillaRecipe != null) {
                 // When encoding a pattern, send along any extra inputs and outputs that might not be reported by
                 // the Vanilla crafting recipe as we're not limited here by what can actually be crafted in Vanilla
-                if (menu instanceof PatternTermMenu patternTermMenu && !patternTermMenu.isCraftingMode()) {
+                if (menu instanceof PatternEncodingTermMenu patternTermMenu
+                        && patternTermMenu.getMode() == EncodingMode.PROCESSING) {
                     var inputs = GenericEntryStackHelper.of(recipe.getInputEntries());
                     var outputs = GenericEntryStackHelper.of(recipe.getOutputEntries());
 

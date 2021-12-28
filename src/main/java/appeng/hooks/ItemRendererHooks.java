@@ -76,7 +76,7 @@ public final class ItemRendererHooks {
                     unwrapped.what());
 
             if (unwrapped.amount() > 0) {
-                String amtText = unwrapped.what().formatAmount(unwrapped.amount(), AmountFormat.FULL);
+                String amtText = unwrapped.what().formatAmount(unwrapped.amount(), AmountFormat.PREVIEW_REGULAR);
                 Font font = Minecraft.getInstance().font;
                 StackSizeRenderer.renderSizeLabel(font, x, y, amtText, false);
             }

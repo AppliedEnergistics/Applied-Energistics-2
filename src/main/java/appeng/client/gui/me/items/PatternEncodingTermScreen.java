@@ -18,6 +18,9 @@
 
 package appeng.client.gui.me.items;
 
+import java.util.ArrayList;
+
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
@@ -28,19 +31,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.config.ActionItems;
+import appeng.api.stacks.GenericStack;
 import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
+import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.menu.SlotSemantics;
-import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.me.interaction.EmptyingAction;
+import appeng.menu.me.interaction.StackInteractions;
+import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.slot.PatternTermSlot;
+import appeng.parts.encoding.EncodingMode;
 
-public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScreen<C> {
+public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extends MEStorageScreen<C> {
 
     private static final String MODES_TEXTURE = "guis/pattern_modes.png";
 
@@ -54,9 +63,8 @@ public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScree
     private final ActionButton substitutionsDisabledBtn;
     private final ActionButton fluidSubstitutionsEnabledBtn;
     private final ActionButton fluidSubstitutionsDisabledBtn;
-    private final ActionButton convertItemsToFluidsBtn;
 
-    public PatternTermScreen(C menu, Inventory playerInventory,
+    public PatternEncodingTermScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
@@ -84,22 +92,17 @@ public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScree
         this.fluidSubstitutionsDisabledBtn.setHalfSize(true);
         widgets.add("fluidSubstitutionsDisabled", this.fluidSubstitutionsDisabledBtn);
 
-        convertItemsToFluidsBtn = new ActionButton(ActionItems.FIND_CONTAINED_FLUID,
-                act -> menu.convertItemsToFluids());
-        convertItemsToFluidsBtn.setHalfSize(true);
-        widgets.add("convertItemsToFluids", convertItemsToFluidsBtn);
-
         ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
         widgets.add("encodePattern", encodeBtn);
 
         this.tabCraftButton = new TabButton(
                 new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
-                btn -> getMenu().setCraftingMode(false));
+                btn -> getMenu().setMode(EncodingMode.PROCESSING));
         widgets.add("craftingPatternMode", this.tabCraftButton);
 
         this.tabProcessButton = new TabButton(
                 new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.text(), this.itemRenderer,
-                btn -> getMenu().setCraftingMode(true));
+                btn -> getMenu().setMode(EncodingMode.CRAFTING));
         widgets.add("processingPatternMode", this.tabProcessButton);
 
     }
@@ -108,8 +111,10 @@ public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScree
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
+        var mode = this.menu.getMode();
+
         // Update button visibility
-        if (this.menu.isCraftingMode()) {
+        if (mode == EncodingMode.CRAFTING) {
             this.tabCraftButton.visible = true;
             this.tabProcessButton.visible = false;
 
@@ -137,42 +142,29 @@ public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScree
             this.fluidSubstitutionsDisabledBtn.visible = false;
         }
 
-        setSlotsHidden(SlotSemantics.CRAFTING_RESULT, !this.menu.isCraftingMode());
-        setSlotsHidden(SlotSemantics.PROCESSING_PRIMARY_RESULT, this.menu.isCraftingMode());
-        setSlotsHidden(SlotSemantics.PROCESSING_FIRST_OPTIONAL_RESULT, this.menu.isCraftingMode());
-        setSlotsHidden(SlotSemantics.PROCESSING_SECOND_OPTIONAL_RESULT, this.menu.isCraftingMode());
+        setSlotsHidden(SlotSemantics.CRAFTING_RESULT, mode != EncodingMode.CRAFTING);
+        setSlotsHidden(SlotSemantics.PROCESSING_PRIMARY_RESULT, mode != EncodingMode.PROCESSING);
+        setSlotsHidden(SlotSemantics.PROCESSING_FIRST_OPTIONAL_RESULT, mode != EncodingMode.PROCESSING);
+        setSlotsHidden(SlotSemantics.PROCESSING_SECOND_OPTIONAL_RESULT, mode != EncodingMode.PROCESSING);
 
         // Only show tooltips for the processing output slots, if we're in processing mode
-        widgets.setTooltipAreaEnabled("processing-primary-output", !this.menu.isCraftingMode());
-        widgets.setTooltipAreaEnabled("processing-optional-output1", !this.menu.isCraftingMode());
-        widgets.setTooltipAreaEnabled("processing-optional-output2", !this.menu.isCraftingMode());
-
-        // If the menu allows converting items to fluids, show the button
-        this.convertItemsToFluidsBtn.visible = this.menu.canConvertItemsToFluids();
+        widgets.setTooltipAreaEnabled("processing-primary-output", mode == EncodingMode.PROCESSING);
+        widgets.setTooltipAreaEnabled("processing-optional-output1", mode == EncodingMode.PROCESSING);
+        widgets.setTooltipAreaEnabled("processing-optional-output2", mode == EncodingMode.PROCESSING);
     }
 
     @Override
     public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        Blitter modeBg = this.menu.isCraftingMode() ? CRAFTING_MODE_BG : PROCESSING_MODE_BG;
+        var mode = menu.getMode();
+        Blitter modeBg = mode == EncodingMode.CRAFTING ? CRAFTING_MODE_BG : PROCESSING_MODE_BG;
         modeBg.dest(leftPos + 9, topPos + imageHeight - 164).blit(poseStack, getBlitOffset());
 
-        if (menu.isCraftingMode() && menu.substituteFluids
+        if (mode == EncodingMode.CRAFTING && menu.substituteFluids
                 && fluidSubstitutionsEnabledBtn.isMouseOver(mouseX, mouseY)) {
             for (var slotIndex : menu.slotsSupportingFluidSubstitution) {
                 drawSlotGreenBG(poseStack, menu.getCraftingGridSlots()[slotIndex]);
-            }
-        } else if (!menu.isCraftingMode() && convertItemsToFluidsBtn.isMouseOver(mouseX, mouseY)) {
-            for (var slot : menu.getCraftingGridSlots()) {
-                if (menu.canConvertItemToFluid(slot)) {
-                    drawSlotGreenBG(poseStack, slot);
-                }
-            }
-            for (var slot : menu.getProcessingOutputSlots()) {
-                if (menu.canConvertItemToFluid(slot)) {
-                    drawSlotGreenBG(poseStack, slot);
-                }
             }
         }
     }
@@ -185,9 +177,13 @@ public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScree
 
     @Override
     protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+        if (mouseButton == InputConstants.MOUSE_BUTTON_MIDDLE && menu.canModifyAmountForSlot(slot)) {
+            menu.showModifyAmountMenu(slotIdx);
+            return;
+        }
+
         if (slot instanceof PatternTermSlot) {
             if (!slot.getItem().isEmpty()) {
-                var amount = slot.getItem().getCount();
                 var packet = new PatternSlotPacket(menu.getCraftingMatrix(), slot.getItem(), hasShiftDown());
                 NetworkHandler.instance().sendToServer(packet);
             }
@@ -196,4 +192,38 @@ public class PatternTermScreen<C extends PatternTermMenu> extends MEStorageScree
 
         super.slotClicked(slot, slotIdx, mouseButton, clickType);
     }
+
+    /**
+     * When in processing mode, show a hint in the tooltip that middle-click will open the amount entry dialog.
+     */
+    @Override
+    protected void renderTooltip(PoseStack poseStack, int x, int y) {
+        if (this.menu.getCarried().isEmpty() && menu.canModifyAmountForSlot(this.hoveredSlot)) {
+            var itemTooltip = new ArrayList<>(getTooltipFromItem(this.hoveredSlot.getItem()));
+            var unwrapped = GenericStack.fromItemStack(this.hoveredSlot.getItem());
+            if (unwrapped != null) {
+                itemTooltip.add(Tooltips.getAmountTooltip(ButtonToolTips.Amount, unwrapped));
+            }
+            itemTooltip.add(Tooltips.getSetAmountTooltip());
+            drawTooltip(poseStack, x, y, itemTooltip);
+        } else {
+            super.renderTooltip(poseStack, x, y);
+        }
+    }
+
+    @Override
+    protected EmptyingAction getEmptyingAction(Slot slot, ItemStack carried) {
+        // Since the crafting matrix and output slot are not backed by a config inventory, the default behavior
+        // does not work out of the box.
+        if (menu.isProcessingPatternSlot(slot)) {
+            // See if we should offer the left-/right-click differentiation for setting a different filter
+            var emptyingAction = StackInteractions.getEmptyingAction(carried);
+            if (emptyingAction != null) {
+                return emptyingAction;
+            }
+        }
+
+        return super.getEmptyingAction(slot, carried);
+    }
+
 }
