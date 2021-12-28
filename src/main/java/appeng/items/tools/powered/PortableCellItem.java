@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import appeng.util.fluid.FluidSoundHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -330,6 +331,7 @@ public class PortableCellItem extends AEBasePoweredItem
                             other);
                     if (extracted > 0) {
                         insert(player, stack, fluidStack.what(), extracted, Actionable.MODULATE);
+                        FluidSoundHelper.playEmptySound(player, (AEFluidKey) fluidStack.what());
                     }
                 }
             }
@@ -366,6 +368,7 @@ public class PortableCellItem extends AEBasePoweredItem
                             fluidStack.amount(), stack);
                     if (extracted > 0) {
                         insert(player, stack, fluidStack.what(), extracted, Actionable.MODULATE);
+                        FluidSoundHelper.playEmptySound(player, (AEFluidKey) fluidStack.what());
                     }
                 }
             }
