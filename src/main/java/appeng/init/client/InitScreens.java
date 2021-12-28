@@ -65,7 +65,8 @@ import appeng.client.gui.me.crafting.CraftingStatusScreen;
 import appeng.client.gui.me.crafting.SetStockAmountScreen;
 import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.client.gui.me.items.CraftingTermScreen;
-import appeng.client.gui.me.items.PatternTermScreen;
+import appeng.client.gui.me.items.PatternEncodingTermScreen;
+import appeng.client.gui.me.items.SetProcessingPatternAmountScreen;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.client.gui.me.networktool.NetworkToolScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -137,6 +138,8 @@ public final class InitScreens {
         register(IOBusMenu.IMPORT_TYPE, IOBusScreen::new, "/screens/import_bus.json");
         register(IOPortMenu.TYPE, IOPortScreen::new, "/screens/io_port.json");
         register(StorageBusMenu.TYPE, StorageBusScreen::new, "/screens/storage_bus.json");
+        register(SetProcessingPatternAmountMenu.TYPE, SetProcessingPatternAmountScreen::new,
+                "/screens/set_processing_pattern_amount.json");
         register(SetStockAmountMenu.TYPE, SetStockAmountScreen::new, "/screens/set_stock_amount.json");
         register(FormationPlaneMenu.TYPE, FormationPlaneScreen::new, "/screens/formation_plane.json");
         register(PriorityMenu.TYPE, PriorityScreen::new, "/screens/priority.json");
@@ -182,9 +185,9 @@ public final class InitScreens {
                 WirelessCraftingTermMenu.TYPE,
                 CraftingTermScreen::new,
                 "/screens/terminals/crafting_terminal.json");
-        InitScreens.<PatternTermMenu, PatternTermScreen<PatternTermMenu>>register(
-                PatternTermMenu.TYPE,
-                PatternTermScreen::new,
+        InitScreens.<PatternEncodingTermMenu, PatternEncodingTermScreen<PatternEncodingTermMenu>>register(
+                PatternEncodingTermMenu.TYPE,
+                PatternEncodingTermScreen::new,
                 "/screens/terminals/pattern_encoding_terminal.json");
     }
 

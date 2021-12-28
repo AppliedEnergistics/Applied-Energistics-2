@@ -69,6 +69,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
@@ -518,12 +519,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (!carried.isEmpty()) {
                 var emptyingAction = StackInteractions.getEmptyingAction(carried);
                 if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
-                    renderTooltip(poseStack, List.of(
-                            new TextComponent("Left-Click: Store ").append(carried.getHoverName())
-                                    .withStyle(ChatFormatting.GRAY).getVisualOrderText(),
-                            new TextComponent("Right-Click: Store ").append(emptyingAction.description())
-                                    .withStyle(ChatFormatting.GRAY).getVisualOrderText()),
-                            x, y);
+                    drawTooltip(
+                            poseStack,
+                            x,
+                            y,
+                            Tooltips.getEmptyingTooltip(ButtonToolTips.StoreAction, carried, emptyingAction));
                     return;
                 }
 
@@ -544,17 +544,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry entry, int x, int y) {
-        final long bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
 
-        var stack = entry.getWhat().wrapForDisplayOrFilter();
+        var currentToolTip = AEStackRendering.getTooltip(entry.getWhat());
 
-        var currentToolTip = this.getTooltipFromItem(stack);
-
-        var storedAmount = entry.getStoredAmount();
-        if (storedAmount > bigNumber * entry.getWhat().getAmountPerUnit()
-                || storedAmount > entry.getWhat().getAmountPerUnit() && stack.isDamaged()) {
-            var formattedAmount = entry.getWhat().formatAmount(storedAmount, AmountFormat.FULL);
-            currentToolTip.add(ButtonToolTips.StoredAmount.text(formattedAmount).withStyle(ChatFormatting.GRAY));
+        if (Tooltips.shouldShowAmountTooltip(entry.getWhat(), entry.getStoredAmount())) {
+            currentToolTip.add(
+                    Tooltips.getAmountTooltip(ButtonToolTips.StoredAmount, entry.getWhat(), entry.getStoredAmount()));
         }
 
         var requestableAmount = entry.getRequestableAmount();
@@ -564,7 +559,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         // When we're _NOT_ showing the "craft" text as the amount anyway, add a Craftable entry to the tooltip
-        if (entry.isCraftable() && !(isViewOnlyCraftable() || storedAmount <= 0)) {
+        if (entry.isCraftable() && !(isViewOnlyCraftable() || entry.getStoredAmount() <= 0)) {
             currentToolTip.add(ButtonToolTips.Craftable.text().copy().withStyle(ChatFormatting.DARK_GRAY));
         }
 

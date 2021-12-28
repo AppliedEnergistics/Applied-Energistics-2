@@ -33,11 +33,6 @@ import appeng.client.Point;
 
 public interface ICompositeWidget {
 
-    /**
-     * Constant for the left mouse button.
-     */
-    int BUTTON_LEFT = 0;
-
     void setPosition(Point position);
 
     void setSize(int width, int height);

@@ -52,7 +52,8 @@ import appeng.core.sync.BasePacketHandler;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
-import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.parts.encoding.EncodingMode;
 import appeng.util.CraftingRecipeUtil;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -350,8 +351,8 @@ public class UseRecipePacket extends BasePacket {
     }
 
     private void handleProcessing(AbstractContainerMenu con, Recipe<?> recipe) {
-        if (con instanceof PatternTermMenu patternTerm) {
-            if (!patternTerm.craftingMode && this.extraInputs != null && this.extraOutputs != null) {
+        if (con instanceof PatternEncodingTermMenu patternTerm) {
+            if (patternTerm.mode == EncodingMode.PROCESSING && this.extraInputs != null && this.extraOutputs != null) {
                 // Fill in blank slots with extra inputs
                 var craftingMatrix = patternTerm.getCraftingMatrix();
                 var extraInputs = this.extraInputs.iterator();

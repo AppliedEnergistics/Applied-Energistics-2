@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.reporting;
+package appeng.parts.encoding;
 
 import java.util.List;
 
@@ -35,12 +35,15 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
+import appeng.crafting.pattern.AECraftingPattern;
+import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.IPatternTerminalHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.common.MEStorageMenu;
-import appeng.menu.me.items.PatternTermMenu;
+import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.PartModel;
+import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 
@@ -61,7 +64,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     private final AppEngInternalInventory output = new AppEngInternalInventory(this, 3);
     private final AppEngInternalInventory pattern = new AppEngInternalInventory(this, 2);
 
-    private boolean craftingMode = true;
+    private EncodingMode mode = EncodingMode.CRAFTING;
     private boolean substitute = false;
     private boolean substituteFluids = true;
 
@@ -81,7 +84,12 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     @Override
     public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
-        this.setCraftingRecipe(data.getBoolean("craftingMode"));
+
+        try {
+            this.mode = EncodingMode.valueOf(data.getString("mode"));
+        } catch (IllegalArgumentException ignored) {
+            this.mode = EncodingMode.CRAFTING;
+        }
         this.setSubstitution(data.getBoolean("substitute"));
         this.setFluidSubstitution(data.getBoolean("substituteFluids"));
         this.pattern.readFromNBT(data, "pattern");
@@ -92,7 +100,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     @Override
     public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
-        data.putBoolean("craftingMode", this.craftingMode);
+        data.putString("mode", this.mode.name());
         data.putBoolean("substitute", this.substitute);
         data.putBoolean("substituteFluids", this.substituteFluids);
         this.pattern.writeToNBT(data, "pattern");
@@ -103,7 +111,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     @Override
     public MenuType<?> getMenuType(Player p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
-            return PatternTermMenu.TYPE;
+            return PatternEncodingTermMenu.TYPE;
         }
         return MEStorageMenu.TYPE;
     }
@@ -114,8 +122,12 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
             var is = this.pattern.getStackInSlot(1);
             var details = PatternDetailsHelper.decodePattern(is,
                     this.getHost().getBlockEntity().getLevel());
+            if (details instanceof AECraftingPattern) {
+                setMode(EncodingMode.CRAFTING);
+            } else if (details instanceof AEProcessingPattern) {
+                setMode(EncodingMode.PROCESSING);
+            }
             if (details instanceof IAEPatternDetails aeDetails) {
-                this.setCraftingRecipe(aeDetails.isCraftable());
                 this.setSubstitution(aeDetails.canSubstitute());
                 this.setFluidSubstitution(aeDetails.canSubstituteFluids());
 
@@ -134,12 +146,14 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
         this.getHost().markForSave();
     }
 
-    public boolean isCraftingRecipe() {
-        return this.craftingMode;
+    @Override
+    public EncodingMode getMode() {
+        return mode;
     }
 
-    public void setCraftingRecipe(boolean craftingMode) {
-        this.craftingMode = craftingMode;
+    @Override
+    public void setMode(EncodingMode mode) {
+        this.mode = mode;
         this.fixCraftingRecipes();
     }
 

@@ -78,11 +78,6 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.FluidSubstitutions;
                 displayValue = ButtonToolTips.FluidSubstitutionsDescDisabled;
             }
-            case FIND_CONTAINED_FLUID -> {
-                icon = Icon.FIND_CONTAINED_FLUID;
-                displayName = ButtonToolTips.FindContainedFluids;
-                displayValue = ButtonToolTips.FindContainedFluidsDesc;
-            }
             default -> throw new IllegalArgumentException("Unknown ActionItem: " + action);
         }
 

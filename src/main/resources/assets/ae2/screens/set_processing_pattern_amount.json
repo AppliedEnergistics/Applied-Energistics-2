@@ -1,0 +1,4 @@
+{
+  "$schema": "schema.json",
+  "includes": ["set_stock_amount.json"]
+}
