@@ -14,8 +14,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.stacks.AEFluidKey;
@@ -150,12 +148,7 @@ public final class AutoCraftingTestPlot {
                 .part(Direction.NORTH, AEParts.TOGGLE_BUS);
         plot.cable("0 1 0");
         plot.cable("0 1 1")
-                .part(Direction.DOWN, AEParts.LEVEL_EMITTER, levelEmitter -> {
-                    levelEmitter.getConfig().insert(0, AEFluidKey.of(Fluids.WATER), 1, Actionable.MODULATE);
-                    levelEmitter.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
-                    // Set it to emit and craft on redstone
-                    levelEmitter.getConfigManager().putSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.YES);
-                })
+                .craftingEmitter(Direction.DOWN, Fluids.WATER)
                 .part(Direction.SOUTH, AEParts.INTERFACE);
         plot.cable("0 1 2")
                 .part(Direction.NORTH, AEParts.STORAGE_BUS, storageBus -> {

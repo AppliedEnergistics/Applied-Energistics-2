@@ -155,6 +155,11 @@ public class CraftingLink implements ICraftingLink {
             return 0;
         }
 
+        // The job was canceled. Don't insert more items. See issue #5919
+        if (tie.isCanceled()) {
+            return 0;
+        }
+
         return this.tie.getRequest().getRequester().insertCraftedItems(this.tie.getRequest(), what, amount, mode);
     }
 
