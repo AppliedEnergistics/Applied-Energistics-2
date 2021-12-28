@@ -30,11 +30,9 @@ import javax.annotation.Nullable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
@@ -150,6 +148,7 @@ public class Repo implements IClientRepo {
         }
 
         ViewItems viewMode = this.sortSrc.getSortDisplay();
+        FilterTypes filterType = this.sortSrc.getFilterType();
 
         for (GridInventoryEntry entry : this.entries.values()) {
             if (this.partitionList != null && !this.partitionList.isListed(entry.getWhat())) {
@@ -161,6 +160,14 @@ public class Repo implements IClientRepo {
             }
 
             if (viewMode == ViewItems.STORED && entry.getStoredAmount() == 0) {
+                continue;
+            }
+
+            if (filterType == FilterTypes.ITEMS && entry.getWhat().getType() != AEKeyType.items()) {
+                continue;
+            }
+
+            if (filterType == FilterTypes.FLUIDS && entry.getWhat().getType() != AEKeyType.fluids()) {
                 continue;
             }
 

@@ -42,12 +42,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Setting;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
@@ -102,6 +97,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private final AETextField searchField;
     private int rows = 0;
     private SettingToggleButton<ViewItems> viewModeToggle;
+    private SettingToggleButton<FilterTypes> filterTypesToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
     private final SettingToggleButton<SortDir> sortDirToggle;
     private boolean isAutoFocus = false;
@@ -158,6 +154,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (this.style.isSupportsAutoCrafting()) {
             this.viewModeToggle = this.addToLeftToolbar(new SettingToggleButton<>(
                     Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
+        }
+
+        if (this.style.isSupportsMultipleTypes()) {
+            this.filterTypesToggle = this.addToLeftToolbar(new SettingToggleButton<>(
+                    Settings.FILTER_TYPE, getFilterType(), this::toggleServerSetting));
+
         }
 
         this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(
@@ -644,6 +646,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
+    public FilterTypes getFilterType() {
+        return this.configSrc.getSetting(Settings.FILTER_TYPE);
+    }
+
+    @Override
     public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         if (this.sortByToggle != null) {
             this.sortByToggle.set(getSortBy());
@@ -655,6 +662,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         if (this.viewModeToggle != null) {
             this.viewModeToggle.set(getSortDisplay());
+        }
+
+        if (this.filterTypesToggle != null) {
+            this.filterTypesToggle.set(getFilterType());
         }
 
         this.repo.updateView();

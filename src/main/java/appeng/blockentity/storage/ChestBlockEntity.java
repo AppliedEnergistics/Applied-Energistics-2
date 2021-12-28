@@ -44,14 +44,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.inventories.InternalInventory;
@@ -131,6 +124,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
         this.config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        this.config.registerSetting(Settings.FILTER_TYPE, FilterTypes.ALL);
         this.config.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         this.setInternalPublicPowerStorage(true);

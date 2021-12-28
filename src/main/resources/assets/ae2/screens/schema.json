@@ -454,6 +454,11 @@
           "type": "boolean",
           "default": false
         },
+        "supportsMultipleTypes": {
+          "description": "Defines if this terminal supports multiple types (item, fluids) at the same type. If not, the button to show only fluid/items is hidden.",
+          "type": "boolean",
+          "default": false
+        },
         "stackSizeStyle": {
           "description": "The type of stack size rendering to use.",
           "type": "string",

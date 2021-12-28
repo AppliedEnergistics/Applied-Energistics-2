@@ -215,6 +215,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
         out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        out.registerSetting(Settings.FILTER_TYPE, FilterTypes.ALL);
         out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         out.readFromNBT(target.getOrCreateTag().copy());

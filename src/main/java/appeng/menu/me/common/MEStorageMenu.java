@@ -35,14 +35,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Setting;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
@@ -162,6 +155,7 @@ public class MEStorageMenu extends AEBaseMenu
 
         this.clientCM.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        this.clientCM.registerSetting(Settings.FILTER_TYPE, FilterTypes.ALL);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         IEnergySource powerSource = null;
