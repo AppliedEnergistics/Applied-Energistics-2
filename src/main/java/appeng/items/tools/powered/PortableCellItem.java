@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import appeng.util.fluid.FluidSoundHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -75,6 +74,7 @@ import appeng.menu.locator.MenuLocators;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
+import appeng.util.fluid.FluidSoundHelper;
 
 public class PortableCellItem extends AEBasePoweredItem
         implements IBasicCellItem, IMenuItem, AEToolItem {
