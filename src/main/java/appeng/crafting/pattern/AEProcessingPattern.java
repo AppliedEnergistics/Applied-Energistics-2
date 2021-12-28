@@ -50,10 +50,10 @@ public class AEProcessingPattern implements IAEPatternDetails {
 
         var primaryOutput = this.sparseOutputs[0];
         this.condensedOutputs = AEPatternHelper.condenseStacks(sparseOutputs);
-        // Ensure the primary output is the first in the list, even if it has a smaller stack size.
+        // Ensure the primary output is the first in the list, even if it has a larger stack size from being merged
         int primaryOutputIndex = -1;
         for (int i = 0; i < condensedOutputs.length; ++i) {
-            if (primaryOutput.equals(condensedOutputs[i])) {
+            if (primaryOutput.what().equals(condensedOutputs[i].what())) {
                 primaryOutputIndex = i;
             }
         }
