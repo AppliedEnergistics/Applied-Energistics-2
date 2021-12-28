@@ -134,6 +134,7 @@
   "commands.ae2.ChunkLoggerOn": "区块日志已打开",
   "commands.ae2.permissions": "你没有足够的权限来执行该指令.",
   "commands.ae2.usage": "ae2提供的指令 - 输入/ae2 list查看指令列表,/ae2 help _____查看指令帮助.",
+  "entity.ae2.singularity": "奇点",
   "gui.ae2.And": "与",
   "gui.ae2.Automatic": "自动分配",
   "gui.ae2.Black": "黑色",

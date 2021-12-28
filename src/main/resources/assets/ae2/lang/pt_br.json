@@ -127,6 +127,7 @@
   "commands.ae2.ChunkLoggerOn": "O registro de chunks agora está ligado.",
   "commands.ae2.permissions": "Você não tem a permissão adequada para executar esse comando.",
   "commands.ae2.usage": "Comandos providenciados pelo Applied Energistics 2 - use /ae2 list para uma lista, e /ae2 help _____ para ajuda com certo comando.",
+  "entity.ae2.singularity": "Singularidade",
   "gui.ae2.And": "e",
   "gui.ae2.Automatic": "Automático",
   "gui.ae2.Black": "Preto",

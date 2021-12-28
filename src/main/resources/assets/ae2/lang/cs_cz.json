@@ -113,6 +113,7 @@
   "commands.ae2.ChunkLoggerOn": "Logování chunků je zapnuto",
   "commands.ae2.permissions": "Nemáš dostatečná oprávnění pro použití tohoto příkazu.",
   "commands.ae2.usage": "Příkazy poskytované módem Applied Energistics 2 - použij /ae2 list pro seznam a /ae2 help _____ pro nápovědu s příkazem.",
+  "entity.ae2.singularity": "Singularita",
   "gui.ae2.And": "a",
   "gui.ae2.Automatic": "Automatické",
   "gui.ae2.Black": "Černá",

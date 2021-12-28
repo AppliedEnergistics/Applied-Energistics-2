@@ -151,6 +151,7 @@
   "commands.ae2.ChunkLoggerOn": "Запись куска теперь включена",
   "commands.ae2.permissions": "У тебя нет надлежащих прав, чтобы запустить эту команду.",
   "commands.ae2.usage": "Команды предоставляемые Applied Energistics 2 — используй /ae2 list для списка, а /ae2 help _____ для справки по командам.",
+  "entity.ae2.singularity": "Сингулярность",
   "gui.ae2.And": "и",
   "gui.ae2.AttachedTo": "Присоединён с: %s",
   "gui.ae2.Automatic": "Автоматически",

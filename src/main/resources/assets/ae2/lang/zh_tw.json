@@ -137,6 +137,7 @@
   "commands.ae2.ChunkLoggerOn": "區塊的日誌現在已開啟",
   "commands.ae2.permissions": "你沒有足夠的權限執行這個指令。",
   "commands.ae2.usage": "由應用能源2提供的指令－輸入 /ae2 list 獲得指令清單，/ae2 help _____ 獲得該指令的幫助訊息。",
+  "entity.ae2.singularity": "奇點",
   "gui.ae2.And": "和",
   "gui.ae2.Automatic": "自動",
   "gui.ae2.Black": "黑色",
