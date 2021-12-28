@@ -116,6 +116,7 @@
   "commands.ae2.ChunkLoggerOn": "Chunk Logging è ora attivato",
   "commands.ae2.permissions": "Non hai il permesso di usare questo comando.",
   "commands.ae2.usage": "Comandi forniti da Applied Energistics 2 - usa /ae2 list per una lista, e /ae2 help _____ per aiuto con i comandi.",
+  "entity.ae2.singularity": "Singolarità",
   "gui.ae2.And": "e",
   "gui.ae2.Automatic": "Automatico",
   "gui.ae2.Black": "Nero",

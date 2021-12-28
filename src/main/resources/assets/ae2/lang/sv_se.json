@@ -134,6 +134,7 @@
   "commands.ae2.ChunkLoggerOn": "Loggning av datablock har aktiverats",
   "commands.ae2.permissions": "Du har inte tillräckliga behörigheter för att köra detta kommando.",
   "commands.ae2.usage": "Kommandon som Applied Energistics 2 tillhandahåller - använd \"/ae2 list\" för en lista och \"/ae2 help _____\" för hjälp med ett kommando.",
+  "entity.ae2.singularity": "Singularitet",
   "gui.ae2.And": "och",
   "gui.ae2.Automatic": "Automatisk",
   "gui.ae2.Black": "Svart",

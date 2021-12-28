@@ -125,6 +125,7 @@
   "commands.ae2.ChunkLoggerOn": "Le chargement des chunks est en actif",
   "commands.ae2.permissions": "Vous n'avez pas les permissions adéquates pour exécuter cette commande.",
   "commands.ae2.usage": "Commandes fournies par Applied Energistics 2 - utilisez /ae2 list pour lister et /ae2 help _____ pour l'aide sur une commande.",
+  "entity.ae2.singularity": "Singularité",
   "gui.ae2.And": "et",
   "gui.ae2.Automatic": "Automatique",
   "gui.ae2.Black": "Noir",
