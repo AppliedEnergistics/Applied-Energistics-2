@@ -45,6 +45,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.util.AEColor;
+import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -79,6 +80,7 @@ public final class TestPlots {
             .put(AppEng.makeId("insertfluidintomechest"), TestPlots::testInsertFluidIntoMEChest)
             .put(AppEng.makeId("maxchannelsadhoctest"), TestPlots::maxChannelsAdHocTest)
             .put(AppEng.makeId("blockingmodesubnetworkchesttest"), TestPlots::blockingModeSubnetworkChestTest)
+            .put(AppEng.makeId("cancelingjobsfrominterfacecrash"), TestPlots::cancelingJobsFromInterfaceCrash)
             .build();
 
     private TestPlots() {
@@ -383,11 +385,7 @@ public final class TestPlots {
                 });
         plot.cable("0 1 0");
         plot.cable("0 1 -1")
-                .part(Direction.DOWN, AEParts.LEVEL_EMITTER, part -> {
-                    part.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
-                    part.getConfig().addFilter(Items.OAK_PLANKS);
-                    part.getConfigManager().putSetting(Settings.CRAFT_VIA_REDSTONE, YesNo.YES);
-                });
+                .craftingEmitter(Direction.DOWN, Items.OAK_PLANKS);
         plot.cable("0 0 -1")
                 .part(Direction.NORTH, AEParts.IMPORT_BUS, part -> {
                     part.getUpgrades().addItems(AEItems.REDSTONE_CARD.stack());
@@ -744,5 +742,49 @@ public final class TestPlots {
                     })
                     .thenSucceed();
         });
+    }
+
+    /**
+     * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5919
+     */
+    public static void cancelingJobsFromInterfaceCrash(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+
+        plot.creativeEnergyCell(origin);
+        // Stock 1 oak_plank via crafting
+        plot.blockEntity(origin.above(), AEBlocks.INTERFACE, iface -> {
+            iface.getUpgrades().addItems(AEItems.CRAFTING_CARD.stack());
+            iface.getConfig().setStack(0, new GenericStack(AEItemKey.of(Items.OAK_PLANKS), 1));
+        });
+        plot.block(origin.east(), AEBlocks.CRAFTING_STORAGE_1K);
+        // Set up a level emitter for oak_planks
+        plot.cable(origin.west()).craftingEmitter(Direction.WEST, Items.OAK_PLANKS);
+
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenWaitUntil(() -> {
+                        var grid = helper.getGrid(origin);
+                        helper.check(
+                                grid.getCraftingService().isRequesting(AEItemKey.of(Items.OAK_PLANKS)),
+                                "Interface is not crafting oak planks");
+                    })
+                    .thenExecute(() -> {
+                        // Cancel the job by removing the upgrade card
+                        var iface = (InterfaceBlockEntity) helper.getBlockEntity(origin.above());
+                        iface.getUpgrades().removeItems(1, ItemStack.EMPTY, null);
+
+                        // and immediately insert a craft result into the network storage
+                        // this would crash because the crafting job was not cleaned up properly before
+                        // the crafting service ticks
+                        var grid = helper.getGrid(origin);
+                        var inserted = grid.getStorageService().getInventory().insert(
+                                AEItemKey.of(Items.OAK_PLANKS), 1, Actionable.MODULATE, new BaseActionSource());
+                        helper.check(inserted == 0,
+                                "Nothing should have been inserted into the network");
+                        helper.check(iface.getInterfaceLogic().getStorage().isEmpty(),
+                                "Nothing should have been inserted into the interface");
+                    })
+                    .thenSucceed();
+        }).maxTicks(300 /* interface takes a while to request */);
     }
 }

@@ -137,12 +137,15 @@ public class ConfigInventory extends GenericStackInv {
     }
 
     public void addFilter(ItemLike item) {
-        Preconditions.checkState(getMode() == Mode.CONFIG_TYPES);
-        insert(AEItemKey.of(item), 1, Actionable.MODULATE, new BaseActionSource());
+        addFilter(AEItemKey.of(item));
     }
 
     public void addFilter(Fluid fluid) {
+        addFilter(AEFluidKey.of(fluid));
+    }
+
+    public void addFilter(AEKey what) {
         Preconditions.checkState(getMode() == Mode.CONFIG_TYPES);
-        insert(AEFluidKey.of(fluid), 1, Actionable.MODULATE, new BaseActionSource());
+        insert(what, 1, Actionable.MODULATE, new BaseActionSource());
     }
 }
