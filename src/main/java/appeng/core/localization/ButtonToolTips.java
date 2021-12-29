@@ -64,6 +64,7 @@ public enum ButtonToolTips {
     FilterOnExtract("Filtered Operations"),
     FilterOnExtractDisabled("Filter on insertion only."),
     FilterOnExtractEnabled("Filter on insert and extract."),
+    TypeFilter("Filter Types"),
     FluidSubstitutions("Fluid Substitutions"),
     FluidSubstitutionsDescDisabled("Don't use fluids."),
     FluidSubstitutionsDescEnabled(
@@ -115,6 +116,9 @@ public enum ButtonToolTips {
     SearchMode_RememberSearch("Remember Search: %s"),
     Singularity("Condense Into Singularities\n%s per item"),
     TankBucketCapacity("Can Store up to %d Buckets"),
+    ShowAll("Show All"),
+    ShowFluidsOnly("Show Fluids only"),
+    ShowItemsOnly("Show Items only"),
     SortBy("Sort By"),
     SortOrder("Sort Order"),
     Stash("Store Items"),

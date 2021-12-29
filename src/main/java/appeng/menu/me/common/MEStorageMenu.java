@@ -42,6 +42,7 @@ import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.implementations.blockentities.IViewCellStorage;
@@ -162,6 +163,7 @@ public class MEStorageMenu extends AEBaseMenu
 
         this.clientCM.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        this.clientCM.registerSetting(Settings.TYPE_FILTER, TypeFilter.ALL);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         IEnergySource powerSource = null;
@@ -718,5 +720,9 @@ public class MEStorageMenu extends AEBaseMenu
     protected final KeyCounter getPreviousAvailableStacks() {
         Preconditions.checkState(isServer());
         return previousAvailableStacks;
+    }
+
+    public boolean canConfigureTypeFilter() {
+        return this.host.getConfigManager().hasSetting(Settings.TYPE_FILTER);
     }
 }

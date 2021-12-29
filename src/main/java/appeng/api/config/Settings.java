@@ -63,6 +63,7 @@ public final class Settings {
     public static final Setting<SortOrder> SORT_BY = register("sort_by", SortOrder.class);
     public static final Setting<YesNo> SEARCH_TOOLTIPS = register("search_tooltips", YesNo.YES, YesNo.NO);
     public static final Setting<ViewItems> VIEW_MODE = register("view_mode", ViewItems.class);
+    public static final Setting<TypeFilter> TYPE_FILTER = register("filter_type", TypeFilter.class);
     public static final Setting<SearchBoxMode> SEARCH_MODE = register("search_mode", SearchBoxMode.class);
     public static final Setting<RelativeDirection> IO_DIRECTION = register("io_direction", RelativeDirection.LEFT,
             RelativeDirection.RIGHT);

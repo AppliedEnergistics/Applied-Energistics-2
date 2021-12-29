@@ -149,7 +149,8 @@ public class Repo implements IClientRepo {
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
         }
 
-        ViewItems viewMode = this.sortSrc.getSortDisplay();
+        var viewMode = this.sortSrc.getSortDisplay();
+        var typeFilter = this.sortSrc.getTypeFilter().getFilter();
 
         for (GridInventoryEntry entry : this.entries.values()) {
             if (this.partitionList != null && !this.partitionList.isListed(entry.getWhat())) {
@@ -161,6 +162,10 @@ public class Repo implements IClientRepo {
             }
 
             if (viewMode == ViewItems.STORED && entry.getStoredAmount() == 0) {
+                continue;
+            }
+
+            if (!typeFilter.matches(entry.getWhat())) {
                 continue;
             }
 
