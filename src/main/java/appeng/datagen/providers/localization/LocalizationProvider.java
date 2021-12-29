@@ -13,7 +13,8 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
@@ -66,9 +67,9 @@ public class LocalizationProvider implements IAE2DataProvider {
         save(cache, localizations);
     }
 
-    public TextComponent component(String key, String text) {
+    public Component component(String key, String text) {
         add(key, text);
-        return new TextComponent(key);
+        return new TranslatableComponent(key);
     }
 
     public void add(String key, String text) {
