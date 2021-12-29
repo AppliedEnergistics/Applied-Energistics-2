@@ -135,7 +135,9 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
         if (storage != null) {
             try (var tx = Transaction.openOuter()) {
                 for (var view : storage.iterable(tx)) {
-                    if (view.isResourceBlank()) {
+                    var resource = view.getResource();
+
+                    if (resource.isBlank()) {
                         continue;
                     }
 
@@ -144,11 +146,13 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
                         // Use an inner TX to prevent two tanks that can be extracted from only mutually exclusively
                         // from not being influenced by our extraction test here.
                         try (var innerTx = tx.openNested()) {
-                            var extracted = view.extract(view.getResource(), 1, innerTx);
+                            var extracted = view.extract(resource, 1, innerTx);
                             // If somehow extracting the minimal amount doesn't work, check if everything could be
                             // extracted because the tank might have a minimum (or fixed) allowed extraction amount.
+                            // In addition, re-check if the resource is now blank since the inventory may have performed
+                            // cleanup on our failed extraction attempt.
                             if (extracted == 0) {
-                                extracted = view.extract(view.getResource(), view.getAmount(), innerTx);
+                                extracted = view.extract(resource, view.getAmount(), innerTx);
                             }
                             if (extracted == 0) {
                                 // We weren't able to simulate extraction of any fluid, so skip this one
@@ -158,7 +162,7 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
                     }
 
                     long amount = Math.min(view.getAmount(), MAX_REPORTED_AMOUNT);
-                    out.add(conversion.getKey(view.getResource()), amount);
+                    out.add(conversion.getKey(resource), amount);
                 }
             }
         }
