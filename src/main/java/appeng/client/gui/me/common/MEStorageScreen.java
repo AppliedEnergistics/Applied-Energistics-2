@@ -42,7 +42,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.config.*;
+import appeng.api.config.SearchBoxMode;
+import appeng.api.config.Setting;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.TypeFilter;
+import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
