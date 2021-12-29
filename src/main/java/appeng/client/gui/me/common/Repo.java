@@ -32,7 +32,6 @@ import com.google.common.collect.HashBiMap;
 
 import appeng.api.config.*;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
@@ -147,8 +146,8 @@ public class Repo implements IClientRepo {
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
         }
 
-        ViewItems viewMode = this.sortSrc.getSortDisplay();
-        FilterTypes filterType = this.sortSrc.getFilterType();
+        var viewMode = this.sortSrc.getSortDisplay();
+        var typeFilter = this.sortSrc.getTypeFilter().getFilter();
 
         for (GridInventoryEntry entry : this.entries.values()) {
             if (this.partitionList != null && !this.partitionList.isListed(entry.getWhat())) {
@@ -163,11 +162,7 @@ public class Repo implements IClientRepo {
                 continue;
             }
 
-            if (filterType == FilterTypes.ITEMS && entry.getWhat().getType() != AEKeyType.items()) {
-                continue;
-            }
-
-            if (filterType == FilterTypes.FLUIDS && entry.getWhat().getType() != AEKeyType.fluids()) {
+            if (!typeFilter.matches(entry.getWhat())) {
                 continue;
             }
 

@@ -86,7 +86,6 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
 
         out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        out.registerSetting(Settings.FILTER_TYPE, FilterTypes.ALL.ALL);
         out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         out.readFromNBT(getItemStack().getOrCreateTag().copy());

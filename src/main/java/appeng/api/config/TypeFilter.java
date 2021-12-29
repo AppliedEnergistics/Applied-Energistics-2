@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,19 +16,26 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.widgets;
+package appeng.api.config;
 
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.TypeFilter;
-import appeng.api.config.ViewItems;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.storage.AEKeyFilter;
 
-public interface ISortSource {
-    SortOrder getSortBy();
+/**
+ * Configures a type-based filter for terminals and other views.
+ */
+public enum TypeFilter {
+    ALL(AEKeyFilter.none()),
+    ITEMS(AEKeyType.items().filter()),
+    FLUIDS(AEKeyType.fluids().filter());
 
-    SortDir getSortDir();
+    private final AEKeyFilter filter;
 
-    ViewItems getSortDisplay();
+    TypeFilter(AEKeyFilter filter) {
+        this.filter = filter;
+    }
 
-    TypeFilter getTypeFilter();
+    public AEKeyFilter getFilter() {
+        return filter;
+    }
 }

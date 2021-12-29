@@ -66,8 +66,6 @@ public class TerminalStyle {
 
     private boolean supportsAutoCrafting = false;
 
-    private boolean supportsMultipleTypes = false;
-
     /**
      * Should the terminal show item tooltips for the network inventory even if the player has an item in their hand?
      * Useful for showing fluid tooltips when the player has a bucket in hand.
@@ -192,10 +190,6 @@ public class TerminalStyle {
 
     public void setSupportsAutoCrafting(boolean supportsAutoCrafting) {
         this.supportsAutoCrafting = supportsAutoCrafting;
-    }
-
-    public boolean isSupportsMultipleTypes() {
-        return supportsMultipleTypes;
     }
 
     public boolean isShowTooltipsWithItemInHand() {

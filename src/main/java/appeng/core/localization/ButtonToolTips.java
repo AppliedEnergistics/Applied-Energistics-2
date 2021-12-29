@@ -64,7 +64,7 @@ public enum ButtonToolTips {
     FilterOnExtract("Filtered Operations"),
     FilterOnExtractDisabled("Filter on insertion only."),
     FilterOnExtractEnabled("Filter on insert and extract."),
-    FilterType("Filter Types"),
+    TypeFilter("Filter Types"),
     FluidSubstitutions("Fluid Substitutions"),
     FluidSubstitutionsDescDisabled("Don't use fluids."),
     FluidSubstitutionsDescEnabled(

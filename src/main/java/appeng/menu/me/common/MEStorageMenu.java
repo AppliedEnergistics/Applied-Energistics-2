@@ -155,7 +155,7 @@ public class MEStorageMenu extends AEBaseMenu
 
         this.clientCM.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.clientCM.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.clientCM.registerSetting(Settings.FILTER_TYPE, FilterTypes.ALL);
+        this.clientCM.registerSetting(Settings.TYPE_FILTER, TypeFilter.ALL);
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         IEnergySource powerSource = null;
@@ -712,5 +712,9 @@ public class MEStorageMenu extends AEBaseMenu
     protected final KeyCounter getPreviousAvailableStacks() {
         Preconditions.checkState(isServer());
         return previousAvailableStacks;
+    }
+
+    public boolean canConfigureTypeFilter() {
+        return this.host.getConfigManager().hasSetting(Settings.TYPE_FILTER);
     }
 }

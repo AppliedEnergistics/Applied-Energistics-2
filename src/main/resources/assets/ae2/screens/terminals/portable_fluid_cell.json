@@ -15,7 +15,6 @@
   "terminalStyle": {
     "maxRows": 3,
     "supportsAutoCrafting": false,
-    "supportsMultipleTypes": false,
     "stackSizeStyle": "FLUIDS",
     "showTooltipsWithItemInHand": true
   }

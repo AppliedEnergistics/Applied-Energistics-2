@@ -97,7 +97,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private final AETextField searchField;
     private int rows = 0;
     private SettingToggleButton<ViewItems> viewModeToggle;
-    private SettingToggleButton<FilterTypes> filterTypesToggle;
+    private SettingToggleButton<TypeFilter> filterTypesToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
     private final SettingToggleButton<SortDir> sortDirToggle;
     private boolean isAutoFocus = false;
@@ -156,9 +156,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
         }
 
-        if (this.style.isSupportsMultipleTypes()) {
+        if (this.menu.canConfigureTypeFilter()) {
             this.filterTypesToggle = this.addToLeftToolbar(new SettingToggleButton<>(
-                    Settings.FILTER_TYPE, getFilterType(), this::toggleServerSetting));
+                    Settings.TYPE_FILTER, getTypeFilter(), this::toggleServerSetting));
 
         }
 
@@ -646,8 +646,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public FilterTypes getFilterType() {
-        return this.configSrc.getSetting(Settings.FILTER_TYPE);
+    public TypeFilter getTypeFilter() {
+        return this.configSrc.getSetting(Settings.TYPE_FILTER);
     }
 
     @Override
@@ -665,7 +665,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         if (this.filterTypesToggle != null) {
-            this.filterTypesToggle.set(getFilterType());
+            this.filterTypesToggle.set(getTypeFilter());
         }
 
         this.repo.updateView();

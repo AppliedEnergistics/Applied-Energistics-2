@@ -64,7 +64,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
         this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.cm.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.cm.registerSetting(Settings.FILTER_TYPE, FilterTypes.ALL);
+        this.cm.registerSetting(Settings.TYPE_FILTER, TypeFilter.ALL);
         this.cm.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
     }
 

@@ -186,11 +186,11 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.VIEW_MODE_CRAFTING, Settings.VIEW_MODE, ViewItems.CRAFTABLE, ButtonToolTips.View,
                     ButtonToolTips.Craftable);
 
-            registerApp(Icon.FILTER_TYPE_ALL, Settings.FILTER_TYPE, FilterTypes.ALL, ButtonToolTips.FilterType,
+            registerApp(Icon.TYPE_FILTER_ALL, Settings.TYPE_FILTER, TypeFilter.ALL, ButtonToolTips.TypeFilter,
                     ButtonToolTips.ShowAll);
-            registerApp(Icon.FILTER_TYPE_ITEMS, Settings.FILTER_TYPE, FilterTypes.ITEMS, ButtonToolTips.FilterType,
+            registerApp(Icon.TYPE_FILTER_ITEMS, Settings.TYPE_FILTER, TypeFilter.ITEMS, ButtonToolTips.TypeFilter,
                     ButtonToolTips.ShowItemsOnly);
-            registerApp(Icon.FILTER_TYPE_FLUIDS, Settings.FILTER_TYPE, FilterTypes.FLUIDS, ButtonToolTips.FilterType,
+            registerApp(Icon.TYPE_FILTER_FLUIDS, Settings.TYPE_FILTER, TypeFilter.FLUIDS, ButtonToolTips.TypeFilter,
                     ButtonToolTips.ShowFluidsOnly);
 
             registerApp(Icon.FUZZY_PERCENT_25, Settings.FUZZY_MODE, FuzzyMode.PERCENT_25, ButtonToolTips.FuzzyMode,
