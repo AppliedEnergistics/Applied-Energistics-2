@@ -18,6 +18,8 @@
 
 package appeng.parts.reporting;
 
+import appeng.parts.IndicatorLightBuilder;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartItem;
@@ -61,4 +63,12 @@ public abstract class AbstractDisplayPart extends AbstractReportingPart {
         return false;
     }
 
+    // All terminals and monitors use the same base chassis model with indicators at the same place
+    @Override
+    protected void buildIndicatorLights(IndicatorLightBuilder builder) {
+        builder.addFace(Direction.UP, 7, 4, 2, 9, 12, 3);
+        builder.addFace(Direction.DOWN, 7, 4, 2, 9, 12, 3);
+        builder.addFace(Direction.WEST, 4, 7, 2, 12, 9, 3);
+        builder.addFace(Direction.EAST, 4, 7, 2, 12, 9, 3);
+    }
 }

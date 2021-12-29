@@ -28,7 +28,8 @@
     "MouseWheelMixin",
     "ItemRendererMixin",
     "WrappedGenericStackTooltipModIdMixin",
-    "ResizableSlotHighlightMixin"
+    "ResizableSlotHighlightMixin",
+    "RenderBuffersMixin"
   ],
   "server": [],
   "injectors": {

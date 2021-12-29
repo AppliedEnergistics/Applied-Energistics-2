@@ -18,27 +18,6 @@
 
 package appeng.parts;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Objects;
-
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
-import net.minecraft.CrashReportCategory;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
-
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.inventories.ISegmentedInventory;
@@ -55,6 +34,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.render.FacingToRotation;
+import appeng.client.render.PartIndicatorLightRenderer;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.ICustomNameObject;
@@ -63,9 +44,41 @@ import appeng.util.CustomNameUtil;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+import it.unimi.dsi.fastutil.floats.FloatList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory {
 
+    private static final Map<Class<?>, IndicatorLightCache> INDICATOR_LIGHT_CACHE = new IdentityHashMap<>();
     private final IManagedGridNode mainNode;
     private final IPartItem<?> partItem;
     private BlockEntity blockEntity = null;
@@ -74,12 +87,16 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     private Direction side;
     @Nullable
     private Component customName;
+    private IndicatorState lastReportedIndicator = IndicatorState.OFF;
+    private final int visualSeed;
 
     public AEBasePart(IPartItem<?> partItem) {
         this.partItem = Objects.requireNonNull(partItem, "partItem");
         this.mainNode = createMainNode()
                 .setVisualRepresentation(AEItemKey.of(this.partItem))
                 .setExposedOnSides(EnumSet.noneOf(Direction.class));
+        this.visualSeed = ThreadLocalRandom.current().nextInt();
+        INDICATOR_LIGHT_CACHE.clear();
     }
 
     protected IManagedGridNode createMainNode() {
@@ -156,6 +173,33 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         return this.partItem;
     }
 
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int combinedLightIn, int combinedOverlayIn) {
+        if (lastReportedIndicator == IndicatorState.OFF) {
+            // The OFF state is the default state shown by the baked model
+            return;
+        }
+
+        var positions = getIndicatorVertexPositions();
+        if (positions != null) {
+            double animationTime = (getLevel().getGameTime() % Integer.MAX_VALUE) + partialTicks;
+
+            PartIndicatorLightRenderer.renderIndicatorLights(
+                    positions,
+                    lastReportedIndicator,
+                    animationTime,
+                    poseStack,
+                    buffers
+            );
+        }
+    }
+
+    @Override
+    public boolean requireDynamicRender() {
+        return getIndicatorVertexPositions() != null;
+    }
+
     @Override
     public void readFromNBT(CompoundTag data) {
         this.mainNode.loadFromNBT(data);
@@ -164,6 +208,19 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     @Override
     public void writeToNBT(CompoundTag data) {
         this.mainNode.saveToNBT(data);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void writeToStream(FriendlyByteBuf data) {
+        data.writeByte((byte) lastReportedIndicator.ordinal());
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean readFromStream(FriendlyByteBuf data) {
+        lastReportedIndicator = IndicatorState.values()[data.readByte()];
+        return false; // Indicator state is rendered using a Block Entity Renderer, no remesh needed
     }
 
     @Override
@@ -346,7 +403,109 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
 
         @Override
         public void onStateChanged(T nodeOwner, IGridNode node, State state) {
+            nodeOwner.updateIndicatorStateForClients();
             nodeOwner.onMainNodeStateChanged(state);
         }
+    }
+
+    public int getVisualSeed() {
+        return visualSeed;
+    }
+
+    protected final void updateIndicatorStateForClients() {
+        if (isClientSide()) {
+            return;
+        }
+        if (updateIndicatorState()) {
+            getHost().markForUpdate();
+        }
+    }
+
+    private boolean updateIndicatorState() {
+        var state = getIndicatorState();
+        if (state != lastReportedIndicator) {
+            lastReportedIndicator = state;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return The current LED indicator state for this part, if it uses the machine state system to transfer
+     * state information to the client to show it on indicator LEDs. This is called server-side.
+     */
+    public IndicatorState getIndicatorState() {
+        if (isClientSide()) {
+            return lastReportedIndicator;
+        }
+        var mainNode = getMainNode();
+        var node = mainNode.getNode();
+        if (node == null) {
+            return IndicatorState.OFF;
+        }
+        if (node.isActive()) {
+            return IndicatorState.ONLINE;
+        } else if (node.getGrid().getPathingService().isNetworkBooting()) {
+            return IndicatorState.BOOTING;
+        } else if (!node.meetsChannelRequirements()) {
+            return IndicatorState.MISSING_CHANNEL;
+        } else {
+            return IndicatorState.OFF;
+        }
+    }
+
+    /**
+     * The vertex positions forming a quad list to show the indicator color for this part.
+     * May be null if this part has no indicators.
+     */
+    @Nullable
+    public float[] getIndicatorVertexPositions() {
+        var cached = INDICATOR_LIGHT_CACHE.get(getClass());
+
+        if (cached == null) {
+            var builder = new IndicatorLightBuilder();
+            buildIndicatorLights(builder);
+            var northPositions = builder.getVertices();
+            if (northPositions.length == 0) {
+                cached = new IndicatorLightCache(null);
+            } else {
+                // Generate the versions for the other sides by rotating the northern version
+                var positionsBySide = new EnumMap<Direction, float[]>(Direction.class);
+                positionsBySide.put(Direction.NORTH, northPositions);
+                var v = new Vector3f();
+                for (var side : Direction.values()) {
+                    if (side != Direction.NORTH) {
+                        var rotatedSide = new float[northPositions.length];
+                        positionsBySide.put(side, rotatedSide);
+
+                        var rotation = FacingToRotation.get(side, side.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP).getRot();
+                        for (int i = 0; i < northPositions.length; i += 3) {
+                            // Move to center before rotating
+                            v.set(northPositions[i] - 0.5f,
+                                    northPositions[i + 1] - 0.5f,
+                                    northPositions[i + 2] - 0.5f);
+                            v.transform(rotation);
+                            rotatedSide[i] = v.x() + 0.5f;
+                            rotatedSide[i + 1] = v.y() + 0.5f;
+                            rotatedSide[i + 2] = v.z() + 0.5f;
+                        }
+                    }
+                }
+                cached = new IndicatorLightCache(positionsBySide);
+            }
+            INDICATOR_LIGHT_CACHE.put(getClass(), cached);
+        }
+
+        return cached.positions == null ? null : cached.positions.get(getSide());
+    }
+
+    /**
+     * Override to add indicator lights to this part. The results will be cached. The indicators should be added
+     * for a part oriented NORTH (the default orientation), as they'll be automatically rotated for each side.
+     */
+    protected void buildIndicatorLights(IndicatorLightBuilder builder) {
+    }
+
+    private record IndicatorLightCache(@Nullable Map<Direction, float[]> positions) {
     }
 }

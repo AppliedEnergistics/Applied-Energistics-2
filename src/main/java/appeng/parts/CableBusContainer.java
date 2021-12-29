@@ -466,10 +466,12 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     private void updateDynamicRender() {
         this.requiresDynamicRender = false;
-        for (Direction s : Direction.values()) {
-            final IPart p = this.getPart(s);
+        for (var s : Direction.values()) {
+            var p = this.getPart(s);
             if (p != null) {
-                this.setRequiresDynamicRender(this.isRequiresDynamicRender() || p.requireDynamicRender());
+                if (p.requireDynamicRender()) {
+                    this.requiresDynamicRender = true;
+                }
             }
         }
     }
@@ -885,10 +887,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     public boolean isRequiresDynamicRender() {
         return this.requiresDynamicRender;
-    }
-
-    private void setRequiresDynamicRender(boolean requiresDynamicRender) {
-        this.requiresDynamicRender = requiresDynamicRender;
     }
 
     @Override

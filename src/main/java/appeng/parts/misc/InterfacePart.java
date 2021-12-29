@@ -22,6 +22,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.parts.IndicatorLightBuilder;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -174,5 +176,13 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     @Override
     public ItemStack getMainMenuIcon() {
         return new ItemStack(getPartItem());
+    }
+
+    @Override
+    protected void buildIndicatorLights(IndicatorLightBuilder builder) {
+        builder.addFace(Direction.UP, 7, 5, 2, 9, 11, 3);
+        builder.addFace(Direction.DOWN, 7, 5, 2, 9, 11, 3);
+        builder.addFace(Direction.WEST, 5, 7, 2, 11, 9, 3);
+        builder.addFace(Direction.EAST, 5, 7, 2, 11, 9, 3);
     }
 }

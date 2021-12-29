@@ -18,15 +18,15 @@
 
 package appeng.parts.automation;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.inventory.MenuType;
-
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
+import appeng.hooks.MachineStateUpdates;
 import appeng.menu.implementations.IOBusMenu;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.inventory.MenuType;
 
 public class ImportBusPart extends IOBusPart {
     private StackImportStrategy importStrategy;
@@ -52,6 +52,10 @@ public class ImportBusPart extends IOBusPart {
                 getFilter());
 
         importStrategy.transfer(context);
+
+        if (context.hasDoneWork()) {
+            MachineStateUpdates.addOperations(this, context.getOperationsPerformed());
+        }
 
         return context.hasDoneWork();
     }

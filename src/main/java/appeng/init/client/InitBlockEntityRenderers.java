@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import appeng.blockentity.networking.CableBusTESR;
+import appeng.blockentity.networking.CableBusRenderer;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.client.render.tesr.*;
@@ -46,7 +46,7 @@ public final class InitBlockEntityRenderers {
         register(AEBlockEntities.CHEST, ChestBlockEntityRenderer::new);
         register(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorRenderer::new);
         register(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
-        register(AEBlockEntities.CABLE_BUS, CableBusTESR::new);
+        register(AEBlockEntities.CABLE_BUS, CableBusRenderer::new);
         register(AEBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
         register(AEBlockEntities.SKY_STONE_TANK, SkyStoneTankBlockEntityRenderer::new);
 

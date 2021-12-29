@@ -233,6 +233,8 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public void writeToStream(FriendlyByteBuf data) {
+        super.writeToStream(data);
+
         int flags = 0;
         boolean[] writeSide = new boolean[Direction.values().length];
         byte[] channelsPerSide = new byte[Direction.values().length];
@@ -309,12 +311,12 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     @Override
     public boolean readFromStream(FriendlyByteBuf data) {
+        boolean channelsChanged = super.readFromStream(data);
+
         int cs = data.readByte();
         // Save previous state for change-detection
         var previousConnections = this.getConnections();
         var wasPowered = this.powered;
-
-        boolean channelsChanged = false;
 
         this.powered = (cs & (1 << Direction.values().length)) != 0;
 

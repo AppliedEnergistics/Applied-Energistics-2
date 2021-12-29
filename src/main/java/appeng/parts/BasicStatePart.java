@@ -20,6 +20,7 @@ package appeng.parts;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.implementations.IPowerChannelState;

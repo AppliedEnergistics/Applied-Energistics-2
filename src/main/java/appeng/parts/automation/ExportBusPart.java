@@ -20,9 +20,11 @@ package appeng.parts.automation;
 
 import javax.annotation.Nullable;
 
+import appeng.hooks.MachineStateUpdates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.nbt.CompoundTag;
@@ -192,7 +194,9 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
         var grid = getMainNode().getGrid();
         if (grid != null && getMainNode().isActive()) {
-            return getExportStrategy().push(what, amount, mode);
+            var inserted = getExportStrategy().push(what, amount, mode);
+            MachineStateUpdates.addOperations(this, Ints.saturatedCast(inserted));
+            return inserted;
         }
 
         return 0;

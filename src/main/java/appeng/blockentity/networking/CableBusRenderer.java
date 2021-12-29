@@ -19,30 +19,28 @@
 package appeng.blockentity.networking;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 
-import appeng.api.parts.IPart;
-
-public class CableBusTESR implements BlockEntityRenderer<CableBusBlockEntity> {
-
-    public CableBusTESR(BlockEntityRendererProvider.Context context) {
+public class CableBusRenderer implements BlockEntityRenderer<CableBusBlockEntity> {
+    public CableBusRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(CableBusBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(CableBusBlockEntity te, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
         if (!te.getCableBus().isRequiresDynamicRender()) {
             return;
         }
 
-        for (Direction facing : Direction.values()) {
-            IPart part = te.getPart(facing);
-            if (part != null && part.requireDynamicRender()) {
-                part.renderDynamic(partialTicks, ms, buffers, combinedLightIn, combinedOverlayIn);
+        for (var facing : Direction.values()) {
+            var part = te.getPart(facing);
+            if (part != null) {
+                if (part.requireDynamicRender()) {
+                    part.renderDynamic(partialTicks, poseStack, buffers, combinedLightIn, combinedOverlayIn);
+                }
             }
         }
     }
@@ -51,5 +49,4 @@ public class CableBusTESR implements BlockEntityRenderer<CableBusBlockEntity> {
     public int getViewDistance() {
         return 900;
     }
-
 }

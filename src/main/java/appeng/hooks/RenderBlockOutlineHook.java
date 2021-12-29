@@ -150,7 +150,7 @@ public class RenderBlockOutlineHook {
         }
     }
 
-    private static void renderPart(PoseStack poseStack,
+    public static void renderPart(PoseStack poseStack,
             MultiBufferSource buffers,
             Camera camera,
             BlockPos pos,
@@ -163,7 +163,7 @@ public class RenderBlockOutlineHook {
         renderBoxes(poseStack, buffers, camera, pos, boxes, preview);
     }
 
-    private static void renderFacade(PoseStack poseStack,
+    public static void renderFacade(PoseStack poseStack,
             MultiBufferSource buffers,
             Camera camera,
             BlockPos pos,
@@ -176,7 +176,7 @@ public class RenderBlockOutlineHook {
         renderBoxes(poseStack, buffers, camera, pos, boxes, preview);
     }
 
-    private static void renderBoxes(PoseStack poseStack,
+    public static void renderBoxes(PoseStack poseStack,
             MultiBufferSource buffers,
             Camera camera,
             BlockPos pos,

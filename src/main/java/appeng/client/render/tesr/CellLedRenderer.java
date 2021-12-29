@@ -36,7 +36,7 @@ import appeng.block.storage.DriveSlotState;
 /**
  * Utility class to render LEDs for storage cells from a Block entity Renderer.
  */
-class CellLedRenderer {
+public class CellLedRenderer {
 
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
@@ -82,7 +82,7 @@ class CellLedRenderer {
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
     public static final RenderType RENDER_LAYER = RenderType.create("ae_drive_leds",
-            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 32565, false, true,
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 131072, false, false,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .createCompositeState(false));

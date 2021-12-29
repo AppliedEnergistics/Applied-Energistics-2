@@ -42,8 +42,7 @@ import net.minecraft.world.level.Level;
  * When implementing a custom part, you must create an item to both represent the part in NBT and Packet data, and to
  * actually place the part onto the bus. Implement this interface on your part {@link net.minecraft.world.item.Item}.
  * <p/>
- * To help with placing parts onto buses, use
- * {@link PartHelper#usePartItem(ItemStack, BlockPos, Direction, Player, InteractionHand, Level)} to implement your
+ * To help with placing parts onto buses, use {@link PartHelper#usePartItem} to implement your
  * items {@link net.minecraft.world.item.Item#useOn(UseOnContext)} method.
  */
 public interface IPartItem<P extends IPart> extends ItemLike {

@@ -23,14 +23,12 @@
 
 package appeng.api.parts;
 
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.util.SettingsFrom;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.CrashReportCategory;
@@ -49,11 +47,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IManagedGridNode;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.util.SettingsFrom;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public interface IPart extends ICustomCableConnection {
 
@@ -390,7 +387,7 @@ public interface IPart extends ICustomCableConnection {
     }
 
     /**
-     * add your collision information to the the list.
+     * add your collision information to the list.
      *
      * @param bch collision boxes
      */
@@ -412,5 +409,4 @@ public interface IPart extends ICustomCableConnection {
     default AECableType getDesiredConnectionType() {
         return AECableType.GLASS;
     }
-
 }

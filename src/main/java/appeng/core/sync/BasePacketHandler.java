@@ -80,7 +80,9 @@ public class BasePacketHandler {
 
         CRAFTING_STATUS(CraftingStatusPacket.class, CraftingStatusPacket::new),
 
-        MOUSE_WHEEL(MouseWheelPacket.class, MouseWheelPacket::new);
+        MOUSE_WHEEL(MouseWheelPacket.class, MouseWheelPacket::new),
+
+        SYNC_MACHINE_STATE(SyncMachineStatePacket.class, SyncMachineStatePacket::new);
 
         private final Function<FriendlyByteBuf, BasePacket> factory;
 

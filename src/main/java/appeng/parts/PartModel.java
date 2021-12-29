@@ -26,6 +26,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 
+import javax.annotation.Nullable;
+
 public class PartModel implements IPartModel {
     private final boolean isSolid;
 
@@ -65,5 +67,4 @@ public class PartModel implements IPartModel {
     public List<ResourceLocation> getModels() {
         return this.resources;
     }
-
 }

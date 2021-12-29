@@ -24,7 +24,9 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import appeng.parts.IndicatorLightBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -518,5 +520,13 @@ public class StorageBusPart extends UpgradeablePart
                     getSide().getOpposite());
         }
         return externalStorageStrategies;
+    }
+
+    @Override
+    protected void buildIndicatorLights(IndicatorLightBuilder builder) {
+        builder.addFace(Direction.UP, 7, 5, 2, 9, 11, 3);
+        builder.addFace(Direction.DOWN, 7, 5, 2, 9, 11, 3);
+        builder.addFace(Direction.WEST, 5, 7, 2, 11, 9, 3);
+        builder.addFace(Direction.EAST, 5, 7, 2, 11, 9, 3);
     }
 }

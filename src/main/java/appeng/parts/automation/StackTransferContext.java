@@ -51,6 +51,10 @@ class StackTransferContext {
         return actionSource;
     }
 
+    public int getOperationsPerformed() {
+        return initialOperations - operationsRemaining;
+    }
+
     public int getOperationsRemaining() {
         return operationsRemaining;
     }
@@ -64,7 +68,7 @@ class StackTransferContext {
     }
 
     public boolean hasDoneWork() {
-        return initialOperations > operationsRemaining;
+        return getOperationsPerformed() > 0;
     }
 
     public boolean isKeyTypeEnabled(AEKeyType space) {

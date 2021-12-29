@@ -20,7 +20,9 @@ package appeng.parts.automation;
 
 import javax.annotation.Nullable;
 
+import appeng.parts.IndicatorLightBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -298,5 +300,14 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         if (pendingPulse) {
             getMainNode().ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         }
+    }
+
+    // Import and Export buses use the same location for their indicator lights
+    @Override
+    protected void buildIndicatorLights(IndicatorLightBuilder builder) {
+        builder.addFace(Direction.UP, 7, 6, 4, 9, 10, 5);
+        builder.addFace(Direction.DOWN, 7, 6, 4, 9, 10, 5);
+        builder.addFace(Direction.WEST, 6, 7, 4, 10, 9, 5);
+        builder.addFace(Direction.EAST, 6, 7, 4, 10, 9, 5);
     }
 }

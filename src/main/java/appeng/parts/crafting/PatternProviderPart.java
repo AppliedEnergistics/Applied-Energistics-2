@@ -18,17 +18,6 @@
 
 package appeng.parts.crafting;
 
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
-
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -41,7 +30,18 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.BasicStatePart;
+import appeng.parts.IndicatorLightBuilder;
 import appeng.parts.PartModel;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.EnumSet;
+import java.util.List;
 
 public class PatternProviderPart extends BasicStatePart implements PatternProviderLogicHost {
 
@@ -138,5 +138,13 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
         } else {
             return MODELS_OFF;
         }
+    }
+
+    @Override
+    protected void buildIndicatorLights(IndicatorLightBuilder builder) {
+        builder.addFace(Direction.UP, 7, 5, 2, 9, 11, 3);
+        builder.addFace(Direction.DOWN, 7, 5, 2, 9, 11, 3);
+        builder.addFace(Direction.WEST, 5, 7, 2, 11, 9, 3);
+        builder.addFace(Direction.EAST, 5, 7, 2, 11, 9, 3);
     }
 }

@@ -22,6 +22,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.parts.IndicatorLightBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -197,5 +198,13 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
         if (mode == SettingsFrom.MEMORY_CARD) {
             output.putLong("reportingValue", reportingValue);
         }
+    }
+
+    @Override
+    protected void buildIndicatorLights(IndicatorLightBuilder builder) {
+        builder.addFace(Direction.UP, 7, 7, 4, 9, 9, 5);
+        builder.addFace(Direction.DOWN, 7, 7, 4, 9, 9, 5);
+        builder.addFace(Direction.WEST, 7, 7, 4, 9, 9, 5);
+        builder.addFace(Direction.EAST, 7, 7, 4, 9, 9, 5);
     }
 }
