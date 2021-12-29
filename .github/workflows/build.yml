@@ -1,8 +1,7 @@
-name: 'Build master'
+name: 'Build and Test'
 
 on:
   push:
-    branches: [ master ]
 
 jobs:
   build:
@@ -22,24 +21,34 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-      - name: Clean gradle
-        run: ./gradlew clean --no-daemon
+      - name: Cleanup Gradle Cache
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+      - name: Setup Gradle Wrapper Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
       - name: Validate no assets
         run: test ! -d ./src/generated
       - name: Generate assets
-        run: ./gradlew runData --no-daemon
+        run: ./gradlew runData
       - name: Validate assets
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon --info
+        run: ./gradlew build
       - name: Run Game Tests
-        run: ./gradlew runGametest --no-daemon --info
+        run: ./gradlew runGametest
       - name: Upload new Source Text Strings to Crowdin
-        run: ./gradlew uploadToCrowdin --no-daemon --info
+        run: ./gradlew uploadToCrowdin
         env:
           GIT_BRANCH: master
           CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
         continue-on-error: true
+        if: github.ref == 'refs/heads/master'
       - uses: actions/upload-artifact@v2
         with:
           name: dist
