@@ -62,9 +62,11 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-        exclude group: "net.fabricmc.fabric-api"
+        exclude(group: "net.fabricmc.fabric-api")
     }
-    modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}")
+    include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {
         exclude group: "net.fabricmc.fabric-api"
