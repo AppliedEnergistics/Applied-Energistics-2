@@ -1,17 +1,17 @@
 {
   "name": "Sky Stone",
-  "category": "appliedenergistics2:world_gen",
-  "icon": "appliedenergistics2:sky_stone_block",
+  "category": "ae2:world_gen",
+  "icon": "ae2:sky_stone_block",
   "pages": [
     {
       "type": "spotlight",
       "title": "Sky Stone",
-      "item": "appliedenergistics2:sky_stone_block",
-      "text": "$(item)Sky Stone$() is a blast resistant dark stone block found in $(l:appliedenergistics2:world_gen/meteorite#meteorite)meteorites$(/l) that have impacted the surface in the distant or semi recent past. Their origin is unknown, however they appear to contain remnant of technology from another place."
+      "item": "ae2:sky_stone_block",
+      "text": "$(item)Sky Stone$() is a blast resistant dark stone block found in $(l:ae2:world_gen/meteorite#meteorite)meteorites$(/l) that have impacted the surface in the distant or semi recent past. Their origin is unknown, however they appear to contain remnant of technology from another place."
     },
     {
       "type": "text",
-      "text": "$(item)Sky Stone$() is extremely hard and requires at least a diamond pick to mine it, however the $(l:appliedenergistics2:decorative_blocks/sky_stone_blocks)processed variants$(/l) can be removed with any pick.$(br2)Can be ground into $(item)Sky Stone Dust$()."
+      "text": "$(item)Sky Stone$() is extremely hard and requires at least a diamond pick to mine it, however the $(l:ae2:decorative_blocks/sky_stone_blocks)processed variants$(/l) can be removed with any pick.$(br2)Can be ground into $(item)Sky Stone Dust$()."
     }
   ]
 }

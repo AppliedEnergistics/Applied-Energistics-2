@@ -1,7 +1,7 @@
 {
   "name": "Spatial Cells",
-  "parent": "appliedenergistics2:cell_storage",
+  "parent": "ae2:cell_storage",
   "description": "",
-  "icon": "appliedenergistics2:2_cubed_spatial_storage_cell",
+  "icon": "ae2:2_cubed_spatial_storage_cell",
   "sortnum": 5
 }

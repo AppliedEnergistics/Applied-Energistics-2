@@ -1,7 +1,7 @@
 {
   "name": "Crafting Monitor",
-  "category": "appliedenergistics2:me_network/crafting_cpu",
-  "icon": "appliedenergistics2:1k_crafting_monitor",
+  "category": "ae2:me_network/crafting_cpu",
+  "icon": "ae2:1k_crafting_monitor",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/crafting/cpu_crafting_monitor"
+      "recipe": "ae2:network/crafting/cpu_crafting_monitor"
     }
   ]
 }

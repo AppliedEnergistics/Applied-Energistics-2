@@ -1,7 +1,7 @@
 {
   "name": "Spatial IO Port",
-  "category": "appliedenergistics2:me_network/spatial_io",
-  "icon": "appliedenergistics2:spatial_io_port",
+  "category": "ae2:me_network/spatial_io",
+  "icon": "ae2:spatial_io_port",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/blocks/spatial_io_port"
+      "recipe": "ae2:network/blocks/spatial_io_port"
     },
     {
       "type": "text",

@@ -1,7 +1,7 @@
 {
   "name": "Weapons",
-  "parent": "appliedenergistics2:advanced_tools",
+  "parent": "ae2:advanced_tools",
   "description": "",
-  "icon": "appliedenergistics2:matter_cannon",
+  "icon": "ae2:matter_cannon",
   "sortnum": 0
 }

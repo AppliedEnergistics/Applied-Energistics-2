@@ -1,21 +1,21 @@
 {
   "name": "Sky Stone Slabs",
-  "category": "appliedenergistics2:decorative_blocks",
-  "icon": "appliedenergistics2:sky_stone_slab",
+  "category": "ae2:decorative_blocks",
+  "icon": "ae2:sky_stone_slab",
   "pages": [
     {
       "type": "text",
-      "text": "Each block variant of $(l:appliedenergistics2:world_gen/sky_stone)Sky Stone$(/l) also has a matching slab block."
+      "text": "Each block variant of $(l:ae2:world_gen/sky_stone)Sky Stone$(/l) also has a matching slab block."
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:shaped/slabs/sky_stone_block",
-      "recipe2": "appliedenergistics2:shaped/slabs/smooth_sky_stone_block"
+      "recipe": "ae2:shaped/slabs/sky_stone_block",
+      "recipe2": "ae2:shaped/slabs/smooth_sky_stone_block"
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:shaped/slabs/sky_stone_brick",
-      "recipe2": "appliedenergistics2:shaped/slabs/sky_stone_small_brick"
+      "recipe": "ae2:shaped/slabs/sky_stone_brick",
+      "recipe2": "ae2:shaped/slabs/sky_stone_small_brick"
     }
   ]
 }

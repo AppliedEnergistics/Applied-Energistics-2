@@ -1,7 +1,7 @@
 {
   "name": "Crafting Storage",
-  "category": "appliedenergistics2:me_network/crafting_cpu",
-  "icon": "appliedenergistics2:1k_crafting_storage",
+  "category": "ae2:me_network/crafting_cpu",
+  "icon": "ae2:1k_crafting_storage",
   "pages": [
     {
       "type": "text",
@@ -9,13 +9,13 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/crafting/1k_cpu_crafting_storage",
-      "recipe2": "appliedenergistics2:network/crafting/4k_cpu_crafting_storage"
+      "recipe": "ae2:network/crafting/1k_cpu_crafting_storage",
+      "recipe2": "ae2:network/crafting/4k_cpu_crafting_storage"
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/crafting/16k_cpu_crafting_storage",
-      "recipe2": "appliedenergistics2:network/crafting/64k_cpu_crafting_storage"
+      "recipe": "ae2:network/crafting/16k_cpu_crafting_storage",
+      "recipe2": "ae2:network/crafting/64k_cpu_crafting_storage"
     }
   ]
 }

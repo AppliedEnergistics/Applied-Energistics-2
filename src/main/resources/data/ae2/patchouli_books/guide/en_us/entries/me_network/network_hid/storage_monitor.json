@@ -1,7 +1,7 @@
 {
   "name": "ME Storage Monitor",
-  "category": "appliedenergistics2:me_network/network_hid",
-  "icon": "appliedenergistics2:storage_monitor",
+  "category": "ae2:me_network/network_hid",
+  "icon": "ae2:storage_monitor",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/monitors_storage"
+      "recipe": "ae2:network/parts/monitors_storage"
     }
   ]
 }

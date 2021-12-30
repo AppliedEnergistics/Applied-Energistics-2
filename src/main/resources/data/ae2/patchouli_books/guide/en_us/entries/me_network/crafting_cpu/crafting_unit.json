@@ -1,7 +1,7 @@
 {
   "name": "Crafting Unit",
-  "category": "appliedenergistics2:me_network/crafting_cpu",
-  "icon": "appliedenergistics2:crafting_unit",
+  "category": "ae2:me_network/crafting_cpu",
+  "icon": "ae2:crafting_unit",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/crafting/cpu_crafting_unit"
+      "recipe": "ae2:network/crafting/cpu_crafting_unit"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "Energy Cells",
-  "category": "appliedenergistics2:me_network/network_power",
-  "icon": "appliedenergistics2:energy_cell",
+  "category": "ae2:me_network/network_power",
+  "icon": "ae2:energy_cell",
   "pages": [
     {
       "type": "text",
@@ -9,8 +9,8 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/blocks/energy_energy_cell",
-      "recipe2": "appliedenergistics2:network/blocks/energy_dense_energy_cell"
+      "recipe": "ae2:network/blocks/energy_energy_cell",
+      "recipe2": "ae2:network/blocks/energy_dense_energy_cell"
     }
   ]
 }

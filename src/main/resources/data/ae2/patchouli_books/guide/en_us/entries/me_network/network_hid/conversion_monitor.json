@@ -1,7 +1,7 @@
 {
   "name": "ME Conversion Monitor",
-  "category": "appliedenergistics2:me_network/network_hid",
-  "icon": "appliedenergistics2:conversion_monitor",
+  "category": "ae2:me_network/network_hid",
+  "icon": "ae2:conversion_monitor",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/monitors_conversion"
+      "recipe": "ae2:network/parts/monitors_conversion"
     }
   ]
 }

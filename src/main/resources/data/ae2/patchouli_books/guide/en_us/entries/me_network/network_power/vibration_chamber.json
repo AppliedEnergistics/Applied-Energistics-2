@@ -1,7 +1,7 @@
 {
   "name": "Vibration Chamber",
-  "category": "appliedenergistics2:me_network/network_power",
-  "icon": "appliedenergistics2:vibration_chamber",
+  "category": "ae2:me_network/network_power",
+  "icon": "ae2:vibration_chamber",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/blocks/energy_vibration_chamber"
+      "recipe": "ae2:network/blocks/energy_vibration_chamber"
     }
   ]
 }

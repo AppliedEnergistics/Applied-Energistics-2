@@ -1,7 +1,7 @@
 {
   "name": "ME Wireless Access Point",
-  "category": "appliedenergistics2:me_network/misc",
-  "icon": "appliedenergistics2:wireless_access_point",
+  "category": "ae2:me_network/misc",
+  "icon": "ae2:wireless_access_point",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/wireless_access_point"
+      "recipe": "ae2:network/wireless_access_point"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "Fluid Storage Cell Parts",
-  "parent": "appliedenergistics2:cell_storage",
+  "parent": "ae2:cell_storage",
   "description": "",
-  "icon": "appliedenergistics2:1k_fluid_cell_component",
+  "icon": "ae2:1k_fluid_cell_component",
   "sortnum": 2
 }

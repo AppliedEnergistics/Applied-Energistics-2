@@ -1,7 +1,7 @@
 {
   "name": "Crystal Growth Accelerator",
-  "category": "appliedenergistics2:me_network/powered_machines",
-  "icon": "appliedenergistics2:quartz_growth_accelerator",
+  "category": "ae2:me_network/powered_machines",
+  "icon": "ae2:quartz_growth_accelerator",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/blocks/crystal_processing_quartz_growth_accelerator"
+      "recipe": "ae2:network/blocks/crystal_processing_quartz_growth_accelerator"
     }
   ]
 }

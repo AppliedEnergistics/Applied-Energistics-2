@@ -1,7 +1,7 @@
 {
   "name": "ME Interface",
-  "category": "appliedenergistics2:me_network/network_functions",
-  "icon": "appliedenergistics2:interface",
+  "category": "ae2:me_network/network_functions",
+  "icon": "ae2:interface",
   "pages": [
     {
       "type": "text",
@@ -9,8 +9,8 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/blocks/interfaces_interface",
-      "recipe2": "appliedenergistics2:network/blocks/interfaces_interface_part"
+      "recipe": "ae2:network/blocks/interfaces_interface",
+      "recipe2": "ae2:network/blocks/interfaces_interface_part"
     }
   ]
 }

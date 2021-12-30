@@ -1,7 +1,7 @@
 {
   "name": "ME Export Bus",
-  "category": "appliedenergistics2:me_network/network_functions",
-  "icon": "appliedenergistics2:export_bus",
+  "category": "ae2:me_network/network_functions",
+  "icon": "ae2:export_bus",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/export_bus"
+      "recipe": "ae2:network/parts/export_bus"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "ME IO Port",
-  "category": "appliedenergistics2:me_network/misc",
-  "icon": "appliedenergistics2:io_port",
+  "category": "ae2:me_network/misc",
+  "icon": "ae2:io_port",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/io_port"
+      "recipe": "ae2:network/parts/io_port"
     }
   ]
 }

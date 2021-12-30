@@ -1,7 +1,7 @@
 {
   "name": "P2P Tunnels",
-  "category": "appliedenergistics2:me_network/misc",
-  "icon": "appliedenergistics2:me_p2p_tunnel",
+  "category": "ae2:me_network/misc",
+  "icon": "ae2:me_p2p_tunnel",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/tunnels_me"
+      "recipe": "ae2:network/parts/tunnels_me"
     }
   ]
 }

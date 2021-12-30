@@ -1,7 +1,7 @@
 {
   "name": "ME Pattern Terminal",
-  "category": "appliedenergistics2:me_network/network_hid",
-  "icon": "appliedenergistics2:pattern_terminal",
+  "category": "ae2:me_network/network_hid",
+  "icon": "ae2:pattern_terminal",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/terminals_pattern"
+      "recipe": "ae2:network/parts/terminals_pattern"
     }
   ]
 }

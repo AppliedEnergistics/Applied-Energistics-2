@@ -1,7 +1,7 @@
 {
   "name": "ME Security Terminal",
-  "category": "appliedenergistics2:me_network/misc",
-  "icon": "appliedenergistics2:security_station",
+  "category": "ae2:me_network/misc",
+  "icon": "ae2:security_station",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/blocks/security_station"
+      "recipe": "ae2:network/blocks/security_station"
     }
   ]
 }

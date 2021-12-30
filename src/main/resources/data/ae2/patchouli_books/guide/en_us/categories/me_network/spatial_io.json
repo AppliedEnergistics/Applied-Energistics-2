@@ -1,7 +1,7 @@
 {
   "name": "Spatial IO",
-  "parent": "appliedenergistics2:me_network",
+  "parent": "ae2:me_network",
   "description": "",
-  "icon": "appliedenergistics2:spatial_pylon",
+  "icon": "ae2:spatial_pylon",
   "sortnum": 7
 }

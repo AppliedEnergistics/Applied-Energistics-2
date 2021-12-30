@@ -1,25 +1,25 @@
 {
   "name": "Quartz Fixtures",
-  "category": "appliedenergistics2:decorative_blocks",
-  "icon": "appliedenergistics2:quartz_block",
+  "category": "ae2:decorative_blocks",
+  "icon": "ae2:quartz_block",
   "pages": [
     {
       "type": "spotlight",
-      "item": "appliedenergistics2:quartz_fixture",
+      "item": "ae2:quartz_fixture",
       "text": "Decerative light source that can be mounted on any solid surfance."
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:decorative/quartz_fixture"
+      "recipe": "ae2:decorative/quartz_fixture"
     },
     {
       "type": "spotlight",
-      "item": "appliedenergistics2:light_detector",
+      "item": "ae2:light_detector",
       "text": "Just like a daylight sensor uses nether quartz to detect daylight, this nether quartz fixture outputs redstone level on any near by light sources.$(br2)Outputs starting at light level 6 at redstone level 1 and goes up to light level 15 redstone level 9."
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:decorative/light_detector"
+      "recipe": "ae2:decorative/light_detector"
     }
   ]
 }

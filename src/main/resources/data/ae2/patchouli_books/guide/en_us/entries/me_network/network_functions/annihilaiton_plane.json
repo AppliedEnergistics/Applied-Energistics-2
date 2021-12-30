@@ -1,7 +1,7 @@
 {
   "name": "ME Annihilation Plane",
-  "category": "appliedenergistics2:me_network/network_functions",
-  "icon": "appliedenergistics2:annihilation_plane",
+  "category": "ae2:me_network/network_functions",
+  "icon": "ae2:annihilation_plane",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/planes_annihilation_alt"
+      "recipe": "ae2:network/parts/planes_annihilation_alt"
     }
   ]
 }

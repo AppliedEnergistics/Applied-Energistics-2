@@ -1,6 +1,6 @@
 {
   "name": "Advanced Tools",
   "description": "Applied Energistics 2 Offers a varienty of unqiue Advanced tools.",
-  "icon": "appliedenergistics2:network_tool",
+  "icon": "ae2:network_tool",
   "sortnum": 2
 }

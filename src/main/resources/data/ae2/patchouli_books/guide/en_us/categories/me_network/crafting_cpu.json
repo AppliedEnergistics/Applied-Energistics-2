@@ -1,7 +1,7 @@
 {
   "name": "Crafting CPU",
-  "parent": "appliedenergistics2:me_network",
+  "parent": "ae2:me_network",
   "description": "",
-  "icon": "appliedenergistics2:crafting_unit",
+  "icon": "ae2:crafting_unit",
   "sortnum": 9
 }

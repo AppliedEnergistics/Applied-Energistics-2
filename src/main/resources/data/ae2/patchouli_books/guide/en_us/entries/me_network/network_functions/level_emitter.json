@@ -1,7 +1,7 @@
 {
   "name": "ME Level Emitter",
-  "category": "appliedenergistics2:me_network/network_functions",
-  "icon": "appliedenergistics2:level_emitter",
+  "category": "ae2:me_network/network_functions",
+  "icon": "ae2:level_emitter",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/level_emitter"
+      "recipe": "ae2:network/parts/level_emitter"
     }
   ]
 }

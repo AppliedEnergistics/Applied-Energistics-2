@@ -1,7 +1,7 @@
 {
   "name": "(to-do) Channels",
-  "category": "appliedenergistics2:misc",
-  "icon": "appliedenergistics2:fluix_smart_cable",
+  "category": "ae2:misc",
+  "icon": "ae2:fluix_smart_cable",
   "pages": [
     {
       "type": "text",

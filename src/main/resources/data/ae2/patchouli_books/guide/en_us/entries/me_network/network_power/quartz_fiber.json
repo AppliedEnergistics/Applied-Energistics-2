@@ -1,7 +1,7 @@
 {
   "name": "Quartz Fiber",
-  "category": "appliedenergistics2:me_network/network_power",
-  "icon": "appliedenergistics2:energy_acceptor",
+  "category": "ae2:me_network/network_power",
+  "icon": "ae2:energy_acceptor",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/quartz_fiber_part"
+      "recipe": "ae2:network/parts/quartz_fiber_part"
     }
   ]
 }

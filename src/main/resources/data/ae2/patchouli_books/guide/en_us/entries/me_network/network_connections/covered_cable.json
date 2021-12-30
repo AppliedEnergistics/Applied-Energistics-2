@@ -1,7 +1,7 @@
 {
   "name": "ME Covered Cables",
-  "category": "appliedenergistics2:me_network/network_connections",
-  "icon": "appliedenergistics2:fluix_covered_cable",
+  "category": "ae2:me_network/network_connections",
+  "icon": "ae2:fluix_covered_cable",
   "pages": [
     {
       "type": "text",
@@ -9,8 +9,8 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/cables/covered_fluix",
-      "recipe2": "appliedenergistics2:network/cables/covered_white"
+      "recipe": "ae2:network/cables/covered_fluix",
+      "recipe2": "ae2:network/cables/covered_white"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "Network Storage",
-  "parent": "appliedenergistics2:me_network",
+  "parent": "ae2:me_network",
   "description": "",
-  "icon": "appliedenergistics2:chest",
+  "icon": "ae2:chest",
   "sortnum": 2
 }

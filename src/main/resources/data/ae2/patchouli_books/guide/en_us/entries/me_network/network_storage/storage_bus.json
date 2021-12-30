@@ -1,7 +1,7 @@
 {
   "name": "ME Storage Bus",
-  "category": "appliedenergistics2:me_network/network_storage",
-  "icon": "appliedenergistics2:drive",
+  "category": "ae2:me_network/network_storage",
+  "icon": "ae2:drive",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/parts/storage_bus"
+      "recipe": "ae2:network/parts/storage_bus"
     }
   ]
 }

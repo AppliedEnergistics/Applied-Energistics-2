@@ -1,7 +1,7 @@
 {
   "name": "Network Functions",
-  "parent": "appliedenergistics2:me_network",
+  "parent": "ae2:me_network",
   "description": "",
-  "icon": "appliedenergistics2:interface",
+  "icon": "ae2:interface",
   "sortnum": 4
 }

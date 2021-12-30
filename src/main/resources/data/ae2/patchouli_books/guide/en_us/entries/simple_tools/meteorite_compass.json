@@ -1,16 +1,16 @@
 {
   "name": "Meteorite Compass",
-  "category": "appliedenergistics2:simple_tools",
-  "icon": "appliedenergistics2:sky_compass",
+  "category": "ae2:simple_tools",
+  "icon": "ae2:sky_compass",
   "pages": [
     {
       "type": "text",
-      "text": "A compass which points to the nearest $(l:appliedenergistics2:world_gen/sky_stone)Sky Stone$(/l) in the current world, it has a max range of roughly 2700 blocks.$(br2)If it is spinning rapidly it means the current chunk your standing in contains skystone. If its spinning slowly, it means that there is no metorite in range, this usually means you should do some more exploring."
+      "text": "A compass which points to the nearest $(l:ae2:world_gen/sky_stone)Sky Stone$(/l) in the current world, it has a max range of roughly 2700 blocks.$(br2)If it is spinning rapidly it means the current chunk your standing in contains skystone. If its spinning slowly, it means that there is no metorite in range, this usually means you should do some more exploring."
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:misc/meteors_sky_compass",
-      "text": "It will find one as new terrain is generated, or in some cases such as the nether you can use $(l:appliedenergistics2:world_gen/sky_stone)Sky Stone$(/l) blocks to control the compass since $(l:appliedenergistics2:world_gen/sky_stone)Sky Stone$(/l) does not spawn naturally."
+      "recipe": "ae2:misc/meteors_sky_compass",
+      "text": "It will find one as new terrain is generated, or in some cases such as the nether you can use $(l:ae2:world_gen/sky_stone)Sky Stone$(/l) blocks to control the compass since $(l:ae2:world_gen/sky_stone)Sky Stone$(/l) does not spawn naturally."
     }
   ]
 }

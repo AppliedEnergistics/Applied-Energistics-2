@@ -1,7 +1,7 @@
 {
   "name": "Molecular Assembler",
-  "category": "appliedenergistics2:me_network/powered_machines",
-  "icon": "appliedenergistics2:molecular_assembler",
+  "category": "ae2:me_network/powered_machines",
+  "icon": "ae2:molecular_assembler",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/crafting/molecular_assembler"
+      "recipe": "ae2:network/crafting/molecular_assembler"
     },
     {
       "type": "text",

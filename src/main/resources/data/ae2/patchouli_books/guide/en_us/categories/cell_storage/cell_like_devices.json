@@ -1,7 +1,7 @@
 {
   "name": "Cell Like Devices",
-  "parent": "appliedenergistics2:cell_storage",
+  "parent": "ae2:cell_storage",
   "description": "",
-  "icon": "appliedenergistics2:portable_cell",
+  "icon": "ae2:portable_cell",
   "sortnum": 6
 }

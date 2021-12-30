@@ -1,7 +1,7 @@
 {
   "name": "ME Quantum Link Chamber",
-  "category": "appliedenergistics2:me_network/qnb",
-  "icon": "appliedenergistics2:quantum_link",
+  "category": "ae2:me_network/qnb",
+  "icon": "ae2:quantum_link",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/blocks/quantum_link"
+      "recipe": "ae2:network/blocks/quantum_link"
     }
   ]
 }

@@ -1,21 +1,21 @@
 {
   "name": "Certus Quartz Crystals",
-  "category": "appliedenergistics2:world_gen",
-  "icon": "appliedenergistics2:certus_quartz_crystal",
+  "category": "ae2:world_gen",
+  "icon": "ae2:certus_quartz_crystal",
   "pages": [
     {
       "type": "spotlight",
       "title": "Certus Quartz Crystal",
       "anchor": "crystal",
-      "item": "appliedenergistics2:certus_quartz_crystal",
-      "text": "A commonly found resource in the Overworld. When charged in the $(l:appliedenergistics2:me_network/powered_machines/charger)Charger$(/l) it will convert into $(l:appliedenergistics2:world_gen/certus_quartz_crystals#charged_crystal)Charged Certus Quartz Crystal$(/l).$(br)Crystal yield can be improved by using $(l:appliedenergistics2:misc/purification)purification$(/l) by growing the raw crystals into $(item)Pure Certus Quartz Crystal$().$(br)Can be ground up in the $(l:appliedenergistics2:simple_tools/grindstone)Quartz Grindstone$(/l) to produce $(item)Certus Quartz Dust$()."
+      "item": "ae2:certus_quartz_crystal",
+      "text": "A commonly found resource in the Overworld. When charged in the $(l:ae2:me_network/powered_machines/charger)Charger$(/l) it will convert into $(l:ae2:world_gen/certus_quartz_crystals#charged_crystal)Charged Certus Quartz Crystal$(/l).$(br)Crystal yield can be improved by using $(l:ae2:misc/purification)purification$(/l) by growing the raw crystals into $(item)Pure Certus Quartz Crystal$().$(br)Can be ground up in the $(l:ae2:simple_tools/grindstone)Quartz Grindstone$(/l) to produce $(item)Certus Quartz Dust$()."
     },
     {
       "type": "spotlight",
       "anchor": "charged_crystal",
       "title": "Charged C. Q. Crystal",
-      "item": "appliedenergistics2:charged_certus_quartz_crystal",
-      "text": "Dropped from $(l:appliedenergistics2:world_gen/certus_quartz_ore#charged_ore)Charged Certus Quartz Ore$(/l), or can be manufactured from $(l:appliedenergistics2:world_gen/certus_quartz_crystals#crystal)Certus Quartz Crystal$(/l) using the $(l:appliedenergistics2:me_network/powered_machines/charger)Charger$(/l).$(br2)$(item)Charged Certus Quartz Crystal$() is used to make $(item)Fluix Crystal$() by placing it in water near $(item)Redstone$() and $(item)Nether Quartz$()."
+      "item": "ae2:charged_certus_quartz_crystal",
+      "text": "Dropped from $(l:ae2:world_gen/certus_quartz_ore#charged_ore)Charged Certus Quartz Ore$(/l), or can be manufactured from $(l:ae2:world_gen/certus_quartz_crystals#crystal)Certus Quartz Crystal$(/l) using the $(l:ae2:me_network/powered_machines/charger)Charger$(/l).$(br2)$(item)Charged Certus Quartz Crystal$() is used to make $(item)Fluix Crystal$() by placing it in water near $(item)Redstone$() and $(item)Nether Quartz$()."
     }
   ]
 }

@@ -1,20 +1,20 @@
 {
   "name": "Certus Quartz Ore",
-  "category": "appliedenergistics2:world_gen",
-  "icon": "appliedenergistics2:quartz_ore",
+  "category": "ae2:world_gen",
+  "icon": "ae2:quartz_ore",
   "pages": [
     {
       "type": "spotlight",
       "title": "Certus Quartz Ore",
-      "item": "appliedenergistics2:quartz_ore",
-      "text": "A commonly found ore which, when mined, drops $(l:appliedenergistics2:world_gen/certus_quartz_crystals#crystal)Certus Quartz Crystal$(/l). Another varient, $(l:appliedenergistics2:world_gen/certus_quartz_ore#charged_ore)Charged Certus Quartz Ore$(/l), also spawns in the Overworld more rarely."
+      "item": "ae2:quartz_ore",
+      "text": "A commonly found ore which, when mined, drops $(l:ae2:world_gen/certus_quartz_crystals#crystal)Certus Quartz Crystal$(/l). Another varient, $(l:ae2:world_gen/certus_quartz_ore#charged_ore)Charged Certus Quartz Ore$(/l), also spawns in the Overworld more rarely."
     },
     {
       "type": "spotlight",
       "anchor": "charged_ore",
       "title": "Charged C. Q. Ore",
-      "item": "appliedenergistics2:charged_quartz_ore",
-      "text": "Spawns semi commonly in the overworld, but unlike $(l:appliedenergistics2:world_gen/certus_quartz_ore)Certus Quartz Ore$(/l) it drops $(l:appliedenergistics2:world_gen/certus_quartz_ore#charged_crystal)Charged Certus Quartz Crystal.$(/l)"
+      "item": "ae2:charged_quartz_ore",
+      "text": "Spawns semi commonly in the overworld, but unlike $(l:ae2:world_gen/certus_quartz_ore)Certus Quartz Ore$(/l) it drops $(l:ae2:world_gen/certus_quartz_ore#charged_crystal)Charged Certus Quartz Crystal.$(/l)"
     }
   ]
 }

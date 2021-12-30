@@ -1,7 +1,7 @@
 {
   "name": "ME Chest",
-  "category": "appliedenergistics2:me_network/network_storage",
-  "icon": "appliedenergistics2:chest",
+  "category": "ae2:me_network/network_storage",
+  "icon": "ae2:chest",
   "pages": [
     {
       "type": "text",
@@ -13,7 +13,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:network/blocks/storage_chest"
+      "recipe": "ae2:network/blocks/storage_chest"
     }
   ]
 }

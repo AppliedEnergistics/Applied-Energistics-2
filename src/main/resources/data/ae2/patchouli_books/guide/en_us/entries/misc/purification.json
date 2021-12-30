@@ -1,7 +1,7 @@
 {
   "name": "(to-do) Purification",
-  "category": "appliedenergistics2:misc",
-  "icon": "appliedenergistics2:purified_fluix_crystal",
+  "category": "ae2:misc",
+  "icon": "ae2:purified_fluix_crystal",
   "pages": [
     {
       "type": "text",

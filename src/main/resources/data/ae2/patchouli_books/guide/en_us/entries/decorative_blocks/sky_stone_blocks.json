@@ -1,21 +1,21 @@
 {
   "name": "Sky Stone Blocks",
-  "category": "appliedenergistics2:decorative_blocks",
-  "icon": "appliedenergistics2:sky_stone_block",
+  "category": "ae2:decorative_blocks",
+  "icon": "ae2:sky_stone_block",
   "pages": [
     {
       "type": "text",
-      "text": "$(l:appliedenergistics2:world_gen/sky_stone)Sky Stone$(/l) can be smelted or crafted into various other blocks like$(li)Sky Stone Block$()$(li)Sky Stone Bricks$()$(li)Sky Stone Small Bricks$()"
+      "text": "$(l:ae2:world_gen/sky_stone)Sky Stone$(/l) can be smelted or crafted into various other blocks like$(li)Sky Stone Block$()$(li)Sky Stone Bricks$()$(li)Sky Stone Small Bricks$()"
     },
     {
       "type": "smelting",
-      "recipe": "appliedenergistics2:smelting/smooth_sky_stone_block",
-      "text": "$(l:appliedenergistics2:world_gen/sky_stone)Sky Stone$(/l) can be smelted into a smoother $(item)Sky Stone Block$()"
+      "recipe": "ae2:smelting/smooth_sky_stone_block",
+      "text": "$(l:ae2:world_gen/sky_stone)Sky Stone$(/l) can be smelted into a smoother $(item)Sky Stone Block$()"
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:decorative/sky_stone_brick",
-      "recipe2": "appliedenergistics2:decorative/sky_stone_small_brick"
+      "recipe": "ae2:decorative/sky_stone_brick",
+      "recipe2": "ae2:decorative/sky_stone_small_brick"
     }
   ]
 }

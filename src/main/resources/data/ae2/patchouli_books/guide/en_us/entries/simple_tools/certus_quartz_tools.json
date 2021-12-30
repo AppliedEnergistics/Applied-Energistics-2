@@ -1,36 +1,36 @@
 {
   "name": "Certus Quartz Tools",
-  "category": "appliedenergistics2:simple_tools",
-  "icon": "appliedenergistics2:certus_quartz_pickaxe",
+  "category": "ae2:simple_tools",
+  "icon": "ae2:certus_quartz_pickaxe",
   "pages": [
     {
       "type": "text",
-      "text": "Various tools can be crafted from $(l:appliedenergistics2:world_gen/certus_quartz_crystals)Certus Quartz Crystals$(/l).$(br2)With the exception of the $(item)Certus Quartz Wrench$() and $(item)Certus Quartz Cutting Knife$() all tools behave like other minecraft tools.$(br2)All tools have a the hardness and durability of iron tools."
+      "text": "Various tools can be crafted from $(l:ae2:world_gen/certus_quartz_crystals)Certus Quartz Crystals$(/l).$(br2)With the exception of the $(item)Certus Quartz Wrench$() and $(item)Certus Quartz Cutting Knife$() all tools behave like other minecraft tools.$(br2)All tools have a the hardness and durability of iron tools."
     },
     {
       "type": "spotlight",
-      "item": "appliedenergistics2:certus_quartz_wrench",
-      "text": "A wrench made from $(l:appliedenergistics2:world_gen/certus_quartz_crystals)Certus Quartz Crystals$(/l).$(br2)Used to rotate or instantaneously break ME blocks and remove parts and facades from cables."
+      "item": "ae2:certus_quartz_wrench",
+      "text": "A wrench made from $(l:ae2:world_gen/certus_quartz_crystals)Certus Quartz Crystals$(/l).$(br2)Used to rotate or instantaneously break ME blocks and remove parts and facades from cables."
     },
     {
       "type": "spotlight",
-      "item": "appliedenergistics2:certus_quartz_cutting_knife",
+      "item": "ae2:certus_quartz_cutting_knife",
       "title": "Cutting Knife",
-      "text": "A cutting knife made out of $(l:appliedenergistics2:world_gen/certus_quartz_crystals)Certus Quartz Crystals$(/l).$(br)Used to make Inscriber Name Press, Cable Anchor, and Cable Facade."
+      "text": "A cutting knife made out of $(l:ae2:world_gen/certus_quartz_crystals)Certus Quartz Crystals$(/l).$(br)Used to make Inscriber Name Press, Cable Anchor, and Cable Facade."
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:tools/certus_quartz_pickaxe",
-      "recipe2": "appliedenergistics2:tools/certus_quartz_axe"
+      "recipe": "ae2:tools/certus_quartz_pickaxe",
+      "recipe2": "ae2:tools/certus_quartz_axe"
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:tools/certus_quartz_hoe",
-      "recipe2": "appliedenergistics2:tools/certus_quartz_spade"
+      "recipe": "ae2:tools/certus_quartz_hoe",
+      "recipe2": "ae2:tools/certus_quartz_spade"
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:tools/certus_quartz_sword"
+      "recipe": "ae2:tools/certus_quartz_sword"
     }
   ]
 }

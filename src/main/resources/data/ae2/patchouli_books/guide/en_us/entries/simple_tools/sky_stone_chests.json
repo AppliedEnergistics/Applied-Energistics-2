@@ -1,16 +1,16 @@
 {
   "name": "Sky Stone Chests",
-  "category": "appliedenergistics2:simple_tools",
-  "icon": "appliedenergistics2:sky_stone_chest",
+  "category": "ae2:simple_tools",
+  "icon": "ae2:sky_stone_chest",
   "pages": [
     {
       "type": "text",
-      "text": "Chest made of $(l:appliedenergistics2:world_gen/sky_stone)Sky Stone$(/l), its blast resistant and can hold 36 Stacks.$(br2)Natrually spawning Sky Stone Chest's contain various random drops, the most important of which are the 4 Processor Presses."
+      "text": "Chest made of $(l:ae2:world_gen/sky_stone)Sky Stone$(/l), its blast resistant and can hold 36 Stacks.$(br2)Natrually spawning Sky Stone Chest's contain various random drops, the most important of which are the 4 Processor Presses."
     },
     {
       "type": "crafting",
-      "recipe": "appliedenergistics2:misc/chests_sky_stone",
-      "recipe2": "appliedenergistics2:misc/chests_smooth_sky_stone"
+      "recipe": "ae2:misc/chests_sky_stone",
+      "recipe2": "ae2:misc/chests_smooth_sky_stone"
     }
   ]
 }
