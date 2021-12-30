@@ -69,6 +69,10 @@ public interface PlotBuilder {
         return new CableBuilder(this, bb);
     }
 
+    default CableBuilder denseCable(BlockPos pos) {
+        return cable(posToBb(pos), AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT));
+    }
+
     default void part(String bb, Direction side, ItemDefinition<? extends PartItem<?>> part) {
         addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
     }
@@ -243,6 +247,10 @@ public interface PlotBuilder {
      */
     default PlotBuilder offset(int x, int y, int z) {
         return transform(bb -> bb.moved(x, y, z));
+    }
+
+    default PlotBuilder offset(BlockPos pos) {
+        return offset(pos.getX(), pos.getY(), pos.getZ());
     }
 
     /**

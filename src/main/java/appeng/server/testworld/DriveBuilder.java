@@ -99,22 +99,24 @@ public class DriveBuilder {
             this.inv = inv;
         }
 
-        public void add(ItemLike item) {
-            add(AEItemKey.of(item.asItem()));
+        public CreativeCellBuilder add(ItemLike item) {
+            return add(AEItemKey.of(item.asItem()));
         }
 
-        public void add(Fluid fluid) {
-            add(AEFluidKey.of(fluid));
+        public CreativeCellBuilder add(Fluid fluid) {
+            return add(AEFluidKey.of(fluid));
         }
 
-        public void add(@Nullable GenericStack stack) {
+        public CreativeCellBuilder add(@Nullable GenericStack stack) {
             if (stack != null) {
                 add(stack.what());
             }
+            return this;
         }
 
-        public void add(AEKey key) {
+        public CreativeCellBuilder add(AEKey key) {
             inv.insert(key, 1, Actionable.MODULATE, new BaseActionSource());
+            return this;
         }
 
         public DriveBuilder and() {

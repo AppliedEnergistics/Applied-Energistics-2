@@ -333,6 +333,24 @@ public class GenericStackInv implements MEStorage {
             return 0;
         }
 
+        // For type configs it makes no sense to try and spread the insert across multiple slots, so we use specific
+        // logic here to just shove it into the first potential slot
+        if (this.mode == Mode.CONFIG_TYPES) {
+            int freeSlot = -1;
+            for (int i = 0; i < stacks.length; i++) {
+                var key = getKey(i);
+                if (key == what) {
+                    return 0;
+                } else if (key == null && freeSlot == -1) {
+                    freeSlot = i;
+                }
+            }
+            if (freeSlot != -1 && mode == Actionable.MODULATE) {
+                setStack(freeSlot, new GenericStack(what, 0));
+            }
+            return 0;
+        }
+
         var inserted = 0L;
         for (int i = 0; i < stacks.length && inserted < amount; i++) {
             inserted += insert(i, what, amount, mode);
