@@ -267,7 +267,7 @@ public final class MeteoritePlacer {
                     if (state.getMaterial().isReplaceable()) {
                         if (!level.isEmptyBlock(blockPosUp)) {
                             final BlockState stateUp = level.getBlockState(blockPosUp);
-                            level.setBlock(blockPos, stateUp, 3);
+                            level.setBlock(blockPos, stateUp, Block.UPDATE_ALL);
                         } else if (randomShit < 100 * this.crater) {
                             final double dx = i - x;
                             final double dy = j - y;
