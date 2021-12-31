@@ -20,6 +20,7 @@ package appeng.worldgen.meteorite;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -31,7 +32,7 @@ public class MeteoriteBlockPutter {
             return false;
         }
 
-        level.setBlock(pos, blk, 0);
+        level.setBlock(pos, blk, Block.UPDATE_ALL);
         return true;
     }
 
