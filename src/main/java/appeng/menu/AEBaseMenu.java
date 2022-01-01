@@ -187,7 +187,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     public void lockPlayerInventorySlot(int invSlot) {
-        Preconditions.checkArgument(invSlot >= 0 && invSlot < playerInventory.items.size(),
+        Preconditions.checkArgument(invSlot >= 0 && invSlot < playerInventory.getContainerSize(),
                 "cannot lock player inventory slot: %s", invSlot);
         this.lockedPlayerInventorySlots.add(invSlot);
     }
