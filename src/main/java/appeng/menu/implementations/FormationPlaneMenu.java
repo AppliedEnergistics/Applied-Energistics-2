@@ -23,11 +23,11 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.stacks.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.FormationPlaneScreen;
+import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeSlot;
@@ -70,11 +70,6 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
     }
 
     @Override
-    protected boolean supportCapacity() {
-        return true;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         if (supportsFuzzyRangeSearch()) {
             this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
@@ -86,7 +81,7 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
 
     @Override
     public boolean isSlotEnabled(int idx) {
-        final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
+        final int upgrades = getUpgrades().getInstalledUpgrades(AEItems.CAPACITY_CARD);
         return upgrades > idx;
     }
 
@@ -103,7 +98,7 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
     }
 
     public boolean supportsFuzzyMode() {
-        return hasUpgrade(Upgrades.FUZZY) && supportsFuzzyRangeSearch();
+        return hasUpgrade(AEItems.FUZZY_CARD) && supportsFuzzyRangeSearch();
     }
 
     private boolean supportsFuzzyRangeSearch() {

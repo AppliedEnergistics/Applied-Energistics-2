@@ -35,9 +35,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
@@ -46,13 +43,14 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
-import appeng.parts.automation.DefinitionUpgradeInventory;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.util.inv.AppEngInternalInventory;
@@ -69,7 +67,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable, IUpgradeableObject {
     private final int maxProcessingTime = 100;
 
-    private final UpgradeInventory upgrades;
+    private final IUpgradeInventory upgrades;
     private int processingTime = 0;
     // cycles from 0 - 16, at 8 it preforms the action, at 16 it re-enables the
     // normal routine.
@@ -99,7 +97,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(1600);
 
-        this.upgrades = new DefinitionUpgradeInventory(AEBlocks.INSCRIBER, this, 3);
+        this.upgrades = UpgradeInventories.forMachine(AEBlocks.INSCRIBER, 3, this::saveChanges);
 
         this.sideItemHandler.setMaxStackSize(1, 64);
 
@@ -263,7 +261,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
                 IEnergySource src = this;
 
                 // Base 1, increase by 1 for each card
-                final int speedFactor = 1 + this.upgrades.getInstalledUpgrades(Upgrades.SPEED);
+                final int speedFactor = 1 + this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
                 final int powerConsumption = 10 * speedFactor;
                 final double powerThreshold = powerConsumption - 0.01;
                 double powerReq = this.extractAEPower(powerConsumption, Actionable.SIMULATE, PowerMultiplier.CONFIG);

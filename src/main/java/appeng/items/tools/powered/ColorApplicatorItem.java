@@ -57,22 +57,23 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.networking.CableBusBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.core.AEConfig;
+import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
 import appeng.items.contents.CellConfig;
-import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -92,8 +93,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public double getChargeRate() {
-        return 80d;
+    public double getChargeRate(ItemStack stack) {
+        return 80d + 80d * getUpgrades(stack).getInstalledUpgrades(AEItems.ENERGY_CARD);
     }
 
     @Override
@@ -394,8 +395,14 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(ItemStack is) {
-        return new CellUpgrades(is, 2);
+    public IUpgradeInventory getUpgrades(ItemStack is) {
+        return UpgradeInventories.forItem(is, 2, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
+        var energyCards = upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD);
+        // Item is crafted with a normal cell, card contains a dense cell (x8)
+        setAEMaxPowerMultiplier(stack, 1 + energyCards * 8);
     }
 
     @Override

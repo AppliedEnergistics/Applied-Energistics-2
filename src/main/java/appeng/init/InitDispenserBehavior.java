@@ -37,7 +37,7 @@ public final class InitDispenserBehavior {
     public static void init() {
         DispenserBlock.registerBehavior(AEBlocks.TINY_TNT, new TinyTNTDispenseItemBehavior());
         DispenserBlock.registerBehavior(AEItems.ENTROPY_MANIPULATOR, new BlockToolDispenseItemBehavior());
-        DispenserBlock.registerBehavior(AEItems.MASS_CANNON, new MatterCannonDispenseItemBehavior());
+        DispenserBlock.registerBehavior(AEItems.MATTER_CANNON, new MatterCannonDispenseItemBehavior());
         DispenserBlock.registerBehavior(AEItems.COLOR_APPLICATOR, new BlockToolDispenseItemBehavior());
     }
 

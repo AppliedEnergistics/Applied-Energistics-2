@@ -32,6 +32,8 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.Upgrades;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
@@ -65,6 +67,10 @@ public final class UpgradesPanel implements ICompositeWidget {
 
     public UpgradesPanel(List<Slot> slots) {
         this(slots, Collections::emptyList);
+    }
+
+    public UpgradesPanel(List<Slot> slots, IUpgradeableObject upgradeableObject) {
+        this(slots, () -> Upgrades.getTooltipLinesForMachine(upgradeableObject.getUpgrades().getUpgradableItem()));
     }
 
     public UpgradesPanel(List<Slot> slots, Supplier<List<Component>> tooltipSupplier) {

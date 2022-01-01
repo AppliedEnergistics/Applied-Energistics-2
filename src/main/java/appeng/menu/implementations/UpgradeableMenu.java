@@ -18,32 +18,26 @@
 
 package appeng.menu.implementations;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.items.contents.NetworkToolMenuHost;
-import appeng.items.tools.NetworkToolItem;
+import appeng.core.definitions.AEItems;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantics;
+import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
-import appeng.menu.slot.RestrictedInputSlot;
 
 public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBaseMenu implements IOptionalSlotHost {
 
@@ -56,65 +50,28 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
     public YesNo cMode = YesNo.NO;
     @GuiSync(6)
     public SchedulingMode schedulingMode = SchedulingMode.DEFAULT;
-    private int tbSlot;
-    private NetworkToolMenuHost tbInventory;
+
+    private final ToolboxMenu toolbox;
 
     public UpgradeableMenu(MenuType<?> menuType, int id, Inventory ip, T host) {
         super(menuType, id, ip, host);
         this.host = host;
 
-        final Container pi = this.getPlayerInventory();
-        for (int x = 0; x < pi.getContainerSize(); x++) {
-            final ItemStack pii = pi.getItem(x);
-            if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
-                this.lockPlayerInventorySlot(x);
-                this.tbSlot = x;
-                this.tbInventory = ((NetworkToolItem) pii.getItem()).getMenuHost(getPlayerInventory().player, x, pii,
-                        null);
-                break;
-            }
-        }
-
-        if (this.hasToolbox()) {
-            for (int i = 0; i < 9; i++) {
-                RestrictedInputSlot slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES,
-                        this.tbInventory.getInternalInventory(), i);
-                // The toolbox is in the network tool that is part of the player inventory
-                this.addSlot(slot, SlotSemantics.TOOLBOX);
-            }
-        }
+        this.toolbox = new ToolboxMenu(this);
 
         this.setupConfig();
 
         this.createPlayerInventorySlots(ip);
     }
 
-    public boolean hasToolbox() {
-        return this.tbInventory != null;
-    }
-
-    public Component getToolboxName() {
-        return this.tbInventory != null ? this.tbInventory.getItemStack().getHoverName()
-                : TextComponent.EMPTY;
-    }
-
     protected abstract void setupConfig();
 
     protected final void setupUpgrades() {
-        var upgrades = this.getHost().getUpgrades();
-
-        for (int i = 0; i < getUpgrades().size(); i++) {
-            var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, i);
-            slot.setNotDraggable();
-            this.addSlot(slot, SlotSemantics.UPGRADE);
-        }
+        setupUpgrades(this.getHost().getUpgrades());
     }
 
-    /**
-     * Indicates whether capacity upgrades can be used to increase the number of filter slots in this UI.
-     */
-    protected boolean supportCapacity() {
-        return true;
+    public ToolboxMenu getToolbox() {
+        return toolbox;
     }
 
     @Override
@@ -125,7 +82,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
             this.loadSettingsFromHost(configurableObject.getConfigManager());
         }
 
-        this.checkToolbox();
+        toolbox.tick();
 
         for (Object o : this.slots) {
             if (o instanceof OptionalFakeSlot fs) {
@@ -149,32 +106,13 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         }
     }
 
-    protected void checkToolbox() {
-        if (this.hasToolbox()) {
-            final ItemStack currentItem = this.getPlayerInventory().getItem(this.tbSlot);
-
-            if (currentItem != this.tbInventory.getItemStack()) {
-                if (!currentItem.isEmpty()) {
-                    if (ItemStack.isSame(this.tbInventory.getItemStack(), currentItem)) {
-                        this.getPlayerInventory().setItem(this.tbSlot,
-                                this.tbInventory.getItemStack());
-                    } else {
-                        this.setValidMenu(false);
-                    }
-                } else {
-                    this.setValidMenu(false);
-                }
-            }
-        }
-    }
-
     protected void standardDetectAndSendChanges() {
         super.broadcastChanges();
     }
 
     @Override
     public boolean isSlotEnabled(int idx) {
-        int capacityUpgrades = this.getHost().getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
+        int capacityUpgrades = this.getHost().getUpgrades().getInstalledUpgrades(AEItems.CAPACITY_CARD);
         return idx == 1 && capacityUpgrades >= 1
                 || idx == 2 && capacityUpgrades >= 2;
     }
@@ -219,8 +157,8 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         return getHost().getUpgrades();
     }
 
-    public final boolean hasUpgrade(Upgrades upgrade) {
-        return getUpgrades().getInstalledUpgrades(upgrade) > 0;
+    public final boolean hasUpgrade(ItemLike upgradeCard) {
+        return getUpgrades().isInstalled(upgradeCard);
     }
 
 }

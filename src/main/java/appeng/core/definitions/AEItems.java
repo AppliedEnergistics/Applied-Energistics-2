@@ -30,9 +30,9 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
-import appeng.api.config.Upgrades;
 import appeng.api.ids.AEItemIds;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.upgrades.Upgrades;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -49,7 +49,6 @@ import appeng.items.materials.CustomEntityItem;
 import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
 import appeng.items.materials.StorageComponentItem;
-import appeng.items.materials.UpgradeCardItem;
 import appeng.items.misc.CrystalSeedItem;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.misc.WrappedGenericStack;
@@ -121,7 +120,7 @@ public final class AEItems {
     public static final ItemDefinition<WirelessTerminalItem> WIRELESS_CRAFTING_TERMINAL = item("Wireless Crafting Terminal", AEItemIds.WIRELESS_CRAFTING_TERMINAL, p -> new WirelessCraftingTerminalItem(AEConfig.instance().getWirelessTerminalBattery(), p.stacksTo(1)));
     public static final ItemDefinition<ChargedStaffItem> CHARGED_STAFF = item("Charged Staff", AEItemIds.CHARGED_STAFF, p -> new ChargedStaffItem(p.stacksTo(1)));
     public static final ItemDefinition<ColorApplicatorItem> COLOR_APPLICATOR = item("Color Applicator", AEItemIds.COLOR_APPLICATOR, p -> new ColorApplicatorItem(p.stacksTo(1)));
-    public static final ItemDefinition<MatterCannonItem> MASS_CANNON = item("Matter Cannon", AEItemIds.MATTER_CANNON, p -> new MatterCannonItem(p.stacksTo(1)));
+    public static final ItemDefinition<MatterCannonItem> MATTER_CANNON = item("Matter Cannon", AEItemIds.MATTER_CANNON, p -> new MatterCannonItem(p.stacksTo(1)));
 
     ///
     /// PORTABLE CELLS
@@ -186,14 +185,14 @@ public final class AEItems {
     public static final ItemDefinition<MaterialItem> CALCULATION_PROCESSOR = item("Calculation Processor", AEItemIds.CALCULATION_PROCESSOR, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> ENGINEERING_PROCESSOR = item("Engineering Processor", AEItemIds.ENGINEERING_PROCESSOR, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> BASIC_CARD = item("Basic Card", AEItemIds.BASIC_CARD, MaterialItem::new);
-    public static final ItemDefinition<UpgradeCardItem> REDSTONE_CARD = item("Redstone Card", AEItemIds.REDSTONE_CARD, p -> new UpgradeCardItem(p, Upgrades.REDSTONE));
-    public static final ItemDefinition<UpgradeCardItem> CAPACITY_CARD = item("Capacity Card", AEItemIds.CAPACITY_CARD, p -> new UpgradeCardItem(p, Upgrades.CAPACITY));
+    public static final ItemDefinition<Item> REDSTONE_CARD = item("Redstone Card", AEItemIds.REDSTONE_CARD, Upgrades::createUpgradeCardItem);
+    public static final ItemDefinition<Item> CAPACITY_CARD = item("Capacity Card", AEItemIds.CAPACITY_CARD, Upgrades::createUpgradeCardItem);
     public static final ItemDefinition<MaterialItem> ADVANCED_CARD = item("Advanced Card", AEItemIds.ADVANCED_CARD, MaterialItem::new);
-    public static final ItemDefinition<UpgradeCardItem> FUZZY_CARD = item("Fuzzy Card", AEItemIds.FUZZY_CARD, p -> new UpgradeCardItem(p, Upgrades.FUZZY));
-    public static final ItemDefinition<UpgradeCardItem> SPEED_CARD = item("Acceleration Card", AEItemIds.SPEED_CARD, p -> new UpgradeCardItem(p, Upgrades.SPEED));
-    public static final ItemDefinition<UpgradeCardItem> INVERTER_CARD = item("Inverter Card", AEItemIds.INVERTER_CARD, p -> new UpgradeCardItem(p, Upgrades.INVERTER));
-    public static final ItemDefinition<UpgradeCardItem> CRAFTING_CARD = item("Crafting Card", AEItemIds.CRAFTING_CARD, p -> new UpgradeCardItem(p, Upgrades.CRAFTING));
-    public static final ItemDefinition<MaterialItem> ENERGY_CARD = item("Energy Card", AEItemIds.ENERGY_CARD, MaterialItem::new);
+    public static final ItemDefinition<Item> FUZZY_CARD = item("Fuzzy Card", AEItemIds.FUZZY_CARD, Upgrades::createUpgradeCardItem);
+    public static final ItemDefinition<Item> SPEED_CARD = item("Acceleration Card", AEItemIds.SPEED_CARD, Upgrades::createUpgradeCardItem);
+    public static final ItemDefinition<Item> INVERTER_CARD = item("Inverter Card", AEItemIds.INVERTER_CARD, Upgrades::createUpgradeCardItem);
+    public static final ItemDefinition<Item> CRAFTING_CARD = item("Crafting Card", AEItemIds.CRAFTING_CARD, Upgrades::createUpgradeCardItem);
+    public static final ItemDefinition<Item> ENERGY_CARD = item("Energy Card", AEItemIds.ENERGY_CARD, Upgrades::createUpgradeCardItem);
     public static final ItemDefinition<MaterialItem> SPATIAL_2_CELL_COMPONENT = item("2³ Spatial Component", AEItemIds.SPATIAL_2_CELL_COMPONENT, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SPATIAL_16_CELL_COMPONENT = item("16³ Spatial Component", AEItemIds.SPATIAL_16_CELL_COMPONENT, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SPATIAL_128_CELL_COMPONENT = item("128³ Spatial Component", AEItemIds.SPATIAL_128_CELL_COMPONENT, MaterialItem::new);

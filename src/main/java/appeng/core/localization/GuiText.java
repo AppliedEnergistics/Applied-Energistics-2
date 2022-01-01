@@ -166,6 +166,8 @@ public enum GuiText {
     StorageBus("Storage Bus"),
     StorageBusFluids("Fluid Storage Bus"),
     StorageCells("ME Storage Cells"),
+    WirelessTerminals("Wireless Terminals"),
+    PortableCells("Portable Cells"),
     Stored("Stored"),
     StoredEnergy("Stored Energy"),
     StoredFluids("Stored Fluids"),

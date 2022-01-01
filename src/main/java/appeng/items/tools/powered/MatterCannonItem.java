@@ -58,12 +58,13 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.Upgrades;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
@@ -71,14 +72,13 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.packets.MatterCannonPacket;
 import appeng.items.contents.CellConfig;
-import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
@@ -97,8 +97,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public double getChargeRate() {
-        return 800d;
+    public double getChargeRate(ItemStack stack) {
+        return 800d + 800d * getUpgrades(stack).getInstalledUpgrades(AEItems.ENERGY_CARD);
     }
 
     @Environment(EnvType.CLIENT)
@@ -143,9 +143,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         int shots = 1;
-        var cu = getUpgradesInventory(stack);
+        var cu = getUpgrades(stack);
         if (cu != null) {
-            shots += cu.getInstalledUpgrades(Upgrades.SPEED);
+            shots += cu.getInstalledUpgrades(AEItems.SPEED_CARD);
         }
         shots = Math.min(shots, (int) req.getLongValue());
 
@@ -383,8 +383,14 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(ItemStack is) {
-        return new CellUpgrades(is, 4);
+    public IUpgradeInventory getUpgrades(ItemStack is) {
+        return UpgradeInventories.forItem(is, 4, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
+        var energyCards = upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD);
+        // Item is crafted with a normal cell, card contains a dense cell (x8)
+        setAEMaxPowerMultiplier(stack, 1 + energyCards * 8);
     }
 
     @Override

@@ -87,11 +87,6 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     }
 
     @Override
-    protected boolean supportCapacity() {
-        return false;
-    }
-
-    @Override
     protected void standardDetectAndSendChanges() {
         if (isServer()) {
             this.maxProcessingTime = getHost().getMaxProcessingTime();

@@ -32,12 +32,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkBlockEntity;

@@ -23,10 +23,10 @@ import javax.annotation.Nullable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.upgrades.Upgrades;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -66,7 +66,7 @@ public class NetworkToolMenuHost extends ItemMenuHost implements InternalInvento
 
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            return IUpgradeModule.getTypeFromStack(stack) != null;
+            return Upgrades.isUpgradeCardItem(stack.getItem());
         }
     }
 

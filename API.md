@@ -206,6 +206,46 @@ It also implements `IStorageMonitorable` to allow changes to the grid's inventor
 
 **Service Interface**: `ISpatialService`
 
+## Adding New Upgrades or Making Upgradable Machines
+
+This will be made available in 10.0.0-beta.3.
+
+Relevant APIs:
+
+- `appeng.api.upgrades.Upgrades` for managing upgrade cards and associating them with machines
+- `appeng.api.upgrades.UpgradeInventories` for creating upgrade inventories for use in upgradable machines or items
+
+### Custom Upgrade Cards
+
+Each upgrade is unique identified by a registered item (the "upgrade card"). To create a custom upgrade card that
+behaves like the existing AE2 cards (i.e. it can be inserted into the network tool's toolbelt), use the
+utility function `Upgrades#createUpgradeCardItem` to create an item for your card. Remember it's your responsibility
+to actually register this item, provide an icon and a translation key for it. It will however, show the tooltip for supported machines and support insertion into machines by right-click out of the box. 
+
+### Associating Upgrade Cards with Machines
+
+For both cases where your addon adds a custom machine or upgrade card, you need to associate possible upgrades
+with potential machines. The `Upgrades.add` method allows you to link an upgrade card (represented by its Item) with
+a Machine (also represented by an item, usually a `BlockItem` or `IPartItem`). 
+
+If there are multiple machines that are treated equally with regard to upgrades, you can pass a translation key to 
+the `tooltipGroup` parameter. When displaying the tooltip for an upgrade card, all supported machines with the same
+`tooltipGroup` will be merged into a single line and shown using the translation for the group. This was used
+for displaying fluid and item parts as one line, as well as the block/part form of interfaces. 
+
+### Making custom Machines Upgradable
+
+You can use the factory class `UpgradeInventories` to create inventories for storing upgrade cards. These
+inventories will use the provided item to identify which upgrade cards are accepted by the inventory to
+automatically prevent incompatible cards from being inserted.
+
+They also offer convenience methods (see `IUpgradeInventory`) to quickly check if an upgrade is present or
+count how many upgrades of a type are present.
+
+For the machine version created by `forMachine`, you are responsible for saving the inventory yourself from the
+change callback. For the item version created by `forItem`, the upgrade inventory will automatically save itself 
+to the provided ´ItemStack` whenever its content changes.
+
 # Changes from 1.17 and before to 1.18
 
 There are large changes to the API in 1.18.

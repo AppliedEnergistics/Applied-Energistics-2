@@ -24,13 +24,13 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.core.definitions.AEItems;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
 
 public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmitterMenu> {
@@ -70,7 +70,7 @@ public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmi
         this.fuzzyMode.setVisibility(menu.supportsFuzzySearch());
 
         // configure enabled status...
-        final boolean notCraftingMode = !menu.hasUpgrade(Upgrades.CRAFTING);
+        final boolean notCraftingMode = !menu.hasUpgrade(AEItems.CRAFTING_CARD);
         this.level.setActive(notCraftingMode);
 
         this.redstoneMode.active = notCraftingMode;

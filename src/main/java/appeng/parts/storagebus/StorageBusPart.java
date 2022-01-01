@@ -42,7 +42,6 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGridNode;
@@ -63,6 +62,7 @@ import appeng.api.storage.MEStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.helpers.IConfigInvHost;
@@ -348,7 +348,7 @@ public class StorageBusPart extends UpgradeablePart
 
         // Apply other settings.
         this.handler.setAccessRestriction(this.getConfigManager().getSetting(Settings.ACCESS));
-        this.handler.setWhitelist(getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
+        this.handler.setWhitelist(isUpgradedWith(AEItems.INVERTER_CARD) ? IncludeExclude.BLACKLIST
                 : IncludeExclude.WHITELIST);
 
         this.handler.setPartitionList(createFilter());
@@ -387,11 +387,11 @@ public class StorageBusPart extends UpgradeablePart
 
     private IPartitionList createFilter() {
         var filterBuilder = IPartitionList.builder();
-        if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+        if (isUpgradedWith(AEItems.FUZZY_CARD)) {
             filterBuilder.fuzzyMode(this.getConfigManager().getSetting(Settings.FUZZY_MODE));
         }
 
-        var slotsToUse = 18 + getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+        var slotsToUse = 18 + getInstalledUpgrades(AEItems.CAPACITY_CARD) * 9;
         for (var x = 0; x < config.size() && x < slotsToUse; x++) {
             filterBuilder.add(config.getKey(x));
         }

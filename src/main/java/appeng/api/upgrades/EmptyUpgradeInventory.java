@@ -16,28 +16,38 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.automation;
+package appeng.api.upgrades;
 
 import java.util.Collections;
 import java.util.Iterator;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeInventory;
-
-public final class EmptyUpgradeInventory implements IUpgradeInventory {
+final class EmptyUpgradeInventory implements IUpgradeInventory {
     public static final EmptyUpgradeInventory INSTANCE = new EmptyUpgradeInventory();
 
     @Override
-    public int getInstalledUpgrades(Upgrades u) {
+    public ItemLike getUpgradableItem() {
+        return Items.AIR;
+    }
+
+    @Override
+    public boolean isInstalled(ItemLike upgradeCard) {
+        return false;
+    }
+
+    @Override
+    public int getInstalledUpgrades(ItemLike u) {
         return 0;
     }
 
     @Override
-    public int getMaxInstalled(Upgrades u) {
+    public int getMaxInstalled(ItemLike u) {
         return 0;
     }
 
@@ -78,5 +88,13 @@ public final class EmptyUpgradeInventory implements IUpgradeInventory {
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag data, String subtag) {
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag data, String subtag) {
     }
 }

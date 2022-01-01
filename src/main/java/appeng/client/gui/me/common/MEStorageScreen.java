@@ -65,6 +65,7 @@ import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
+import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -180,6 +181,13 @@ public class MEStorageScreen<C extends MEStorageMenu>
             appeng.api.config.TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
             this.addToLeftToolbar(new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle,
                     this::toggleTerminalStyle));
+        }
+
+        this.widgets.add("upgrades", new UpgradesPanel(
+                menu.getSlots(SlotSemantics.UPGRADE),
+                menu.getHost()));
+        if (menu.getToolbox().isPresent()) {
+            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
         }
     }
 

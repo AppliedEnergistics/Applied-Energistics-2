@@ -21,12 +21,11 @@ package appeng.client.gui.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeableObject;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.Upgrades;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
@@ -47,8 +46,8 @@ public class UpgradeableScreen<T extends UpgradeableMenu<?>> extends AEBaseScree
         this.widgets.add("upgrades", new UpgradesPanel(
                 menu.getSlots(SlotSemantics.UPGRADE),
                 this::getCompatibleUpgrades));
-        if (menu.hasToolbox()) {
-            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolboxName()));
+        if (menu.getToolbox().isPresent()) {
+            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
         }
     }
 
@@ -57,17 +56,9 @@ public class UpgradeableScreen<T extends UpgradeableMenu<?>> extends AEBaseScree
      * compatible.
      */
     private List<Component> getCompatibleUpgrades() {
-        List<Component> list = new ArrayList<>();
+        var list = new ArrayList<Component>();
         list.add(GuiText.CompatibleUpgrades.text());
-
-        for (var upgrade : Upgrades.values()) {
-            var maxCount = menu.getUpgrades().getMaxInstalled(upgrade);
-            if (maxCount > 0) {
-                list.add(GuiText.CompatibleUpgrade.text(upgrade.getDisplayName(), maxCount)
-                        .withStyle(ChatFormatting.GRAY));
-            }
-        }
-
+        list.addAll(Upgrades.getTooltipLinesForMachine(menu.getUpgrades().getUpgradableItem()));
         return list;
     }
 

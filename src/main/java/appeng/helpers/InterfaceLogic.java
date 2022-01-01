@@ -34,16 +34,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.IUpgradeableObject;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -63,28 +58,28 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.externalstorage.GenericStackFluidStorage;
 import appeng.helpers.externalstorage.GenericStackInvStorage;
 import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
-import appeng.parts.automation.StackUpgradeInventory;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
-import appeng.util.inv.InternalInventoryHost;
 
 /**
  * Contains behavior for interface blocks and parts, which is independent of the storage channel.
  */
-public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, IConfigurableObject,
-        InternalInventoryHost {
+public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, IConfigurableObject {
 
     public static final int NUMBER_OF_SLOTS = 9;
 
@@ -98,7 +93,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     protected final IActionSource actionSource;
     protected final IActionSource interfaceRequestSource;
     private final MultiCraftingTracker craftingTracker;
-    private final UpgradeInventory upgrades;
+    private final IUpgradeInventory upgrades;
     private final IStorageMonitorableAccessor accessor = this::getMonitorable;
     private final ConfigManager cm = new ConfigManager((manager, setting) -> {
         onConfigChanged();
@@ -141,7 +136,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.interfaceRequestSource = new InterfaceRequestSource(mainNode::getNode);
 
         gridNode.addService(ICraftingRequester.class, this);
-        this.upgrades = new StackUpgradeInventory(is, this, 1);
+        this.upgrades = UpgradeInventories.forMachine(is, 1, this::onUpgradesChanged);
         this.craftingTracker = new MultiCraftingTracker(this, 9);
         this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
 
@@ -433,7 +428,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     }
 
     private boolean storedRequestEquals(AEKey request, AEKey stored) {
-        if (upgrades.getInstalledUpgrades(Upgrades.FUZZY) > 0 && request.supportsFuzzyRangeSearch()) {
+        if (upgrades.isInstalled(AEItems.FUZZY_CARD) && request.supportsFuzzyRangeSearch()) {
             return request.fuzzyEquals(stored, cm.getSetting(Settings.FUZZY_MODE));
         } else {
             return request.equals(stored);
@@ -490,7 +485,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             }
 
             // Try a fuzzy import from network instead if we don't have stacks in stock yet
-            if (storage.getStack(slot) == null && upgrades.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+            if (storage.getStack(slot) == null && upgrades.isInstalled(AEItems.FUZZY_CARD)) {
                 FuzzyMode fuzzyMode = getConfigManager().getSetting(Settings.FUZZY_MODE);
                 for (var entry : grid.getStorageService().getCachedInventory().findFuzzy(what, fuzzyMode)) {
                     // Simulate insertion first in case the stack size is different
@@ -528,7 +523,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     private boolean handleCrafting(int x, AEKey key, long amount) {
         var grid = mainNode.getGrid();
-        if (grid != null && upgrades.getInstalledUpgrades(Upgrades.CRAFTING) > 0 && key != null) {
+        if (grid != null && upgrades.isInstalled(AEItems.CRAFTING_CARD) && key != null) {
             return this.craftingTracker.handleCrafting(x, key, amount,
                     this.host.getBlockEntity().getLevel(),
                     grid.getCraftingService(),
@@ -547,27 +542,16 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         updatePlan(); // update plan in case fuzzy mode changed
     }
 
-    @Override
-    public void saveChanges() {
+    private void onUpgradesChanged() {
         this.host.saveChanges();
-    }
 
-    @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-        if (inv == upgrades) {
-            if (upgrades.getInstalledUpgrades(Upgrades.CRAFTING) == 0) {
-                // Cancel crafting if the crafting card is removed
-                this.cancelCrafting();
-            }
-            // Update plan in case fuzzy card was inserted or removed
-            updatePlan();
+        if (!upgrades.isInstalled(AEItems.CRAFTING_CARD)) {
+            // Cancel crafting if the crafting card is removed
+            this.cancelCrafting();
         }
-    }
 
-    @Override
-    public boolean isClientSide() {
-        Level level = this.host.getBlockEntity().getLevel();
-        return level == null || level.isClientSide();
+        // Update plan in case fuzzy card was inserted or removed
+        updatePlan();
     }
 
     public void addDrops(List<ItemStack> drops) {

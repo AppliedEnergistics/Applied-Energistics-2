@@ -23,15 +23,15 @@ import java.util.Collection;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.UpgradeInventories;
+import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
-import appeng.items.contents.CellUpgrades;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
@@ -66,26 +66,8 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 var priorityList = new KeyCounter();
 
                 var vc = (ICellWorkbenchItem) currentViewCell.getItem();
-                var upgrades = vc.getUpgradesInventory(currentViewCell);
                 var config = vc.getConfigInventory(currentViewCell);
                 var fzMode = vc.getFuzzyMode(currentViewCell);
-
-                boolean hasInverter = false;
-                boolean hasFuzzy = false;
-
-                if (upgrades != null) {
-                    for (var upgrade : upgrades) {
-                        var u = IUpgradeModule.getTypeFromStack(upgrade);
-                        if (u != null) {
-                            switch (u) {
-                                case FUZZY -> hasFuzzy = true;
-                                case INVERTER -> hasInverter = true;
-                                default -> {
-                                }
-                            }
-                        }
-                    }
-                }
 
                 for (int i = 0; i < config.size(); i++) {
                     var what = config.getKey(i);
@@ -95,7 +77,9 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 }
 
                 if (!priorityList.isEmpty()) {
-                    if (hasFuzzy) {
+                    var upgrades = vc.getUpgrades(currentViewCell);
+                    var hasInverter = upgrades.isInstalled(AEItems.INVERTER_CARD);
+                    if (upgrades.isInstalled(AEItems.FUZZY_CARD)) {
                         myMergedList.addNewList(new FuzzyPriorityList(priorityList, fzMode), !hasInverter);
                     } else {
                         myMergedList.addNewList(new PrecisePriorityList(priorityList), !hasInverter);
@@ -115,8 +99,8 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(ItemStack is) {
-        return new CellUpgrades(is, 2);
+    public IUpgradeInventory getUpgrades(ItemStack is) {
+        return UpgradeInventories.forItem(is, 2);
     }
 
     @Override

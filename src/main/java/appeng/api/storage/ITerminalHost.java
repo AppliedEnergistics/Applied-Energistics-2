@@ -25,9 +25,10 @@ package appeng.api.storage;
 
 import javax.annotation.Nullable;
 
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigurableObject;
 
-public interface ITerminalHost extends IConfigurableObject, ISubMenuHost {
+public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, ISubMenuHost {
     @Nullable
     MEStorage getInventory();
 }

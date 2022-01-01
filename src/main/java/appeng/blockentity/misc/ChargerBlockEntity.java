@@ -176,7 +176,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 if (currentPower < maxPower) {
                     // Since we specify the charge rate in "per tick", calculate it per tick of the charger,
                     // which only ticks once every few actual game ticks.
-                    var chargeRate = ps.getChargeRate() * ticksSinceLastCall
+                    var chargeRate = ps.getChargeRate(myItem) * ticksSinceLastCall
                             * AEConfig.instance().getChargerChargeRate();
 
                     // First charge from the local buffer

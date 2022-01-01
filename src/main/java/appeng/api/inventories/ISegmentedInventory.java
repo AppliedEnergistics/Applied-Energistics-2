@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.api.upgrades.IUpgradeInventory;
+
 /**
  * Allows access to specific segments of a machines inventory.
  */
@@ -39,8 +41,7 @@ public interface ISegmentedInventory {
     ResourceLocation CONFIG = new ResourceLocation("ae2:config");
 
     /**
-     * Identifies the sub-inventory that contains installed upgrades. See
-     * {@link appeng.api.implementations.IUpgradeInventory}.
+     * Identifies the sub-inventory that contains installed upgrades. See {@link IUpgradeInventory}.
      */
     ResourceLocation UPGRADES = new ResourceLocation("ae2:upgrades");
 

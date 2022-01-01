@@ -155,6 +155,7 @@ public enum ButtonToolTips {
     StoreAction("%s: Store %s"),
     SetAction("%s: Set %s"),
     ModifyAmountAction("%s: Modify Amount"),
+    SupportedBy("Supported by:"),
     ;
 
     private final TranslatableComponent text;

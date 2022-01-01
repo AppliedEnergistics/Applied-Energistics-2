@@ -28,7 +28,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -37,10 +36,7 @@ import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
@@ -56,15 +52,17 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
-import appeng.parts.automation.BlockUpgradeInventory;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
@@ -88,7 +86,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private final InternalInventory outputCellsExt = new FilteredInternalInventory(this.outputCells,
             AEItemFilters.EXTRACT_ONLY);
 
-    private final UpgradeInventory upgrades;
+    private final IUpgradeInventory upgrades;
     private final IActionSource mySrc;
     private YesNo lastRedstoneState;
 
@@ -104,8 +102,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         this.mySrc = new MachineSource(this);
         this.lastRedstoneState = YesNo.UNDECIDED;
 
-        final Block ioPortBlock = AEBlocks.IO_PORT.block();
-        this.upgrades = new BlockUpgradeInventory(ioPortBlock, this, NUMBER_OF_UPGRADE_SLOTS);
+        this.upgrades = UpgradeInventories.forMachine(AEBlocks.IO_PORT, NUMBER_OF_UPGRADE_SLOTS, this::saveChanges);
     }
 
     @Override
@@ -158,7 +155,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     private boolean isEnabled() {
-        if (upgrades.getInstalledUpgrades(Upgrades.REDSTONE) == 0) {
+        if (!upgrades.isInstalled(AEItems.REDSTONE_CARD)) {
             return true;
         }
 
@@ -235,7 +232,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         TickRateModulation ret = TickRateModulation.SLEEP;
         long itemsToMove = 256;
 
-        switch (upgrades.getInstalledUpgrades(Upgrades.SPEED)) {
+        switch (upgrades.getInstalledUpgrades(AEItems.SPEED_CARD)) {
             case 1 -> itemsToMove *= 2;
             case 2 -> itemsToMove *= 4;
             case 3 -> itemsToMove *= 8;
