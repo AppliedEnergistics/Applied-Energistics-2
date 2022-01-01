@@ -61,6 +61,7 @@ import appeng.block.AEBaseBlockItemChargeable;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.FluidContainerHelper;
 import appeng.hooks.AEToolItem;
@@ -172,6 +173,8 @@ public class PortableCellItem extends AEBasePoweredItem
             return false;
         }
 
+        boolean hasBeenEnergyUpgraded = hasBeenEnergyUpgraded(stack);
+
         if (inv.getAvailableStacks().isEmpty()) {
             playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
@@ -186,6 +189,11 @@ public class PortableCellItem extends AEBasePoweredItem
 
                 playerInventory.placeItemBackInInventory(ingredientStack);
             }
+
+            if (hasBeenEnergyUpgraded) { // Giving the Energy Card Back
+                playerInventory.placeItemBackInInventory(AEItems.ENERGY_CARD.stack(1));
+            }
+
         } else {
             player.sendMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.get(), Util.NIL_UUID);
         }
@@ -354,6 +362,14 @@ public class PortableCellItem extends AEBasePoweredItem
             return false;
         }
 
+        if (other.getItem() == AEItems.ENERGY_CARD.asItem() && !hasBeenEnergyUpgraded(stack)) {
+            if (other.getCount() >= 1) {
+                other.shrink(1);
+                setEnergyUpgraded(stack, true);
+                return true;
+            }
+        }
+
         if (keyType == AEKeyType.items()) {
             AEKey key = AEItemKey.of(other);
             int inserted = (int) insert(player, stack, key, other.getCount(), Actionable.MODULATE);
@@ -394,6 +410,33 @@ public class PortableCellItem extends AEBasePoweredItem
         } else {
             // White
             return 0xFFFFFF;
+        }
+    }
+
+    private static final String ENERGY_UPGRADED_KEY = "energyUpgraded";
+
+    private boolean hasBeenEnergyUpgraded(ItemStack is) {
+        if (is.getTag() == null) {
+            return false;
+        } else {
+            return is.getTag().getBoolean(ENERGY_UPGRADED_KEY);
+        }
+    }
+
+    private void setEnergyUpgraded(ItemStack is, boolean value) {
+        if (is.getTag() == null) {
+            is.getOrCreateTag().putBoolean(ENERGY_UPGRADED_KEY, value);
+        } else {
+            is.getTag().putBoolean(ENERGY_UPGRADED_KEY, value);
+        }
+    }
+
+    @Override
+    public double getAEMaxPower(ItemStack is) {
+        if (hasBeenEnergyUpgraded(is)) {
+            return super.getAEMaxPower(is) * 8;
+        } else {
+            return super.getAEMaxPower(is);
         }
     }
 }

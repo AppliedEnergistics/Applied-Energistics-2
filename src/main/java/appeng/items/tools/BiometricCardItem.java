@@ -30,7 +30,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -45,6 +44,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
@@ -167,7 +167,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
             TooltipFlag advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {
-            lines.add(new TranslatableComponent(GuiText.NoPermissions.getLocal()));
+            lines.add(Tooltips.of(GuiText.NoPermissions));
         } else {
             Component msg = null;
 
@@ -178,7 +178,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
                     msg = msg.copy().append(", ").append(sp.getDisplayName());
                 }
             }
-            lines.add(msg);
+            lines.add(msg.copy().setStyle(Tooltips.GREEN));
         }
     }
 }

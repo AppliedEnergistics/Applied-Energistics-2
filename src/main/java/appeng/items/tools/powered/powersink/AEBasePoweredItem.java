@@ -18,7 +18,6 @@
 
 package appeng.items.tools.powered.powersink;
 
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
@@ -36,9 +35,8 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 import appeng.items.AEBaseItem;
 
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
@@ -62,12 +60,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
             internalCurrentPower = tag.getDouble(CURRENT_POWER_NBT_KEY);
         }
 
-        final double percent = internalCurrentPower / internalMaxPower;
+        lines.add(
+                Tooltips.energyStorageComponent(internalCurrentPower, internalMaxPower));
 
-        lines.add(GuiText.StoredEnergy.text().copy()
-                .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                .append(PowerUnits.AE.textComponent())
-                .append(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
     }
 
     @Override

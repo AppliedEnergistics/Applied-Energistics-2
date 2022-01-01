@@ -86,6 +86,12 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(ConventionTags.ALL_FLUIX)
                 .unlockedBy("has_advanced_card", has(AEItems.ADVANCED_CARD))
                 .save(consumer, AppEng.makeId("materials/cardspeed"));
+        ShapedRecipeBuilder.shaped(AEItems.ENERGY_CARD)
+                .pattern("ab")
+                .define('a', AEBlocks.DENSE_ENERGY_CELL)
+                .define('b', AEItems.ADVANCED_CARD)
+                .unlockedBy("has_advanced_card", has(AEItems.ADVANCED_CARD))
+                .save(consumer, AppEng.makeId("materials/cardenergy"));
 
         // ====================================================
         // Misc Materials

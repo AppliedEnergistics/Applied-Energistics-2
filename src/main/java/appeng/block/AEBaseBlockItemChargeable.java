@@ -18,14 +18,12 @@
 
 package appeng.block;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,10 +32,9 @@ import net.minecraft.world.level.block.Block;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
@@ -58,12 +55,8 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
                 internalCurrentPower = tag.getDouble("internalCurrentPower");
             }
 
-            final double percent = internalCurrentPower / internalMaxPower;
-
-            lines.add(GuiText.StoredEnergy.text().copy()
-                    .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                    .append(new TranslatableComponent(PowerUnits.AE.unlocalizedName))
-                    .append(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
+            lines.add(
+                    Tooltips.energyStorageComponent(internalCurrentPower, internalMaxPower));
         }
     }
 

@@ -38,6 +38,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 import appeng.items.AEBaseItem;
 import appeng.spatial.SpatialStorageHelper;
 import appeng.spatial.SpatialStoragePlot;
@@ -65,20 +66,20 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             TooltipFlag advancedTooltips) {
         int plotId = this.getAllocatedPlotId(stack);
         if (plotId == -1) {
-            lines.add(GuiText.Unformatted.text().copy().withStyle(ChatFormatting.ITALIC));
-            lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
+            lines.add(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));
+            lines.add(Tooltips.of(GuiText.SpatialCapacity, maxRegion, maxRegion, maxRegion));
             return;
         }
 
         // Add a serial number to allows players to keep different cells apart
         // Try to make this a little more flavorful.
         String serialNumber = String.format(Locale.ROOT, "SP-%04d", plotId);
-        lines.add(GuiText.SerialNumber.text(serialNumber));
+        lines.add(Tooltips.of(GuiText.SerialNumber, serialNumber));
 
         CompoundTag tag = stack.getTag();
         if (tag != null && tag.contains(TAG_PLOT_SIZE, Tag.TAG_LONG)) {
             BlockPos size = BlockPos.of(tag.getLong(TAG_PLOT_SIZE));
-            lines.add(GuiText.StoredSize.text(size.getX(), size.getY(), size.getZ()));
+            lines.add(Tooltips.of(GuiText.StoredSize, size.getX(), size.getY(), size.getZ()));
         }
     }
 

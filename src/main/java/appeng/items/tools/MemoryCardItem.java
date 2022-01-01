@@ -45,6 +45,7 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
+import appeng.core.localization.Tooltips;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
@@ -64,22 +65,23 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
     @Environment(EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
+
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
-        lines.add(new TranslatableComponent(firstLineKey));
+        lines.add(Tooltips.of(new TranslatableComponent(firstLineKey)));
 
         final CompoundTag data = this.getData(stack);
         if (data.contains("tooltip")) {
             String tooltipKey = getFirstValidTranslationKey(data.getString("tooltip") + ".name",
                     data.getString("tooltip"));
-            lines.add(new TranslatableComponent(tooltipKey));
+            lines.add(Tooltips.of(new TranslatableComponent(tooltipKey)));
         }
 
         if (data.contains("freq")) {
             final short freq = data.getShort("freq");
             final String freqTooltip = ChatFormatting.BOLD + Platform.p2p().toHexString(freq);
 
-            lines.add(new TranslatableComponent("gui.tooltips.ae2.P2PFrequency", freqTooltip));
+            lines.add(Tooltips.of(new TranslatableComponent("gui.tooltips.ae2.P2PFrequency", freqTooltip)));
         }
     }
 

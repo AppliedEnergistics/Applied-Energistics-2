@@ -193,6 +193,7 @@ public final class AEItems {
     public static final ItemDefinition<UpgradeCardItem> SPEED_CARD = item("Acceleration Card", AEItemIds.SPEED_CARD, p -> new UpgradeCardItem(p, Upgrades.SPEED));
     public static final ItemDefinition<UpgradeCardItem> INVERTER_CARD = item("Inverter Card", AEItemIds.INVERTER_CARD, p -> new UpgradeCardItem(p, Upgrades.INVERTER));
     public static final ItemDefinition<UpgradeCardItem> CRAFTING_CARD = item("Crafting Card", AEItemIds.CRAFTING_CARD, p -> new UpgradeCardItem(p, Upgrades.CRAFTING));
+    public static final ItemDefinition<MaterialItem> ENERGY_CARD = item("Energy Card", AEItemIds.ENERGY_CARD, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SPATIAL_2_CELL_COMPONENT = item("2³ Spatial Component", AEItemIds.SPATIAL_2_CELL_COMPONENT, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SPATIAL_16_CELL_COMPONENT = item("16³ Spatial Component", AEItemIds.SPATIAL_16_CELL_COMPONENT, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SPATIAL_128_CELL_COMPONENT = item("128³ Spatial Component", AEItemIds.SPATIAL_128_CELL_COMPONENT, MaterialItem::new);
