@@ -31,7 +31,6 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
@@ -45,6 +44,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.IConfigInvHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
@@ -93,7 +93,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
 
         @Override
         public void onStackChange(AEKey what, long amount) {
-            if (what.equals(getConfiguredKey()) && getInstalledUpgrades(Upgrades.FUZZY) == 0) {
+            if (what.equals(getConfiguredKey()) && !isUpgradedWith(AEItems.FUZZY_CARD)) {
                 lastReportedValue = amount;
                 updateState();
             } else { // either fuzzy upgrade or null filter
@@ -142,7 +142,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
 
     @Override
     protected boolean hasDirectOutput() {
-        return getInstalledUpgrades(Upgrades.CRAFTING) > 0;
+        return isUpgradedWith(AEItems.CRAFTING_CARD);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
 
     @Override
     public Set<AEKey> getEmitableItems() {
-        if (getInstalledUpgrades(Upgrades.CRAFTING) > 0
+        if (isUpgradedWith(AEItems.CRAFTING_CARD)
                 && getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE) == YesNo.YES) {
             if (getConfiguredKey() != null) {
                 return Set.of(getConfiguredKey());
@@ -199,7 +199,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
 
         ICraftingProvider.requestUpdate(getMainNode());
 
-        if (this.getInstalledUpgrades(Upgrades.CRAFTING) > 0) {
+        if (isUpgradedWith(AEItems.CRAFTING_CARD)) {
             if (this.craftingWatcher != null) {
                 if (myStack == null) {
                     this.craftingWatcher.setWatchAll(true);
@@ -209,7 +209,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
             }
         } else {
             if (this.storageWatcher != null) {
-                if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0 || myStack == null) {
+                if (isUpgradedWith(AEItems.FUZZY_CARD) || myStack == null) {
                     this.storageWatcher.setWatchAll(true);
                 } else {
                     this.storageWatcher.add(myStack);
@@ -231,7 +231,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
             for (var st : stacks) {
                 this.lastReportedValue += st.getLongValue();
             }
-        } else if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+        } else if (isUpgradedWith(AEItems.FUZZY_CARD)) {
             this.lastReportedValue = 0;
             final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
             var fuzzyList = stacks.findFuzzy(myStack, fzMode);

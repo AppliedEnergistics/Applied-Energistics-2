@@ -58,6 +58,7 @@ import appeng.api.parts.IPart;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.api.upgrades.IUpgradeInventory;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
@@ -74,6 +75,7 @@ import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
+import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
 import appeng.util.Platform;
 import appeng.util.fluid.FluidSoundHelper;
@@ -925,6 +927,14 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
 
             this.handler.accept(arg);
+        }
+    }
+
+    protected final void setupUpgrades(IUpgradeInventory upgrades) {
+        for (int i = 0; i < upgrades.size(); i++) {
+            var slot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, i);
+            slot.setNotDraggable();
+            this.addSlot(slot, SlotSemantics.UPGRADE);
         }
     }
 }

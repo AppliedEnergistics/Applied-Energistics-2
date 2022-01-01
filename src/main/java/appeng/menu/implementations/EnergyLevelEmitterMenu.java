@@ -69,11 +69,6 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu<EnergyLevelEmitterPa
     }
 
     @Override
-    protected boolean supportCapacity() {
-        return false;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_EMITTER));
     }

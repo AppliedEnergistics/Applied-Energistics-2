@@ -79,7 +79,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public double getChargeRate() {
+    public double getChargeRate(ItemStack stack) {
         return 800d;
     }
 

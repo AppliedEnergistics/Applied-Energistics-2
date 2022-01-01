@@ -28,12 +28,12 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IconButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.InterfaceMenu;
 
@@ -70,7 +70,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
         super.updateBeforeRender();
 
         this.fuzzyMode.set(menu.getFuzzyMode());
-        this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
+        this.fuzzyMode.setVisibility(menu.hasUpgrade(AEItems.FUZZY_CARD));
 
         var configSlots = menu.getSlots(SlotSemantics.CONFIG);
         for (int i = 0; i < amountButtons.size(); i++) {

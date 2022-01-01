@@ -25,11 +25,11 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.core.definitions.AEItems;
 import appeng.menu.implementations.IOBusMenu;
 
 public class IOBusScreen extends UpgradeableScreen<IOBusMenu> {
@@ -69,16 +69,16 @@ public class IOBusScreen extends UpgradeableScreen<IOBusMenu> {
         super.updateBeforeRender();
 
         this.redstoneMode.set(menu.getRedStoneMode());
-        this.redstoneMode.setVisibility(menu.hasUpgrade(Upgrades.REDSTONE));
+        this.redstoneMode.setVisibility(menu.hasUpgrade(AEItems.REDSTONE_CARD));
         this.fuzzyMode.set(menu.getFuzzyMode());
-        this.fuzzyMode.setVisibility(menu.hasUpgrade(Upgrades.FUZZY));
+        this.fuzzyMode.setVisibility(menu.hasUpgrade(AEItems.FUZZY_CARD));
         if (this.craftMode != null) {
             this.craftMode.set(menu.getCraftingMode());
-            this.craftMode.setVisibility(menu.hasUpgrade(Upgrades.CRAFTING));
+            this.craftMode.setVisibility(menu.hasUpgrade(AEItems.CRAFTING_CARD));
         }
         if (this.schedulingMode != null) {
             this.schedulingMode.set(menu.getSchedulingMode());
-            this.schedulingMode.setVisibility(menu.hasUpgrade(Upgrades.CAPACITY));
+            this.schedulingMode.setVisibility(menu.hasUpgrade(AEItems.CAPACITY_CARD));
         }
     }
 

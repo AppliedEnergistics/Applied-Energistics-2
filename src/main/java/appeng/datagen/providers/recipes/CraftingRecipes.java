@@ -815,7 +815,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
 
         addQuartzTools(consumer);
 
-        ShapedRecipeBuilder.shaped(AEItems.MASS_CANNON)
+        ShapedRecipeBuilder.shaped(AEItems.MATTER_CANNON)
                 .pattern("aab")
                 .pattern("cd ")
                 .pattern("a  ")

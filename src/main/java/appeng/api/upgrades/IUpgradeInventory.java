@@ -21,11 +21,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations;
+package appeng.api.upgrades;
 
 import javax.annotation.Nonnegative;
 
-import appeng.api.config.Upgrades;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.ItemLike;
+
 import appeng.api.inventories.InternalInventory;
 
 /**
@@ -33,17 +35,37 @@ import appeng.api.inventories.InternalInventory;
  * by the machine can be inserted.
  */
 public interface IUpgradeInventory extends InternalInventory {
+    /**
+     * Item representation of the upgradable object this inventory is managing upgrades for.
+     */
+    ItemLike getUpgradableItem();
+
+    /**
+     * @return Checks if the given upgrade card is installed in this inventory.
+     */
+    default boolean isInstalled(ItemLike upgradeCard) {
+        return getInstalledUpgrades(upgradeCard) > 0;
+    }
 
     /**
      * determine how many of an upgrade are installed.
      */
     @Nonnegative
-    int getInstalledUpgrades(Upgrades u);
+    int getInstalledUpgrades(ItemLike u);
 
     /**
      * determine how many of an upgrade can be installed.
      */
     @Nonnegative
-    int getMaxInstalled(Upgrades u);
+    int getMaxInstalled(ItemLike u);
 
+    /**
+     * Reads the contents of this upgrade inventory from a subtag of the given compound tag.
+     */
+    void readFromNBT(CompoundTag data, String subtag);
+
+    /**
+     * Reads the contents of this upgrade inventory from a subtag of the given compound tag.
+     */
+    void writeToNBT(CompoundTag data, String subtag);
 }

@@ -33,7 +33,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
@@ -45,6 +44,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigInvHost;
 import appeng.items.parts.PartModels;
@@ -144,7 +144,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         if (filter == null) {
             var filterBuilder = IPartitionList.builder();
             filterBuilder.addAll(getConfig().keySet());
-            if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+            if (isUpgradedWith(AEItems.FUZZY_CARD)) {
                 filterBuilder.fuzzyMode(this.getConfigManager().getSetting(Settings.FUZZY_MODE));
             }
             filter = filterBuilder.build();
@@ -171,11 +171,11 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     protected int availableSlots() {
-        return Math.min(1 + getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().size());
+        return Math.min(1 + getInstalledUpgrades(AEItems.CAPACITY_CARD) * 4, this.getConfig().size());
     }
 
     protected int getOperationsPerTick() {
-        return switch (getInstalledUpgrades(Upgrades.SPEED)) {
+        return switch (getInstalledUpgrades(AEItems.SPEED_CARD)) {
             default -> 1;
             case 1 -> 8;
             case 2 -> 32;

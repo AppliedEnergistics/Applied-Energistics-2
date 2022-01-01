@@ -20,19 +20,17 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.ToggleButton;
+import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.menu.implementations.CellWorkbenchMenu;
 
@@ -60,13 +58,8 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchMenu> {
 
         this.copyMode.setState(this.menu.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
-        boolean hasFuzzy = false;
-        for (ItemStack upgrade : menu.getUpgrades()) {
-            if (IUpgradeModule.getTypeFromStack(upgrade) == Upgrades.FUZZY) {
-                hasFuzzy = true;
-                break;
-            }
-        }
+        boolean hasFuzzy = menu.getUpgrades().isInstalled(AEItems.FUZZY_CARD);
+        this.fuzzyMode.set(menu.getFuzzyMode());
         this.fuzzyMode.setVisibility(hasFuzzy);
     }
 

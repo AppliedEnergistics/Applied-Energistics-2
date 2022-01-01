@@ -34,12 +34,12 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.StorageBusScreen;
+import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.FakeSlot;
@@ -107,11 +107,6 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
     }
 
     @Override
-    protected boolean supportCapacity() {
-        return true;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         this.setReadWriteMode(cm.getSetting(Settings.ACCESS));
@@ -121,7 +116,7 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
 
     @Override
     public boolean isSlotEnabled(int idx) {
-        final int upgrades = getUpgrades().getInstalledUpgrades(Upgrades.CAPACITY);
+        final int upgrades = getUpgrades().getInstalledUpgrades(AEItems.CAPACITY_CARD);
 
         return upgrades > idx;
     }
@@ -191,7 +186,7 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
     }
 
     public boolean supportsFuzzySearch() {
-        return hasUpgrade(Upgrades.FUZZY);
+        return hasUpgrade(AEItems.FUZZY_CARD);
     }
 
     @Nullable

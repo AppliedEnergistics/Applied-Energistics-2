@@ -107,7 +107,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    public double getChargeRate() {
+    public double getChargeRate(ItemStack stack) {
         if (getBlock() == AEBlocks.ENERGY_CELL.block()) {
             return 800d;
         } else {

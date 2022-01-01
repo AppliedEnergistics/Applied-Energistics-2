@@ -57,6 +57,9 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableItem;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -66,19 +69,17 @@ import appeng.core.localization.PlayerMessages;
 import appeng.helpers.FluidContainerHelper;
 import appeng.hooks.AEToolItem;
 import appeng.items.contents.CellConfig;
-import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.fluid.FluidSoundHelper;
 
 public class PortableCellItem extends AEBasePoweredItem
-        implements IBasicCellItem, IMenuItem, AEToolItem {
+        implements IBasicCellItem, IMenuItem, IUpgradeableItem, AEToolItem {
 
     public static final StorageTier SIZE_1K = new StorageTier("1k", 512, 54, 8,
             () -> Registry.ITEM.get(AEItemIds.CELL_COMPONENT_1K));
@@ -108,8 +109,8 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public double getChargeRate() {
-        return 80d;
+    public double getChargeRate(ItemStack stack) {
+        return 80d + 80d * getUpgrades(stack).getInstalledUpgrades(AEItems.ENERGY_CARD);
     }
 
     /**
@@ -147,7 +148,7 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
-        if (AEConfig.instance().isPortableCellDisassemblyEnabled()) {
+        if (!AEConfig.instance().isPortableCellDisassemblyEnabled()) {
             return false;
         }
 
@@ -173,8 +174,6 @@ public class PortableCellItem extends AEBasePoweredItem
             return false;
         }
 
-        boolean hasBeenEnergyUpgraded = hasBeenEnergyUpgraded(stack);
-
         if (inv.getAvailableStacks().isEmpty()) {
             playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
 
@@ -190,10 +189,10 @@ public class PortableCellItem extends AEBasePoweredItem
                 playerInventory.placeItemBackInInventory(ingredientStack);
             }
 
-            if (hasBeenEnergyUpgraded) { // Giving the Energy Card Back
-                playerInventory.placeItemBackInInventory(AEItems.ENERGY_CARD.stack(1));
+            // Drop upgrades
+            for (var upgrade : getUpgrades(stack)) {
+                playerInventory.placeItemBackInInventory(upgrade);
             }
-
         } else {
             player.sendMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.get(), Util.NIL_UUID);
         }
@@ -235,8 +234,15 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(ItemStack is) {
-        return new CellUpgrades(is, 2);
+    public IUpgradeInventory getUpgrades(ItemStack is) {
+        return UpgradeInventories.forItem(is, 2, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
+        var energyCards = upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD);
+        // The energy card is crafted with a dense energy cell, while the portable cell just uses a normal energy cell
+        // Since the dense cells capacity is 8x the normal capacity, the result should be 9x normal.
+        setAEMaxPowerMultiplier(stack, 1 + energyCards * 8);
     }
 
     @Override
@@ -362,14 +368,6 @@ public class PortableCellItem extends AEBasePoweredItem
             return false;
         }
 
-        if (other.getItem() == AEItems.ENERGY_CARD.asItem() && !hasBeenEnergyUpgraded(stack)) {
-            if (other.getCount() >= 1) {
-                other.shrink(1);
-                setEnergyUpgraded(stack, true);
-                return true;
-            }
-        }
-
         if (keyType == AEKeyType.items()) {
             AEKey key = AEItemKey.of(other);
             int inserted = (int) insert(player, stack, key, other.getCount(), Actionable.MODULATE);
@@ -410,33 +408,6 @@ public class PortableCellItem extends AEBasePoweredItem
         } else {
             // White
             return 0xFFFFFF;
-        }
-    }
-
-    private static final String ENERGY_UPGRADED_KEY = "energyUpgraded";
-
-    private boolean hasBeenEnergyUpgraded(ItemStack is) {
-        if (is.getTag() == null) {
-            return false;
-        } else {
-            return is.getTag().getBoolean(ENERGY_UPGRADED_KEY);
-        }
-    }
-
-    private void setEnergyUpgraded(ItemStack is, boolean value) {
-        if (is.getTag() == null) {
-            is.getOrCreateTag().putBoolean(ENERGY_UPGRADED_KEY, value);
-        } else {
-            is.getTag().putBoolean(ENERGY_UPGRADED_KEY, value);
-        }
-    }
-
-    @Override
-    public double getAEMaxPower(ItemStack is) {
-        if (hasBeenEnergyUpgraded(is)) {
-            return super.getAEMaxPower(is) * 8;
-        } else {
-            return super.getAEMaxPower(is);
         }
     }
 }

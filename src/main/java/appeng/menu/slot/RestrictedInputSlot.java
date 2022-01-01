@@ -31,10 +31,10 @@ import appeng.api.ids.AETags;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
-import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.api.upgrades.Upgrades;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.Icon;
@@ -165,7 +165,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case BIOMETRIC_CARD:
                 return stack.getItem() instanceof IBiometricCard;
             case UPGRADES:
-                return IUpgradeModule.getTypeFromStack(stack) != null;
+                return Upgrades.isUpgradeCardItem(stack);
             default:
                 break;
         }

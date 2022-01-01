@@ -33,7 +33,6 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.Actionable;
 import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -46,6 +45,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
 import appeng.items.parts.PartModels;
@@ -136,7 +136,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
 
             var before = context.getOperationsRemaining();
 
-            if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+            if (isUpgradedWith(AEItems.FUZZY_CARD)) {
                 // When fuzzy exporting, simply attempt export of all items in the set of fuzzy-equals keys
                 for (var fuzzyWhat : ImmutableList
                         .copyOf(storageService.getCachedInventory().findFuzzy(what, fzMode))) {
@@ -241,7 +241,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     }
 
     private boolean isCraftingEnabled() {
-        return this.getInstalledUpgrades(Upgrades.CRAFTING) > 0;
+        return isUpgradedWith(AEItems.CRAFTING_CARD);
     }
 
     @Override

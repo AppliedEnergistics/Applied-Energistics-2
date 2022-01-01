@@ -68,5 +68,5 @@ public interface IAEItemPowerStorage {
     /**
      * @return The amount of AE per tick that the AE charger will charge this item at.
      */
-    double getChargeRate();
+    double getChargeRate(ItemStack stack);
 }

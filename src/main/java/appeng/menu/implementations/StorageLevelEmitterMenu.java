@@ -26,11 +26,11 @@ import net.minecraft.world.inventory.Slot;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.StorageLevelEmitterScreen;
+import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.FakeSlot;
 import appeng.parts.automation.StorageLevelEmitterPart;
@@ -93,11 +93,6 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
     }
 
     @Override
-    protected boolean supportCapacity() {
-        return false;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setCraftingMode(cm.getSetting(Settings.CRAFT_VIA_REDSTONE));
         if (cm.hasSetting(Settings.FUZZY_MODE)) {
@@ -107,7 +102,7 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
     }
 
     public boolean supportsFuzzySearch() {
-        return getHost().getConfigManager().hasSetting(Settings.FUZZY_MODE) && hasUpgrade(Upgrades.FUZZY);
+        return getHost().getConfigManager().hasSetting(Settings.FUZZY_MODE) && hasUpgrade(AEItems.FUZZY_CARD);
     }
 
     @Nullable

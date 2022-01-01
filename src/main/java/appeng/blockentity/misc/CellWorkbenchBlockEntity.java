@@ -30,17 +30,17 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.externalstorage.GenericStackInv;
-import appeng.parts.automation.EmptyUpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
@@ -206,17 +206,17 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         if (this.cacheUpgrades == null) {
             final ICellWorkbenchItem cell = this.getCell();
             if (cell == null) {
-                return EmptyUpgradeInventory.INSTANCE;
+                return UpgradeInventories.empty();
             }
 
             final ItemStack is = this.cell.getStackInSlot(0);
             if (is.isEmpty()) {
-                return EmptyUpgradeInventory.INSTANCE;
+                return UpgradeInventories.empty();
             }
 
-            var inv = cell.getUpgradesInventory(is);
+            var inv = cell.getUpgrades(is);
             if (inv == null) {
-                return EmptyUpgradeInventory.INSTANCE;
+                return UpgradeInventories.empty();
             }
 
             return this.cacheUpgrades = inv;

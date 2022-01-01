@@ -21,27 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.implementations.items;
+package appeng.api.upgrades;
 
-import javax.annotation.Nullable;
+import net.minecraft.world.level.ItemLike;
 
-import net.minecraft.world.item.ItemStack;
-
-import appeng.api.config.Upgrades;
-
-public interface IUpgradeModule {
-    @Nullable
-    static Upgrades getTypeFromStack(ItemStack stack) {
-        if (stack.getItem() instanceof IUpgradeModule upgradeModule) {
-            return upgradeModule.getType(stack);
-        }
-        return null;
+/**
+ * Implemented by {@link net.minecraft.world.level.block.entity.BlockEntity block entities} and
+ * {@link appeng.api.parts.IPart parts} that are upgradable through upgrade cards.
+ */
+public interface IUpgradeableObject {
+    /**
+     * Gets the inventory that contains the upgrade cards for this upgradable object.
+     */
+    default IUpgradeInventory getUpgrades() {
+        return UpgradeInventories.empty();
     }
 
-    /**
-     * @param itemstack item with potential upgrades
-     *
-     * @return null, or a valid upgrade type.
-     */
-    Upgrades getType(ItemStack itemstack);
+    default int getInstalledUpgrades(ItemLike upgradeCard) {
+        return getUpgrades().getInstalledUpgrades(upgradeCard);
+    }
+
+    default boolean isUpgradedWith(ItemLike upgradeCard) {
+        return getUpgrades().isInstalled(upgradeCard);
+    }
 }

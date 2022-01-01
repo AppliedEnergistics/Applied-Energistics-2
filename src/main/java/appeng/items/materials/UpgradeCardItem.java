@@ -22,6 +22,7 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,27 +34,21 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.IUpgradeableObject;
-import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.Upgrades;
+import appeng.core.localization.ButtonToolTips;
+import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
-public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule, AEToolItem {
-    private final Upgrades cardType;
+public class UpgradeCardItem extends AEBaseItem implements AEToolItem {
 
-    public UpgradeCardItem(Item.Properties properties, Upgrades cardType) {
+    public UpgradeCardItem(Item.Properties properties) {
         super(properties);
-        this.cardType = cardType;
-    }
-
-    @Override
-    public Upgrades getType(ItemStack itemstack) {
-        return cardType;
     }
 
     @Environment(EnvType.CLIENT)
@@ -62,9 +57,10 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule, AEToo
             TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        final Upgrades u = this.getType(stack);
-        if (u != null) {
-            lines.addAll(u.getTooltipLines());
+        var supportedBy = Upgrades.getTooltipLinesForCard(this);
+        if (!supportedBy.isEmpty()) {
+            lines.add(ButtonToolTips.SupportedBy.text());
+            lines.addAll(supportedBy);
         }
     }
 
@@ -85,9 +81,31 @@ public class UpgradeCardItem extends AEBaseItem implements IUpgradeModule, AEToo
                 upgrades = ((IUpgradeableObject) te).getUpgrades();
             }
 
-            ItemStack heldStack = player.getItemInHand(hand);
-            var u = IUpgradeModule.getTypeFromStack(heldStack);
-            if (upgrades != null && u != null) {
+            if (upgrades != null && upgrades.size() > 0) {
+                var heldStack = player.getItemInHand(hand);
+
+                boolean isFull = true;
+                for (int i = 0; i < upgrades.size(); i++) {
+                    if (upgrades.getStackInSlot(i).isEmpty()) {
+                        isFull = false;
+                        break;
+                    }
+                }
+                if (isFull) {
+                    player.sendMessage(PlayerMessages.MaxUpgradesInstalled.get(), Util.NIL_UUID);
+                    return InteractionResult.FAIL;
+                }
+
+                var maxInstalled = upgrades.getMaxInstalled(heldStack.getItem());
+                var installed = upgrades.getInstalledUpgrades(heldStack.getItem());
+                if (maxInstalled <= 0) {
+                    player.sendMessage(PlayerMessages.UnsupportedUpgrade.get(), Util.NIL_UUID);
+                    return InteractionResult.FAIL;
+                } else if (installed >= maxInstalled) {
+                    player.sendMessage(PlayerMessages.MaxUpgradesOfTypeInstalled.get(), Util.NIL_UUID);
+                    return InteractionResult.FAIL;
+                }
+
                 if (player.getCommandSenderWorld().isClientSide()) {
                     return InteractionResult.PASS;
                 }

@@ -28,42 +28,36 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.core.definitions.AEItems;
 import appeng.parts.BasicStatePart;
 import appeng.util.ConfigManager;
-import appeng.util.inv.InternalInventoryHost;
 
 public abstract class UpgradeablePart extends BasicStatePart
-        implements InternalInventoryHost, IConfigurableObject, IUpgradeableObject {
+        implements IConfigurableObject, IUpgradeableObject {
     private final IConfigManager config;
-    private final UpgradeInventory upgrades;
+    private final IUpgradeInventory upgrades;
 
     public UpgradeablePart(IPartItem<?> partItem) {
         super(partItem);
-        this.upgrades = new StackUpgradeInventory(partItem.asItem(), this, this.getUpgradeSlots());
+        this.upgrades = UpgradeInventories.forMachine(partItem.asItem(), this.getUpgradeSlots(),
+                this::onUpgradesChanged);
         this.config = new ConfigManager(this::onSettingChanged);
+    }
+
+    private void onUpgradesChanged() {
+        getHost().markForSave();
+        upgradesChanged();
     }
 
     protected int getUpgradeSlots() {
         return 4;
-    }
-
-    @Override
-    public void saveChanges() {
-        getHost().markForSave();
-    }
-
-    @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-        if (inv == this.upgrades) {
-            this.upgradesChanged();
-        }
     }
 
     public void upgradesChanged() {
@@ -71,7 +65,7 @@ public abstract class UpgradeablePart extends BasicStatePart
     }
 
     protected boolean isSleeping() {
-        if (upgrades.getInstalledUpgrades(Upgrades.REDSTONE) > 0) {
+        if (upgrades.isInstalled(AEItems.REDSTONE_CARD)) {
             return switch (this.getRSMode()) {
                 case IGNORE -> false;
                 case HIGH_SIGNAL -> !this.getHost().hasRedstone();
@@ -85,7 +79,7 @@ public abstract class UpgradeablePart extends BasicStatePart
 
     @Override
     public boolean canConnectRedstone() {
-        return this.upgrades.getMaxInstalled(Upgrades.REDSTONE) > 0;
+        return this.upgrades.getMaxInstalled(AEItems.REDSTONE_CARD) > 0;
     }
 
     @Override
@@ -129,10 +123,6 @@ public abstract class UpgradeablePart extends BasicStatePart
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;
-    }
-
-    protected final int getInstalledUpgrades(Upgrades u) {
-        return upgrades.getInstalledUpgrades(u);
     }
 
     public RedstoneMode getRSMode() {

@@ -70,11 +70,6 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
     }
 
     @Override
-    protected boolean supportCapacity() {
-        return false;
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setOperationMode(cm.getSetting(Settings.OPERATION_MODE));
         this.setFullMode(cm.getSetting(Settings.FULLNESS_MODE));

@@ -83,11 +83,6 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
     }
 
     @Override
-    protected boolean supportCapacity() {
-        return false;
-    }
-
-    @Override
     public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 

@@ -571,7 +571,7 @@ public final class TestPlots {
     }
 
     private static ItemStack createMatterCannon(Item... ammo) {
-        var cannon = AEItems.MASS_CANNON.stack();
+        var cannon = AEItems.MATTER_CANNON.stack();
         ((MatterCannonItem) cannon.getItem()).injectAEPower(cannon, Double.MAX_VALUE, Actionable.MODULATE);
         var cannonInv = BasicCellInventory.createInventory(cannon, null);
         for (var item : ammo) {

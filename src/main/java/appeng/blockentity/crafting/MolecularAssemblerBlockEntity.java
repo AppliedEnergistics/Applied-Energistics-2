@@ -40,12 +40,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Upgrades;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.IPowerChannelState;
-import appeng.api.implementations.IUpgradeInventory;
-import appeng.api.implementations.IUpgradeableObject;
 import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -56,12 +53,16 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -69,8 +70,6 @@ import appeng.crafting.CraftingEvent;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.menu.NullMenu;
-import appeng.parts.automation.DefinitionUpgradeInventory;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.util.CraftingRemainders;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
@@ -90,7 +89,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
     private final InternalInventory gridInvExt = new FilteredInternalInventory(this.gridInv, new CraftingGridFilter());
     private final InternalInventory internalInv = new CombinedInternalInventory(this.gridInv, this.patternInv);
-    private final UpgradeInventory upgrades;
+    private final IUpgradeInventory upgrades;
     private boolean isPowered = false;
     private Direction pushDirection = null;
     private ItemStack myPattern = ItemStack.EMPTY;
@@ -109,7 +108,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         this.getMainNode()
                 .setIdlePowerUsage(0.0)
                 .addService(IGridTickable.class, this);
-        this.upgrades = new DefinitionUpgradeInventory(AEBlocks.MOLECULAR_ASSEMBLER, this, this.getUpgradeSlots());
+        this.upgrades = UpgradeInventories.forMachine(AEBlocks.MOLECULAR_ASSEMBLER, getUpgradeSlots(),
+                this::saveChanges);
         this.craftingInv = new CraftingContainer(new NullMenu(), 3, 3);
 
     }
@@ -411,7 +411,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
         this.reboot = false;
         int speed = 10;
-        switch (this.upgrades.getInstalledUpgrades(Upgrades.SPEED)) {
+        switch (this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD)) {
             case 0 -> this.progress += this.userPower(ticksSinceLastCall, speed = 10, 1.0);
             case 1 -> this.progress += this.userPower(ticksSinceLastCall, speed = 13, 1.3);
             case 2 -> this.progress += this.userPower(ticksSinceLastCall, speed = 17, 1.7);

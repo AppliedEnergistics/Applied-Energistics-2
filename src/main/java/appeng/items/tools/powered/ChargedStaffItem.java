@@ -60,7 +60,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     }
 
     @Override
-    public double getChargeRate() {
+    public double getChargeRate(ItemStack stack) {
         return 32d;
     }
 }

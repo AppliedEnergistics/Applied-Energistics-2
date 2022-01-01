@@ -28,16 +28,21 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableItem;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 
 /**
  * Base interface for an adapter that connects an item stack in a player inventory with a menu that is opened by it.
  */
-public class ItemMenuHost {
+public class ItemMenuHost implements IUpgradeableObject {
 
     private final Player player;
     @Nullable
     private final Integer slot;
     private final ItemStack itemStack;
+    private final IUpgradeInventory upgrades;
     private int powerTicks = 0;
     private double powerDrainPerTick = 0.5;
 
@@ -45,6 +50,11 @@ public class ItemMenuHost {
         this.player = player;
         this.slot = slot;
         this.itemStack = itemStack;
+        if (itemStack.getItem() instanceof IUpgradeableItem upgradeableItem) {
+            this.upgrades = upgradeableItem.getUpgrades(itemStack);
+        } else {
+            this.upgrades = UpgradeInventories.empty();
+        }
     }
 
     /**
@@ -135,5 +145,10 @@ public class ItemMenuHost {
      */
     protected void setPowerDrainPerTick(double powerDrainPerTick) {
         this.powerDrainPerTick = powerDrainPerTick;
+    }
+
+    @Override
+    public final IUpgradeInventory getUpgrades() {
+        return upgrades;
     }
 }

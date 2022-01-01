@@ -40,11 +40,11 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
-import appeng.items.contents.CellUpgrades;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 
@@ -118,8 +118,8 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public UpgradeInventory getUpgradesInventory(ItemStack is) {
-        return new CellUpgrades(is, 2);
+    public IUpgradeInventory getUpgrades(ItemStack is) {
+        return UpgradeInventories.forItem(is, 2);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
                     playerInventory.placeItemBackInInventory(new ItemStack(coreItem));
 
                     // drop upgrades
-                    for (ItemStack upgrade : this.getUpgradesInventory(stack)) {
+                    for (var upgrade : this.getUpgrades(stack)) {
                         playerInventory.placeItemBackInInventory(upgrade);
                     }
 

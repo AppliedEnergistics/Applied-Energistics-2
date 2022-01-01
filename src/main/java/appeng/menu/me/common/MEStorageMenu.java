@@ -76,6 +76,7 @@ import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
+import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.crafting.CraftAmountMenu;
@@ -108,6 +109,7 @@ public class MEStorageMenu extends AEBaseMenu
 
     private final List<RestrictedInputSlot> viewCellSlots;
     private final IConfigManager clientCM;
+    private final ToolboxMenu toolboxMenu;
     private final ITerminalHost host;
     @GuiSync(99)
     public boolean canEditViewCells;
@@ -206,9 +208,17 @@ public class MEStorageMenu extends AEBaseMenu
         }
         updateViewCellPermission();
 
+        this.toolboxMenu = new ToolboxMenu(this);
+
+        setupUpgrades(host.getUpgrades());
+
         if (bindInventory) {
             this.createPlayerInventorySlots(ip);
         }
+    }
+
+    public ToolboxMenu getToolbox() {
+        return toolboxMenu;
     }
 
     protected boolean hideViewCells() {
@@ -233,6 +243,8 @@ public class MEStorageMenu extends AEBaseMenu
 
     @Override
     public void broadcastChanges() {
+        toolboxMenu.tick();
+
         if (isServer()) {
             // Close the screen if the backing network inventory has changed
             if (this.storage != this.host.getInventory()) {
@@ -724,5 +736,9 @@ public class MEStorageMenu extends AEBaseMenu
 
     public boolean canConfigureTypeFilter() {
         return this.host.getConfigManager().hasSetting(Settings.TYPE_FILTER);
+    }
+
+    public ITerminalHost getHost() {
+        return host;
     }
 }

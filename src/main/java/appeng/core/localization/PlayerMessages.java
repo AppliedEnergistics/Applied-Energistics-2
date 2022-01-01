@@ -38,7 +38,9 @@ public enum PlayerMessages {
     isNowLocked("Monitor is now Locked."),
     isNowUnlocked("Monitor is now Unlocked."),
     OnlyEmptyCellsCanBeDisassembled("Only empty storage cells can be disassembled."),
-    ;
+    UnsupportedUpgrade("This upgrade is not supported by this machine."),
+    MaxUpgradesOfTypeInstalled("No further upgrade cards of this type can be installed."),
+    MaxUpgradesInstalled("The upgrade capacity of this machine has been reached.");
 
     private final String englishText;
 

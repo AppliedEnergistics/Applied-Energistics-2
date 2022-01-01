@@ -41,12 +41,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.*;
+import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.TypeFilter;
+import appeng.api.config.ViewItems;
 import appeng.api.features.IGridLinkableHandler;
 import appeng.api.features.Locatables;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableItem;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.IConfigManager;
+import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
@@ -57,7 +66,7 @@ import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.util.ConfigManager;
 
-public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem {
+public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem, IUpgradeableItem {
 
     public static final IGridLinkableHandler LINKABLE_HANDLER = new LinkableHandler();
 
@@ -68,8 +77,8 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     }
 
     @Override
-    public double getChargeRate() {
-        return 800d;
+    public double getChargeRate(ItemStack stack) {
+        return 800d + 800d * getUpgrades(stack).getInstalledUpgrades(AEItems.ENERGY_CARD);
     }
 
     /**
@@ -221,6 +230,15 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
         out.readFromNBT(target.getOrCreateTag().copy());
         return out;
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades(ItemStack stack) {
+        return UpgradeInventories.forItem(stack, 2, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
+        setAEMaxPowerMultiplier(stack, 1 + upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD));
     }
 
     private static class LinkableHandler implements IGridLinkableHandler {

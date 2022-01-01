@@ -38,7 +38,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
@@ -52,6 +51,7 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.parts.PartModels;
@@ -100,7 +100,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     protected final void updateFilter() {
         this.filter = createFilter();
-        this.filterMode = this.getInstalledUpgrades(Upgrades.INVERTER) > 0
+        this.filterMode = isUpgradedWith(AEItems.INVERTER_CARD)
                 ? IncludeExclude.BLACKLIST
                 : IncludeExclude.WHITELIST;
     }
@@ -249,10 +249,10 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
      */
     private IPartitionList createFilter() {
         var builder = IPartitionList.builder();
-        if (getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+        if (isUpgradedWith(AEItems.FUZZY_CARD)) {
             builder.fuzzyMode(getConfigManager().getSetting(Settings.FUZZY_MODE));
         }
-        var slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+        var slotsToUse = 18 + this.getInstalledUpgrades(AEItems.CAPACITY_CARD) * 9;
         for (var x = 0; x < this.config.size() && x < slotsToUse; x++) {
             builder.add(this.config.getKey(x));
         }
