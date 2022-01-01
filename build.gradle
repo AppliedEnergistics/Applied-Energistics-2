@@ -22,7 +22,6 @@ plugins {
     id "com.diffplug.spotless" version "5.12.4"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "1.2.1"
-    id 'io.github.juuxel.loom-quiltflower-mini' version '1.2.1'
 }
 
 repositories {
