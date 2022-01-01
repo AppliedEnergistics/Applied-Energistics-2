@@ -126,7 +126,7 @@ public enum Upgrades {
 
                 if (namesAdded.add(name)) {
                     // append the supported count only if its > 1
-                    Component base = (name.copy().withStyle(Tooltips.GRAY_TEXT));
+                    Component base = (name.copy().withStyle(Tooltips.NORMAL_TOOLTIP_TEXT));
                     Component main = base;
 
                     if (supported.maxCount > 1) {

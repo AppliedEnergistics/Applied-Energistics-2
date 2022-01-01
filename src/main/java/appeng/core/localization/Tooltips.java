@@ -1,7 +1,6 @@
 package appeng.core.localization;
 
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -12,10 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.*;
-
-import appeng.api.config.PowerUnits;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.config.PowerUnits;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
@@ -28,12 +26,21 @@ import appeng.menu.me.interaction.EmptyingAction;
  */
 public final class Tooltips {
 
-    private static final DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
-    private static final DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-    private static final char SEP = symbols.getDecimalSeparator();
+    private static final char SEP;
+    static {
+        var format = (DecimalFormat) DecimalFormat.getInstance();
+        var symbols = format.getDecimalFormatSymbols();
+        SEP = symbols.getDecimalSeparator();
+    }
 
     public static final ChatFormatting MUTED_COLOR = ChatFormatting.DARK_GRAY;
-    public static final ChatFormatting NORMAL_TOOLTIP_TEXT = ChatFormatting.GRAY;
+
+    public static final Style NORMAL_TOOLTIP_TEXT = Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false);
+    public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x886eff)).withItalic(false);
+    public static final Style UNIT_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
+
+    public static final Style RED = Style.EMPTY.withColor(ChatFormatting.RED);
+    public static final Style GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
 
     private Tooltips() {
     }
@@ -146,15 +153,12 @@ public final class Tooltips {
         var amountText = what.formatAmount(amount, AmountFormat.FULL);
         return baseText.text(amountText).withStyle(MUTED_COLOR);
     }
+
     public record Amount(String digit, String unit) {
     }
 
-    ;
-
     public record MaxedAmount(String digit, String maxDigit, String unit) {
     }
-
-    ;
 
     public static final String[] units = new String[] { "k", "M", "G", "T", "P", "E" };
     public static final long[] nums = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L,
@@ -229,19 +233,12 @@ public final class Tooltips {
         }
     }
 
-    public static final Style GRAY_TEXT = Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false);
-    public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x886eff)).withItalic(false);
-    public static final Style UNIT_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
-
-    public static final Style RED = Style.EMPTY.withColor(ChatFormatting.RED);
-    public static final Style GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
-
     public static MutableComponent of(TranslatableComponent component) {
-        return component.copy().withStyle(GRAY_TEXT);
+        return component.copy().withStyle(NORMAL_TOOLTIP_TEXT);
     }
 
     public static MutableComponent of(ButtonToolTips buttonToolTips, Object... args) {
-        return of(buttonToolTips, GRAY_TEXT, args);
+        return of(buttonToolTips, NORMAL_TOOLTIP_TEXT, args);
     }
 
     public static MutableComponent of(ButtonToolTips buttonToolTips, Style style, Object... args) {
@@ -249,7 +246,7 @@ public final class Tooltips {
     }
 
     public static MutableComponent of(GuiText guiText, Object... args) {
-        return of(guiText, GRAY_TEXT, args);
+        return of(guiText, NORMAL_TOOLTIP_TEXT, args);
     }
 
     public static MutableComponent of(GuiText guiText, Style style, Object... args) {
@@ -266,7 +263,7 @@ public final class Tooltips {
     }
 
     public static MutableComponent of(String s) {
-        return new TextComponent(s).withStyle(GRAY_TEXT);
+        return new TextComponent(s).withStyle(NORMAL_TOOLTIP_TEXT);
     }
 
     public static MutableComponent of(PowerUnits pU) {
@@ -333,7 +330,7 @@ public final class Tooltips {
         boolean numberUnit = !number.digit().equals("0");
         return new TextComponent(number.digit() + (numberUnit ? number.unit() : "")).withStyle(NUMBER_TEXT)
                 .append(new TextComponent("/")
-                        .withStyle(GRAY_TEXT))
+                        .withStyle(NORMAL_TOOLTIP_TEXT))
                 .append(number.maxDigit() + number.unit()).withStyle(NUMBER_TEXT);
     }
 
