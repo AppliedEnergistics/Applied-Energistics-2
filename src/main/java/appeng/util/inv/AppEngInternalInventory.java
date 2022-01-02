@@ -80,11 +80,8 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
     @Override
     public void setItemDirect(int slot, ItemStack stack) {
-        var previousStack = stacks.get(slot);
         stacks.set(slot, stack);
-        if (previousStack != stack) {
-            notifyContentsChanged(slot);
-        }
+        notifyContentsChanged(slot);
     }
 
     private void notifyContentsChanged(int slot) {
