@@ -38,12 +38,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.FacingToRotation;
@@ -75,10 +72,8 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
             return;
         }
 
-        DriveSlotsState driveSlotState = DriveSlotsState.fromChestOrDrive(chest);
-
-        Item cellItem = driveSlotState.getCell(0);
-        if (cellItem == null || cellItem == Items.AIR) {
+        var cellItem = chest.getCellItem(0);
+        if (cellItem == null) {
             return; // No cell inserted into chest
         }
 

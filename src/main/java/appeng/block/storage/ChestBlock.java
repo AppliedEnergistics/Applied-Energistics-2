@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.storage.cells.CellState;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.core.localization.PlayerMessages;
@@ -56,18 +57,13 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
 
     @Override
     protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, ChestBlockEntity be) {
-        DriveSlotState slotState = DriveSlotState.EMPTY;
+        var cellState = CellState.ABSENT;
 
         if (be.getCellCount() >= 1) {
-            slotState = DriveSlotState.fromCellStatus(be.getCellStatus(0));
-        }
-        // Power-state has to be checked separately
-        if (!be.isPowered() && slotState != DriveSlotState.EMPTY) {
-            slotState = DriveSlotState.OFFLINE;
+            cellState = be.getCellStatus(0);
         }
 
-        return currentState.setValue(LIGHTS_ON,
-                slotState != DriveSlotState.EMPTY && slotState != DriveSlotState.OFFLINE);
+        return currentState.setValue(LIGHTS_ON, be.isPowered() && cellState != CellState.ABSENT);
     }
 
     @Override

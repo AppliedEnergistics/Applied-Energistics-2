@@ -46,8 +46,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.storage.DriveSlotsState;
-
 public class DriveBakedModel extends ForwardingBakedModel implements FabricBakedModel {
     private final Map<Item, BakedModel> cellModels;
     private final Map<Item, Mesh> bakedCells;
@@ -85,14 +83,14 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
         super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
 
         // Add cell models on top of the base model, if possible
-        DriveSlotsState slotsState = getDriveSlotsState(blockView, pos);
-        if (slotsState != null) {
+        Item[] cells = getCells(blockView, pos);
+        if (cells != null) {
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 2; col++) {
                     int slot = getSlotIndex(row, col);
 
                     // Add the cell chassis
-                    Item cell = slotsState.getCell(slot);
+                    Item cell = slot < cells.length ? cells[slot] : null;
                     BakedModel cellChassisModel = getCellChassisModel(cell);
 
                     context.pushTransform(slotTransforms[slot]);
@@ -105,7 +103,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
     }
 
-    private static DriveSlotsState getDriveSlotsState(BlockAndTintGetter blockView, BlockPos pos) {
+    private static Item[] getCells(BlockAndTintGetter blockView, BlockPos pos) {
         if (!(blockView instanceof RenderAttachedBlockView)) {
             return null;
         }
@@ -114,7 +112,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
             return null;
         }
 
-        return ((DriveModelData) attachedData).getSlotsState();
+        return ((DriveModelData) attachedData).getCells();
     }
 
     @Override
