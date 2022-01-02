@@ -10,10 +10,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
-import java.net.URL;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.jar.Manifest;
 
 class TestLauncher extends FabricLauncherBase {
@@ -22,7 +21,7 @@ class TestLauncher extends FabricLauncherBase {
         setProperties(new HashMap<>());
 
         var provider = new MinecraftGameProvider();
-        provider.locateGame(this, new String[]{}, Thread.currentThread().getContextClassLoader());
+        provider.locateGame(this, new String[]{});
 
         FabricLoaderImpl loader = FabricLoaderImpl.INSTANCE;
         loader.setGameProvider(provider);
@@ -119,7 +118,7 @@ class TestLauncher extends FabricLauncherBase {
     }
 
     @Override
-    public Collection<URL> getLoadTimeDependencies() {
+    public List<Path> getClassPath() {
         throw new UnsupportedOperationException();
     }
 }
