@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import appeng.client.gui.AEGuiHandler;
+import appeng.container.implementations.ContainerExpandedProcessingPatternTerm;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -90,16 +91,13 @@ public class JEIPlugin implements IModPlugin
 		this.registerDescriptions( definitions, registry );
 
 		// Allow recipe transfer from JEI to crafting and pattern terminal
-		registry.getRecipeTransferRegistry()
-				.addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerCraftingTerm.class ),
-						VanillaRecipeCategoryUid.CRAFTING );
-		registry.getRecipeTransferRegistry()
-				.addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ),
-						Constants.UNIVERSAL_RECIPE_TRANSFER_UID );
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerCraftingTerm.class ), VanillaRecipeCategoryUid.CRAFTING );
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ), Constants.UNIVERSAL_RECIPE_TRANSFER_UID );
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerExpandedProcessingPatternTerm.class ), Constants.UNIVERSAL_RECIPE_TRANSFER_UID );
 
 		aeGuiHandler = new AEGuiHandler();
-		registry.addAdvancedGuiHandlers(aeGuiHandler);
-		registry.addGhostIngredientHandler( aeGuiHandler.getGuiContainerClass(), aeGuiHandler);
+		registry.addAdvancedGuiHandlers( aeGuiHandler );
+		registry.addGhostIngredientHandler( aeGuiHandler.getGuiContainerClass(), aeGuiHandler );
 	}
 
 	private void registerDescriptions( IDefinitions definitions, IModRegistry registry )

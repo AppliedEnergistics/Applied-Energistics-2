@@ -23,11 +23,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IItemList;
+import appeng.container.implementations.ContainerExpandedProcessingPatternTerm;
 import appeng.container.implementations.ContainerPatternTerm;
 import gregtech.common.items.MetaTool;
 import io.netty.buffer.ByteBuf;
@@ -69,8 +70,9 @@ import appeng.util.prioritylist.IPartitionList;
 public class PacketJEIRecipe extends AppEngPacket
 {
 
-	private ItemStack[][] recipe;
-	private ItemStack[] output;
+	private List<ItemStack[]> recipe;
+	private List<ItemStack> output;
+	static ItemStack[] emptyArray = {ItemStack.EMPTY};
 
 
 	// automatic.
@@ -81,28 +83,35 @@ public class PacketJEIRecipe extends AppEngPacket
 		final NBTTagCompound comp = CompressedStreamTools.readCompressed( bytes );
 		if( comp != null )
 		{
-			this.recipe = new ItemStack[9][];
-			for( int x = 0; x < this.recipe.length; x++ )
+			this.recipe = new ArrayList<>();
+
+			for( int x = 0; x < comp.getKeySet().size(); x++ )
 			{
-				final NBTTagList list = comp.getTagList( "#" + x, 10 );
-				if( list.tagCount() > 0 )
+				if( comp.hasKey( "#" + x ) )
 				{
-					this.recipe[x] = new ItemStack[list.tagCount()];
-					for( int y = 0; y < list.tagCount(); y++ )
+					final NBTTagList list = comp.getTagList( "#" + x, 10 );
+					if( list.tagCount() > 0 )
 					{
-						this.recipe[x][y] = new ItemStack( list.getCompoundTagAt( y ) );
+						this.recipe.add( new ItemStack[list.tagCount()] );
+						for( int y = 0; y < list.tagCount(); y++ )
+						{
+							this.recipe.get( x )[y] = new ItemStack( list.getCompoundTagAt( y ) );
+						}
+					}
+					else
+					{
+						this.recipe.add( emptyArray );
 					}
 				}
 			}
-			if ( comp.hasKey("outputs") ) {
-				final NBTTagList outputList = comp.getTagList("outputs", 10);
-				this.output = new ItemStack[3];
-				for( int x = 0; x < this.output.length; x++ )
+
+			if( comp.hasKey( "outputs" ) )
+			{
+				final NBTTagList outputList = comp.getTagList( "outputs", 10 );
+				this.output = new ArrayList<>();
+				for( int z = 0; z < outputList.tagCount(); z++ )
 				{
-					if( outputList.tagCount() > 0 )
-					{
-						this.output[x] = new ItemStack(outputList.getCompoundTagAt( x ));
-					}
+					this.output.add( new ItemStack( outputList.getCompoundTagAt( z ) ) );
 				}
 			}
 		}
@@ -172,9 +181,12 @@ public class PacketJEIRecipe extends AppEngPacket
 					// already the correct item?
 					ItemStack newItem = this.canUseInSlot( x, currentItem );
 
-					if ( !cct.useRealItems() && this.recipe[x] != null ) {
-						if (this.recipe[x].length > 0 )
-						currentItem.setCount( recipe[x][0].getCount() );
+					if( !cct.useRealItems() && this.recipe.get( x ) != null )
+					{
+						if( this.recipe.get( x ).length > 0 )
+						{
+							currentItem.setCount( recipe.get( x )[0].getCount() );
+						}
 					}
 
 					// put away old item
@@ -193,12 +205,12 @@ public class PacketJEIRecipe extends AppEngPacket
 					}
 				}
 
-				if( currentItem.isEmpty() && this.recipe[x] != null )
+				if( currentItem.isEmpty() && recipe.size() > x && recipe.get( x ) != null )
 				{
 					// for each variant
-					for( int y = 0; y < this.recipe[x].length && currentItem.isEmpty(); y++ )
+					for( int y = 0; y < this.recipe.get( x ).length && currentItem.isEmpty(); y++ )
 					{
-						final IAEItemStack request = AEItemStack.fromItemStack( this.recipe[x][y] );
+						final IAEItemStack request = AEItemStack.fromItemStack( this.recipe.get( x )[y] );
 						if( request != null )
 						{
 							// try ae
@@ -247,7 +259,7 @@ public class PacketJEIRecipe extends AppEngPacket
 								{
 									if (!cct.useRealItems())
 									{
-										out.setStackSize( recipe[x][y].getCount() );
+										out.setStackSize( recipe.get( x )[y].getCount() );
 									}
 									currentItem = out.createItemStack();
 								}
@@ -260,20 +272,20 @@ public class PacketJEIRecipe extends AppEngPacket
 
 								if( cct.useRealItems() )
 								{
-									currentItem = ad.removeSimilarItems(1, this.recipe[x][y],FuzzyMode.IGNORE_ALL, null );
+									currentItem = ad.removeSimilarItems( 1, this.recipe.get( x )[y], FuzzyMode.IGNORE_ALL, null );
 								}
 								else
 								{
-									currentItem = ad.simulateSimilarRemove(recipe[x][y].getCount(), this.recipe[x][y],FuzzyMode.IGNORE_ALL, null );
+									currentItem = ad.simulateSimilarRemove( recipe.get( x )[y].getCount(), this.recipe.get( x )[y], FuzzyMode.IGNORE_ALL, null );
 								}
 							}
 						}
 					}
 					if (!cct.useRealItems())
 					{
-						if( currentItem.isEmpty() && this.recipe[x] != null )
+						if( currentItem.isEmpty() && recipe.size() > x && this.recipe.get( x ) != null )
 						{
-							currentItem = this.recipe[x][0].copy();
+							currentItem = this.recipe.get( x )[0].copy();
 						}
 					}
 				}
@@ -282,14 +294,19 @@ public class PacketJEIRecipe extends AppEngPacket
 
 			con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
 
-			if( this.output != null && con instanceof ContainerPatternTerm && !( (ContainerPatternTerm) con ).isCraftingMode() )
+			if( this.output != null && ( ( con instanceof ContainerPatternTerm && !( (ContainerPatternTerm) con ).isCraftingMode() ) || con instanceof ContainerExpandedProcessingPatternTerm ) )
 			{
 				IItemHandler outputSlots = cct.getInventoryByName( "output" );
-				for( int i = 0; i < this.output.length; ++i )
+
+				for( int i = 0; i < this.output.size(); ++i )
 				{
-					if( this.output[i] == null ) continue;
-					ItemHandlerUtil.setStackInSlot( outputSlots, i, this.output[i] );
+					if( this.output.get( i ) == null )
+					{
+						continue;
+					}
+					ItemHandlerUtil.setStackInSlot( outputSlots, i, this.output.get( i ) );
 				}
+
 			}
 		}
 	}
@@ -302,9 +319,9 @@ public class PacketJEIRecipe extends AppEngPacket
 	 */
 	private ItemStack canUseInSlot( int slot, ItemStack is )
 	{
-		if( this.recipe[slot] != null )
+		if( this.recipe.get( slot ) != null )
 		{
-			for( ItemStack option : this.recipe[slot] )
+			for( ItemStack option : this.recipe.get( slot ) )
 			{
 				if( ItemStack.areItemStacksEqual( is, option ) )
 				{

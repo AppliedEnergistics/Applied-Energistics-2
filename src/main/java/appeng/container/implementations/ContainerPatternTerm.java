@@ -178,7 +178,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		this.getAndUpdateOutput();
 	}
 
-	private ItemStack getAndUpdateOutput()
+	protected ItemStack getAndUpdateOutput()
 	{
 		final World world = this.getPlayerInv().player.world;
 		final InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
@@ -505,7 +505,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 	}
 
-	private ItemStack[] getInputs()
+	protected ItemStack[] getInputs()
 	{
 		final ItemStack[] input = new ItemStack[9];
 		boolean hasValue = false;
@@ -527,7 +527,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		return null;
 	}
 
-	private ItemStack[] getOutputs()
+	protected ItemStack[] getOutputs()
 	{
 		if( this.isCraftingMode() )
 		{
@@ -535,7 +535,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			if( !out.isEmpty() && out.getCount() > 0 )
 			{
-				return new ItemStack[] { out };
+				return new ItemStack[]{out};
 			}
 		}
 		else
@@ -563,7 +563,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		return null;
 	}
 
-	private boolean isPattern( final ItemStack output )
+	boolean isPattern( final ItemStack output )
 	{
 		if( output.isEmpty() )
 		{
@@ -578,7 +578,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		return isPattern;
 	}
 
-	private NBTBase createItemTag( final ItemStack i )
+	NBTBase createItemTag( final ItemStack i )
 	{
 		final NBTTagCompound c = new NBTTagCompound();
 
@@ -824,7 +824,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		return this.patternTerminal;
 	}
 
-	private boolean isSubstitute()
+	boolean isSubstitute()
 	{
 		return this.substitute;
 	}

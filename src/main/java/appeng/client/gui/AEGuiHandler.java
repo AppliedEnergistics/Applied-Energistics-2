@@ -104,7 +104,7 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
         }
         if( doStart && GuiScreen.isShiftKeyDown() && Mouse.isButtonDown( 0 ) )
         {
-            if( gui instanceof GuiUpgradeable || gui instanceof GuiPatternTerm )
+            if( gui instanceof GuiUpgradeable || gui instanceof GuiPatternTerm || gui instanceof GuiExpandedProcessingPatternTerm )
             {
                 IJEIGhostIngredients ghostGui = ( (IJEIGhostIngredients) gui );
                 for( Target<I> target : targets )

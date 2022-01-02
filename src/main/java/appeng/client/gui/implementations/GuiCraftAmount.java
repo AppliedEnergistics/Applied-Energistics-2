@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -121,6 +122,12 @@ public class GuiCraftAmount extends AEBaseGui
 		{
 			myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 			this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+		}
+
+		if( target instanceof PartExpandedProcessingPatternTerminal )
+		{
+			myIcon = parts.expandedProcessingPatternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+			this.originalGui = GuiBridge.GUI_EXPANDED_PROCESSING_PATTERN_TERMINAL;
 		}
 
 		if( this.originalGui != null && !myIcon.isEmpty() )

@@ -1,0 +1,76 @@
+{
+    "ae2_uvl_marker": true,
+    "textures": {
+        "lightsBright": "appliedenergistics2:parts/expanded_processing_pattern_terminal_bright",
+        "lightsMedium": "appliedenergistics2:parts/expanded_processing_pattern_terminal_medium",
+        "lightsDark": "appliedenergistics2:parts/pattern_terminal_dark"
+    },
+    "elements": [
+        {
+            "from": [
+                2,
+                2,
+                0
+            ],
+            "to": [
+                14,
+                14,
+                2
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#lightsBright",
+                    "tintindex": 3,
+                    "uvlightmap": {
+                        "sky": 0.007,
+                        "block": 0.007
+                    }
+                }
+            }
+        },
+        {
+            "from": [
+                2,
+                2,
+                0
+            ],
+            "to": [
+                14,
+                14,
+                2
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#lightsMedium",
+                    "tintindex": 2,
+                    "uvlightmap": {
+                        "sky": 0.007,
+                        "block": 0.007
+                    }
+                }
+            }
+        },
+        {
+            "from": [
+                2,
+                2,
+                0
+            ],
+            "to": [
+                14,
+                14,
+                2
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#lightsDark",
+                    "tintindex": 1,
+                    "uvlightmap": {
+                        "sky": 0.007,
+                        "block": 0.007
+                    }
+                }
+            }
+        }
+    ]
+}

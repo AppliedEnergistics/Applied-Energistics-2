@@ -102,6 +102,8 @@ public interface IParts
 
 	IItemDefinition patternTerminal();
 
+	IItemDefinition expandedProcessingPatternTerminal();
+
 	IItemDefinition craftingTerminal();
 
 	IItemDefinition terminal();

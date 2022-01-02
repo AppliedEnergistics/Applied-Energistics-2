@@ -59,6 +59,7 @@ import appeng.me.cache.CraftingGridCache;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.IWorldCallable;
 import appeng.util.ReadOnlyCollection;
+import net.minecraftforge.common.util.Constants;
 
 
 public class GridNode implements IGridNode, IPathItem
@@ -333,7 +334,11 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public void loadFromNBT( final String name, final NBTTagCompound nodeData )
 	{
-		if( this.myGrid == null )
+		if( this.myGrid != null )
+		{
+			throw new IllegalStateException( "Loading data after part of a grid, this is invalid." );
+		}
+		if( nodeData.hasKey( name, 10 ) )
 		{
 			final NBTTagCompound node = nodeData.getCompoundTag( name );
 			this.playerID = node.getInteger( "p" );
@@ -345,7 +350,9 @@ public class GridNode implements IGridNode, IPathItem
 		}
 		else
 		{
-			throw new IllegalStateException( "Loading data after part of a grid, this is invalid." );
+			this.playerID = -1; // Unknown owner
+			setLastSecurityKey( -1 );
+			setGridStorage( null );
 		}
 	}
 

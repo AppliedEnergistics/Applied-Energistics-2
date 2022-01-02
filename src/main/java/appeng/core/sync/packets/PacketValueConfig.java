@@ -24,6 +24,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import appeng.container.implementations.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -40,17 +41,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.container.AEBaseContainer;
-import appeng.container.implementations.ContainerCellWorkbench;
-import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.container.implementations.ContainerCraftingCPU;
-import appeng.container.implementations.ContainerCraftingStatus;
-import appeng.container.implementations.ContainerLevelEmitter;
-import appeng.container.implementations.ContainerNetworkTool;
-import appeng.container.implementations.ContainerPatternTerm;
-import appeng.container.implementations.ContainerPriority;
-import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.container.implementations.ContainerSecurityStation;
-import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.ContainerFluidLevelEmitter;
@@ -166,58 +156,109 @@ public class PacketValueConfig extends AppEngPacket
 			final ContainerFluidLevelEmitter lvc = (ContainerFluidLevelEmitter) c;
 			lvc.setLevel( Long.parseLong( this.Value ), player );
 		}
-		else if( this.Name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )
+		else if( this.Name.startsWith( "PatternTerminal." ) )
 		{
-			final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
-			if( this.Name.equals( "PatternTerminal.CraftMode" ) )
+			if( c instanceof ContainerPatternTerm )
 			{
-				cpt.getPatternTerminal().setCraftingRecipe( this.Value.equals( "1" ) );
-			}
-			else if( this.Name.equals( "PatternTerminal.Encode" ) )
-			{
-				if (this.Value.equals( "2" )) {
-					cpt.encodeAndMoveToInventory();
-				}
-				else
+				final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
+				if( this.Name.equals( "PatternTerminal.CraftMode" ) )
 				{
-					cpt.encode();
+					cpt.getPatternTerminal().setCraftingRecipe( this.Value.equals( "1" ) );
+				}
+				else if( this.Name.equals( "PatternTerminal.Encode" ) )
+				{
+					if( this.Value.equals( "2" ) )
+					{
+						cpt.encodeAndMoveToInventory();
+					}
+					else
+					{
+						cpt.encode();
+					}
+				}
+				else if( this.Name.equals( "PatternTerminal.Clear" ) )
+				{
+					cpt.clear();
+				}
+				else if( this.Name.equals( "PatternTerminal.MultiplyByTwo" ) )
+				{
+					cpt.multiply( 2 );
+				}
+				else if( this.Name.equals( "PatternTerminal.MultiplyByThree" ) )
+				{
+					cpt.multiply( 3 );
+				}
+				else if( this.Name.equals( "PatternTerminal.DivideByTwo" ) )
+				{
+					cpt.divide( 2 );
+				}
+				else if( this.Name.equals( "PatternTerminal.DivideByThree" ) )
+				{
+					cpt.divide( 3 );
+				}
+				else if( this.Name.equals( "PatternTerminal.IncreaseByOne" ) )
+				{
+					cpt.increase( 1 );
+				}
+				else if( this.Name.equals( "PatternTerminal.DecreaseByOne" ) )
+				{
+					cpt.decrease( 1 );
+				}
+				else if( this.Name.equals( "PatternTerminal.MaximizeCount" ) )
+				{
+					cpt.maximizeCount();
+				}
+				else if( this.Name.equals( "PatternTerminal.Substitute" ) )
+				{
+					cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );
 				}
 			}
-			else if( this.Name.equals( "PatternTerminal.Clear" ) )
+			else if( c instanceof ContainerExpandedProcessingPatternTerm )
 			{
-				cpt.clear();
-			}
-			else if( this.Name.equals( "PatternTerminal.MultiplyByTwo" ) )
-			{
-				cpt.multiply(2);
-			}
-			else if( this.Name.equals( "PatternTerminal.MultiplyByThree" ) )
-			{
-				cpt.multiply(3);
-			}
-			else if( this.Name.equals( "PatternTerminal.DivideByTwo" ) )
-			{
-				cpt.divide(2);
-			}
-			else if( this.Name.equals( "PatternTerminal.DivideByThree" ) )
-			{
-				cpt.divide(3);
-			}
-			else if( this.Name.equals( "PatternTerminal.IncreaseByOne" ) )
-			{
-				cpt.increase(1);
-			}
-			else if( this.Name.equals( "PatternTerminal.DecreaseByOne" ) )
-			{
-				cpt.decrease(1);
-			}
-			else if( this.Name.equals( "PatternTerminal.MaximizeCount" ) )
-			{
-				cpt.maximizeCount();
-			}
-			else if( this.Name.equals( "PatternTerminal.Substitute" ) )
-			{
-				cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );
+				final ContainerExpandedProcessingPatternTerm cept = (ContainerExpandedProcessingPatternTerm) c;
+				if( this.Name.equals( "PatternTerminal.Encode" ) )
+				{
+					if( this.Value.equals( "2" ) )
+					{
+						cept.encodeAndMoveToInventory();
+					}
+					else
+					{
+						cept.encode();
+					}
+				}
+				else if( this.Name.equals( "PatternTerminal.Clear" ) )
+				{
+					cept.clear();
+				}
+				else if( this.Name.equals( "PatternTerminal.MultiplyByTwo" ) )
+				{
+					cept.multiply( 2 );
+				}
+				else if( this.Name.equals( "PatternTerminal.MultiplyByThree" ) )
+				{
+					cept.multiply( 3 );
+				}
+				else if( this.Name.equals( "PatternTerminal.DivideByTwo" ) )
+				{
+					cept.divide( 2 );
+				}
+				else if( this.Name.equals( "PatternTerminal.DivideByThree" ) )
+				{
+					cept.divide( 3 );
+				}
+				else if( this.Name.equals( "PatternTerminal.IncreaseByOne" ) )
+				{
+					cept.increase( 1 );
+				}
+				else if( this.Name.equals( "PatternTerminal.DecreaseByOne" ) )
+				{
+					cept.decrease( 1 );
+				}
+				else if( this.Name.equals( "PatternTerminal.MaximizeCount" ) )
+				{
+					cept.maximizeCount();
+				}
 			}
 		}
 		else if( this.Name.startsWith( "StorageBus." ) )

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
 import com.google.common.base.Joiner;
 
 import org.lwjgl.input.Mouse;
@@ -103,6 +104,11 @@ public class GuiCraftConfirm extends AEBaseGui
 		if( te instanceof PartPatternTerminal )
 		{
 			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+		}
+
+		if( te instanceof PartExpandedProcessingPatternTerminal )
+		{
+			this.OriginalGui = GuiBridge.GUI_EXPANDED_PROCESSING_PATTERN_TERMINAL;
 		}
 	}
 

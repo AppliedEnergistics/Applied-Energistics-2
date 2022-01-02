@@ -20,7 +20,6 @@ package appeng.helpers;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -38,9 +37,6 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
-import appeng.core.AEConfig;
-import appeng.core.AELog;
-import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import net.minecraftforge.common.crafting.IShapedRecipe;
@@ -50,13 +46,14 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 {
 
 	private static final int CRAFTING_GRID_DIMENSION = 3;
-	private static final int ALL_INPUT_LIMIT = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
+	private static final int CRAFTING_INPUT_LIMIT = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
+	public static final int PROCESSING_INPUT_LIMIT = 16;
 	private static final int CRAFTING_OUTPUT_LIMIT = 1;
-	private static final int PROCESSING_OUTPUT_LIMIT = 3;
+	public static final int PROCESSING_OUTPUT_LIMIT = 6;
 
 	private final ItemStack patternItem;
-	private final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
-	private final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
+	private final InventoryCrafting crafting;
+	private final InventoryCrafting testFrame;
 	private final ItemStack correctOutput;
 	private final IRecipe standardRecipe;
 	private final IAEItemStack[] condensedInputs;
@@ -83,6 +80,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		final NBTTagList inTag = encodedValue.getTagList( "in", 10 );
 		final NBTTagList outTag = encodedValue.getTagList( "out", 10 );
 		this.isCrafting = encodedValue.getBoolean( "crafting" );
+
+		crafting = new InventoryCrafting( new ContainerNull(), isCrafting ? 3 : 4, isCrafting ? 3 : 4 );
+		testFrame = new InventoryCrafting( new ContainerNull(), isCrafting ? 3 : 4, isCrafting ? 3 : 4 );
 
 		this.canSubstitute = this.isCrafting && encodedValue.getBoolean( "substitute" );
 		this.patternItem = is;
@@ -149,9 +149,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 		final int outputLength = out.size();
 
-		this.inputs = in.toArray(new IAEItemStack[ALL_INPUT_LIMIT]);
-		this.outputs = out.toArray(new IAEItemStack[outputLength]);
-		this.substituteInputs = new HashMap<>(ALL_INPUT_LIMIT);
+		this.inputs = in.toArray( new IAEItemStack[isCrafting ? CRAFTING_INPUT_LIMIT : PROCESSING_INPUT_LIMIT] );
+		this.outputs = out.toArray( new IAEItemStack[outputLength] );
+		this.substituteInputs = new HashMap<>( CRAFTING_INPUT_LIMIT );
 
 		final Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<>();
 

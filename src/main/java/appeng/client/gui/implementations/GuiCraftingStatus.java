@@ -25,6 +25,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -94,6 +95,12 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 			this.myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
 			this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+		}
+
+		if( target instanceof PartExpandedProcessingPatternTerminal )
+		{
+			myIcon = parts.expandedProcessingPatternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+			this.originalGui = GuiBridge.GUI_EXPANDED_PROCESSING_PATTERN_TERMINAL;
 		}
 	}
 

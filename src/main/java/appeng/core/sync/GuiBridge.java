@@ -21,6 +21,8 @@ package appeng.core.sync;
 
 import java.lang.reflect.Constructor;
 
+import appeng.container.implementations.*;
+import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -53,39 +55,6 @@ import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
 import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCellWorkbench;
-import appeng.container.implementations.ContainerChest;
-import appeng.container.implementations.ContainerCondenser;
-import appeng.container.implementations.ContainerCraftAmount;
-import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.container.implementations.ContainerCraftingCPU;
-import appeng.container.implementations.ContainerCraftingStatus;
-import appeng.container.implementations.ContainerCraftingTerm;
-import appeng.container.implementations.ContainerDrive;
-import appeng.container.implementations.ContainerFormationPlane;
-import appeng.container.implementations.ContainerGrinder;
-import appeng.container.implementations.ContainerIOPort;
-import appeng.container.implementations.ContainerInscriber;
-import appeng.container.implementations.ContainerInterface;
-import appeng.container.implementations.ContainerInterfaceTerminal;
-import appeng.container.implementations.ContainerLevelEmitter;
-import appeng.container.implementations.ContainerMAC;
-import appeng.container.implementations.ContainerMEMonitorable;
-import appeng.container.implementations.ContainerMEPortableCell;
-import appeng.container.implementations.ContainerNetworkStatus;
-import appeng.container.implementations.ContainerNetworkTool;
-import appeng.container.implementations.ContainerPatternTerm;
-import appeng.container.implementations.ContainerPriority;
-import appeng.container.implementations.ContainerQNB;
-import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.container.implementations.ContainerSecurityStation;
-import appeng.container.implementations.ContainerSkyChest;
-import appeng.container.implementations.ContainerSpatialIOPort;
-import appeng.container.implementations.ContainerStorageBus;
-import appeng.container.implementations.ContainerUpgradeable;
-import appeng.container.implementations.ContainerVibrationChamber;
-import appeng.container.implementations.ContainerWireless;
-import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.fluids.container.ContainerFluidFormationPlane;
 import appeng.fluids.container.ContainerFluidIO;
 import appeng.fluids.container.ContainerFluidInterface;
@@ -184,6 +153,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_CRAFTING_TERMINAL( ContainerCraftingTerm.class, PartCraftingTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
 	GUI_PATTERN_TERMINAL( ContainerPatternTerm.class, PartPatternTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
+
+	GUI_EXPANDED_PROCESSING_PATTERN_TERMINAL( ContainerExpandedProcessingPatternTerm.class, PartExpandedProcessingPatternTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
 	GUI_FLUID_TERMINAL( ContainerFluidTerminal.class, ITerminalHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 

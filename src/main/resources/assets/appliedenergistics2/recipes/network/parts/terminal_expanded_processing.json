@@ -1,0 +1,41 @@
+{
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "appliedenergistics2:part_exists",
+          "part": "part.pattern_terminal"
+        },
+        {
+          "type": "appliedenergistics2:material_exists",
+          "material": "material.calculation_processor"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.expanded_processing_pattern_terminal"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "c c",
+    "tft",
+    "c c"
+  ],
+  "key": {
+    "f": {
+      "type": "appliedenergistics2:part",
+      "part": "cable_glass.fluix"
+    },
+    "t": {
+      "type": "appliedenergistics2:part",
+      "part": "part.pattern_terminal"
+    },
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "material.calculation_processor"
+    }
+  }
+}

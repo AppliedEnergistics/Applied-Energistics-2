@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import appeng.parts.reporting.*;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -75,15 +76,6 @@ import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLight;
 import appeng.parts.p2p.PartP2PRedstone;
 import appeng.parts.p2p.PartP2PTunnelME;
-import appeng.parts.reporting.PartConversionMonitor;
-import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartDarkPanel;
-import appeng.parts.reporting.PartInterfaceTerminal;
-import appeng.parts.reporting.PartPanel;
-import appeng.parts.reporting.PartPatternTerminal;
-import appeng.parts.reporting.PartSemiDarkPanel;
-import appeng.parts.reporting.PartStorageMonitor;
-import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
 
 
@@ -211,94 +203,83 @@ public enum PartType
 	FLUID_EXPORT_BUS( 261, "fluid_export_bus", EnumSet.of( AEFeature.FLUID_EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidExportBus.class ),
 
 	LEVEL_EMITTER( 280, "level_emitter", EnumSet.of( AEFeature.LEVEL_EMITTER ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
-	FLUID_LEVEL_EMITTER( 281, "fluid_level_emitter", EnumSet.of( AEFeature.FLUID_LEVEL_EMITTER ), EnumSet
-			.noneOf( IntegrationType.class ), PartFluidLevelEmitter.class ),
+	FLUID_LEVEL_EMITTER( 281, "fluid_level_emitter", EnumSet.of( AEFeature.FLUID_LEVEL_EMITTER ), EnumSet.noneOf( IntegrationType.class ), PartFluidLevelEmitter.class ),
 
-	ANNIHILATION_PLANE( 300, "annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE ), EnumSet
-			.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),
+	ANNIHILATION_PLANE( 300, "annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),
 
-	IDENTITY_ANNIHILATION_PLANE( 301, "identity_annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE, AEFeature.IDENTITY_ANNIHILATION_PLANE ), EnumSet
-			.noneOf( IntegrationType.class ), PartIdentityAnnihilationPlane.class ),
+	IDENTITY_ANNIHILATION_PLANE( 301, "identity_annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE, AEFeature.IDENTITY_ANNIHILATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartIdentityAnnihilationPlane.class ),
 
-	FLUID_ANNIHILATION_PLANE( 302, "fluid_annihilation_plane", EnumSet.of( AEFeature.FLUID_ANNIHILATION_PLANE ), EnumSet
-			.noneOf( IntegrationType.class ), PartFluidAnnihilationPlane.class ),
+	FLUID_ANNIHILATION_PLANE( 302, "fluid_annihilation_plane", EnumSet.of( AEFeature.FLUID_ANNIHILATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartFluidAnnihilationPlane.class ),
 
 	FORMATION_PLANE( 320, "formation_plane", EnumSet.of( AEFeature.FORMATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartFormationPlane.class ),
 
-	FLUID_FORMATION_PLANE( 321, "fluid_formation_plane", EnumSet.of( AEFeature.FLUID_FORMATION_PLANE ), EnumSet
-			.noneOf( IntegrationType.class ), PartFluidFormationPlane.class ),
+	FLUID_FORMATION_PLANE( 321, "fluid_formation_plane", EnumSet.of( AEFeature.FLUID_FORMATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartFluidFormationPlane.class ),
 
 	PATTERN_TERMINAL( 340, "pattern_terminal", EnumSet.of( AEFeature.PATTERNS ), EnumSet.noneOf( IntegrationType.class ), PartPatternTerminal.class ),
 
-	CRAFTING_TERMINAL( 360, "crafting_terminal", EnumSet.of( AEFeature.CRAFTING_TERMINAL ), EnumSet
-			.noneOf( IntegrationType.class ), PartCraftingTerminal.class ),
+	EXPANDED_PROCESSING_PATTERN_TERMINAL( 341, "expanded_processing_pattern_terminal", EnumSet.of( AEFeature.PATTERNS ), EnumSet.noneOf( IntegrationType.class ), PartExpandedProcessingPatternTerminal.class ),
+
+	CRAFTING_TERMINAL( 360, "crafting_terminal", EnumSet.of( AEFeature.CRAFTING_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartCraftingTerminal.class ),
 
 	TERMINAL( 380, "terminal", EnumSet.of( AEFeature.TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartTerminal.class ),
 
 	STORAGE_MONITOR( 400, "storage_monitor", EnumSet.of( AEFeature.STORAGE_MONITOR ), EnumSet.noneOf( IntegrationType.class ), PartStorageMonitor.class ),
 
-	CONVERSION_MONITOR( 420, "conversion_monitor", EnumSet.of( AEFeature.PART_CONVERSION_MONITOR ), EnumSet
-			.noneOf( IntegrationType.class ), PartConversionMonitor.class ),
+	CONVERSION_MONITOR( 420, "conversion_monitor", EnumSet.of( AEFeature.PART_CONVERSION_MONITOR ), EnumSet.noneOf( IntegrationType.class ), PartConversionMonitor.class ),
 
 	INTERFACE( 440, "interface", EnumSet.of( AEFeature.INTERFACE ), EnumSet.noneOf( IntegrationType.class ), PartInterface.class ),
 	FLUID_INTERFACE( 441, "fluid_interface", EnumSet.of( AEFeature.FLUID_INTERFACE ), EnumSet.noneOf( IntegrationType.class ), PartFluidInterface.class ),
 
-	P2P_TUNNEL_ME( 460, "p2p_tunnel_me", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ME ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
-			return "p2p_tunnel";
-		}
-	},
+	P2P_TUNNEL_ME( 460, "p2p_tunnel_me", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ME ), EnumSet.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
+					return "p2p_tunnel";
+				}
+			},
 
-	P2P_TUNNEL_REDSTONE( 461, "p2p_tunnel_redstone", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_REDSTONE ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PRedstone.class, GuiText.RedstoneTunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
-			return "p2p_tunnel";
-		}
-	},
+	P2P_TUNNEL_REDSTONE( 461, "p2p_tunnel_redstone", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_REDSTONE ), EnumSet.noneOf( IntegrationType.class ), PartP2PRedstone.class, GuiText.RedstoneTunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
+					return "p2p_tunnel";
+				}
+			},
 
-	P2P_TUNNEL_ITEMS( 462, "p2p_tunnel_items", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ITEMS ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
-			return "p2p_tunnel";
-		}
-	},
+	P2P_TUNNEL_ITEMS( 462, "p2p_tunnel_items", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ITEMS ), EnumSet.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
+					return "p2p_tunnel";
+				}
+			},
 
-	P2P_TUNNEL_FLUIDS( 463, "p2p_tunnel_fluids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
-			return "p2p_tunnel";
-		}
-	},
+	P2P_TUNNEL_FLUIDS( 463, "p2p_tunnel_fluids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
+					return "p2p_tunnel";
+				}
+			},
 
-	P2P_TUNNEL_IC2( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
-			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
-			return "p2p_tunnel";
-		}
-	},
+	P2P_TUNNEL_IC2( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
+					return "p2p_tunnel";
+				}
+			},
 
-	P2P_TUNNEL_LIGHT( 467, "p2p_tunnel_light", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIGHT ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
+	P2P_TUNNEL_LIGHT( 467, "p2p_tunnel_light", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIGHT ), EnumSet.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
 			return "p2p_tunnel";
 		}
 	},
