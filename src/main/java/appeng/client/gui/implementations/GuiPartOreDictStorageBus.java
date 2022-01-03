@@ -1,6 +1,9 @@
 package appeng.client.gui.implementations;
 
+import appeng.api.config.ActionItems;
+import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
+import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.container.implementations.ContainerPartOreDictStorageBus;
@@ -21,6 +24,7 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
 {
     PartOreDicStorageBus part;
     private GuiTabButton priority;
+    private GuiImgButton partition;
 
     private static final Pattern ORE_DICTIONARY_FILTER = Pattern.compile( "\\*?[a-zA-Z0-9_|\\\\+(){,}?!=\\-\\[:\\]&^$]*\\*?" );
     private MEGuiTextField searchFieldInputs;
@@ -46,6 +50,7 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
         this.searchFieldInputs.setValidator( str -> ORE_DICTIONARY_FILTER.matcher( str ).matches() );
 
         this.buttonList.add( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender ) );
+        this.buttonList.add( this.partition = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH ) );
 
         try
         {
@@ -70,6 +75,18 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
         if( btn == this.priority )
         {
             NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+        }
+        if( btn == this.partition )
+        {
+            NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
+            try
+            {
+                NetworkHandler.instance().sendToServer( new PacketValueConfig( "OreDictStorageBus.getRegex", "1" ) );
+            }
+            catch( IOException e )
+            {
+                e.printStackTrace();
+            }
         }
     }
 

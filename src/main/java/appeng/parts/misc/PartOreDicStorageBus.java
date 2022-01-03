@@ -61,7 +61,7 @@ public class PartOreDicStorageBus extends PartStorageBus
     public void writeToNBT( NBTTagCompound data )
     {
         super.writeToNBT( data );
-        data.setString( "oreMatch", oreMatch );
+        data.setString( "oreMatch", getOreMatch() );
     }
 
     @Override

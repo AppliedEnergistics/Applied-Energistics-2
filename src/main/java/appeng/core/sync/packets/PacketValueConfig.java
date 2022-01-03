@@ -276,6 +276,10 @@ public class PacketValueConfig extends AppEngPacket
 					{
 						( (ContainerFluidStorageBus) c ).partition();
 					}
+					else if( c instanceof ContainerPartOreDictStorageBus )
+					{
+						( (ContainerPartOreDictStorageBus) c ).partition();
+					}
 				}
 				else if( this.Value.equals( "Clear" ) )
 				{

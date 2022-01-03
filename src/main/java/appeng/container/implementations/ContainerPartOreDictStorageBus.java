@@ -1,14 +1,33 @@
 package appeng.container.implementations;
 
+import appeng.api.AEApi;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartOreDicStorageBus;
 import appeng.util.Platform;
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.item.AEItemStack;
+import appeng.util.item.OreReference;
+import appeng.util.iterators.NullIterator;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 public class ContainerPartOreDictStorageBus extends AEBaseContainer
@@ -32,7 +51,47 @@ public class ContainerPartOreDictStorageBus extends AEBaseContainer
         }
 
         super.detectAndSendChanges();
+    }
 
+    public void partition()
+    {
+        final IMEInventory<IAEItemStack> cellInv = this.part.getInternalHandler();
+
+        Set<Integer> oreIDs = new HashSet<>();
+
+        for( IAEItemStack itemStack : cellInv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
+        {
+            OreReference ref = ( (AEItemStack) itemStack ).getOre().orElse( null );
+            if( ref != null )
+            {
+                oreIDs.addAll( ref.getOres() );
+            }
+        }
+
+        String oreMatch = "(";
+        String append = "";
+
+        for( Iterator<Integer> it = oreIDs.iterator(); it.hasNext(); )
+        {
+            int oreID = it.next();
+            if( it.hasNext() )
+            {
+                append = ")|(";
+            }
+            else
+            {
+                append = ")";
+            }
+            oreMatch = oreMatch.concat( OreDictionary.getOreName( oreID ) + append );
+        }
+
+        if( oreMatch.equals( "(" ) )
+        {
+            oreMatch = "";
+        }
+        part.saveOreMatch( oreMatch );
+
+        this.detectAndSendChanges();
     }
 
     public void saveOreMatch( String value )
