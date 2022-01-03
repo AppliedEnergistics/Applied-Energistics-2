@@ -70,6 +70,7 @@ public enum GuiText
 	EnergyDrain,
 
 	StorageBus,
+	OreDictStorageBus,
 	StorageBusFluids,
 	Priority,
 	Security,

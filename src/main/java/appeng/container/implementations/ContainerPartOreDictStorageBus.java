@@ -38,7 +38,6 @@ public class ContainerPartOreDictStorageBus extends AEBaseContainer
     public void saveOreMatch( String value )
     {
         part.saveOreMatch( value );
-        part.upgradesChanged();
     }
 
     public void sendRegex()

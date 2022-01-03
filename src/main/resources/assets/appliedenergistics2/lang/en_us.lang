@@ -133,6 +133,7 @@ gui.appliedenergistics2.SecurityCardEditor=Biometric Card Editor
 gui.appliedenergistics2.Encoded=Encoded
 gui.appliedenergistics2.Priority=Priority
 gui.appliedenergistics2.StorageBus=Storage Bus
+gui.appliedenergistics2.OreDictStorageBus=Ore Dictionary Storage Bus
 gui.appliedenergistics2.StorageBusFluids=Fluid Storage Bus
 gui.appliedenergistics2.EnergyDrain=Passive Drain
 gui.appliedenergistics2.Installed=Installed

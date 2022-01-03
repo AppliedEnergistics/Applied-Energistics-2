@@ -27,7 +27,8 @@ import net.minecraft.util.math.Vec3d;
 
 public class PartOreDicStorageBus extends PartStorageBus
 {
-    public String oreMatch = "";
+    public String oreMatch;
+    OreDictPriorityList<IAEItemStack> priorityList;
 
     public PartOreDicStorageBus( ItemStack is )
     {
@@ -96,7 +97,7 @@ public class PartOreDicStorageBus extends PartStorageBus
                 this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
                 this.handler.setPriority( this.priority );
 
-                this.handler.setPartitionList( new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreMatch ), oreMatch ) );
+                this.handler.setPartitionList( priorityList );
 
                 if( inv instanceof IBaseMonitor )
                 {
@@ -153,8 +154,16 @@ public class PartOreDicStorageBus extends PartStorageBus
 
     public void saveOreMatch( String oreMatch )
     {
-        this.oreMatch = oreMatch;
-        this.getHost().markForSave();
+        if( !this.oreMatch.equals( oreMatch ) )
+        {
+            this.oreMatch = oreMatch;
+            this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreMatch ), oreMatch );
+            if( this.handler != null )
+            {
+                handler.setPartitionList( this.priorityList );
+            }
+            this.getHost().markForSave();
+        }
     }
 
     @Override
@@ -162,6 +171,7 @@ public class PartOreDicStorageBus extends PartStorageBus
     {
         super.readFromNBT( data );
         this.oreMatch = data.getString( "oreMatch" );
+        this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreMatch ), oreMatch );
     }
 
     @Override
