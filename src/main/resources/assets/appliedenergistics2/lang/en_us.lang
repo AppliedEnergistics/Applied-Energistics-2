@@ -539,6 +539,7 @@ item.appliedenergistics2.multi_part.pattern_terminal.name=ME Pattern Terminal
 item.appliedenergistics2.multi_part.expanded_processing_pattern_terminal.name=ME Extended Processing Pattern Terminal
 item.appliedenergistics2.multi_part.quartz_fiber.name=Quartz Fiber
 item.appliedenergistics2.multi_part.storage_bus.name=ME Storage Bus
+item.appliedenergistics2.multi_part.oredict_storage_bus.name=ME OreDict Storage Bus
 item.appliedenergistics2.multi_part.fluid_storage_bus.name=ME Fluid Storage Bus
 item.appliedenergistics2.multi_part.terminal.name=ME Terminal
 item.appliedenergistics2.multi_part.inverted_toggle_bus.name=ME Inverted Toggle Bus

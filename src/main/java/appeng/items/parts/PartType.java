@@ -187,7 +187,7 @@ public enum PartType
 
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
 	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
-	ORE_DICT_STORAGE_BUS( 222, "ore_dict_storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartOreDicStorageBus.class ),
+	OREDICT_STORAGE_BUS( 222, "oredict_storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartOreDicStorageBus.class ),
 
 	IMPORT_BUS( 240, "import_bus", EnumSet.of( AEFeature.IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
 

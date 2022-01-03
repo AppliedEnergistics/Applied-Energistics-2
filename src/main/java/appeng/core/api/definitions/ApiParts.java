@@ -114,7 +114,7 @@ public final class ApiParts implements IParts
 		this.toggleBus = new DamagedItemDefinition( "part.toggle_bus", itemPart.createPart( PartType.TOGGLE_BUS ) );
 		this.invertedToggleBus = new DamagedItemDefinition( "part.toggle_bus.inverted", itemPart.createPart( PartType.INVERTED_TOGGLE_BUS ) );
 		this.storageBus = new DamagedItemDefinition( "part.bus.storage", itemPart.createPart( PartType.STORAGE_BUS ) );
-		this.oreDictStorageBus = new DamagedItemDefinition( "part.bus.ore_dict_storage", itemPart.createPart( PartType.ORE_DICT_STORAGE_BUS ) );
+		this.oreDictStorageBus = new DamagedItemDefinition( "part.bus.oredict_storage", itemPart.createPart( PartType.OREDICT_STORAGE_BUS ) );
 		this.importBus = new DamagedItemDefinition( "part.bus.import", itemPart.createPart( PartType.IMPORT_BUS ) );
 		this.exportBus = new DamagedItemDefinition( "part.bus.export", itemPart.createPart( PartType.EXPORT_BUS ) );
 		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.INTERFACE ) );

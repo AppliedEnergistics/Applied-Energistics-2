@@ -5,14 +5,18 @@ import appeng.api.config.*;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.cache.GridStorageCache;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.parts.PartModel;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import appeng.util.item.OreHelper;
@@ -22,17 +26,42 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
 
 public class PartOreDicStorageBus extends PartStorageBus
 {
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/oredict_storage_bus_base" );
+    @PartModels
+    public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_off" ) );
+    @PartModels
+    public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_on" ) );
+    @PartModels
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_has_channel" ) );
+
+
     public String oreMatch;
     OreDictPriorityList<IAEItemStack> priorityList;
 
     public PartOreDicStorageBus( ItemStack is )
     {
         super( is );
+    }
+
+    @Override
+    public void readFromNBT( NBTTagCompound data )
+    {
+        super.readFromNBT( data );
+        this.oreMatch = data.getString( "oreMatch" );
+        this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreMatch ), oreMatch );
+    }
+
+    @Override
+    public void writeToNBT( NBTTagCompound data )
+    {
+        super.writeToNBT( data );
+        data.setString( "oreMatch", oreMatch );
     }
 
     @Override
@@ -167,17 +196,20 @@ public class PartOreDicStorageBus extends PartStorageBus
     }
 
     @Override
-    public void readFromNBT( NBTTagCompound data )
+    public IPartModel getStaticModels()
     {
-        super.readFromNBT( data );
-        this.oreMatch = data.getString( "oreMatch" );
-        this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreMatch ), oreMatch );
+        if( this.isActive() && this.isPowered() )
+        {
+            return MODELS_HAS_CHANNEL;
+        }
+        else if( this.isPowered() )
+        {
+            return MODELS_ON;
+        }
+        else
+        {
+            return MODELS_OFF;
+        }
     }
 
-    @Override
-    public void writeToNBT( NBTTagCompound data )
-    {
-        super.writeToNBT( data );
-        data.setString( "oreMatch", oreMatch );
-    }
 }
