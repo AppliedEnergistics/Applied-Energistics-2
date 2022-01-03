@@ -65,8 +65,8 @@ public class OreReference
 		return this.aeOtherOptions;
 	}
 
-	Collection<Integer> getOres()
-	{
-		return this.ores;
-	}
+	public Collection<Integer> getOres()
+    {
+        return this.ores;
+    }
 }

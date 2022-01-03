@@ -19,13 +19,8 @@
 package appeng.util.item;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -116,7 +111,7 @@ public class OreHelper
 	boolean sameOre( final AEItemStack aeItemStack, final IAEItemStack is )
 	{
 		final OreReference a = aeItemStack.getOre().orElse( null );
-		final OreReference b = aeItemStack.getOre().orElse( null );
+		final OreReference b = ( (AEItemStack) is ).getOre().orElse( null );
 
 		return this.sameOre( a, b );
 	}
@@ -160,8 +155,53 @@ public class OreHelper
 				}
 			}
 			return false;
-		} )
-				.orElse( false );
+		} ).orElse( false );
+	}
+
+	public Set<Integer> getMatchingOre( String allow )
+	{
+		List<String> matchingOres = new ArrayList<>();
+		ConcurrentMap<String, List<ItemStack>> oreKeys = oreDictCache.asMap();
+
+		oreKeys.forEach( ( s, l ) -> {
+
+			if( allow.startsWith( "*" ) && allow.endsWith( "*" ) )
+			{
+				if( s.contains( allow.substring( 1, allow.length() - 1 ) ) )
+				{
+					matchingOres.add( s );
+				}
+			}
+			else if( allow.startsWith( "*" ) )
+			{
+				if( s.endsWith( allow.substring( 1 ) ) )
+				{
+					matchingOres.add( s );
+				}
+			}
+			else if( allow.endsWith( "*" ) )
+			{
+				if( s.startsWith( allow.substring( 0, allow.length() - 1 ) ) )
+				{
+					matchingOres.add( s );
+				}
+			}
+			else
+			{
+				if( s.matches( allow ) )
+				{
+					matchingOres.add( s );
+				}
+			}
+		} );
+
+		Set<Integer> oreIDs = new HashSet<>();
+		for( String matchingOre : matchingOres )
+		{
+			oreIDs.add( OreDictionary.getOreID( matchingOre ) );
+		}
+
+		return oreIDs;
 	}
 
 	List<ItemStack> getCachedOres( final String oreName )

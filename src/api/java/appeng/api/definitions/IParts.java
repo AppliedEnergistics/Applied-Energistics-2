@@ -58,6 +58,8 @@ public interface IParts
 
 	IItemDefinition storageBus();
 
+	IItemDefinition oreDictStorageBus();
+
 	IItemDefinition importBus();
 
 	IItemDefinition exportBus();

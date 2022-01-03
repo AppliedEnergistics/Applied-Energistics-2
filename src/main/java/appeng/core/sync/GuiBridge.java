@@ -22,6 +22,7 @@ package appeng.core.sync;
 import java.lang.reflect.Constructor;
 
 import appeng.container.implementations.*;
+import appeng.parts.misc.PartOreDicStorageBus;
 import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -139,6 +140,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_IOPORT( ContainerIOPort.class, TileIOPort.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+
+	GUI_OREDICTSTORAGEBUS( ContainerPartOreDictStorageBus.class, PartOreDicStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_STORAGEBUS_FLUID( ContainerFluidStorageBus.class, PartFluidStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 

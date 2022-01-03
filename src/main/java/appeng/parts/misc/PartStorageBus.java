@@ -96,13 +96,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_has_channel" ) );
     @CapabilityInject( IItemRepository.class )
     public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
-    private final IActionSource mySrc;
-    private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
-    private int priority = 0;
-    private boolean cached = false;
-    private ITickingMonitor monitor = null;
-    private MEInventoryHandler<IAEItemStack> handler = null;
-    private int handlerHash = 0;
+    protected final IActionSource mySrc;
+    protected final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
+    protected int priority = 0;
+    protected boolean cached = false;
+    protected ITickingMonitor monitor = null;
+    protected MEInventoryHandler<IAEItemStack> handler = null;
+    protected int handlerHash = 0;
     private boolean wasActive = false;
     private byte resetCacheLogic = 0;
     private boolean accessChanged;
@@ -409,7 +409,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
         }
     }
 
-    private IMEInventory<IAEItemStack> getInventoryWrapper( TileEntity target )
+    IMEInventory<IAEItemStack> getInventoryWrapper( TileEntity target )
     {
 
         EnumFacing targetSide = this.getSide().getFacing().getOpposite();
@@ -452,7 +452,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
     }
 
-    private int createHandlerHash( TileEntity target )
+    int createHandlerHash( TileEntity target )
     {
         if( target == null )
         {

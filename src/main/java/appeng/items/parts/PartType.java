@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import appeng.parts.misc.*;
 import appeng.parts.reporting.*;
 import com.google.common.collect.ImmutableList;
 
@@ -58,11 +59,6 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartIdentityAnnihilationPlane;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
-import appeng.parts.misc.PartCableAnchor;
-import appeng.parts.misc.PartInterface;
-import appeng.parts.misc.PartInvertedToggleBus;
-import appeng.parts.misc.PartStorageBus;
-import appeng.parts.misc.PartToggleBus;
 import appeng.parts.networking.PartCableCovered;
 import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
@@ -185,14 +181,13 @@ public enum PartType
 
 	MONITOR( 160, "monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartPanel.class, "itemIlluminatedPanel" ),
 
-	SEMI_DARK_MONITOR( 180, "semi_dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet
-			.noneOf( IntegrationType.class ), PartSemiDarkPanel.class, "itemIlluminatedPanel" ),
+	SEMI_DARK_MONITOR( 180, "semi_dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartSemiDarkPanel.class, "itemIlluminatedPanel" ),
 
 	DARK_MONITOR( 200, "dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class, "itemIlluminatedPanel" ),
 
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
-	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet
-			.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
+	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
+	ORE_DICT_STORAGE_BUS( 222, "ore_dict_storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartOreDicStorageBus.class ),
 
 	IMPORT_BUS( 240, "import_bus", EnumSet.of( AEFeature.IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
 
