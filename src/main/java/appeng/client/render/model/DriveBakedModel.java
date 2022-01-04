@@ -19,14 +19,9 @@
 package appeng.client.render.model;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-
+import appeng.block.storage.BlockDrive;
+import appeng.block.storage.DriveSlotState;
+import appeng.block.storage.DriveSlotsState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -37,9 +32,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-import appeng.block.storage.BlockDrive;
-import appeng.block.storage.DriveSlotState;
-import appeng.block.storage.DriveSlotsState;
+import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class DriveBakedModel implements IBakedModel
@@ -57,13 +55,17 @@ public class DriveBakedModel implements IBakedModel
 	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
 	{
 
-		List<BakedQuad> result = new ArrayList<>();
-
-		result.addAll( this.bakedBase.getQuads( state, side, rand ) );
+		List<BakedQuad> result = new ArrayList<>( this.bakedBase.getQuads( state, side, rand ) );
 
 		if( side == null && state instanceof IExtendedBlockState )
 		{
 			IExtendedBlockState extState = (IExtendedBlockState) state;
+
+			if (!extState.getUnlistedNames().contains( BlockDrive.SLOTS_STATE ))
+			{
+				return result;
+			}
+
 			DriveSlotsState slotsState = extState.getValue( BlockDrive.SLOTS_STATE );
 
 			for( int row = 0; row < 5; row++ )
