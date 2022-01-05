@@ -31,31 +31,29 @@ import net.minecraft.client.renderer.RenderType;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.storage.cells.CellState;
-import appeng.block.storage.DriveSlotState;
 
 /**
  * Utility class to render LEDs for storage cells from a Block entity Renderer.
  */
 class CellLedRenderer {
 
-    private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
+    private static final EnumMap<CellState, Vector3f> STATE_COLORS;
+
+    // Color to use if the cell is present but unpowered
+    private static final Vector3f UNPOWERED_COLOR = new Vector3f(0, 0, 0);
 
     // Color used for the cell indicator for blinking during recent activity
     private static final Vector3f BLINK_COLOR = new Vector3f(1, 0.5f, 0.5f);
 
     static {
-        STATE_COLORS = new EnumMap<>(DriveSlotState.class);
-
+        STATE_COLORS = new EnumMap<>(CellState.class);
         for (var cellState : CellState.values()) {
             var color = cellState.getStateColor();
             var colorVector = new Vector3f(
                     ((color >> 16) & 0xFF) / 255.0f,
                     ((color >> 8) & 0xFF) / 255.0f,
                     (color & 0xFF) / 255.0f);
-
-            STATE_COLORS.put(
-                    DriveSlotState.fromCellStatus(cellState),
-                    colorVector);
+            STATE_COLORS.put(cellState, colorVector);
         }
     }
 
@@ -105,13 +103,13 @@ class CellLedRenderer {
     }
 
     private static Vector3f getColorForSlot(IChestOrDrive drive, int slot, float partialTicks) {
-        DriveSlotState state = DriveSlotState.fromCellStatus(drive.getCellStatus(slot));
-        if (state == DriveSlotState.EMPTY) {
+        var state = drive.getCellStatus(slot);
+        if (state == CellState.ABSENT) {
             return null;
         }
 
         if (!drive.isPowered()) {
-            return STATE_COLORS.get(DriveSlotState.OFFLINE);
+            return UNPOWERED_COLOR;
         }
 
         Vector3f col = STATE_COLORS.get(state);

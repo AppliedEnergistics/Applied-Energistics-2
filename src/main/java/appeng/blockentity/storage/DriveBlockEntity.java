@@ -46,7 +46,6 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.util.AECableType;
-import appeng.block.storage.DriveSlotsState;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.client.render.model.DriveModelData;
@@ -398,7 +397,11 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public DriveModelData getRenderAttachmentData() {
-        return new DriveModelData(getUp(), getForward(), DriveSlotsState.fromChestOrDrive(this));
+        var cells = new Item[getCellCount()];
+        for (int i = 0; i < getCellCount(); i++) {
+            cells[i] = getCellItem(i);
+        }
+        return new DriveModelData(getUp(), getForward(), cells);
     }
 
     public void openMenu(Player player) {
