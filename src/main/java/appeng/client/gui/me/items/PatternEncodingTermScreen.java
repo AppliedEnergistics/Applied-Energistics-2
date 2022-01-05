@@ -20,7 +20,6 @@ package appeng.client.gui.me.items;
 
 import java.util.ArrayList;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
@@ -176,12 +175,21 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     }
 
     @Override
-    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
-        if (mouseButton == InputConstants.MOUSE_BUTTON_MIDDLE && menu.canModifyAmountForSlot(slot)) {
-            menu.showModifyAmountMenu(slotIdx);
-            return;
+    public boolean mouseClicked(double xCoord, double yCoord, int btn) {
+        // handler for middle mouse button crafting in survival mode
+        if (this.minecraft.options.keyPickItem.matchesMouse(btn)) {
+            Slot slot = this.findSlot(xCoord, yCoord);
+            if (menu.canModifyAmountForSlot(slot)) {
+                menu.showModifyAmountMenu(slot.index);
+                return true;
+            }
         }
 
+        return super.mouseClicked(xCoord, yCoord, btn);
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
         if (slot instanceof PatternTermSlot) {
             if (!slot.getItem().isEmpty()) {
                 var packet = new PatternSlotPacket(menu.getCraftingMatrix(), slot.getItem(), hasShiftDown());

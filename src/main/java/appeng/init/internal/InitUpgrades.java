@@ -84,8 +84,8 @@ public final class InitUpgrades {
                 AEItems.PORTABLE_FLUID_CELL1K, AEItems.PORTABLE_FLUID_CELL4K, AEItems.PORTABLE_FLUID_CELL16K,
                 AEItems.PORTABLE_FLUID_CELL64K);
         for (var portableCell : portableCells) {
-            Upgrades.add(AEItems.FUZZY_CARD, portableCell, 2, GuiText.PortableCells.getTranslationKey());
-            Upgrades.add(AEItems.INVERTER_CARD, portableCell, 2, GuiText.PortableCells.getTranslationKey());
+            Upgrades.add(AEItems.FUZZY_CARD, portableCell, 1, GuiText.PortableCells.getTranslationKey());
+            Upgrades.add(AEItems.INVERTER_CARD, portableCell, 1, GuiText.PortableCells.getTranslationKey());
             Upgrades.add(AEItems.ENERGY_CARD, portableCell, 2, GuiText.PortableCells.getTranslationKey());
         }
 
