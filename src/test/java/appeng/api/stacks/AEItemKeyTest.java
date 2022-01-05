@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.BootstrapMinecraft;
@@ -157,5 +158,18 @@ class AEItemKeyTest {
 
             assertNull(AEKey.fromTagGeneric(tag));
         }
+    }
+
+    @Test
+    void testIsDamaged() {
+        assertFalse(AEItemKey.of(Blocks.BEDROCK).isDamaged());
+        assertFalse(AEItemKey.of(Items.DIAMOND_PICKAXE).isDamaged());
+
+        var stack = new ItemStack(Items.DIAMOND_PICKAXE);
+        stack.setDamageValue(0);
+        assertFalse(AEItemKey.of(stack).isDamaged());
+
+        stack.setDamageValue(1);
+        assertTrue(AEItemKey.of(stack).isDamaged());
     }
 }

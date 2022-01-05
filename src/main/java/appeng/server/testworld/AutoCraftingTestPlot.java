@@ -64,6 +64,7 @@ public final class AutoCraftingTestPlot {
         });
         plot.part("5 0 1", Direction.NORTH, AEParts.PATTERN_ACCESS_TERMINAL);
         plot.part("4 0 1", Direction.NORTH, AEParts.TERMINAL);
+        plot.part("3 0 1", Direction.NORTH, AEParts.CRAFTING_TERMINAL);
 
         // Subsystem to craft obsidian
         buildObsidianCrafting(plot.offset(3, 0, 5));

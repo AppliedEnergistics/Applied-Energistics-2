@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.block.AEBaseBlock;
-import appeng.services.compass.CompassService;
+import appeng.server.services.compass.CompassService;
 
 public class SkyStoneBlock extends AEBaseBlock {
     private final SkystoneType type;

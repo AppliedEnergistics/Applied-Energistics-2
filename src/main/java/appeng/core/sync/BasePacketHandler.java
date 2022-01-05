@@ -66,7 +66,7 @@ public class BasePacketHandler {
 
         PATTERN_SLOT(PatternSlotPacket.class, PatternSlotPacket::new),
 
-        RECIPE_JEI(UseRecipePacket.class, UseRecipePacket::new),
+        FILL_CRAFTING_GRID_FROM_RECIPE(FillCraftingGridFromRecipePacket.class, FillCraftingGridFromRecipePacket::new),
 
         CONFIRM_AUTO_CRAFT(ConfirmAutoCraftPacket.class, ConfirmAutoCraftPacket::new),
 

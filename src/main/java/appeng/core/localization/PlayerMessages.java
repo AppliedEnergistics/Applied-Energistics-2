@@ -18,10 +18,7 @@
 
 package appeng.core.localization;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-
-public enum PlayerMessages {
+public enum PlayerMessages implements LocalizationEnum {
     AmmoDepleted("Ammo Depleted."),
     ChestCannotReadStorageCell("ME Chest cannot read storage cell."),
     CommunicationError("Error Communicating with Network."),
@@ -48,14 +45,12 @@ public enum PlayerMessages {
         this.englishText = englishText;
     }
 
-    public Component get() {
-        return new TranslatableComponent(this.getTranslationKey());
-    }
-
+    @Override
     public String getEnglishText() {
         return englishText;
     }
 
+    @Override
     public String getTranslationKey() {
         return "chat.ae2." + name();
     }

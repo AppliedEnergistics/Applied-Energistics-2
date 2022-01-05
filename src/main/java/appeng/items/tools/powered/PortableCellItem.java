@@ -194,7 +194,7 @@ public class PortableCellItem extends AEBasePoweredItem
                 playerInventory.placeItemBackInInventory(upgrade);
             }
         } else {
-            player.sendMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.get(), Util.NIL_UUID);
+            player.sendMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), Util.NIL_UUID);
         }
 
         return true;

@@ -38,7 +38,7 @@ public enum GridNodeState {
     }
 
     public MutableComponent textComponent() {
-        return text.textComponent();
+        return text.text();
     }
 
     public static GridNodeState fromNode(@Nullable IGridNode gridNode) {

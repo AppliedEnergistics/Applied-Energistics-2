@@ -79,7 +79,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
             if (!level.isClientSide()) {
                 if (hit.getDirection() == be.getUp()) {
                     if (!be.openGui(p)) {
-                        p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
+                        p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.text(), Util.NIL_UUID);
                     }
                 } else {
                     be.openCellInventoryMenu(p);

@@ -18,13 +18,10 @@
 
 package appeng.core.localization;
 
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-
 /**
  * Texts used for in-game tooltip mods like WAILA, TOP, Jade, WTHIT, etc.
  */
-public enum InGameTooltip {
+public enum InGameTooltip implements LocalizationEnum {
     Channels("%1$d Channels"),
     ChannelsOf("%1$d of %2$d Channels"),
     Charged("%d%% charged"),
@@ -52,20 +49,14 @@ public enum InGameTooltip {
         this.englishText = englishText;
     }
 
+    @Override
     public String getTranslationKey() {
         return "waila.ae2." + name();
     }
 
+    @Override
     public String getEnglishText() {
         return englishText;
-    }
-
-    public MutableComponent textComponent() {
-        return new TranslatableComponent(getTranslationKey());
-    }
-
-    public MutableComponent textComponent(Object... args) {
-        return new TranslatableComponent(getTranslationKey(), args);
     }
 
 }

@@ -57,7 +57,7 @@ import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.client.render.overlay.IOverlayDataSource;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.me.service.StatisticsService;
-import appeng.services.ChunkLoadingService;
+import appeng.server.services.ChunkLoadingService;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerListener;
 

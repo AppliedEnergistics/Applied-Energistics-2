@@ -44,7 +44,7 @@ import appeng.api.movable.IBlockEntityMoveStrategy;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
-import appeng.services.compass.CompassService;
+import appeng.server.services.compass.CompassService;
 import appeng.util.Platform;
 
 public class CachedPlane {

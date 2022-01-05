@@ -55,7 +55,7 @@ public final class PowerStorageDataProvider extends BaseDataProvider {
             var formatCurrentPower = Platform.formatPower(currentPower, false);
             var formatMaxPower = Platform.formatPower(maxPower, false);
 
-            tooltip.add(InGameTooltip.Stored.textComponent(formatCurrentPower, formatMaxPower));
+            tooltip.add(InGameTooltip.Stored.text(formatCurrentPower, formatMaxPower));
         }
     }
 

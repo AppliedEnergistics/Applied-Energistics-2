@@ -27,7 +27,7 @@ import net.minecraft.world.level.ChunkPos;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.services.compass.CompassService;
+import appeng.server.services.compass.CompassService;
 
 public class CompassRequestPacket extends BasePacket {
 

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.services;
+package appeng.server.services;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

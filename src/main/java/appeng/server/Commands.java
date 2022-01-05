@@ -20,6 +20,7 @@ package appeng.server;
 
 import java.util.Locale;
 
+import appeng.server.services.compass.TestCompassCommand;
 import appeng.server.subcommands.ChannelModeCommand;
 import appeng.server.subcommands.ChunkLogger;
 import appeng.server.subcommands.SetupTestWorldCommand;
@@ -28,7 +29,6 @@ import appeng.server.subcommands.Supporters;
 import appeng.server.subcommands.TestMeteoritesCommand;
 import appeng.server.subcommands.TestOreGenCommand;
 import appeng.server.subcommands.TickMonitoring;
-import appeng.services.compass.TestCompassCommand;
 
 public enum Commands {
     // Unrestricted

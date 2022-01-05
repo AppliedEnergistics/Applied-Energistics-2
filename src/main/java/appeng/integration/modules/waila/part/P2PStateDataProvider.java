@@ -50,8 +50,8 @@ public final class P2PStateDataProvider implements IPartDataProvider {
             var outputs = partTag.getInt(TAG_P2P_OUTPUTS);
 
             switch (state) {
-                case STATE_UNLINKED -> tooltip.add(InGameTooltip.P2PUnlinked.textComponent());
-                case STATE_OUTPUT -> tooltip.add(InGameTooltip.P2POutput.textComponent());
+                case STATE_UNLINKED -> tooltip.add(InGameTooltip.P2PUnlinked.text());
+                case STATE_OUTPUT -> tooltip.add(InGameTooltip.P2POutput.text());
                 case STATE_INPUT -> tooltip.add(getOutputText(outputs));
             }
 
@@ -92,9 +92,9 @@ public final class P2PStateDataProvider implements IPartDataProvider {
 
     private static Component getOutputText(int outputs) {
         if (outputs <= 1) {
-            return InGameTooltip.P2PInputOneOutput.textComponent();
+            return InGameTooltip.P2PInputOneOutput.text();
         } else {
-            return InGameTooltip.P2PInputManyOutputs.textComponent(outputs);
+            return InGameTooltip.P2PInputManyOutputs.text(outputs);
         }
     }
 
