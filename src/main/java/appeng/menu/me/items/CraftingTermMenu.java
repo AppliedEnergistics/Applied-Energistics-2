@@ -18,6 +18,10 @@
 
 package appeng.menu.me.items;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.Container;
@@ -26,13 +30,17 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -153,6 +161,61 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         }
 
         return super.hasItemType(itemStack, amount);
+    }
+
+    /**
+     * Determines which slots of the given slot-to-item map cannot be filled with items based on the contents of this
+     * terminal or player inventory.
+     * 
+     * @return The keys of the given slot-map for which no stored ingredients could be found.
+     */
+    public Set<Integer> findMissingIngredients(Map<Integer, Ingredient> ingredients) {
+
+        // Try to figure out if any slots have missing ingredients
+        // Find every "slot" (in JEI parlance) that has no equivalent item in the item repo or player inventory
+        Set<Integer> missingSlots = new HashSet<>();
+
+        // We need to track how many of a given item stack we've already used for other slots in the recipe.
+        // Otherwise recipes that need 4x<item> will not correctly show missing items if at least 1 of <item> is in
+        // the grid.
+        var reservedGridAmounts = new Object2IntOpenHashMap<>();
+        var playerItems = getPlayerInventory().items;
+        var reservedPlayerItems = new int[playerItems.size()];
+
+        for (var entry : ingredients.entrySet()) {
+            var ingredient = entry.getValue();
+
+            boolean found = false;
+            // Player inventory is cheaper to check
+            for (int i = 0; i < playerItems.size(); i++) {
+                var stack = playerItems.get(i);
+                if (stack.getCount() - reservedPlayerItems[i] > 0 && ingredient.test(stack)) {
+                    reservedPlayerItems[i]++;
+                    found = true;
+                    break;
+                }
+            }
+
+            // Then check the terminal screen's repository of network items
+            if (!found) {
+                for (var stack : ingredient.getItems()) {
+                    // We use AE stacks to get an easily comparable item type key that ignores stack size
+                    var itemKey = AEItemKey.of(stack);
+                    int reservedAmount = reservedGridAmounts.getOrDefault(itemKey, 0) + 1;
+                    if (hasItemType(stack, reservedAmount)) {
+                        reservedGridAmounts.put(itemKey, reservedAmount);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!found) {
+                missingSlots.add(entry.getKey());
+            }
+        }
+
+        return missingSlots;
     }
 
 }

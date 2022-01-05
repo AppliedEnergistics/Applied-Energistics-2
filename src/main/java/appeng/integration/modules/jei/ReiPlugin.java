@@ -36,6 +36,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import dev.architectury.event.CompoundEventResult;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.category.ButtonArea;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
@@ -62,6 +63,10 @@ import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.REIFacade;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
+import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
+import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
+import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.handlers.InscriberRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
@@ -135,8 +140,8 @@ public class ReiPlugin implements REIClientPlugin {
     @Override
     public void registerTransferHandlers(TransferHandlerRegistry registry) {
         // Allow recipe transfer from JEI to crafting and pattern terminal
-        registry.register(new CraftingRecipeTransferHandler());
-        registry.register(new PatternRecipeTransferHandler());
+        registry.register(new EncodePatternTransferHandler<>(PatternEncodingTermMenu.class));
+        registry.register(new UseCraftingRecipeTransfer<>(CraftingTermMenu.class));
     }
 
     @Override
@@ -216,6 +221,7 @@ public class ReiPlugin implements REIClientPlugin {
 
         ItemStack inscriber = AEBlocks.INSCRIBER.stack();
         registry.addWorkstations(InscriberRecipeCategory.ID, EntryStacks.of(inscriber));
+        registry.setPlusButtonArea(InscriberRecipeCategory.ID, ButtonArea.defaultArea());
     }
 
     private void registerDescriptions(DisplayRegistry registry) {

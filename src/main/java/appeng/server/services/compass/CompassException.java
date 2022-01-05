@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.services.compass;
+package appeng.server.services.compass;
 
 public class CompassException extends RuntimeException {
 

@@ -41,7 +41,7 @@ public final class CraftingMonitorDataProvider extends BaseDataProvider {
             var displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {
-                tooltip.add(InGameTooltip.Crafting.textComponent(displayStack.what().getDisplayName()));
+                tooltip.add(InGameTooltip.Crafting.text(displayStack.what().getDisplayName()));
             }
         }
     }

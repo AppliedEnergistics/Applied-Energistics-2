@@ -22,6 +22,8 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
+import appeng.core.localization.ItemModText;
+import appeng.core.localization.LocalizationEnum;
 import appeng.core.localization.PlayerMessages;
 import appeng.datagen.providers.IAE2DataProvider;
 
@@ -46,25 +48,25 @@ public class LocalizationProvider implements IAE2DataProvider {
         for (var item : AEItems.getItems()) {
             add("item.ae2." + item.id().getPath(), item.getEnglishName());
         }
-        for (var text : GuiText.values()) {
-            add(text.getTranslationKey(), text.getEnglishText());
-        }
-        for (var text : ButtonToolTips.values()) {
-            add(text.getTranslationKey(), text.getEnglishText());
-        }
-        for (var text : PlayerMessages.values()) {
-            add(text.getTranslationKey(), text.getEnglishText());
-        }
-        for (var text : InGameTooltip.values()) {
-            add(text.getTranslationKey(), text.getEnglishText());
-        }
         for (var entry : AEEntities.ENTITY_ENGLISH_NAMES.entrySet()) {
             add("entity.ae2." + entry.getKey(), entry.getValue());
         }
 
+        addEnum(GuiText.class);
+        addEnum(ButtonToolTips.class);
+        addEnum(PlayerMessages.class);
+        addEnum(InGameTooltip.class);
+        addEnum(ItemModText.class);
+
         generateLocalizations();
 
         save(cache, localizations);
+    }
+
+    public <T extends Enum<T> & LocalizationEnum> void addEnum(Class<T> localizedEnum) {
+        for (var enumConstant : localizedEnum.getEnumConstants()) {
+            add(enumConstant.getTranslationKey(), enumConstant.getEnglishText());
+        }
     }
 
     public Component component(String key, String text) {
@@ -111,15 +113,8 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("gui.ae2.validation.NumberLessThanMinValue", "Please enter a number greater than or equal to %d");
         add("itemGroup.ae2.facades", "Applied Energistics 2 - Facades");
         add("itemGroup.ae2.main", "Applied Energistics 2");
-        add("jei.ae2.missing_id", "Cannot identify recipe");
-        add("jei.ae2.missing_items", "Missing items will be skipped");
-        add("jei.ae2.no_output", "Recipe has no output");
-        add("jei.ae2.recipe_too_large", "Recipe larger than 3x3");
-        add("jei.ae2.requires_processing_mode", "Requires processing mode");
         add("key.ae2.category", "Applied Energistics 2");
         add("key.toggle_focus.desc", "Toggle search box focus");
-        add("rei.ae2.throwing_in_water_category", "Throwing In Water");
-        add("rei.ae2.with_crystal_growth_accelerators", "With Crystal Growth Accelerators:");
         add("stat.ae2.items_extracted", "Items extracted from ME Storage");
         add("stat.ae2.items_inserted", "Items added to ME Storage");
         add("theoneprobe.ae2.channels", "%1$d Channels");

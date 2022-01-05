@@ -7,7 +7,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -20,6 +19,7 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.ItemModText;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.items.misc.CrystalSeedItem;
 
@@ -52,7 +52,7 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("rei.ae2.throwing_in_water_category");
+        return ItemModText.THROWING_IN_WATER_CATEGORY.text();
     }
 
     @Override
@@ -112,8 +112,7 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
             var durationY = bounds.y + 10 + display.getInputEntries().size() * 18 + 2;
 
             List<Component> tooltipLines = new ArrayList<>();
-            tooltipLines.add(
-                    new TranslatableComponent("rei.ae2.with_crystal_growth_accelerators"));
+            tooltipLines.add(ItemModText.WITH_CRYSTAL_GROWTH_ACCELERATORS.text());
             for (var i = 1; i <= 5; i++) {
                 var duration = GrowingCrystalEntity.getGrowthDuration(i).toMillis();
                 tooltipLines.add(new TextComponent(i + ": " + DurationFormatUtils.formatDurationWords(

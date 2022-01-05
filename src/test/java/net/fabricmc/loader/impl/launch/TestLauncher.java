@@ -4,13 +4,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider;
 import net.fabricmc.loader.impl.launch.knot.MixinServiceKnotAccessor;
+import net.minecraft.DetectedVersion;
 import org.spongepowered.asm.launch.MixinBootstrap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.jar.Manifest;
@@ -119,6 +123,12 @@ class TestLauncher extends FabricLauncherBase {
 
     @Override
     public List<Path> getClassPath() {
-        throw new UnsupportedOperationException();
+        try {
+            return Collections.singletonList(
+                    Paths.get(DetectedVersion.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+            );
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

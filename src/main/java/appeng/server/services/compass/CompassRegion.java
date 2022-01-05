@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.services.compass;
+package appeng.server.services.compass;
 
 import java.util.BitSet;
 import java.util.HashMap;

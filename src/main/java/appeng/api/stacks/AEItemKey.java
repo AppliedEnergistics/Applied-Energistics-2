@@ -203,6 +203,13 @@ public final class AEItemKey extends AEKey {
         return toStack().getHoverName();
     }
 
+    /**
+     * @return True if the item represented by this key is damaged.
+     */
+    public boolean isDamaged() {
+        return tag != null && tag.getInt(ItemStack.TAG_DAMAGE) > 0;
+    }
+
     @Override
     public void writeToPacket(FriendlyByteBuf data) {
         data.writeVarInt(Item.getId(item));

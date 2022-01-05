@@ -39,11 +39,11 @@ public final class StorageMonitorDataProvider implements IPartDataProvider {
             var isLocked = monitor.isLocked();
 
             if (displayed != null) {
-                tooltip.add(InGameTooltip.Showing.textComponent().append(": ")
+                tooltip.add(InGameTooltip.Showing.text().append(": ")
                         .append(displayed.getDisplayName()));
             }
 
-            tooltip.add(isLocked ? InGameTooltip.Locked.textComponent() : InGameTooltip.Unlocked.textComponent());
+            tooltip.add(isLocked ? InGameTooltip.Locked.text() : InGameTooltip.Unlocked.text());
         }
     }
 

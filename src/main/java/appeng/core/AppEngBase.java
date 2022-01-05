@@ -81,8 +81,8 @@ import appeng.init.worldgen.InitFeatures;
 import appeng.init.worldgen.InitStructures;
 import appeng.items.tools.NetworkToolItem;
 import appeng.server.AECommand;
+import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
-import appeng.services.ChunkLoadingService;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 

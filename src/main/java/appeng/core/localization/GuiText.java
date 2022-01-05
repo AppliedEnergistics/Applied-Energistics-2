@@ -21,10 +21,9 @@ package appeng.core.localization;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
-public enum GuiText {
+public enum GuiText implements LocalizationEnum {
     inventory(null, "container"), // mc's default Inventory localization.
     And("and"),
     Or("or"),
@@ -226,28 +225,12 @@ public enum GuiText {
         return englishText;
     }
 
-    public String getLocal() {
-        return text.getString();
-    }
-
+    @Override
     public String getTranslationKey() {
         return this.root + '.' + name();
     }
 
-    public Component text() {
-        return text;
+    public String getLocal() {
+        return text.getString();
     }
-
-    public MutableComponent withSuffix(String text) {
-        return text().copy().append(text);
-    }
-
-    public MutableComponent withSuffix(Component text) {
-        return text().copy().append(text);
-    }
-
-    public MutableComponent text(Object... args) {
-        return new TranslatableComponent(getTranslationKey(), args);
-    }
-
 }

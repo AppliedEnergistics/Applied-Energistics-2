@@ -43,7 +43,7 @@ public final class ChannelDataProvider implements IPartDataProvider {
     public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
         if (partTag.contains(TAG_ERROR, Tag.TAG_STRING)) {
             var error = ChannelError.valueOf(partTag.getString(TAG_ERROR));
-            tooltip.add(error.text.textComponent().withStyle(ChatFormatting.RED));
+            tooltip.add(error.text.text().withStyle(ChatFormatting.RED));
             return;
         }
 
@@ -52,9 +52,9 @@ public final class ChannelDataProvider implements IPartDataProvider {
             var maxChannels = partTag.getInt(TAG_MAX_CHANNELS);
             // Even in the maxChannels=0 case, we'll show as infinite
             if (maxChannels <= 0) {
-                tooltip.add(InGameTooltip.Channels.textComponent(usedChannels));
+                tooltip.add(InGameTooltip.Channels.text(usedChannels));
             } else {
-                tooltip.add(InGameTooltip.ChannelsOf.textComponent(usedChannels, maxChannels));
+                tooltip.add(InGameTooltip.ChannelsOf.text(usedChannels, maxChannels));
             }
         }
     }

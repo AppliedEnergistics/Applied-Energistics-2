@@ -18,11 +18,7 @@
 
 package appeng.core.localization;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-
-public enum ButtonToolTips {
+public enum ButtonToolTips implements LocalizationEnum {
     Amount("Amount: %d"),
     ActiveOnPulse("Activate once per pulse"),
     ActiveWithSignal("Active with signal"),
@@ -158,29 +154,20 @@ public enum ButtonToolTips {
     SupportedBy("Supported by:"),
     ;
 
-    private final TranslatableComponent text;
-
     private final String englishText;
 
     ButtonToolTips(String englishText) {
-        this.text = new TranslatableComponent(getTranslationKey());
         this.englishText = englishText;
     }
 
+    @Override
     public String getTranslationKey() {
         return "gui.tooltips.ae2." + name();
     }
 
+    @Override
     public String getEnglishText() {
         return englishText;
-    }
-
-    public Component text() {
-        return text;
-    }
-
-    public MutableComponent text(Object... args) {
-        return new TranslatableComponent(text.getKey(), args);
     }
 
 }
