@@ -44,10 +44,8 @@ import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.OptionalRestrictedInputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.util.ConfigMenuInventory;
 import appeng.util.EnumCycler;
 import appeng.util.inv.SupplierInternalInventory;
 
@@ -107,12 +105,11 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
                 SlotSemantics.STORAGE_CELL);
 
-        ConfigMenuInventory configInv = getConfigInventory().createMenuWrapper();
+        addConfigSlots(getConfigInventory(), 7, 9);
+    }
 
-        for (int i = 0; i < 7 * 9; i++) {
-            this.addSlot(new FakeSlot(configInv, i), SlotSemantics.CONFIG);
-        }
-
+    @Override
+    protected void setupUpgrades() {
         // We support up to 8 upgrade slots, see ICellWorkbenchItem, but we need to pre-create all slots here
         // while the active number of slots changes depending on the item inserted
         var upgradeInventory = new SupplierInternalInventory(this::getUpgrades);

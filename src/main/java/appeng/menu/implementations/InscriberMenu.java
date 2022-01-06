@@ -82,11 +82,6 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     }
 
     @Override
-    protected void setupConfig() {
-        this.setupUpgrades();
-    }
-
-    @Override
     protected void standardDetectAndSendChanges() {
         if (isServer()) {
             this.maxProcessingTime = getHost().getMaxProcessingTime();

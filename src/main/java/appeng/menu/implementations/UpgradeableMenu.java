@@ -18,6 +18,8 @@
 
 package appeng.menu.implementations;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.ItemLike;
@@ -33,9 +35,12 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.SlotSemantics;
 import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
+import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.IOptionalSlotHost;
 import appeng.menu.slot.OptionalFakeSlot;
 
@@ -59,15 +64,41 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
 
         this.toolbox = new ToolboxMenu(this);
 
+        // Upgrade slots MUST be added before the config slots that depend on them.
+        // Otherwise, the client might reject the initial server-sent config slot content because it doesn't
+        // know about the expanded capacity when it receives them.
+        this.setupUpgrades();
         this.setupConfig();
 
         this.createPlayerInventorySlots(ip);
     }
 
-    protected abstract void setupConfig();
+    @ApiStatus.OverrideOnly
+    protected void setupConfig() {
+    }
 
-    protected final void setupUpgrades() {
+    @ApiStatus.OverrideOnly
+    protected void setupUpgrades() {
         setupUpgrades(this.getHost().getUpgrades());
+    }
+
+    protected final void addConfigSlots(GenericStackInv config, int rows, int cols) {
+        addExpandableConfigSlots(config, rows, cols, 0);
+    }
+
+    protected final void addExpandableConfigSlots(GenericStackInv config, int rows, int cols, int optionalRows) {
+        var inv = config.createMenuWrapper();
+
+        for (int y = 0; y < rows + optionalRows; y++) {
+            for (int x = 0; x < cols; x++) {
+                int invIdx = y * cols + x;
+                if (y < rows) {
+                    this.addSlot(new FakeSlot(inv, invIdx), SlotSemantics.CONFIG);
+                } else {
+                    this.addSlot(new OptionalFakeSlot(inv, this, invIdx, y - rows), SlotSemantics.CONFIG);
+                }
+            }
+        }
     }
 
     public ToolboxMenu getToolbox() {
