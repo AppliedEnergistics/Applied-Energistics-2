@@ -65,8 +65,6 @@ public class IOPortMenu extends UpgradeableMenu<IOPortBlockEntity> {
             this.addSlot(new OutputSlot(cells, 6 + i,
                     RestrictedInputSlot.PlacableItemType.STORAGE_CELLS.icon), SlotSemantics.MACHINE_OUTPUT);
         }
-
-        this.setupUpgrades();
     }
 
     @Override

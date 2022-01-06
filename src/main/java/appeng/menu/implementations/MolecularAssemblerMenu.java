@@ -78,8 +78,6 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
                 SlotSemantics.ENCODED_PATTERN);
 
         this.addSlot(new OutputSlot(mac, 9, null), SlotSemantics.MACHINE_OUTPUT);
-
-        setupUpgrades();
     }
 
     @Override

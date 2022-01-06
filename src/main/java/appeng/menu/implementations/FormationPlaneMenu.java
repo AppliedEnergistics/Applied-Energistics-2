@@ -28,10 +28,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.FormationPlaneScreen;
 import appeng.core.definitions.AEItems;
-import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.OptionalFakeSlot;
 import appeng.parts.automation.FormationPlanePart;
 
 /**
@@ -54,19 +51,7 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
 
     @Override
     protected void setupConfig() {
-        var config = this.getHost().getConfig().createMenuWrapper();
-        for (int y = 0; y < 7; y++) {
-            for (int x = 0; x < 9; x++) {
-                int invIdx = y * 9 + x;
-                if (y < 2) {
-                    this.addSlot(new FakeSlot(config, invIdx), SlotSemantics.CONFIG);
-                } else {
-                    this.addSlot(new OptionalFakeSlot(config, this, invIdx, y - 2), SlotSemantics.CONFIG);
-                }
-            }
-        }
-
-        this.setupUpgrades();
+        addExpandableConfigSlots(getHost().getConfig(), 2, 9, 5);
     }
 
     @Override

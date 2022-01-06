@@ -40,10 +40,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.implementations.StorageBusScreen;
 import appeng.core.definitions.AEItems;
-import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.OptionalFakeSlot;
 import appeng.parts.storagebus.StorageBusPart;
 
 /**
@@ -84,19 +81,7 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
 
     @Override
     protected void setupConfig() {
-        var config = getHost().getConfig().createMenuWrapper();
-        for (int y = 0; y < 7; y++) {
-            for (int x = 0; x < 9; x++) {
-                int invSlot = y * 9 + x;
-                if (y < 2) {
-                    this.addSlot(new FakeSlot(config, invSlot), SlotSemantics.CONFIG);
-                } else {
-                    this.addSlot(new OptionalFakeSlot(config, this, invSlot, y - 2), SlotSemantics.CONFIG);
-                }
-            }
-        }
-
-        this.setupUpgrades();
+        addExpandableConfigSlots(getHost().getConfig(), 2, 9, 5);
     }
 
     @Override

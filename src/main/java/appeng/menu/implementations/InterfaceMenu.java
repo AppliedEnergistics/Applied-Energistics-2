@@ -66,11 +66,6 @@ public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
         this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
     }
 
-    @Override
-    protected void setupConfig() {
-        this.setupUpgrades();
-    }
-
     /**
      * Opens a sub-menu to enter the amount for a config-slot
      *

@@ -81,8 +81,6 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
 
     @Override
     protected void setupConfig() {
-        this.setupUpgrades();
-
         var inv = getHost().getConfig().createMenuWrapper();
         this.addSlot(new FakeSlot(inv, 0), SlotSemantics.CONFIG);
     }

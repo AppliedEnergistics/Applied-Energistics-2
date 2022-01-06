@@ -65,10 +65,6 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu<EnergyLevelEmitterPa
     }
 
     @Override
-    protected void setupConfig() {
-    }
-
-    @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.setRedStoneMode(cm.getSetting(Settings.REDSTONE_EMITTER));
     }

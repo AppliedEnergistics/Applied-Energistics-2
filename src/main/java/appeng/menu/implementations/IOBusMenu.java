@@ -53,8 +53,6 @@ public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
 
     @Override
     protected void setupConfig() {
-        this.setupUpgrades();
-
         var inv = this.getHost().getConfig().createMenuWrapper();
         var s = SlotSemantics.CONFIG;
         this.addSlot(new FakeSlot(inv, 0), s);
