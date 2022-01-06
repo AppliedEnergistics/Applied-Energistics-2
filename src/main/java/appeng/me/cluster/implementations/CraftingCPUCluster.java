@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import appeng.api.config.Upgrades;
 import appeng.helpers.DualityInterface;
+import appeng.helpers.PatternHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -742,24 +743,35 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 							{
 								continue;
 							}
+							if( details.isCraftable() )
+							{
+								ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+							}
+							else
+							{
+								ic = new InventoryCrafting( new ContainerNull(), PatternHelper.PROCESSING_INPUT_WIDTH, PatternHelper.PROCESSING_INPUT_HEIGHT );
+							}
 
-							ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 							boolean found = false;
 
-							for (int x = 0; x < input.length; x++) {
-								if (input[x] != null) {
+							for( int x = 0; x < input.length; x++ )
+							{
+								if( input[x] != null )
+								{
 									found = false;
 
-									if (details.isCraftable()) {
+									if( details.isCraftable() )
+									{
 										final Collection<IAEItemStack> itemList;
 
-										if (details.canSubstitute()) {
-											final List<IAEItemStack> substitutes = details.getSubstituteInputs(x);
-											itemList = new ArrayList<>(substitutes.size());
+										if( details.canSubstitute() )
+										{
+											final List<IAEItemStack> substitutes = details.getSubstituteInputs( x );
+											itemList = new ArrayList<>( substitutes.size() );
 
-											for (IAEItemStack stack : substitutes) {
-												itemList.addAll(this.inventory.getItemList().findFuzzy(stack,
-														FuzzyMode.IGNORE_ALL));
+											for( IAEItemStack stack : substitutes )
+											{
+												itemList.addAll( this.inventory.getItemList().findFuzzy( stack, FuzzyMode.IGNORE_ALL ) );
 											}
 										} else {
 											itemList = new ArrayList<>(1);

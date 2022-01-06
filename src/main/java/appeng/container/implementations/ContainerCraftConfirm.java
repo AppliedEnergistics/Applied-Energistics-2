@@ -26,6 +26,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 
+import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -345,11 +346,15 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
 
+		if( ah instanceof PartExpandedProcessingPatternTerminal )
+		{
+			originalGui = GuiBridge.GUI_EXPANDED_PROCESSING_PATTERN_TERMINAL;
+		}
+
 		if( this.result != null && !this.isSimulation() )
 		{
 			final ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
-			final ICraftingLink g = cc.submitJob( this.result, null, this.getSelectedCpu() == -1 ? null : this.cpus.get( this.getSelectedCpu() ).getCpu(), true,
-					this.getActionSrc() );
+			final ICraftingLink g = cc.submitJob( this.result, null, this.getSelectedCpu() == -1 ? null : this.cpus.get( this.getSelectedCpu() ).getCpu(), true, this.getActionSrc() );
 			this.setAutoStart( false );
 			if( g != null && originalGui != null && this.getOpenContext() != null )
 			{
