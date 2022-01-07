@@ -231,10 +231,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public InteractionResult onActivated(Level level, BlockPos pos, Player player,
             InteractionHand hand,
             @Nullable ItemStack heldItem, BlockHitResult hit) {
-        // Transform from world into block space
-        Vec3 hitVec = hit.getLocation();
-        Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(level, pos).activate(player, hand, hitInBlock)
+        return this.cb(level, pos).activate(player, hand, hit)
                 ? InteractionResult.sidedSuccess(level.isClientSide())
                 : InteractionResult.PASS;
     }

@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
@@ -623,15 +624,20 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public boolean activate(Player player, InteractionHand hand, Vec3 pos) {
-        final SelectedPart p = this.selectPartLocal(pos);
+    public boolean activate(Player player, InteractionHand hand, BlockHitResult hit) {
+        // Transform from world into block space
+        var pos = getLocation().getPos();
+        Vec3 hitVec = hit.getLocation();
+        Vec3 localPos = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
+
+        final SelectedPart p = this.selectPartLocal(localPos);
         if (p != null && p.part != null) {
             // forge sends activate even when sneaking in some cases (eg emtpy hand)
             // if sneaking try shift activate first.
-            if (InteractionUtil.isInAlternateUseMode(player) && p.part.onShiftActivate(player, hand, pos)) {
+            if (InteractionUtil.isInAlternateUseMode(player) && p.part.onShiftActivate(player, hand, localPos)) {
                 return true;
             }
-            return p.part.onActivate(player, hand, pos);
+            return p.part.onActivate(player, hand, localPos);
         }
         return false;
     }
@@ -925,7 +931,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 }
 
                 // Check if the adjacent TE is a cable bus or not
-                if (adjacentHost instanceof CableBusContainer) {
+                if (adjacentHost instanceof CableBusContainer) { // TODO: this is ALWAYS false?
                     renderState.getCableBusAdjacent().add(side);
                 }
 

@@ -43,7 +43,7 @@ import net.minecraft.world.level.Level;
  * actually place the part onto the bus. Implement this interface on your part {@link net.minecraft.world.item.Item}.
  * <p/>
  * To help with placing parts onto buses, use
- * {@link PartHelper#usePartItem(ItemStack, BlockPos, Direction, Player, InteractionHand, Level)} to implement your
+ * {@link PartHelper#usePartItem} to implement your
  * items {@link net.minecraft.world.item.Item#useOn(UseOnContext)} method.
  */
 public interface IPartItem<P extends IPart> extends ItemLike {

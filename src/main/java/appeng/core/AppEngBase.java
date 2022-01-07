@@ -154,6 +154,14 @@ public abstract class AppEngBase implements AppEng {
         UseBlockCallback.EVENT.register(WrenchHook::onPlayerUseBlock);
         UseBlockCallback.EVENT.register(ToolItemHook::onPlayerUseBlock);
         InitBiomeModifications.init();
+
+        if (FabricLoader.getInstance().isModLoaded("libmultipart")) {
+            try {
+                Class.forName("appeng.integration.modules.lmp.LmpIntegration").getMethod("init").invoke(null);
+            } catch (Exception e) {
+                AELog.warn("Failed to load LMP compat", e);
+            }
+        }
     }
 
     /**

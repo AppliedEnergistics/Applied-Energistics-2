@@ -27,6 +27,8 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.multipart.api.MultipartContainer;
+import appeng.integration.modules.lmp.CableBusPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -82,9 +84,9 @@ public final class PartHelper {
      */
     @Nullable
     public static IPart getPart(BlockGetter level, BlockPos pos, @Nullable Direction side) {
-        var be = level.getBlockEntity(pos);
-        if (be instanceof IPartHost partHost) {
-            return partHost.getPart(side);
+        var host = getPartHost((Level) level, pos); // TODO: bad cast
+        if (host != null) {
+            return host.getPart(side);
         }
         return null;
     }
@@ -128,9 +130,9 @@ public final class PartHelper {
     @Nullable
     public static IPartHost getOrPlacePartHost(Level level, BlockPos pos, boolean force, @Nullable Player player) {
         // Get or place part host
-        var blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof IPartHost partHost) {
-            return partHost;
+        var host = getPartHost(level, pos);
+        if (host != null) {
+            return host;
         } else {
             if (!force && !canPlacePartHost(player, level, pos)) {
                 return null;
@@ -175,6 +177,15 @@ public final class PartHelper {
         var blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof IPartHost partHost) {
             return partHost;
+        }
+
+        // TODO no hard dep
+        var maybeContainer = MultipartContainer.ATTRIBUTE.getFirstOrNull(level, pos);
+        if (maybeContainer != null) {
+            var cableBus = maybeContainer.getFirstPart(CableBusPart.class);
+            if (cableBus != null) {
+                return cableBus;
+            }
         }
 
         return null;

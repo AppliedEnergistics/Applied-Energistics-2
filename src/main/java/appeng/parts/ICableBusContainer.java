@@ -30,6 +30,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.SelectedPart;
@@ -46,7 +47,7 @@ public interface ICableBusContainer {
 
     void onEntityCollision(Entity e);
 
-    boolean activate(Player player, InteractionHand hand, Vec3 vecFromPool);
+    boolean activate(Player player, InteractionHand hand, BlockHitResult hitResult);
 
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 

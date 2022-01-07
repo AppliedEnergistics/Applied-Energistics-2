@@ -48,6 +48,13 @@ repositories {
             includeGroup "org.parchmentmc.data"
         }
     }
+    maven { // for LMP
+        name "BuildCraft"
+        url "https://mod-buildcraft.com/maven"
+        content {
+            includeGroup "alexiil.mc.lib"
+        }
+    }
 }
 
 dependencies {
@@ -76,6 +83,8 @@ dependencies {
     include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
+
+    modImplementation "alexiil.mc.lib:libmultipart-all:${project.lmp_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 

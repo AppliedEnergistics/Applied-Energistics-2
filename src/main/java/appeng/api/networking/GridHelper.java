@@ -29,8 +29,11 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.multipart.api.MultipartContainer;
+import appeng.integration.modules.lmp.CableBusPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
 import appeng.api.exceptions.FailedConnectionException;
@@ -107,6 +110,16 @@ public final class GridHelper {
             var te = level.getBlockEntity(pos);
             if (te instanceof IInWorldGridNodeHost host) {
                 return host;
+            }
+
+            // TODO: make this a soft-dep (possibly using API lookup?)
+            // TODO: cast is ugly
+            var multipartContainer = MultipartContainer.ATTRIBUTE.getFirstOrNull((Level) level, pos);
+            if (multipartContainer != null) {
+                var cableBusPart = multipartContainer.getFirstPart(CableBusPart.class);
+                if (cableBusPart != null) {
+                    return cableBusPart;
+                }
             }
         }
         return null;

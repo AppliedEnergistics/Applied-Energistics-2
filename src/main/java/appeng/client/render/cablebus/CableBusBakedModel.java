@@ -130,7 +130,10 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
             Supplier<Random> randomSupplier, RenderContext context) {
 
         CableBusRenderState renderState = getRenderState(blockView, pos);
+        emitBlockQuads(renderState, blockView, state, pos, randomSupplier, context);
+    }
 
+    public void emitBlockQuads(@Nullable CableBusRenderState renderState, BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         if (renderState == null) {
             return;
         }
