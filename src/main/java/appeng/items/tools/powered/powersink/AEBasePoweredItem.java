@@ -102,14 +102,14 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         final double maxStorage = this.getAEMaxPower(stack);
         final double currentStorage = this.getAECurrentPower(stack);
         final double required = maxStorage - currentStorage;
-        final double overflow = amount - required;
+        final double overflow = Math.max(0, Math.min(amount - required, amount));
 
         if (mode == Actionable.MODULATE) {
             var toAdd = Math.min(amount, required);
             setAECurrentPower(stack, currentStorage + toAdd);
         }
 
-        return Math.max(0, overflow);
+        return overflow;
     }
 
     @Override
