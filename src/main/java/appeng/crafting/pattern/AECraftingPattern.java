@@ -33,7 +33,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEFluidKey;
@@ -328,12 +327,21 @@ public class AECraftingPattern implements IAEPatternDetails {
 
         var containedFluid = FluidContainerHelper.getContainedStack(itemKey.toStack());
 
-        if (canSubstituteFluids && containedFluid != null) {
-            // For the MVP, we only support buckets in regular shaped and shapeless recipes.
-            if (recipe.getClass() == ShapedRecipe.class || recipe.getClass() == ShapelessRecipe.class) {
-                if (itemKey.getItem() instanceof BucketItem) {
-                    return new GenericStack(containedFluid.what(), containedFluid.amount());
-                }
+        if (canSubstituteFluids && containedFluid != null && itemKey.getItem() instanceof BucketItem) {
+            // We only support buckets since we can't predict the behavior of other kinds of containers (ender tanks...)
+
+            // Check that the remaining item is indeed the emptied container.
+            var testFrameCopy = new CraftingContainer(new NullMenu(), 3, 3);
+            for (int i = 0; i < 9; ++i) {
+                testFrameCopy.setItem(i, testFrame.getItem(i).copy());
+            }
+            // Note: the following call might do a performed extraction with mods that have native fluid container
+            // support (such as immersive engineering "fluid aware" recipes). This is only safe because we restrict this
+            // code path to buckets.
+            var remainingItems = recipe.getRemainingItems(testFrameCopy);
+            var slotRemainder = remainingItems.get(slot);
+            if (ItemStack.matches(slotRemainder, CraftingRemainders.getRemainder(itemKey.toStack()))) {
+                return new GenericStack(containedFluid.what(), containedFluid.amount());
             }
         }
 
