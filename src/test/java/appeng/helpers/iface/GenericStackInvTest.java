@@ -218,4 +218,16 @@ class GenericStackInvTest {
             assertEquals(ONE_STICK, inv.getStack(0));
         }
     }
+
+    @Nested
+    class Extract {
+        @Test
+        void testPartialExtract() {
+            inv.setStack(0, new GenericStack(STICK_KEY, 32));
+            assertEquals(10, inv.extract(0, STICK_KEY, 10, Actionable.SIMULATE));
+            assertEquals(new GenericStack(STICK_KEY, 32), inv.getStack(0));
+            assertEquals(10, inv.extract(0, STICK_KEY, 10, Actionable.MODULATE));
+            assertEquals(new GenericStack(STICK_KEY, 22), inv.getStack(0));
+        }
+    }
 }

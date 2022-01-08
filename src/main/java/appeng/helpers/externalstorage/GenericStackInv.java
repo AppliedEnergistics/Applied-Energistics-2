@@ -42,6 +42,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.MEStorage;
+import appeng.core.AELog;
 import appeng.util.ConfigMenuInventory;
 
 public class GenericStackInv implements MEStorage {
@@ -167,8 +168,14 @@ public class GenericStackInv implements MEStorage {
                 } else {
                     setStack(slot, new GenericStack(what, newAmount));
                 }
-                // Ensure setStack didn't screw us over and reduce the extracted amount by what is left
-                canExtract = Math.max(0, canExtract - getAmount(slot));
+                // Ensure setStack didn't screw us over
+                var reallyExtracted = Math.max(0, currentAmount - getAmount(slot));
+                if (reallyExtracted != canExtract) {
+                    AELog.warn(
+                            "GenericStackInv simulation/modulation extraction mismatch: canExtract=%d, reallyExtracted=%d",
+                            canExtract, reallyExtracted);
+                    canExtract = reallyExtracted;
+                }
             }
         }
         return canExtract;
