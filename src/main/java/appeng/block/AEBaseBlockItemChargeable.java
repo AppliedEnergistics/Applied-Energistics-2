@@ -65,7 +65,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
         final double internalCurrentPower = this.getInternal(is);
         final double internalMaxPower = this.getAEMaxPower(is);
         final double required = internalMaxPower - internalCurrentPower;
-        final double overflow = Math.max(0, amount - required);
+        final double overflow = Math.max(0, Math.min(amount - required, amount));
 
         if (mode == Actionable.MODULATE) {
             final double toAdd = Math.min(required, amount);
