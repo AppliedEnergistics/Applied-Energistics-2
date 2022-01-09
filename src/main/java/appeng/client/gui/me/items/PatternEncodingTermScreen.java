@@ -62,6 +62,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     private final ActionButton substitutionsDisabledBtn;
     private final ActionButton fluidSubstitutionsEnabledBtn;
     private final ActionButton fluidSubstitutionsDisabledBtn;
+    private final ActionButton cycleProcessingOutputBtn;
 
     public PatternEncodingTermScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -91,6 +92,10 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         this.fluidSubstitutionsDisabledBtn.setHalfSize(true);
         widgets.add("fluidSubstitutionsDisabled", this.fluidSubstitutionsDisabledBtn);
 
+        this.cycleProcessingOutputBtn = new ActionButton(
+                ActionItems.CYCLE_PROCESSING_OUTPUT, act -> getMenu().cycleProcessingOutput());
+        this.cycleProcessingOutputBtn.setHalfSize(true);
+        widgets.add("cycleProcessingOutput", this.cycleProcessingOutputBtn);
         ActionButton encodeBtn = new ActionButton(ActionItems.ENCODE, act -> menu.encode());
         widgets.add("encodePattern", encodeBtn);
 
@@ -141,6 +146,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             this.fluidSubstitutionsDisabledBtn.visible = false;
         }
 
+        this.cycleProcessingOutputBtn.visible = menu.canCycleProcessingOutputs();
         setSlotsHidden(SlotSemantics.CRAFTING_RESULT, mode != EncodingMode.CRAFTING);
         setSlotsHidden(SlotSemantics.PROCESSING_PRIMARY_RESULT, mode != EncodingMode.PROCESSING);
         setSlotsHidden(SlotSemantics.PROCESSING_FIRST_OPTIONAL_RESULT, mode != EncodingMode.PROCESSING);

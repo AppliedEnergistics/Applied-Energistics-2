@@ -8,6 +8,7 @@ import java.util.Locale;
 public enum ItemModText implements LocalizationEnum {
     MISSING_ID("Cannot identify recipe"),
     MISSING_ITEMS("Missing items will be skipped"),
+    INCOMPATIBLE_RECIPE("Incompatible recipe"),
     NO_OUTPUT("Recipe has no output"),
     RECIPE_TOO_LARGE("Recipe larger than 3x3"),
     REQUIRES_PROCESSING_MODE("Requires processing mode"),

@@ -61,6 +61,8 @@ public enum ButtonToolTips implements LocalizationEnum {
     FilterOnExtractDisabled("Filter on insertion only."),
     FilterOnExtractEnabled("Filter on insert and extract."),
     TypeFilter("Filter Types"),
+    CycleProcessingOutput("Cycle Outputs"),
+    CycleProcessingOutputTooltip("Change the primary output of this pattern"),
     FluidSubstitutions("Fluid Substitutions"),
     FluidSubstitutionsDescDisabled("Don't use fluids."),
     FluidSubstitutionsDescEnabled(
