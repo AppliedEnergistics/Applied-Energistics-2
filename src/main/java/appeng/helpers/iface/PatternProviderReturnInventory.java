@@ -18,21 +18,17 @@
 
 package appeng.helpers.iface;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -42,7 +38,7 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.externalstorage.GenericStackInv;
-import appeng.util.IVariantConversion;
+import appeng.util.Platform;
 
 public class PatternProviderReturnInventory extends GenericStackInv {
     public static int NUMBER_OF_SLOTS = 9;
@@ -53,9 +49,10 @@ public class PatternProviderReturnInventory extends GenericStackInv {
      */
     private boolean injectingIntoNetwork = false;
     // TODO: how do we expose this for foreign storage channels?
-    private final Participant participant = new Participant();
-    private final Storage<ItemVariant> itemStorage = new GenericStorage<>(IVariantConversion.ITEM);
-    private final Storage<FluidVariant> fluidStorage = new GenericStorage<>(IVariantConversion.FLUID);
+    private final IItemHandler itemHandler = new ItemHandler();
+    private final LazyOptional<IItemHandler> itemHandlerOpt = LazyOptional.of(() -> itemHandler);
+    private final IFluidHandler fluidHandler = new FluidHandler();
+    private final LazyOptional<IFluidHandler> fluidHandlerOpt = LazyOptional.of(() -> fluidHandler);
 
     public PatternProviderReturnInventory(Runnable listener) {
         super(listener, NUMBER_OF_SLOTS);
@@ -103,77 +100,117 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         }
     }
 
-    public Storage<ItemVariant> getItemStorage() {
-        return itemStorage;
-    }
-
-    public Storage<FluidVariant> getFluidStorage() {
-        return fluidStorage;
-    }
-
-    private class Participant extends SnapshotParticipant<GenericStack[]> {
-        @Override
-        protected GenericStack[] createSnapshot() {
-            var snapshot = new GenericStack[stacks.length];
-            System.arraycopy(stacks, 0, snapshot, 0, stacks.length);
-            return snapshot;
-        }
-
-        @Override
-        protected void readSnapshot(GenericStack[] snapshot) {
-            System.arraycopy(snapshot, 0, stacks, 0, stacks.length);
-        }
-
-        @Override
-        protected void onFinalCommit() {
-            onChange();
+    public <T> LazyOptional<T> getCapability(Capability<T> capability) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return itemHandlerOpt.cast();
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return fluidHandlerOpt.cast();
+        } else {
+            return LazyOptional.empty();
         }
     }
 
-    private class GenericStorage<V extends TransferVariant<?>> implements InsertionOnlyStorage<V> {
-        private final IVariantConversion<V> conversion;
-
-        protected GenericStorage(IVariantConversion<V> conversion) {
-            this.conversion = conversion;
+    private class ItemHandler implements IItemHandler {
+        @Override
+        public int getSlots() {
+            return size();
         }
 
         @Override
-        public long insert(V resource, long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+        public ItemStack getStackInSlot(int slot) {
+            if (stacks[slot] != null && stacks[slot].what() instanceof AEItemKey what) {
+                return what.toStack((int) Math.min(Integer.MAX_VALUE, stacks[slot].amount()));
+            }
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (injectingIntoNetwork) {
+                // We are pushing out items already, prevent changing the stacks in unexpected ways.
+                return stack;
+            }
+
+            var genericStack = GenericStack.fromItemStack(stack);
+            if (genericStack != null) {
+                var inserted = insert(slot, genericStack.what(), genericStack.amount(),
+                        simulate ? Actionable.SIMULATE : Actionable.MODULATE);
+                if (inserted > 0) {
+                    return Platform.copyStackWithSize(stack, stack.getCount() - (int) inserted);
+                }
+            }
+
+            return stack;
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 64;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return true;
+        }
+    }
+
+    private class FluidHandler implements IFluidHandler {
+
+        @Override
+        public int getTanks() {
+            return size();
+        }
+
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            if (stacks[tank] != null && stacks[tank].what() instanceof AEFluidKey what) {
+                return what.toStack((int) Math.min(Integer.MAX_VALUE, stacks[tank].amount()));
+            }
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return 4 * AEFluidKey.AMOUNT_BUCKET;
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, FluidStack stack) {
+            return true;
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
             if (injectingIntoNetwork) {
                 // We are pushing out items already, prevent changing the stacks in unexpected ways.
                 return 0;
             }
-            long totalInserted = 0;
 
-            for (int slot = 0; slot < stacks.length; ++slot) {
-                if (stacks[slot] == null) {
-                    long inserted = Math.min(maxAmount - totalInserted, conversion.getBaseSlotSize(resource));
-
-                    if (inserted > 0) {
-                        participant.updateSnapshots(transaction);
-                        stacks[slot] = new GenericStack(conversion.getKey(resource), inserted);
-                        totalInserted += inserted;
-                    }
-                } else if (conversion.variantMatches(stacks[slot].what(), resource)) {
-                    var stack = stacks[slot];
-                    long inserted = Math.min(maxAmount - totalInserted,
-                            conversion.getBaseSlotSize(resource) - stack.amount());
-
-                    if (inserted > 0) {
-                        participant.updateSnapshots(transaction);
-                        stacks[slot] = new GenericStack(stack.what(), stack.amount() + inserted);
-                        totalInserted += inserted;
-                    }
-                }
+            var what = AEFluidKey.of(resource);
+            if (what == null) {
+                return 0;
             }
 
-            return totalInserted;
+            long filled = 0;
+            for (int i = 0; i < stacks.length && resource.getAmount() - filled > 0; ++i) {
+                filled += insert(i, what, resource.getAmount() - filled, Actionable.of(action));
+            }
+            return (int) filled;
         }
 
         @Override
-        public Iterator<StorageView<V>> iterator(TransactionContext transaction) {
-            return Collections.emptyIterator();
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
         }
     }
 }

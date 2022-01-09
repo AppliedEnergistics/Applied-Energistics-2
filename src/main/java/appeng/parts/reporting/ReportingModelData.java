@@ -18,7 +18,16 @@
 
 package appeng.parts.reporting;
 
-public class ReportingModelData {
+import javax.annotation.Nullable;
+
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
+
+import appeng.client.render.model.AEModelData;
+
+public class ReportingModelData implements IModelData {
+
+    public static final ModelProperty<Byte> SPIN = AEModelData.SPIN;
 
     private final byte spin;
 
@@ -26,8 +35,25 @@ public class ReportingModelData {
         this.spin = spin;
     }
 
-    public byte getSpin() {
-        return spin;
+    @Override
+    public boolean hasProperty(ModelProperty<?> prop) {
+        return prop == SPIN;
+    }
+
+    @Override
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <T> T getData(ModelProperty<T> prop) {
+        if (prop == SPIN) {
+            return (T) (Byte) this.spin;
+        }
+        return null;
+    }
+
+    @Override
+    @Nullable
+    public <T> T setData(ModelProperty<T> prop, T data) {
+        return null;
     }
 
     @Override

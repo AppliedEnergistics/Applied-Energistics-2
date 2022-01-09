@@ -1,8 +1,8 @@
 package appeng.init.client;
 
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
 
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
@@ -16,11 +16,12 @@ public final class InitKeyTypes {
     }
 
     public static void init() {
-        var registry = FabricRegistryBuilder
-                .createSimple(AEKeyType.class, REGISTRY_ID)
-                .attribute(RegistryAttribute.SYNCED)
-                .attribute(RegistryAttribute.PERSISTED)
-                .buildAndRegister();
+        var registry = (ForgeRegistry<AEKeyType>) new RegistryBuilder<AEKeyType>()
+                .setType(AEKeyType.class)
+                .setMaxID(127)
+                .setName(REGISTRY_ID)
+                .create();
+
         AEKeyTypesInternal.setRegistry(registry);
 
         AEKeyTypes.register(AEKeyType.items());

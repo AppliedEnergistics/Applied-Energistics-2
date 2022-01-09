@@ -28,6 +28,7 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
@@ -36,7 +37,7 @@ public final class InitFeatures {
     private InitFeatures() {
     }
 
-    public static void init(Registry<Feature<?>> registry) {
+    public static void init(IForgeRegistry<Feature<?>> registry) {
         // Register the configured versions of our features
         registerQuartzOreFeature();
     }

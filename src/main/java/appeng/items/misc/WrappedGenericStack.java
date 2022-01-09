@@ -21,11 +21,10 @@ package appeng.items.misc;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.common.primitives.Ints;
+
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -36,6 +35,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
@@ -141,21 +142,20 @@ public class WrappedGenericStack extends AEBaseItem {
         var what = unwrapWhat(itemInSlot);
         if (clickAction == ClickAction.PRIMARY && what instanceof AEFluidKey fluidKey) {
             // TODO: Getting the carried item is tricky
-            var heldContainer = FluidStorage.ITEM.find(otherStack,
-                    ContainerItemContext.ofPlayerCursor(player, player.containerMenu));
+            var heldContainer = FluidUtil.getFluidHandler(player.containerMenu.getCarried())
+                    .orElse(null);
             if (heldContainer != null) {
                 long amount = unwrapAmount(itemInSlot);
-                long inserted;
-                try (var tx = Transaction.openOuter()) {
-                    inserted = heldContainer.insert(fluidKey.toVariant(), amount, tx);
-                    tx.commit();
-                }
+                long inserted = heldContainer.fill(fluidKey.toStack(Ints.saturatedCast(amount)),
+                        IFluidHandler.FluidAction.EXECUTE);
 
                 if (inserted >= amount) {
                     slot.set(ItemStack.EMPTY);
                 } else {
                     slot.set(wrap(what, amount - inserted));
                 }
+
+                player.containerMenu.setCarried(heldContainer.getContainer());
             }
         }
 

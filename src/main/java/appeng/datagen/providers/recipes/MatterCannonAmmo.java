@@ -30,6 +30,10 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ItemExistsCondition;
+import net.minecraftforge.common.crafting.conditions.NotCondition;
+import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 
 import appeng.recipes.mattercannon.MatterCannonAmmoSerializer;
 
@@ -39,11 +43,14 @@ record MatterCannonAmmo(ResourceLocation id, Tag.Named<Item> tag, Item item, flo
         JsonArray conditions = new JsonArray();
         if (tag != null) {
             json.add("ammo", Ingredient.of(tag).toJson());
-            json.addProperty("ae2:has_tag", tag.getName().toString());
+            conditions.add(CraftingHelper.serialize(new NotCondition(
+                    new TagEmptyCondition(tag.getName()))));
         } else if (item != null) {
             json.add("ammo", Ingredient.of(item).toJson());
-            json.addProperty("ae2:has_item", Registry.ITEM.getKey(item).toString());
+            conditions.add(CraftingHelper.serialize(
+                    new ItemExistsCondition(Registry.ITEM.getKey(item).toString())));
         }
+
         json.addProperty("weight", this.weight);
         json.add("conditions", conditions);
     }
