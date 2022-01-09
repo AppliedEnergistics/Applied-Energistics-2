@@ -136,18 +136,11 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
 
         // JEI will align non-shaped recipes smaller than 3x3 in the grid. It'll center them horizontally, and
         // some will be aligned to the bottom. (i.e. slab recipes).
-        int width, height;
+        int width;
         if (recipe instanceof ShapedRecipe shapedRecipe) {
             width = shapedRecipe.getWidth();
-            height = shapedRecipe.getHeight();
         } else {
-            if (ingredients.size() > 4) {
-                width = height = 3;
-            } else if (ingredients.size() > 1) {
-                width = height = 2;
-            } else {
-                width = height = 1;
-            }
+            width = CRAFTING_GRID_WIDTH;
         }
 
         var result = new HashMap<Integer, Ingredient>(ingredients.size());
