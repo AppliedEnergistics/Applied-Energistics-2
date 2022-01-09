@@ -1,20 +1,34 @@
 package appeng.integration.modules.jei.transfer;
 
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.gui.widgets.Slot;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerErrorRenderer;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.localization.ItemModText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.CraftingRecipeUtil;
 
@@ -23,74 +37,156 @@ import appeng.util.CraftingRecipeUtil;
  * server-side because permission-checks and inventory extraction cannot be done client-side.
  */
 public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends AbstractTransferHandler<T> {
+
+    private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator
+            .comparing(GridInventoryEntry::getStoredAmount);
+
     public UseCraftingRecipeTransfer(Class<T> containerClass) {
         super(containerClass);
     }
 
     @Override
-    protected boolean isOnlyCraftingSupported() {
-        return true;
+    protected Result transferRecipe(T menu, Recipe<?> recipe, Display display, boolean doTransfer) {
+
+        boolean craftingRecipe = isCraftingRecipe(recipe, display);
+        if (!craftingRecipe) {
+            return Result.createNotApplicable();
+        }
+
+        if (!fitsIn3x3Grid(recipe, display)) {
+            return Result.createFailed(ItemModText.RECIPE_TOO_LARGE.text());
+        }
+
+        if (recipe == null) {
+            recipe = createFakeRecipe(display);
+        }
+
+        // Find missing ingredients and highlight the slots which have these
+        if (!doTransfer) {
+            var missingSlots = menu.findMissingIngredients(getGuiSlotToIngredientMap(recipe));
+            if (!missingSlots.isEmpty()) {
+                return Result.createSuccessful()
+                        .color(0x80FFA500)
+                        .errorRenderer(new MissingSlots(missingSlots));
+            }
+        } else {
+            performTransfer(menu, recipe);
+        }
+
+        // No error
+        return Result.createSuccessful().blocksFurtherHandling();
     }
 
-    protected void performTransfer(T menu,
-            @Nullable Recipe<?> recipe,
-            List<List<GenericStack>> genericIngredients,
-            List<GenericStack> genericResults, boolean forCraftingTable) {
+    private Recipe<?> createFakeRecipe(Display display) {
+        var ingredients = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
+                Ingredient.EMPTY);
 
-        // We send the items shown by REI in any case to serve as a fallback in case the recipe is unresolvable
-        var flatIngredients = NonNullList.withSize(9, ItemStack.EMPTY);
-        for (int i = 0; i < genericIngredients.size(); i++) {
-            var inputIngredient = genericIngredients.get(i);
-            if (inputIngredient.isEmpty()) {
-                continue;
+        for (int i = 0; i < Math.min(display.getInputEntries().size(), ingredients.size()); i++) {
+            var ingredient = Ingredient.of(display.getInputEntries().get(i).stream()
+                    .filter(es -> es.getType() == VanillaEntryTypes.ITEM)
+                    .map(es -> (ItemStack) es.castValue()));
+            ingredients.set(i, ingredient);
+        }
+
+        return new ShapedRecipe(AppEng.makeId("__fake_recipe"), "", CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT,
+                ingredients, ItemStack.EMPTY);
+    }
+
+    protected void performTransfer(T menu, Recipe<?> recipe) {
+
+        // We send the items in the recipe in any case to serve as a fallback in case the recipe is transient
+        var templateItems = findGoodTemplateItems(recipe, menu);
+
+        var recipeId = recipe.getId();
+        // Don't transmit a recipe id to the server in case the recipe is not actually resolvable
+        // this is the case for recipes synthetically generated for JEI
+        if (menu.getPlayer().level.getRecipeManager().byKey(recipe.getId()).isEmpty()) {
+            AELog.debug("Cannot send recipe id %s to server because it's transient", recipeId);
+            recipeId = null;
+        }
+
+        NetworkHandler.instance().sendToServer(new FillCraftingGridFromRecipePacket(recipeId, templateItems));
+    }
+
+    private NonNullList<ItemStack> findGoodTemplateItems(Recipe<?> recipe, MEStorageMenu menu) {
+        var ingredientPriorities = getIngredientPriorities(menu, ENTRY_COMPARATOR);
+
+        var templateItems = NonNullList.withSize(9, ItemStack.EMPTY);
+        var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
+        for (int i = 0; i < ingredients.size(); i++) {
+            var ingredient = ingredients.get(i);
+            if (!ingredient.isEmpty()) {
+                // Try to find the best item. In case the ingredient is a tag, it might contain versions the
+                // player doesn't actually have
+                var stack = ingredientPriorities.entrySet()
+                        .stream()
+                        .filter(e -> e.getKey() instanceof AEItemKey itemKey && ingredient.test(itemKey.toStack()))
+                        .max(Comparator.comparingInt(Map.Entry::getValue))
+                        .map(e -> ((AEItemKey) e.getKey()).toStack())
+                        .orElse(ingredient.getItems()[0]);
+
+                templateItems.set(i, stack);
             }
-            if (i < flatIngredients.size()) {
-                // Just use the first *item* in the list (it might alternate with fluids)
-                for (var entryStack : inputIngredient) {
-                    if (entryStack.what() instanceof AEItemKey itemKey) {
-                        flatIngredients.set(i, itemKey.toStack());
-                        break;
+        }
+        return templateItems;
+    }
+
+    private Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
+        var ingredients = recipe.getIngredients();
+
+        // JEI will align non-shaped recipes smaller than 3x3 in the grid. It'll center them horizontally, and
+        // some will be aligned to the bottom. (i.e. slab recipes).
+        int width, height;
+        if (recipe instanceof ShapedRecipe shapedRecipe) {
+            width = shapedRecipe.getWidth();
+            height = shapedRecipe.getHeight();
+        } else {
+            if (ingredients.size() > 4) {
+                width = height = 3;
+            } else if (ingredients.size() > 1) {
+                width = height = 2;
+            } else {
+                width = height = 1;
+            }
+        }
+
+        var result = new HashMap<Integer, Ingredient>(ingredients.size());
+        for (int i = 0; i < ingredients.size(); i++) {
+            var guiSlot = (i / width) * CRAFTING_GRID_WIDTH + (i % width);
+            var ingredient = ingredients.get(i);
+            if (!ingredient.isEmpty()) {
+                result.put(guiSlot, ingredient);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Draw missing slots.
+     */
+    @Override
+    public @Nullable TransferHandlerErrorRenderer provideErrorRenderer(Context context, Object data) {
+        if (!(data instanceof MissingSlots missingSlots)) {
+            return null;
+        }
+
+        return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
+            int i = 0;
+            for (Widget widget : widgets) {
+                if (widget instanceof Slot && ((Slot) widget).getNoticeMark() == Slot.INPUT) {
+                    if (missingSlots.indices().contains(i++)) {
+                        matrices.pushPose();
+                        matrices.translate(0, 0, 400);
+                        Rectangle innerBounds = ((Slot) widget).getInnerBounds();
+                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                                innerBounds.getMaxY(), 0x40ff0000);
+                        matrices.popPose();
                     }
                 }
             }
-        }
-
-        var recipeId = recipe != null ? recipe.getId() : null;
-
-        NetworkHandler.instance().sendToServer(new FillCraftingGridFromRecipePacket(recipeId, flatIngredients));
+        };
     }
 
-    @Override
-    protected Set<Integer> findMissingSlots(T menu,
-            @Nullable Recipe<?> recipe,
-            List<List<GenericStack>> genericIngredients) {
-
-        var slots = new HashMap<Integer, Ingredient>(9);
-
-        // Prefer checking recipe ingredients if available since we'll also prefer searching by ingredient if possible
-        if (recipe != null) {
-            var recipeIngredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
-            for (int i = 0; i < recipeIngredients.size(); i++) {
-                var ingredient = recipeIngredients.get(i);
-                if (!ingredient.isEmpty()) {
-                    slots.put(i, ingredient);
-                }
-            }
-        } else {
-            // Fall back to searching for direct matches of REI stacks
-            for (int i = 0; i < genericIngredients.size(); i++) {
-                var stacks = genericIngredients.get(i);
-                var ingredient = Ingredient.of(stacks.stream()
-                        .filter(stack -> stack.what() instanceof AEItemKey)
-                        // Note that since we're trying to craft something, we'll use stack size 1
-                        .map(stack -> ((AEItemKey) stack.what()).toStack()));
-
-                if (!ingredient.isEmpty()) {
-                    slots.put(i, ingredient);
-                }
-            }
-        }
-
-        return menu.findMissingIngredients(slots);
+    private record MissingSlots(Set<Integer> indices) {
     }
 }

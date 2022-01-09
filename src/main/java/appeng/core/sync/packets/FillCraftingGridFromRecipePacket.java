@@ -35,7 +35,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -84,15 +83,6 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         }
     }
 
-    /**
-     * Sends a recipe to the server for either filling a crafting grid or a pattern.
-     * <p>
-     * Prefer the id-based constructor above whereever possible.
-     */
-    public FillCraftingGridFromRecipePacket(Recipe<?> recipe) {
-        this(recipe.getId(), getSampleItems(recipe));
-    }
-
     public FillCraftingGridFromRecipePacket(@Nullable ResourceLocation recipeId,
             NonNullList<ItemStack> ingredientTemplates) {
         var data = new FriendlyByteBuf(Unpooled.buffer());
@@ -110,19 +100,6 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         }
 
         configureWrite(data);
-    }
-
-    // From a list of ingredients, return a list of each ingredient's first valid item
-    private static NonNullList<ItemStack> getSampleItems(Recipe<?> recipe) {
-        var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
-        var sampleItems = NonNullList.withSize(ingredients.size(), ItemStack.EMPTY);
-        for (int i = 0; i < sampleItems.size(); i++) {
-            var ingredient = ingredients.get(i);
-            if (!ingredient.isEmpty()) {
-                sampleItems.set(i, ingredient.getItems()[0]);
-            }
-        }
-        return sampleItems;
     }
 
     /**
@@ -172,16 +149,22 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
                 if (ingredient.test(currentItem)) {
                     // Grid already has an item that matches the ingredient
                     continue;
-                } else if (security.hasPermission(player, SecurityPermissions.INJECT)) {
-                    var in = AEItemKey.of(currentItem);
-                    var inserted = StorageHelper.poweredInsert(energy, storage, in, currentItem.getCount(),
-                            cct.getActionSource());
-                    if (inserted < currentItem.getCount()) {
-                        currentItem = currentItem.copy();
-                        currentItem.shrink((int) inserted);
-                    } else {
-                        currentItem = ItemStack.EMPTY;
+                } else {
+                    if (security.hasPermission(player, SecurityPermissions.INJECT)) {
+                        var in = AEItemKey.of(currentItem);
+                        var inserted = StorageHelper.poweredInsert(energy, storage, in, currentItem.getCount(),
+                                cct.getActionSource());
+                        if (inserted < currentItem.getCount()) {
+                            currentItem = currentItem.copy();
+                            currentItem.shrink((int) inserted);
+                        } else {
+                            currentItem = ItemStack.EMPTY;
+                        }
                     }
+                    // If more is remaining, try moving it to the player inventory
+                    player.getInventory().add(currentItem);
+
+                    craftMatrix.setItemDirect(x, currentItem.isEmpty() ? ItemStack.EMPTY : currentItem);
                 }
             }
 

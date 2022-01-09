@@ -2,7 +2,6 @@ package appeng.integration.modules.jei.transfer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,12 +15,18 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.core.localization.ItemModText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
+import appeng.integration.modules.jei.GenericEntryStackHelper;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.slot.FakeSlot;
@@ -52,31 +57,55 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
     }
 
     @Override
-    protected boolean isOnlyCraftingSupported() {
-        return false;
-    }
+    protected Result transferRecipe(T menu, Recipe<?> recipe, Display display, boolean doTransfer) {
 
-    @Override
-    protected void performTransfer(T menu,
-            @Nullable Recipe<?> recipe,
-            List<List<GenericStack>> genericIngredients,
-            List<GenericStack> genericResults,
-            boolean forCraftingTable) {
-        var suitableMode = forCraftingTable ? EncodingMode.CRAFTING : EncodingMode.PROCESSING;
-        menu.setMode(suitableMode);
-
-        if (forCraftingTable) {
-            encodeCraftingRecipe(menu, recipe, genericIngredients);
-        } else {
-            encodeProcessingRecipe(menu, genericIngredients, genericResults);
+        // Crafting recipe slots are not grouped, hence they must fit into the 3x3 grid.
+        boolean craftingRecipe = isCraftingRecipe(recipe, display);
+        if (craftingRecipe && !fitsIn3x3Grid(recipe, display)) {
+            return Result.createFailed(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
+        if (doTransfer) {
+            if (craftingRecipe) {
+                menu.setMode(EncodingMode.CRAFTING);
+                encodeCraftingRecipe(menu, recipe, getGuiIngredientsForCrafting(display));
+            } else {
+                menu.setMode(EncodingMode.PROCESSING);
+                encodeProcessingRecipe(menu,
+                        GenericEntryStackHelper.ofInputs(display),
+                        GenericEntryStackHelper.ofOutputs(display));
+            }
+        }
+
+        return Result.createSuccessful().blocksFurtherHandling();
+    }
+
+    /**
+     * In case the recipe does not report inputs, we will use the inputs shown on the JEI GUI instead.
+     */
+    private List<List<GenericStack>> getGuiIngredientsForCrafting(Display recipeLayout) {
+        var result = new ArrayList<List<GenericStack>>(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT);
+        for (int i = 0; i < CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT; i++) {
+            var stacks = new ArrayList<GenericStack>();
+
+            if (i < recipeLayout.getInputEntries().size()) {
+                for (EntryStack<?> entryStack : recipeLayout.getInputEntries().get(i)) {
+                    if (entryStack.getType() == VanillaEntryTypes.ITEM) {
+                        stacks.add(GenericStack.fromItemStack(entryStack.castValue()));
+                    }
+                }
+            }
+
+            result.add(stacks);
+        }
+
+        return result;
     }
 
     private void encodeProcessingRecipe(T menu, List<List<GenericStack>> genericIngredients,
             List<GenericStack> genericResults) {
         // Note that this runs on the client and getClientRepo() is guaranteed to be available there.
-        var ingredientPriorities = getIngredientPriorities(menu);
+        var ingredientPriorities = getIngredientPriorities(menu, ENTRY_COMPARATOR);
 
         encodeBestMatchingStacksIntoSlots(
                 genericIngredients,
@@ -112,7 +141,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
             @Nullable Recipe<?> recipe,
             List<List<GenericStack>> genericIngredients) {
         // Note that this runs on the client and getClientRepo() is guaranteed to be available there.
-        var prioritizedNetworkInv = getIngredientPriorities(menu);
+        var prioritizedNetworkInv = getIngredientPriorities(menu, ENTRY_COMPARATOR);
 
         var encodedInputs = NonNullList.withSize(menu.getCraftingGridSlots().length, ItemStack.EMPTY);
 
@@ -205,33 +234,4 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         stacks.add(newStack);
     }
 
-    /**
-     * Compute a map from all keys in the network inventory to their position when sorted by priority. Also takes the
-     * player inventory into account for any items that are not already in the grid.
-     * <p/>
-     * Higher means higher priority.
-     */
-    private Map<AEKey, Integer> getIngredientPriorities(T menu) {
-        var orderedEntries = menu.getClientRepo().getAllEntries()
-                .stream()
-                .sorted(ENTRY_COMPARATOR)
-                .map(GridInventoryEntry::getWhat)
-                .toList();
-
-        var result = new HashMap<AEKey, Integer>(orderedEntries.size());
-        for (int i = 0; i < orderedEntries.size(); i++) {
-            result.put(orderedEntries.get(i), i);
-        }
-
-        // Also consider the player inventory, but only as the last resort
-        for (var item : menu.getPlayerInventory().items) {
-            var key = AEItemKey.of(item);
-            if (key != null) {
-                // Use -1 as lower priority than the lowest network entry (which start at 0)
-                result.putIfAbsent(key, -1);
-            }
-        }
-
-        return result;
-    }
 }

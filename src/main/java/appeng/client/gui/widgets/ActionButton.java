@@ -78,6 +78,11 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.FluidSubstitutions;
                 displayValue = ButtonToolTips.FluidSubstitutionsDescDisabled;
             }
+            case CYCLE_PROCESSING_OUTPUT -> {
+                icon = Icon.SCHEDULING_DEFAULT;
+                displayName = ButtonToolTips.CycleProcessingOutput;
+                displayValue = ButtonToolTips.CycleProcessingOutputTooltip;
+            }
             default -> throw new IllegalArgumentException("Unknown ActionItem: " + action);
         }
 

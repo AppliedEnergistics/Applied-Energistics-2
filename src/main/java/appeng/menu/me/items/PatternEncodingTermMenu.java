@@ -18,6 +18,8 @@
 
 package appeng.menu.me.items;
 
+import java.util.Arrays;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,6 +85,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
     private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
     private static final String ACTION_SET_FLUID_SUBSTITUTION = "setFluidSubstitution";
     private static final String ACTION_SHOW_MODIFY_AMOUNT_MENU = "showModifyAmountMenu";
+    private static final String ACTION_CYCLE_PROCESSING_OUTPUT = "cycleProcessingOutput";
     private static final int GROUP_SECONDARY_OUTPUT = 1;
     private static final int GROUP_CRAFTING_RESULT = 2;
 
@@ -168,6 +171,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
         registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, getPatternTerminal()::setSubstitution);
         registerClientAction(ACTION_SET_FLUID_SUBSTITUTION, Boolean.class, getPatternTerminal()::setFluidSubstitution);
         registerClientAction(ACTION_SHOW_MODIFY_AMOUNT_MENU, Integer.class, this::showModifyAmountMenu);
+        registerClientAction(ACTION_CYCLE_PROCESSING_OUTPUT, this::cycleProcessingOutput);
     }
 
     @Override
@@ -646,5 +650,44 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
 
             SetProcessingPatternAmountMenu.open((ServerPlayer) getPlayer(), getLocator(), aeSlot.getSlotInv());
         }
+    }
+
+    /**
+     * Cycles the defined processing outputs around in case recipe transfer didn't put what the player considers the
+     * primary output into the right slot.
+     */
+    public void cycleProcessingOutput() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_CYCLE_PROCESSING_OUTPUT);
+        } else {
+            if (mode != EncodingMode.PROCESSING) {
+                return;
+            }
+
+            var newOutputs = new ItemStack[getProcessingOutputSlots().length];
+            for (int i = 0; i < processingOutputSlots.length; i++) {
+                newOutputs[i] = ItemStack.EMPTY;
+                if (!processingOutputSlots[i].getItem().isEmpty()) {
+                    // Search for the next, skipping empty slots
+                    for (int j = 1; j < processingOutputSlots.length; j++) {
+                        var nextItem = processingOutputSlots[(i + j) % processingOutputSlots.length].getItem();
+                        if (!nextItem.isEmpty()) {
+                            newOutputs[i] = nextItem;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < newOutputs.length; i++) {
+                processingOutputSlots[i].set(newOutputs[i]);
+            }
+        }
+    }
+
+    // Can cycle if there is more than 1 processing output encoded
+    public boolean canCycleProcessingOutputs() {
+        return mode == EncodingMode.PROCESSING
+                && Arrays.stream(processingOutputSlots).filter(s -> !s.getItem().isEmpty()).count() > 1;
     }
 }
