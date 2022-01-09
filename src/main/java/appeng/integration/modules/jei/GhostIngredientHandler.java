@@ -21,24 +21,15 @@ package appeng.integration.modules.jei;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import dev.architectury.fluid.FluidStack;
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.drag.DraggableStack;
-import me.shedaniel.rei.api.client.gui.drag.DraggableStackVisitor;
-import me.shedaniel.rei.api.client.gui.drag.DraggedAcceptorResult;
-import me.shedaniel.rei.api.client.gui.drag.DraggingContext;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.core.sync.network.NetworkHandler;
@@ -52,43 +43,27 @@ import appeng.menu.slot.FakeSlot;
  * having the actual item in hand.
  */
 @SuppressWarnings("rawtypes")
-class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
-
+class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
     @Override
-    public <R extends Screen> boolean isHandingScreen(R screen) {
-        return screen instanceof AEBaseScreen;
-    }
-
-    @Override
-    public Stream<BoundsProvider> getDraggableAcceptingBounds(DraggingContext<AEBaseScreen> context,
-            DraggableStack stack) {
-        List<DropTarget> targets = getTargets(context, stack);
-
-        return targets.stream().map(target -> BoundsProvider.ofRectangle(target.getArea()));
-    }
-
-    @Override
-    public DraggedAcceptorResult acceptDraggedStack(DraggingContext<AEBaseScreen> context, DraggableStack stack) {
-        var targets = getTargets(context, stack);
-        var pos = context.getCurrentPosition();
-
-        for (var target : targets) {
-            if (target.getArea().contains(pos)) {
-                if (target.accept(stack)) {
-                    return DraggedAcceptorResult.ACCEPTED;
-                }
-            }
+    public <I> List<Target<I>> getTargets(AEBaseScreen gui, I ingredient, boolean doStart) {
+        var wrapped = wrapDraggedItem(ingredient);
+        if (wrapped == null) {
+            return Collections.emptyList();
         }
 
-        return DraggedAcceptorResult.PASS;
+        List<Target<I>> targets = new ArrayList<>();
+
+        addItemStackTargets(gui, targets, wrapped);
+
+        return targets;
     }
 
     @Nullable
-    private ItemStack wrapDraggedItem(EntryStack<?> entryStack) {
-        if (entryStack.getType() == VanillaEntryTypes.ITEM) {
-            return entryStack.castValue();
+    private static ItemStack wrapDraggedItem(Object ingredient) {
+        if (ingredient instanceof ItemStack itemStack) {
+            return itemStack;
         } else {
-            var genericStack = GenericEntryStackHelper.of(entryStack);
+            var genericStack = GenericEntryStackHelper.of(ingredient);
             if (genericStack != null) {
                 return GenericStack.wrapInItemStack(genericStack);
             }
@@ -96,21 +71,11 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
         return null;
     }
 
-    private List<DropTarget> getTargets(DraggingContext<AEBaseScreen> context, DraggableStack stack) {
-        var wrapped = wrapDraggedItem(stack.getStack());
-        if (wrapped == null) {
-            return Collections.emptyList();
-        }
-
-        List<DropTarget> targets = new ArrayList<>();
-        addItemStackTargets(context.getScreen(), targets, wrapped);
-        return targets;
-    }
-
     /**
      * Returns possible drop-targets for ghost items.
      */
-    private static void addItemStackTargets(AEBaseScreen<?> gui, List<DropTarget> targets, ItemStack draggedStack) {
+    @SuppressWarnings("unchecked")
+    private static <I> void addItemStackTargets(AEBaseScreen<?> gui, List<Target<I>> targets, ItemStack draggedStack) {
         for (Slot slot : gui.getMenu().slots) {
             if (!(slot instanceof AppEngSlot appEngSlot)) {
                 continue;
@@ -126,49 +91,38 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
                     continue;
                 }
 
-                targets.add(new ItemSlotTarget(gui, appEngSlot));
+                targets.add((Target<I>) new ItemSlotTarget(gui, appEngSlot));
             }
         }
     }
 
-    private static class ItemSlotTarget implements DropTarget {
+    @Override
+    public void onComplete() {
+    }
+
+    private static class ItemSlotTarget implements Target<Object> {
         private final AppEngSlot slot;
-        private final Rectangle area;
+        private final Rect2i area;
 
         public ItemSlotTarget(AEBaseScreen<?> screen, AppEngSlot slot) {
             this.slot = slot;
-            this.area = new Rectangle(screen.getGuiLeft() + slot.x, screen.getGuiTop() + slot.y, 16, 16);
+            this.area = new Rect2i(screen.getGuiLeft() + slot.x, screen.getGuiTop() + slot.y, 16, 16);
         }
 
         @Override
-        public Rectangle getArea() {
+        public Rect2i getArea() {
             return area;
         }
 
         @Override
-        public boolean accept(DraggableStack ingredient) {
-            var entryStack = ingredient.getStack();
-            if (entryStack.getType() == VanillaEntryTypes.ITEM) {
-                ItemStack itemStack = entryStack.castValue();
-                NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
-                        slot.index, itemStack));
-            } else if (entryStack.getType() == VanillaEntryTypes.FLUID) {
-                FluidStack fluidStack = entryStack.castValue();
+        public void accept(Object ingredient) {
+            var wrapped = wrapDraggedItem(ingredient);
 
-                // Wrap in a generic stack to set it anyway
-                var wrappedFluid = GenericStack.wrapInItemStack(
-                        new GenericStack(AEFluidKey.of(fluidStack.getFluid()), fluidStack.getAmount()));
+            if (wrapped != null) {
                 NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
-                        slot.index, wrappedFluid));
+                        slot.index, wrapped));
             }
-            return false;
         }
-    }
-
-    interface DropTarget {
-        Rectangle getArea();
-
-        boolean accept(DraggableStack stack);
     }
 
 }

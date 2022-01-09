@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,15 +26,6 @@ public final class AEItemKey extends AEKey {
         this.item = item;
         this.tag = tag;
         this.hashCode = Objects.hash(item, tag);
-    }
-
-    @Nullable
-    public static AEItemKey of(ItemVariant variant) {
-
-        if (variant.isBlank()) {
-            return null;
-        }
-        return of(variant.getItem(), variant.getNbt());
     }
 
     @Nullable
@@ -170,10 +160,6 @@ public final class AEItemKey extends AEKey {
     @Override
     public String getModId() {
         return Registry.ITEM.getKey(item).getNamespace();
-    }
-
-    public ItemVariant toVariant() {
-        return ItemVariant.of(item, tag);
     }
 
     /**
