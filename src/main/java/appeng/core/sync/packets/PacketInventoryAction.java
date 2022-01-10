@@ -192,7 +192,20 @@ public class PacketInventoryAction extends AppEngPacket
 			}
 			else if( this.action == InventoryAction.PLACE_JEI_GHOST_ITEM )
 			{
-				if( sender.openContainer.inventorySlots.get( this.slot ) instanceof SlotFake )
+				if( sender.openContainer instanceof ContainerFluidConfigurable )
+				{
+					if( this.slotItem != null )
+					{
+						IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
+						if( aefs != null )
+						{
+							aefs.setStackSize( 1000 );
+							( (ContainerFluidConfigurable) sender.openContainer ).getFluidConfigInventory().setFluidInSlot( this.slot, aefs );
+							NetworkHandler.instance().sendToServer( new PacketFluidSlot( Collections.singletonMap( this.slot, aefs ) ) );
+						}
+					}
+				}
+				else if( this.slot < sender.openContainer.inventorySlots.size() && sender.openContainer.inventorySlots.get( this.slot ) instanceof SlotFake )
 				{
 					if( this.slotItem != null )
 					{
@@ -215,20 +228,6 @@ public class PacketInventoryAction extends AppEngPacket
 					catch( final IOException e )
 					{
 						AELog.debug( e );
-					}
-				}
-
-				if( sender.openContainer instanceof ContainerFluidConfigurable )
-				{
-					if( this.slotItem != null )
-					{
-						IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
-						if( aefs != null )
-						{
-							aefs.setStackSize( 1000 );
-							( (ContainerFluidConfigurable) sender.openContainer ).getFluidConfigInventory().setFluidInSlot( this.slot, aefs );
-							NetworkHandler.instance().sendToServer( new PacketFluidSlot( Collections.singletonMap( this.slot, aefs ) ) );
-						}
 					}
 				}
 			}
