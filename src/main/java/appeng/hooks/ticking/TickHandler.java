@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
@@ -38,6 +39,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -140,6 +142,7 @@ public class TickHandler {
         // for no there is no reason to care about this on the client...
         if (!blockEntity.getLevel().isClientSide()) {
             Objects.requireNonNull(blockEntity);
+            blockEntity.setQueuedForReady((byte) (blockEntity.getQueuedForReady() + 1));
             this.blockEntities.addBlockEntity(blockEntity);
         }
     }
@@ -367,6 +370,7 @@ public class TickHandler {
                         try {
                             // This could load more chunks, but the earliest time to be initialized is the next tick.
                             bt.onReady();
+                            bt.setReadyInvoked((byte) (bt.getReadyInvoked() + 1));
                         } catch (Throwable t) {
                             CrashReport crashReport = CrashReport.forThrowable(t, "Readying AE2 block entity");
                             bt.fillCrashReportCategory(crashReport.addCategory("Block entity being readied"));
@@ -417,5 +421,9 @@ public class TickHandler {
 
     public long getCurrentTick() {
         return tickCounter;
+    }
+
+    public List<Component> getBlockEntityReport() {
+        return blockEntities.getReport();
     }
 }
