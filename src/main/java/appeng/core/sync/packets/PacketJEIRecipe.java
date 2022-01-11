@@ -175,6 +175,10 @@ public class PacketJEIRecipe extends AppEngPacket
 			{
 				ItemStack currentItem = craftMatrix.getStackInSlot( x );
 
+				if (x >= this.recipe.size()) {
+					currentItem = ItemStack.EMPTY;
+				}
+
 				// prepare slots
 				if( !currentItem.isEmpty() )
 				{
