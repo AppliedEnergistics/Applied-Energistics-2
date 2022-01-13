@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 
@@ -94,4 +98,30 @@ class ServerBlockEntityRepo {
         return blockEntities.get(level);
     }
 
+    public List<Component> getReport() {
+        var result = new ArrayList<Component>();
+
+        for (var levelEntry : blockEntities.entrySet()) {
+            if (levelEntry.getValue().isEmpty()) {
+                continue;
+            }
+
+            var level = levelEntry.getKey();
+            String levelName = level.toString();
+            if (level instanceof ServerLevel serverLevel) {
+                levelName = serverLevel.dimension().location().toString();
+            }
+
+            result.add(new TextComponent(levelName).withStyle(ChatFormatting.BOLD));
+            for (var chunkEntry : levelEntry.getValue().long2ObjectEntrySet()) {
+                var chunkPos = new ChunkPos(chunkEntry.getLongKey());
+                var line = new TextComponent(chunkPos.x + "," + chunkPos.z + ": ")
+                        .withStyle(ChatFormatting.BOLD)
+                        .append(Integer.toString(chunkEntry.getValue().size()));
+                result.add(line);
+            }
+        }
+
+        return result;
+    }
 }

@@ -87,6 +87,16 @@ public class AEBaseBlockEntity extends BlockEntity
     private Direction forward = Direction.NORTH;
     private Direction up = Direction.UP;
     private boolean setChangedQueued = false;
+    /**
+     * For diagnosing issues with the delayed block entity initialization, this tracks how often this BE has been queued
+     * for defered initializiation using {@link TickHandler#addInit(AEBaseBlockEntity)}.
+     */
+    private byte queuedForReady = 0;
+    /**
+     * Tracks how often {@link #onReady()} has been called. This should always be less than {@link #queuedForReady}, and
+     * subsequently be equal.
+     */
+    private byte readyInvoked = 0;
 
     public AEBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -437,4 +447,19 @@ public class AEBaseBlockEntity extends BlockEntity
         return InteractionResult.PASS;
     }
 
+    public byte getQueuedForReady() {
+        return queuedForReady;
+    }
+
+    public void setQueuedForReady(byte queuedForReady) {
+        this.queuedForReady = queuedForReady;
+    }
+
+    public byte getReadyInvoked() {
+        return readyInvoked;
+    }
+
+    public void setReadyInvoked(byte readyInvoked) {
+        this.readyInvoked = readyInvoked;
+    }
 }

@@ -22,13 +22,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.common.collect.Iterables;
+import com.google.common.math.StatsAccumulator;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -43,6 +46,7 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.hooks.AEToolItem;
 import appeng.hooks.ticking.TickHandler;
@@ -51,6 +55,7 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
+import appeng.parts.networking.CablePart;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -59,6 +64,37 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
 
     public DebugCardItem(Item.Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
+            int grids = 0;
+
+            var stats = new StatsAccumulator();
+            for (Grid g : TickHandler.instance().getGridList()) {
+                grids++;
+                stats.add(g.size());
+            }
+
+            divider(player);
+            outputMessage(player, "Grids", ChatFormatting.BOLD);
+            this.outputSecondaryMessage(player, "Grids", Integer.toString(grids));
+            if (stats.count() > 0) {
+                this.outputSecondaryMessage(player, "Total Nodes", "" + (long) stats.sum());
+                this.outputSecondaryMessage(player, "Mean Nodes", "" + (long) stats.mean());
+                this.outputSecondaryMessage(player, "Max Nodes", "" + (long) stats.max());
+            }
+            divider(player);
+            outputMessage(player, "Ticking", ChatFormatting.BOLD);
+            this.outputSecondaryMessage(player, "Current Tick: ",
+                    Long.toString(TickHandler.instance().getCurrentTick()));
+            for (var line : TickHandler.instance().getBlockEntityReport()) {
+                player.sendMessage(line, Util.NIL_UUID);
+            }
+        }
+
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
     }
 
     @Override
@@ -72,148 +108,159 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
 
-        if (player == null) {
+        if (player == null || InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
 
-        if (InteractionUtil.isInAlternateUseMode(player)) {
-            int grids = 0;
-            int totalNodes = 0;
-
-            for (Grid g : TickHandler.instance().getGridList()) {
-                grids++;
-                totalNodes += g.size();
-            }
-
-            this.outputSecondaryMessage(player, "Grids", Integer.toString(grids));
-            this.outputSecondaryMessage(player, "Total Nodes", Integer.toString(totalNodes));
-        } else {
-            var gh = GridHelper.getNodeHost(level, pos);
-            if (gh != null) {
-                this.outputMessage(player, "---------------------------------------------", ChatFormatting.BOLD,
-                        ChatFormatting.DARK_PURPLE);
-                var node = (GridNode) gh.getGridNode(side);
-                // If we couldn't get a world-accessible node, fall back to getting it via internal APIs
-                if (node == null) {
-                    if (gh instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
-                        node = (GridNode) gridConnectedBlockEntity.getMainNode().getNode();
-                        this.outputMessage(player, "Main node of IGridConnectedBlockEntity");
-                    }
+        var gh = GridHelper.getNodeHost(level, pos);
+        if (gh != null) {
+            divider(player);
+            var node = (GridNode) gh.getGridNode(side);
+            // If we couldn't get a world-accessible node, fall back to getting it via internal APIs
+            if (node == null) {
+                if (gh instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
+                    node = (GridNode) gridConnectedBlockEntity.getMainNode().getNode();
+                    this.outputMessage(player, "Main node of IGridConnectedBlockEntity");
                 }
-                if (node != null) {
-                    this.outputMessage(player, "-- Grid Details");
-                    final Grid g = node.getInternalGrid();
-                    final IGridNode center = g.getPivot();
-                    this.outputPrimaryMessage(player, "Grid Powered",
-                            String.valueOf(g.getEnergyService().isNetworkPowered()));
-                    this.outputPrimaryMessage(player, "Grid Booted",
-                            String.valueOf(!g.getPathingService().isNetworkBooting()));
-                    this.outputPrimaryMessage(player, "Nodes in grid", String.valueOf(Iterables.size(g.getNodes())));
-                    this.outputSecondaryMessage(player, "Grid Pivot Node", String.valueOf(center));
+            }
+            if (node != null) {
+                this.outputMessage(player, "-- Grid Details");
+                final Grid g = node.getInternalGrid();
+                final IGridNode center = g.getPivot();
+                this.outputPrimaryMessage(player, "Grid Powered",
+                        String.valueOf(g.getEnergyService().isNetworkPowered()));
+                this.outputPrimaryMessage(player, "Grid Booted",
+                        String.valueOf(!g.getPathingService().isNetworkBooting()));
+                this.outputPrimaryMessage(player, "Nodes in grid", String.valueOf(Iterables.size(g.getNodes())));
+                this.outputSecondaryMessage(player, "Grid Pivot Node", String.valueOf(center));
 
-                    var tmc = (TickManagerService) g.getTickManager();
-                    for (var c : g.getMachineClasses()) {
-                        int o = 0;
-                        long totalAverageTime = 0;
-                        long singleMaximumTime = 0;
+                var tmc = (TickManagerService) g.getTickManager();
+                for (var c : g.getMachineClasses()) {
+                    int o = 0;
+                    long totalAverageTime = 0;
+                    long singleMaximumTime = 0;
 
-                        for (var oj : g.getMachineNodes(c)) {
-                            o++;
-                            totalAverageTime += tmc.getAverageTime(oj);
-                            singleMaximumTime = Math.max(singleMaximumTime, tmc.getMaximumTime(oj));
-                        }
-
-                        String message = "#: " + o;
-
-                        if (totalAverageTime > 0) {
-                            message += "; average: " + Platform.formatTimeMeasurement((long) totalAverageTime);
-                        }
-                        if (singleMaximumTime > 0) {
-                            message += "; max: " + Platform.formatTimeMeasurement(singleMaximumTime);
-                        }
-
-                        this.outputSecondaryMessage(player, c.getSimpleName(), message);
+                    for (var oj : g.getMachineNodes(c)) {
+                        o++;
+                        totalAverageTime += tmc.getAverageTime(oj);
+                        singleMaximumTime = Math.max(singleMaximumTime, tmc.getMaximumTime(oj));
                     }
 
-                    this.outputMessage(player, "-- Node Details");
+                    String message = "#: " + o;
 
-                    this.outputPrimaryMessage(player, "This Node", String.valueOf(node));
-                    this.outputPrimaryMessage(player, "This Node Active", String.valueOf(node.isActive()));
-                    this.outputSecondaryMessage(player, "Node exposed on side", side.getName());
+                    if (totalAverageTime > 0) {
+                        message += "; average: " + Platform.formatTimeMeasurement((long) totalAverageTime);
+                    }
+                    if (singleMaximumTime > 0) {
+                        message += "; max: " + Platform.formatTimeMeasurement(singleMaximumTime);
+                    }
 
-                    var pg = g.getPathingService();
-                    if (pg.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
+                    this.outputSecondaryMessage(player, c.getSimpleName(), message);
+                }
 
-                        Set<IGridNode> next = new HashSet<>();
-                        next.add(node);
+                this.outputMessage(player, "-- Node Details");
 
-                        final int maxLength = 10000;
+                this.outputPrimaryMessage(player, "This Node", String.valueOf(node));
+                this.outputPrimaryMessage(player, "This Node Active", String.valueOf(node.isActive()));
+                this.outputSecondaryMessage(player, "Node exposed on side", side.getName());
 
-                        int length = 0;
-                        outer: while (!next.isEmpty()) {
-                            final Iterable<IGridNode> current = next;
-                            next = new HashSet<>();
+                var pg = g.getPathingService();
+                if (pg.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
 
-                            for (IGridNode n : current) {
-                                if (n.getOwner() instanceof ControllerBlockEntity) {
-                                    break outer;
-                                }
+                    Set<IGridNode> next = new HashSet<>();
+                    next.add(node);
 
-                                for (var c : n.getConnections()) {
-                                    next.add(c.getOtherSide(n));
-                                }
+                    final int maxLength = 10000;
+
+                    int length = 0;
+                    outer: while (!next.isEmpty()) {
+                        final Iterable<IGridNode> current = next;
+                        next = new HashSet<>();
+
+                        for (IGridNode n : current) {
+                            if (n.getOwner() instanceof ControllerBlockEntity) {
+                                break outer;
                             }
 
-                            length++;
-
-                            if (length > maxLength) {
-                                break;
+                            for (var c : n.getConnections()) {
+                                next.add(c.getOtherSide(n));
                             }
                         }
 
-                        this.outputSecondaryMessage(player, "Cable Distance", Integer.toString(length));
+                        length++;
+
+                        if (length > maxLength) {
+                            break;
+                        }
                     }
 
-                    if (center.getOwner() instanceof P2PTunnelPart<?>tunnelPart) {
-                        this.outputSecondaryMessage(player, "Freq", Integer.toString(tunnelPart.getFrequency()));
-                    }
-                } else {
-                    this.outputMessage(player, "No Node Available.");
+                    this.outputSecondaryMessage(player, "Cable Distance", Integer.toString(length));
+                }
+
+                if (center.getOwner() instanceof P2PTunnelPart<?>tunnelPart) {
+                    this.outputSecondaryMessage(player, "Freq", Integer.toString(tunnelPart.getFrequency()));
                 }
             } else {
-                this.outputMessage(player, "Not Networked Block");
+                this.outputMessage(player, "No Node Available.");
             }
+        } else {
+            this.outputMessage(player, "Not Networked Block");
+        }
 
-            var te = level.getBlockEntity(pos);
-            if (te instanceof IPartHost partHost) {
-                this.outputMessage(player, "-- CableBus Details");
-                final IPart center = partHost.getPart(null);
-                partHost.markForUpdate();
-                if (center != null) {
-                    final GridNode n = (GridNode) center.getGridNode();
-                    this.outputSecondaryMessage(player, "Node Channels", Integer.toString(n.usedChannels()));
-                    for (var entry : n.getInWorldConnections().entrySet()) {
-                        this.outputSecondaryMessage(player, "Channels " + entry.getKey().getName(),
-                                Integer.toString(entry.getValue().getUsedChannels()));
-                    }
+        var te = level.getBlockEntity(pos);
+        if (te instanceof IPartHost partHost) {
+            this.outputMessage(player, "-- CableBus Details");
+            outputSecondaryMessage(player, "In World", Boolean.toString(partHost.isInWorld()));
+            outputSecondaryMessage(player, "Has Redstone", Boolean.toString(partHost.hasRedstone()));
+            final IPart center = partHost.getPart(null);
+            partHost.markForUpdate();
+            if (center != null) {
+                final GridNode n = (GridNode) center.getGridNode();
+                this.outputSecondaryMessage(player, "Node Channels", Integer.toString(n.usedChannels()));
+                for (var entry : n.getInWorldConnections().entrySet()) {
+                    this.outputSecondaryMessage(player, "Channels " + entry.getKey().getName(),
+                            Integer.toString(entry.getValue().getUsedChannels()));
                 }
             }
+            // Print which sides of the cable are connected
+            if (center instanceof CablePart cablePart) {
+                var msg = new TextComponent("");
+                for (var v : Direction.values()) {
+                    msg.append(new TextComponent(v.name().substring(0, 1))
+                            .withStyle(cablePart.isConnected(v) ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY));
+                }
+                player.sendMessage(new TextComponent("Connected Sides: ")
+                        .withStyle(ChatFormatting.GRAY)
+                        .append(msg), Util.NIL_UUID);
+            }
+        }
 
-            if (te instanceof IAEPowerStorage ps) {
-                this.outputMessage(player, "-- EnergyStorage Details");
-                this.outputSecondaryMessage(player, "Energy", ps.getAECurrentPower() + " / " + ps.getAEMaxPower());
+        if (te instanceof IAEPowerStorage ps) {
+            this.outputMessage(player, "-- EnergyStorage Details");
+            this.outputSecondaryMessage(player, "Energy", ps.getAECurrentPower() + " / " + ps.getAEMaxPower());
 
-                if (gh != null) {
-                    final IGridNode node = gh.getGridNode(side);
-                    if (node != null) {
-                        final IEnergyService eg = node.getGrid().getEnergyService();
-                        this.outputSecondaryMessage(player, "GridEnergy",
-                                +eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
-                    }
+            if (gh != null) {
+                final IGridNode node = gh.getGridNode(side);
+                if (node != null) {
+                    final IEnergyService eg = node.getGrid().getEnergyService();
+                    this.outputSecondaryMessage(player, "GridEnergy",
+                            +eg.getStoredPower() + " : " + eg.getEnergyDemand(Double.MAX_VALUE));
                 }
             }
         }
+
+        if (te instanceof AEBaseBlockEntity be) {
+            this.outputMessage(player, "-- Delayed Init Details");
+            outputSecondaryMessage(player, "QueuedForReady", "" + be.getQueuedForReady());
+            outputSecondaryMessage(player, "ReadyInvoked", "" + be.getReadyInvoked());
+        }
+
         return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    private void divider(Player player) {
+        this.outputMessage(player, "---------------------------------------------", ChatFormatting.BOLD,
+                ChatFormatting.DARK_PURPLE);
     }
 
     private void outputMessage(Entity player, String string, ChatFormatting... chatFormattings) {
