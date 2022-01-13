@@ -194,7 +194,7 @@ public final class InitScreens {
     /**
      * Registers a screen for a given menu and ensures the given style is applied after opening the screen.
      */
-    private static <M extends AEBaseMenu, U extends AEBaseScreen<M>> void register(MenuType<M> type,
+    public static <M extends AEBaseMenu, U extends AEBaseScreen<M>> void register(MenuType<M> type,
             StyledScreenFactory<M, U> factory,
             String stylePath) {
         MENU_STYLES.put(type, stylePath);
