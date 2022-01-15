@@ -98,8 +98,8 @@ public class BlockEntityRenderHelper {
             long amount,
             float itemScale,
             float spacing,
-            int combinedLightIn) {
-        renderItem2d(poseStack, buffers, what, itemScale, combinedLightIn);
+            int textColor) {
+        renderItem2d(poseStack, buffers, what, itemScale, LightTexture.FULL_BRIGHT);
 
         var renderedStackSize = what.formatAmount(amount, AmountFormat.PREVIEW_REGULAR);
 
@@ -111,7 +111,7 @@ public class BlockEntityRenderHelper {
         poseStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
         poseStack.scale(0.5f, 0.5f, 0);
         poseStack.translate(-0.5f * width, 0.0f, 0.5f);
-        fr.drawInBatch(renderedStackSize, 0, 0, -1, false, poseStack.last().pose(), buffers, false, 0,
+        fr.drawInBatch(renderedStackSize, 0, 0, textColor, false, poseStack.last().pose(), buffers, false, 0,
                 LightTexture.FULL_BRIGHT);
         poseStack.popPose();
 

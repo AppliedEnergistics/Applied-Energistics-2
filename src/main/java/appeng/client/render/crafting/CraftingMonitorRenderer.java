@@ -22,7 +22,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -62,7 +61,7 @@ public class CraftingMonitorRenderer implements BlockEntityRenderer<CraftingMoni
                     jobProgress.amount(),
                     0.3f,
                     -0.18f,
-                    LightTexture.FULL_BRIGHT);
+                    te.getColor().contrastTextColor);
 
             poseStack.popPose();
         }
