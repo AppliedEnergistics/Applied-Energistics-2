@@ -121,7 +121,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
         // Clear selection if CPU is no longer in list
         if (selectedCpuSerial != -1) {
             if (cpuList.cpus().stream().noneMatch(c -> c.serial() == selectedCpuSerial)) {
-                selectedCpuSerial = -1;
+                selectCpu(-1);
             }
         }
 
@@ -130,7 +130,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
             // Try busy CPUs first
             for (var cpu : cpuList.cpus()) {
                 if (cpu.currentJob() != null) {
-                    selectedCpuSerial = cpu.serial();
+                    selectCpu(cpu.serial());
                     break;
                 }
             }
@@ -187,7 +187,6 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
             }
 
             if (newSelectedCpu != selectedCpu) {
-                selectedCpu = newSelectedCpu;
                 setCPU(newSelectedCpu);
             }
         }
