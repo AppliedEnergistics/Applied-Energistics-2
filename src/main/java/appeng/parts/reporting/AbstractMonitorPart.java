@@ -25,7 +25,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -226,7 +225,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         poseStack.translate(0, 0.05, 0.5);
 
         BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount,
-                0.4f, -0.23f, LightTexture.FULL_BRIGHT);
+                0.4f, -0.23f, getColor().contrastTextColor);
 
         poseStack.popPose();
 
