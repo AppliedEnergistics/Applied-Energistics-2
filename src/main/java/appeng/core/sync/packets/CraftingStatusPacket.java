@@ -40,7 +40,7 @@ public class CraftingStatusPacket extends BasePacket {
     public CraftingStatusPacket(CraftingStatus status) {
         this.status = status;
 
-        FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+        var data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
         status.write(data);
         configureWrite(data);

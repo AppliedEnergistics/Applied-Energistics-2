@@ -47,7 +47,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -317,10 +316,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         drawTooltipWithHeader(poseStack, mouseX, mouseY, tooltip.getContent());
     }
 
-    // FIXME FABRIC: move out to json (?)
-    private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormat(ChatFormatting.WHITE);
-    private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormat(ChatFormatting.GRAY);
-
     /**
      * Draws a tooltip and word-wraps it to a maximum width.
      */
@@ -354,8 +349,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         var formattedLines = new ArrayList<Component>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
-            Style style = i == 0 ? TOOLTIP_HEADER : TOOLTIP_BODY;
-            formattedLines.add(lines.get(i).copy().withStyle(s -> style));
+            if (i == 0) {
+                formattedLines.add(lines.get(i).copy().withStyle(s -> s.withColor(ChatFormatting.WHITE)));
+            } else {
+                formattedLines.add(lines.get(i));
+            }
         }
         drawTooltip(poseStack, x, y, formattedLines);
     }

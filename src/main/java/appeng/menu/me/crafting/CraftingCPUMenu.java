@@ -139,7 +139,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
     @Override
     public void broadcastChanges() {
         if (isServer() && this.cpu != null) {
-            this.schedulingMode = this.cpu.getSchedulingMode();
+            this.schedulingMode = this.cpu.getSelectionMode();
 
             if (this.incrementalUpdateHelper.hasChanges()) {
                 CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);

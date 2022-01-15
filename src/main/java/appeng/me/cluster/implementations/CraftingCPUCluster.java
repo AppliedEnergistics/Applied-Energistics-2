@@ -35,6 +35,7 @@ import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.Settings;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.CraftingJobStatus;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
@@ -207,6 +208,24 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return craftingLogic.hasJob();
     }
 
+    @Nullable
+    @Override
+    public CraftingJobStatus getJobStatus() {
+        var finalOutput = craftingLogic.getFinalJobOutput();
+        if (finalOutput != null) {
+            var elapsedTimeTracker = craftingLogic.getElapsedTimeTracker();
+            var progress = Math.max(
+                    0,
+                    elapsedTimeTracker.getStartItemCount() - elapsedTimeTracker.getRemainingItemCount());
+            return new CraftingJobStatus(
+                    new GenericStack(finalOutput.what(), elapsedTimeTracker.getStartItemCount()),
+                    progress,
+                    elapsedTimeTracker.getElapsedTime());
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public long getAvailableStorage() {
         return this.availableStorage;
@@ -282,7 +301,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    public CpuSelectionMode getSchedulingMode() {
+    public CpuSelectionMode getSelectionMode() {
         return this.configManager.getSetting(Settings.CPU_SELECTION_MODE);
     }
 
@@ -294,7 +313,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
      * Checks if this CPU cluster can be automatically selected for a crafting request by the given action source.
      */
     public boolean canBeAutoSelectedFor(IActionSource source) {
-        return switch (getSchedulingMode()) {
+        return switch (getSelectionMode()) {
             case ANY -> true;
             case PLAYER_ONLY -> source.player().isPresent();
             case MACHINE_ONLY -> source.player().isEmpty();
@@ -305,7 +324,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
      * Checks if this CPU cluster is preferred for crafting requests by the given action source.
      */
     public boolean isPreferredFor(IActionSource source) {
-        return switch (getSchedulingMode()) {
+        return switch (getSelectionMode()) {
             case ANY -> false;
             case PLAYER_ONLY -> source.player().isPresent();
             case MACHINE_ONLY -> source.player().isEmpty();

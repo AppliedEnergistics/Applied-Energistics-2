@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -160,10 +161,48 @@ public final class Tooltips {
     public record MaxedAmount(String digit, String maxDigit, String unit) {
     }
 
+    public static Component ofDuration(long number, TimeUnit unit) {
+        long seconds = TimeUnit.SECONDS.convert(number, unit);
+        // We don't have 1s, but not 0 either
+        if (seconds == 0) {
+            if (number > 0) {
+                return new TextComponent("~")
+                        .withStyle(NUMBER_TEXT)
+                        .append(ButtonToolTips.DurationFormatSeconds.text(0));
+            } else {
+                return ButtonToolTips.DurationFormatSeconds.text(0)
+                        .withStyle(NUMBER_TEXT);
+            }
+        }
+
+        MutableComponent durationStr = new TextComponent("");
+        var hours = TimeUnit.HOURS.convert(seconds, TimeUnit.SECONDS);
+        if (hours > 0) {
+            durationStr.append(Long.toString(hours)).append("h");
+            seconds -= hours * 60 * 60;
+        }
+        var minutes = TimeUnit.MINUTES.convert(seconds, TimeUnit.SECONDS);
+        if (minutes > 0) {
+            durationStr.append(Long.toString(minutes)).append("m");
+            seconds -= minutes * 60;
+        }
+        if (seconds > 0) {
+            durationStr.append(Long.toString(seconds)).append("s");
+        }
+
+        return durationStr.withStyle(NUMBER_TEXT);
+    }
+
     public static final String[] units = new String[] { "k", "M", "G", "T", "P", "E" };
-    public static final long[] nums = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L,
+    public static final long[] DECIMAL_NUMS = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L,
             1000_000_000_000_000L,
             1000_000_000_000_000_000L };
+    public static final long[] BYTE_NUMS = new long[] { 1024L, 1024 * 1024L, 1024 * 1024 * 1024L, 1024 * 1024 * 1024L };
+
+    public static Component ofAmount(GenericStack stack) {
+        return new TextComponent(stack.what().formatAmount(stack.amount(), AmountFormat.FULL))
+                .withStyle(NUMBER_TEXT);
+    }
 
     public static String getAmount(double amount, long num) {
         double fract = amount / num;
@@ -190,10 +229,10 @@ public final class Tooltips {
             return new Amount(getAmount(amount, 1), "");
         } else {
             int i = 0;
-            while (amount / nums[i] >= 1000) {
+            while (amount / DECIMAL_NUMS[i] >= 1000) {
                 i++;
             }
-            return new Amount(getAmount(amount, nums[i]), units[i]);
+            return new Amount(getAmount(amount, DECIMAL_NUMS[i]), units[i]);
         }
     }
 
@@ -202,10 +241,22 @@ public final class Tooltips {
             return new MaxedAmount(getAmount(amount, 1), getAmount(max, 1), "");
         } else {
             int i = 0;
-            while (max / nums[i] >= 1000) {
+            while (max / DECIMAL_NUMS[i] >= 1000) {
                 i++;
             }
-            return new MaxedAmount(getAmount(amount, nums[i]), getAmount(max, nums[i]), units[i]);
+            return new MaxedAmount(getAmount(amount, DECIMAL_NUMS[i]), getAmount(max, DECIMAL_NUMS[i]), units[i]);
+        }
+    }
+
+    public static Amount getByteAmount(long amount) {
+        if (amount < BYTE_NUMS[0]) {
+            return new Amount(String.valueOf(amount), "");
+        } else {
+            int i = 0;
+            while (i < BYTE_NUMS.length && amount / BYTE_NUMS[i] >= 1000) {
+                i++;
+            }
+            return new Amount(getAmount(amount, BYTE_NUMS[i]), units[i]);
         }
     }
 
@@ -214,10 +265,10 @@ public final class Tooltips {
             return new Amount(String.valueOf(amount), "");
         } else {
             int i = 0;
-            while (amount / nums[i] >= 1000) {
+            while (i < DECIMAL_NUMS.length && amount / DECIMAL_NUMS[i] >= 1000) {
                 i++;
             }
-            return new Amount(getAmount(amount, nums[i]), units[i]);
+            return new Amount(getAmount(amount, DECIMAL_NUMS[i]), units[i]);
         }
     }
 
@@ -226,10 +277,10 @@ public final class Tooltips {
             return new MaxedAmount(String.valueOf(amount), String.valueOf(max), "");
         } else {
             int i = 0;
-            while (max / nums[i] >= 1000) {
+            while (max / DECIMAL_NUMS[i] >= 1000) {
                 i++;
             }
-            return new MaxedAmount(getAmount(amount, nums[i]), getAmount(max, nums[i]), units[i]);
+            return new MaxedAmount(getAmount(amount, DECIMAL_NUMS[i]), getAmount(max, DECIMAL_NUMS[i]), units[i]);
         }
     }
 
@@ -300,6 +351,11 @@ public final class Tooltips {
 
     public static MutableComponent ofUnformattedNumberWithRatioColor(long number, double ratio, boolean oneIsGreen) {
         return new TextComponent(String.valueOf(number)).withStyle(colorFromRatio(ratio, oneIsGreen));
+    }
+
+    public static MutableComponent ofBytes(long number) {
+        Amount amount = getByteAmount(number);
+        return ofNumber(amount);
     }
 
     public static MutableComponent ofNumber(long number) {

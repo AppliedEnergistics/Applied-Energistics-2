@@ -378,6 +378,11 @@ public class CraftingCpuLogic {
         return this.job != null;
     }
 
+    @Nullable
+    public GenericStack getFinalJobOutput() {
+        return this.job != null ? this.job.finalOutput : null;
+    }
+
     public ElapsedTimeTracker getElapsedTimeTracker() {
         if (this.job != null) {
             return this.job.timeTracker;

@@ -57,7 +57,11 @@ public class ElapsedTimeTracker {
     }
 
     public long getElapsedTime() {
-        return this.elapsedTime;
+        if (remainingItemCount > 0) {
+            return this.elapsedTime + (System.nanoTime() - this.lastTime);
+        } else {
+            return this.elapsedTime;
+        }
     }
 
     public long getRemainingItemCount() {

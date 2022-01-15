@@ -44,17 +44,17 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     /**
      * Width of the scrollbar handle sprite in the source texture.
      */
-    private static int HANDLE_WIDTH = 12;
+    private static final int HANDLE_WIDTH = 12;
 
     /**
      * Height of the scrollbar handle sprite in the source texture.
      */
-    private static int HANDLE_HEIGHT = 15;
+    private static final int HANDLE_HEIGHT = 15;
 
     /**
      * Texture containing the scrollbar handle sprites.
      */
-    private static ResourceLocation TEXTURE = new ResourceLocation("minecraft",
+    private static final ResourceLocation TEXTURE = new ResourceLocation("minecraft",
             "textures/gui/container/creative_inventory/tabs.png");
 
     /**
@@ -274,10 +274,16 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         return true;
     }
 
+    private boolean captureMouseWheel = true;
+
     @Override
     public boolean wantsAllMouseWheelEvents() {
         // Capture all mouse wheel events since we want to scroll even when over the item grid
-        return true;
+        return captureMouseWheel;
+    }
+
+    public void setCaptureMouseWheel(boolean captureMouseWheel) {
+        this.captureMouseWheel = captureMouseWheel;
     }
 
     /**
