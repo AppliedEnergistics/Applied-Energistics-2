@@ -243,7 +243,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
             exportSettings(SettingsFrom.MEMORY_CARD, data);
 
-            mc.setMemoryCardContents(is, type + ".name", data);
+            mc.setMemoryCardContents(is, type, data);
             if (needsNewFrequency) {
                 mc.notifyUser(player, MemoryCardMessages.SETTINGS_RESET);
             } else {
