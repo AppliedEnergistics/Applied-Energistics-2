@@ -69,8 +69,12 @@ public class SetupTestWorldCommand implements ISubCommand {
 
             player.getAbilities().flying = true;
             player.onUpdateAbilities();
-            var goodStartPos = generator.getSuitableStartPos();
-            player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), 0, 0);
+
+            // Only teleport the player if they're not within the bounds already
+            if (!generator.isWithinBounds(player.blockPosition())) {
+                var goodStartPos = generator.getSuitableStartPos();
+                player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), 0, 0);
+            }
 
             sender.sendSuccess(new TextComponent("Test world setup completed in " + sw), true);
         } catch (RuntimeException | CommandSyntaxException e) {

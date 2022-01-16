@@ -10,14 +10,19 @@ import com.google.common.collect.Iterables;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -59,12 +64,14 @@ public class TestWorldGenerator {
         positionedPlots = positionedArea.rectangles().stream().map(pp -> {
             // Remember we added padding to the overall area of each plot for placement
             var relativeBounds = pp.what().getBounds();
-            var absBoundingBox = relativeBounds.moved(
-                    origin.getX() + pp.x() + PADDING,
+            var plotOrigin = new BlockPos(pp.x() - pp.what().getBounds().minX() + PADDING,
                     origin.getY(),
-                    origin.getZ() + pp.y() + PADDING);
-            var plotOrigin = new BlockPos(absBoundingBox.minX() - relativeBounds.minX(), origin.getY(),
-                    absBoundingBox.minZ() - relativeBounds.minZ());
+                    pp.y() - pp.what().getBounds().minZ() + PADDING);
+            var absBoundingBox = relativeBounds.moved(
+                    plotOrigin.getX(),
+                    plotOrigin.getY(),
+                    plotOrigin.getZ());
+
             return new PositionedPlot(plotOrigin, absBoundingBox, pp.what());
         }).toList();
         overallBounds = BoundingBox.encapsulatingBoxes(
@@ -75,6 +82,12 @@ public class TestWorldGenerator {
 
     public BlockPos getSuitableStartPos() {
         return suitableStartPos;
+    }
+
+    public boolean isWithinBounds(BlockPos pos) {
+        return overallBounds
+                .inflatedBy(10)
+                .isInside(pos);
     }
 
     public void generate() {
@@ -91,8 +104,36 @@ public class TestWorldGenerator {
             // Outline the plot
             outline(positionedPlot);
 
+            // Place a sign with the plot id
+            placeSign(positionedPlot);
+
             positionedPlot.plot.build(level, player, positionedPlot.origin, entities);
         }
+    }
+
+    private void placeSign(PositionedPlot positionedPlot) {
+        var signPos = new BlockPos(
+                positionedPlot.bounds.maxX() + 2,
+                origin.getY(),
+                positionedPlot.bounds.minZ() - 2);
+        level.setBlock(signPos,
+                Blocks.OAK_SIGN.defaultBlockState().rotate(Rotation.CLOCKWISE_180),
+                Block.UPDATE_ALL);
+        level.getBlockEntity(signPos, BlockEntityType.SIGN).ifPresent(sign -> {
+            sign.setEditable(false);
+            sign.setHasGlowingText(true);
+            sign.setColor(DyeColor.WHITE);
+
+            var text = new StringBuilder(positionedPlot.plot.getId().getPath());
+            int line = 0;
+            while (line < SignBlockEntity.LINES && !text.isEmpty()) {
+                var lineLength = Math.min(12, text.length()); // Sign lines should fit roughly 12 chars
+                var lineText = text.substring(0, lineLength);
+                text.delete(0, lineLength);
+
+                sign.setMessage(line++, new TextComponent(lineText));
+            }
+        });
     }
 
     /**
