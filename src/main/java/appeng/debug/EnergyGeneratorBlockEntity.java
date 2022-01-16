@@ -65,6 +65,7 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
             if (consumer != null) {
                 try (var tx = Transaction.openOuter()) {
                     consumer.insert(energyToInsert, tx);
+                    tx.commit();
                 }
             }
         }
