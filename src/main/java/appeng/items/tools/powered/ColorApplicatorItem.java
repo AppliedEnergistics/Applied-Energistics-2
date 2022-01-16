@@ -160,11 +160,13 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
             final double powerPerUse = 100;
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                final BlockEntity te = level.getBlockEntity(pos);
+                var be = level.getBlockEntity(pos);
                 // clean cables.
-                if (te instanceof IColorableBlockEntity && p != null && this.getAECurrentPower(is) > powerPerUse
-                        && ((IColorableBlockEntity) te).getColor() != AEColor.TRANSPARENT) {
-                    if (((IColorableBlockEntity) te).recolourBlock(side, AEColor.TRANSPARENT, p)) {
+                if (p != null
+                        && be instanceof IColorableBlockEntity colorableBlockEntity
+                        && this.getAECurrentPower(is) > powerPerUse
+                        && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
+                    if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
                         inv.extract(paintBallKey, 1, Actionable.MODULATE, source);
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                         return InteractionResult.sidedSuccess(level.isClientSide());
@@ -184,8 +186,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
 
-                if (color != null && this.getAECurrentPower(is) > powerPerUse
-                        && color != AEColor.TRANSPARENT && this.recolourBlock(blk, side, level, pos, color, p)) {
+                if (color != null
+                        && this.getAECurrentPower(is) > powerPerUse
+                        && color != AEColor.TRANSPARENT
+                        && this.recolourBlock(blk, side, level, pos, color, p)) {
                     inv.extract(paintBallKey, 1, Actionable.MODULATE, source);
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     return InteractionResult.sidedSuccess(level.isClientSide());
@@ -334,7 +338,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     private boolean recolourBlock(Block blk, Direction side, Level level, BlockPos pos,
             AEColor newColor, @Nullable Player p) {
-        final BlockState state = level.getBlockState(pos);
+        var state = level.getBlockState(pos);
 
         Block recolored = BlockRecolorer.recolor(blk, newColor);
         if (recolored != blk) {
@@ -346,8 +350,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return level.setBlockAndUpdate(pos, newState);
         }
 
-        if (blk instanceof CableBusBlock && p != null) {
-            return ((CableBusBlock) blk).recolorBlock(level, pos, side, newColor.dye, p);
+        if (blk instanceof CableBusBlock cableBusBlock && p != null) {
+            return cableBusBlock.recolorBlock(level, pos, side, newColor.dye, p);
         }
 
         BlockEntity be = level.getBlockEntity(pos);
@@ -489,6 +493,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         for (var dyeItem : VANILLA_DYES.values()) {
             dyeStorage.insert(AEItemKey.of(dyeItem), 128, Actionable.MODULATE, new BaseActionSource());
         }
+        dyeStorage.insert(AEItemKey.of(Items.SNOWBALL), 128, Actionable.MODULATE, new BaseActionSource());
 
         // Upgrade energy storage
         var upgrades = item.getUpgrades(applicator);

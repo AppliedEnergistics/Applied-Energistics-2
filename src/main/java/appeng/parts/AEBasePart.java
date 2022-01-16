@@ -67,7 +67,7 @@ import appeng.util.SettingsFrom;
 public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory {
 
     private final IManagedGridNode mainNode;
-    private final IPartItem<?> partItem;
+    private IPartItem<?> partItem;
     private BlockEntity blockEntity = null;
     private IPartHost host = null;
     @Nullable
@@ -154,6 +154,17 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     @Override
     public IPartItem<?> getPartItem() {
         return this.partItem;
+    }
+
+    /**
+     * Advanced method. Take care to properly update any grid related state and update the host after changing the part
+     * item.
+     */
+    protected void setPartItem(IPartItem<?> partItem) {
+        if (partItem != this.partItem) {
+            this.partItem = Objects.requireNonNull(partItem);
+            this.getMainNode().setVisualRepresentation(partItem);
+        }
     }
 
     @Override

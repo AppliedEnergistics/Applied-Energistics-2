@@ -136,7 +136,7 @@ public class InWorldGridNode extends GridNode {
 
             var theirSide = ourSide.getOpposite();
             IGridNode otherNode = connection.getOtherSide(this);
-            if (!otherNode.isExposedOnSide(theirSide)) {
+            if (!otherNode.isExposedOnSide(theirSide) || !hasCompatibleColor(otherNode)) {
                 connection.destroy();
                 continue;
             }

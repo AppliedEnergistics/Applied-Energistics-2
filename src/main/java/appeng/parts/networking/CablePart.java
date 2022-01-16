@@ -132,7 +132,11 @@ public class CablePart extends AEBasePart implements ICablePart {
                     return true;
                 }
 
-                this.getHost().replacePart(newPart, null, who, null);
+                setPartItem(newPart);
+
+                getMainNode().setGridColor(getCableColor());
+                getHost().markForUpdate();
+                getHost().markForSave();
                 return true;
             }
         }
