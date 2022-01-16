@@ -77,6 +77,17 @@ public interface PlotBuilder {
         addBuildAction(new PlacePart(bb(bb), part.asItem(), side));
     }
 
+    default void part(BlockPos pos, Direction side, ItemDefinition<? extends PartItem<?>> part) {
+        part(posToBb(pos), side, part);
+    }
+
+    default <T extends IPart> void part(BlockPos pos,
+            Direction side,
+            ItemDefinition<? extends PartItem<T>> part,
+            Consumer<T> partCustomizer) {
+        part(posToBb(pos), side, part, partCustomizer);
+    }
+
     default <T extends IPart> void part(String bb,
             Direction side,
             ItemDefinition<? extends PartItem<T>> part,
@@ -186,6 +197,10 @@ public interface PlotBuilder {
         });
     }
 
+    default void hopper(BlockPos pos, Direction direction, ItemStack... stacks) {
+        hopper(posToBb(pos), direction, stacks);
+    }
+
     default void hopper(String bb, Direction direction, ItemStack... stacks) {
         blockState(bb, Blocks.HOPPER.defaultBlockState().setValue(HopperBlock.FACING, direction));
         customizeBlockEntity(bb, BlockEntityType.HOPPER, hopper -> {
@@ -260,11 +275,19 @@ public interface PlotBuilder {
         addBuildAction(new PostGridInitAction(bb(bb), consumer, true));
     }
 
+    default void afterGridInitAt(BlockPos pos, BiConsumer<IGrid, IGridNode> consumer) {
+        afterGridInitAt(posToBb(pos), consumer);
+    }
+
     /**
      * Runs a given callback once the grid is available at all viable nodes in the given bounding box.
      */
     default void afterGridExistsAt(String bb, BiConsumer<IGrid, IGridNode> consumer) {
         addBuildAction(new PostGridInitAction(bb(bb), consumer, false));
+    }
+
+    default void afterGridExistsAt(BlockPos pos, BiConsumer<IGrid, IGridNode> consumer) {
+        afterGridExistsAt(posToBb(pos), consumer);
     }
 
     /**

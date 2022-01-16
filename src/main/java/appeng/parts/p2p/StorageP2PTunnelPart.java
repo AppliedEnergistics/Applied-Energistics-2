@@ -41,7 +41,8 @@ public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>,
             StoragePreconditions.notBlankNotNegative(resource, maxAmount);
             long total = 0;
 
-            final int outputTunnels = getOutputs().size();
+            var outputs = getOutputs();
+            final int outputTunnels = outputs.size();
             final long amount = maxAmount;
 
             if (outputTunnels == 0 || amount == 0) {
@@ -51,7 +52,7 @@ public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>,
             final long amountPerOutput = amount / outputTunnels;
             long overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
-            for (var target : getOutputs()) {
+            for (var target : outputs) {
                 try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
                     final Storage<T> output = capabilityGuard.get();
                     final long toSend = amountPerOutput + overflow;

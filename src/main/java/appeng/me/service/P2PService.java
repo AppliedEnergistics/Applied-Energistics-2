@@ -20,6 +20,7 @@ package appeng.me.service;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -33,7 +34,6 @@ import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.events.GridBootingStatusChange;
 import appeng.api.networking.events.GridPowerStatusChange;
 import appeng.core.AELog;
-import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.p2p.MEP2PTunnelPart;
 import appeng.parts.p2p.P2PTunnelPart;
 
@@ -52,9 +52,6 @@ public class P2PService implements IGridService, IGridServiceProvider {
     public static P2PService get(IGrid grid) {
         return grid.getService(P2PService.class);
     }
-
-    private static final TunnelCollection<P2PTunnelPart> NULL_COLLECTION = new TunnelCollection<P2PTunnelPart>(null,
-            null);
 
     private final IGrid myGrid;
     private final HashMap<Short, P2PTunnelPart> inputs = new HashMap<>();
@@ -168,20 +165,17 @@ public class P2PService implements IGridService, IGridServiceProvider {
         return newFrequency;
     }
 
-    public TunnelCollection<P2PTunnelPart> getOutputs(short freq, Class<? extends P2PTunnelPart> c) {
-        final P2PTunnelPart in = this.inputs.get(freq);
-
-        if (in == null) {
-            return NULL_COLLECTION;
+    public <T extends P2PTunnelPart<T>> Stream<T> getOutputs(short freq, Class<T> c) {
+        // Check that a matching input exists for the requested type
+        var input = this.inputs.get(freq);
+        if (!c.isInstance(input)) {
+            return Stream.empty();
         }
 
-        final TunnelCollection<P2PTunnelPart> out = this.inputs.get(freq).getCollection(this.outputs.get(freq), c);
-
-        if (out == null) {
-            return NULL_COLLECTION;
-        }
-
-        return out;
+        return this.outputs.get(freq)
+                .stream()
+                .filter(c::isInstance)
+                .map(c::cast);
     }
 
     public P2PTunnelPart getInput(short freq) {
