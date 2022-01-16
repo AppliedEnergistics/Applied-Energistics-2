@@ -18,9 +18,7 @@
 
 package appeng.parts.p2p;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.core.Direction;
@@ -155,6 +153,12 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     public void updateConnections(Connections connections) {
+        if (this.isOutput()) {
+            // It's possible to be woken up while we're still an input, then be made an output,
+            // and THEN this method is called afterwards
+            return;
+        }
+
         if (connections.isDestroy()) {
             for (TunnelConnection cw : this.connection.getConnections().values()) {
                 cw.getConnection().destroy();
@@ -165,7 +169,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
             var grid = this.getMainNode().getGrid();
 
-            final Iterator<TunnelConnection> i = this.connection.getConnections().values().iterator();
+            var i = this.connection.getConnections().values().iterator();
             while (i.hasNext()) {
                 final TunnelConnection cw = i.next();
                 if (grid == null
@@ -176,15 +180,13 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                 }
             }
 
-            final List<MEP2PTunnelPart> newSides = new ArrayList<>();
+            var newSides = this.getOutputs();
 
-            for (MEP2PTunnelPart me : this.getOutputs()) {
-                if (me.getMainNode().isActive() && connections.getConnections().get(me.getGridNode()) == null) {
-                    newSides.add(me);
+            for (var me : newSides) {
+                if (!me.getMainNode().isActive() || connections.getConnections().get(me.getGridNode()) != null) {
+                    continue;
                 }
-            }
 
-            for (MEP2PTunnelPart me : newSides) {
                 try {
                     connections.getConnections().put(me.getGridNode(), new TunnelConnection(me,
                             GridHelper.createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));

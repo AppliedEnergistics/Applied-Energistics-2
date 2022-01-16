@@ -18,8 +18,8 @@
 
 package appeng.parts.p2p;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -46,16 +46,14 @@ import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
 import appeng.core.AEConfig;
 import appeng.me.service.P2PService;
-import appeng.me.service.helpers.TunnelCollection;
 import appeng.parts.BasicStatePart;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStatePart {
+public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends BasicStatePart {
     private static final String CONFIG_NBT_TYPE = "p2pType";
     private static final String CONFIG_NBT_FREQ = "p2pFreq";
 
-    private final TunnelCollection type = new TunnelCollection<T>(null, this.getClass());
     private boolean output;
     private short freq;
     private final EnergyDrainHandler energyDrainHandler = new EnergyDrainHandler();
@@ -67,16 +65,6 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
     protected float getPowerDrainPerTick() {
         return 1.0f;
-    }
-
-    public TunnelCollection<T> getCollection(Collection<P2PTunnelPart> collection,
-            Class<? extends P2PTunnelPart> c) {
-        if (this.type.matches(c)) {
-            this.type.setSource(collection);
-            return this.type;
-        }
-
-        return null;
     }
 
     @Nullable
@@ -95,14 +83,18 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         return null;
     }
 
-    public TunnelCollection<T> getOutputs() {
+    public List<T> getOutputs() {
+        return getOutputStream().toList();
+    }
+
+    public Stream<T> getOutputStream() {
         if (this.getMainNode().isActive()) {
             var grid = getMainNode().getGrid();
             if (grid != null) {
-                return (TunnelCollection<T>) P2PService.get(grid).getOutputs(this.getFrequency(), this.getClass());
+                return P2PService.get(grid).getOutputs(this.getFrequency(), this.getClass());
             }
         }
-        return new TunnelCollection(new ArrayList(), this.getClass());
+        return Stream.empty();
     }
 
     @Override

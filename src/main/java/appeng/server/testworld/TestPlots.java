@@ -82,6 +82,11 @@ public final class TestPlots {
             .put(AppEng.makeId("blockingmode_subnetwork_chesttest"), TestPlots::blockingModeSubnetworkChestTest)
             .put(AppEng.makeId("canceling_jobs_from_interfacecrash"), TestPlots::cancelingJobsFromInterfaceCrash)
             .put(AppEng.makeId("terminal_fullof_enchanteditems"), TestPlots::terminalFullOfEnchantedItems)
+            .put(AppEng.makeId("p2p_me"), P2PTestPlots::me)
+            .put(AppEng.makeId("p2p_items"), P2PTestPlots::item)
+            .put(AppEng.makeId("p2p_fluids"), P2PTestPlots::fluid)
+            .put(AppEng.makeId("p2p_energy"), P2PTestPlots::energy)
+            .put(AppEng.makeId("p2p_light"), P2PTestPlots::light)
             .build();
 
     private TestPlots() {
