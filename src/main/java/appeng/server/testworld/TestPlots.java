@@ -47,6 +47,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.util.AEColor;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
+import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -87,6 +88,7 @@ public final class TestPlots {
             .put(AppEng.makeId("p2p_fluids"), P2PTestPlots::fluid)
             .put(AppEng.makeId("p2p_energy"), P2PTestPlots::energy)
             .put(AppEng.makeId("p2p_light"), P2PTestPlots::light)
+            .put(AppEng.makeId("import_from_cauldron"), TestPlots::importLavaFromCauldron)
             .build();
 
     private TestPlots() {
@@ -812,5 +814,27 @@ public final class TestPlots {
                 cell.add(AEItemKey.of(pickaxe), 2);
             }
         }
+    }
+
+    public static void importLavaFromCauldron(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.creativeEnergyCell(origin.below());
+        plot.cable(origin)
+                .part(Direction.EAST, AEParts.IMPORT_BUS, importBus -> {
+                    importBus.getUpgrades().addItems(AEItems.SPEED_CARD.stack());
+                })
+                .part(Direction.WEST, AEParts.STORAGE_BUS);
+        plot.block(origin.west(), AEBlocks.SKY_STONE_TANK);
+        plot.block(origin.east(), Blocks.LAVA_CAULDRON);
+        plot.test(helper -> {
+            helper.succeedWhen(() -> {
+                helper.assertBlockPresent(Blocks.CAULDRON, origin.east());
+                var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(origin.west());
+                helper.check(tank.getStorage().amount == AEFluidKey.AMOUNT_BUCKET,
+                        "Less than a bucket stored");
+                helper.check(tank.getStorage().variant.getFluid() == Fluids.LAVA,
+                        "Something other than lava stored");
+            });
+        });
     }
 }
