@@ -127,7 +127,7 @@ public class TesrRenderHelper {
         matrixStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
         matrixStack.scale(0.5f, 0.5f, 0);
         matrixStack.translate(-0.5f * width, 0.0f, 0.5f);
-        fr.renderString(renderedStackSize, 0, 0, -1, false, matrixStack.getLast().getMatrix(), buffers, false, 0,
+        fr.renderString(renderedStackSize, 0, 0, 0, false, matrixStack.getLast().getMatrix(), buffers, false, 0,
                 15728880);
         matrixStack.pop();
 
