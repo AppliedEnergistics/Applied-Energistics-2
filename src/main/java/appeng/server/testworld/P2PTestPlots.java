@@ -167,7 +167,7 @@ public class P2PTestPlots {
                         var newLightLevel = helper.getLevel().getBrightness(LightLayer.BLOCK,
                                 helper.absolutePos(outputPos));
                         helper.check(
-                                newLightLevel == lightLevel.getValue(),
+                                newLightLevel <= lightLevel.getValue(),
                                 "Light-Level didn't reset");
                     })
                     .thenSucceed();
