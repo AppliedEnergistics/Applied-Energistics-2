@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
+import appeng.worldgen.meteorite.fallout.Fallout;
 
 /**
  * Makes decisions about spawning meteorites in the level.
@@ -37,7 +38,7 @@ public class MeteoriteSpawner {
     }
 
     public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader level, BlockPos startPos,
-            float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
+            float coreRadius, CraterType craterType, boolean pureCrater) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
         MutableBlockPos mutablePos = startPos.mutable();
@@ -63,51 +64,11 @@ public class MeteoriteSpawner {
             return null;
         }
 
-        // we can spawn here!
-        int skyMode = countBlockWithSkyLight(level, pos);
-        boolean placeCrater = skyMode > 10;
-
-        boolean solid = !isAirBelowSpawnPoint(level, pos);
-
-        if (!solid || placeCrater) {
-            // return null;
-        }
-
-        // FalloutMode fallout = getFalloutFromBaseBlock(level.getBlockState(pos));
+        var fallout = Fallout.fromBiome(level.getBiome(pos));
 
         boolean craterLake = false;
 
-        return new PlacedMeteoriteSettings(pos, coreRadius, craterType, null, pureCrater, craterLake);
-    }
-
-    private static boolean isAirBelowSpawnPoint(LevelReader level, BlockPos pos) {
-        MutableBlockPos testPos = pos.mutable();
-        for (int j = pos.getY() - 15; j < pos.getY() - 1; j++) {
-            testPos.setY(j);
-            if (level.isEmptyBlock(testPos)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private int countBlockWithSkyLight(LevelReader level, BlockPos pos) {
-        int skyMode = 0;
-
-        MutableBlockPos testPos = new MutableBlockPos();
-        for (int i = pos.getX() - 15; i < pos.getX() + 15; i++) {
-            testPos.setX(i);
-            for (int j = pos.getY() - 15; j < pos.getY() + 11; j++) {
-                testPos.setY(j);
-                for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
-                    testPos.setZ(k);
-                    if (level.canSeeSkyFromBelowWater(testPos)) {
-                        skyMode++;
-                    }
-                }
-            }
-        }
-        return skyMode;
+        return new PlacedMeteoriteSettings(pos, coreRadius, craterType, fallout, pureCrater, craterLake);
     }
 
     private boolean areSurroundingsSuitable(LevelReader level, BlockPos pos) {
@@ -133,7 +94,6 @@ public class MeteoriteSpawner {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
-                    Block testBlk = level.getBlockState(testPos).getBlock();
                     validBlocks++;
                 }
             }

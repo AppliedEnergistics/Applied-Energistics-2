@@ -106,7 +106,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
         MeteoriteSpawner spawner = new MeteoriteSpawner();
         PlacedMeteoriteSettings spawned = spawner.trySpawnMeteoriteAtSuitableHeight(level, pos, coreRadius, craterType,
-                pureCrater, false);
+                pureCrater);
 
         if (spawned == null) {
             player.sendMessage(new TextComponent("Un-suitable Location."), Util.NIL_UUID);
