@@ -76,6 +76,13 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 AEItems.LOGIC_PROCESSOR,
                 Ingredient.of(ConventionTags.GOLD_INGOT));
 
+        // Crystal -> Dust Recipes
+        inscribe(Ingredient.of(ConventionTags.FLUIX_CRYSTAL), AEItems.FLUIX_DUST.stack())
+                .setMode(InscriberProcessType.INSCRIBE)
+                .save(consumer, "fluix_dust");
+        inscribe(Ingredient.of(ConventionTags.CERTUS_QUARTZ), AEItems.CERTUS_QUARTZ_DUST.stack())
+                .setMode(InscriberProcessType.INSCRIBE)
+                .save(consumer, "certus_quartz_dust");
     }
 
     private void processor(Consumer<FinishedRecipe> consumer,
