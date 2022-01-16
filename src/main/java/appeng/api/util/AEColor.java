@@ -135,6 +135,15 @@ public enum AEColor {
         this.dye = dye;
     }
 
+    public static AEColor fromDye(DyeColor vanillaDye) {
+        for (var value : values()) {
+            if (value.dye == vanillaDye) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("Unknown Vanilla dye: " + vanillaDye);
+    }
+
     /**
      * Will return a variant of this color based on the given tint index.
      *

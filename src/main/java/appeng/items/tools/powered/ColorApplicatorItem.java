@@ -27,10 +27,14 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.EnumHashBiMap;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -38,8 +42,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SnowballItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -73,6 +80,8 @@ import appeng.hooks.IBlockTool;
 import appeng.items.contents.CellConfig;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.me.cells.BasicCellHandler;
+import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
@@ -85,6 +94,25 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             .collect(Collectors.toMap(
                     aeColor -> ConventionTags.dye(aeColor.dye),
                     Function.identity()));
+    private static final BiMap<DyeColor, Item> VANILLA_DYES = EnumHashBiMap.create(DyeColor.class);
+    static {
+        VANILLA_DYES.put(DyeColor.WHITE, Items.WHITE_DYE);
+        VANILLA_DYES.put(DyeColor.ORANGE, Items.ORANGE_DYE);
+        VANILLA_DYES.put(DyeColor.MAGENTA, Items.MAGENTA_DYE);
+        VANILLA_DYES.put(DyeColor.LIGHT_BLUE, Items.LIGHT_BLUE_DYE);
+        VANILLA_DYES.put(DyeColor.YELLOW, Items.YELLOW_DYE);
+        VANILLA_DYES.put(DyeColor.LIME, Items.LIME_DYE);
+        VANILLA_DYES.put(DyeColor.PINK, Items.PINK_DYE);
+        VANILLA_DYES.put(DyeColor.GRAY, Items.GRAY_DYE);
+        VANILLA_DYES.put(DyeColor.LIGHT_GRAY, Items.LIGHT_GRAY_DYE);
+        VANILLA_DYES.put(DyeColor.CYAN, Items.CYAN_DYE);
+        VANILLA_DYES.put(DyeColor.PURPLE, Items.PURPLE_DYE);
+        VANILLA_DYES.put(DyeColor.BLUE, Items.BLUE_DYE);
+        VANILLA_DYES.put(DyeColor.BROWN, Items.BROWN_DYE);
+        VANILLA_DYES.put(DyeColor.GREEN, Items.GREEN_DYE);
+        VANILLA_DYES.put(DyeColor.RED, Items.RED_DYE);
+        VANILLA_DYES.put(DyeColor.BLACK, Items.BLACK_DYE);
+    }
 
     private static final String TAG_COLOR = "color";
 
@@ -204,11 +232,17 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (paintBall instanceof PaintBallItem ipb) {
             return ipb.getColor();
-        } else {
-            for (var entry : TAG_TO_COLOR.entrySet()) {
-                if (entry.getKey().contains(paintBall)) {
-                    return entry.getValue();
-                }
+        }
+
+        // Especially during startup when Vanilla builds it's search index, we don't have tags loaded yet
+        var vanillaDye = VANILLA_DYES.inverse().get(paintBall);
+        if (vanillaDye != null) {
+            return AEColor.fromDye(vanillaDye);
+        }
+
+        for (var entry : TAG_TO_COLOR.entrySet()) {
+            if (entry.getKey().contains(paintBall)) {
+                return entry.getValue();
             }
         }
 
@@ -431,6 +465,39 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     public void onWheel(ItemStack is, boolean up) {
         this.cycleColors(is, this.getColor(is), up ? 1 : -1);
+    }
+
+    @Override
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
+        if (allowdedIn(group)) {
+            items.add(createFullColorApplicator());
+        }
+    }
+
+    /**
+     * Create a fully kitted out color applicator.
+     */
+    public static ItemStack createFullColorApplicator() {
+        // Give a fully set up color applicator
+        var item = AEItems.COLOR_APPLICATOR.asItem();
+        var applicator = new ItemStack(item);
+
+        // Add all dyes
+        var dyeStorage = BasicCellHandler.INSTANCE.getCellInventory(applicator, null);
+
+        for (var dyeItem : VANILLA_DYES.values()) {
+            dyeStorage.insert(AEItemKey.of(dyeItem), 128, Actionable.MODULATE, new BaseActionSource());
+        }
+
+        // Upgrade energy storage
+        var upgrades = item.getUpgrades(applicator);
+        upgrades.addItems(AEItems.ENERGY_CARD.stack());
+        upgrades.addItems(AEItems.ENERGY_CARD.stack());
+
+        // Fill it up with power
+        item.injectAEPower(applicator, item.getAEMaxPower(applicator), Actionable.MODULATE);
+        return applicator;
     }
 
 }
