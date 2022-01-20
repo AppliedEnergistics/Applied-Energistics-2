@@ -19,16 +19,14 @@
 package appeng.core.features.registries;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import gregtech.api.unification.material.Materials;
-import gregtech.api.unification.ore.OrePrefix;
-import gregtech.api.unification.stack.UnificationEntry;
+import appeng.core.AELog;
+import appeng.util.item.OreHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -57,8 +55,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	private final Map<String, TunnelType> modIdTunnels = new HashMap<>( INITIAL_CAPACITY );
 	private final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>( INITIAL_CAPACITY );
 
-	public void configure()
-	{
+	public void configure() {
 
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IBlocks blocks = definitions.blocks();
@@ -67,8 +64,31 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * light!
 		 */
-		this.addNewAttunement( new ItemStack( Blocks.TORCH ), TunnelType.LIGHT );
-		this.addNewAttunement( new ItemStack( Blocks.GLOWSTONE ), TunnelType.LIGHT );
+		this.addNewAttunement(new ItemStack(Blocks.TORCH), TunnelType.LIGHT);
+		this.addNewAttunement(new ItemStack(Blocks.GLOWSTONE), TunnelType.LIGHT);
+
+		List<String> gtceOreDict = new ArrayList<>();
+		gtceOreDict.add("wireGtHex");
+		gtceOreDict.add("wireGtOctal");
+		gtceOreDict.add("wireGtQuadruple");
+		gtceOreDict.add("wireGtDouble");
+		gtceOreDict.add("wireGtSingle");
+		gtceOreDict.add("cableGtHex");
+		gtceOreDict.add("cableGtOctal");
+		gtceOreDict.add("cableGtQuadruple");
+		gtceOreDict.add("cableGtDouble");
+		gtceOreDict.add("cableGtSingle");
+
+		for(String oreDict : gtceOreDict) {
+			Arrays.stream(OreDictionary.getOreNames()).filter(s -> s.startsWith(oreDict)).forEach(s -> {
+						OreHelper.INSTANCE.getCachedOres(s).forEach(
+								stack -> {
+									this.addNewAttunement(stack, TunnelType.GTCEU_POWER);
+									AELog.info("Added " + stack + " to P2P Tunnel Registry");
+								});
+					}
+			);
+		}
 
 		/**
 		 * Forge energy tunnel items
