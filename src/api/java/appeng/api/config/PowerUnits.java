@@ -28,7 +28,8 @@ public enum PowerUnits
 {
 	AE( "gui.appliedenergistics2.units.appliedenergstics" ), // Native Units - AE Energy
 	EU( "gui.appliedenergistics2.units.ic2" ), // IndustrialCraft 2 - Energy Units
-	RF( "gui.appliedenergistics2.units.rf" ); // RF - Redstone Flux
+	RF( "gui.appliedenergistics2.units.rf" ), // RF - Redstone Flux
+	GTCEU( "gui.appliedenergistics2.units.gtceu" ); // RF - Redstone Flux
 
 	/**
 	 * unlocalized name for the power unit.

@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import appeng.parts.misc.*;
+import appeng.parts.p2p.*;
 import appeng.parts.reporting.*;
 import com.google.common.collect.ImmutableList;
 
@@ -65,13 +66,6 @@ import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCableCovered;
 import appeng.parts.networking.PartDenseCableSmart;
 import appeng.parts.networking.PartQuartzFiber;
-import appeng.parts.p2p.PartP2PFEPower;
-import appeng.parts.p2p.PartP2PFluids;
-import appeng.parts.p2p.PartP2PIC2Power;
-import appeng.parts.p2p.PartP2PItems;
-import appeng.parts.p2p.PartP2PLight;
-import appeng.parts.p2p.PartP2PRedstone;
-import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.util.Platform;
 
 
@@ -275,25 +269,32 @@ public enum PartType
 				@Override
 				String getUnlocalizedName()
 				{
-			return "p2p_tunnel";
-		}
-	},
+					return "p2p_tunnel";
+				}
+			},
 
-	P2P_TUNNEL_FE( 469, "p2p_tunnel_fe", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FE ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PFEPower.class, GuiText.FETunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
-			return "p2p_tunnel";
-		}
-	},
+	P2P_TUNNEL_FE( 469, "p2p_tunnel_fe", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FE ), EnumSet.noneOf( IntegrationType.class ), PartP2PFEPower.class, GuiText.FETunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
+					return "p2p_tunnel";
+				}
+			},
+
+	P2P_TUNNEL_GTCEU( 470, "p2p_tunnel_gtceu", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_GTCEU ), EnumSet.of( IntegrationType.GTCE ), PartP2PGTCEPower.class, GuiText.GTCEUTunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
+					return "p2p_tunnel";
+				}
+			},
 
 	// P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of(
 	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
 
-	INTERFACE_TERMINAL( 480, "interface_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet
-			.noneOf( IntegrationType.class ), PartInterfaceTerminal.class ),
+	INTERFACE_TERMINAL( 480, "interface_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceTerminal.class ),
 
 	FLUID_TERMINAL( 520, "fluid_terminal", EnumSet.of( AEFeature.FLUID_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartFluidTerminal.class );
 

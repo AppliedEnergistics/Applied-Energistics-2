@@ -1,0 +1,6 @@
+{
+    "parent": "appliedenergistics2:item/part/p2p_tunnel",
+    "textures": {
+        "type": "appliedenergistics2:parts/p2p/power_gtceu"
+    }
+}

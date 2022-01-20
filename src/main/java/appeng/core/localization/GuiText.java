@@ -99,6 +99,7 @@ public enum GuiText
 	OCTunnel,
 	LightTunnel,
 	FETunnel,
+	GTCEUTunnel,
 	PressureTunnel,
 
 	// spatial
