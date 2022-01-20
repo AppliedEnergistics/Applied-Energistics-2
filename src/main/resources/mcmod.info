@@ -1,17 +1,17 @@
 [
     {
-        "modid":"appliedenergistics2",
-        "name":"Applied Energistics 2 Trousers Edition",
-        "description":"A Mod about Matter, Energy and using them to conquer the world..",
-        "version":"${version}",
-        "mcversion":"${mcversion}",
-        "url":"https://github.com/PrototypeTrousers/Applied-Energistics-2",
-        "updateUrl":"",
-        "authorList":[
-         "AlgorithmX2"
+        "modid": "appliedenergistics2",
+        "name": "AE2 Unofficial Extended Life",
+        "description": "A Mod about Matter, Energy and using them to conquer the world..",
+        "version": "${version}",
+        "mcversion": "${mcversion}",
+        "url": "https://github.com/PrototypeTrousers/Applied-Energistics-2",
+        "updateUrl": "",
+        "authorList": [
+            "AlgorithmX2"
         ],
-        "credits":"AlgorithmX2",
-        "logoFile":"assets/appliedenergistics2/meta/logo.png",
+        "credits": "AlgorithmX2",
+        "logoFile": "assets/appliedenergistics2/meta/logo.png",
         "screenshots":[]
     }
 ]
