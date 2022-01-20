@@ -26,6 +26,9 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import gregtech.api.unification.material.Materials;
+import gregtech.api.unification.ore.OrePrefix;
+import gregtech.api.unification.stack.UnificationEntry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -70,7 +73,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * Forge energy tunnel items
 		 */
-
+		
 		this.addNewAttunement( blocks.energyCellDense(), TunnelType.FE_POWER );
 		this.addNewAttunement( blocks.energyAcceptor(), TunnelType.FE_POWER );
 		this.addNewAttunement( blocks.energyCell(), TunnelType.FE_POWER );

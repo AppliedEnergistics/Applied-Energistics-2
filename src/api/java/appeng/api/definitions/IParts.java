@@ -88,6 +88,8 @@ public interface IParts
 
 	IItemDefinition p2PTunnelFE();
 
+	IItemDefinition p2PTunnelGTCEU();
+
 	IItemDefinition p2PTunnelLight();
 
 	// IItemDefinition p2PTunnelOpenComputers();

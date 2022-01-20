@@ -30,35 +30,37 @@ import appeng.integration.modules.waila.WailaModule;
 public enum IntegrationType
 {
 	IC2( IntegrationSide.BOTH, "Industrial Craft 2", "ic2" )
-	{
-		@Override
-		public IIntegrationModule createInstance()
-		{
-			return Integrations.setIc2( new IC2Module() );
-		}
-	},
+			{
+				@Override
+				public IIntegrationModule createInstance()
+				{
+					return Integrations.setIc2( new IC2Module() );
+				}
+			},
+
+	GTCE( IntegrationSide.BOTH, "GregTech", "gregtech" ),
 
 	RC( IntegrationSide.BOTH, "Railcraft", "railcraft" ),
 
 	MFR( IntegrationSide.BOTH, "Mine Factory Reloaded", "minefactoryreloaded" ),
 
 	Waila( IntegrationSide.BOTH, "Waila", "waila" )
-	{
-		@Override
-		public IIntegrationModule createInstance()
-		{
-			return new WailaModule();
-		}
-	},
+			{
+				@Override
+				public IIntegrationModule createInstance()
+				{
+					return new WailaModule();
+				}
+			},
 
 	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" )
-	{
-		@Override
-		public IIntegrationModule createInstance()
-		{
-			return Integrations.setInvTweaks( new InventoryTweaksModule() );
-		}
-	},
+			{
+				@Override
+				public IIntegrationModule createInstance()
+				{
+					return Integrations.setInvTweaks( new InventoryTweaksModule() );
+				}
+			},
 
 	JEI( IntegrationSide.CLIENT, "Just Enough Items", "jei" )
 	{

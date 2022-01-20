@@ -71,6 +71,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	// Default Energy Conversion Rates
 	private static final double DEFAULT_IC2_EXCHANGE = 2.0;
+	private static final double DEFAULT_GTCEU_EXCHANGE = 2.0;
 	private static final double DEFAULT_RF_EXCHANGE = 0.5;
 
 	private final IConfigManager settings = new ConfigManager( this );
@@ -148,6 +149,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		PowerUnits.EU.conversionRatio = this.get( "PowerRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );
 		PowerUnits.RF.conversionRatio = this.get( "PowerRatios", "ForgeEnergy", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
+		PowerUnits.GTCEU.conversionRatio = this.get( "PowerRatios", "GTCEU", DEFAULT_GTCEU_EXCHANGE ).getDouble( DEFAULT_GTCEU_EXCHANGE );
 
 		final double usageEffective = this.get( "PowerRatios", "UsageMultiplier", 1.0 ).getDouble( 1.0 );
 		PowerMultiplier.CONFIG.multiplier = Math.max( 0.01, usageEffective );
