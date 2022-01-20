@@ -20,6 +20,7 @@ package appeng.capabilities;
 
 
 import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
+import gregtech.api.capability.IEnergyContainer;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.minecraft.nbt.NBTBase;
@@ -56,6 +57,8 @@ public final class Capabilities
 	public static Capability<IEnergyStorage> FORGE_ENERGY;
 
 	public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY;
+
+	public static Capability<IEnergyContainer> GTCE_ENERGY;
 
 	/**
 	 * Register AE2 provided capabilities.
@@ -103,7 +106,19 @@ public final class Capabilities
 	}
 
 	@CapabilityInject( IItemRepository.class )
-	private static void capIItemRepositoryRegistered( Capability<IItemRepository> cap ) { ITEM_REPOSITORY_CAPABILITY = cap; }
+	private static void capIItemRepositoryRegistered( Capability<IItemRepository> cap )
+	{
+		ITEM_REPOSITORY_CAPABILITY = cap;
+	}
+
+	@CapabilityInject( IEnergyContainer.class )
+	private static void capIEnergyContainerRegistered( Capability<IEnergyContainer> cap )
+	{
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.GTCE ) )
+		{
+			GTCE_ENERGY = cap;
+		}
+	}
 
 	// Create a storage implementation that does not do anything
 	private static <T> Capability.IStorage<T> createNullStorage()

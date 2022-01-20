@@ -53,7 +53,7 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	private EnumSet<EnumFacing> internalPowerSides = EnumSet.allOf( EnumFacing.class );
 	private final IEnergyStorage forgeEnergyAdapter;
 	private Object teslaEnergyAdapter;
-
+	private GTCEEnergyAdapter gtceEnergyAdapter = null;
 	private IC2PowerSink ic2Sink;
 
 	public AEBasePoweredTile()
@@ -63,6 +63,11 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 		{
 			this.teslaEnergyAdapter = new TeslaEnergyAdapter( this );
 		}
+		if( Capabilities.GTCE_ENERGY != null )
+		{
+			this.gtceEnergyAdapter = new GTCEEnergyAdapter( this );
+		}
+
 		this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
 		this.ic2Sink.setValidFaces( this.internalPowerSides );
 	}
@@ -284,6 +289,13 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 				return true;
 			}
 		}
+		else if( capability == Capabilities.GTCE_ENERGY )
+		{
+			if( this.getPowerSides().contains( facing ) )
+			{
+				return true;
+			}
+		}
 
 		return super.hasCapability( capability, facing );
 	}
@@ -306,7 +318,14 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 				return (T) this.teslaEnergyAdapter;
 			}
 		}
-
+		else if( capability == Capabilities.GTCE_ENERGY )
+		{
+			if( this.getPowerSides().contains( facing ) )
+			{
+				return (T) this.gtceEnergyAdapter;
+			}
+		}
+		
 		return super.getCapability( capability, facing );
 	}
 

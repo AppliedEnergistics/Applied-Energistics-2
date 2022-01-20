@@ -57,8 +57,14 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		}
 		catch( final GridAccessException e )
 		{
-			return this.getInternalMaxPower();
+			return 0;
 		}
+	}
+
+	@Override
+	public double getInternalMaxPower()
+	{
+		return getFunnelPowerDemand( Long.MAX_VALUE );
 	}
 
 	@Override

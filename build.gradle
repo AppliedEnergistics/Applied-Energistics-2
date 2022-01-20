@@ -57,7 +57,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-version = extended + "-" + aeversion + "-" + aechannel + "-" + aebuild + "-" + extendedversion
+version = aeversion + "-" + aechannel + "-" + aebuild + "-" + extended + "-" + extendedversion
 group = aegroup
 archivesBaseName = aebasename
 
