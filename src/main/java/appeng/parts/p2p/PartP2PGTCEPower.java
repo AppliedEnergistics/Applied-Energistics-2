@@ -94,7 +94,32 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
         @Override
         public long getEnergyCanBeInserted()
         {
-            return Long.MAX_VALUE;
+            long canInsert = 0;
+            if( outputs.isEmpty() )
+            {
+                try
+                {
+                    for( PartP2PGTCEPower o : PartP2PGTCEPower.this.getOutputs() )
+                        outputs.add( o );
+                }
+                catch( GridAccessException e )
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            while ( !outputs.isEmpty() )
+            {
+                PartP2PGTCEPower target = outputs.poll();
+                final IEnergyContainer output = target.getAttachedEnergyStorage();
+
+                if( output == null || output.getEnergyCanBeInserted() <= 0 )
+                {
+                    continue;
+                }
+                canInsert += output.getEnergyCanBeInserted();
+            }
+            return canInsert;
         }
 
         @Override
@@ -165,13 +190,13 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
         @Override
         public long getInputAmperage()
         {
-            return Long.MAX_VALUE;
+            return 0;
         }
 
         @Override
         public long getInputVoltage()
         {
-            return Long.MAX_VALUE;
+            return 0;
         }
     }
 
@@ -186,7 +211,11 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
             }
             final IEnergyContainer output = getAttachedEnergyStorage();
             voltage *= 0.95;
-            return output.acceptEnergyFromNetwork( facing, voltage, amperage );
+            if( voltage > 0 )
+            {
+                return output.acceptEnergyFromNetwork( facing, voltage, amperage );
+            }
+            return 0;
         }
 
         @Override

@@ -204,7 +204,7 @@ public class OreHelper
 		return oreIDs;
 	}
 
-	List<ItemStack> getCachedOres( final String oreName )
+	public List<ItemStack> getCachedOres( final String oreName )
 	{
 		return this.oreDictCache.getUnchecked( oreName );
 	}

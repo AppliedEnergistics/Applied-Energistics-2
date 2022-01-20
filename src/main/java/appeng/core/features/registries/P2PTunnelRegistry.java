@@ -80,14 +80,9 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		gtceOreDict.add("cableGtSingle");
 
 		for(String oreDict : gtceOreDict) {
-			Arrays.stream(OreDictionary.getOreNames()).filter(s -> s.startsWith(oreDict)).forEach(s -> {
-						OreHelper.INSTANCE.getCachedOres(s).forEach(
-								stack -> {
-									this.addNewAttunement(stack, TunnelType.GTCEU_POWER);
-									AELog.info("Added " + stack + " to P2P Tunnel Registry");
-								});
-					}
-			);
+			Arrays.stream( OreDictionary.getOreNames() ).filter( oreName -> oreName.startsWith( oreDict ) ).forEach( oreName -> {
+				OreHelper.INSTANCE.getCachedOres( oreName ).forEach( stack -> this.addNewAttunement( stack, TunnelType.GTCEU_POWER ) );
+			} );
 		}
 
 		/**
