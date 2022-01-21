@@ -252,7 +252,7 @@ public class CraftingTreeProcess
 			pro.dive( job );
 		}
 
-		job.addBytes( this.crafts + 8 + this.bytes );
+		job.addBytes( this.crafts * 8 + this.bytes );
 	}
 
 	IAEItemStack getAmountCrafted( IAEItemStack what2 )

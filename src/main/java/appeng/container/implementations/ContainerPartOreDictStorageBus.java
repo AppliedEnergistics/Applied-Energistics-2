@@ -48,6 +48,11 @@ public class ContainerPartOreDictStorageBus extends AEBaseContainer
     {
         final IMEInventory<IAEItemStack> cellInv = this.part.getInternalHandler();
 
+        if( cellInv == null )
+        {
+            return;
+        }
+
         Set<Integer> oreIDs = new HashSet<>();
 
         for( IAEItemStack itemStack : cellInv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
