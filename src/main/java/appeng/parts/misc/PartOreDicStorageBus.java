@@ -40,8 +40,7 @@ public class PartOreDicStorageBus extends PartStorageBus
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_has_channel" ) );
 
-
-    public String oreMatch;
+    public String oreExp = "";
     OreDictPriorityList<IAEItemStack> priorityList;
 
     public PartOreDicStorageBus( ItemStack is )
@@ -53,15 +52,15 @@ public class PartOreDicStorageBus extends PartStorageBus
     public void readFromNBT( NBTTagCompound data )
     {
         super.readFromNBT( data );
-        this.oreMatch = data.getString( "oreMatch" );
-        this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreMatch ), oreMatch );
+        this.oreExp = data.getString( "oreMatch" );
+        this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreExp ), oreExp );
     }
 
     @Override
     public void writeToNBT( NBTTagCompound data )
     {
         super.writeToNBT( data );
-        data.setString( "oreMatch", getOreMatch() );
+        data.setString( "oreMatch", getOreExp() );
     }
 
     @Override
@@ -172,21 +171,22 @@ public class PartOreDicStorageBus extends PartStorageBus
         return this.handler;
     }
 
-    public String getOreMatch()
+    public String getOreExp()
     {
-        if( this.oreMatch == null )
+        if( this.oreExp == null )
         {
             return "";
         }
-        return oreMatch;
+        return oreExp;
     }
 
     public void saveOreMatch( String oreMatch )
     {
-        if( !this.oreMatch.equals( oreMatch ) )
+        if( !this.oreExp.equals( oreMatch ) )
         {
-            this.oreMatch = oreMatch;
-            this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreMatch ), oreMatch );
+            this.oreExp = oreMatch;
+
+            this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreExp ), oreExp );
             if( this.handler != null )
             {
                 handler.setPartitionList( this.priorityList );

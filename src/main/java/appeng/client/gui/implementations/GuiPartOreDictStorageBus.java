@@ -13,6 +13,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartOreDicStorageBus;
+import appeng.util.item.OreDictFilterMatcher;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -26,7 +27,7 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
     private GuiTabButton priority;
     private GuiImgButton partition;
 
-    private static final Pattern ORE_DICTIONARY_FILTER = Pattern.compile( "\\*?[a-zA-Z0-9_|\\\\+(){,}?!=\\-\\[:\\]&^$]*\\*?" );
+    private static final Pattern ORE_DICTIONARY_FILTER = Pattern.compile( "[(!]* *[0-9a-zA-Z*]* *\\)*( *[&|^]? *[(!]* *[0-9a-zA-Z*]* *\\)*)*" );
     private MEGuiTextField searchFieldInputs;
 
     public GuiPartOreDictStorageBus( final InventoryPlayer inventoryPlayer, final PartOreDicStorageBus te )
@@ -103,6 +104,7 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
 
         if( !searchFieldInputs.isFocused() && wasFocused )
         {
+            searchFieldInputs.setText( OreDictFilterMatcher.validateExp( searchFieldInputs.getText() ) );
             NetworkHandler.instance().sendToServer( new PacketValueConfig( "OreDictStorageBus.save", searchFieldInputs.getText() ) );
         }
 
@@ -125,8 +127,11 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
     public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
     {
         this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.OreDictStorageBus.getLocal() ), 8, 6, 4210752 );
-        this.fontRenderer.drawString( this.searchFieldInputs.getText().length() + " / " + this.searchFieldInputs.getMaxStringLength(), 8, 36, 4210752 );
-        this.fontRenderer.drawSplitString( "Supports regex. Or use * as a wildcard", 6, 48, 174, 4210752 );
+        this.fontRenderer.drawString( this.searchFieldInputs.getText().length() + " / " + this.searchFieldInputs.getMaxStringLength(), 120, 36, 4210752 );
+        this.fontRenderer.drawString( "& = AND    " + "| = OR", 8, 36, 4210752 );
+        this.fontRenderer.drawString( "^ = XOR    " + "! = NOT", 8, 48, 4210752 );
+        this.fontRenderer.drawString( "() for priority    " + "* for wildcard", 8, 60, 4210752 );
+        this.fontRenderer.drawString( "Ex.: *Redstone*&!dustRedstone", 8, 72, 4210752 );
     }
 
     @Override

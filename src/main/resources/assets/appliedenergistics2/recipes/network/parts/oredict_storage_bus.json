@@ -1,0 +1,36 @@
+{
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.storage_bus"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:interface"
+                }
+            ]
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.oredict_storage_bus"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:sticky_piston"
+        },
+        {
+            "item": "#appliedenergistics2:interface"
+        },
+        {
+            "item": "minecraft:piston"
+        },
+        {
+            "item": "minecraft:book"
+        }
+    ]
+}

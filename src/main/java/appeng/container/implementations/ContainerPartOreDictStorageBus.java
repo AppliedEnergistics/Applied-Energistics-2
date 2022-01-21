@@ -1,27 +1,18 @@
 package appeng.container.implementations;
 
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartOreDicStorageBus;
 import appeng.util.Platform;
-import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.OreReference;
-import appeng.util.iterators.NullIterator;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.IOException;
@@ -103,7 +94,7 @@ public class ContainerPartOreDictStorageBus extends AEBaseContainer
     {
         try
         {
-            NetworkHandler.instance().sendTo( new PacketValueConfig( "OreDictStorageBus.sendRegex", part.getOreMatch() ), (EntityPlayerMP) getInventoryPlayer().player );
+            NetworkHandler.instance().sendTo( new PacketValueConfig( "OreDictStorageBus.sendRegex", part.getOreExp() ), (EntityPlayerMP) getInventoryPlayer().player );
         }
         catch( IOException e )
         {

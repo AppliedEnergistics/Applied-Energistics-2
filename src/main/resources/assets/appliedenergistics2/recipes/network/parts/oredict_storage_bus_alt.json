@@ -1,0 +1,31 @@
+{
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.storage_bus"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:interface"
+                }
+            ]
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.oredict_storage_bus"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "part.storage_bus"
+        },
+        {
+            "item": "minecraft:book"
+        }
+    ]
+}
