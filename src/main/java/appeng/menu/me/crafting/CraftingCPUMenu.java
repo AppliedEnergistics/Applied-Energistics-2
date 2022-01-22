@@ -82,7 +82,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
             this.setCPU(((CraftingBlockEntity) te).getCluster());
         }
 
-        if (this.getGrid() == null && isServer()) {
+        if (this.getGrid() == null && isServerSide()) {
             this.setValidMenu(false);
         }
 
@@ -119,7 +119,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
     }
 
     public void cancelCrafting() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_CANCEL_CRAFTING);
         } else {
             if (this.cpu != null) {
@@ -138,7 +138,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
 
     @Override
     public void broadcastChanges() {
-        if (isServer() && this.cpu != null) {
+        if (isServerSide() && this.cpu != null) {
             this.schedulingMode = this.cpu.getSelectionMode();
 
             if (this.incrementalUpdateHelper.hasChanges()) {

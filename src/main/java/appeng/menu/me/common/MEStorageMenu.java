@@ -169,7 +169,7 @@ public class MEStorageMenu extends AEBaseMenu
         this.clientCM.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         IEnergySource powerSource = null;
-        if (isServer()) {
+        if (isServerSide()) {
             this.serverCM = host.getConfigManager();
 
             this.storage = host.getInventory();
@@ -245,7 +245,7 @@ public class MEStorageMenu extends AEBaseMenu
     public void broadcastChanges() {
         toolboxMenu.tick();
 
-        if (isServer()) {
+        if (isServerSide()) {
             // Close the screen if the backing network inventory has changed
             if (this.storage != this.host.getInventory()) {
                 this.setValidMenu(false);
@@ -401,7 +401,7 @@ public class MEStorageMenu extends AEBaseMenu
 
     @Override
     public IConfigManager getConfigManager() {
-        if (isServer()) {
+        if (isServerSide()) {
             return this.serverCM;
         }
         return this.clientCM;
@@ -422,7 +422,7 @@ public class MEStorageMenu extends AEBaseMenu
 
     @Override
     public final void handleInteraction(long serial, InventoryAction action) {
-        if (isClient()) {
+        if (isClientSide()) {
             NetworkHandler.instance().sendToServer(new MEInteractionPacket(containerId, serial, action));
             return;
         }
@@ -730,7 +730,7 @@ public class MEStorageMenu extends AEBaseMenu
      * @return The stacks available in the storage as determined the last time this menu was ticked.
      */
     protected final KeyCounter getPreviousAvailableStacks() {
-        Preconditions.checkState(isServer());
+        Preconditions.checkState(isServerSide());
         return previousAvailableStacks;
     }
 

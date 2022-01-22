@@ -65,7 +65,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
 
     public void setName(String value) {
         this.currentName = value;
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_SET_NAME, value);
         }
     }
@@ -118,7 +118,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
         }
 
         private void makePlate() {
-            if (isServer() && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
+            if (isServerSide() && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
                 final ItemStack item = itemMenuHost.getItemStack();
                 final ItemStack before = item.copy();
                 Inventory playerInv = QuartzKnifeMenu.this.getPlayerInventory();

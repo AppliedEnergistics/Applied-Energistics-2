@@ -128,7 +128,14 @@ public class WidgetContainer {
      * Adds a {@link Scrollbar} to the screen.
      */
     public Scrollbar addScrollBar(String id) {
-        Scrollbar scrollbar = new Scrollbar();
+        return addScrollBar(id, Scrollbar.DEFAULT);
+    }
+
+    /**
+     * Adds a {@link Scrollbar} to the screen.
+     */
+    public Scrollbar addScrollBar(String id, Scrollbar.Style style) {
+        Scrollbar scrollbar = new Scrollbar(style);
         add(id, scrollbar);
         return scrollbar;
     }
@@ -190,8 +197,10 @@ public class WidgetContainer {
      * Tick {@link ICompositeWidget} instances that are not automatically ticked as part of being a normal widget.
      */
     public void tick() {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            widget.tick();
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.tick();
+            }
         }
     }
 
@@ -199,8 +208,10 @@ public class WidgetContainer {
      * @see ICompositeWidget#updateBeforeRender()
      */
     public void updateBeforeRender() {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            widget.updateBeforeRender();
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.updateBeforeRender();
+            }
         }
     }
 
@@ -208,8 +219,10 @@ public class WidgetContainer {
      * @see ICompositeWidget#drawBackgroundLayer(PoseStack, int, Rect2i, Point)
      */
     public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            widget.drawBackgroundLayer(poseStack, zIndex, bounds, mouse);
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.drawBackgroundLayer(poseStack, zIndex, bounds, mouse);
+            }
         }
     }
 
@@ -217,8 +230,10 @@ public class WidgetContainer {
      * @see ICompositeWidget#drawForegroundLayer(PoseStack, int, Rect2i, Point)
      */
     public void drawForegroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            widget.drawForegroundLayer(poseStack, zIndex, bounds, mouse);
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.drawForegroundLayer(poseStack, zIndex, bounds, mouse);
+            }
         }
     }
 
@@ -226,8 +241,9 @@ public class WidgetContainer {
      * @see ICompositeWidget#onMouseDown(Point, int)
      */
     public boolean onMouseDown(Point mousePos, int btn) {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            if ((widget.wantsAllMouseDownEvents() || mousePos.isIn(widget.getBounds()))
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()
+                    && (widget.wantsAllMouseDownEvents() || mousePos.isIn(widget.getBounds()))
                     && widget.onMouseDown(mousePos, btn)) {
                 return true;
             }
@@ -240,8 +256,9 @@ public class WidgetContainer {
      * @see ICompositeWidget#onMouseUp(Point, int)
      */
     public boolean onMouseUp(Point mousePos, int btn) {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            if ((widget.wantsAllMouseUpEvents() || mousePos.isIn(widget.getBounds()))
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()
+                    && (widget.wantsAllMouseUpEvents() || mousePos.isIn(widget.getBounds()))
                     && widget.onMouseUp(mousePos, btn)) {
                 return true;
             }
@@ -254,8 +271,8 @@ public class WidgetContainer {
      * @see ICompositeWidget#onMouseDrag(Point, int)
      */
     public boolean onMouseDrag(Point mousePos, int btn) {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            if (widget.onMouseDrag(mousePos, btn)) {
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible() && widget.onMouseDrag(mousePos, btn)) {
                 return true;
             }
         }
@@ -267,8 +284,9 @@ public class WidgetContainer {
      * @see ICompositeWidget#onMouseWheel(Point, double)
      */
     boolean onMouseWheel(Point mousePos, double wheelDelta) {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            if ((widget.wantsAllMouseWheelEvents() || mousePos.isIn(widget.getBounds()))
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()
+                    && (widget.wantsAllMouseWheelEvents() || mousePos.isIn(widget.getBounds()))
                     && widget.onMouseWheel(mousePos, wheelDelta)) {
                 return true;
             }
@@ -281,8 +299,10 @@ public class WidgetContainer {
      * @see ICompositeWidget#addExclusionZones(List, Rect2i)
      */
     public void addExclusionZones(List<Rect2i> exclusionZones, Rect2i bounds) {
-        for (ICompositeWidget widget : compositeWidgets.values()) {
-            widget.addExclusionZones(exclusionZones, bounds);
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.addExclusionZones(exclusionZones, bounds);
+            }
         }
     }
 
@@ -304,13 +324,17 @@ public class WidgetContainer {
      */
     public void setTooltipAreaEnabled(String id, boolean enabled) {
         var tooltip = tooltips.get(id);
-        Preconditions.checkArgument(tooltip != null, "No tooltip with id '%s' is defined");
+        Preconditions.checkArgument(tooltip != null, "No tooltip with id '%s' is defined", id);
         tooltip.enabled = enabled;
     }
 
     @Nullable
     public Tooltip getTooltip(int mouseX, int mouseY) {
-        for (ICompositeWidget c : this.compositeWidgets.values()) {
+        for (var c : this.compositeWidgets.values()) {
+            if (!c.isVisible()) {
+                continue;
+            }
+
             Rect2i bounds = c.getBounds();
             if (mouseX >= bounds.getX() && mouseX < bounds.getX() + bounds.getWidth()
                     && mouseY >= bounds.getY() && mouseY < bounds.getY() + bounds.getHeight()) {

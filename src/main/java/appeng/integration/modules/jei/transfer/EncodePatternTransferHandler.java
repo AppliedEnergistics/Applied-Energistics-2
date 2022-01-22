@@ -30,7 +30,6 @@ import appeng.integration.modules.jei.GenericEntryStackHelper;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.OptionalFakeSlot;
 import appeng.parts.encoding.EncodingMode;
 import appeng.util.CraftingRecipeUtil;
 
@@ -194,7 +193,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         }
 
         // Clear out the processing outputs
-        for (OptionalFakeSlot outputSlot : menu.getProcessingOutputSlots()) {
+        for (var outputSlot : menu.getProcessingOutputSlots()) {
             NetworkHandler.instance().sendToServer(new InventoryActionPacket(
                     InventoryAction.SET_FILTER, outputSlot.index, ItemStack.EMPTY));
         }

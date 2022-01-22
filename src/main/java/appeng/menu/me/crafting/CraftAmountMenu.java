@@ -116,7 +116,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
     private void setWhatToCraft(AEKey whatToCraft, int initialAmount) {
         this.whatToCraft = Objects.requireNonNull(whatToCraft, "whatToCraft");
-        this.craftingItem.set(whatToCraft.wrap(initialAmount));
+        this.craftingItem.set(GenericStack.wrapInItemStack(whatToCraft, initialAmount));
     }
 
     /**
@@ -127,7 +127,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      * @param autoStart Start crafting immediately when the planning is done.
      */
     public void confirm(int amount, boolean autoStart) {
-        if (!isServer()) {
+        if (!isServerSide()) {
             NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, autoStart));
             return;
         }

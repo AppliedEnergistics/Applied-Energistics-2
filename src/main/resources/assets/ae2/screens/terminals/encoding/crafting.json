@@ -1,0 +1,29 @@
+{
+  "__comment": "Describes the parts of the pattern encoding terminal that relate to encoding a crafting pattern",
+  "$schema": "../../schema.json",
+  "slots": {
+    "CRAFTING_GRID": {
+      "left": 18,
+      "bottom": 156,
+      "grid": "BREAK_AFTER_3COLS"
+    },
+    "CRAFTING_RESULT": {
+      "left": 110,
+      "bottom": 138
+    }
+  },
+  "widgets": {
+    "craftingSubstitutions": {
+      "left": 84,
+      "bottom": 163
+    },
+    "craftingFluidSubstitutions": {
+      "left": 94,
+      "bottom": 163
+    },
+    "craftingClearPattern": {
+      "left": 74,
+      "bottom": 163
+    }
+  }
+}

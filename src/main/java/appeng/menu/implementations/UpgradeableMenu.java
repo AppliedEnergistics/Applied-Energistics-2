@@ -109,7 +109,7 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
     public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (isServer() && getHost() instanceof IConfigurableObject configurableObject) {
+        if (isServerSide() && getHost() instanceof IConfigurableObject configurableObject) {
             this.loadSettingsFromHost(configurableObject.getConfigManager());
         }
 

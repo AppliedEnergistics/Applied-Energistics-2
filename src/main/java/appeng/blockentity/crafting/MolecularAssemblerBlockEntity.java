@@ -52,6 +52,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -164,7 +165,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                     var amount = list.get(validFluidKey);
                     int requiredAmount = (int) validFluid.amount();
                     if (amount >= requiredAmount) {
-                        this.gridInv.setItemDirect(sparseIndex, validFluidKey.wrap(requiredAmount));
+                        this.gridInv.setItemDirect(sparseIndex,
+                                GenericStack.wrapInItemStack(validFluidKey, requiredAmount));
                         list.remove(validFluidKey, requiredAmount);
                         continue;
                     }

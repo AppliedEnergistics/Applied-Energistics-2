@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
 import appeng.core.AELog;
+import appeng.items.misc.WrappedGenericStack;
 
 /**
  * Uniquely identifies something that "stacks" within an ME inventory.
@@ -213,12 +214,19 @@ public abstract class AEKey {
     /**
      * Wraps a key in an ItemStack that can be unwrapped into a key later.
      */
-    public abstract ItemStack wrapForDisplayOrFilter();
+    public ItemStack wrapForDisplayOrFilter() {
+        return GenericStack.wrapInItemStack(this, 0);
+    }
 
     /**
      * Wraps a key in an ItemStack that can be unwrapped into a key later.
+     * 
+     * @see GenericStack#wrapInItemStack(AEKey, long) use this instead
      */
-    public abstract ItemStack wrap(int amount);
+    @Deprecated(forRemoval = true)
+    public ItemStack wrap(int amount) {
+        return WrappedGenericStack.wrap(this, amount);
+    }
 
     /**
      * True to indicate that this type of {@link AEKey} supports range-based fuzzy search using

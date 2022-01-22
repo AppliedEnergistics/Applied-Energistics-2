@@ -78,7 +78,7 @@ public class PatternProviderMenu extends AEBaseMenu {
     public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (isServer()) {
+        if (isServerSide()) {
             blockingMode = logic.getConfigManager().getSetting(Settings.BLOCKING_MODE);
             showInAccessTerminal = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);
         }

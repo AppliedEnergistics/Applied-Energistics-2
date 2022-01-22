@@ -18,67 +18,72 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.Icon;
 
-public class ToggleButton extends Button implements ITooltip {
-    private final Icon icon;
-    private final Icon iconDisabled;
+public class ToggleButton extends IconButton implements ITooltip {
 
-    private final Component displayName;
-    private final Component displayHint;
+    private final Listener listener;
 
-    private boolean isActive;
+    private final Icon iconOn;
+    private final Icon iconOff;
+
+    private List<Component> tooltipOn = Collections.emptyList();
+    private List<Component> tooltipOff = Collections.emptyList();
+
+    private boolean state;
 
     public ToggleButton(Icon on, Icon off, Component displayName,
-            Component displayHint, OnPress onPress) {
-        super(0, 0, 16, 16, TextComponent.EMPTY, onPress);
-        this.icon = on;
-        this.iconDisabled = off;
-        this.displayName = Objects.requireNonNull(displayName);
-        this.displayHint = Objects.requireNonNull(displayHint);
+            Component displayHint, Listener listener) {
+        this(on, off, listener);
+        setTooltipOn(List.of(displayName, displayHint));
+        setTooltipOff(List.of(displayName, displayHint));
     }
 
-    public void setState(boolean isOn) {
-        this.isActive = isOn;
+    public ToggleButton(Icon on, Icon off, Listener listener) {
+        super(null);
+        this.iconOn = on;
+        this.iconOff = off;
+        this.listener = listener;
+    }
+
+    public void setTooltipOn(List<Component> lines) {
+        this.tooltipOn = lines;
+    }
+
+    public void setTooltipOff(List<Component> lines) {
+        this.tooltipOff = lines;
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        if (this.visible) {
-            Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(poseStack, getBlitOffset());
-            getIcon().getBlitter().dest(x, y).blit(poseStack, getBlitOffset());
-        }
+    public void onPress() {
+        this.listener.onChange(!state);
     }
 
-    private Icon getIcon() {
-        return this.isActive ? this.icon : this.iconDisabled;
+    public void setState(boolean isOn) {
+        this.state = isOn;
+    }
+
+    protected Icon getIcon() {
+        return this.state ? this.iconOn : this.iconOff;
     }
 
     @Override
     public List<Component> getTooltipMessage() {
-        return Arrays.asList(
-                displayName,
-                displayHint);
-    }
-
-    @Override
-    public Rect2i getTooltipArea() {
-        return new Rect2i(x, y, 16, 16);
+        return state ? tooltipOn : tooltipOff;
     }
 
     @Override
     public boolean isTooltipAreaVisible() {
-        return this.visible;
+        return super.isTooltipAreaVisible() && !getTooltipMessage().isEmpty();
+    }
+
+    @FunctionalInterface
+    public interface Listener {
+        void onChange(boolean state);
     }
 }

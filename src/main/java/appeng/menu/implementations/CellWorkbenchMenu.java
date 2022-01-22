@@ -76,7 +76,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     public void setCellFuzzyMode(FuzzyMode fuzzyMode) {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_SET_FUZZY_MODE, fuzzyMode);
             return;
         }
@@ -88,7 +88,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     public void nextWorkBenchCopyMode() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_NEXT_COPYMODE);
         } else {
             getHost().getConfigManager().putSetting(Settings.COPY_MODE, EnumCycler.next(this.getWorkBenchCopyMode()));
@@ -145,7 +145,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     public void clear() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_CLEAR);
         } else {
             getConfigInventory().clear();
@@ -162,7 +162,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     public void partition() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_PARTITION);
             return;
         }

@@ -39,6 +39,10 @@ public class ClientReadOnlySlot extends Slot {
         super(EMPTY_INVENTORY, 0, xPosition, yPosition);
     }
 
+    public ClientReadOnlySlot() {
+        this(0, 0);
+    }
+
     @Override
     public final boolean mayPlace(ItemStack stack) {
         return false;

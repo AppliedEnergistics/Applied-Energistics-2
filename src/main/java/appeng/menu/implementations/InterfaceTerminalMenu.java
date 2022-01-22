@@ -88,7 +88,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
     @Override
     public void broadcastChanges() {
-        if (isClient()) {
+        if (isClientSide()) {
             return;
         }
 

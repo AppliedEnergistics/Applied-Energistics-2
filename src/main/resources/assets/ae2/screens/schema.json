@@ -335,9 +335,8 @@
           "VIEW_CELL",
           "CRAFTING_GRID",
           "CRAFTING_RESULT",
-          "PROCESSING_PRIMARY_RESULT",
-          "PROCESSING_FIRST_OPTIONAL_RESULT",
-          "PROCESSING_SECOND_OPTIONAL_RESULT",
+          "PROCESSING_INPUTS",
+          "PROCESSING_OUTPUTS",
           "BIOMETRIC_CARD"
         ]
       }

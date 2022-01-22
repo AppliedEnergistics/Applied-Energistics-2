@@ -111,6 +111,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     protected final WidgetContainer widgets;
     protected final ScreenStyle style;
 
+    /**
+     * The positions of all slots when a subscreen is opened.
+     */
+    private final List<SavedSlotInfo> savedSlotInfos = new ArrayList<>();
+
     public AEBaseScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title);
 
@@ -133,13 +138,12 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     @OverridingMethodsMustInvokeSuper
     protected void init() {
         super.init();
-        positionSlots(style);
+        positionSlots();
 
         widgets.populateScreen(this::addRenderableWidget, getBounds(true), this);
     }
 
-    private void positionSlots(ScreenStyle style) {
-
+    private void positionSlots() {
         for (var entry : style.getSlots().entrySet()) {
             var semantic = SlotSemantics.getOrThrow(entry.getKey());
 
@@ -148,28 +152,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 continue;
             }
 
-            List<Slot> slots = menu.getSlots(semantic);
-            for (int i = 0; i < slots.size(); i++) {
-                Slot slot = slots.get(i);
-
-                // Special case for slots with overridable width/height, which use widget styles instead of
-                // semantic based slot positioning
-                if (slot instanceof ResizableSlot resizableSlot) {
-                    var widgetStyle = style.getWidget(resizableSlot.getStyleId());
-                    var pos = widgetStyle.resolve(getBounds(false));
-                    slot.x = pos.getX();
-                    slot.y = pos.getY();
-                    resizableSlot.setWidth(widgetStyle.getWidth());
-                    resizableSlot.setHeight(widgetStyle.getHeight());
-                } else {
-                    Point pos = getSlotPosition(entry.getValue(), i);
-
-                    slot.x = pos.getX();
-                    slot.y = pos.getY();
-                }
-            }
+            repositionSlots(semantic);
         }
-
     }
 
     private Point getSlotPosition(SlotPosition position, int semanticIndex) {
@@ -180,6 +164,31 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             pos = grid.getPosition(pos.getX(), pos.getY(), semanticIndex);
         }
         return pos;
+    }
+
+    protected final void repositionSlots(SlotSemantic semantic) {
+        var position = style.getSlots().get(semantic.id());
+
+        var slots = menu.getSlots(semantic);
+        for (int i = 0; i < slots.size(); i++) {
+            Slot slot = slots.get(i);
+
+            // Special case for slots with overridable width/height, which use widget styles instead of
+            // semantic based slot positioning
+            if (slot instanceof ResizableSlot resizableSlot) {
+                var widgetStyle = style.getWidget(resizableSlot.getStyleId());
+                var pos = widgetStyle.resolve(getBounds(false));
+                slot.x = pos.getX();
+                slot.y = pos.getY();
+                resizableSlot.setWidth(widgetStyle.getWidth());
+                resizableSlot.setHeight(widgetStyle.getHeight());
+            } else {
+                Point pos = getSlotPosition(position, i);
+
+                slot.x = pos.getX();
+                slot.y = pos.getY();
+            }
+        }
     }
 
     private Rect2i getBounds(boolean absolute) {
@@ -533,6 +542,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     @Override
     protected void slotClicked(@Nullable Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
 
+        // Do not further process clicks on client-only slots
+        if (getMenu().isClientSideSlot(slot)) {
+            return;
+        }
+
         // Do not allow clicks on disabled player inventory slots
         if (slot instanceof DisabledSlot) {
             return;
@@ -810,7 +824,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 }
             }
         } else if (hiddenSlots.remove(semantic) && style != null) {
-            positionSlots(style);
+            positionSlots();
         }
     }
 
@@ -896,4 +910,38 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         RenderSystem.enableDepthTest();
     }
 
+    protected final void switchToScreen(AEBaseScreen<?> screen) {
+        savedSlotInfos.clear();
+        for (var slot : menu.slots) {
+            savedSlotInfos.add(new SavedSlotInfo(slot));
+            // Hide all slots and give the sub-screen a chance to reposition whatever slots it wants
+            slot.x = HIDDEN_SLOT_POS.getX();
+            slot.y = HIDDEN_SLOT_POS.getY();
+        }
+
+        minecraft.screen = null;
+        minecraft.setScreen(screen);
+
+        if (!screen.savedSlotInfos.isEmpty()) {
+            // Restore slot state to that of the new screen
+            for (var savedSlotInfo : screen.savedSlotInfos) {
+                savedSlotInfo.restore();
+            }
+            screen.savedSlotInfos.clear();
+        }
+    }
+
+    record SavedSlotInfo(Slot slot, boolean active, int x, int y) {
+        public SavedSlotInfo(Slot slot) {
+            this(slot, slot.isActive(), slot.x, slot.y);
+        }
+
+        public void restore() {
+            if (slot instanceof AppEngSlot appEngSlot) {
+                appEngSlot.setActive(active);
+            }
+            slot.x = x;
+            slot.y = y;
+        }
+    }
 }

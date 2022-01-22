@@ -58,26 +58,6 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.Encode;
                 displayValue = ButtonToolTips.EncodeDescription;
             }
-            case ENABLE_SUBSTITUTION -> {
-                icon = Icon.SUBSTITUTION_ENABLED;
-                displayName = ButtonToolTips.Substitutions;
-                displayValue = ButtonToolTips.SubstitutionsDescEnabled;
-            }
-            case DISABLE_SUBSTITUTION -> {
-                icon = Icon.SUBSTITUTION_DISABLED;
-                displayName = ButtonToolTips.Substitutions;
-                displayValue = ButtonToolTips.SubstitutionsDescDisabled;
-            }
-            case ENABLE_FLUID_SUBSTITUTION -> {
-                icon = Icon.FLUID_SUBSTITUTION_ENABLED;
-                displayName = ButtonToolTips.FluidSubstitutions;
-                displayValue = ButtonToolTips.FluidSubstitutionsDescEnabled;
-            }
-            case DISABLE_FLUID_SUBSTITUTION -> {
-                icon = Icon.FLUID_SUBSTITUTION_DISABLED;
-                displayName = ButtonToolTips.FluidSubstitutions;
-                displayValue = ButtonToolTips.FluidSubstitutionsDescDisabled;
-            }
             case CYCLE_PROCESSING_OUTPUT -> {
                 icon = Icon.SCHEDULING_DEFAULT;
                 displayName = ButtonToolTips.CycleProcessingOutput;

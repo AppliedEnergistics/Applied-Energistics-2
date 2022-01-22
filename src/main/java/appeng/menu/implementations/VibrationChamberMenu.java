@@ -56,7 +56,7 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     @Override
     public void broadcastChanges() {
-        if (isServer()) {
+        if (isServerSide()) {
             this.remainingBurnTime = this.vibrationChamber.getMaxBurnTime() <= 0 ? 0
                     : (int) (100.0 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime());
             this.burnSpeed = this.remainingBurnTime <= 0 ? 0 : this.vibrationChamber.getBurnSpeed();

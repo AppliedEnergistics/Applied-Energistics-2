@@ -51,11 +51,6 @@ public interface ISegmentedInventory {
     ResourceLocation STORAGE = new ResourceLocation("ae2:storage");
 
     /**
-     * Identifies the sub-inventory used by interfaces or molecular assemblers to store crafting patterns.
-     */
-    ResourceLocation PATTERNS = new ResourceLocation("ae2:patterns");
-
-    /**
      * Identifies the sub-inventory used to store storage cells in machines such as the cell workbench, drive, ME chest.
      */
     ResourceLocation CELLS = new ResourceLocation("ae2:cells");

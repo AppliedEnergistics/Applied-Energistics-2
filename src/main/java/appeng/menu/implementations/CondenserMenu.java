@@ -67,7 +67,7 @@ public class CondenserMenu extends AEBaseMenu implements IProgressProvider {
 
     @Override
     public void broadcastChanges() {
-        if (isServer()) {
+        if (isServerSide()) {
             final double maxStorage = this.condenser.getStorage();
             final double requiredEnergy = this.condenser.getRequiredPower();
 

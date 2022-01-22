@@ -83,7 +83,7 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
 
     @Override
     protected void standardDetectAndSendChanges() {
-        if (isServer()) {
+        if (isServerSide()) {
             this.maxProcessingTime = getHost().getMaxProcessingTime();
             this.processingTime = getHost().getProcessingTime();
         }

@@ -44,7 +44,8 @@ import appeng.menu.NullMenu;
 import appeng.util.CraftingRemainders;
 
 public class AECraftingPattern implements IAEPatternDetails {
-    private static final int CRAFTING_GRID_DIMENSION = 3;
+    public static final int CRAFTING_GRID_DIMENSION = 3;
+    public static final int CRAFTING_GRID_SLOTS = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
 
     private final AEItemKey definition;
     public final boolean canSubstitute;

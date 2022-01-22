@@ -53,7 +53,7 @@ public class NetworkStatusMenu extends AEBaseMenu {
             }
         }
 
-        if (this.grid == null && isServer()) {
+        if (this.grid == null && isServerSide()) {
             this.setValidMenu(false);
         }
     }
@@ -70,7 +70,7 @@ public class NetworkStatusMenu extends AEBaseMenu {
     @Override
     public void broadcastChanges() {
         this.delay++;
-        if (isServer() && this.delay > 15 && this.grid != null) {
+        if (isServerSide() && this.delay > 15 && this.grid != null) {
             this.delay = 0;
 
             NetworkStatus status = NetworkStatus.fromGrid(this.grid);

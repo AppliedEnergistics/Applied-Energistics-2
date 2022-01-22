@@ -64,8 +64,6 @@ public class BasePacketHandler {
 
         SWAP_SLOTS(SwapSlotsPacket.class, SwapSlotsPacket::new),
 
-        PATTERN_SLOT(PatternSlotPacket.class, PatternSlotPacket::new),
-
         FILL_CRAFTING_GRID_FROM_RECIPE(FillCraftingGridFromRecipePacket.class, FillCraftingGridFromRecipePacket::new),
 
         CONFIRM_AUTO_CRAFT(ConfirmAutoCraftPacket.class, ConfirmAutoCraftPacket::new),

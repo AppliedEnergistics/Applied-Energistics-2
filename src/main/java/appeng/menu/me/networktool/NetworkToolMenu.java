@@ -56,7 +56,7 @@ public class NetworkToolMenu extends AEBaseMenu {
     }
 
     public void toggleFacadeMode() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_TOGGLE_FACADE_MODE);
             return;
         }

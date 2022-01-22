@@ -20,8 +20,6 @@ package appeng.parts.encoding;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -29,25 +27,20 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
-import appeng.crafting.pattern.AECraftingPattern;
-import appeng.crafting.pattern.AEProcessingPattern;
-import appeng.crafting.pattern.IAEPatternDetails;
-import appeng.helpers.IPatternTerminalHost;
+import appeng.helpers.IPatternTerminalLogicHost;
+import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.util.Platform;
-import appeng.util.inv.AppEngInternalInventory;
 
-public class PatternEncodingTerminalPart extends AbstractTerminalPart implements IPatternTerminalHost {
+public class PatternEncodingTerminalPart extends AbstractTerminalPart
+        implements IPatternTerminalLogicHost, IPatternTerminalMenuHost {
 
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
@@ -60,13 +53,7 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final AppEngInternalInventory crafting = new AppEngInternalInventory(this, 9);
-    private final AppEngInternalInventory output = new AppEngInternalInventory(this, 3);
-    private final AppEngInternalInventory pattern = new AppEngInternalInventory(this, 2);
-
-    private EncodingMode mode = EncodingMode.CRAFTING;
-    private boolean substitute = false;
-    private boolean substituteFluids = true;
+    private final PatternEncodingLogic logic = new PatternEncodingLogic(this);
 
     public PatternEncodingTerminalPart(IPartItem<?> partItem) {
         super(partItem);
@@ -74,10 +61,11 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
 
     @Override
     public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
-        for (ItemStack is : this.pattern) {
-            if (!is.isEmpty()) {
-                drops.add(is);
-            }
+        for (var is : this.logic.getBlankPatternInv()) {
+            drops.add(is);
+        }
+        for (var is : this.logic.getEncodedPatternInv()) {
+            drops.add(is);
         }
     }
 
@@ -85,27 +73,13 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     public void readFromNBT(CompoundTag data) {
         super.readFromNBT(data);
 
-        try {
-            this.mode = EncodingMode.valueOf(data.getString("mode"));
-        } catch (IllegalArgumentException ignored) {
-            this.mode = EncodingMode.CRAFTING;
-        }
-        this.setSubstitution(data.getBoolean("substitute"));
-        this.setFluidSubstitution(data.getBoolean("substituteFluids"));
-        this.pattern.readFromNBT(data, "pattern");
-        this.output.readFromNBT(data, "outputList");
-        this.crafting.readFromNBT(data, "craftingGrid");
+        logic.readFromNBT(data);
     }
 
     @Override
     public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
-        data.putString("mode", this.mode.name());
-        data.putBoolean("substitute", this.substitute);
-        data.putBoolean("substituteFluids", this.substituteFluids);
-        this.pattern.writeToNBT(data, "pattern");
-        this.output.writeToNBT(data, "outputList");
-        this.crafting.writeToNBT(data, "craftingGrid");
+        logic.writeToNBT(data);
     }
 
     @Override
@@ -117,78 +91,17 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart implements
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-        if (inv == this.pattern && slot == 1) {
-            var is = this.pattern.getStackInSlot(1);
-            var details = PatternDetailsHelper.decodePattern(is,
-                    this.getHost().getBlockEntity().getLevel());
-            if (details instanceof AECraftingPattern) {
-                setMode(EncodingMode.CRAFTING);
-            } else if (details instanceof AEProcessingPattern) {
-                setMode(EncodingMode.PROCESSING);
-            }
-            if (details instanceof IAEPatternDetails aeDetails) {
-                this.setSubstitution(aeDetails.canSubstitute());
-                this.setFluidSubstitution(aeDetails.canSubstituteFluids());
-
-                for (int x = 0; x < this.crafting.size() && x < aeDetails.getSparseInputs().length; x++) {
-                    this.crafting.setItemDirect(x, GenericStack.wrapInItemStack(aeDetails.getSparseInputs()[x]));
-                }
-
-                for (int x = 0; x < this.output.size() && x < aeDetails.getSparseOutputs().length; x++) {
-                    this.output.setItemDirect(x, GenericStack.wrapInItemStack(aeDetails.getSparseOutputs()[x]));
-                }
-            }
-        } else if (inv == this.crafting) {
-            this.fixCraftingRecipes();
-        }
-
-        this.getHost().markForSave();
-    }
-
-    @Override
-    public EncodingMode getMode() {
-        return mode;
-    }
-
-    @Override
-    public void setMode(EncodingMode mode) {
-        this.mode = mode;
-        this.fixCraftingRecipes();
-    }
-
-    public boolean isSubstitution() {
-        return this.substitute;
-    }
-
-    public void setSubstitution(boolean canSubstitute) {
-        this.substitute = canSubstitute;
-    }
-
-    public boolean isFluidSubstitution() {
-        return this.substituteFluids;
-    }
-
-    public void setFluidSubstitution(boolean canSubstitute) {
-        this.substituteFluids = canSubstitute;
-    }
-
-    @Nullable
-    @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
-        if (id.equals(INV_CRAFTING)) {
-            return this.crafting;
-        } else if (id.equals(INV_OUTPUT)) {
-            return this.output;
-        } else if (id.equals(PATTERNS)) {
-            return this.pattern;
-        } else {
-            return super.getSubInventory(id);
-        }
-    }
-
-    @Override
     public IPartModel getStaticModels() {
         return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
+    }
+
+    @Override
+    public PatternEncodingLogic getLogic() {
+        return logic;
+    }
+
+    @Override
+    public void markForSave() {
+        getHost().markForSave();
     }
 }

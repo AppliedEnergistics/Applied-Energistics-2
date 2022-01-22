@@ -103,7 +103,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
     @Override
     public void broadcastChanges() {
         IGrid network = this.getGrid();
-        if (isServer() && network != null) {
+        if (isServerSide() && network != null) {
             if (!lastCpuSet.equals(network.getCraftingService().getCpus())
                     // Always try to update once every second to show job progress
                     || ++lastUpdate >= 20) {
@@ -172,7 +172,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
     }
 
     public void selectCpu(int serial) {
-        if (isClient()) {
+        if (isClientSide()) {
             selectedCpuSerial = serial;
             sendClientAction(ACTION_SELECT_CPU, serial);
         } else {
