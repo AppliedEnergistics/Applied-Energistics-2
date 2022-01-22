@@ -10,6 +10,8 @@ public class GTCEEnergyAdapter implements IEnergyContainer
 {
     private final IExternalPowerSink sink;
 
+    double EUBuffer;
+
     GTCEEnergyAdapter( IExternalPowerSink sink )
     {
         this.sink = sink;
@@ -18,9 +20,29 @@ public class GTCEEnergyAdapter implements IEnergyContainer
     @Override
     public long acceptEnergyFromNetwork( EnumFacing enumFacing, long voltage, long amperage )
     {
-        final double overflow = this.sink.injectExternalPower( PowerUnits.GTCEU, (double) voltage, Actionable.MODULATE );
+        final double power = voltage * amperage;
+        final double oldBuffer = EUBuffer;
 
-        return (long) ( voltage - overflow );
+        EUBuffer = this.sink.injectExternalPower( PowerUnits.GTCEU, power + EUBuffer, Actionable.MODULATE );
+
+        // if the overflow went down, all inputs were consumed
+        if ( EUBuffer <= oldBuffer )
+        {
+            return amperage;
+        }
+        // if overflow is greater than the inputs, nothing was consumed
+        if ( EUBuffer >= power )
+        {
+            EUBuffer -= power;
+            return 0;
+        }
+        // determine how many amps are being used
+        final double usedEU = power + oldBuffer - EUBuffer;
+        final long ampsUsed = (long) Math.ceil( usedEU / ( (double) voltage ) );
+        // adjust the overflow
+        EUBuffer += usedEU % voltage;
+
+        return ampsUsed;
     }
 
     @Override
