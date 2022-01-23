@@ -21,7 +21,13 @@ package appeng.menu.guisync;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+
+import com.google.common.base.Preconditions;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -84,7 +90,9 @@ public abstract class SynchronizedField<T> {
     public static SynchronizedField<?> create(Object source, Field field) {
         Class<?> fieldType = field.getType();
 
-        if (fieldType.isAssignableFrom(Component.class)) {
+        if (PacketWritable.class.isAssignableFrom(fieldType)) {
+            return new CustomField(source, field);
+        } else if (fieldType.isAssignableFrom(Component.class)) {
             return new TextComponentField(source, field);
         } else if (fieldType == String.class) {
             return new StringField(source, field);
@@ -218,6 +226,47 @@ public abstract class SynchronizedField<T> {
                 return data.readComponent();
             } else {
                 return null;
+            }
+        }
+    }
+
+    private static class CustomField extends SynchronizedField<Object> {
+        private static final Map<Class<?>, Function<FriendlyByteBuf, Object>> factories = new HashMap<>();
+        private final Class<?> fieldType;
+
+        private CustomField(Object source, Field field) {
+            super(source, field);
+            this.fieldType = field.getType();
+            Preconditions.checkArgument(PacketWritable.class.isAssignableFrom(fieldType));
+            if (!fieldType.isRecord()) {
+                throw new RuntimeException("Use records to synchronize custom class on " + field
+                        + " to enable easier equals comparisons");
+            }
+        }
+
+        @Override
+        protected void writeValue(FriendlyByteBuf data, Object value) {
+            ((PacketWritable) value).writeToPacket(data);
+        }
+
+        @Override
+        protected Object readValue(FriendlyByteBuf data) {
+            var factory = factories.computeIfAbsent(fieldType, CustomField::getFactory);
+            return factory.apply(data);
+        }
+
+        private static Function<FriendlyByteBuf, Object> getFactory(Class<?> clazz) {
+            try {
+                var constructor = clazz.getConstructor(FriendlyByteBuf.class);
+                return buffer -> {
+                    try {
+                        return constructor.newInstance(buffer);
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException("Failed to deserialize " + clazz, e);
+                    }
+                };
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("No constructor taking FriendlyByteBuf on " + clazz);
             }
         }
     }

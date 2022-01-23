@@ -1,6 +1,7 @@
 {
   "$schema": "../schema.json",
   "palette": {
-    "DEFAULT_TEXT_COLOR": "#404040"
+    "DEFAULT_TEXT_COLOR": "#404040",
+    "SELECTION_COLOR": "#00D5FF"
   }
 }

@@ -63,5 +63,4 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
     public void setName(Component name) {
         this.name = name;
     }
-
 }

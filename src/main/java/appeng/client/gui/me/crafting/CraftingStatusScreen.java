@@ -18,14 +18,12 @@
 
 package appeng.client.gui.me.crafting;
 
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.core.localization.GuiText;
+import appeng.client.gui.widgets.CPUSelectionList;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 
 /**
@@ -34,43 +32,20 @@ import appeng.menu.me.crafting.CraftingStatusMenu;
  */
 public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> {
 
-    private final Button selectCPU;
-
-    public CraftingStatusScreen(CraftingStatusMenu menu, Inventory playerInventory,
+    public CraftingStatusScreen(CraftingStatusMenu menu,
+            Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
-        this.selectCPU = widgets.addButton("selectCpu", getNextCpuButtonLabel(), this::selectNextCpu);
 
         AESubScreen.addBackButton(menu, "back", widgets);
-    }
 
-    @Override
-    protected void updateBeforeRender() {
-        super.updateBeforeRender();
-
-        this.selectCPU.setMessage(getNextCpuButtonLabel());
-    }
-
-    private Component getNextCpuButtonLabel() {
-        if (this.menu.noCPU) {
-            return GuiText.NoCraftingJobs.text();
-        }
-        // it's possible that the cpu name has not synchronized from server->client yet, since fields are synced
-        // individually.
-        Component name = menu.cpuName;
-        if (name == null) {
-            name = TextComponent.EMPTY;
-        }
-        return GuiText.SelectedCraftingCPU.text(name);
+        var scrollbar = widgets.addScrollBar("selectCpuScrollbar");
+        widgets.add("selectCpuList", new CPUSelectionList(menu, scrollbar, style));
     }
 
     @Override
     protected Component getGuiDisplayName(Component in) {
         return in; // the cpu name is on the button
-    }
-
-    private void selectNextCpu() {
-        getMenu().cycleSelectedCPU(!isHandlingRightClick());
     }
 
 }

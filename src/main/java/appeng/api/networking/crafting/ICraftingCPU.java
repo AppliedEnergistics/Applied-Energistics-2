@@ -23,7 +23,11 @@
 
 package appeng.api.networking.crafting;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.network.chat.Component;
+
+import appeng.api.config.CpuSelectionMode;
 
 public interface ICraftingCPU {
 
@@ -31,6 +35,12 @@ public interface ICraftingCPU {
      * @return true if the CPU currently has a job.
      */
     boolean isBusy();
+
+    /**
+     * @return The status of the current job (that is if {@link #isBusy()} was true).
+     */
+    @Nullable
+    CraftingJobStatus getJobStatus();
 
     /**
      * @return the available storage in bytes
@@ -45,5 +55,11 @@ public interface ICraftingCPU {
     /**
      * @return a null or the name of the cpu.
      */
+    @Nullable
     Component getName();
+
+    /**
+     * @return The mode used to select this CPU for crafting jobs when the CPU should be auto-selected.
+     */
+    CpuSelectionMode getSelectionMode();
 }

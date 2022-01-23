@@ -18,7 +18,6 @@
 
 package appeng.menu.guisync;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,9 +39,9 @@ public class DataSynchronization {
     }
 
     private void collectFields(Object host, Class<?> clazz) {
-        for (Field f : clazz.getDeclaredFields()) {
+        for (var f : clazz.getDeclaredFields()) {
             if (f.isAnnotationPresent(GuiSync.class)) {
-                final GuiSync annotation = f.getAnnotation(GuiSync.class);
+                var annotation = f.getAnnotation(GuiSync.class);
                 short key = annotation.value();
                 if (this.fields.containsKey(key)) {
                     throw new IllegalStateException(
