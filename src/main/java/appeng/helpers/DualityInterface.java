@@ -28,6 +28,7 @@ import appeng.util.*;
 import appeng.util.inv.*;
 import com.google.common.collect.ImmutableSet;
 
+import com.google.common.primitives.Ints;
 import de.ellpeck.actuallyadditions.api.tile.IPhantomTile;
 import gregtech.api.block.machines.BlockMachine;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -851,7 +852,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			else if( itemStack.getStackSize() > 0 )
 			{
 				// make sure strange things didn't happen...
-				if( !adaptor.simulateAdd( itemStack.createItemStack() ).isEmpty() )
+				ItemStack inputStack = itemStack.createItemStack();
+				if( !adaptor.simulateAdd( inputStack ).isEmpty() )
 				{
 					changed = true;
 					throw new GridAccessException();
@@ -866,7 +868,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						if( acquired != null )
 						{
 							changed = true;
-							final ItemStack issue = adaptor.addItems( acquired.createItemStack() );
+							inputStack.setCount( Ints.saturatedCast( acquired.getStackSize() ) );
+							final ItemStack issue = adaptor.addItems( inputStack );
 							if( !issue.isEmpty() )
 							{
 								throw new IllegalStateException( "bad attempt at managing inventory. ( addItems )" );

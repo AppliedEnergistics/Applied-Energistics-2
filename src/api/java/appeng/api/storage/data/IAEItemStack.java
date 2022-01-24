@@ -119,6 +119,10 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	 *
 	 * @param is An item stack
 	 */
-	boolean equals(ItemStack is);
+	boolean equals( ItemStack is );
+
+	ItemStack getCachedItemStack( long stackSize );
+
+	void setCachedItemStack( ItemStack is );
 
 }

@@ -42,8 +42,6 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     private final InventoryCache cache;
     private AccessRestriction access;
 
-    private ItemStack stackCache;
-
     ItemRepositoryAdapter( IItemRepository itemRepository, IGridProxyable proxy )
     {
         this.itemRepository = itemRepository;
@@ -61,31 +59,24 @@ class ItemRepositoryAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<
     public IAEItemStack injectItems( IAEItemStack iox, Actionable type, IActionSource src )
     {
         // Try to reuse the cached stack
-        @Nullable ItemStack currentCached = stackCache;
-        stackCache = null;
+        ItemStack inputStack = iox.getCachedItemStack( iox.getStackSize() );
 
-        ItemStack orgInput;
-        if( currentCached != null && iox.isSameType( currentCached ) )
+        ItemStack remaining;
+
+        remaining = this.itemRepository.insertItem( inputStack, type == Actionable.SIMULATE );
+
+        // Store the stack in the cache for next time.
+        if( !remaining.isEmpty() )
         {
-            // Cache is suitable, just update the count
-            orgInput = currentCached;
-            currentCached.setCount( Ints.saturatedCast( iox.getStackSize() ) );
+            iox.setCachedItemStack( remaining );
         }
         else
         {
-            // We need a new stack :-(
-            orgInput = iox.createItemStack();
-        }
-        ItemStack remaining = this.itemRepository.insertItem( orgInput, type == Actionable.SIMULATE );
-
-        // Store the stack in the cache for next time.
-        if( !remaining.isEmpty() && remaining != orgInput )
-        {
-            stackCache = remaining;
+            iox.setCachedItemStack( inputStack );
         }
 
         // At this point, we still have some items left...
-        if( remaining == orgInput )
+        if( remaining == inputStack )
         {
             // The stack remained unmodified, target inventory is full
             return iox;

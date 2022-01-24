@@ -19,9 +19,11 @@
 package appeng.parts.automation;
 
 
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import com.google.common.primitives.Ints;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -278,11 +280,27 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 				if( energy.extractAEPower( power, mode, PowerMultiplier.CONFIG ) > power - 0.01 )
 				{
-					if( mode == Actionable.MODULATE )
+					ItemStack inputStack = items.getCachedItemStack( items.getStackSize() );
+
+					ItemStack remaining;
+
+					remaining = mode == Actionable.SIMULATE ? d.simulateAdd( inputStack ) : d.addItems( inputStack );
+
+					if( !remaining.isEmpty() )
 					{
-						return AEItemStack.fromItemStack( d.addItems( items.createItemStack() ) );
+						items.setCachedItemStack( remaining );
 					}
-					return AEItemStack.fromItemStack( d.simulateAdd( items.createItemStack() ) );
+					else
+					{
+						items.setCachedItemStack( inputStack );
+					}
+
+					if( remaining == inputStack )
+					{
+						return items;
+					}
+
+					return AEItemStack.fromItemStack( remaining );
 				}
 			}
 		}
@@ -318,11 +336,13 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	private void pushItemIntoTarget( final InventoryAdaptor d, final IEnergyGrid energy, final IMEInventory<IAEItemStack> inv, IAEItemStack ais )
 	{
-		final ItemStack is = ais.createItemStack();
-		is.setCount( (int) this.itemToSend );
+		ItemStack inputStack = ais.createItemStack();
 
-		final ItemStack o = d.simulateAdd( is );
-		final long canFit = o.isEmpty() ? this.itemToSend : this.itemToSend - o.getCount();
+		ItemStack toAdd = inputStack;
+
+		final ItemStack remaining = d.simulateAdd( inputStack );
+
+		final long canFit = remaining.isEmpty() ? this.itemToSend : this.itemToSend - remaining.getCount();
 
 		if( canFit > 0 )
 		{
@@ -334,7 +354,13 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			{
 				this.itemToSend -= itemsToAdd.getStackSize();
 
-				final ItemStack failed = d.addItems( itemsToAdd.createItemStack() );
+				if( !remaining.isEmpty() )
+				{
+					toAdd = remaining;
+				}
+				toAdd.setCount( Ints.saturatedCast( canFit ) );
+
+				final ItemStack failed = d.addItems( toAdd );
 				if( !failed.isEmpty() )
 				{
 					ais.setStackSize( failed.getCount() );

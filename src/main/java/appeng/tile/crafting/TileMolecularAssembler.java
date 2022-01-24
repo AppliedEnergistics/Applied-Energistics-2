@@ -22,6 +22,13 @@ package appeng.tile.crafting;
 import java.io.IOException;
 import java.util.List;
 
+import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.capabilities.Capabilities;
+import appeng.me.helpers.MachineSource;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.inventory.InventoryCrafting;
@@ -96,6 +103,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private boolean isAwake = false;
 	private boolean forcePlan = false;
 	private boolean reboot = true;
+	private final IActionSource mySrc = new MachineSource( this );
 
 	public TileMolecularAssembler()
 	{
@@ -458,7 +466,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			final ItemStack output = this.myPlan.getOutput( this.craftingInv, this.getWorld() );
 			if( !output.isEmpty() )
 			{
-				this.pushOut( output.copy() );
+				this.pushOut( output );
 
 				for( int x = 0; x < this.craftingInv.getSizeInventory(); x++ )
 				{
@@ -567,6 +575,34 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			return output;
 		}
 
+		// Prioritize a handler to directly link to another ME network
+		IStorageMonitorableAccessor accessor = te.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, d.getOpposite() );
+
+		if( accessor != null )
+		{
+			IStorageMonitorable inventory = accessor.getInventory( this.mySrc );
+			if( inventory != null )
+			{
+				IAEItemStack toInsert = AEItemStack.fromItemStack( output );
+				IMEMonitor<IAEItemStack> inv = inventory.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				IAEItemStack remainder = inv.injectItems( toInsert, Actionable.SIMULATE, this.mySrc );
+				if( remainder == null )
+				{
+					inv.injectItems( toInsert, Actionable.MODULATE, this.mySrc );
+					return ItemStack.EMPTY;
+				}
+				else
+				{
+					if( remainder.getStackSize() == toInsert.getStackSize() )
+					{
+						return output.copy();
+					}
+					inv.injectItems( toInsert.setStackSize( toInsert.getStackSize() - remainder.getStackSize() ), Actionable.MODULATE, this.mySrc );
+					return remainder.createItemStack();
+				}
+			}
+		}
+
 		final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( te, d.getOpposite() );
 
 		if( adaptor == null )
@@ -575,7 +611,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		}
 
 		final int size = output.getCount();
-		output = adaptor.addItems( output );
+		output = adaptor.addItems( output.copy() );
 		final int newSize = output.isEmpty() ? 0 : output.getCount();
 
 		if( size != newSize )

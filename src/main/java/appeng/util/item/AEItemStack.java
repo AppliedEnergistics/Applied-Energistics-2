@@ -25,6 +25,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.primitives.Ints;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -51,8 +52,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @SideOnly(Side.CLIENT)
     private String displayName;
-    @SideOnly(Side.CLIENT)
+    @SideOnly( Side.CLIENT )
     private List<String> tooltip;
+    private ItemStack cachedItemStack;
 
     private AEItemStack(final AEItemStack is) {
         this.setStackSize(is.getStackSize());
@@ -235,44 +237,83 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public boolean equals(final Object ia) {
-        if (ia instanceof AEItemStack) {
-            return this.isSameType((AEItemStack) ia);
-        } else if (ia instanceof ItemStack) {
+    public boolean equals( final Object ia )
+    {
+        if( ia instanceof AEItemStack )
+        {
+            return this.isSameType( (AEItemStack) ia );
+        }
+        else if( ia instanceof ItemStack )
+        {
             // this actually breaks the equals contract (being equals to unrelated classes)
-            return equals((ItemStack) ia);
+            return equals( (ItemStack) ia );
         }
         return false;
     }
 
     @Override
-    public boolean equals(final ItemStack is) {
-        return this.isSameType(is);
+    public boolean equals( final ItemStack is )
+    {
+        return this.isSameType( is );
     }
 
     @Override
-    public String toString() {
+    public ItemStack getCachedItemStack( long stackSize )
+    {
+        @Nullable ItemStack currentCached = this.cachedItemStack;
+        cachedItemStack = ItemStack.EMPTY;
+
+        ItemStack itemStack;
+
+        if( currentCached != null )
+        {
+            // Cache is suitable, just update the count
+            itemStack = currentCached;
+            currentCached.setCount( Ints.saturatedCast( stackSize ) );
+        }
+        else
+        {
+            // We need a new stack :-(
+            itemStack = this.createItemStack();
+        }
+        return itemStack;
+    }
+
+    @Override
+    public void setCachedItemStack( ItemStack itemStack )
+    {
+        this.cachedItemStack = itemStack;
+    }
+
+    @Override
+    public String toString()
+    {
         return this.getStackSize() + "x" + this.getDefinition().getItem().getRegistryName();
     }
 
-    @SideOnly(Side.CLIENT)
-    public List<String> getToolTip() {
-        if (this.tooltip == null) {
-            this.tooltip = Platform.getTooltip(this.asItemStackRepresentation());
+    @SideOnly( Side.CLIENT )
+    public List<String> getToolTip()
+    {
+        if( this.tooltip == null )
+        {
+            this.tooltip = Platform.getTooltip( this.asItemStackRepresentation() );
         }
         return this.tooltip;
     }
 
-    @SideOnly(Side.CLIENT)
-    public String getDisplayName() {
-        if (this.displayName == null) {
-            this.displayName = Platform.getItemDisplayName(this.asItemStackRepresentation());
+    @SideOnly( Side.CLIENT )
+    public String getDisplayName()
+    {
+        if( this.displayName == null )
+        {
+            this.displayName = Platform.getItemDisplayName( this.asItemStackRepresentation() );
         }
         return this.displayName;
     }
 
-    @SideOnly(Side.CLIENT)
-    public String getModID() {
+    @SideOnly( Side.CLIENT )
+    public String getModID()
+    {
         return this.getDefinition().getItem().getRegistryName().getResourceDomain();
     }
 
@@ -282,7 +323,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public boolean hasTagCompound() {
+    public boolean hasTagCompound()
+    {
         return this.getDefinition().hasTagCompound();
     }
 

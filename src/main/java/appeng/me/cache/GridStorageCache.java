@@ -66,8 +66,8 @@ public class GridStorageCache implements IStorageGrid
 	private final SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
 	private final GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<>( this.interests );
 	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<>();
-	private Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
-	private Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
+	private final Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
+	private final Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
 
 	public GridStorageCache( final IGrid g )
 	{

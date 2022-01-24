@@ -1226,7 +1226,7 @@ public class Platform
 		Preconditions.checkNotNull( src );
 		Preconditions.checkNotNull( mode );
 
-		final T possible = cell.injectItems( input.copy(), Actionable.SIMULATE, src );
+		final T possible = cell.injectItems( input, Actionable.SIMULATE, src );
 
 		long stored = input.getStackSize();
 		if( possible != null )
