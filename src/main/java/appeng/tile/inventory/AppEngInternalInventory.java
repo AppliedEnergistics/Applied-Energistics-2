@@ -119,14 +119,15 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
 		if( this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag )
 		{
 			this.dirtyFlag = true;
-			ItemStack newStack = this.getStackInSlot( slot ).copy();
+			ItemStack newStack = this.getStackInSlot( slot );
 			ItemStack oldStack = this.previousStack;
 			InvOperation op = InvOperation.SET;
 
-			if( newStack.isEmpty() || oldStack.isEmpty() || ( oldStack.getCount() < oldStack.getMaxStackSize() && oldStack.getCount() < this.getSlotLimit( slot ) && ItemStack.areItemsEqual( newStack, oldStack ) ) )
+			if( newStack.isEmpty() || oldStack.isEmpty() || oldStack.getCount() != newStack.getCount() && ItemStack.areItemsEqual( newStack, oldStack ) )
 			{
 				if( newStack.getCount() > oldStack.getCount() )
 				{
+					newStack = newStack.copy();
 					newStack.shrink( oldStack.getCount() );
 					oldStack = ItemStack.EMPTY;
 					op = InvOperation.INSERT;

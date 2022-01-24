@@ -68,6 +68,7 @@ public class GridStorageCache implements IStorageGrid
 	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<>();
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
+	private int localDepth;
 
 	public GridStorageCache( final IGrid g )
 	{
@@ -212,6 +213,11 @@ public class GridStorageCache implements IStorageGrid
 	@MENetworkEventSubscribe
 	public void cellUpdate( final MENetworkCellArrayUpdate ev )
 	{
+		if( localDepth > 0 )
+		{
+			return;
+		}
+		localDepth++;
 		this.storageNetworks.clear();
 
 		final List<ICellProvider> ll = new ArrayList<ICellProvider>();
@@ -247,7 +253,7 @@ public class GridStorageCache implements IStorageGrid
 			}
 		}
 		tracker.applyChanges();
-
+		localDepth--;
 		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.setForceUpdate( true ) );
 	}
 
