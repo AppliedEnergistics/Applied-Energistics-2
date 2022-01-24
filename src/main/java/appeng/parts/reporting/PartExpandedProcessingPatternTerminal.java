@@ -17,6 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.List;
+
 import static appeng.helpers.PatternHelper.PROCESSING_INPUT_LIMIT;
 import static appeng.helpers.PatternHelper.PROCESSING_OUTPUT_LIMIT;
 
@@ -41,6 +43,18 @@ public class PartExpandedProcessingPatternTerminal extends AbstractPartTerminal
     public PartExpandedProcessingPatternTerminal( final ItemStack is )
     {
         super( is );
+    }
+
+    @Override
+    public void getDrops( final List<ItemStack> drops, final boolean wrenched )
+    {
+        for( final ItemStack is : this.pattern )
+        {
+            if( !is.isEmpty() )
+            {
+                drops.add( is );
+            }
+        }
     }
 
     @Override
