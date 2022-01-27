@@ -31,11 +31,14 @@ import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.externalstorage.GenericStackInv;
@@ -56,6 +59,9 @@ public class PatternProviderReturnInventory extends GenericStackInv {
 
     public PatternProviderReturnInventory(Runnable listener) {
         super(listener, NUMBER_OF_SLOTS);
+
+        setCapacity(AEKeyType.items(), Container.LARGE_MAX_STACK_SIZE);
+        setCapacity(AEKeyType.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
     }
 
     /**
