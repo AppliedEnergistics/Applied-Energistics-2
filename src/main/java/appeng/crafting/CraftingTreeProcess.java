@@ -82,7 +82,7 @@ public class CraftingTreeProcess {
             boolean isAnInput = false;
 
             for (var output : details.getOutputs()) {
-                if (output.equals(primaryInput)) {
+                if (output.what().matches(primaryInput)) {
                     isAnInput = true;
                     break;
                 }
