@@ -52,6 +52,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.config.CondenserOutput;
+import appeng.api.integrations.jei.IngredientConverters;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
@@ -75,6 +76,11 @@ import appeng.recipes.handlers.InscriberRecipe;
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
     private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
+
+    public JEIPlugin() {
+        IngredientConverters.register(new ItemIngredientConverter());
+        IngredientConverters.register(new FluidIngredientConverter());
+    }
 
     @Override
     public ResourceLocation getPluginUid() {

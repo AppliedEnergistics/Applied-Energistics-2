@@ -9,11 +9,11 @@ import net.minecraftforge.fluids.FluidStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredientType;
 
-import appeng.api.integrations.jei.IngredientTypeConverter;
+import appeng.api.integrations.jei.IngredientConverter;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 
-public class FluidIngredientConverter implements IngredientTypeConverter<FluidStack> {
+public class FluidIngredientConverter implements IngredientConverter<FluidStack> {
     @Override
     public IIngredientType<FluidStack> getIngredientType() {
         return VanillaTypes.FLUID;

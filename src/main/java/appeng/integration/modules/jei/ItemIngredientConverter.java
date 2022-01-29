@@ -9,11 +9,11 @@ import net.minecraft.world.item.ItemStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredientType;
 
-import appeng.api.integrations.jei.IngredientTypeConverter;
+import appeng.api.integrations.jei.IngredientConverter;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 
-public class ItemIngredientConverter implements IngredientTypeConverter<ItemStack> {
+public class ItemIngredientConverter implements IngredientConverter<ItemStack> {
     @Override
     public IIngredientType<ItemStack> getIngredientType() {
         return VanillaTypes.ITEM;

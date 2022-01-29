@@ -22,7 +22,7 @@ import appeng.api.stacks.GenericStack;
  * {@link java.util.ServiceLoader} file
  * (<code>/META-INF/services/appeng.api.integrations.jei.IngredientTypeConverter</code>).
  */
-public interface IngredientTypeConverter<T> {
+public interface IngredientConverter<T> {
     /**
      * The JEI ingredient type handled by this converter.
      */
