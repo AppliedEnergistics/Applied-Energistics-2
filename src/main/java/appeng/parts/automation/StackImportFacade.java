@@ -2,6 +2,9 @@ package appeng.parts.automation;
 
 import java.util.List;
 
+import appeng.api.behaviors.StackImportStrategy;
+import appeng.api.behaviors.StackTransferContext;
+
 /**
  * Simply iterates over a list of {@link StackImportStrategy} and exposes them as a single strategy. First come, first
  * serve.

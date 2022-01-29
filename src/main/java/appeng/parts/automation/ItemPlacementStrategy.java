@@ -18,6 +18,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;

@@ -25,6 +25,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 
+import appeng.api.behaviors.PickupSink;
+import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;

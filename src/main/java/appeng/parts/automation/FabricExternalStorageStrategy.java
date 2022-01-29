@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
+import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.storage.MEStorage;
 import appeng.me.storage.StorageAdapter;
 import appeng.util.IVariantConversion;

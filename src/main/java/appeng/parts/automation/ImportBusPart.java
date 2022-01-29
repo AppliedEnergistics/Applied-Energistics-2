@@ -21,6 +21,7 @@ package appeng.parts.automation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
 
+import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
@@ -44,7 +45,7 @@ public class ImportBusPart extends IOBusPart {
             importStrategy = StackWorldBehaviors.createImportFacade((ServerLevel) getLevel(), fromPos, fromSide);
         }
 
-        var context = new StackTransferContext(
+        var context = new StackTransferContextImpl(
                 grid.getStorageService(),
                 grid.getEnergyService(),
                 this.source,

@@ -1,8 +1,11 @@
-package appeng.parts.automation;
+package appeng.api.behaviors;
+
+import org.jetbrains.annotations.ApiStatus;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 
-interface PickupSink {
+@ApiStatus.Experimental
+public interface PickupSink {
     long insert(AEKey what, long amount, Actionable mode);
 }
