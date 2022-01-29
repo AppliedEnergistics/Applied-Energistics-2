@@ -63,7 +63,7 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
         if (ingredient instanceof ItemStack itemStack) {
             return itemStack;
         } else {
-            var genericStack = GenericEntryStackHelper.of(ingredient);
+            var genericStack = GenericEntryStackHelper.ingredientToStack(ingredient);
             if (genericStack != null) {
                 return GenericStack.wrapInItemStack(genericStack);
             }

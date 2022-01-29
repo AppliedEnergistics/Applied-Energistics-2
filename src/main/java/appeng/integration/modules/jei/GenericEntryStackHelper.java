@@ -1,48 +1,60 @@
 package appeng.integration.modules.jei;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.ServiceLoader;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
-import mezz.jei.api.ingredients.IIngredientType;
 
-import appeng.api.stacks.AEFluidKey;
+import appeng.api.integrations.jei.IngredientTypeConverter;
 import appeng.api.stacks.GenericStack;
 
 public final class GenericEntryStackHelper {
-
-    public static final List<IngredientType<?>> INGREDIENT_TYPES = ImmutableList.of(
-            new IngredientType<>(VanillaTypes.ITEM, i -> i.getAllIngredients().stream()
-                    .map(GenericStack::fromItemStack).toList()),
-            new IngredientType<>(VanillaTypes.FLUID, i -> i.getAllIngredients().stream()
-                    .map(GenericStack::fromFluidStack).toList()));
 
     private GenericEntryStackHelper() {
     }
 
     @Nullable
-    public static GenericStack of(Object ingredient) {
+    private static List<IngredientTypeConverter<?>> converters;
 
-        if (ingredient instanceof ItemStack itemStack) {
-            return GenericStack.fromItemStack(itemStack);
-        } else if (ingredient instanceof FluidStack fluidStack) {
-            return new GenericStack(AEFluidKey.of(fluidStack.getFluid(), fluidStack.getTag()), fluidStack.getAmount());
-        } else {
-            return null;
+    @Nullable
+    public static GenericStack ingredientToStack(Object ingredient) {
+        for (var converter : getConverters()) {
+            var stack = tryConvertToStack(converter, ingredient);
+            if (stack != null) {
+                return stack;
+            }
         }
+
+        return null;
+    }
+
+    @Nullable
+    public static Object stackToIngredient(GenericStack stack) {
+        for (var converter : getConverters()) {
+            var ingredient = converter.getIngredientFromStack(stack);
+            if (ingredient != null) {
+                return ingredient;
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private static <T> GenericStack tryConvertToStack(IngredientTypeConverter<T> converter, Object ingredient) {
+        var ingredientClass = converter.getIngredientType().getIngredientClass();
+        if (ingredientClass.isInstance(ingredient)) {
+            return converter.getStackFromIngredient(ingredientClass.cast(ingredient));
+        }
+        return null;
     }
 
     public static List<List<GenericStack>> ofInputs(IRecipeLayout recipeLayout) {
@@ -58,22 +70,30 @@ public final class GenericEntryStackHelper {
 
     private static List<List<GenericStack>> ofRecipeLayout(IRecipeLayout recipeLayout,
             Predicate<IGuiIngredient<?>> predicate) {
-        return INGREDIENT_TYPES.stream()
-                .flatMap(type -> type.getConverted(recipeLayout, predicate))
+        return getConverters().stream()
+                .flatMap(converter -> getConverted(converter, recipeLayout, predicate))
                 .toList();
     }
 
-    public record IngredientType<T> (IIngredientType<T> type,
-            Function<IGuiIngredient<T>, List<GenericStack>> converter) {
-        public Stream<List<GenericStack>> getConverted(IRecipeLayout layout, Predicate<IGuiIngredient<?>> predicate) {
-            return layout.getIngredientsGroup(type).getGuiIngredients().entrySet()
-                    .stream()
-                    .filter(e -> predicate.test(e.getValue()))
-                    // We use this to have consistent ordering of entries in the processing recipe
-                    // since the hash maps order is undefined
-                    .sorted(Comparator.comparingInt(Map.Entry::getKey))
-                    .map(e -> converter.apply(e.getValue()));
+    private synchronized static List<IngredientTypeConverter<?>> getConverters() {
+        if (converters == null) {
+            converters = new ArrayList<>();
+            for (IngredientTypeConverter<?> converter : ServiceLoader.load(IngredientTypeConverter.class)) {
+                converters.add(converter);
+            }
         }
+        return converters;
+    }
 
+    private static <T> Stream<List<GenericStack>> getConverted(IngredientTypeConverter<T> converter,
+            IRecipeLayout layout, Predicate<IGuiIngredient<?>> predicate) {
+        return layout.getIngredientsGroup(converter.getIngredientType())
+                .getGuiIngredients().entrySet()
+                .stream()
+                .filter(e -> predicate.test(e.getValue()))
+                // We use this to have consistent ordering of entries in the processing recipe
+                // since the hash maps order is undefined
+                .sorted(Comparator.comparingInt(Map.Entry::getKey))
+                .map(e -> converter.getStacksFromGuiIngredient(e.getValue()));
     }
 }

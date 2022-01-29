@@ -52,8 +52,6 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
@@ -205,11 +203,7 @@ public class JEIPlugin implements IModPlugin {
                         // or AE fluid tanks shown in fluid interfaces and other UI.
                         var stack = screen.getStackUnderMouse(mouseX, mouseY);
                         if (stack != null) {
-                            if (stack.what() instanceof AEItemKey itemKey) {
-                                return itemKey.toStack();
-                            } else if (stack.what() instanceof AEFluidKey fluidKey) {
-                                return fluidKey.toStack(1);
-                            }
+                            return GenericEntryStackHelper.stackToIngredient(stack);
                         }
 
                         return null;
