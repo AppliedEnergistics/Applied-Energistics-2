@@ -88,7 +88,7 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
         if (entryStack.getType() == VanillaEntryTypes.ITEM) {
             return entryStack.castValue();
         } else {
-            var genericStack = GenericEntryStackHelper.of(entryStack);
+            var genericStack = GenericEntryStackHelper.ingredientToStack(entryStack);
             if (genericStack != null) {
                 return GenericStack.wrapInItemStack(genericStack);
             }

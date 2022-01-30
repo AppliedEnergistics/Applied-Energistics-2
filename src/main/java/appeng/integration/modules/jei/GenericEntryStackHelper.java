@@ -3,41 +3,37 @@ package appeng.integration.modules.jei;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
-import dev.architectury.fluid.FluidStack;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.EntryType;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
-import appeng.api.stacks.AEFluidKey;
+import appeng.api.integrations.rei.IngredientConverter;
+import appeng.api.integrations.rei.IngredientConverters;
 import appeng.api.stacks.GenericStack;
 
 public final class GenericEntryStackHelper {
-
-    public static final List<IngredientType<?>> INGREDIENT_TYPES = ImmutableList.of(
-            new IngredientType<>(VanillaEntryTypes.ITEM, e -> GenericStack.fromItemStack(e.castValue())),
-            new IngredientType<>(VanillaEntryTypes.FLUID, e -> {
-                FluidStack fluidStack = e.castValue();
-                var what = AEFluidKey.of(fluidStack.getFluid(), fluidStack.getTag());
-                return new GenericStack(what, fluidStack.getAmount());
-            }));
-
     private GenericEntryStackHelper() {
     }
 
     @Nullable
-    public static GenericStack of(EntryStack<?> entryStack) {
-        for (var ingredientType : INGREDIENT_TYPES) {
-            if (ingredientType.type == entryStack.getType()) {
-                return ingredientType.converter.apply(entryStack.cast());
+    public static GenericStack ingredientToStack(EntryStack<?> entryStack) {
+        for (var converter : IngredientConverters.getConverters()) {
+            var stack = tryConvertToStack(converter, entryStack);
+            if (stack != null) {
+                return stack;
             }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private static <T> GenericStack tryConvertToStack(IngredientConverter<T> converter, EntryStack<?> ingredient) {
+        if (ingredient.getType() == converter.getIngredientType()) {
+            return converter.getStackFromIngredient(ingredient.cast());
         }
         return null;
     }
@@ -48,7 +44,7 @@ public final class GenericEntryStackHelper {
 
     public static List<GenericStack> ofOutputs(Display display) {
         return display.getOutputEntries().stream().map(entryIngredient -> entryIngredient.stream()
-                .map(GenericEntryStackHelper::of)
+                .map(GenericEntryStackHelper::ingredientToStack)
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null))
@@ -62,12 +58,8 @@ public final class GenericEntryStackHelper {
         }
 
         return entryIngredient.stream()
-                .map(GenericEntryStackHelper::of)
+                .map(GenericEntryStackHelper::ingredientToStack)
                 .filter(Objects::nonNull)
                 .toList();
-    }
-
-    public record IngredientType<T> (EntryType<T> type,
-            Function<EntryStack<T>, GenericStack> converter) {
     }
 }
