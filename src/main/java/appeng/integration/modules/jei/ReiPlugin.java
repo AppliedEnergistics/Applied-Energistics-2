@@ -49,8 +49,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
+import appeng.api.integrations.rei.IngredientConverters;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
@@ -77,6 +76,9 @@ public class ReiPlugin implements REIClientPlugin {
     private List<Predicate<ItemStack>> coloredCables;
 
     public ReiPlugin() {
+        IngredientConverters.register(new ItemIngredientConverter());
+        IngredientConverters.register(new FluidIngredientConverter());
+
         REIFacade.setInstance(new ReiRuntimeAdapter());
     }
 
@@ -151,12 +153,12 @@ public class ReiPlugin implements REIClientPlugin {
             if (screen instanceof AEBaseScreen<?>aeScreen) {
                 var stack = aeScreen.getStackUnderMouse(mouse.x, mouse.y);
                 if (stack != null) {
-                    if (stack.what() instanceof AEItemKey itemKey) {
-                        return CompoundEventResult.interruptTrue(EntryStacks.of(itemKey.toStack()));
-                    } else if (stack.what() instanceof AEFluidKey fluidKey) {
-                        return CompoundEventResult.interruptTrue(EntryStacks.of(fluidKey.getFluid()));
+                    for (var converter : IngredientConverters.getConverters()) {
+                        var entryStack = converter.getIngredientFromStack(stack);
+                        if (entryStack != null) {
+                            return CompoundEventResult.interruptTrue(entryStack);
+                        }
                     }
-                    // we can't handle custom mod resources. addons need to register their own REI plugin
                 }
             }
 

@@ -138,6 +138,19 @@ public final class AEFluidKey extends AEKey {
         return fluid;
     }
 
+    /**
+     * @return <strong>NEVER MODIFY THE RETURNED TAG</strong>
+     */
+    @Nullable
+    public CompoundTag getTag() {
+        return tag;
+    }
+
+    @Nullable
+    public CompoundTag copyTag() {
+        return tag != null ? tag.copy() : null;
+    }
+
     public boolean hasTag() {
         return tag != null;
     }

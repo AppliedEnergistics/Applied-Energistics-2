@@ -112,11 +112,6 @@ public final class AEItemKey extends AEKey {
         return result;
     }
 
-    @Nullable
-    public CompoundTag copyTag() {
-        return tag != null ? tag.copy() : null;
-    }
-
     public Item getItem() {
         return item;
     }
@@ -182,6 +177,11 @@ public final class AEItemKey extends AEKey {
     @Nullable
     public CompoundTag getTag() {
         return tag;
+    }
+
+    @Nullable
+    public CompoundTag copyTag() {
+        return tag != null ? tag.copy() : null;
     }
 
     public boolean hasTag() {
