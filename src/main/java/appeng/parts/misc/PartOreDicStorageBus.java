@@ -20,6 +20,7 @@ import appeng.parts.PartModel;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import appeng.util.item.OreHelper;
+import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.OreDictPriorityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -125,7 +126,7 @@ public class PartOreDicStorageBus extends PartStorageBus
                 this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
                 this.handler.setPriority( this.priority );
 
-                this.handler.setPartitionList( priorityList );
+                this.handler.setPartitionList( this.getPriorityList() );
 
                 if( inv instanceof IBaseMonitor )
                 {
@@ -169,6 +170,15 @@ public class PartOreDicStorageBus extends PartStorageBus
         }
 
         return this.handler;
+    }
+
+    private IPartitionList<IAEItemStack> getPriorityList()
+    {
+        if( priorityList == null )
+        {
+            this.priorityList = new OreDictPriorityList<>( OreHelper.INSTANCE.getMatchingOre( oreExp ), oreExp );
+        }
+        return priorityList;
     }
 
     public String getOreExp()
