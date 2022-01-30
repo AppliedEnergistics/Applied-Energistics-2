@@ -51,6 +51,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     private EncodingMode mode = EncodingMode.CRAFTING;
     private boolean substitute = false;
     private boolean substituteFluids = true;
+    private boolean isLoading = false;
 
     public PatternEncodingLogic(IPatternTerminalLogicHost host) {
         this.host = host;
@@ -63,12 +64,15 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             loadEncodedPattern(encodedPatternInv.getStackInSlot(0));
         }
 
-        host.markForSave();
+        saveChanges();
     }
 
     @Override
     public void saveChanges() {
-        host.markForSave();
+        // Do not re-save while we're loading since it could overwrite the NBT with incomplete data
+        if (!isLoading) {
+            host.markForSave();
+        }
     }
 
     @Override
@@ -78,11 +82,11 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     private void onEncodedInputChanged() {
         fixCraftingRecipes();
-        host.markForSave();
+        saveChanges();
     }
 
     private void onEncodedOutputChanged() {
-        host.markForSave();
+        saveChanges();
     }
 
     private void loadEncodedPattern(ItemStack pattern) {
@@ -125,6 +129,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     public void setMode(EncodingMode mode) {
         this.mode = mode;
         this.fixCraftingRecipes();
+        this.saveChanges();
     }
 
     public boolean isSubstitution() {
@@ -133,6 +138,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     public void setSubstitution(boolean canSubstitute) {
         this.substitute = canSubstitute;
+        this.saveChanges();
     }
 
     public boolean isFluidSubstitution() {
@@ -141,6 +147,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     public void setFluidSubstitution(boolean canSubstitute) {
         this.substituteFluids = canSubstitute;
+        this.saveChanges();
     }
 
     /**
@@ -177,25 +184,30 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     }
 
     public void readFromNBT(CompoundTag data) {
+        isLoading = true;
         try {
-            this.mode = EncodingMode.valueOf(data.getString("mode"));
-        } catch (IllegalArgumentException ignored) {
-            this.mode = EncodingMode.CRAFTING;
-        }
-        this.setSubstitution(data.getBoolean("substitute"));
-        this.setFluidSubstitution(data.getBoolean("substituteFluids"));
+            try {
+                this.mode = EncodingMode.valueOf(data.getString("mode"));
+            } catch (IllegalArgumentException ignored) {
+                this.mode = EncodingMode.CRAFTING;
+            }
+            this.setSubstitution(data.getBoolean("substitute"));
+            this.setFluidSubstitution(data.getBoolean("substituteFluids"));
 
-        // TODO: Remove in 1.19
-        if (data.contains("pattern")) {
-            var pattern = new AppEngInternalInventory(null, 2);
-            pattern.readFromNBT(data, "pattern");
-        } else {
-            blankPatternInv.readFromNBT(data, "blankPattern");
-            encodedPatternInv.readFromNBT(data, "encodedPattern");
-        }
+            // TODO: Remove in 1.19
+            if (data.contains("pattern")) {
+                var pattern = new AppEngInternalInventory(null, 2);
+                pattern.readFromNBT(data, "pattern");
+            } else {
+                blankPatternInv.readFromNBT(data, "blankPattern");
+                encodedPatternInv.readFromNBT(data, "encodedPattern");
+            }
 
-        encodedInputInv.readFromChildTag(data, "encodedInputs");
-        encodedOutputInv.readFromChildTag(data, "encodedOutputs");
+            encodedInputInv.readFromChildTag(data, "encodedInputs");
+            encodedOutputInv.readFromChildTag(data, "encodedOutputs");
+        } finally {
+            isLoading = false;
+        }
     }
 
     public void writeToNBT(CompoundTag data) {
