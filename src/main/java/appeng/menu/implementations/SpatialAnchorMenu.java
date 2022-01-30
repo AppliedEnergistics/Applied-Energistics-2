@@ -76,7 +76,7 @@ public class SpatialAnchorMenu extends AEBaseMenu {
     public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (isServer()) {
+        if (isServerSide()) {
             SpatialAnchorBlockEntity anchor = (SpatialAnchorBlockEntity) this.getBlockEntity();
             this.setOverlayMode(anchor.getConfigManager().getSetting(Settings.OVERLAY_MODE));
 

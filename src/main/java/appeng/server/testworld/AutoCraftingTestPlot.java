@@ -15,7 +15,6 @@ import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
@@ -59,7 +58,7 @@ public final class AutoCraftingTestPlot {
             drive.getInternalInventory().addItems(CreativeCellItem.ofFluids(Fluids.LAVA));
         });
         plot.part("6 0 1", Direction.NORTH, AEParts.PATTERN_ENCODING_TERMINAL, term -> {
-            var inv = term.getSubInventory(ISegmentedInventory.PATTERNS);
+            var inv = term.getLogic().getBlankPatternInv();
             inv.addItems(AEItems.BLANK_PATTERN.stack(64));
         });
         plot.part("5 0 1", Direction.NORTH, AEParts.PATTERN_ACCESS_TERMINAL);

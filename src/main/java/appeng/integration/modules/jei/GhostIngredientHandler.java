@@ -112,21 +112,13 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
      */
     private static void addItemStackTargets(AEBaseScreen<?> gui, List<DropTarget> targets, ItemStack draggedStack) {
         for (Slot slot : gui.getMenu().slots) {
-            if (!(slot instanceof AppEngSlot appEngSlot)) {
-                continue;
-            }
-
-            if (!appEngSlot.isSlotEnabled()) {
-                continue;
-            }
-
-            if (appEngSlot instanceof FakeSlot fakeSlot) {
+            if (slot.isActive() && slot instanceof FakeSlot fakeSlot) {
                 // Use the standard inventory function to test if the dragged stack would in theory be accepted
                 if (!fakeSlot.canSetFilterTo(draggedStack)) {
                     continue;
                 }
 
-                targets.add(new ItemSlotTarget(gui, appEngSlot));
+                targets.add(new ItemSlotTarget(gui, fakeSlot));
             }
         }
     }

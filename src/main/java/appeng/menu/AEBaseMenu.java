@@ -99,6 +99,8 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private boolean menuValid = true;
     private MenuLocator locator;
     private int ticksSinceCheck = 900;
+    // Slots that are only present on the client-side
+    private final Set<Slot> clientSideSlot = new HashSet<>();
 
     public AEBaseMenu(MenuType<?> menuType, int id, Inventory playerInventory,
             Object host) {
@@ -139,10 +141,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return this.itemMenuHost instanceof IActionHost
                 || this.blockEntity instanceof IActionHost
                 || this.part instanceof IActionHost;
-    }
-
-    public boolean isClientSide() {
-        return getPlayer().getCommandSenderWorld().isClientSide();
     }
 
     /**
@@ -236,6 +234,52 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         return slot;
     }
 
+    /**
+     * Allows screens to add client-side only slots.
+     * <p/>
+     * For sub-screens that need their slots to be removed when returning to the parent, use the
+     * <code>addClientSideSlot</code> method in {@link appeng.client.gui.implementations.AESubScreen} instead.
+     */
+    public Slot addClientSideSlot(Slot slot, SlotSemantic semantic) {
+        Preconditions.checkState(isClientSide(), "Can only add client-side slots on the client");
+        if (!clientSideSlot.add(slot)) {
+            throw new IllegalStateException("Client-side slot already exists");
+        }
+
+        // We're only doing this on the client-side.
+        // The synchronization related fields are not used
+        slot.index = slots.size();
+        slots.add(slot);
+
+        if (semantic != null) {
+            semanticBySlot.put(slot, semantic);
+            slotsBySemantic.put(semantic, slot);
+        }
+        return slot;
+    }
+
+    public void removeClientSideSlot(Slot slot) {
+        if (slots.get(slot.index) != slot) {
+            throw new IllegalStateException("Trying to remove slot which isn't currently in the menu");
+        }
+        if (!clientSideSlot.remove(slot)) {
+            throw new IllegalStateException("Trying to remove slot which isn't a client-side slot");
+        }
+
+        slots.remove(slot.index);
+        semanticBySlot.remove(slot);
+        slotsBySemantic.values().remove(slot);
+
+        // Update the slot index for any subsequent slots
+        for (int i = slot.index; i < slots.size(); i++) {
+            slots.get(i).index = i;
+        }
+    }
+
+    public boolean isClientSideSlot(Slot slot) {
+        return clientSideSlot.contains(slot);
+    }
+
     public List<Slot> getSlots(SlotSemantic semantic) {
         return slotsBySemantic.get(semantic);
     }
@@ -255,7 +299,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        if (isServer()) {
+        if (isServerSide()) {
             if (this.blockEntity != null
                     && this.blockEntity.getLevel().getBlockEntity(this.blockEntity.getBlockPos()) != this.blockEntity) {
                 this.setValidMenu(false);
@@ -778,15 +822,15 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     /**
      * Returns whether this menu instance lives on the client.
      */
-    protected boolean isClient() {
+    public boolean isClientSide() {
         return getPlayer().getCommandSenderWorld().isClientSide();
     }
 
     /**
      * Returns whether this menu instance lives on the server.
      */
-    protected boolean isServer() {
-        return !isClient();
+    protected boolean isServerSide() {
+        return !isClientSide();
     }
 
     protected final void sendPacketToClient(BasePacket packet) {

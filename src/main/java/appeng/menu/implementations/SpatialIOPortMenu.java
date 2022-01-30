@@ -71,7 +71,7 @@ public class SpatialIOPortMenu extends AEBaseMenu {
     public void broadcastChanges() {
         this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if (isServer()) {
+        if (isServerSide()) {
             this.delay++;
 
             var gridNode = ((SpatialIOPortBlockEntity) getBlockEntity()).getGridNode();

@@ -139,7 +139,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
      * Clears the crafting grid and moves everything back into the network inventory.
      */
     public void clearCraftingGrid() {
-        Preconditions.checkState(isClient());
+        Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
         final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
         NetworkHandler.instance().sendToServer(p);

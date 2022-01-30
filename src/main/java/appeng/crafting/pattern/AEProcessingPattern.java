@@ -31,6 +31,9 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 
 public class AEProcessingPattern implements IAEPatternDetails {
+    public static final int MAX_INPUT_SLOTS = 18;
+    public static final int MAX_OUTPUT_SLOTS = 6;
+
     private final AEItemKey definition;
     private final GenericStack[] sparseInputs, sparseOutputs;
     private final Input[] inputs;

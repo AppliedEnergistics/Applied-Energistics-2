@@ -18,6 +18,7 @@
 
 package appeng.client.gui.style;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -59,8 +60,17 @@ public final class StyleManager {
         }
     }
 
-    public static ScreenStyle loadStyleDoc(String path) throws IOException {
-        ScreenStyle style = loadStyleDocInternal(path);
+    public static ScreenStyle loadStyleDoc(String path) {
+        ScreenStyle style;
+
+        try {
+            style = loadStyleDocInternal(path);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Failed to read Screen JSON file: " + path + ": " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read Screen JSON file: " + path, e);
+        }
+
         // We only require the final style-document to be fully valid,
         // includes are allowed to be partially valid.
         style.validate();

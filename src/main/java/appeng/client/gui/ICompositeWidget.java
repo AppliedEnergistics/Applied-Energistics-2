@@ -33,6 +33,10 @@ import appeng.client.Point;
 
 public interface ICompositeWidget {
 
+    default boolean isVisible() {
+        return true;
+    }
+
     void setPosition(Point position);
 
     void setSize(int width, int height);

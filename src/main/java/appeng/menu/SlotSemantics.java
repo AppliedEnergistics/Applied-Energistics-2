@@ -89,15 +89,11 @@ public final class SlotSemantics {
 
     public static final SlotSemantic CRAFTING_GRID = register("CRAFTING_GRID", false);
 
+    public static final SlotSemantic PROCESSING_INPUTS = register("PROCESSING_INPUTS", false);
+
+    public static final SlotSemantic PROCESSING_OUTPUTS = register("PROCESSING_OUTPUTS", false);
+
     public static final SlotSemantic CRAFTING_RESULT = register("CRAFTING_RESULT", false);
-
-    public static final SlotSemantic PROCESSING_PRIMARY_RESULT = register("PROCESSING_PRIMARY_RESULT", false);
-
-    public static final SlotSemantic PROCESSING_FIRST_OPTIONAL_RESULT = register("PROCESSING_FIRST_OPTIONAL_RESULT",
-            false);
-
-    public static final SlotSemantic PROCESSING_SECOND_OPTIONAL_RESULT = register("PROCESSING_SECOND_OPTIONAL_RESULT",
-            false);
 
     public static final SlotSemantic BIOMETRIC_CARD = register("BIOMETRIC_CARD", false);
 }

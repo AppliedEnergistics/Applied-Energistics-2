@@ -76,7 +76,7 @@ public class SecurityStationMenu extends MEStorageMenu implements InternalInvent
     }
 
     public void toggleSetting(SecurityPermissions permission) {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_TOGGLE_PERMISSION, permission);
             return;
         }

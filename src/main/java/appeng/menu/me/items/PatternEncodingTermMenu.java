@@ -23,13 +23,9 @@ import java.util.Arrays;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -38,69 +34,62 @@ import net.minecraft.world.item.crafting.RecipeType;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.StorageHelper;
+import appeng.client.gui.Icon;
 import appeng.client.gui.me.items.PatternEncodingTermScreen;
 import appeng.core.definitions.AEItems;
-import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.helpers.IMenuCraftingPacket;
-import appeng.helpers.IPatternTerminalHost;
-import appeng.items.storage.ViewCellItem;
-import appeng.me.helpers.MachineSource;
-import appeng.menu.NullMenu;
+import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
-import appeng.menu.slot.AppEngSlot;
-import appeng.menu.slot.FakeCraftingMatrixSlot;
-import appeng.menu.slot.IOptionalSlotHost;
-import appeng.menu.slot.OptionalFakeSlot;
-import appeng.menu.slot.PatternOutputsSlot;
+import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.PatternTermSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.encoding.EncodingMode;
-import appeng.util.Platform;
-import appeng.util.inv.CarriedItemInventory;
-import appeng.util.inv.PlayerInternalInventory;
+import appeng.parts.encoding.PatternEncodingLogic;
+import appeng.util.ConfigInventory;
 
 /**
- * Can only be used with a host that implements {@link IPatternTerminalHost}.
+ * Can only be used with a host that implements {@link PatternEncodingLogic}.
  *
  * @see PatternEncodingTermScreen
  */
-public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalSlotHost, IMenuCraftingPacket {
+public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraftingPacket {
+
+    private static final int CRAFTING_GRID_WIDTH = 3;
+    private static final int CRAFTING_GRID_HEIGHT = 3;
+    private static final int CRAFTING_GRID_SLOTS = CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT;
 
     private static final String ACTION_SET_MODE = "setMode";
     private static final String ACTION_ENCODE = "encode";
     private static final String ACTION_CLEAR = "clear";
     private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
     private static final String ACTION_SET_FLUID_SUBSTITUTION = "setFluidSubstitution";
-    private static final String ACTION_SHOW_MODIFY_AMOUNT_MENU = "showModifyAmountMenu";
     private static final String ACTION_CYCLE_PROCESSING_OUTPUT = "cycleProcessingOutput";
-    private static final int GROUP_SECONDARY_OUTPUT = 1;
-    private static final int GROUP_CRAFTING_RESULT = 2;
 
     public static MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
-            .create(PatternEncodingTermMenu::new, ITerminalHost.class)
+            .create(PatternEncodingTermMenu::new, IPatternTerminalMenuHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("patternterm");
 
-    private final IPatternTerminalHost patternTerminal;
-    private final InternalInventory craftingGridInv;
-    private final FakeCraftingMatrixSlot[] craftingGridSlots = new FakeCraftingMatrixSlot[9];
-    private final OptionalFakeSlot[] processingOutputSlots = new OptionalFakeSlot[3];
+    private final PatternEncodingLogic encodingLogic;
+    private final FakeSlot[] craftingGridSlots = new FakeSlot[9];
+    private final FakeSlot[] processingInputSlots = new FakeSlot[18];
+    private final FakeSlot[] processingOutputSlots = new FakeSlot[6];
     private final PatternTermSlot craftOutputSlot;
     private final RestrictedInputSlot blankPatternSlot;
     private final RestrictedInputSlot encodedPatternSlot;
+    // 9x9 inventory wrapper to feed into the crafting mode slots
+
+    private final ConfigInventory encodedInputsInv;
+    private final ConfigInventory encodedOutputsInv;
 
     private CraftingRecipe currentRecipe;
     // The current mode is essentially the last-known client-side version of mode
@@ -112,65 +101,65 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
     public boolean substitute = false;
     @GuiSync(95)
     public boolean substituteFluids = true;
+
     /**
      * Whether fluids can be substituted or not depends on the recipe. This set contains the slots of the crafting
      * matrix that support such substitution.
      */
     public IntSet slotsSupportingFluidSubstitution = new IntArraySet();
 
-    public PatternEncodingTermMenu(int id, Inventory ip, ITerminalHost host) {
+    public PatternEncodingTermMenu(int id, Inventory ip, IPatternTerminalMenuHost host) {
         this(TYPE, id, ip, host, true);
     }
 
-    public PatternEncodingTermMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,
+    public PatternEncodingTermMenu(MenuType<?> menuType, int id, Inventory ip, IPatternTerminalMenuHost host,
             boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory);
-        this.patternTerminal = (IPatternTerminalHost) host;
+        this.encodingLogic = host.getLogic();
+        this.encodedInputsInv = encodingLogic.getEncodedInputInv();
+        this.encodedOutputsInv = encodingLogic.getEncodedOutputInv();
 
-        var patternInv = this.getPatternTerminal().getSubInventory(ISegmentedInventory.PATTERNS);
-        var output = this.getPatternTerminal().getSubInventory(IPatternTerminalHost.INV_OUTPUT);
+        // Wrappers for use with slots
+        var encodedInputs = encodedInputsInv.createMenuWrapper();
+        var encodedOutputs = encodedOutputsInv.createMenuWrapper();
 
-        // Create the 3x3 crafting input grid, which is used for both processing and crafting mode
-        this.craftingGridInv = this.getPatternTerminal().getSubInventory(IPatternTerminalHost.INV_CRAFTING);
-        for (int i = 0; i < 9; i++) {
-            this.addSlot(this.craftingGridSlots[i] = new FakeCraftingMatrixSlot(this.craftingGridInv, i),
-                    SlotSemantics.CRAFTING_GRID);
+        // Create the 3x3 crafting input grid for crafting mode
+        for (int i = 0; i < CRAFTING_GRID_SLOTS; i++) {
+            var slot = new FakeSlot(encodedInputs, i);
+            slot.setHideAmount(true);
+            this.addSlot(this.craftingGridSlots[i] = slot, SlotSemantics.CRAFTING_GRID);
         }
-
         // Create the output slot used for crafting mode patterns
         this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
-                host.getInventory(), this.craftingGridInv, patternInv, this, GROUP_CRAFTING_RESULT, this),
+                host.getInventory(), encodedInputs, this),
                 SlotSemantics.CRAFTING_RESULT);
         this.craftOutputSlot.setIcon(null);
 
-        // Create slots for the outputs of processing-mode patterns. Unrolled as each as a different semantic
-        this.addSlot(this.processingOutputSlots[0] = new PatternOutputsSlot(output, this, 0, GROUP_SECONDARY_OUTPUT),
-                SlotSemantics.PROCESSING_PRIMARY_RESULT);
-        this.addSlot(this.processingOutputSlots[1] = new PatternOutputsSlot(output, this, 1, GROUP_SECONDARY_OUTPUT),
-                SlotSemantics.PROCESSING_FIRST_OPTIONAL_RESULT);
-        this.addSlot(this.processingOutputSlots[2] = new PatternOutputsSlot(output, this, 2, GROUP_SECONDARY_OUTPUT),
-                SlotSemantics.PROCESSING_SECOND_OPTIONAL_RESULT);
-
-        for (int i = 0; i < 3; i++) {
-            this.processingOutputSlots[i].setRenderDisabled(false);
-            this.processingOutputSlots[i].setIcon(null);
+        // Create as many slots as needed for processing inputs and outputs
+        for (int i = 0; i < processingInputSlots.length; i++) {
+            this.addSlot(this.processingInputSlots[i] = new FakeSlot(encodedInputs, i),
+                    SlotSemantics.PROCESSING_INPUTS);
         }
+        for (int i = 0; i < this.processingOutputSlots.length; i++) {
+            this.addSlot(this.processingOutputSlots[i] = new FakeSlot(encodedOutputs, i),
+                    SlotSemantics.PROCESSING_OUTPUTS);
+        }
+        this.processingOutputSlots[0].setIcon(Icon.BACKGROUND_PRIMARY_OUTPUT);
 
         this.addSlot(this.blankPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BLANK_PATTERN,
-                patternInv, 0), SlotSemantics.BLANK_PATTERN);
+                encodingLogic.getBlankPatternInv(), 0), SlotSemantics.BLANK_PATTERN);
         this.addSlot(
                 this.encodedPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                        patternInv, 1),
+                        encodingLogic.getEncodedPatternInv(), 0),
                 SlotSemantics.ENCODED_PATTERN);
 
         this.encodedPatternSlot.setStackLimit(1);
 
         registerClientAction(ACTION_ENCODE, this::encode);
         registerClientAction(ACTION_CLEAR, this::clear);
-        registerClientAction(ACTION_SET_MODE, EncodingMode.class, getPatternTerminal()::setMode);
-        registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, getPatternTerminal()::setSubstitution);
-        registerClientAction(ACTION_SET_FLUID_SUBSTITUTION, Boolean.class, getPatternTerminal()::setFluidSubstitution);
-        registerClientAction(ACTION_SHOW_MODIFY_AMOUNT_MENU, Integer.class, this::showModifyAmountMenu);
+        registerClientAction(ACTION_SET_MODE, EncodingMode.class, encodingLogic::setMode);
+        registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, encodingLogic::setSubstitution);
+        registerClientAction(ACTION_SET_FLUID_SUBSTITUTION, Boolean.class, encodingLogic::setFluidSubstitution);
         registerClientAction(ACTION_CYCLE_PROCESSING_OUTPUT, this::cycleProcessingOutput);
     }
 
@@ -182,11 +171,11 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
 
     private ItemStack getAndUpdateOutput() {
         var level = this.getPlayerInventory().player.level;
-        var ic = new CraftingContainer(this, 3, 3);
+        var ic = new CraftingContainer(this, CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
 
         boolean invalidIngredients = false;
         for (int x = 0; x < ic.getContainerSize(); x++) {
-            var stack = unwrapCraftingIngredient(this.craftingGridInv.getStackInSlot(x));
+            var stack = getEncodedCraftingIngredient(x);
             if (stack != null) {
                 ic.setItem(x, stack);
             } else {
@@ -238,7 +227,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
     }
 
     public void encode() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_ENCODE);
             return;
         }
@@ -294,10 +283,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
 
     @Nullable
     private ItemStack encodeCraftingPattern() {
-        var ingredients = new ItemStack[this.craftingGridSlots.length];
+        var ingredients = new ItemStack[CRAFTING_GRID_SLOTS];
         boolean valid = false;
-        for (int x = 0; x < this.craftingGridSlots.length; x++) {
-            ingredients[x] = unwrapCraftingIngredient(this.craftingGridSlots[x].getItem());
+        for (int x = 0; x < ingredients.length; x++) {
+            ingredients[x] = getEncodedCraftingIngredient(x);
             if (ingredients[x] == null) {
                 return null; // Invalid item
             } else if (!ingredients[x].isEmpty()) {
@@ -320,11 +309,11 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
 
     @Nullable
     private ItemStack encodeProcessingPattern() {
-        var inputs = new GenericStack[this.craftingGridSlots.length];
+        var inputs = new GenericStack[encodedInputsInv.size()];
         boolean valid = false;
-        for (int x = 0; x < this.craftingGridSlots.length; x++) {
-            inputs[x] = GenericStack.fromItemStack(this.craftingGridSlots[x].getItem());
-            if (inputs[x] != null) {
+        for (int slot = 0; slot < encodedInputsInv.size(); slot++) {
+            inputs[slot] = encodedInputsInv.getStack(slot);
+            if (inputs[slot] != null) {
                 // At least one input must be set, but it doesn't matter which one
                 valid = true;
             }
@@ -333,9 +322,9 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
             return null;
         }
 
-        var outputs = new GenericStack[3];
-        for (int i = 0; i < this.processingOutputSlots.length; i++) {
-            outputs[i] = GenericStack.fromItemStack(this.processingOutputSlots[i].getItem());
+        var outputs = new GenericStack[encodedOutputsInv.size()];
+        for (int slot = 0; slot < encodedOutputsInv.size(); slot++) {
+            outputs[slot] = encodedOutputsInv.getStack(slot);
         }
         if (outputs[0] == null) {
             // The first output slot is required
@@ -345,17 +334,19 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
         return PatternDetailsHelper.encodeProcessingPattern(inputs, outputs);
     }
 
+    /**
+     * Get potential crafting ingredient encoded in given slot, return null if something is encoded in the slot, but
+     * it's not an item.
+     */
     @Nullable
-    private ItemStack unwrapCraftingIngredient(ItemStack ingredient) {
-        var unwrapped = GenericStack.unwrapItemStack(ingredient);
-        if (unwrapped != null) {
-            if (unwrapped.what() instanceof AEItemKey itemKey) {
-                return itemKey.toStack(1);
-            } else {
-                return null; // There's something in this slot that's not an item
-            }
+    private ItemStack getEncodedCraftingIngredient(int slot) {
+        var what = encodedInputsInv.getKey(slot);
+        if (what == null) {
+            return ItemStack.EMPTY;
+        } else if (what instanceof AEItemKey itemKey) {
+            return itemKey.toStack(1);
         } else {
-            return ingredient;
+            return null; // There's something in this slot that's not an item
         }
     }
 
@@ -368,128 +359,16 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
     }
 
     @Override
-    public boolean isSlotEnabled(int idx) {
-        var effectiveMode = isServer() ? this.getPatternTerminal().getMode() : this.mode;
-        if (idx == GROUP_SECONDARY_OUTPUT) {
-            return mode == EncodingMode.PROCESSING;
-        } else if (idx == GROUP_CRAFTING_RESULT) {
-            return mode == EncodingMode.CRAFTING;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Triggered by clicking on the pattern terminals crafting result slot. Will either grab the item from the network
-     * inventory or craft it.
-     */
-    public void craftOrGetItem(PatternSlotPacket packetPatternSlot) {
-        var what = packetPatternSlot.what;
-        if (what.isEmpty() || this.storage == null || !isPowered()) {
-            return;
-        }
-
-        InternalInventory inv = new CarriedItemInventory(this);
-        var playerInv = new PlayerInternalInventory(getPlayerInventory());
-
-        if (packetPatternSlot.intoPlayerInv) {
-            inv = playerInv;
-        }
-
-        // If the target inv hold at least 1 of the crafted/extracted item, don't bother
-        if (!inv.simulateAdd(what).isEmpty()) {
-            return;
-        }
-
-        // Clamp the amount to a reasonable amount
-        var itemKey = AEItemKey.of(what);
-        var amount = Mth.clamp(what.getCount(), 1, what.getItem().getMaxStackSize());
-
-        var extracted = StorageHelper.poweredExtraction(this.powerSource, this.storage,
-                itemKey, amount, this.getActionSource());
-        var p = this.getPlayerInventory().player;
-
-        if (extracted > 0) {
-            what.setCount(amount);
-            inv.addItems(what);
-            this.broadcastChanges();
-            return;
-        }
-
-        ///
-        // Item was not available in network inventory, let's try to grab ingredients for crafting it ad-hoc
-        ///
-
-        var ic = new CraftingContainer(new NullMenu(), 3, 3);
-        var real = new CraftingContainer(new NullMenu(), 3, 3);
-
-        for (int x = 0; x < 9; x++) {
-            ic.setItem(x, packetPatternSlot.pattern[x]);
-        }
-
-        var r = p.level.getRecipeManager()
-                .getRecipeFor(RecipeType.CRAFTING, ic, p.level)
-                .orElse(null);
-
-        if (r == null) {
-            return;
-        }
-
-        var all = getPreviousAvailableStacks();
-        var is = r.assemble(ic);
-
-        var partitionFilter = ViewCellItem.createItemFilter(this.getViewCells());
-        for (int x = 0; x < ic.getContainerSize(); x++) {
-            if (!ic.getItem(x).isEmpty()) {
-                var pulled = Platform.extractItemsByRecipe(this.powerSource,
-                        this.getActionSource(), storage, p.level, r, is, ic, ic.getItem(x), x, all,
-                        Actionable.MODULATE, partitionFilter);
-                real.setItem(x, pulled);
-            }
-        }
-
-        var rr = p.level.getRecipeManager()
-                .getRecipeFor(RecipeType.CRAFTING, real, p.level).orElse(null);
-
-        if (rr == r && ItemStack.isSameItemSameTags(rr.assemble(real), is)) {
-            final ResultContainer craftingResult = new ResultContainer();
-            craftingResult.setRecipeUsed(rr);
-
-            final ResultSlot sc = new ResultSlot(p, real, craftingResult, 0, 0, 0);
-            sc.onTake(p, is);
-
-            for (int x = 0; x < real.getContainerSize(); x++) {
-                final ItemStack failed = playerInv.addItems(real.getItem(x));
-
-                if (!failed.isEmpty()) {
-                    p.drop(failed, false);
-                }
-            }
-
-            inv.addItems(is);
-            this.broadcastChanges();
-        } else {
-            for (int x = 0; x < real.getContainerSize(); x++) {
-                final ItemStack failed = real.getItem(x);
-                if (!failed.isEmpty()) {
-                    this.storage.insert(AEItemKey.of(failed), failed.getCount(), Actionable.MODULATE,
-                            new MachineSource(this.getPatternTerminal()));
-                }
-            }
-        }
-    }
-
-    @Override
     public void broadcastChanges() {
         super.broadcastChanges();
 
-        if (isServer()) {
-            if (this.mode != this.getPatternTerminal().getMode()) {
-                this.setMode(this.getPatternTerminal().getMode());
+        if (isServerSide()) {
+            if (this.mode != encodingLogic.getMode()) {
+                this.setMode(encodingLogic.getMode());
             }
 
-            this.substitute = this.patternTerminal.isSubstitution();
-            this.substituteFluids = this.patternTerminal.isFluidSubstitution();
+            this.substitute = encodingLogic.isSubstitution();
+            this.substituteFluids = encodingLogic.isFluidSubstitution();
         }
     }
 
@@ -497,39 +376,43 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
     public void onServerDataSync() {
         super.onServerDataSync();
 
+        // Update slot visibility
         for (var slot : craftingGridSlots) {
-            slot.setHideAmount(mode == EncodingMode.CRAFTING);
+            slot.setActive(mode == EncodingMode.CRAFTING);
+        }
+        craftOutputSlot.setActive(mode == EncodingMode.CRAFTING);
+        for (var slot : processingInputSlots) {
+            slot.setActive(mode == EncodingMode.PROCESSING);
+        }
+        for (var slot : processingOutputSlots) {
+            slot.setActive(mode == EncodingMode.PROCESSING);
         }
 
         if (this.currentMode != this.mode) {
+            this.encodingLogic.setMode(this.mode);
             this.getAndUpdateOutput();
         }
     }
 
     @Override
     public void onSlotChange(Slot s) {
-        if (s == this.encodedPatternSlot && isServer()) {
+        if (s == this.encodedPatternSlot && isServerSide()) {
             this.broadcastChanges();
         }
 
-        if (s == this.craftOutputSlot && isClient()) {
+        if (s == this.craftOutputSlot && isClientSide()) {
             this.getAndUpdateOutput();
         }
     }
 
     public void clear() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_CLEAR);
             return;
         }
 
-        for (Slot s : this.craftingGridSlots) {
-            s.set(ItemStack.EMPTY);
-        }
-
-        for (Slot s : this.processingOutputSlots) {
-            s.set(ItemStack.EMPTY);
-        }
+        encodedInputsInv.clear();
+        encodedOutputsInv.clear();
 
         this.broadcastChanges();
         this.getAndUpdateOutput();
@@ -537,7 +420,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
 
     @Override
     public InternalInventory getCraftingMatrix() {
-        return craftingGridInv;
+        return encodedInputsInv.createMenuWrapper().getSubInventory(0, CRAFTING_GRID_SLOTS);
     }
 
     @Override
@@ -550,15 +433,11 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
     }
 
     public void setMode(EncodingMode mode) {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_SET_MODE, mode);
         } else {
             this.mode = mode;
         }
-    }
-
-    public IPatternTerminalHost getPatternTerminal() {
-        return this.patternTerminal;
     }
 
     public boolean isSubstitute() {
@@ -566,7 +445,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
     }
 
     public void setSubstitute(boolean substitute) {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_SET_SUBSTITUTION, substitute);
         } else {
             this.substitute = substitute;
@@ -578,7 +457,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
     }
 
     public void setSubstituteFluids(boolean substituteFluids) {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_SET_FLUID_SUBSTITUTION, substituteFluids);
         } else {
             this.substituteFluids = substituteFluids;
@@ -623,7 +502,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
             }
         }
 
-        for (var craftingSlot : craftingGridSlots) {
+        for (var craftingSlot : processingInputSlots) {
             if (craftingSlot == slot) {
                 return true;
             }
@@ -631,25 +510,16 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IOptionalS
         return false;
     }
 
-    public FakeCraftingMatrixSlot[] getCraftingGridSlots() {
+    public FakeSlot[] getCraftingGridSlots() {
         return craftingGridSlots;
     }
 
-    public OptionalFakeSlot[] getProcessingOutputSlots() {
-        return processingOutputSlots;
+    public FakeSlot[] getProcessingInputSlots() {
+        return processingInputSlots;
     }
 
-    public void showModifyAmountMenu(int slotIdx) {
-        if (isClientSide()) {
-            sendClientAction(ACTION_SHOW_MODIFY_AMOUNT_MENU, slotIdx);
-        } else {
-            var slot = slots.get(slotIdx);
-            if (!canModifyAmountForSlot(slot) || !(slot instanceof AppEngSlot aeSlot)) {
-                return;
-            }
-
-            SetProcessingPatternAmountMenu.open((ServerPlayer) getPlayer(), getLocator(), aeSlot.getSlotInv());
-        }
+    public FakeSlot[] getProcessingOutputSlots() {
+        return processingOutputSlots;
     }
 
     /**

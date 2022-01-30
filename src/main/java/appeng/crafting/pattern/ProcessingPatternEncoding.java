@@ -37,11 +37,11 @@ class ProcessingPatternEncoding {
     private static final String NBT_OUTPUTS = "out";
 
     public static GenericStack[] getProcessingInputs(CompoundTag nbt) {
-        return getMixedList(nbt, NBT_INPUTS, 9);
+        return getMixedList(nbt, NBT_INPUTS, AEProcessingPattern.MAX_INPUT_SLOTS);
     }
 
     public static GenericStack[] getProcessingOutputs(CompoundTag nbt) {
-        return getMixedList(nbt, NBT_OUTPUTS, 3);
+        return getMixedList(nbt, NBT_OUTPUTS, AEProcessingPattern.MAX_OUTPUT_SLOTS);
     }
 
     public static GenericStack[] getMixedList(CompoundTag nbt, String nbtKey, int maxSize) {

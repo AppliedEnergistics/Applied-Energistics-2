@@ -23,8 +23,6 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -51,6 +49,7 @@ public class AppEngSlot extends Slot {
 
     private boolean isDraggable = true;
     private AEBaseMenu menu = null;
+    private boolean active = true;
 
     /**
      * Shows an icon from the icon sprite-sheet in the background of this slot.
@@ -189,9 +188,12 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public boolean isActive() {
-        return this.isSlotEnabled();
+        return this.isSlotEnabled() && active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public boolean isSlotEnabled() {

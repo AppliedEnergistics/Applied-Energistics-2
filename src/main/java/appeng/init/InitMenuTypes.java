@@ -92,7 +92,6 @@ public final class InitMenuTypes {
                 QNBMenu.TYPE,
                 QuartzKnifeMenu.TYPE,
                 SecurityStationMenu.TYPE,
-                SetProcessingPatternAmountMenu.TYPE,
                 SetStockAmountMenu.TYPE,
                 SkyChestMenu.TYPE,
                 SpatialAnchorMenu.TYPE,

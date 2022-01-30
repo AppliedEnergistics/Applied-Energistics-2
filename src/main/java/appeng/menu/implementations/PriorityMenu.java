@@ -57,7 +57,7 @@ public class PriorityMenu extends AEBaseMenu implements ISubMenu {
 
     public void setPriority(int newValue) {
         if (newValue != priorityValue) {
-            if (isClient()) {
+            if (isClientSide()) {
                 // If for whatever reason the client enters the value first, do not update based
                 // on incoming server data
                 this.priorityValue = newValue;

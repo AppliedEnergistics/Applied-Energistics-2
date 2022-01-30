@@ -11,12 +11,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
-import appeng.items.misc.WrappedGenericStack;
 import appeng.util.Platform;
 
 public final class AEFluidKey extends AEKey {
@@ -125,16 +123,6 @@ public final class AEFluidKey extends AEKey {
     @Override
     public String getModId() {
         return Registry.FLUID.getKey(fluid).getNamespace();
-    }
-
-    @Override
-    public ItemStack wrapForDisplayOrFilter() {
-        return wrap(0);
-    }
-
-    @Override
-    public ItemStack wrap(int amount) {
-        return WrappedGenericStack.wrap(this, amount);
     }
 
     @Override

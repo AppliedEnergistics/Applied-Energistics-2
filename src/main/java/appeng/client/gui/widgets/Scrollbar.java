@@ -30,6 +30,7 @@ import net.minecraft.util.Mth;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.style.Blitter;
+import appeng.core.AppEng;
 
 /**
  * Implements a vertical scrollbar using Vanilla's scrollbar handle texture from the creative tab.
@@ -37,37 +38,11 @@ import appeng.client.gui.style.Blitter;
  * It is expected that the background of the UI contains a pre-baked scrollbar track border, and that the exact
  * rectangle of that track is set on this object via {@link #displayX}, {@link #displayY} and {@link #setHeight(int)}.
  * While the width of the track can also be set, the drawn handle will use vanilla's sprite width (see
- * {@link #HANDLE_WIDTH}.
+ * {@link Style#handleWidth()}.
  */
 public class Scrollbar implements IScrollSource, ICompositeWidget {
 
-    /**
-     * Width of the scrollbar handle sprite in the source texture.
-     */
-    private static final int HANDLE_WIDTH = 12;
-
-    /**
-     * Height of the scrollbar handle sprite in the source texture.
-     */
-    private static final int HANDLE_HEIGHT = 15;
-
-    /**
-     * Texture containing the scrollbar handle sprites.
-     */
-    private static final ResourceLocation TEXTURE = new ResourceLocation("minecraft",
-            "textures/gui/container/creative_inventory/tabs.png");
-
-    /**
-     * Rectangle in the source texture that contains the sprite for an enabled handle.
-     */
-    private static final Blitter ENABLED = Blitter.texture(TEXTURE)
-            .src(232, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
-
-    /**
-     * Rectangle in the source texture that contains the sprite for a disabled handle.
-     */
-    private static final Blitter DISABLED = Blitter.texture(TEXTURE)
-            .src(232 + HANDLE_WIDTH, 0, HANDLE_WIDTH, HANDLE_HEIGHT);
+    private boolean visible = true;
 
     /**
      * The screen x-coordinate of the scrollbar's inner track.
@@ -79,10 +54,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
      */
     private int displayY = 0;
 
-    /**
-     * The inner width of the scrollbar track.
-     */
-    private int width = HANDLE_WIDTH;
+    private final Style style;
 
     /**
      * The inner height of the scrollbar track.
@@ -104,11 +76,24 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
      */
     private int dragYOffset;
 
+    /**
+     * Capture all mouse wheel events to make it scroll when the mouse wheel is used anywhere on the screen.
+     */
+    private boolean captureMouseWheel = true;
+
     private final EventRepeater eventRepeater = new EventRepeater(Duration.ofMillis(250), Duration.ofMillis(150));
+
+    public Scrollbar(Style style) {
+        this.style = style;
+    }
+
+    public Scrollbar() {
+        this(DEFAULT);
+    }
 
     @Override
     public Rect2i getBounds() {
-        return new Rect2i(displayX, displayY, width, height);
+        return new Rect2i(displayX, displayY, style.handleWidth(), height);
     }
 
     /**
@@ -126,10 +111,10 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         Blitter image;
         if (this.getRange() == 0) {
             yOffset = 0;
-            image = DISABLED;
+            image = style.disabledBlitter();
         } else {
             yOffset = getHandleYOffset();
-            image = ENABLED;
+            image = style.enabledBlitter();
         }
 
         image.dest(this.displayX, this.displayY + yOffset).blit(poseStack, zIndex);
@@ -142,7 +127,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         if (getRange() == 0) {
             return 0;
         }
-        int availableHeight = this.height - HANDLE_HEIGHT;
+        int availableHeight = this.height - style.handleHeight();
         return (this.currentScroll - this.minScroll) * availableHeight / this.getRange();
     }
 
@@ -163,9 +148,6 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
 
     @Override
     public void setSize(int width, int height) {
-        if (width != 0) {
-            this.width = width;
-        }
         if (height != 0) {
             this.height = height;
         }
@@ -214,7 +196,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
             pageUp();
             eventRepeater.repeat(this::pageUp);
 
-        } else if (relY < handleYOffset + HANDLE_HEIGHT) {
+        } else if (relY < handleYOffset + style.handleHeight()) {
             // Clicks on the handle will initiate dragging it
             this.dragging = true;
             this.dragYOffset = relY - handleYOffset;
@@ -253,7 +235,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         // the upper edge of it) within the scrollable area of the track (minus the
         // handle height).
         double handleUpperEdgeY = mousePos.getY() - this.displayY - this.dragYOffset;
-        double availableHeight = this.height - HANDLE_HEIGHT;
+        double availableHeight = this.height - style.handleHeight();
         double position = Mth.clamp(handleUpperEdgeY / availableHeight, 0.0, 1.0);
 
         this.currentScroll = this.minScroll + (int) Math.round(position * this.getRange());
@@ -274,11 +256,13 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         return true;
     }
 
-    private boolean captureMouseWheel = true;
-
     @Override
     public boolean wantsAllMouseWheelEvents() {
         // Capture all mouse wheel events since we want to scroll even when over the item grid
+        return captureMouseWheel;
+    }
+
+    public boolean isCaptureMouseWheel() {
         return captureMouseWheel;
     }
 
@@ -305,4 +289,54 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         this.applyRange();
     }
 
+    public static final Style DEFAULT = Style.create(
+            new ResourceLocation("minecraft", "textures/gui/container/creative_inventory/tabs.png"),
+            12,
+            15,
+            232, 0,
+            244, 0);
+
+    public static final Style SMALL = Style.create(
+            AppEng.makeId("textures/guis/pattern_modes.png"),
+            7,
+            15,
+            242, 0,
+            249, 0);
+
+    /**
+     * @param handleWidth     Width of the scrollbar handle sprite in the source texture.
+     * @param handleHeight    Height of the scrollbar handle sprite in the source texture.
+     * @param texture         Texture containing the scrollbar handle sprites.
+     * @param enabledBlitter  Rectangle in the source texture that contains the sprite for an enabled handle.
+     * @param disabledBlitter Rectangle in the source texture that contains the sprite for a disabled handle.
+     */
+    public record Style(
+            int handleWidth,
+            int handleHeight,
+            ResourceLocation texture,
+            Blitter enabledBlitter,
+            Blitter disabledBlitter) {
+        public static Style create(
+                ResourceLocation texture,
+                int handleWidth,
+                int handleHeight,
+                int enabledSrcX, int enabledSrcY,
+                int disabledSrcX, int disabledSrcY) {
+            return new Style(
+                    handleWidth,
+                    handleHeight,
+                    texture,
+                    Blitter.texture(texture).src(enabledSrcX, enabledSrcY, handleWidth, handleHeight),
+                    Blitter.texture(texture).src(disabledSrcX, disabledSrcY, handleWidth, handleHeight));
+        }
+    }
+
+    @Override
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 }

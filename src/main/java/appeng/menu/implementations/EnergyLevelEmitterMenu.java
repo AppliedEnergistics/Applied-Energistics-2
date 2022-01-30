@@ -54,7 +54,7 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu<EnergyLevelEmitterPa
     }
 
     public void setReportingValue(long reportingValue) {
-        if (isClient()) {
+        if (isClientSide()) {
             if (reportingValue != this.reportingValue) {
                 this.reportingValue = reportingValue;
                 sendClientAction(ACTION_SET_REPORTING_VALUE, reportingValue);

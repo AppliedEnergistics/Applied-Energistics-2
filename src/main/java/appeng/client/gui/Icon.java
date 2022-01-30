@@ -39,7 +39,7 @@ public enum Icon {
     UNUSED_00_11(176, 0),
     UNUSED_00_12(192, 0),
     UNUSED_00_13(208, 0),
-    UNUSED_00_14(224, 0),
+    BACKGROUND_PRIMARY_OUTPUT(224, 0),
     BACKGROUND_STORAGE_CELL(240, 0),
 
     // ROW 1

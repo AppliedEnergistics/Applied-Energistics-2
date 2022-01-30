@@ -18,7 +18,6 @@
 
 package appeng.init.client;
 
-import java.io.FileNotFoundException;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -66,7 +65,6 @@ import appeng.client.gui.me.crafting.SetStockAmountScreen;
 import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.client.gui.me.items.CraftingTermScreen;
 import appeng.client.gui.me.items.PatternEncodingTermScreen;
-import appeng.client.gui.me.items.SetProcessingPatternAmountScreen;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.client.gui.me.networktool.NetworkToolScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -138,8 +136,6 @@ public final class InitScreens {
         register(IOBusMenu.IMPORT_TYPE, IOBusScreen::new, "/screens/import_bus.json");
         register(IOPortMenu.TYPE, IOPortScreen::new, "/screens/io_port.json");
         register(StorageBusMenu.TYPE, StorageBusScreen::new, "/screens/storage_bus.json");
-        register(SetProcessingPatternAmountMenu.TYPE, SetProcessingPatternAmountScreen::new,
-                "/screens/set_processing_pattern_amount.json");
         register(SetStockAmountMenu.TYPE, SetStockAmountScreen::new, "/screens/set_stock_amount.json");
         register(FormationPlaneMenu.TYPE, FormationPlaneScreen::new, "/screens/formation_plane.json");
         register(PriorityMenu.TYPE, PriorityScreen::new, "/screens/priority.json");
@@ -199,14 +195,7 @@ public final class InitScreens {
             String stylePath) {
         MENU_STYLES.put(type, stylePath);
         ScreenRegistry.<M, U>register(type, (menu, playerInv, title) -> {
-            ScreenStyle style;
-            try {
-                style = StyleManager.loadStyleDoc(stylePath);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException("Failed to read Screen JSON file: " + stylePath + ": " + e.getMessage());
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to read Screen JSON file: " + stylePath, e);
-            }
+            var style = StyleManager.loadStyleDoc(stylePath);
 
             return factory.create(menu, playerInv, title, style);
         });

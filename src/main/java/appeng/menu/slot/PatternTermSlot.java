@@ -31,35 +31,18 @@ import appeng.helpers.IMenuCraftingPacket;
  * The crafting result slot in a pattern terminal.
  */
 public class PatternTermSlot extends CraftingTermSlot {
-
-    private final int groupNum;
-    private final IOptionalSlotHost host;
-
     public PatternTermSlot(Player player, IActionSource mySrc, IEnergySource energySrc,
-            MEStorage storage, InternalInventory cMatrix, InternalInventory secondMatrix,
-            IOptionalSlotHost h, int groupNumber,
+            MEStorage storage, InternalInventory cMatrix,
             IMenuCraftingPacket c) {
-        super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, c);
-
-        this.host = h;
-        this.groupNum = groupNumber;
+        super(player, mySrc, energySrc, storage, cMatrix, InternalInventory.empty(), c);
     }
 
     @Override
     public ItemStack getItem() {
-        if (!this.isSlotEnabled() && !this.getDisplayStack().isEmpty()) {
+        if (!this.isActive() && !this.getDisplayStack().isEmpty()) {
             this.clearStack();
         }
 
         return super.getItem();
-    }
-
-    @Override
-    public boolean isSlotEnabled() {
-        if (this.host == null) {
-            return false;
-        }
-
-        return this.host.isSlotEnabled(this.groupNum);
     }
 }

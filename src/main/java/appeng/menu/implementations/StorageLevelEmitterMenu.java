@@ -69,7 +69,7 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
     }
 
     public void setValue(long initialValue) {
-        if (isClient()) {
+        if (isClientSide()) {
             if (initialValue != this.currentValue) {
                 this.currentValue = initialValue;
                 sendClientAction(ACTION_SET_REPORTING_VALUE, initialValue);

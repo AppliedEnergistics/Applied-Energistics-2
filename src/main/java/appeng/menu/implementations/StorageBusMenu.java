@@ -107,7 +107,7 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
     }
 
     public void clear() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_CLEAR);
             return;
         }
@@ -117,7 +117,7 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
     }
 
     public void partition() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_PARTITION);
             return;
         }

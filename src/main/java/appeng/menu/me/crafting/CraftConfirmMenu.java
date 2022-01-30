@@ -107,7 +107,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public void cycleSelectedCPU(boolean next) {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_CYCLE_CPU, next);
         } else {
             this.cpuCycler.cycleCpu(next);
@@ -116,7 +116,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     @Override
     public void broadcastChanges() {
-        if (isClient()) {
+        if (isClientSide()) {
             return;
         }
 
@@ -171,7 +171,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public void startJob() {
-        if (isClient()) {
+        if (isClientSide()) {
             sendClientAction(ACTION_START_JOB);
             return;
         }

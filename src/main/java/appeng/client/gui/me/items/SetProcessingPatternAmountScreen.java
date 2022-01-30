@@ -18,62 +18,87 @@
 
 package appeng.client.gui.me.items;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+import java.util.function.Consumer;
 
-import appeng.client.gui.AEBaseScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.util.Mth;
+
+import appeng.api.stacks.GenericStack;
+import appeng.client.gui.AESubScreen;
 import appeng.client.gui.NumberEntryType;
-import appeng.client.gui.implementations.AESubScreen;
-import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.me.common.ClientDisplaySlot;
 import appeng.client.gui.widgets.NumberEntryWidget;
+import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
-import appeng.menu.me.items.SetProcessingPatternAmountMenu;
+import appeng.menu.SlotSemantics;
+import appeng.menu.me.items.PatternEncodingTermMenu;
 
 /**
  * Allows precisely setting the amount to use for a processing pattern slot.
+ * <p/>
+ * Note that this is a sub-screen of {@link PatternEncodingTermScreen}
  */
-public class SetProcessingPatternAmountScreen extends AEBaseScreen<SetProcessingPatternAmountMenu> {
+public class SetProcessingPatternAmountScreen<C extends PatternEncodingTermMenu>
+        extends AESubScreen<C, PatternEncodingTermScreen<C>> {
 
     private final NumberEntryWidget amount;
 
-    private boolean amountInitialized;
+    private final GenericStack currentStack;
 
-    public SetProcessingPatternAmountScreen(SetProcessingPatternAmountMenu menu,
-            Inventory playerInventory,
-            Component title,
-            ScreenStyle style) {
-        super(menu, playerInventory, title, style);
+    private final Consumer<GenericStack> setter;
+
+    public SetProcessingPatternAmountScreen(PatternEncodingTermScreen<C> parentScreen,
+            GenericStack currentStack,
+            Consumer<GenericStack> setter) {
+        super(parentScreen, "/screens/set_processing_pattern_amount.json");
+
+        this.currentStack = currentStack;
+        this.setter = setter;
 
         widgets.addButton("save", GuiText.Set.text(), this::confirm);
 
-        AESubScreen.addBackButton(menu, "back", widgets);
+        var icon = getMenu().getHost().getMainMenuIcon();
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+        var button = new TabButton(icon, icon.getHoverName(), itemRenderer, btn -> {
+            returnToParent();
+        });
+        widgets.add("back", button);
 
-        this.amount = new NumberEntryWidget(NumberEntryType.UNITLESS);
-        this.amount.setLongValue(1);
+        this.amount = new NumberEntryWidget(NumberEntryType.of(currentStack.what()));
+        this.amount.setLongValue(currentStack.amount());
+        this.amount.setMaxValue(getMaxAmount());
         this.amount.setTextFieldStyle(style.getWidget("amountToStockInput"));
         this.amount.setMinValue(0);
         this.amount.setHideValidationIcon(true);
         this.amount.setOnConfirm(this::confirm);
         widgets.add("amountToStock", this.amount);
+
+        addClientSideSlot(new ClientDisplaySlot(currentStack), SlotSemantics.MACHINE_OUTPUT);
     }
 
     @Override
-    protected void updateBeforeRender() {
-        super.updateBeforeRender();
+    protected void init() {
+        super.init();
 
-        if (!this.amountInitialized) {
-            var whatToStock = menu.getWhatToStock();
-            if (whatToStock != null) {
-                this.amount.setType(NumberEntryType.of(whatToStock));
-                this.amount.setLongValue(menu.getInitialAmount());
-
-                this.amount.setMaxValue(menu.getMaxAmount());
-                this.amountInitialized = true;
-            }
-        }
+        // The screen JSON includes the toolbox, but we don't actually have a need for it here
+        setSlotsHidden(SlotSemantics.TOOLBOX, true);
     }
 
     private void confirm() {
-        this.amount.getIntValue().ifPresent(menu::confirm);
+        this.amount.getLongValue().ifPresent(newAmount -> {
+            newAmount = Mth.clamp(newAmount, 0, getMaxAmount());
+
+            if (newAmount <= 0) {
+                setter.accept(null);
+            } else {
+                setter.accept(new GenericStack(currentStack.what(), newAmount));
+            }
+            returnToParent();
+        });
+    }
+
+    private long getMaxAmount() {
+        return 999999 * (long) currentStack.what().getAmountPerUnit();
     }
 }
