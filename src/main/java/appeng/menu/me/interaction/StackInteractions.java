@@ -1,32 +1,69 @@
 package appeng.menu.me.interaction;
 
-import java.util.List;
+import com.google.common.base.Preconditions;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * TODO: Use approach from {@link appeng.api.client.AEStackRendering} or generalize as AEStackClientFeatures
- */
-public final class StackInteractions {
-    private static final List<StackInteractionHandler> HANDLERS = List.of(
-            new FluidInteractionHandler(),
-            new ItemInteractionHandler());
+import appeng.api.behaviors.ContainerItemStrategy;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
+import appeng.util.CowMap;
+
+public class StackInteractions {
+    private static final CowMap<AEKeyType, ContainerItemStrategy<?, ?>> strategies = CowMap.identityHashMap();
+
+    static {
+        register(AEKeyType.fluids(), AEFluidKey.class, new FluidContainerItemStrategy());
+    }
+
+    public static <T extends AEKey> void register(AEKeyType type, Class<T> keyClass,
+            ContainerItemStrategy<T, ?> strategy) {
+        Preconditions.checkArgument(type.getKeyClass() == keyClass, "%s != %s", type.getKeyClass(), keyClass);
+        Preconditions.checkArgument(type != AEKeyType.items(), "Can't register container items for AEItemKey");
+
+        strategies.putIfAbsent(type, strategy);
+    }
 
     @Nullable
-    public static EmptyingAction getEmptyingAction(ItemStack stack) {
+    public static GenericStack getContainedStack(ItemStack stack) {
         if (stack.isEmpty()) {
             return null;
         }
 
-        for (StackInteractionHandler handler : HANDLERS) {
-            var result = handler.getEmptyingResult(stack);
-            if (result != null) {
-                return result;
+        for (var entry : strategies.getMap().entrySet()) {
+            var content = entry.getValue().getContainedStack(stack);
+            if (content != null) {
+                return content;
             }
         }
+        return null;
+    }
 
+    @Nullable
+    public static EmptyingAction getEmptyingAction(ItemStack stack) {
+        var contents = getContainedStack(stack);
+        if (contents == null) {
+            return null;
+        }
+
+        var description = contents.what().getDisplayName();
+        return new EmptyingAction(description, contents.what(), contents.amount());
+    }
+
+    @Nullable
+    public static ContainerItemContext findCarriedContext(Player player, AbstractContainerMenu menu) {
+        for (var entry : strategies.getMap().entrySet()) {
+            var context = entry.getValue().findCarriedContext(player, menu);
+            if (context != null) {
+                return new ContainerItemContext((ContainerItemStrategy<AEKey, Object>) entry.getValue(), context);
+            }
+        }
         return null;
     }
 }

@@ -26,8 +26,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -64,9 +62,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
-import appeng.helpers.externalstorage.GenericStackFluidStorage;
-import appeng.helpers.externalstorage.GenericStackInvStorage;
-import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DelegatingMEInventory;
 import appeng.util.ConfigInventory;
@@ -111,16 +106,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     private boolean hasConfig = false;
     private final ConfigInventory storage;
 
-    /**
-     * Used to expose items in the local storage of this interface to external machines.
-     */
-    private final GenericStackItemStorage localItemStorage;
-
-    /**
-     * Used to expose fluids in the local storage of this interface to external machines.
-     */
-    private final GenericStackFluidStorage localFluidStorage;
-
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is) {
         this.host = host;
         this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::readConfig);
@@ -139,8 +124,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
         getConfig().useRegisteredCapacities();
         getStorage().useRegisteredCapacities();
-        this.localItemStorage = new GenericStackItemStorage(getStorage());
-        this.localFluidStorage = new GenericStackFluidStorage(getStorage());
     }
 
     public int getPriority() {
@@ -249,14 +232,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     public ConfigInventory getConfig() {
         return config;
-    }
-
-    public GenericStackInvStorage<ItemVariant> getLocalItemStorage() {
-        return localItemStorage;
-    }
-
-    public GenericStackInvStorage<FluidVariant> getLocalFluidStorage() {
-        return localFluidStorage;
     }
 
     private MEStorage getMonitorable(IActionSource src) {

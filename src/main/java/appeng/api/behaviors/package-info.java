@@ -19,6 +19,11 @@
  * {@link appeng.api.behaviors.GenericSlotCapacities}.</li>
  * </ul>
  *
+ * <h3>Menu interactions</h3>
+ * <ul>
+ * <li>Emptying and filling container items in AE2 menus: {@link appeng.api.behaviors.ContainerItemStrategy}</li>
+ * </ul>
+ *
  * @apiNote These classes are experimental: we might release breaking changes to them in any release.
  */
 @ApiStatus.Experimental

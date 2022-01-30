@@ -23,9 +23,6 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -37,12 +34,13 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.stacks.AEFluidKey;
+import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.Platform;
 
 /**
@@ -139,17 +137,11 @@ public class WrappedGenericStack extends AEBaseItem {
 
         // Allow picking up fluids items with a fluid container, this is a special case for fluids
         var what = unwrapWhat(itemInSlot);
-        if (clickAction == ClickAction.PRIMARY && what instanceof AEFluidKey fluidKey) {
-            // TODO: Getting the carried item is tricky
-            var heldContainer = FluidStorage.ITEM.find(otherStack,
-                    ContainerItemContext.ofPlayerCursor(player, player.containerMenu));
+        if (clickAction == ClickAction.PRIMARY) {
+            var heldContainer = StackInteractions.findCarriedContext(player, player.containerMenu);
             if (heldContainer != null) {
                 long amount = unwrapAmount(itemInSlot);
-                long inserted;
-                try (var tx = Transaction.openOuter()) {
-                    inserted = heldContainer.insert(fluidKey.toVariant(), amount, tx);
-                    tx.commit();
-                }
+                long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);
 
                 if (inserted >= amount) {
                     slot.set(ItemStack.EMPTY);

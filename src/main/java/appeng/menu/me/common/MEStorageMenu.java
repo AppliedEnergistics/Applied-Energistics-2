@@ -71,7 +71,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
-import appeng.helpers.FluidContainerHelper;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.menu.AEBaseMenu;
@@ -80,6 +79,7 @@ import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.crafting.CraftAmountMenu;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
@@ -463,7 +463,7 @@ public class MEStorageMenu extends AEBaseMenu
         }
 
         if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE) {
-            if (FluidContainerHelper.getContainedStack(getCarried()) != null) {
+            if (StackInteractions.getContainedStack(getCarried()) != null) {
                 action = InventoryAction.EMPTY_ITEM;
             }
         }

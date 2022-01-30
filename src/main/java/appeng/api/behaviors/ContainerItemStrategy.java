@@ -1,0 +1,42 @@
+package appeng.api.behaviors;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.api.config.Actionable;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
+import appeng.menu.me.interaction.StackInteractions;
+
+/**
+ * Strategy to interact with the secondary keys held by container items (such as buckets or tanks).
+ *
+ * @param <C> Any context object that can accept or offer resources, directly or indirectly. Usually the API instance
+ *            such as {@code Storage<FluidVariant> on fabric}.
+ */
+public interface ContainerItemStrategy<T extends AEKey, C> {
+    @Nullable
+    GenericStack getContainedStack(ItemStack stack);
+
+    @Nullable
+    C findCarriedContext(Player player, AbstractContainerMenu menu);
+
+    long extract(C context, T what, long amount, Actionable mode);
+
+    long insert(C context, T what, long amount, Actionable mode);
+
+    void playFillSound(Player player, T what);
+
+    void playEmptySound(Player player, T what);
+
+    @Nullable
+    GenericStack getExtractableContent(C context);
+
+    static <T extends AEKey> void register(AEKeyType keyType, Class<T> keyClass, ContainerItemStrategy<T, ?> strategy) {
+        StackInteractions.register(keyType, keyClass, strategy);
+    }
+}
