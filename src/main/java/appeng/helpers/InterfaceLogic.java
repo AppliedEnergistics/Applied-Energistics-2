@@ -31,7 +31,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -50,10 +49,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
@@ -140,10 +137,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.craftingTracker = new MultiCraftingTracker(this, 9);
         this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
 
-        getConfig().setCapacity(AEKeyType.items(), Container.LARGE_MAX_STACK_SIZE);
-        getStorage().setCapacity(AEKeyType.items(), Container.LARGE_MAX_STACK_SIZE);
-        getConfig().setCapacity(AEKeyType.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
-        getStorage().setCapacity(AEKeyType.fluids(), 4 * AEFluidKey.AMOUNT_BUCKET);
+        getConfig().useRegisteredCapacities();
+        getStorage().useRegisteredCapacities();
         this.localItemStorage = new GenericStackItemStorage(getStorage());
         this.localFluidStorage = new GenericStackFluidStorage(getStorage());
     }

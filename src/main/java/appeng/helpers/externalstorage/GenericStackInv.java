@@ -24,15 +24,20 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.Items;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 
+import appeng.api.behaviors.GenericInternalInventory;
+import appeng.api.behaviors.GenericSlotCapacities;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
@@ -45,12 +50,13 @@ import appeng.api.storage.MEStorage;
 import appeng.core.AELog;
 import appeng.util.ConfigMenuInventory;
 
-public class GenericStackInv implements MEStorage {
+public class GenericStackInv implements MEStorage, GenericInternalInventory {
     protected final GenericStack[] stacks;
+    private final Participant[] participants;
     private final Runnable listener;
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
-    private Reference2LongMap<AEKeyType> capacities = new Reference2LongArrayMap<>();
+    private final Reference2LongMap<AEKeyType> capacities = new Reference2LongArrayMap<>();
     @org.jetbrains.annotations.Nullable
     private AEKeyFilter filter;
     protected final Mode mode;
@@ -68,6 +74,7 @@ public class GenericStackInv implements MEStorage {
 
     public GenericStackInv(@Nullable Runnable listener, Mode mode, int size) {
         this.stacks = new GenericStack[size];
+        this.participants = new Participant[size];
         this.listener = listener;
         this.mode = mode;
     }
@@ -89,6 +96,7 @@ public class GenericStackInv implements MEStorage {
         return stack == null || isAllowed(stack.what());
     }
 
+    @Override
     public int size() {
         return stacks.length;
     }
@@ -102,20 +110,24 @@ public class GenericStackInv implements MEStorage {
         return true;
     }
 
+    @Override
     @Nullable
     public GenericStack getStack(int slot) {
         return stacks[slot];
     }
 
+    @Override
     @Nullable
     public AEKey getKey(int slot) {
         return stacks[slot] != null ? stacks[slot].what() : null;
     }
 
+    @Override
     public long getAmount(int slot) {
         return stacks[slot] != null ? stacks[slot].amount() : 0;
     }
 
+    @Override
     public void setStack(int slot, @Nullable GenericStack stack) {
         if (!Objects.equals(stacks[slot], stack)) {
             stacks[slot] = stack;
@@ -181,14 +193,32 @@ public class GenericStackInv implements MEStorage {
         return canExtract;
     }
 
+    @Override
     public long getCapacity(AEKeyType space) {
         return capacities.getOrDefault(space, Long.MAX_VALUE);
+    }
+
+    @Override
+    public boolean canInsert() {
+        return true;
+    }
+
+    @Override
+    public boolean canExtract() {
+        return true;
     }
 
     public void setCapacity(AEKeyType space, long capacity) {
         this.capacities.put(space, capacity);
     }
 
+    public void useRegisteredCapacities() {
+        for (var entry : GenericSlotCapacities.getMap().entrySet()) {
+            setCapacity(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @Override
     public long getMaxAmount(AEKey key) {
         if (key instanceof AEItemKey itemKey) {
             return Math.min(itemKey.getItem().getMaxStackSize(), getCapacity(key.getType()));
@@ -196,7 +226,8 @@ public class GenericStackInv implements MEStorage {
         return getCapacity(key.getType());
     }
 
-    protected final void onChange() {
+    @Override
+    public final void onChange() {
         if (!suppressOnChange) {
             notifyListener();
         } else {
@@ -295,6 +326,7 @@ public class GenericStackInv implements MEStorage {
      * calling this method would cause a notification to occur, a <strong>single</strong> change notification will occur
      * upon calling {@link #endBatch()} instead.
      */
+    @Override
     public void beginBatch() {
         Preconditions.checkState(!suppressOnChange, "beginBatch was called without endBatch");
         suppressOnChange = true;
@@ -303,6 +335,7 @@ public class GenericStackInv implements MEStorage {
     /**
      * Ends a batch that was begun by calling {@link #beginBatch()} and triggers a pending change notification.
      */
+    @Override
     public void endBatch() {
         Preconditions.checkState(suppressOnChange, "endBatch was called without beginBatch");
         suppressOnChange = false;
@@ -315,7 +348,8 @@ public class GenericStackInv implements MEStorage {
     /**
      * Ends a batch that was begun by calling {@link #beginBatch()} and drops the change notification.
      */
-    void endBatchSuppressed() {
+    @Override
+    public void endBatchSuppressed() {
         Preconditions.checkState(suppressOnChange, "endBatch was called without beginBatch");
         suppressOnChange = false;
         onChangeSuppressed = false;
@@ -396,5 +430,46 @@ public class GenericStackInv implements MEStorage {
      */
     public void setDescription(Component description) {
         this.description = description;
+    }
+
+    @Override
+    public void updateSnapshots(int slot, TransactionContext transaction) {
+        if (participants[slot] == null) {
+            participants[slot] = new Participant(slot);
+        }
+        participants[slot].updateSnapshots(transaction);
+    }
+
+    private class Participant extends SnapshotParticipant<GenericStack> {
+        // SnapshotParticipant doesn't allow null snapshots so we use this marker stack
+        private static final GenericStack EMPTY_STACK = new GenericStack(AEItemKey.of(Items.AIR), 0);
+
+        private final int slotIndex;
+
+        private Participant(int slotIndex) {
+            this.slotIndex = slotIndex;
+        }
+
+        @Override
+        protected GenericStack createSnapshot() {
+            var stack = getStack(slotIndex);
+            return stack != null ? stack : EMPTY_STACK;
+        }
+
+        @Override
+        protected void readSnapshot(GenericStack snapshot) {
+            beginBatch();
+            if (snapshot == EMPTY_STACK) {
+                setStack(slotIndex, null);
+            } else {
+                setStack(slotIndex, snapshot);
+            }
+            endBatchSuppressed();
+        }
+
+        @Override
+        protected void onFinalCommit() {
+            onChange();
+        }
     }
 }

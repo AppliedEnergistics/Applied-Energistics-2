@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 
 import team.reborn.energy.api.EnergyStorage;
 
+import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.inventories.PartApiLookup;
@@ -14,6 +15,8 @@ import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.definitions.AEBlockEntities;
+import appeng.helpers.externalstorage.GenericStackFluidStorage;
+import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.items.tools.powered.powersink.PoweredItemCapabilities;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.misc.InterfacePart;
@@ -33,7 +36,7 @@ public final class InitApiLookup {
         PartApiLookup.addHostType(AEBlockEntities.CABLE_BUS);
 
         // Forward to interfaces
-        initItemInterface();
+        initInterface();
         initPatternProvider();
         initCondenser();
         initMEChest();
@@ -45,6 +48,20 @@ public final class InitApiLookup {
         ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
             if (blockEntity instanceof AEBaseInvBlockEntity baseInvBlockEntity) {
                 return baseInvBlockEntity.getExposedInventoryForSide(direction).toStorage();
+            }
+            // Fall back to generic inv
+            var genericInv = GenericInternalInventory.SIDED.find(world, pos, state, blockEntity, direction);
+            if (genericInv != null) {
+                return new GenericStackItemStorage(genericInv);
+            }
+            return null;
+        });
+
+        FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
+            // Fall back to generic inv
+            var genericInv = GenericInternalInventory.SIDED.find(world, pos, state, blockEntity, direction);
+            if (genericInv != null) {
+                return new GenericStackFluidStorage(genericInv);
             }
             return null;
         });
@@ -69,18 +86,12 @@ public final class InitApiLookup {
         // The block version is handled by the generic fallback registration for AEBasePoweredBlockEntity
     }
 
-    private static void initItemInterface() {
-        PartApiLookup.register(ItemStorage.SIDED,
-                (part, context) -> part.getInterfaceLogic().getLocalItemStorage(),
+    private static void initInterface() {
+        PartApiLookup.register(GenericInternalInventory.SIDED, (part, context) -> part.getInterfaceLogic().getStorage(),
                 InterfacePart.class);
-        PartApiLookup.register(FluidStorage.SIDED, (part, context) -> part.getInterfaceLogic().getLocalFluidStorage(),
-                InterfacePart.class);
-        ItemStorage.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getInterfaceLogic().getLocalItemStorage();
-        }, AEBlockEntities.INTERFACE);
-        FluidStorage.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getInterfaceLogic().getLocalFluidStorage();
-        }, AEBlockEntities.INTERFACE);
+        GenericInternalInventory.SIDED.registerForBlockEntity(
+                (blockEntity, context) -> blockEntity.getInterfaceLogic().getStorage(), AEBlockEntities.INTERFACE);
+
         PartApiLookup.register(IStorageMonitorableAccessor.SIDED,
                 (part, context) -> part.getInterfaceLogic().getGridStorageAccessor(), InterfacePart.class);
         IStorageMonitorableAccessor.SIDED.registerForBlockEntity((blockEntity, context) -> {
@@ -89,17 +100,10 @@ public final class InitApiLookup {
     }
 
     private static void initPatternProvider() {
-        PartApiLookup.register(ItemStorage.SIDED, (part, context) -> part.getLogic().getReturnInv().getItemStorage(),
+        PartApiLookup.register(GenericInternalInventory.SIDED, (part, context) -> part.getLogic().getReturnInv(),
                 PatternProviderPart.class);
-        ItemStorage.SIDED.registerForBlockEntity(
-                (blockEntity, direction) -> blockEntity.getLogic().getReturnInv().getItemStorage(),
-                AEBlockEntities.PATTERN_PROVIDER);
-
-        PartApiLookup.register(FluidStorage.SIDED,
-                (part, context) -> part.getLogic().getReturnInv().getFluidStorage(), PatternProviderPart.class);
-        FluidStorage.SIDED.registerForBlockEntity(
-                (blockEntity, direction) -> blockEntity.getLogic().getReturnInv().getFluidStorage(),
-                AEBlockEntities.PATTERN_PROVIDER);
+        GenericInternalInventory.SIDED.registerForBlockEntity(
+                (blockEntity, context) -> blockEntity.getLogic().getReturnInv(), AEBlockEntities.PATTERN_PROVIDER);
     }
 
     private static void initCondenser() {

@@ -9,10 +9,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
-import net.minecraft.world.item.Items;
 
-import appeng.api.stacks.AEItemKey;
+import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.util.IVariantConversion;
@@ -23,12 +21,12 @@ import appeng.util.IVariantConversion;
  */
 public class GenericStackInvStorage<V extends TransferVariant<?>> implements Storage<V> {
     private final IVariantConversion<V> conversion;
-    private final GenericStackInv inv;
+    private final GenericInternalInventory inv;
     private final AEKeyType channel;
     private final List<View> storageViews;
 
     public GenericStackInvStorage(IVariantConversion<V> conversion, AEKeyType channel,
-            GenericStackInv inv) {
+            GenericInternalInventory inv) {
         this.conversion = conversion;
         this.channel = channel;
         this.inv = inv;
@@ -41,6 +39,9 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
     @Override
     public long insert(V resource, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+        if (!inv.canInsert()) {
+            return 0;
+        }
         long totalInserted = 0;
 
         // First iteration matches the resource, second iteration inserts into empty slots.
@@ -68,6 +69,9 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
     @Override
     public long extract(V resource, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+        if (!inv.canExtract()) {
+            return 0;
+        }
         long totalExtracted = 0;
 
         for (var view : storageViews) {
@@ -83,10 +87,7 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
         return (Iterator) storageViews.iterator();
     }
 
-    private class View extends SnapshotParticipant<GenericStack> implements StorageView<V> {
-        // SnapshotParticipant doesn't allow null snapshots so we use this marker stack
-        private static final GenericStack EMPTY_STACK = new GenericStack(AEItemKey.of(Items.AIR), 0);
-
+    private class View implements StorageView<V> {
         private final int slotIndex;
 
         private View(int slotIndex) {
@@ -96,13 +97,13 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
         @Override
         public long extract(V resource, long maxAmount, TransactionContext transaction) {
             StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-            if (!getResource().equals(resource))
+            if (!inv.canExtract() || !getResource().equals(resource))
                 return 0;
 
             long actuallyExtracted = Math.min(getAmount(), maxAmount);
 
             if (actuallyExtracted > 0) {
-                updateSnapshots(transaction);
+                inv.updateSnapshots(slotIndex, transaction);
                 var amount = getAmount() - actuallyExtracted;
                 inv.beginBatch();
                 if (amount <= 0) {
@@ -111,9 +112,10 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
                     inv.setStack(slotIndex, new GenericStack(conversion.getKey(resource), amount));
                 }
                 inv.endBatchSuppressed();
+                return actuallyExtracted;
             }
 
-            return actuallyExtracted;
+            return 0;
         }
 
         public long insert(V resource, long maxAmount, TransactionContext transaction) {
@@ -125,7 +127,7 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
                 long inserted = Math.min(maxAmount, inv.getMaxAmount(key) - getAmount());
 
                 if (inserted > 0) {
-                    updateSnapshots(transaction);
+                    inv.updateSnapshots(slotIndex, transaction);
                     inv.beginBatch();
                     inv.setStack(slotIndex, new GenericStack(key, getAmount() + inserted));
                     inv.endBatchSuppressed();
@@ -162,26 +164,6 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
         @Override
         public long getCapacity() {
             return isSupportedSlot() ? inv.getCapacity(conversion.getKeyType()) : 0;
-        }
-
-        @Override
-        protected GenericStack createSnapshot() {
-            var stack = inv.getStack(slotIndex);
-            return stack != null ? stack : EMPTY_STACK;
-        }
-
-        @Override
-        protected void readSnapshot(GenericStack snapshot) {
-            if (snapshot == EMPTY_STACK) {
-                inv.setStack(slotIndex, null);
-            } else {
-                inv.setStack(slotIndex, snapshot);
-            }
-        }
-
-        @Override
-        protected void onFinalCommit() {
-            inv.onChange();
         }
     }
 
