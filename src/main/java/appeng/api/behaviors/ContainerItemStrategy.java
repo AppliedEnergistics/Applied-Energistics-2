@@ -1,5 +1,6 @@
 package appeng.api.behaviors;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
@@ -18,6 +19,7 @@ import appeng.menu.me.interaction.StackInteractions;
  * @param <C> Any context object that can accept or offer resources, directly or indirectly. Usually the API instance
  *            such as {@code Storage<FluidVariant> on fabric}.
  */
+@ApiStatus.Experimental
 public interface ContainerItemStrategy<T extends AEKey, C> {
     @Nullable
     GenericStack getContainedStack(ItemStack stack);

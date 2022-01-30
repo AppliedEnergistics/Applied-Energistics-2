@@ -129,6 +129,10 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
 
     @Override
     public void setStack(int slot, @Nullable GenericStack stack) {
+        // Clamp to capacity
+        if (stack != null && getMaxAmount(stack.what()) < stack.amount()) {
+            stack = new GenericStack(stack.what(), getMaxAmount(stack.what()));
+        }
         if (!Objects.equals(stacks[slot], stack)) {
             stacks[slot] = stack;
             onChange();

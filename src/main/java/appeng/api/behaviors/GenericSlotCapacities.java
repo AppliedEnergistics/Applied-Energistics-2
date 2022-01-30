@@ -4,6 +4,8 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.world.Container;
 
 import appeng.api.stacks.AEFluidKey;
@@ -13,6 +15,7 @@ import appeng.util.CowMap;
 /**
  * Allows custom key types to define slot capacities for pattern providers and interfaces.
  */
+@ApiStatus.Experimental
 public class GenericSlotCapacities {
     private static final CowMap<AEKeyType, Long> map = CowMap.identityHashMap();
 
