@@ -29,6 +29,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.security.ISecurityService;
@@ -57,8 +60,17 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     private final InterestManager<StackWatcher<IStorageWatcherNode>> interestManager = new InterestManager<>(
             this.interests);
     private final NetworkStorage storage;
-    private final KeyCounter cachedAvailableStacks = new KeyCounter(); // publicly exposed cached stacks.
-    private KeyCounter lastTickStacks = new KeyCounter(); // private cache, to make sure it's never modified.
+    /**
+     * Publicly exposed cached available stacks.
+     */
+    private KeyCounter cachedAvailableStacks = new KeyCounter();
+    private KeyCounter cachedAvailableStacksBackBuffer = new KeyCounter();
+    /**
+     * Private cached amounts, to ensure that we send correct change notifications even if
+     * {@link #cachedAvailableStacks} is modified by mistake.
+     */
+    private final Object2LongMap<AEKey> cachedAvailableAmounts = new Object2LongOpenHashMap<>();
+    private boolean cachedStacksNeedUpdate = true;
     /**
      * Tracks the stack watcher associated with a given grid node. Needed to clean up watchers when the node leaves the
      * grid.
@@ -71,24 +83,57 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     @Override
     public void onServerEndTick() {
+        if (interestManager.isEmpty()) {
+            // lazily rebuild cache list
+            cachedStacksNeedUpdate = true;
+        } else {
+            // we need to rebuild the cache every tick to notify listeners
+            updateCachedStacks();
+        }
+    }
+
+    private void updateCachedStacks() {
+        cachedStacksNeedUpdate = false;
+
         // Update cache
-        var previousStacks = lastTickStacks;
-        // Already set the value so that it can be accessed by the watcher node callbacks.
-        this.lastTickStacks = storage.getAvailableStacks();
-        this.cachedAvailableStacks.reset();
-        this.cachedAvailableStacks.addAll(lastTickStacks);
-        this.cachedAvailableStacks.removeZeros();
-        // Update watchers
-        previousStacks.removeAll(cachedAvailableStacks);
-        previousStacks.removeZeros();
-        for (var entry : previousStacks) {
-            long newAmount = cachedAvailableStacks.get(entry.getKey());
-            for (var watcher : interestManager.get(entry.getKey())) {
-                watcher.getHost().onStackChange(entry.getKey(), newAmount);
+        var previousStacks = cachedAvailableStacks;
+        var currentStacks = cachedAvailableStacksBackBuffer;
+        cachedAvailableStacks = currentStacks;
+        cachedAvailableStacksBackBuffer = previousStacks;
+
+        currentStacks.clear();
+        storage.getAvailableStacks(currentStacks);
+
+        // Post watcher update for currently available stacks
+        for (var entry : currentStacks) {
+            var what = entry.getKey();
+            var newAmount = entry.getLongValue();
+            if (newAmount != cachedAvailableAmounts.getLong(what)) {
+                postWatcherUpdate(what, newAmount);
             }
-            for (var watcher : interestManager.getAllStacksWatchers()) {
-                watcher.getHost().onStackChange(entry.getKey(), newAmount);
+        }
+        // Post watcher update for removed stacks
+        for (var entry : cachedAvailableAmounts.object2LongEntrySet()) {
+            var what = entry.getKey();
+            var newAmount = currentStacks.get(what);
+            if (newAmount == 0) {
+                postWatcherUpdate(what, newAmount);
             }
+        }
+
+        // Update private amounts
+        cachedAvailableAmounts.clear();
+        for (var entry : currentStacks) {
+            cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
+        }
+    }
+
+    private void postWatcherUpdate(AEKey what, long newAmount) {
+        for (var watcher : interestManager.get(what)) {
+            watcher.getHost().onStackChange(what, newAmount);
+        }
+        for (var watcher : interestManager.getAllStacksWatchers()) {
+            watcher.getHost().onStackChange(what, newAmount);
         }
     }
 
@@ -139,6 +184,9 @@ public class StorageService implements IStorageService, IGridServiceProvider {
 
     @Override
     public KeyCounter getCachedInventory() {
+        if (cachedStacksNeedUpdate) {
+            updateCachedStacks();
+        }
         return cachedAvailableStacks;
     }
 
