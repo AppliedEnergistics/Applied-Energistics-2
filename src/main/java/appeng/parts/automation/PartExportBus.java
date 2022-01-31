@@ -72,7 +72,7 @@ import appeng.util.item.AEItemStack;
 
 public class PartExportBus extends PartSharedItemBus implements ICraftingRequester
 {
-	private final int[] failedCraftTriesSlot = {0,0,0,0,0,0,0,0,0};
+	private final int[] failedCraftTriesSlot = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_base" );
 
@@ -133,10 +133,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		try
 		{
 			final InventoryAdaptor destination = this.getHandler();
-			final IMEMonitor<IAEItemStack> inv = this.getProxy()
-					.getStorage()
-					.getInventory(
-							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IEnergyGrid energy = this.getProxy().getEnergy();
 			final ICraftingGrid cg = this.getProxy().getCrafting();
 			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
@@ -152,16 +149,26 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					final IAEItemStack ais = this.getConfig().getAEStackInSlot( slotToExport );
 
-					if( ais == null || this.itemToSend <= 0 ) continue;
+					if( ais == null || this.itemToSend <= 0 )
+					{
+						continue;
+					}
 
-					if ( this.craftOnly() ) {
-						if (this.failedCraftTriesSlot[x] <= 0) {
+					if( this.craftOnly() )
+					{
+						if( this.failedCraftTriesSlot[x] <= 0 )
+						{
 
-							this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
-									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
+							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
 
-							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
-							else this.failedCraftTriesSlot[x] += 2;
+							if( this.didSomething )
+							{
+								this.failedCraftTriesSlot[x] = 0;
+							}
+							else
+							{
+								this.failedCraftTriesSlot[x] += 2;
+							}
 						}
 						this.failedCraftTriesSlot[x] -= 1;
 						continue;
@@ -190,13 +197,19 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					if( this.itemToSend == before && this.isCraftingEnabled() )
 					{
-						if (this.failedCraftTriesSlot[x] <= 0) {
+						if( this.failedCraftTriesSlot[x] <= 0 )
+						{
 
-							this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
-									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
+							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
 
-							if (this.didSomething) this.failedCraftTriesSlot[x] = 0;
-							else this.failedCraftTriesSlot[x] += 2;
+							if( this.didSomething )
+							{
+								this.failedCraftTriesSlot[x] = 0;
+							}
+							else
+							{
+								this.failedCraftTriesSlot[x] += 2;
+							}
 						}
 						this.failedCraftTriesSlot[x] -= 1;
 					}
@@ -336,11 +349,19 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	private void pushItemIntoTarget( final InventoryAdaptor d, final IEnergyGrid energy, final IMEInventory<IAEItemStack> inv, IAEItemStack ais )
 	{
-		ItemStack inputStack = ais.createItemStack();
+		ItemStack inputStack = ais.getCachedItemStack( ais.getStackSize() );
 
-		ItemStack toAdd = inputStack;
+		ItemStack remaining = d.simulateAdd( inputStack );
 
-		final ItemStack remaining = d.simulateAdd( inputStack );
+		// Store the stack in the cache for next time.
+		if( !remaining.isEmpty() )
+		{
+			ais.setCachedItemStack( remaining );
+		}
+		else
+		{
+			ais.setCachedItemStack( inputStack );
+		}
 
 		final long canFit = remaining.isEmpty() ? this.itemToSend : this.itemToSend - remaining.getCount();
 
@@ -354,13 +375,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			{
 				this.itemToSend -= itemsToAdd.getStackSize();
 
-				if( !remaining.isEmpty() )
-				{
-					toAdd = remaining;
-				}
-				toAdd.setCount( Ints.saturatedCast( canFit ) );
+				inputStack.setCount( Ints.saturatedCast( itemsToAdd.getStackSize() ) );
 
-				final ItemStack failed = d.addItems( toAdd );
+				final ItemStack failed = d.addItems( inputStack );
 				if( !failed.isEmpty() )
 				{
 					ais.setStackSize( failed.getCount() );
