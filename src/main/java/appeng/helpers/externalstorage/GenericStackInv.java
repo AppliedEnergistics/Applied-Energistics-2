@@ -360,7 +360,7 @@ public class GenericStackInv implements MEStorage {
 
         var inserted = 0L;
         for (int i = 0; i < stacks.length && inserted < amount; i++) {
-            inserted += insert(i, what, amount, mode);
+            inserted += insert(i, what, amount - inserted, mode);
         }
         return inserted;
     }
@@ -372,7 +372,7 @@ public class GenericStackInv implements MEStorage {
 
         var extracted = 0L;
         for (int i = 0; i < stacks.length && extracted < amount; i++) {
-            extracted += extract(i, what, amount, mode);
+            extracted += extract(i, what, amount - extracted, mode);
         }
         return extracted;
     }

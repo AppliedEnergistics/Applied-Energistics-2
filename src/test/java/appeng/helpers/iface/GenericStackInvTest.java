@@ -17,9 +17,11 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.Items;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
+import appeng.me.helpers.BaseActionSource;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.ConfigInventory;
 
@@ -27,6 +29,7 @@ import appeng.util.ConfigInventory;
 class GenericStackInvTest {
     public static final AEItemKey STICK_KEY = AEItemKey.of(Items.STICK);
     public static final GenericStack ONE_STICK = new GenericStack(STICK_KEY, 1);
+    public static final IActionSource SRC = new BaseActionSource();
     private final AtomicInteger changeNotifications = new AtomicInteger();
 
     private final GenericStackInv inv = new GenericStackInv(changeNotifications::incrementAndGet, 2);
@@ -217,6 +220,11 @@ class GenericStackInvTest {
             assertEquals(1, inv.insert(0, STICK_KEY, 1, Actionable.MODULATE));
             assertEquals(ONE_STICK, inv.getStack(0));
         }
+
+        @Test
+        void testBulkInsert() {
+            assertEquals(70, inv.insert(STICK_KEY, 70, Actionable.SIMULATE, SRC));
+        }
     }
 
     @Nested
@@ -228,6 +236,13 @@ class GenericStackInvTest {
             assertEquals(new GenericStack(STICK_KEY, 32), inv.getStack(0));
             assertEquals(10, inv.extract(0, STICK_KEY, 10, Actionable.MODULATE));
             assertEquals(new GenericStack(STICK_KEY, 22), inv.getStack(0));
+        }
+
+        @Test
+        void testBulkExtract() {
+            inv.setStack(0, new GenericStack(STICK_KEY, 64));
+            inv.setStack(1, new GenericStack(STICK_KEY, 64));
+            assertEquals(70, inv.extract(STICK_KEY, 70, Actionable.SIMULATE, SRC));
         }
     }
 }
