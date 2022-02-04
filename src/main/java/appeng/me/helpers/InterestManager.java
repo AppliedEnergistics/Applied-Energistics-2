@@ -62,4 +62,8 @@ public class InterestManager<T> {
     public Collection<T> getAllStacksWatchers() {
         return this.allStacksWatchers;
     }
+
+    public boolean isEmpty() {
+        return allStacksWatchers.isEmpty() && container.isEmpty();
+    }
 }
