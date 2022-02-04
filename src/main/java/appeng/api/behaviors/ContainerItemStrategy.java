@@ -14,7 +14,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.menu.me.interaction.StackInteractions;
 
 /**
- * Strategy to interact with the secondary keys held by container items (such as buckets or tanks).
+ * Strategy to interact with the non-item keys held by container items, for example the fluid contained in a bucket.
  *
  * @param <C> Any context object that can accept or offer resources, directly or indirectly. Usually the API instance
  *            such as {@code Storage<FluidVariant> on fabric}.
