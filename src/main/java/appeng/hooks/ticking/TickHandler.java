@@ -94,7 +94,6 @@ public class TickHandler {
         ServerTickEvents.START_WORLD_TICK.register(this::onServerLevelTickStart);
         ServerTickEvents.END_WORLD_TICK.register(this::onServerLevelTickEnd);
         ServerChunkEvents.CHUNK_UNLOAD.register(this::onUnloadChunk);
-        ServerWorldEvents.LOAD.register((server, level) -> onLoadLevel(level));
         ServerWorldEvents.UNLOAD.register((server, level) -> onUnloadLevel(level));
 
     }
@@ -191,13 +190,6 @@ public class TickHandler {
      */
     public void onUnloadChunk(ServerLevel level, LevelChunk chunk) {
         this.blockEntities.removeChunk(level, chunk.getPos().toLong());
-    }
-
-    /**
-     * Handle a newly loaded level and setup defaults when necessary.
-     */
-    public void onLoadLevel(ServerLevel level) {
-        this.blockEntities.addLevel(level);
     }
 
     /**
@@ -346,6 +338,9 @@ public class TickHandler {
      */
     private void readyBlockEntities(ServerLevel level) {
         var levelQueue = blockEntities.getBlockEntities(level);
+        if (levelQueue == null) {
+            return;
+        }
 
         // Make a copy because this set may be modified when new chunks are loaded by an onReady call below
         long[] workSet = levelQueue.keySet().toLongArray();
