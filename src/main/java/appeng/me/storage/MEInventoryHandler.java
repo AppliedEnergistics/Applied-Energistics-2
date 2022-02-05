@@ -142,20 +142,6 @@ public class MEInventoryHandler extends DelegatingMEInventory {
 
     // Applies the black/whitelist, but only if any item is listed at all
     private boolean passesBlackOrWhitelist(AEKey input) {
-        if (!this.partitionList.isEmpty()) {
-            switch (this.partitionListMode) {
-                case WHITELIST -> {
-                    if (!this.partitionList.isListed(input)) {
-                        return false;
-                    }
-                }
-                case BLACKLIST -> {
-                    if (this.partitionList.isListed(input)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+        return this.partitionList.matchesFilter(input, this.partitionListMode);
     }
 }

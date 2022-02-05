@@ -370,7 +370,7 @@ public class BasicCellInventory implements StorageCell {
             return 0;
         }
 
-        if (!this.partitionList.isEmpty() && !this.partitionList.isListed(what)) {
+        if (!this.partitionList.matchesFilter(what, this.partitionListMode)) {
             return 0;
         }
 

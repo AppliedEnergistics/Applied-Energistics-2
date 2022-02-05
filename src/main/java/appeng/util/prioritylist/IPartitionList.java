@@ -36,7 +36,7 @@ public interface IPartitionList {
      * Checks if the given stack matches this partition list assuming a given WHITELIST/BLACKLIST mode.
      */
     default boolean matchesFilter(AEKey key, IncludeExclude mode) {
-        if (!isEmpty()) {
+        if (!isEmpty()) { // Always return true for empty lists
             switch (mode) {
                 case WHITELIST -> {
                     if (!isListed(key)) {
