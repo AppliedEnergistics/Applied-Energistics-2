@@ -59,16 +59,12 @@ class ServerBlockEntityRepo {
         final int z = blockEntity.getBlockPos().getZ() >> 4;
         final long chunkPos = ChunkPos.asLong(x, z);
 
-        Long2ObjectMap<List<AEBaseBlockEntity>> worldQueue = this.blockEntities.get(level);
+        // Note: in some cases, the level load event might be fired after addBlockEntity is called if a mod loads chunks
+        // during an earlier listener. To avoid such issues, we use computeIfAbsent in addBlockEntity directly.
+        Long2ObjectMap<List<AEBaseBlockEntity>> worldQueue = this.blockEntities.computeIfAbsent(level,
+                key -> new Long2ObjectOpenHashMap<>());
 
         worldQueue.computeIfAbsent(chunkPos, key -> new ArrayList<>()).add(blockEntity);
-    }
-
-    /**
-     * Sets up the necessary defaults when a new level is loaded
-     */
-    synchronized void addLevel(LevelAccessor level) {
-        this.blockEntities.computeIfAbsent(level, key -> new Long2ObjectOpenHashMap<>());
     }
 
     /**
