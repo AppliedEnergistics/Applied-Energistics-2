@@ -2,6 +2,7 @@ package appeng.parts.automation;
 
 import java.util.Map;
 
+import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;

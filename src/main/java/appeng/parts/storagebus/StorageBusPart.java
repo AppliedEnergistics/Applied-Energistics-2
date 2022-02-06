@@ -36,6 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
@@ -80,7 +81,6 @@ import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartAdjacentApi;
 import appeng.parts.PartModel;
-import appeng.parts.automation.ExternalStorageStrategy;
 import appeng.parts.automation.StackWorldBehaviors;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.ConfigInventory;

@@ -223,7 +223,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 continue;
             }
 
-            var adapter = IInterfaceTarget.get(level, adjPos, adjBe, adjBeSide, this.actionSource);
+            var adapter = PatternProviderTarget.get(level, adjPos, adjBe, adjBeSide, this.actionSource);
             if (adapter == null)
                 continue;
 
@@ -259,7 +259,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
-    private boolean adapterAcceptsAll(IInterfaceTarget target, KeyCounter[] inputHolder) {
+    private boolean adapterAcceptsAll(PatternProviderTarget target, KeyCounter[] inputHolder) {
         for (var inputList : inputHolder) {
             for (var input : inputList) {
                 var inserted = target.insert(input.getKey(), input.getLongValue(), Actionable.SIMULATE);
@@ -291,7 +291,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         var level = be.getLevel();
         var adjPos = be.getBlockPos().relative(sendDirection);
         var adjBe = level.getBlockEntity(adjPos);
-        var adapter = IInterfaceTarget.get(level, adjPos, adjBe, sendDirection.getOpposite(), actionSource);
+        var adapter = PatternProviderTarget.get(level, adjPos, adjBe, sendDirection.getOpposite(), actionSource);
 
         if (adapter == null) {
             return false;

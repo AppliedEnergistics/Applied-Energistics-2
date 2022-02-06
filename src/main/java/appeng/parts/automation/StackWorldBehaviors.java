@@ -10,64 +10,91 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.behaviors.ExternalStorageStrategy;
+import appeng.api.behaviors.PickupStrategy;
+import appeng.api.behaviors.PlacementStrategy;
+import appeng.api.behaviors.StackExportStrategy;
+import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.AEKeyFilter;
+import appeng.util.CowMap;
 
 public final class StackWorldBehaviors {
-    private static final Map<AEKeyType, ImportStrategyFactory> importStrategies = new IdentityHashMap<>();
-    private static final Map<AEKeyType, ExportStrategyFactory> exportStrategies = new IdentityHashMap<>();
-    private static final Map<AEKeyType, ExternalStorageStrategyFactory> externalStorageStrategies = new IdentityHashMap<>();
-    private static final Map<AEKeyType, PlacementStrategyFactory> placementStrategies = new IdentityHashMap<>();
-    private static final Map<AEKeyType, PickupStrategyFactory> pickupStrategies = new IdentityHashMap<>();
+    private static final CowMap<AEKeyType, StackImportStrategy.Factory> importStrategies = CowMap.identityHashMap();
+    private static final CowMap<AEKeyType, StackExportStrategy.Factory> exportStrategies = CowMap.identityHashMap();
+    private static final CowMap<AEKeyType, ExternalStorageStrategy.Factory> externalStorageStrategies = CowMap
+            .identityHashMap();
+    private static final CowMap<AEKeyType, PlacementStrategy.Factory> placementStrategies = CowMap.identityHashMap();
+    private static final CowMap<AEKeyType, PickupStrategy.Factory> pickupStrategies = CowMap.identityHashMap();
 
     static {
-        importStrategies.put(AEKeyType.items(), StorageImportStrategy::createItem);
-        importStrategies.put(AEKeyType.fluids(), StorageImportStrategy::createFluid);
-        exportStrategies.put(AEKeyType.items(), StorageExportStrategy::createItem);
-        exportStrategies.put(AEKeyType.fluids(), StorageExportStrategy::createFluid);
-        externalStorageStrategies.put(AEKeyType.items(), FabricExternalStorageStrategy::createItem);
-        externalStorageStrategies.put(AEKeyType.fluids(), FabricExternalStorageStrategy::createFluid);
-        placementStrategies.put(AEKeyType.fluids(), FluidPlacementStrategy::new);
-        placementStrategies.put(AEKeyType.items(), ItemPlacementStrategy::new);
-        pickupStrategies.put(AEKeyType.fluids(), FluidPickupStrategy::new);
-        pickupStrategies.put(AEKeyType.items(), ItemPickupStrategy::new);
+        registerImportStrategy(AEKeyType.items(), StorageImportStrategy::createItem);
+        registerImportStrategy(AEKeyType.fluids(), StorageImportStrategy::createFluid);
+        registerExportStrategy(AEKeyType.items(), StorageExportStrategy::createItem);
+        registerExportStrategy(AEKeyType.fluids(), StorageExportStrategy::createFluid);
+        registerExternalStorageStrategy(AEKeyType.items(), FabricExternalStorageStrategy::createItem);
+        registerExternalStorageStrategy(AEKeyType.fluids(), FabricExternalStorageStrategy::createFluid);
+        registerPlacementStrategy(AEKeyType.fluids(), FluidPlacementStrategy::new);
+        registerPlacementStrategy(AEKeyType.items(), ItemPlacementStrategy::new);
+        registerPickupStrategy(AEKeyType.fluids(), FluidPickupStrategy::new);
+        registerPickupStrategy(AEKeyType.items(), ItemPickupStrategy::new);
     }
 
     private StackWorldBehaviors() {
+    }
+
+    public static void registerImportStrategy(AEKeyType type, StackImportStrategy.Factory factory) {
+        importStrategies.putIfAbsent(type, factory);
+    }
+
+    public static void registerExportStrategy(AEKeyType type, StackExportStrategy.Factory factory) {
+        exportStrategies.putIfAbsent(type, factory);
+    }
+
+    public static void registerExternalStorageStrategy(AEKeyType type, ExternalStorageStrategy.Factory factory) {
+        externalStorageStrategies.putIfAbsent(type, factory);
+    }
+
+    public static void registerPlacementStrategy(AEKeyType type, PlacementStrategy.Factory factory) {
+        placementStrategies.putIfAbsent(type, factory);
+    }
+
+    public static void registerPickupStrategy(AEKeyType type, PickupStrategy.Factory factory) {
+        pickupStrategies.putIfAbsent(type, factory);
     }
 
     /**
      * {@return filter matching any key for which there is an import strategy}
      */
     public static AEKeyFilter hasImportStrategyFilter() {
-        return what -> importStrategies.containsKey(what.getType());
+        return what -> importStrategies.getMap().containsKey(what.getType());
     }
 
     /**
      * {@return filter matching any key for which there is an export strategy}
      */
     public static AEKeyFilter hasExportStrategyFilter() {
-        return what -> exportStrategies.containsKey(what.getType());
+        return what -> exportStrategies.getMap().containsKey(what.getType());
     }
 
     /**
      * {@return filter matching any key for which there is an export strategy}
      */
     public static AEKeyFilter hasPlacementStrategy() {
-        return what -> placementStrategies.containsKey(what.getType());
+        return what -> placementStrategies.getMap().containsKey(what.getType());
     }
 
     public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide) {
-        var strategies = new ArrayList<StackImportStrategy>(importStrategies.size());
-        for (var supplier : importStrategies.values()) {
+        var strategies = new ArrayList<StackImportStrategy>(importStrategies.getMap().size());
+        for (var supplier : importStrategies.getMap().values()) {
             strategies.add(supplier.create(level, fromPos, fromSide));
         }
         return new StackImportFacade(strategies);
     }
 
     public static StackExportStrategy createExportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide) {
-        var strategies = new ArrayList<StackExportStrategy>(exportStrategies.size());
-        for (var supplier : exportStrategies.values()) {
+        var strategies = new ArrayList<StackExportStrategy>(exportStrategies.getMap().size());
+        for (var supplier : exportStrategies.getMap().values()) {
             strategies.add(supplier.create(level, fromPos, fromSide));
         }
         return new StackExportFacade(strategies);
@@ -75,8 +102,9 @@ public final class StackWorldBehaviors {
 
     public static Map<AEKeyType, ExternalStorageStrategy> createExternalStorageStrategies(ServerLevel level,
             BlockPos fromPos, Direction fromSide) {
-        var strategies = new IdentityHashMap<AEKeyType, ExternalStorageStrategy>(externalStorageStrategies.size());
-        for (var entry : externalStorageStrategies.entrySet()) {
+        var strategies = new IdentityHashMap<AEKeyType, ExternalStorageStrategy>(
+                externalStorageStrategies.getMap().size());
+        for (var entry : externalStorageStrategies.getMap().entrySet()) {
             strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide));
         }
         return strategies;
@@ -84,8 +112,8 @@ public final class StackWorldBehaviors {
 
     public static PlacementStrategy createPlacementStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
             BlockEntity host) {
-        var strategies = new IdentityHashMap<AEKeyType, PlacementStrategy>(placementStrategies.size());
-        for (var entry : placementStrategies.entrySet()) {
+        var strategies = new IdentityHashMap<AEKeyType, PlacementStrategy>(placementStrategies.getMap().size());
+        for (var entry : placementStrategies.getMap().entrySet()) {
             strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide, host));
         }
         return new PlacementStrategyFacade(strategies);
@@ -93,36 +121,10 @@ public final class StackWorldBehaviors {
 
     public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
             BlockEntity host, boolean allowSilkTouch) {
-        return pickupStrategies.values()
+        return pickupStrategies.getMap().values()
                 .stream()
                 .map(f -> f.create(level, fromPos, fromSide, host, allowSilkTouch))
                 .toList();
-    }
-
-    @FunctionalInterface
-    interface ImportStrategyFactory {
-        StackImportStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
-    }
-
-    @FunctionalInterface
-    interface ExportStrategyFactory {
-        StackExportStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
-    }
-
-    @FunctionalInterface
-    interface ExternalStorageStrategyFactory {
-        ExternalStorageStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
-    }
-
-    @FunctionalInterface
-    interface PlacementStrategyFactory {
-        PlacementStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host);
-    }
-
-    @FunctionalInterface
-    interface PickupStrategyFactory {
-        PickupStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host,
-                boolean allowSilkTouch);
     }
 
 }

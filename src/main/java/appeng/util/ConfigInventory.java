@@ -21,7 +21,7 @@ import appeng.me.helpers.BaseActionSource;
 
 /**
  * Configuration inventories contain a set of {@link AEKey} references that configure how certain aspects of a machine
- * work. These inventories are never exposed as platform storage (inaccessible to other machines).
+ * work.
  * <p/>
  * They can expose an {@link net.minecraft.world.item.ItemStack} based wrapper that can be used as backing for
  * {@link net.minecraft.world.inventory.Slot} in {@link appeng.menu.AEBaseMenu}.

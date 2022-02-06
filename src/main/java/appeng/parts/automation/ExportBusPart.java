@@ -30,6 +30,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
 
+import appeng.api.behaviors.StackExportStrategy;
+import appeng.api.behaviors.StackTransferContext;
 import appeng.api.config.Actionable;
 import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
@@ -200,7 +202,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
 
     @NotNull
     private StackTransferContext createTransferContext(IStorageService storageService, IEnergyService energyService) {
-        return new StackTransferContext(
+        return new StackTransferContextImpl(
                 storageService,
                 energyService,
                 this.source,
