@@ -93,10 +93,10 @@ public class ConfigInventoryTest {
 
         @Test
         void positiveAmountsAreKept() {
-            GenericStack stack = new GenericStack(STICK_KEY, 1000);
+            GenericStack stack = new GenericStack(STICK_KEY, 50);
             inv.setStack(0, stack);
             assertEquals(stack, inv.getStack(0));
-            assertEquals(1000, inv.getAmount(0));
+            assertEquals(50, inv.getAmount(0));
         }
     }
 }
