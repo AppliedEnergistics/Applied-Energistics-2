@@ -22,11 +22,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.client.render.FacingToRotation;
@@ -35,7 +35,7 @@ import appeng.client.render.model.DriveBakedModel;
 /**
  * Renders the drive cell status indicators.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class DriveLedBlockEntityRenderer implements BlockEntityRenderer<DriveBlockEntity> {
 
     public DriveLedBlockEntityRenderer(BlockEntityRendererProvider.Context context) {

@@ -34,9 +34,6 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.network.chat.Component;
@@ -44,7 +41,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.fml.LogicalSide;
 
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AEConfig;
@@ -89,13 +93,11 @@ public class TickHandler {
     }
 
     public void init() {
-        ServerTickEvents.START_SERVER_TICK.register(server -> onServerTickStart());
-        ServerTickEvents.END_SERVER_TICK.register(server -> onServerTickEnd());
-        ServerTickEvents.START_WORLD_TICK.register(this::onServerLevelTickStart);
-        ServerTickEvents.END_WORLD_TICK.register(this::onServerLevelTickEnd);
-        ServerChunkEvents.CHUNK_UNLOAD.register(this::onUnloadChunk);
-        ServerWorldEvents.UNLOAD.register((server, level) -> onUnloadLevel(level));
-
+        MinecraftForge.EVENT_BUS.addListener(this::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(this::onLevelTick);
+        MinecraftForge.EVENT_BUS.addListener(this::onUnloadChunk);
+        // Try to go last for level unloads since we use it to clean-up state
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onUnloadLevel);
     }
 
     public void addCallable(LevelAccessor level, Runnable c) {
@@ -188,14 +190,21 @@ public class TickHandler {
      * <p>
      * Removes any pending initialization callbacks for block entities in that chunk.
      */
-    public void onUnloadChunk(ServerLevel level, LevelChunk chunk) {
-        this.blockEntities.removeChunk(level, chunk.getPos().toLong());
+    public void onUnloadChunk(final ChunkEvent.Unload ev) {
+        var level = ev.getWorld();
+        var chunk = ev.getChunk();
+
+        if (!level.isClientSide()) {
+            this.blockEntities.removeChunk(level, chunk.getPos().toLong());
+        }
     }
 
     /**
      * Handle a level unload and tear down related data structures.
      */
-    public void onUnloadLevel(ServerLevel level) {
+    public void onUnloadLevel(final WorldEvent.Unload ev) {
+        var level = ev.getWorld();
+
         if (level.isClientSide()) {
             return; // for no there is no reason to care about this on the client...
         }
@@ -217,6 +226,27 @@ public class TickHandler {
 
         this.blockEntities.removeLevel(level);
         this.callQueue.remove(level);
+    }
+
+    /**
+     * Tick a single {@link Level}
+     * <p>
+     * This can happen multiple times per level, but each level should only be ticked once per minecraft tick.
+     */
+    public void onLevelTick(final WorldTickEvent ev) {
+        var level = ev.world;
+
+        if (!(level instanceof ServerLevel serverLevel) || ev.side != LogicalSide.SERVER) {
+            // While forge doesn't generate this event for client worlds,
+            // the event is generic enough that some other mod might be insane enough to do so.
+            return;
+        }
+
+        if (ev.phase == Phase.START) {
+            onServerLevelTickStart(serverLevel);
+        } else if (ev.phase == Phase.END) {
+            onServerLevelTickEnd(serverLevel);
+        }
     }
 
     private void onServerLevelTickStart(ServerLevel level) {
@@ -256,6 +286,17 @@ public class TickHandler {
                 level.fillReportDetails(crashReport);
                 throw new ReportedException(crashReport);
             }
+        }
+    }
+
+    /**
+     * Tick everything related to the global server tick once per minecraft tick.
+     */
+    public void onServerTick(final ServerTickEvent ev) {
+        if (ev.phase == Phase.START) {
+            onServerTickStart();
+        } else if (ev.phase == Phase.END) {
+            onServerTickEnd();
         }
     }
 

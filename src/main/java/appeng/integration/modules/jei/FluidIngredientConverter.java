@@ -1,30 +1,29 @@
 package appeng.integration.modules.jei;
 
+import com.google.common.primitives.Ints;
+
 import org.jetbrains.annotations.Nullable;
 
-import dev.architectury.fluid.FluidStack;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.EntryType;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import net.minecraftforge.fluids.FluidStack;
 
-import appeng.api.integrations.rei.IngredientConverter;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.ingredients.IIngredientType;
+
+import appeng.api.integrations.jei.IngredientConverter;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 
 public class FluidIngredientConverter implements IngredientConverter<FluidStack> {
     @Override
-    public EntryType<FluidStack> getIngredientType() {
-        return VanillaEntryTypes.FLUID;
+    public IIngredientType<FluidStack> getIngredientType() {
+        return VanillaTypes.FLUID;
     }
 
     @Nullable
     @Override
-    public EntryStack<FluidStack> getIngredientFromStack(GenericStack stack) {
+    public FluidStack getIngredientFromStack(GenericStack stack) {
         if (stack.what() instanceof AEFluidKey fluidKey) {
-            return EntryStack.of(getIngredientType(), FluidStack.create(
-                    fluidKey.getFluid(),
-                    Math.max(1, stack.amount()),
-                    fluidKey.copyTag()));
+            return fluidKey.toStack(Math.max(1, Ints.saturatedCast(stack.amount())));
         } else {
             return null;
         }
@@ -32,13 +31,7 @@ public class FluidIngredientConverter implements IngredientConverter<FluidStack>
 
     @Nullable
     @Override
-    public GenericStack getStackFromIngredient(EntryStack<FluidStack> ingredient) {
-        if (ingredient.getType() == getIngredientType()) {
-            FluidStack fluidStack = ingredient.castValue();
-            return new GenericStack(
-                    AEFluidKey.of(fluidStack.getFluid(), fluidStack.getTag()),
-                    fluidStack.getAmount());
-        }
-        return null;
+    public GenericStack getStackFromIngredient(FluidStack ingredient) {
+        return GenericStack.fromFluidStack(ingredient);
     }
 }

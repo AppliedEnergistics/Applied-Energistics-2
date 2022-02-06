@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -43,9 +43,9 @@ public class ItemPickupStrategy implements PickupStrategy {
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
 
-    private static final Tag<Block> BLOCK_BLACKLIST = TagRegistry.block(TAG_BLACKLIST);
+    private static final Tag<Block> BLOCK_BLACKLIST = BlockTags.createOptional(TAG_BLACKLIST);
 
-    private static final Tag<Item> ITEM_BLACKLIST = TagRegistry.item(TAG_BLACKLIST);
+    private static final Tag<Item> ITEM_BLACKLIST = ItemTags.createOptional(TAG_BLACKLIST);
 
     private final ServerLevel level;
     private final BlockPos pos;
