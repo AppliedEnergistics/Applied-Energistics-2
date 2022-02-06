@@ -105,6 +105,12 @@ public class PathingService implements IPathingService, IGridServiceProvider {
             this.channelsInUse = 0;
             this.adHocNetworkError = null;
 
+            // updateControllerState / postBootingStatusChange called above can cause the grid to be destroyed,
+            // and the pivot to become null.
+            if (grid.isEmpty()) {
+                return;
+            }
+
             if (this.controllerState == ControllerState.NO_CONTROLLER) {
                 // Returns 0 if there's an error
                 this.channelsInUse = this.calculateAdHocChannels();
@@ -147,7 +153,15 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                     var controllerIterator = this.controllers.iterator();
                     if (controllerIterator.hasNext()) {
                         var controller = controllerIterator.next();
-                        controller.getGridNode().beginVisit(new ControllerChannelUpdater());
+                        // Make absolutely sure the grid still matches
+                        var gridNode = controller.getGridNode();
+                        if (gridNode != null && gridNode.getGrid() == grid) {
+                            gridNode.beginVisit(new ControllerChannelUpdater());
+                        } else {
+                            AELog.warn(
+                                    "Cannot update controller channels since controller @ %s no longer belongs to this grid.",
+                                    controller.getBlockPos());
+                        }
                     }
                 }
 
