@@ -145,7 +145,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
 
-        if (!isAllowed(what)) {
+        if (!canInsert() || !isAllowed(what)) {
             return 0;
         }
 
@@ -171,7 +171,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
 
         var currentWhat = getKey(slot);
-        if (currentWhat == null || !currentWhat.equals(what)) {
+        if (!canExtract() || currentWhat == null || !currentWhat.equals(what)) {
             // Can't extract from empty slot or mismatched type
             return 0;
         }
