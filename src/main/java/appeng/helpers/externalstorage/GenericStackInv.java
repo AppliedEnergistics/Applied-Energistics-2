@@ -88,6 +88,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         return filter;
     }
 
+    @Override
     public boolean isAllowed(AEKey what) {
         return filter == null || filter.matches(what);
     }
@@ -139,6 +140,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
+    @Override
     public long insert(int slot, AEKey what, long amount, Actionable mode) {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");
@@ -163,6 +165,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         return 0;
     }
 
+    @Override
     public long extract(int slot, AEKey what, long amount, Actionable mode) {
         Objects.requireNonNull(what, "what");
         Preconditions.checkArgument(amount >= 0, "amount >= 0");

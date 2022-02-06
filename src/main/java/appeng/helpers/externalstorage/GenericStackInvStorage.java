@@ -123,7 +123,7 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
 
             var currentKey = inv.getKey(slotIndex);
             var key = conversion.getKey(resource);
-            if (currentKey == null || currentKey.equals(key)) {
+            if ((currentKey == null && inv.isAllowed(key)) || currentKey.equals(key)) {
                 long inserted = Math.min(maxAmount, inv.getMaxAmount(key) - getAmount());
 
                 if (inserted > 0) {

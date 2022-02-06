@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.api.config.Actionable;
 import appeng.api.ids.AEConstants;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -55,6 +56,21 @@ public interface GenericInternalInventory {
     boolean canExtract();
 
     void setStack(int slot, @Nullable GenericStack newStack);
+
+    /**
+     * Return true if the key would generally be allowed, ignoring the current state of the inventory.
+     */
+    boolean isAllowed(AEKey what);
+
+    /**
+     * Try to insert something into a given slot.
+     */
+    long insert(int slot, AEKey what, long amount, Actionable mode);
+
+    /**
+     * Try to extract something from a given slot.
+     */
+    long extract(int slot, AEKey what, long amount, Actionable mode);
 
     /**
      * Start a new change notifications batch, deferring change notifications.
