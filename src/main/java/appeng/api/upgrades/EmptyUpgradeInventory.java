@@ -21,12 +21,12 @@ package appeng.api.upgrades;
 import java.util.Collections;
 import java.util.Iterator;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 final class EmptyUpgradeInventory implements IUpgradeInventory {
     public static final EmptyUpgradeInventory INSTANCE = new EmptyUpgradeInventory();
@@ -57,8 +57,8 @@ final class EmptyUpgradeInventory implements IUpgradeInventory {
     }
 
     @Override
-    public Storage<ItemVariant> toStorage() {
-        return Storage.empty();
+    public IItemHandler toItemHandler() {
+        return EmptyHandler.INSTANCE;
     }
 
     @Override

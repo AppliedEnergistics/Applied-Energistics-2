@@ -19,6 +19,7 @@
 package appeng.datagen.providers.tags;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.api.ids.AETags;
 import appeng.core.AppEng;
@@ -26,8 +27,8 @@ import appeng.datagen.providers.IAE2DataProvider;
 
 public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider implements IAE2DataProvider {
 
-    public FluidTagsProvider(DataGenerator generator) {
-        super(generator);
+    public FluidTagsProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+        super(generator, AppEng.MOD_ID, existingFileHelper);
     }
 
     @Override

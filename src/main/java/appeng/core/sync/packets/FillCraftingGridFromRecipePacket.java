@@ -240,7 +240,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
      * <p/>
      * We normalize the stored amount vs. the amount needed for the recipe. While this is irrelevant for crafting
      * recipes, it can be relevant for processing patterns where an ingredient doesn't always have amount=1.
-     * 
+     *
      * <pre>
      * Example:
      * Recipe asks for 16xItem A or 1xItem B.

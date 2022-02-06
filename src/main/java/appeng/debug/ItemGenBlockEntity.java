@@ -21,11 +21,11 @@ package appeng.debug;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -33,6 +33,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
@@ -59,7 +63,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
 
     private synchronized static void initGlobalPossibleItems() {
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
-            for (Item item : Registry.ITEM) {
+            for (Item item : ForgeRegistries.ITEMS) {
                 addPossibleItem(item, SHARED_POSSIBLE_ITEMS);
             }
         }
@@ -68,20 +72,26 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
-        data.putString("filter", Registry.ITEM.getKey(filter).toString());
+        data.putString("filter", filter.getRegistryName().toString());
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         if (data.contains("filter")) {
-            Item item = Registry.ITEM.get(new ResourceLocation(data.getString("filter")));
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getString("filter")));
             this.setItem(item);
         }
         super.loadTag(data);
     }
 
-    public Storage<ItemVariant> getItemHandler() {
-        return this.inv.toStorage();
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability) {
+            return (LazyOptional<T>) LazyOptional.of(this.inv::toItemHandler);
+        }
+        return super.getCapability(capability, facing);
     }
 
     public void setItem(Item item) {
