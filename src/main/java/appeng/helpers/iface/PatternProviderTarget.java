@@ -37,6 +37,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
+import appeng.capabilities.Capabilities;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
 
@@ -51,7 +52,7 @@ public interface PatternProviderTarget {
             return null;
 
         // our capability first: allows any storage channel
-        var accessor = IStorageMonitorableAccessor.SIDED.find(l, pos, null, be, side);
+        var accessor = be.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR, side).orElse(null);
         if (accessor != null) {
             return wrapStorageMonitorable(accessor, src);
         }

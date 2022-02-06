@@ -1,7 +1,8 @@
 {
   "required": true,
-  "minVersion": "0.8.2",
+  "minVersion": "0.8.3",
   "package": "appeng.mixins",
+  "refmap": "ae2.mixins.refmap.json",
   "compatibilityLevel": "JAVA_11",
   "mixins": [
     "spatial.DimensionTypeMixin",
@@ -9,11 +10,6 @@
     "spatial.FixupDimensionsMixin",
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin",
-    "DynamicLadderMixin",
-    "OnNeighborUpdateMixin",
-    "ServerLevelCustomItemEntityMixin",
-    "ConditionalRecipeMixin",
-    "BreakSpeedMixin",
     "tests.StructureUtilsMixin"
   ],
   "client": [
@@ -22,9 +18,7 @@
     "unlitquad.ModelBakeryMixin",
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
-    "BlockBreakParticleMixin",
-    "ModelsReloadMixin",
-    "MouseWheelMixin",
+    "unlitquad.BakedQuadAccessor",
     "ItemRendererMixin",
     "WrappedGenericStackTooltipModIdMixin",
     "ResizableSlotHighlightMixin",
