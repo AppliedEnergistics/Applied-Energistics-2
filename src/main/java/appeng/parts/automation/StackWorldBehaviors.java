@@ -32,8 +32,8 @@ public final class StackWorldBehaviors {
         registerImportStrategy(AEKeyType.fluids(), StorageImportStrategy::createFluid);
         registerExportStrategy(AEKeyType.items(), StorageExportStrategy::createItem);
         registerExportStrategy(AEKeyType.fluids(), StorageExportStrategy::createFluid);
-        registerExternalStorageStrategy(AEKeyType.items(), FabricExternalStorageStrategy::createItem);
-        registerExternalStorageStrategy(AEKeyType.fluids(), FabricExternalStorageStrategy::createFluid);
+        registerExternalStorageStrategy(AEKeyType.items(), ForgeExternalStorageStrategy::createItem);
+        registerExternalStorageStrategy(AEKeyType.fluids(), ForgeExternalStorageStrategy::createFluid);
         registerPlacementStrategy(AEKeyType.fluids(), FluidPlacementStrategy::new);
         registerPlacementStrategy(AEKeyType.items(), ItemPlacementStrategy::new);
         registerPickupStrategy(AEKeyType.fluids(), FluidPickupStrategy::new);

@@ -1,16 +1,15 @@
 package appeng.helpers;
 
+import java.util.function.Consumer;
+
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import com.google.common.primitives.Ints;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
@@ -25,23 +24,12 @@ public final class FluidContainerHelper {
             return null;
         }
 
-        var content = StorageUtil.findExtractableContent(
-                getReadOnlyStorage(stack), null);
+        var content = FluidUtil.getFluidContained(stack).orElse(null);
         if (content != null) {
-            return new GenericStack(
-                    AEFluidKey.of(content.resource()),
-                    content.amount());
+            return GenericStack.fromFluidStack(content);
         } else {
             return null;
         }
-    }
-
-    public static Storage<FluidVariant> getReadOnlyStorage(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return null;
-        }
-
-        return ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
     }
 
     /**
@@ -53,8 +41,12 @@ public final class FluidContainerHelper {
             return 0;
         }
 
-        var context = ContainerItemContext.ofPlayerCursor(player, player.containerMenu);
-        return extractFromStorage(what, amount, context);
+        return extractFromStorage(
+                what,
+                amount,
+                carried,
+                player.containerMenu::setCarried,
+                player.getInventory()::placeItemBackInInventory);
     }
 
     /**
@@ -64,35 +56,49 @@ public final class FluidContainerHelper {
     public static long extractFromPlayerInventory(Player player, AEFluidKey what, long amount, ItemStack stack) {
         // Find the item inside the inventory and create a context for it
         var inventory = player.getInventory();
-        ContainerItemContext context = null;
-
-        var playerInv = PlayerInventoryStorage.of(inventory);
+        var invIndex = -1;
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
             if (inventory.getItem(i) == stack) {
-                context = ContainerItemContext.ofPlayerSlot(player, playerInv.getSlots().get(i));
+                invIndex = i;
                 break;
             }
         }
 
-        if (context == null) {
+        if (invIndex == -1) {
             return 0; // Item not found
         }
 
-        return extractFromStorage(what, amount, context);
+        var storeInvIndex = invIndex;
+
+        return extractFromStorage(
+                what,
+                amount,
+                stack,
+                newStack -> inventory.setItem(storeInvIndex, newStack),
+                inventory::placeItemBackInInventory);
     }
 
-    private static long extractFromStorage(AEFluidKey what, long amount, ContainerItemContext context) {
-        var storage = context.find(FluidStorage.ITEM);
-        if (storage == null) {
+    private static long extractFromStorage(AEFluidKey what,
+            long amount,
+            ItemStack stack,
+            Consumer<ItemStack> updateContainer,
+            Consumer<ItemStack> addOverflow) {
+
+        if (stack.getCount() > 1) {
+            // TODO: Do what Fabric does and place overflow into inventory
             return 0;
         }
 
-        try (var tx = Transaction.openOuter()) {
-            var extracted = storage.extract(what.toVariant(), amount, tx);
-            if (extracted > 0) {
-                tx.commit();
-            }
-            return extracted;
+        var handler = FluidUtil.getFluidHandler(stack).orElse(null);
+        if (handler == null) {
+            return 0;
         }
+
+        var extracted = handler.drain(what.toStack(Ints.saturatedCast(amount)), IFluidHandler.FluidAction.EXECUTE);
+        if (!extracted.isEmpty()) {
+            updateContainer.accept(handler.getContainer());
+        }
+
+        return extracted.getAmount();
     }
 }

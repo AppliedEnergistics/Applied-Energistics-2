@@ -20,12 +20,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.core.sync.BasePacket;
@@ -66,7 +66,7 @@ public class InterfaceTerminalPacket extends BasePacket {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void clientPacketData(INetworkInfo network, Player player) {
         if (Minecraft.getInstance().screen instanceof InterfaceTerminalScreen interfaceTerminal) {
             interfaceTerminal.postInventoryUpdate(this.clearExistingData, this.inventoryId, this.in);

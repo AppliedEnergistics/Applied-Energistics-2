@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
@@ -242,8 +243,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
+    public IModelData getModelData() {
+        return new PlaneModelData(getConnections());
     }
 
 }

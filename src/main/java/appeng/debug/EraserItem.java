@@ -35,11 +35,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import appeng.core.AELog;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
-public class EraserItem extends AEBaseItem implements AEToolItem {
+public class EraserItem extends AEBaseItem {
 
     private static final int BOX_SIZE = 48;
     private static final int BLOCK_ERASE_LIMIT = BOX_SIZE * BOX_SIZE * BOX_SIZE;
