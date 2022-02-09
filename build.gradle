@@ -387,7 +387,7 @@ if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT") && project.ver
             addGameVersion project.minecraft_version
             addGameVersion "Fabric"
             mainArtifact(remapJar.archiveFile) {
-                displayName = "${project.version} [FABRIC]"
+                displayName = "AE2 ${project.version} [FABRIC]"
             }
         }
         options {
