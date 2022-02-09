@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import appeng.helpers.NonBlockingItems;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -183,8 +184,7 @@ public final class AppEng
 		AELog.info( "Pre Initialization ( ended after " + watch.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 
 		// Instantiate all Plugins
-		List<Object> injectables = Lists.newArrayList(
-				AEApi.instance() );
+		List<Object> injectables = Lists.newArrayList( AEApi.instance() );
 		new PluginLoader().loadPlugins( injectables, event.getAsmData() );
 	}
 

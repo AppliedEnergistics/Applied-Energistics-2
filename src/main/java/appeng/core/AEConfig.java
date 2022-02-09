@@ -20,11 +20,7 @@ package appeng.core;
 
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import com.google.common.collect.Sets;
@@ -64,10 +60,46 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private static AEConfig instance;
 
 	// Default Grindstone ores
-	private static final String[] ORES_VANILLA = { "Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz" };
-	private static final String[] ORES_AE = { "CertusQuartz", "Wheat", "Fluix" };
-	private static final String[] ORES_COMMON = { "Copper", "Tin", "Silver", "Lead", "Bronze" };
-	private static final String[] ORES_MISC = { "Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium", "Zinc" };
+	private static final String[] ORES_VANILLA = {
+			"Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold",
+			"Charcoal", "NetherQuartz"
+	};
+	private static final String[] ORES_AE = {"CertusQuartz", "Wheat", "Fluix"};
+	private static final String[] ORES_COMMON = {
+			"Copper", "Tin", "Silver", "Lead", "Bronze"
+	};
+	private static final String[] ORES_MISC = {
+			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum",
+			"Osmium", "Zinc"
+	};
+
+	private String[] nonBlockingItems = {
+			"[gregtech]", "gregtech:shape.mold.plate",
+			"gregtech:shape.mold.gear", "gregtech:shape.mold.credit",
+			"gregtech:shape.mold.bottle", "gregtech:shape.mold.ingot",
+			"gregtech:shape.mold.ball", "gregtech:shape.mold.block",
+			"gregtech:shape.mold.nugget", "gregtech:shape.mold.cylinder",
+			"gregtech:shape.mold.anvil", "gregtech:shape.mold.name",
+			"gregtech:shape.mold.gear.small", "gregtech:shape.mold.rotor",
+			"gregtech:shape.extruder.plate", "gregtech:shape.extruder.rod",
+			"gregtech:shape.extruder.bolt", "gregtech:shape.extruder.ring",
+			"gregtech:shape.extruder.cell", "gregtech:shape.extruder.ingot",
+			"gregtech:shape.extruder.wire", "gregtech:shape.extruder.pipe.tiny",
+			"gregtech:shape.extruder.pipe.small",
+			"gregtech:shape.extruder.pipe.normal",
+			"gregtech:shape.extruder.pipe.large",
+			"gregtech:shape.extruder.pipe.huge",
+			"gregtech:shape.extruder.block", "gregtech:shape.extruder.sword",
+			"gregtech:shape.extruder.pickaxe", "gregtech:shape.extruder.shovel",
+			"gregtech:shape.extruder.axe", "gregtech:shape.extruder.hoe",
+			"gregtech:shape.extruder.hammer", "gregtech:shape.extruder.file",
+			"gregtech:shape.extruder.saw", "gregtech:shape.extruder.gear",
+			"gregtech:shape.extruder.bottle", "gregtech:shape.extruder.foil",
+			"gregtech:shape.extruder.gear_small",
+			"gregtech:shape.extruder.rod_long", "gregtech:shape.extruder.rotor",
+			"contenttweaker:smallgearextrudershape",
+			"contenttweaker:creativeportabletankmold"
+	};
 
 	// Default Energy Conversion Rates
 	private static final double DEFAULT_IC2_EXCHANGE = 2.0;
@@ -91,10 +123,10 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private PowerUnits selectedPowerUnit = PowerUnits.AE;
 
 	// GUI Buttons
-	private final int[] craftByStacks = { 1, 10, 100, 1000 };
-	private final int[] priorityByStacks = { 1, 10, 100, 1000 };
-	private final int[] levelByStacks = { 1, 10, 100, 1000 };
-	private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
+	private final int[] craftByStacks = {1, 10, 100, 1000};
+	private final int[] priorityByStacks = {1, 10, 100, 1000};
+	private final int[] levelByStacks = {1, 10, 100, 1000};
+	private final int[] levelByMillibuckets = {10, 100, 1000, 10000};
 
 	// Spatial IO/Dimension
 	private int storageProviderID = -1;
@@ -126,7 +158,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private int minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
 	private double meteoriteClusterChance = 0.1;
 	private int meteoriteMaximumSpawnHeight = 180;
-	private int[] meteoriteDimensionWhitelist = { 0 };
+	private int[] meteoriteDimensionWhitelist = {0};
 
 	// Wireless
 	private double wirelessBaseCost = 8;
@@ -157,32 +189,24 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		CondenserOutput.MATTER_BALLS.requiredPower = this.get( "Condenser", "MatterBalls", 256 ).getInt( 256 );
 		CondenserOutput.SINGULARITY.requiredPower = this.get( "Condenser", "Singularity", 256000 ).getInt( 256000 );
 
-		this.removeCrashingItemsOnLoad = this.get( "general", "removeCrashingItemsOnLoad", false,
-				"Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!" ).getBoolean();
+		this.removeCrashingItemsOnLoad = this.get( "general", "removeCrashingItemsOnLoad", false, "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!" ).getBoolean();
 
-		this.setCategoryComment( "GrindStone",
-				"Creates recipe of the following pattern automatically: '1 oreTYPE => 2 dustTYPE' and '(1 ingotTYPE or 1 crystalTYPE or 1 gemTYPE) => 1 dustTYPE'" );
-		this.grinderOres = this.get( "GrindStone", "grinderOres", this.grinderOres, "The list of types to handle. Specify without a prefix like ore or dust." )
-				.getStringList();
-		this.grinderBlackList = Sets.newHashSet(
-				this.get( "GrindStone", "blacklist", new String[] {}, "Blacklists the exact oredict name from being handled by any recipe." )
-						.getStringList() );
-		this.oreDoublePercentage = this
-				.get( "GrindStone", "oreDoublePercentage", this.oreDoublePercentage, "Chance to actually get an output with stacksize > 1." )
-				.getDouble( this.oreDoublePercentage );
+		this.setCategoryComment( "BlockingMode", "Map of items to not block when blockingmode is enabled.\n[modid]\nmodid:item:metadata(optional,default:0)\nSupports more than one modid, so you can block different things between, for example, gregtech or enderio" );
+		this.nonBlockingItems = this.get( "BlockingMode", "nonBlockingItems", nonBlockingItems, "NonBlockingItems" ).getStringList();
+
+		this.setCategoryComment( "GrindStone", "Creates recipe of the following pattern automatically: '1 oreTYPE => 2 dustTYPE' and '(1 ingotTYPE or 1 crystalTYPE or 1 gemTYPE) => 1 dustTYPE'" );
+		this.grinderOres = this.get( "GrindStone", "grinderOres", this.grinderOres, "The list of types to handle. Specify without a prefix like ore or dust." ).getStringList();
+		this.grinderBlackList = Sets.newHashSet( this.get( "GrindStone", "blacklist", new String[]{}, "Blacklists the exact oredict name from being handled by any recipe." ).getStringList() );
+		this.oreDoublePercentage = this.get( "GrindStone", "oreDoublePercentage", this.oreDoublePercentage, "Chance to actually get an output with stacksize > 1." ).getDouble( this.oreDoublePercentage );
 
 		this.settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
 		this.settings.registerSetting( Settings.TERMINAL_STYLE, TerminalStyle.TALL );
 		this.settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
 
-		this.spawnChargedChance = (float) ( 1.0 - this.get( "worldGen", "spawnChargedChance", 1.0 - this.spawnChargedChance )
-				.getDouble(
-						1.0 - this.spawnChargedChance ) );
+		this.spawnChargedChance = (float) ( 1.0 - this.get( "worldGen", "spawnChargedChance", 1.0 - this.spawnChargedChance ).getDouble( 1.0 - this.spawnChargedChance ) );
 		this.minMeteoriteDistance = this.get( "worldGen", "minMeteoriteDistance", this.minMeteoriteDistance ).getInt( this.minMeteoriteDistance );
 		this.meteoriteClusterChance = this.get( "worldGen", "meteoriteClusterChance", this.meteoriteClusterChance ).getDouble( this.meteoriteClusterChance );
-		this.meteoriteMaximumSpawnHeight = this.get( "worldGen", "meteoriteMaximumSpawnHeight", this.meteoriteMaximumSpawnHeight )
-				.getInt(
-						this.meteoriteMaximumSpawnHeight );
+		this.meteoriteMaximumSpawnHeight = this.get( "worldGen", "meteoriteMaximumSpawnHeight", this.meteoriteMaximumSpawnHeight ).getInt( this.meteoriteMaximumSpawnHeight );
 		this.meteoriteDimensionWhitelist = this.get( "worldGen", "meteoriteDimensionWhitelist", this.meteoriteDimensionWhitelist ).getIntList();
 
 		this.quartzOresPerCluster = this.get( "worldGen", "quartzOresPerCluster", this.quartzOresPerCluster ).getInt( this.quartzOresPerCluster );
@@ -190,23 +214,16 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		this.minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
 
-		this.addCustomCategoryComment( "wireless",
-				"Range= wirelessBaseRange + wirelessBoosterRangeMultiplier * Math.pow( boosters, wirelessBoosterExp )\nPowerDrain= wirelessBaseCost + wirelessCostMultiplier * Math.pow( boosters, 1 + boosters / wirelessHighWirelessCount )" );
+		this.addCustomCategoryComment( "wireless", "Range= wirelessBaseRange + wirelessBoosterRangeMultiplier * Math.pow( boosters, wirelessBoosterExp )\nPowerDrain= wirelessBaseCost + wirelessCostMultiplier * Math.pow( boosters, 1 + boosters / wirelessHighWirelessCount )" );
 
 		this.wirelessBaseCost = this.get( "wireless", "wirelessBaseCost", this.wirelessBaseCost ).getDouble( this.wirelessBaseCost );
 		this.wirelessCostMultiplier = this.get( "wireless", "wirelessCostMultiplier", this.wirelessCostMultiplier ).getDouble( this.wirelessCostMultiplier );
 		this.wirelessBaseRange = this.get( "wireless", "wirelessBaseRange", this.wirelessBaseRange ).getDouble( this.wirelessBaseRange );
-		this.wirelessBoosterRangeMultiplier = this.get( "wireless", "wirelessBoosterRangeMultiplier", this.wirelessBoosterRangeMultiplier )
-				.getDouble(
-						this.wirelessBoosterRangeMultiplier );
+		this.wirelessBoosterRangeMultiplier = this.get( "wireless", "wirelessBoosterRangeMultiplier", this.wirelessBoosterRangeMultiplier ).getDouble( this.wirelessBoosterRangeMultiplier );
 		this.wirelessBoosterExp = this.get( "wireless", "wirelessBoosterExp", this.wirelessBoosterExp ).getDouble( this.wirelessBoosterExp );
-		this.wirelessTerminalDrainMultiplier = this.get( "wireless", "wirelessTerminalDrainMultiplier", this.wirelessTerminalDrainMultiplier )
-				.getDouble(
-						this.wirelessTerminalDrainMultiplier );
+		this.wirelessTerminalDrainMultiplier = this.get( "wireless", "wirelessTerminalDrainMultiplier", this.wirelessTerminalDrainMultiplier ).getDouble( this.wirelessTerminalDrainMultiplier );
 
-		this.formationPlaneEntityLimit = this.get( "automation", "formationPlaneEntityLimit", this.formationPlaneEntityLimit )
-				.getInt(
-						this.formationPlaneEntityLimit );
+		this.formationPlaneEntityLimit = this.get( "automation", "formationPlaneEntityLimit", this.formationPlaneEntityLimit ).getInt( this.formationPlaneEntityLimit );
 
 		this.wirelessTerminalBattery = this.get( "battery", "wirelessTerminal", this.wirelessTerminalBattery ).getInt( this.wirelessTerminalBattery );
 		this.chargedStaffBattery = this.get( "battery", "chargedStaff", this.chargedStaffBattery ).getInt( this.chargedStaffBattery );
@@ -247,8 +264,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		try
 		{
-			this.selectedPowerUnit = PowerUnits.valueOf(
-					this.get( "Client", "PowerUnit", this.selectedPowerUnit.name(), this.getListComment( this.selectedPowerUnit ) ).getString() );
+			this.selectedPowerUnit = PowerUnits.valueOf( this.get( "Client", "PowerUnit", this.selectedPowerUnit.name(), this.getListComment( this.selectedPowerUnit ) ).getString() );
 		}
 		catch( final Throwable t )
 		{
@@ -264,17 +280,13 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		{
 			this.storageProviderID = this.get( "spatialio", "storageProviderID", this.storageProviderID ).getInt( this.storageProviderID );
 			this.storageDimensionID = this.get( "spatialio", "storageDimensionID", this.storageDimensionID ).getInt( this.storageDimensionID );
-			this.spatialPowerMultiplier = this.get( "spatialio", "spatialPowerMultiplier", this.spatialPowerMultiplier )
-					.getDouble(
-							this.spatialPowerMultiplier );
+			this.spatialPowerMultiplier = this.get( "spatialio", "spatialPowerMultiplier", this.spatialPowerMultiplier ).getDouble( this.spatialPowerMultiplier );
 			this.spatialPowerExponent = this.get( "spatialio", "spatialPowerExponent", this.spatialPowerExponent ).getDouble( this.spatialPowerExponent );
 		}
 
 		if( this.isFeatureEnabled( AEFeature.CRAFTING_CPU ) )
 		{
-			this.craftingCalculationTimePerTick = this.get( "craftingCPU", "craftingCalculationTimePerTick", this.craftingCalculationTimePerTick )
-					.getInt(
-							this.craftingCalculationTimePerTick );
+			this.craftingCalculationTimePerTick = this.get( "craftingCPU", "craftingCalculationTimePerTick", this.craftingCalculationTimePerTick ).getInt( this.craftingCalculationTimePerTick );
 		}
 
 		this.updatable = true;
@@ -448,8 +460,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			return true;
 		}
 
-		this.setCategoryComment( "OreCamouflage",
-				"AE2 Automatically uses alternative ores present in your instance of MC to blend better with its surroundings, if you prefer you can disable this selectively using these flags; Its important to note, that some if these items even if enabled may not be craftable in game because other items are overriding their recipes." );
+		this.setCategoryComment( "OreCamouflage", "AE2 Automatically uses alternative ores present in your instance of MC to blend better with its surroundings, if you prefer you can disable this selectively using these flags; Its important to note, that some if these items even if enabled may not be craftable in game because other items are overriding their recipes." );
 		final Property p = this.get( "OreCamouflage", mt.name(), true );
 		p.setComment( "OreDictionary Names: " + mt.getOreName() );
 
@@ -715,6 +726,11 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public int getQuartzOresClusterAmount()
 	{
 		return this.quartzOresClusterAmount;
+	}
+
+	public String[] getNonBlockingItems()
+	{
+		return nonBlockingItems;
 	}
 
 	public int getChargedChange()

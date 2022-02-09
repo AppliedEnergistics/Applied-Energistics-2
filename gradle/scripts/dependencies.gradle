@@ -59,7 +59,7 @@ repositories {
         url "http://maven.k-4u.nl/"
     }
 
-   	maven { // CraftTweaker
+    maven { // CraftTweaker
         name 'jared maven'
         url "http://maven.blamejared.com/"
     }
@@ -70,9 +70,9 @@ repositories {
     //}
 
     maven {
-		name = "CurseForge"
-		url = "https://minecraft.curseforge.com/api/maven/"
-	}
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
 }
 
 configurations {
@@ -80,7 +80,7 @@ configurations {
 }
 
 dependencies {
-    compileOnly "gregtechce:gregtech:1.12.2:1.15.1.735"
+    deobfCompile "gregtechce:gregtech:1.12.2:1.15.1.735"
     // installable runtime dependencies
     mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
@@ -94,7 +94,7 @@ dependencies {
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
     compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
-	compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
+    compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
     compileOnly "team.chisel.ctm:CTM:${ctm_version}"
     compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2-r152.16:api"
 

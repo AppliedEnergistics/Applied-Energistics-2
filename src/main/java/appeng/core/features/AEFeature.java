@@ -25,13 +25,13 @@ public enum AEFeature
 	// is just flat out required by tons of
 	// important stuff.
 	CORE( "Core", null )
-	{
-		@Override
-		public boolean isVisible()
-		{
-			return false;
-		}
-	},
+			{
+				@Override
+				public boolean isVisible()
+				{
+					return false;
+				}
+			},
 
 	CERTUS_QUARTZ_WORLD_GEN( "CertusQuartzWorldGen", Constants.CATEGORY_WORLD ),
 	METEORITE_WORLD_GEN( "MeteoriteWorldGen", Constants.CATEGORY_WORLD ),
@@ -164,7 +164,6 @@ public enum AEFeature
 	MOLECULAR_ASSEMBLER( "MolecularAssembler", Constants.CATEGORY_CRAFTING_FEATURES ),
 	PATTERNS( "Patterns", Constants.CATEGORY_CRAFTING_FEATURES ),
 	CRAFTING_CPU( "CraftingCPU", Constants.CATEGORY_CRAFTING_FEATURES ),
-	CRAFTING_MANAGER_FALLBACK( "CraftingManagerFallback", Constants.CATEGORY_CRAFTING_FEATURES, "Use CraftingManager to find an alternative recipe, after a pattern rejected an ingredient. Should be enabled to avoid issues, but can have a minor performance impact." ),
 
 	BASIC_CARDS( "BasicCards", Constants.CATEGORY_UPGRADES ),
 	ADVANCED_CARDS( "AdvancedCards", Constants.CATEGORY_UPGRADES ),
