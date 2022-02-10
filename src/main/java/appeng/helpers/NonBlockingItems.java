@@ -8,21 +8,20 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.util.item.AEItemStack;
 import gregtech.api.items.metaitem.MetaItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.*;
 
 
 public class NonBlockingItems
 {
-	public static final NonBlockingItems INSTANCE = new NonBlockingItems();
-	public static Map<String, IItemList<IAEItemStack>> NON_BLOCKING_MAP;
+	public static Map<String, IItemList<IAEItemStack>> NON_BLOCKING_MAP = new HashMap<>();
+	public static NonBlockingItems INSTANCE = new NonBlockingItems();
 
-	NonBlockingItems()
+	private NonBlockingItems()
 	{
-		NON_BLOCKING_MAP = new HashMap<>();
 		String[] strings = AEConfig.instance().getNonBlockingItems();
 		String modid = "";
 		if( strings.length > 0 )
@@ -62,11 +61,9 @@ public class NonBlockingItems
 					}
 					else
 					{
-						Item item = Item.getByNameOrId( ModItemMeta[0] + ":" + ModItemMeta[1] );
-						if( item != null )
+						ItemStack itemStack = GameRegistry.makeItemStack( ModItemMeta[0] + ":" + ModItemMeta[1], ModItemMeta.length == 3 ? Integer.parseInt( ModItemMeta[2] ) : 0, 1, null );
+						if( !itemStack.isEmpty() )
 						{
-							ItemStack itemStack;
-							itemStack = new ItemStack( item, 1, ModItemMeta.length == 3 ? Integer.parseInt( ModItemMeta[2] ) : 0 );
 							NON_BLOCKING_MAP.get( modid ).add( AEItemStack.fromItemStack( itemStack ) );
 						}
 						else

@@ -30,16 +30,8 @@ public class BlockingItemHandler extends BlockingInventoryAdaptor
 	boolean isBlockableItem( ItemStack stack )
 	{
 		IItemList<IAEItemStack> itemList = NonBlockingItems.INSTANCE.getMap().get( domain );
-		if( stack.getItem().isDamageable() )
-		{
-			Collection<IAEItemStack> item = itemList.findFuzzy( AEItemStack.fromItemStack( stack ), FuzzyMode.IGNORE_ALL );
-			return item.isEmpty();
-		}
-		else
-		{
-			IAEItemStack item = itemList.findPrecise( AEItemStack.fromItemStack( stack ) );
-			return item == null;
-		}
+		Collection<IAEItemStack> item = itemList.findFuzzy( AEItemStack.fromItemStack( stack ), FuzzyMode.IGNORE_ALL );
+		return item.isEmpty();
 	}
 
 	@Override
