@@ -108,7 +108,7 @@ import static gregtech.api.block.machines.BlockMachine.getMetaTileEntity;
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
 {
-	private int[] failedCraftTriesSlot = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	private final int[] failedCraftTriesSlot = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
 	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
@@ -139,7 +139,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private final Accessor accessor = new Accessor();
 	private EnumSet<EnumFacing> visitedFaces = EnumSet.noneOf( EnumFacing.class );
 	private EnumMap<EnumFacing, List<ItemStack>> waitingToSendFacing = new EnumMap<>( EnumFacing.class );
-	private BlockingInventoryAdaptor blockingInventoryAdaptor;
 	private boolean resetConfigCache = true;
 	private IMEMonitor<IAEItemStack> configCachedHandler;
 
@@ -1285,7 +1284,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	boolean isCustomInvBlocking( TileEntity te, EnumFacing s )
 	{
-		blockingInventoryAdaptor = BlockingInventoryAdaptor.getAdaptor( te, s.getOpposite() );
+		BlockingInventoryAdaptor blockingInventoryAdaptor = BlockingInventoryAdaptor.getAdaptor( te, s.getOpposite() );
 		return invIsCustomBlocking( blockingInventoryAdaptor );
 	}
 

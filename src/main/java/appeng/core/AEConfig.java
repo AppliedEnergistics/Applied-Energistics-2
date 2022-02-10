@@ -97,6 +97,14 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			"gregtech:shape.extruder.bottle", "gregtech:shape.extruder.foil",
 			"gregtech:shape.extruder.gear_small",
 			"gregtech:shape.extruder.rod_long", "gregtech:shape.extruder.rotor",
+			"gregtech:glass_lens.white", "gregtech:glass_lens.orange",
+			"gregtech:glass_lens.magenta", "gregtech:glass_lens.light_blue",
+			"gregtech:glass_lens.yellow", "gregtech:glass_lens.lime",
+			"gregtech:glass_lens.pink", "gregtech:glass_lens.gray",
+			"gregtech:glass_lens.light_gray", "gregtech:glass_lens.cyan",
+			"gregtech:glass_lens.purple", "gregtech:glass_lens.blue",
+			"gregtech:glass_lens.brown", "gregtech:glass_lens.green",
+			"gregtech:glass_lens.red", "gregtech:glass_lens.black",
 			"contenttweaker:smallgearextrudershape",
 			"contenttweaker:creativeportabletankmold"
 	};

@@ -57,6 +57,18 @@ public class NonBlockingItems
 								NON_BLOCKING_MAP.get( modid ).add( AEItemStack.fromItemStack( metaItem2.getStackForm() ) );
 								break;
 							}
+							else
+							{
+								ItemStack itemStack = GameRegistry.makeItemStack( ModItemMeta[0] + ":" + ModItemMeta[1], ModItemMeta.length == 3 ? Integer.parseInt( ModItemMeta[2] ) : 0, 1, null );
+								if( !itemStack.isEmpty() )
+								{
+									NON_BLOCKING_MAP.get( modid ).add( AEItemStack.fromItemStack( itemStack ) );
+								}
+								else
+								{
+									AELog.error( "Item not found on nonBlocking config: " + s );
+								}
+							}
 						}
 					}
 					else
