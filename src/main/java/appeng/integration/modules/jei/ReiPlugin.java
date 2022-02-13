@@ -46,6 +46,7 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
 
 import appeng.api.config.CondenserOutput;
@@ -224,6 +225,12 @@ public class ReiPlugin implements REIClientPlugin {
         ItemStack inscriber = AEBlocks.INSCRIBER.stack();
         registry.addWorkstations(InscriberRecipeCategory.ID, EntryStacks.of(inscriber));
         registry.setPlusButtonArea(InscriberRecipeCategory.ID, ButtonArea.defaultArea());
+
+        ItemStack craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
+        registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(craftingTerminal));
+
+        ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
+        registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(wirelessCraftingTerminal));
     }
 
     private void registerDescriptions(DisplayRegistry registry) {
