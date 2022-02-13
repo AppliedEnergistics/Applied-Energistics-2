@@ -62,7 +62,7 @@ public enum ButtonToolTips implements LocalizationEnum {
     FZPercent_25("Split Damage at 25%"),
     FZPercent_50("Split Damage at 50%"),
     FZPercent_75("Split Damage at 75%"),
-    FZPercent_99("Split Damage at 99%"),
+    FZPercent_99("Split Damaged Items"),
     FilterMode("Search Filter Mode"),
     FilterModeClear("Clear on each opening."),
     FilterModeKeep("Restore previous search filter."),
