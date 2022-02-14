@@ -141,7 +141,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_OREDICTSTORAGEBUS( ContainerPartOreDictStorageBus.class, PartOreDicStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+	GUI_OREDICTSTORAGEBUS( ContainerOreDictStorageBus.class, PartOreDicStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_STORAGEBUS_FLUID( ContainerFluidStorageBus.class, PartFluidStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 

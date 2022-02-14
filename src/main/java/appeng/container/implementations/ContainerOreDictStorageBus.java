@@ -1,10 +1,12 @@
 package appeng.container.implementations;
 
 import appeng.api.AEApi;
+import appeng.api.config.*;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
+import appeng.container.guisync.GuiSync;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartOreDicStorageBus;
@@ -21,11 +23,17 @@ import java.util.Iterator;
 import java.util.Set;
 
 
-public class ContainerPartOreDictStorageBus extends AEBaseContainer
+public class ContainerOreDictStorageBus extends AEBaseContainer
 {
     private final PartOreDicStorageBus part;
 
-    public ContainerPartOreDictStorageBus( final InventoryPlayer ip, final PartOreDicStorageBus anchor )
+    @GuiSync( 3 )
+    public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
+
+    @GuiSync( 4 )
+    public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
+
+    public ContainerOreDictStorageBus( final InventoryPlayer ip, final PartOreDicStorageBus anchor )
     {
         super( ip, anchor );
         this.part = anchor;
@@ -36,9 +44,12 @@ public class ContainerPartOreDictStorageBus extends AEBaseContainer
     @Override
     public void detectAndSendChanges()
     {
-        if( Platform.isClient() )
+        this.verifyPermissions( SecurityPermissions.BUILD, false );
+
+        if( Platform.isServer() )
         {
-            return;
+            this.setReadWriteMode( (AccessRestriction) part.getConfigManager().getSetting( Settings.ACCESS ) );
+            this.setStorageFilter( (StorageFilter) part.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
         }
 
         super.detectAndSendChanges();
@@ -105,5 +116,25 @@ public class ContainerPartOreDictStorageBus extends AEBaseContainer
         {
             e.printStackTrace();
         }
+    }
+
+    public AccessRestriction getReadWriteMode()
+    {
+        return this.rwMode;
+    }
+
+    private void setReadWriteMode( final AccessRestriction rwMode )
+    {
+        this.rwMode = rwMode;
+    }
+
+    public StorageFilter getStorageFilter()
+    {
+        return this.storageFilter;
+    }
+
+    private void setStorageFilter( final StorageFilter storageFilter )
+    {
+        this.storageFilter = storageFilter;
     }
 }

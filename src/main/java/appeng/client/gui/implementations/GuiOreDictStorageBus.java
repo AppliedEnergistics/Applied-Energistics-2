@@ -1,38 +1,46 @@
 package appeng.client.gui.implementations;
 
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.MEGuiTextField;
-import appeng.container.implementations.ContainerPartOreDictStorageBus;
+import appeng.container.implementations.ContainerOreDictStorageBus;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartOreDicStorageBus;
 import appeng.util.item.OreDictFilterMatcher;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 
-public class GuiPartOreDictStorageBus extends AEBaseGui
+public class GuiOreDictStorageBus extends AEBaseGui
 {
+    private final ContainerOreDictStorageBus container;
     PartOreDicStorageBus part;
     private GuiTabButton priority;
     private GuiImgButton partition;
-
+    private GuiImgButton storageFilter;
+    private GuiImgButton rwMode;
     private static final Pattern ORE_DICTIONARY_FILTER = Pattern.compile( "[(!]* *[0-9a-zA-Z*]* *\\)*( *[&|^]? *[(!]* *[0-9a-zA-Z*]* *\\)*)*" );
     private MEGuiTextField searchFieldInputs;
 
-    public GuiPartOreDictStorageBus( final InventoryPlayer inventoryPlayer, final PartOreDicStorageBus te )
+    public GuiOreDictStorageBus( final InventoryPlayer inventoryPlayer, final PartOreDicStorageBus te )
     {
-        super( new ContainerPartOreDictStorageBus( inventoryPlayer, te ) );
+        super( new ContainerOreDictStorageBus( inventoryPlayer, te ) );
+        this.container = (ContainerOreDictStorageBus) super.inventorySlots;
         part = te;
         this.ySize = 84;
     }
@@ -52,6 +60,8 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
 
         this.buttonList.add( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender ) );
         this.buttonList.add( this.partition = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH ) );
+        this.buttonList.add( this.rwMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE ) );
+        this.buttonList.add( this.storageFilter = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY ) );
 
         try
         {
@@ -73,21 +83,31 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
     protected void actionPerformed( final GuiButton btn ) throws IOException
     {
         super.actionPerformed( btn );
-        if( btn == this.priority )
+
+        final boolean backwards = Mouse.isButtonDown( 1 );
+
+        try
         {
-            NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+            if( btn == this.priority )
+            {
+                NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+            }
+            else if( btn == this.partition )
+            {
+                NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
+            }
+            else if( btn == this.rwMode )
+            {
+                NetworkHandler.instance().sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
+            }
+            else if( btn == this.storageFilter )
+            {
+                NetworkHandler.instance().sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
+            }
         }
-        if( btn == this.partition )
+        catch( final IOException e )
         {
-            NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
-            try
-            {
-                NetworkHandler.instance().sendToServer( new PacketValueConfig( "OreDictStorageBus.getRegex", "1" ) );
-            }
-            catch( IOException e )
-            {
-                e.printStackTrace();
-            }
+            AELog.debug( e );
         }
     }
 
@@ -132,6 +152,16 @@ public class GuiPartOreDictStorageBus extends AEBaseGui
         this.fontRenderer.drawString( "^ = XOR    " + "! = NOT", 8, 48, 4210752 );
         this.fontRenderer.drawString( "() for priority    " + "* for wildcard", 8, 60, 4210752 );
         this.fontRenderer.drawString( "Ex.: *Redstone*&!dustRedstone", 8, 72, 4210752 );
+
+        if( this.storageFilter != null )
+        {
+            this.storageFilter.set( container.getStorageFilter() );
+        }
+
+        if( this.rwMode != null )
+        {
+            this.rwMode.set( container.getReadWriteMode() );
+        }
     }
 
     @Override

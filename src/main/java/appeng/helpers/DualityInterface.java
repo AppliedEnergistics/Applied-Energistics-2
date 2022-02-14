@@ -903,18 +903,15 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				IAEItemStack storedStack = this.gridProxy.getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().findPrecise( itemStack );
 				if( storedStack != null )
 				{
-					if( storedStack.getStackSize() > 0 )
+					final IAEItemStack acquired = Platform.poweredExtraction( src, this.destination, itemStack, this.interfaceRequestSource );
+					if( acquired != null )
 					{
-						final IAEItemStack acquired = Platform.poweredExtraction( src, this.destination, itemStack, this.interfaceRequestSource );
-						if( acquired != null )
+						changed = true;
+						inputStack.setCount( Ints.saturatedCast( acquired.getStackSize() ) );
+						final ItemStack issue = adaptor.addItems( inputStack );
+						if( !issue.isEmpty() )
 						{
-							changed = true;
-							inputStack.setCount( Ints.saturatedCast( acquired.getStackSize() ) );
-							final ItemStack issue = adaptor.addItems( inputStack );
-							if( !issue.isEmpty() )
-							{
-								throw new IllegalStateException( "bad attempt at managing inventory. ( addItems )" );
-							}
+							throw new IllegalStateException( "bad attempt at managing inventory. ( addItems )" );
 						}
 					}
 					else if( storedStack.isCraftable() )

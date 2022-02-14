@@ -24,7 +24,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import appeng.client.gui.implementations.GuiPartOreDictStorageBus;
+import appeng.client.gui.implementations.GuiOreDictStorageBus;
 import appeng.container.implementations.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -276,9 +276,10 @@ public class PacketValueConfig extends AppEngPacket
 					{
 						( (ContainerFluidStorageBus) c ).partition();
 					}
-					else if( c instanceof ContainerPartOreDictStorageBus )
+					else if( c instanceof ContainerOreDictStorageBus )
 					{
-						( (ContainerPartOreDictStorageBus) c ).partition();
+						( (ContainerOreDictStorageBus) c ).partition();
+						( (ContainerOreDictStorageBus) c ).sendRegex();
 					}
 				}
 				else if( this.Value.equals( "Clear" ) )
@@ -296,15 +297,15 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( this.Name.startsWith( "OreDictStorageBus" ) )
 		{
-			if( c instanceof ContainerPartOreDictStorageBus )
+			if( c instanceof ContainerOreDictStorageBus )
 			{
 				if( this.Name.equals( "OreDictStorageBus.save" ) )
 				{
-					( (ContainerPartOreDictStorageBus) c ).saveOreMatch( this.Value );
+					( (ContainerOreDictStorageBus) c ).saveOreMatch( this.Value );
 				}
 				if( this.Name.equals( "OreDictStorageBus.getRegex" ) )
 				{
-					( (ContainerPartOreDictStorageBus) c ).sendRegex();
+					( (ContainerOreDictStorageBus) c ).sendRegex();
 				}
 			}
 		}
@@ -387,9 +388,9 @@ public class PacketValueConfig extends AppEngPacket
 		else if( this.Name.equals( "OreDictStorageBus.sendRegex" ) )
 		{
 			final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
-			if( gs instanceof GuiPartOreDictStorageBus )
+			if( gs instanceof GuiOreDictStorageBus )
 			{
-				( (GuiPartOreDictStorageBus) gs ).fillRegex( this.Value );
+				( (GuiOreDictStorageBus) gs ).fillRegex( this.Value );
 			}
 		}
 		else if( c instanceof IConfigurableObject )
