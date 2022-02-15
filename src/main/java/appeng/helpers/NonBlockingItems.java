@@ -55,7 +55,6 @@ public class NonBlockingItems
 							if( metaItem.getItem( ModItemMeta[1] ) != null )
 							{
 								NON_BLOCKING_MAP.get( modid ).add( AEItemStack.fromItemStack( metaItem2.getStackForm() ) );
-								break;
 							}
 							else
 							{
@@ -69,6 +68,7 @@ public class NonBlockingItems
 									AELog.error( "Item not found on nonBlocking config: " + s );
 								}
 							}
+							break;
 						}
 					}
 					else
