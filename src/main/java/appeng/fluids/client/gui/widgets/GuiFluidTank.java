@@ -77,14 +77,14 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip
 				TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite( fluid.getFluid().getStill().toString() );
 				final int scaledHeight = (int) ( this.height * ( (float) fluid.getStackSize() / this.tank.getTankProperties()[this.slot].getCapacity() ) );
 
-				int iconHeightRemainder = scaledHeight % this.getHeight();
+				int iconHeightRemainder = scaledHeight % 16;
 				if( iconHeightRemainder > 0 )
 				{
-					this.drawTexturedModalRect( this.xPos(), this.yPos() + this.getHeight() - iconHeightRemainder, sprite, this.getWidth(), iconHeightRemainder );
+					this.drawTexturedModalRect( this.xPos(), this.yPos() + this.getHeight() - iconHeightRemainder, sprite, 16, iconHeightRemainder );
 				}
-				for( int i = 0; i < scaledHeight / this.getHeight(); i++ )
+				for( int i = 0; i < scaledHeight / 16; i++ )
 				{
-					this.drawTexturedModalRect( this.xPos(), this.yPos() + this.getHeight() - iconHeightRemainder - ( i + 1 ) * 16, sprite, this.getWidth(), this.getHeight() );
+					this.drawTexturedModalRect( this.xPos(), this.yPos() + this.getHeight() - iconHeightRemainder - ( i + 1 ) * 16, sprite, 16, 16 );
 				}
 			}
 		}
@@ -113,7 +113,7 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip
 	@Override
 	public int yPos()
 	{
-		return this.y - 1;
+		return this.y - 4;
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip
 	@Override
 	public int getHeight()
 	{
-		return this.height + 1;
+		return this.height + 4;
 	}
 
 	@Override

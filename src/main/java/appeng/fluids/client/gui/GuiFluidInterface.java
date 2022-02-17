@@ -68,7 +68,7 @@ public class GuiFluidInterface extends GuiUpgradeable implements IConfigManagerH
 
 		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
 		{
-			this.guiSlots.add( new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, 36 + 18 * i, 53, 16, 68 ) );
+			this.guiSlots.add( new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, 36 + 18 * i, 57, 16, 64 ) );
 			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i, 35 + 18 * i, 35 ) );
 		}
 
