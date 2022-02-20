@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -83,57 +84,70 @@ public class MultiCraftingTracker
 
 	public boolean handleCrafting( final int x, final long itemToCraft, final IAEItemStack ais, final InventoryAdaptor d, final World w, final IGrid g, final ICraftingGrid cg, final IActionSource mySrc )
 	{
-		if( ais != null && d.simulateAdd( ais.createItemStack() ).isEmpty() )
+		if( ais != null )
 		{
-			final Future<ICraftingJob> craftingJob = this.getJob( x );
+			ItemStack inputStack = ais.getCachedItemStack( ais.getStackSize() );
 
-			if( this.getLink( x ) != null )
-			{
-				return false;
-			}
-			else if( craftingJob != null )
-			{
+			ItemStack remaining = d.simulateAdd( inputStack );
 
-				try
+			if( remaining.isEmpty() )
+			{
+				ais.setCachedItemStack( inputStack );
+
+				final Future<ICraftingJob> craftingJob = this.getJob( x );
+
+				if( this.getLink( x ) != null )
 				{
-					ICraftingJob job = null;
-					if( craftingJob.isDone() )
+					return false;
+				}
+				else if( craftingJob != null )
+				{
+
+					try
 					{
-						job = craftingJob.get();
-					}
-
-					if( job != null )
-					{
-						final ICraftingLink link = cg.submitJob( job, this.owner, null, false, mySrc );
-
-						this.setJob( x, null );
-
-						if( link != null )
+						ICraftingJob job = null;
+						if( craftingJob.isDone() )
 						{
-							this.setLink( x, link );
+							job = craftingJob.get();
+						}
 
-							return true;
+						if( job != null )
+						{
+							final ICraftingLink link = cg.submitJob( job, this.owner, null, false, mySrc );
+
+							this.setJob( x, null );
+
+							if( link != null )
+							{
+								this.setLink( x, link );
+
+								return true;
+							}
 						}
 					}
+					catch( final InterruptedException e )
+					{
+						// :P
+					}
+					catch( final ExecutionException e )
+					{
+						// :P
+					}
 				}
-				catch( final InterruptedException e )
+				else
 				{
-					// :P
-				}
-				catch( final ExecutionException e )
-				{
-					// :P
+					if( this.getLink( x ) == null )
+					{
+						final IAEItemStack aisC = ais.copy();
+						aisC.setStackSize( itemToCraft );
+
+						this.setJob( x, cg.beginCraftingJob( w, g, mySrc, aisC, null ) );
+					}
 				}
 			}
 			else
 			{
-				if( this.getLink( x ) == null )
-				{
-					final IAEItemStack aisC = ais.copy();
-					aisC.setStackSize( itemToCraft );
-
-					this.setJob( x, cg.beginCraftingJob( w, g, mySrc, aisC, null ) );
-				}
+				ais.setCachedItemStack( remaining );
 			}
 		}
 		return false;

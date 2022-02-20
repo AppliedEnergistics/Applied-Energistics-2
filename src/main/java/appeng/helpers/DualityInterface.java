@@ -893,11 +893,20 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			else if( itemStack.getStackSize() > 0 )
 			{
 				// make sure strange things didn't happen...
-				ItemStack inputStack = itemStack.createItemStack();
-				if( !adaptor.simulateAdd( inputStack ).isEmpty() )
+
+				ItemStack inputStack = itemStack.getCachedItemStack( itemStack.getStackSize() );
+
+				ItemStack remaining = adaptor.simulateAdd( inputStack );
+
+				if( !remaining.isEmpty() )
 				{
+					itemStack.setCachedItemStack( remaining );
 					changed = true;
 					throw new GridAccessException();
+				}
+				else
+				{
+					itemStack.setCachedItemStack( inputStack );
 				}
 
 				IAEItemStack storedStack = this.gridProxy.getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().findPrecise( itemStack );
