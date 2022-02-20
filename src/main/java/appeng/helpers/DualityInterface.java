@@ -968,6 +968,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					{
 						this.failedCraftTriesSlot[x] += 2;
 					}
+					return crafted;
 				}
 				this.failedCraftTriesSlot[x] -= 1;
 			}
