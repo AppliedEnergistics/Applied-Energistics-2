@@ -214,7 +214,6 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		if( pos.offset( updateFromFacing ).equals( neighbor ) )
 		{
-
 			TileEntity te = w.getTileEntity( neighbor );
 			Object capability = null;
 			if( te != null )
