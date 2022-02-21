@@ -20,7 +20,9 @@ package appeng.tile.crafting;
 
 
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
@@ -28,6 +30,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.capabilities.Capabilities;
+import appeng.helpers.PatternHelper;
 import appeng.me.helpers.MachineSource;
 import io.netty.buffer.ByteBuf;
 
@@ -37,6 +40,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -93,6 +97,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private final AppEngInternalInventory patternInv = new AppEngInternalInventory( this, 1, 1 );
 	private final IItemHandler gridInvExt = new WrapperFilteredItemHandler( this.gridInv, new CraftingGridFilter() );
 	private final IItemHandler internalInv = new WrapperChainedItemHandler( this.gridInv, this.patternInv );
+	private final EnumMap<EnumFacing, Object> neighbors = new EnumMap<>( EnumFacing.class );
 	private final IConfigManager settings;
 	private final UpgradeInventory upgrades;
 	private boolean isPowered = false;
@@ -120,6 +125,127 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private int getUpgradeSlots()
 	{
 		return 5;
+	}
+
+	public void updateNeighbors()
+	{
+		for( EnumFacing f : EnumFacing.VALUES )
+		{
+			TileEntity te = world.getTileEntity( pos.offset( f ) );
+			Object capability = null;
+			if( te != null )
+			{
+				// Prioritize a handler to directly link to another ME network
+				IStorageMonitorableAccessor accessor = te.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, f.getOpposite() );
+
+				if( accessor != null )
+				{
+					IStorageMonitorable inventory = accessor.getInventory( this.mySrc );
+					if( inventory != null )
+					{
+						capability = inventory;
+					}
+				}
+
+				if( capability == null )
+				{
+					capability = InventoryAdaptor.getAdaptor( te, f.getOpposite() );
+				}
+			}
+
+			if( capability != null )
+			{
+				neighbors.put( f, capability );
+			}
+			else
+			{
+				neighbors.remove( f );
+			}
+		}
+	}
+
+	@Override
+	public void onReady()
+	{
+		super.onReady();
+		updateNeighbors();
+	}
+
+	public void updateNeighbors( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	{
+		EnumFacing updateFromFacing;
+		if( pos.getX() != neighbor.getX() )
+		{
+			if( pos.getX() > neighbor.getX() )
+			{
+				updateFromFacing = EnumFacing.WEST;
+			}
+			else
+			{
+				updateFromFacing = EnumFacing.EAST;
+			}
+		}
+		else if( pos.getY() != neighbor.getY() )
+		{
+			if( pos.getY() > neighbor.getY() )
+			{
+				updateFromFacing = EnumFacing.DOWN;
+			}
+			else
+			{
+				updateFromFacing = EnumFacing.UP;
+			}
+		}
+		else if( pos.getZ() != neighbor.getZ() )
+		{
+			if( pos.getZ() > neighbor.getZ() )
+			{
+				updateFromFacing = EnumFacing.NORTH;
+			}
+			else
+			{
+				updateFromFacing = EnumFacing.SOUTH;
+			}
+		}
+		else
+		{
+			return;
+		}
+
+		if( pos.offset( updateFromFacing ).equals( neighbor ) )
+		{
+
+			TileEntity te = w.getTileEntity( neighbor );
+			Object capability = null;
+			if( te != null )
+			{
+				// Prioritize a handler to directly link to another ME network
+				IStorageMonitorableAccessor accessor = te.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, updateFromFacing.getOpposite() );
+
+				if( accessor != null )
+				{
+					IStorageMonitorable inventory = accessor.getInventory( this.mySrc );
+					if( inventory != null )
+					{
+						capability = inventory;
+					}
+				}
+
+				if( capability == null )
+				{
+					capability = InventoryAdaptor.getAdaptor( te, updateFromFacing.getOpposite() );
+				}
+			}
+
+			if( capability != null )
+			{
+				neighbors.put( updateFromFacing, capability );
+			}
+			else
+			{
+				neighbors.remove( updateFromFacing );
+			}
+		}
 	}
 
 	@Override
@@ -151,7 +277,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private void updateSleepiness()
 	{
 		final boolean wasEnabled = this.isAwake;
-		this.isAwake = this.myPlan != null && this.hasMats() || this.canPush();
+		this.isAwake = this.canPush() || this.myPlan != null && this.hasMats();
 		if( wasEnabled != this.isAwake )
 		{
 			try
@@ -187,9 +313,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		for( int x = 0; x < this.craftingInv.getSizeInventory(); x++ )
 		{
 			this.craftingInv.setInventorySlotContents( x, this.gridInv.getStackInSlot( x ) );
+			if( !myPlan.isValidItemForSlot( x, craftingInv.getStackInSlot( x ), world ) )
+			{
+				return false;
+			}
 		}
 
-		return !this.myPlan.getOutput( this.craftingInv, this.getWorld() ).isEmpty();
+		return this.myPlan.getOutputs().length > 0;
 	}
 
 	@Override
@@ -433,7 +563,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		this.reboot = false;
 		int speed = 10;
-		switch( this.upgrades.getInstalledUpgrades( Upgrades.SPEED ) )
+		switch ( this.upgrades.getInstalledUpgrades( Upgrades.SPEED ) )
 		{
 			case 0:
 				this.progress += this.userPower( ticksSinceLastCall, speed = 10, 1.0 );
@@ -527,10 +657,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		try
 		{
-			return (int) ( this.getProxy()
-					.getEnergy()
-					.extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE,
-							PowerMultiplier.CONFIG ) / acceleratorTax );
+			return (int) ( this.getProxy().getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax );
 		}
 		catch( final GridAccessException e )
 		{
@@ -542,9 +669,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		if( this.pushDirection == AEPartLocation.INTERNAL )
 		{
-			for( final EnumFacing d : EnumFacing.VALUES )
+			for( final Map.Entry<EnumFacing, Object> d : neighbors.entrySet() )
 			{
-				output = this.pushTo( output, d );
+				output = this.pushTo( output, d.getKey() );
+				if( output.isEmpty() )
+				{
+					break;
+				}
 			}
 		}
 		else
@@ -568,55 +699,42 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			return output;
 		}
 
-		final TileEntity te = this.getWorld().getTileEntity( this.pos.offset( d ) );
-
-		if( te == null )
+		Object capability = neighbors.get( d );
+		if( capability instanceof IStorageMonitorable )
 		{
-			return output;
-		}
-
-		// Prioritize a handler to directly link to another ME network
-		IStorageMonitorableAccessor accessor = te.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, d.getOpposite() );
-
-		if( accessor != null )
-		{
-			IStorageMonitorable inventory = accessor.getInventory( this.mySrc );
-			if( inventory != null )
+			// Prioritize a handler to directly link to another ME network
+			IStorageMonitorable inventory = (IStorageMonitorable) capability;
+			IAEItemStack toInsert = AEItemStack.fromItemStack( output );
+			IMEMonitor<IAEItemStack> inv = inventory.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			IAEItemStack remainder = inv.injectItems( toInsert, Actionable.SIMULATE, this.mySrc );
+			if( remainder == null )
 			{
-				IAEItemStack toInsert = AEItemStack.fromItemStack( output );
-				IMEMonitor<IAEItemStack> inv = inventory.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
-				IAEItemStack remainder = inv.injectItems( toInsert, Actionable.SIMULATE, this.mySrc );
-				if( remainder == null )
+				inv.injectItems( toInsert, Actionable.MODULATE, this.mySrc );
+				return ItemStack.EMPTY;
+			}
+			else
+			{
+				if( remainder.getStackSize() == toInsert.getStackSize() )
 				{
-					inv.injectItems( toInsert, Actionable.MODULATE, this.mySrc );
-					return ItemStack.EMPTY;
+					return output;
 				}
-				else
-				{
-					if( remainder.getStackSize() == toInsert.getStackSize() )
-					{
-						return output.copy();
-					}
-					inv.injectItems( toInsert.setStackSize( toInsert.getStackSize() - remainder.getStackSize() ), Actionable.MODULATE, this.mySrc );
-					return remainder.createItemStack();
-				}
+				inv.injectItems( toInsert.setStackSize( toInsert.getStackSize() - remainder.getStackSize() ), Actionable.MODULATE, this.mySrc );
+				this.saveChanges();
+				return remainder.createItemStack();
 			}
 		}
-
-		final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( te, d.getOpposite() );
-
-		if( adaptor == null )
+		else if( capability instanceof InventoryAdaptor )
 		{
-			return output;
-		}
+			InventoryAdaptor adaptor = (InventoryAdaptor) capability;
 
-		final int size = output.getCount();
-		output = adaptor.addItems( output.copy() );
-		final int newSize = output.isEmpty() ? 0 : output.getCount();
+			final int size = output.getCount();
+			output = adaptor.addItems( output );
+			final int newSize = output.isEmpty() ? 0 : output.getCount();
 
-		if( size != newSize )
-		{
-			this.saveChanges();
+			if( size != newSize )
+			{
+				this.saveChanges();
+			}
 		}
 
 		return output;

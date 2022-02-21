@@ -297,17 +297,27 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					ItemStack remaining;
 
-					remaining = mode == Actionable.SIMULATE ? d.simulateAdd( inputStack ) : d.addItems( inputStack );
-
-					if( !remaining.isEmpty() )
+					if( mode == Actionable.SIMULATE )
 					{
-						items.setCachedItemStack( remaining );
+						remaining = d.simulateAdd( inputStack );
 					}
 					else
 					{
-						items.setCachedItemStack( inputStack );
+						remaining = d.addItems( inputStack );
 					}
 
+					// Store the stack in the cache for next time.
+					if( mode == Actionable.SIMULATE )
+					{
+						items.setCachedItemStack( inputStack );
+					}
+					else
+					{
+						if( !remaining.isEmpty() )
+						{
+							items.setCachedItemStack( remaining );
+						}
+					}
 					if( remaining == inputStack )
 					{
 						return items;
@@ -357,10 +367,10 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		if( !remaining.isEmpty() )
 		{
 			ais.setCachedItemStack( remaining );
-		}
-		else
-		{
-			ais.setCachedItemStack( inputStack );
+			if( remaining == inputStack )
+			{
+				return;
+			}
 		}
 
 		final long canFit = remaining.isEmpty() ? this.itemToSend : this.itemToSend - remaining.getCount();

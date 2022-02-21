@@ -56,7 +56,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[] { POWERED };
+		return new IProperty[]{POWERED};
 	}
 
 	@Override
@@ -107,5 +107,15 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 		}
 
 		return super.onBlockActivated( w, pos, state, p, hand, side, hitX, hitY, hitZ );
+	}
+
+	@Override
+	public void onNeighborChange( IBlockAccess world, BlockPos pos, BlockPos neighbor )
+	{
+		final TileMolecularAssembler tg = this.getTileEntity( world, pos );
+		if( tg != null )
+		{
+			tg.updateNeighbors( world, pos, neighbor );
+		}
 	}
 }

@@ -223,26 +223,24 @@ public class AdaptorItemHandler extends InventoryAdaptor
 		return this.addItems( toBeSimulated, true );
 	}
 
-	protected ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
+	protected ItemStack addItems( ItemStack itemsToAdd, final boolean simulate )
 	{
 		if( itemsToAdd.isEmpty() )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack left = itemsToAdd.copy();
-
 		for( int slot = 0; slot < this.itemHandler.getSlots(); slot++ )
 		{
-			left = this.itemHandler.insertItem( slot, left, simulate );
+			itemsToAdd = this.itemHandler.insertItem( slot, itemsToAdd, simulate );
 
-			if( left.isEmpty() )
+			if( itemsToAdd.isEmpty() )
 			{
 				return ItemStack.EMPTY;
 			}
 		}
 
-		return left;
+		return itemsToAdd;
 	}
 
 	@Override

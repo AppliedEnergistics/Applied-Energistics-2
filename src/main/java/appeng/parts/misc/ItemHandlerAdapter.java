@@ -91,13 +91,16 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		}
 
 		// Store the stack in the cache for next time.
-		if( !remaining.isEmpty() )
+		if( type == Actionable.SIMULATE )
 		{
-			iox.setCachedItemStack( remaining );
+			iox.setCachedItemStack( inputStack );
 		}
 		else
 		{
-			iox.setCachedItemStack( inputStack );
+			if( !remaining.isEmpty() )
+			{
+				iox.setCachedItemStack( remaining );
+			}
 		}
 
 		// At this point, we still have some items left...
@@ -134,7 +137,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		ItemStack gathered = ItemStack.EMPTY;
 
 		final boolean simulate = ( mode == Actionable.SIMULATE );
-		for ( int i = 0; i < this.itemHandler.getSlots(); i++ )
+		for( int i = 0; i < this.itemHandler.getSlots(); i++ )
 		{
 			ItemStack stackInInventorySlot = this.itemHandler.getStackInSlot( i );
 
@@ -159,8 +162,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					{
 						// Something broke. It should never return more than we requested...
 						// We're going to silently eat the remainder
-						AELog.warn( "Mod that provided item handler %s is broken. Returned %s items while only requesting %d.",
-								this.itemHandler.getClass().getName(), extracted.toString(), remainingCurrentSlot );
+						AELog.warn( "Mod that provided item handler %s is broken. Returned %s items while only requesting %d.", this.itemHandler.getClass().getName(), extracted.toString(), remainingCurrentSlot );
 						extracted.setCount( remainingCurrentSlot );
 					}
 
@@ -316,17 +318,17 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				currentlyOnStorage.add( is.getAEItemStack() );
 			}
 
-			for ( final IAEItemStack is : currentlyCached )
+			for( final IAEItemStack is : currentlyCached )
 			{
 				is.setStackSize( -is.getStackSize() );
 			}
 
-			for ( final IAEItemStack is : currentlyOnStorage )
+			for( final IAEItemStack is : currentlyOnStorage )
 			{
 				currentlyCached.add( is );
 			}
 
-			for ( final IAEItemStack is : currentlyCached )
+			for( final IAEItemStack is : currentlyCached )
 			{
 				if( is.getStackSize() != 0 )
 				{
