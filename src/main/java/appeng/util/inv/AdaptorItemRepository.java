@@ -163,23 +163,26 @@ public class AdaptorItemRepository extends InventoryAdaptor
 		return this.addItems( toBeAdded, false );
 	}
 
-	protected ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
+	protected ItemStack addItems( ItemStack itemsToAdd, final boolean simulate )
 	{
 		if( itemsToAdd.isEmpty() )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack left = itemsToAdd.copy();
+		if( !simulate )
+		{
+			itemsToAdd = itemsToAdd.copy();
+		}
 
-		left = this.itemRepository.insertItem( left, simulate );
+		itemsToAdd = this.itemRepository.insertItem( itemsToAdd, simulate );
 
-		if( left.isEmpty() )
+		if( itemsToAdd.isEmpty() )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		return left;
+		return itemsToAdd;
 	}
 
 	@Override

@@ -37,11 +37,10 @@ public class BlockingItemHandler extends BlockingInventoryAdaptor
 		for( int slot = 0; slot < slots; slot++ )
 		{
 			ItemStack is = this.itemHandler.getStackInSlot( slot );
-			if( is.isEmpty() || !isBlockableItem( is ) )
+			if( !is.isEmpty() && isBlockableItem( is ) )
 			{
-				continue;
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}

@@ -561,6 +561,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			try
 			{
+				this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
 				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 			}
 			catch( final GridAccessException e )
@@ -808,17 +809,18 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return;
 		}
 
+		final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+
 		final Iterator<ItemStack> i = this.waitingToSendFacing.get( s ).iterator();
 		while ( i.hasNext() )
 		{
 			ItemStack whatToSend = i.next();
-			final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 			if( ad != null )
 			{
 				final ItemStack result = ad.addItems( whatToSend );
 				if( !result.isEmpty() )
 				{
-					whatToSend.setCount( whatToSend.getCount() - ( whatToSend.getCount() - result.getCount() ) );
+					whatToSend.setCount( result.getCount() );
 				}
 				else
 				{

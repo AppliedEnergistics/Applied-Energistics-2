@@ -232,6 +232,10 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 		for( int slot = 0; slot < this.itemHandler.getSlots(); slot++ )
 		{
+			if( !simulate )
+			{
+				itemsToAdd = itemsToAdd.copy();
+			}
 			itemsToAdd = this.itemHandler.insertItem( slot, itemsToAdd, simulate );
 
 			if( itemsToAdd.isEmpty() )

@@ -115,7 +115,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	private IEnergyGrid energyGrid;
 	int i;
 	private boolean updateList = false;
-	private boolean updatePatterns = true;
+	private boolean updatePatterns = false;
 
 	public CraftingGridCache( final IGrid grid )
 	{
@@ -415,14 +415,20 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if( !updatePatterns )
 		{
 			List<IAEItemStack> newCraftables = new ArrayList<>();
-			for( IAEItemStack stack : api.getOutputs() )
+
+			ObjectSet<ICraftingPatternDetails> b = new ObjectRBTreeSet<>( COMPARATOR );
+			ImmutableList<ICraftingPatternDetails> a = this.craftableItems.get( api.getCondensedOutputs()[0] );
+			if( a != null )
 			{
-				ImmutableList<ICraftingPatternDetails> a = this.craftableItems.get( stack );
-				if( a == null || a.get( 0 ).getPriority() < api.getPriority() )
-				{
-					this.craftableItems.put( stack, ImmutableList.of( api ) );
-					newCraftables.add( stack.copy().reset().setCraftable( true ) );
-				}
+				b.addAll( this.craftableItems.get( api.getOutputs()[0] ) );
+			}
+			b.add( api );
+
+			for( IAEItemStack stack : api.getCondensedOutputs() )
+			{
+				IAEItemStack i = stack.copy().reset().setCraftable( true );
+				this.craftableItems.put( i, ImmutableList.copyOf( b ) );
+				newCraftables.add( i );
 			}
 			this.storageGrid.postCraftablesChanges( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), newCraftables, new BaseActionSource() );
 		}
