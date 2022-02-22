@@ -427,6 +427,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return;
 		}
 
+		boolean removed = false;
+
 		if( this.craftingList != null )
 		{
 			final Iterator<ICraftingPatternDetails> i = this.craftingList.iterator();
@@ -446,26 +448,36 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( !found )
 				{
+					removed = true;
 					i.remove();
 				}
 			}
 		}
 
+		boolean newPattern = false;
+
 		for( int x = 0; x < accountedFor.length; x++ )
 		{
 			if( !accountedFor[x] )
 			{
+				newPattern = true;
 				this.addToCraftingList( this.patterns.getStackInSlot( x ) );
 			}
 		}
-
 		try
 		{
-			this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
+			if( removed )
+			{
+				this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
+			}
+			else if( newPattern )
+			{
+				this.provideCrafting( (ICraftingProviderHelper) this.gridProxy.getCrafting() );
+			}
 		}
-		catch( final GridAccessException e )
+		catch( GridAccessException e )
 		{
-			// :P
+			e.printStackTrace();
 		}
 	}
 
@@ -549,7 +561,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			try
 			{
-				this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
 				this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 			}
 			catch( final GridAccessException e )

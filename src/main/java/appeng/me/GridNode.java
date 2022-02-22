@@ -65,7 +65,7 @@ import net.minecraftforge.common.util.Constants;
 public class GridNode implements IGridNode, IPathItem
 {
 	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
-	private static final int[] CHANNEL_COUNT = { 0, 8, 32 };
+	private static final int[] CHANNEL_COUNT = {0, 8, 32};
 
 	private final List<IGridConnection> connections = new ArrayList<>();
 	private final IGridBlock gridProxy;
@@ -166,8 +166,6 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		final Object tracker = new Object();
 
-		CraftingGridCache.pauseRebuilds();
-
 		Deque<GridNode> nextRun = new ArrayDeque<>();
 		nextRun.add( this );
 
@@ -178,9 +176,9 @@ public class GridNode implements IGridNode, IPathItem
 			final Deque<IGridConnection> nextConn = new ArrayDeque<>();
 			final IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
-			while( !nextRun.isEmpty() )
+			while ( !nextRun.isEmpty() )
 			{
-				while( !nextConn.isEmpty() )
+				while ( !nextConn.isEmpty() )
 				{
 					gcv.visitConnection( nextConn.poll() );
 				}
@@ -196,7 +194,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 		else
 		{
-			while( !nextRun.isEmpty() )
+			while ( !nextRun.isEmpty() )
 			{
 				final Iterable<GridNode> thisRun = nextRun;
 				nextRun = new ArrayDeque<>();
@@ -207,7 +205,6 @@ public class GridNode implements IGridNode, IPathItem
 				}
 			}
 		}
-		CraftingGridCache.unpauseRebuilds();
 	}
 
 	@Override
@@ -269,7 +266,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public void destroy()
 	{
-		while( !this.connections.isEmpty() )
+		while ( !this.connections.isEmpty() )
 		{
 			// not part of this network for real anymore.
 			if( this.connections.size() == 1 )
@@ -378,7 +375,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public boolean meetsChannelRequirements()
 	{
-		return( !this.gridProxy.getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || this.getUsedChannels() > 0 );
+		return ( !this.gridProxy.getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || this.getUsedChannels() > 0 );
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
@@ -190,10 +191,11 @@ public class TickHandler
 			synchronized ( this.craftingJobs )
 			{
 				final Collection<CraftingJob> jobSet = this.craftingJobs.get( wte.world );
-				if (!jobSet.isEmpty()) {
+				if( !jobSet.isEmpty() )
+				{
 					final int jobSize = jobSet.size();
 					final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
-					final int simTime = Math.max(1, microSecondsPerTick / jobSize);
+					final int simTime = Math.max( 1, microSecondsPerTick / jobSize );
 
 					jobSet.removeIf( cj -> !cj.simulateFor( simTime ) );
 				}
@@ -206,7 +208,7 @@ public class TickHandler
 			this.tickColors( this.srvPlayerColors );
 			// ready tiles.
 			final HandlerRep repo = this.getRepo();
-			while( !repo.tiles.isEmpty() )
+			while ( !repo.tiles.isEmpty() )
 			{
 				final AEBaseTile bt = repo.tiles.poll();
 				if( !bt.isInvalid() )
@@ -217,7 +219,8 @@ public class TickHandler
 
 			// tick networks.
 			this.getRepo().updateNetworks();
-			for( final Grid g : this.getRepo().networks )
+			List<Grid> grids = new ArrayList<>( this.getRepo().networks );
+			for( final Grid g : grids )
 			{
 				g.update();
 			}
@@ -238,7 +241,7 @@ public class TickHandler
 	private void tickColors( final HashMap<Integer, PlayerColor> playerSet )
 	{
 		final Iterator<PlayerColor> i = playerSet.values().iterator();
-		while( i.hasNext() )
+		while ( i.hasNext() )
 		{
 			final PlayerColor pc = i.next();
 			if( pc.ticksLeft <= 0 )
@@ -259,7 +262,7 @@ public class TickHandler
 		final Stopwatch sw = Stopwatch.createStarted();
 
 		IWorldCallable<?> c = null;
-		while( ( c = queue.poll() ) != null )
+		while ( ( c = queue.poll() ) != null )
 		{
 			try
 			{
@@ -283,7 +286,7 @@ public class TickHandler
 
 	public void registerCraftingSimulation( final World world, final CraftingJob craftingJob )
 	{
-		synchronized( this.craftingJobs )
+		synchronized ( this.craftingJobs )
 		{
 			this.craftingJobs.put( world, craftingJob );
 		}

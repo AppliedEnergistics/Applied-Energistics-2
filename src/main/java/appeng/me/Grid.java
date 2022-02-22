@@ -19,12 +19,8 @@
 package appeng.me;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
@@ -220,9 +216,7 @@ public class Grid implements IGrid
 	@Override
 	public MENetworkEvent postEvent( final MENetworkEvent ev )
 	{
-		CraftingGridCache.pauseRebuilds();
 		final MENetworkEvent ret = this.eventBus.postEvent( this, ev );
-		CraftingGridCache.unpauseRebuilds();
 		return ret;
 	}
 
