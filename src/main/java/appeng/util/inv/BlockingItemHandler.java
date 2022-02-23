@@ -4,7 +4,9 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.helpers.NonBlockingItems;
+import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import gregtech.common.items.MetaTool;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -26,8 +28,16 @@ public class BlockingItemHandler extends BlockingInventoryAdaptor
 	boolean isBlockableItem( ItemStack stack )
 	{
 		IItemList<IAEItemStack> itemList = NonBlockingItems.INSTANCE.getMap().get( domain );
-		Collection<IAEItemStack> item = itemList.findFuzzy( AEItemStack.fromItemStack( stack ), FuzzyMode.IGNORE_ALL );
-		return item.isEmpty();
+		if( stack.getItem().isDamageable() || ( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool ) )
+		{
+			Collection<IAEItemStack> item = itemList.findFuzzy( AEItemStack.fromItemStack( stack ), FuzzyMode.IGNORE_ALL );
+			return item.isEmpty();
+		}
+		else
+		{
+			IAEItemStack item = itemList.findPrecise( AEItemStack.fromItemStack( stack ) );
+			return item == null;
+		}
 	}
 
 	@Override
