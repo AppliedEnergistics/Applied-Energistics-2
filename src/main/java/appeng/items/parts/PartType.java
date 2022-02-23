@@ -74,96 +74,84 @@ public enum PartType
 	INVALID_TYPE( -1, "invalid", EnumSet.of( AEFeature.CORE ), EnumSet.noneOf( IntegrationType.class ), null ),
 
 	CABLE_GLASS( 0, "cable_glass", EnumSet.of( AEFeature.GLASS_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartCableGlass.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
 
-		@Override
-		@SideOnly( Side.CLIENT )
-		protected List<ModelResourceLocation> createItemModels( String baseName )
-		{
-			return Arrays.stream( AEColor.values() )
-					.map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) )
-					.collect( Collectors.toList() );
-		}
-	},
+				@Override
+				@SideOnly( Side.CLIENT )
+				protected List<ModelResourceLocation> createItemModels( String baseName )
+				{
+					return Arrays.stream( AEColor.values() ).map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) ).collect( Collectors.toList() );
+				}
+			},
 
 	CABLE_COVERED( 20, "cable_covered", EnumSet.of( AEFeature.COVERED_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartCableCovered.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
 
-		@Override
-		@SideOnly( Side.CLIENT )
-		protected List<ModelResourceLocation> createItemModels( String baseName )
-		{
-			return Arrays.stream( AEColor.values() )
-					.map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) )
-					.collect( Collectors.toList() );
-		}
-	},
+				@Override
+				@SideOnly( Side.CLIENT )
+				protected List<ModelResourceLocation> createItemModels( String baseName )
+				{
+					return Arrays.stream( AEColor.values() ).map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) ).collect( Collectors.toList() );
+				}
+			},
 
 	CABLE_SMART( 40, "cable_smart", EnumSet.of( AEFeature.CHANNELS, AEFeature.SMART_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartCableSmart.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
 
-		@Override
-		@SideOnly( Side.CLIENT )
-		protected List<ModelResourceLocation> createItemModels( String baseName )
-		{
-			return Arrays.stream( AEColor.values() )
-					.map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) )
-					.collect( Collectors.toList() );
-		}
-	},
+				@Override
+				@SideOnly( Side.CLIENT )
+				protected List<ModelResourceLocation> createItemModels( String baseName )
+				{
+					return Arrays.stream( AEColor.values() ).map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) ).collect( Collectors.toList() );
+				}
+			},
 
-	CABLE_DENSE_SMART( 60, "cable_dense_smart", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet
-			.noneOf( IntegrationType.class ), PartDenseCableSmart.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
+	CABLE_DENSE_SMART( 60, "cable_dense_smart", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartDenseCableSmart.class )
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
 
-		@Override
-		@SideOnly( Side.CLIENT )
-		protected List<ModelResourceLocation> createItemModels( String baseName )
-		{
-			return Arrays.stream( AEColor.values() )
-					.map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) )
-					.collect( Collectors.toList() );
-		}
-	},
+				@Override
+				@SideOnly( Side.CLIENT )
+				protected List<ModelResourceLocation> createItemModels( String baseName )
+				{
+					return Arrays.stream( AEColor.values() ).map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) ).collect( Collectors.toList() );
+				}
+			},
 
-	CABLE_DENSE_COVERED( 500, "cable_dense_covered", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet
-			.noneOf( IntegrationType.class ), PartDenseCableCovered.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
+	CABLE_DENSE_COVERED( 500, "cable_dense_covered", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartDenseCableCovered.class )
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
 
-		@Override
-		@SideOnly( Side.CLIENT )
-		protected List<ModelResourceLocation> createItemModels( String baseName )
-		{
-			return Arrays.stream( AEColor.values() )
-					.map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) )
-					.collect( Collectors.toList() );
-		}
-	},
+				@Override
+				@SideOnly( Side.CLIENT )
+				protected List<ModelResourceLocation> createItemModels( String baseName )
+				{
+					return Arrays.stream( AEColor.values() ).map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) ).collect( Collectors.toList() );
+				}
+			},
 
 	TOGGLE_BUS( 80, "toggle_bus", EnumSet.of( AEFeature.TOGGLE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartToggleBus.class ),
 
@@ -282,7 +270,7 @@ public enum PartType
 				}
 			},
 
-	P2P_TUNNEL_GTCEU( 470, "p2p_tunnel_gtceu", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_GTCEU ), EnumSet.of( IntegrationType.GTCE ), PartP2PGTCEPower.class, GuiText.GTCEUTunnel )
+	P2P_TUNNEL_GTEU( 470, "p2p_tunnel_gteu", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_GTEU ), EnumSet.of( IntegrationType.GTCE ), PartP2PGTCEPower.class, GuiText.GTEUTunnel )
 			{
 				@Override
 				String getUnlocalizedName()
@@ -335,8 +323,7 @@ public enum PartType
 		this.oreName = oreDict;
 
 		// The part is enabled if all features + integrations it needs are enabled
-		this.enabled = features.stream().allMatch( AEConfig.instance()::isFeatureEnabled ) && integrations.stream()
-				.allMatch( IntegrationRegistry.INSTANCE::isEnabled );
+		this.enabled = features.stream().allMatch( AEConfig.instance()::isFeatureEnabled ) && integrations.stream().allMatch( IntegrationRegistry.INSTANCE::isEnabled );
 
 		if( this.enabled )
 		{

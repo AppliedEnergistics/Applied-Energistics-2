@@ -70,7 +70,7 @@ public final class ApiParts implements IParts
 	private final IItemDefinition p2PTunnelFluids;
 	private final IItemDefinition p2PTunnelEU;
 	private final IItemDefinition p2PTunnelFE;
-	private final IItemDefinition p2PTunnelGTCEU;
+	private final IItemDefinition p2PTunnelGTEU;
 	private final IItemDefinition p2PTunnelLight;
 	// private final IItemDefinition p2PTunnelOpenComputers;
 	private final IItemDefinition cableAnchor;
@@ -92,9 +92,7 @@ public final class ApiParts implements IParts
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
 		final ItemPart itemPart = new ItemPart();
-		registry.item( "part", () -> itemPart )
-				.rendering( new ItemPartRendering( partModels, itemPart ) )
-				.build();
+		registry.item( "part", () -> itemPart ).rendering( new ItemPartRendering( partModels, itemPart ) ).build();
 
 		// Register all part models
 		for( PartType partType : PartType.values() )
@@ -123,8 +121,7 @@ public final class ApiParts implements IParts
 		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LEVEL_EMITTER ) );
 		this.fluidLevelEmitter = new DamagedItemDefinition( "part.fluid_level_emitter", itemPart.createPart( PartType.FLUID_LEVEL_EMITTER ) );
 		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.ANNIHILATION_PLANE ) );
-		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart
-				.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
+		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
 		this.fluidAnnihilationPlane = new DamagedItemDefinition( "part.plane.fluid_annihilation", itemPart.createPart( PartType.FLUID_ANNIHILATION_PLANE ) );
 		this.formationPlane = new DamagedItemDefinition( "part.plane.formation", itemPart.createPart( PartType.FORMATION_PLANE ) );
 		this.fluidFormationPlane = new DamagedItemDefinition( "part.plane.fluid_formation", itemPart.createPart( PartType.FLUID_FORMATION_PLANE ) );
@@ -134,7 +131,7 @@ public final class ApiParts implements IParts
 		this.p2PTunnelFluids = new DamagedItemDefinition( "part.tunnel.fluid", itemPart.createPart( PartType.P2P_TUNNEL_FLUIDS ) );
 		this.p2PTunnelEU = new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2P_TUNNEL_IC2 ) );
 		this.p2PTunnelFE = new DamagedItemDefinition( "part.tunnel.fe", itemPart.createPart( PartType.P2P_TUNNEL_FE ) );
-		this.p2PTunnelGTCEU = new DamagedItemDefinition( "part.tunnel.gtceu", itemPart.createPart( PartType.P2P_TUNNEL_GTCEU ) );
+		this.p2PTunnelGTEU = new DamagedItemDefinition( "part.tunnel.gteu", itemPart.createPart( PartType.P2P_TUNNEL_GTEU ) );
 		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemPart.createPart( PartType.P2P_TUNNEL_LIGHT ) );
 		// this.p2PTunnelOpenComputers = new DamagedItemDefinition( itemMultiPart.createPart(
 		// PartType.P2PTunnelOpenComputers ) );
@@ -340,10 +337,10 @@ public final class ApiParts implements IParts
 	{
 		return this.p2PTunnelFE;
 	}
-	
-	public IItemDefinition p2PTunnelGTCEU()
+
+	public IItemDefinition p2PTunnelGTEU()
 	{
-		return this.p2PTunnelGTCEU;
+		return this.p2PTunnelGTEU;
 	}
 
 	@Override

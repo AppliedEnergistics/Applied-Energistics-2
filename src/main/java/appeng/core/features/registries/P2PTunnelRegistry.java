@@ -55,7 +55,8 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	private final Map<String, TunnelType> modIdTunnels = new HashMap<>( INITIAL_CAPACITY );
 	private final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>( INITIAL_CAPACITY );
 
-	public void configure() {
+	public void configure()
+	{
 
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IBlocks blocks = definitions.blocks();
@@ -64,31 +65,32 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * light!
 		 */
-		this.addNewAttunement(new ItemStack(Blocks.TORCH), TunnelType.LIGHT);
-		this.addNewAttunement(new ItemStack(Blocks.GLOWSTONE), TunnelType.LIGHT);
+		this.addNewAttunement( new ItemStack( Blocks.TORCH ), TunnelType.LIGHT );
+		this.addNewAttunement( new ItemStack( Blocks.GLOWSTONE ), TunnelType.LIGHT );
 
 		List<String> gtceOreDict = new ArrayList<>();
-		gtceOreDict.add("wireGtHex");
-		gtceOreDict.add("wireGtOctal");
-		gtceOreDict.add("wireGtQuadruple");
-		gtceOreDict.add("wireGtDouble");
-		gtceOreDict.add("wireGtSingle");
-		gtceOreDict.add("cableGtHex");
-		gtceOreDict.add("cableGtOctal");
-		gtceOreDict.add("cableGtQuadruple");
-		gtceOreDict.add("cableGtDouble");
-		gtceOreDict.add("cableGtSingle");
+		gtceOreDict.add( "wireGtHex" );
+		gtceOreDict.add( "wireGtOctal" );
+		gtceOreDict.add( "wireGtQuadruple" );
+		gtceOreDict.add( "wireGtDouble" );
+		gtceOreDict.add( "wireGtSingle" );
+		gtceOreDict.add( "cableGtHex" );
+		gtceOreDict.add( "cableGtOctal" );
+		gtceOreDict.add( "cableGtQuadruple" );
+		gtceOreDict.add( "cableGtDouble" );
+		gtceOreDict.add( "cableGtSingle" );
 
-		for(String oreDict : gtceOreDict) {
+		for( String oreDict : gtceOreDict )
+		{
 			Arrays.stream( OreDictionary.getOreNames() ).filter( oreName -> oreName.startsWith( oreDict ) ).forEach( oreName -> {
-				OreHelper.INSTANCE.getCachedOres( oreName ).forEach( stack -> this.addNewAttunement( stack, TunnelType.GTCEU_POWER ) );
+				OreHelper.INSTANCE.getCachedOres( oreName ).forEach( stack -> this.addNewAttunement( stack, TunnelType.GTEU_POWER ) );
 			} );
 		}
 
 		/**
 		 * Forge energy tunnel items
 		 */
-		
+
 		this.addNewAttunement( blocks.energyCellDense(), TunnelType.FE_POWER );
 		this.addNewAttunement( blocks.energyAcceptor(), TunnelType.FE_POWER );
 		this.addNewAttunement( blocks.energyCell(), TunnelType.FE_POWER );
@@ -145,12 +147,12 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "enderio", "itemitemconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 0 ), TunnelType.ITEM ); // itemduct
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 1 ), TunnelType.ITEM ); // itemduct
-																										// (opaque)
+		// (opaque)
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 2 ), TunnelType.ITEM ); // impulse
-																										// itemduct
+		// itemduct
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 3 ), TunnelType.ITEM ); // impulse
-																										// itemduct
-																										// (opaque)
+		// itemduct
+		// (opaque)
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -166,12 +168,12 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "enderio", "itemliquidconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 0 ), TunnelType.FLUID ); // fluiduct
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 1 ), TunnelType.FLUID ); // fluiduct
-																										// (opaque)
+		// (opaque)
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 2 ), TunnelType.FLUID ); // fluiduct
-																										// hardened
+		// hardened
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 3 ), TunnelType.FLUID ); // fluiduct
-																										// hardened
-																										// (opaque)
+		// hardened
+		// (opaque)
 
 		for( final AEColor c : AEColor.values() )
 		{

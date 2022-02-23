@@ -102,7 +102,7 @@ gui.appliedenergistics2.FluidTunnel=Fluid
 gui.appliedenergistics2.RedstoneTunnel=Redstone
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.FETunnel=FE
-gui.appliedenergistics2.GTCEUTunnel=GTCEU
+gui.appliedenergistics2.GTEUTunnel=GTEU
 gui.appliedenergistics2.LightTunnel=Light
 gui.appliedenergistics2.OCTunnel=OpenComputers
 gui.appliedenergistics2.PressureTunnel=Pressure
@@ -376,7 +376,7 @@ gui.tooltips.appliedenergistics2.HighlightInterface=Highlight interface
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Energy Units
 gui.appliedenergistics2.units.rf=Redstone Flux
-gui.appliedenergistics2.units.gtceu=GTCEU
+gui.appliedenergistics2.units.gteu=GTEU
 
 // Colors
 gui.appliedenergistics2.White=White

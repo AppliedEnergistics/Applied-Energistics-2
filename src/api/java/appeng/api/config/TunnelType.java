@@ -29,7 +29,7 @@ public enum TunnelType
 	ME, // Network Tunnel
 	IC2_POWER, // EU Tunnel
 	FE_POWER, // Forge Energy tunnel
-	GTCEU_POWER, // Forge Energy tunnel
+	GTEU_POWER, // Forge Energy tunnel
 	REDSTONE, // Redstone Tunnel
 	FLUID, // Fluid Tunnel
 	ITEM, // Item Tunnel

@@ -156,7 +156,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		super.writeToStream( data );
 		data.writeShort( this.getFrequency() );
 	}
-	
+
 	@Override
 	@MENetworkEventSubscribe
 	public void chanRender( final MENetworkChannelsChanged c )
@@ -205,10 +205,11 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		{
 			return false;
 		}
-		
+
 		boolean pasteAsOutput = true;
 		ItemStack is = player.getHeldItem( hand );
-		if (is.isEmpty()) {
+		if( is.isEmpty() )
+		{
 			pasteAsOutput = false;
 			is = player.getHeldItemOffhand();
 		}
@@ -250,7 +251,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 						if( newBus instanceof PartP2PTunnel )
 						{
 							final PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
-							
+
 							if( pasteAsOutput )
 							{
 								newTunnel.setOutput( true );
@@ -282,7 +283,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 			final IParts parts = AEApi.instance().definitions().parts();
 
-			switch( tt )
+			switch ( tt )
 			{
 				case LIGHT:
 					newType = parts.p2PTunnelLight().maybeStack( 1 ).orElse( ItemStack.EMPTY );
@@ -292,8 +293,8 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					newType = parts.p2PTunnelFE().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
-				case GTCEU_POWER:
-					newType = parts.p2PTunnelGTCEU().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+				case GTEU_POWER:
+					newType = parts.p2PTunnelGTEU().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
 				case FLUID:
@@ -455,8 +456,10 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 			final AEColor[] colors = Platform.p2p().toColors( this.getFrequency() );
 			final int[] colorCode = new int[]{
-					colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(), colors[1].ordinal(),
-					colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(), colors[3].ordinal(),
+					colors[0].ordinal(), colors[0].ordinal(),
+					colors[1].ordinal(), colors[1].ordinal(),
+					colors[2].ordinal(), colors[2].ordinal(),
+					colors[3].ordinal(), colors[3].ordinal(),
 			};
 
 			data.setIntArray( "colorCode", colorCode );

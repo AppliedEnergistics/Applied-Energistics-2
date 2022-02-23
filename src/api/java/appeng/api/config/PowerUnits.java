@@ -29,7 +29,7 @@ public enum PowerUnits
 	AE( "gui.appliedenergistics2.units.appliedenergstics" ), // Native Units - AE Energy
 	EU( "gui.appliedenergistics2.units.ic2" ), // IndustrialCraft 2 - Energy Units
 	RF( "gui.appliedenergistics2.units.rf" ), // RF - Redstone Flux
-	GTCEU( "gui.appliedenergistics2.units.gtceu" ); // RF - Redstone Flux
+	GTEU( "gui.appliedenergistics2.units.gteu" ); // RF - Redstone Flux
 
 	/**
 	 * unlocalized name for the power unit.
@@ -47,14 +47,13 @@ public enum PowerUnits
 
 	/**
 	 * do power conversion using AE's conversion rates.
-	 *
+	 * <p>
 	 * Example: PowerUnits.EU.convertTo( PowerUnits.AE, 32 );
-	 *
+	 * <p>
 	 * will normally returns 64, as it will convert the EU, to AE with AE's power settings.
 	 *
 	 * @param target target power unit
-	 * @param value value
-	 *
+	 * @param value  value
 	 * @return value converted to target units, from this units.
 	 */
 	public double convertTo( final PowerUnits target, final double value )
