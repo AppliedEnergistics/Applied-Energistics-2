@@ -30,7 +30,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
@@ -219,8 +218,7 @@ public class TickHandler
 
 			// tick networks.
 			this.getRepo().updateNetworks();
-			List<Grid> grids = new ArrayList<>( this.getRepo().networks );
-			for( final Grid g : grids )
+			for( final Grid g : this.getRepo().networks )
 			{
 				g.update();
 			}
@@ -278,10 +276,6 @@ public class TickHandler
 				AELog.debug( e );
 			}
 		}
-
-		// long time = sw.elapsed( TimeUnit.MILLISECONDS );
-		// if ( time > 0 )
-		// AELog.info( "processQueue Time: " + time + "ms" );
 	}
 
 	public void registerCraftingSimulation( final World world, final CraftingJob craftingJob )
