@@ -74,7 +74,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	};
 
 	private String[] nonBlockingItems = {
-			"[gregtech]", "gregtech:circuit.integrated",
+			"[gregtech|actuallyadditions]", "gregtech:circuit.integrated",
 			"gregtech:shape.mold.plate", "gregtech:shape.mold.gear",
 			"gregtech:shape.mold.credit", "gregtech:shape.mold.bottle",
 			"gregtech:shape.mold.ingot", "gregtech:shape.mold.ball",
@@ -108,7 +108,14 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			"gregtech:glass_lens.brown", "gregtech:glass_lens.green",
 			"gregtech:glass_lens.red", "gregtech:glass_lens.black",
 			"contenttweaker:smallgearextrudershape",
-			"contenttweaker:creativeportabletankmold"
+			"contenttweaker:creativeportabletankmold", "ore:lensAlmandine",
+			"ore:lensBlueTopaz", "ore:lensDiamond", "ore:lensEmerald",
+			"ore:lensGreenSapphire", "ore:lensRutile", "ore:lensRuby",
+			"ore:lensSapphire", "ore:lensTopaz", "ore:lensJasper",
+			"ore:lensGlass", "ore:lensOlivine", "ore:lensOpal",
+			"ore:lensAmethyst", "ore:lensLapis", "ore:lensEnderPearl",
+			"ore:lensEnderEye", "ore:lensGarnetRed", "ore:lensGarnetYellow",
+			"ore:lensVinteum", "ore:lensNetherStar",
 	};
 
 	// Default Energy Conversion Rates
