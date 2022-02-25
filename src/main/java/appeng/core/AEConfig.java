@@ -87,6 +87,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			"gregtech:shape.extruder.ingot", "gregtech:shape.extruder.wire",
 			"gregtech:shape.extruder.pipe.tiny",
 			"gregtech:shape.extruder.pipe.small",
+			"gregtech:shape.extruder.pipe.medium",
 			"gregtech:shape.extruder.pipe.normal",
 			"gregtech:shape.extruder.pipe.large",
 			"gregtech:shape.extruder.pipe.huge",

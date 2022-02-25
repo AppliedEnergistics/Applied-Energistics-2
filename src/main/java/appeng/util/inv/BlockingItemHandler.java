@@ -7,6 +7,10 @@ import appeng.helpers.NonBlockingItems;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import gregtech.common.items.MetaTool;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -27,17 +31,12 @@ public class BlockingItemHandler extends BlockingInventoryAdaptor
 
 	boolean isBlockableItem( ItemStack stack )
 	{
-		IItemList<IAEItemStack> itemList = NonBlockingItems.INSTANCE.getMap().get( domain );
-		if( stack.getItem().isDamageable() || ( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool ) )
+		Object2ObjectOpenHashMap<Item, IntSet> map = NonBlockingItems.INSTANCE.getMap().get( domain );
+		if( map.get( stack.getItem() ) != null )
 		{
-			Collection<IAEItemStack> item = itemList.findFuzzy( AEItemStack.fromItemStack( stack ), FuzzyMode.IGNORE_ALL );
-			return item.isEmpty();
+			return !map.get( stack.getItem() ).contains( stack.getItemDamage() );
 		}
-		else
-		{
-			IAEItemStack item = itemList.findPrecise( AEItemStack.fromItemStack( stack ) );
-			return item == null;
-		}
+		return true;
 	}
 
 	@Override

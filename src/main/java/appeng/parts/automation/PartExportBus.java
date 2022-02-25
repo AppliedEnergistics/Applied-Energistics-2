@@ -300,24 +300,17 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 					if( mode == Actionable.SIMULATE )
 					{
 						remaining = d.simulateAdd( inputStack );
-					}
-					else
-					{
-						remaining = d.addItems( inputStack );
-					}
-
-					// Store the stack in the cache for next time.
-					if( mode == Actionable.SIMULATE )
-					{
 						items.setCachedItemStack( inputStack );
 					}
 					else
 					{
+						remaining = d.addItems( inputStack );
 						if( !remaining.isEmpty() )
 						{
 							items.setCachedItemStack( remaining );
 						}
 					}
+					
 					if( remaining == inputStack )
 					{
 						return items;

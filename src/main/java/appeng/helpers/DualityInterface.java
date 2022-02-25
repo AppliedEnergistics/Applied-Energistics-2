@@ -1329,7 +1329,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				continue;
 			}
 
-			if( !ad.simulateAdd( is.copy() ).isEmpty() )
+			if( !ad.simulateAdd( is ).isEmpty() )
 			{
 				return false;
 			}
