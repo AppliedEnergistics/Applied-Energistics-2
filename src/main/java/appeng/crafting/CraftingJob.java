@@ -50,7 +50,7 @@ import appeng.hooks.TickHandler;
 
 public class CraftingJob implements Runnable, ICraftingJob
 {
-	private static final String LOG_CRAFTING_JOB = "CraftingJob (%s) issued by %s requesting [%s] using %s bytes took %s ms";
+	private static final String LOG_CRAFTING_JOB = "CraftingJob (%s) issued by %s requesting [%s] using %s bytes took %s us";
 	private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s]";
 
 	private final MECraftingInventory original;
@@ -86,8 +86,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.callback = callback;
 		final ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
 		final IStorageGrid sg = grid.getCache( IStorageGrid.class );
-		this.original = new MECraftingInventory( sg
-				.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), actionSrc, false, false, false );
+		this.original = new MECraftingInventory( sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), actionSrc, false, false, false );
 
 		this.setTree( this.getCraftingTree( cc, what ) );
 		this.availableCheck = null;
@@ -263,7 +262,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		this.availableCheck = null;
 
-		synchronized( this.monitor )
+		synchronized ( this.monitor )
 		{
 			this.running = false;
 			this.done = true;
@@ -311,7 +310,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	/**
 	 * @return true if this needs more simulation
 	 */
-	public boolean simulateFor(final int milli)
+	public boolean simulateFor( final int milli )
 	{
 		this.time = milli;
 
@@ -353,7 +352,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		if( AELog.isCraftingLogEnabled() )
 		{
 			final String itemToOutput = this.output.toString();
-			final long elapsedTime = timer.elapsed( TimeUnit.MILLISECONDS );
+			final long elapsedTime = timer.elapsed( TimeUnit.MICROSECONDS );
 			final String actionSource;
 
 			if( this.actionSrc.player().isPresent() )
