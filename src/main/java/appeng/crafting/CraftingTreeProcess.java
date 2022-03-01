@@ -93,6 +93,7 @@ public class CraftingTreeProcess
 				if( part.getItem().hasContainerItem( part.getDefinition() ) )
 				{
 					this.limitQty = this.containerItems = true;
+					break;
 				}
 			}
 
@@ -103,7 +104,16 @@ public class CraftingTreeProcess
 					final IAEItemStack part = list[x];
 					if( part != null )
 					{
-						this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+						job.getUsedWhileBuilding().addStorage( part );
+						IAEItemStack used = job.getUsedWhileBuilding().findPrecise( part );
+						if( job.getOriginal( part ) != null && used.getStackSize() <= job.getOriginal( part ).getStackSize() )
+						{
+							this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1, true ), part.getStackSize() );
+						}
+						else
+						{
+							this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+						}
 					}
 				}
 			}
@@ -117,8 +127,17 @@ public class CraftingTreeProcess
 						final IAEItemStack comparePart = list[x];
 						if( part != null && part.equals( comparePart ) )
 						{
-							// use the first slot...
-							this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+							job.getUsedWhileBuilding().addStorage( part );
+							IAEItemStack used = job.getUsedWhileBuilding().findPrecise( part );
+							if( job.getOriginal( part ) != null && used.getStackSize() <= job.getOriginal( part ).getStackSize() )
+							{
+								this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1, true ), part.getStackSize() );
+							}
+							else
+							{
+								// use the first slot...
+								this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+							}
 							break;
 						}
 					}

@@ -88,6 +88,35 @@ public class CraftingTreeNode
 		}
 	}
 
+	public CraftingTreeNode( final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat, final CraftingTreeProcess par, final int slot, final int depth, boolean available )
+	{
+		this.what = wat;
+		this.parent = par;
+		this.slot = slot;
+		this.world = job.getWorld();
+		this.job = job;
+		this.sim = false;
+
+		this.canEmit = cc.canEmitFor( this.what );
+
+		if( this.canEmit )
+		{
+			return; // if you can emit for something, you can't make it with patterns.
+		}
+
+		if( !available )
+		{
+			for( final ICraftingPatternDetails details : cc.getCraftingFor( this.what, this.parent == null ? null : this.parent.details, slot, this.world ) )// in
+			// order.
+			{
+				if( this.parent == null || this.parent.notRecursive( details ) )
+				{
+					this.nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1 ) );
+				}
+			}
+		}
+	}
+
 	boolean notRecursive( final ICraftingPatternDetails details )
 	{
 		IAEItemStack[] o = details.getCondensedOutputs();
