@@ -175,23 +175,26 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 				try
 				{
-					final Stopwatch timer = Stopwatch.createStarted();
-					final MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
-					craftingInventory.ignore( this.output );
-
-					this.availableCheck = new MECraftingInventory( this.original, false, false, false );
-
-					this.getTree().setSimulate();
-					this.getTree().request( craftingInventory, this.output.getStackSize(), this.actionSrc );
-					this.getTree().dive( this );
-
-					for( final String s : this.opsAndMultiplier.keySet() )
+					if( actionSrc.player().isPresent() )
 					{
-						final TwoIntegers ti = this.opsAndMultiplier.get( s );
-						AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
-					}
+						final Stopwatch timer = Stopwatch.createStarted();
+						final MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
+						craftingInventory.ignore( this.output );
 
-					this.logCraftingJob( "simulate", timer );
+						this.availableCheck = new MECraftingInventory( this.original, false, false, false );
+
+						this.getTree().setSimulate();
+						this.getTree().request( craftingInventory, this.output.getStackSize(), this.actionSrc );
+						this.getTree().dive( this );
+
+						for( final String s : this.opsAndMultiplier.keySet() )
+						{
+							final TwoIntegers ti = this.opsAndMultiplier.get( s );
+							AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
+						}
+
+						this.logCraftingJob( "simulate", timer );
+					}
 				}
 				catch( final CraftBranchFailure e1 )
 				{
