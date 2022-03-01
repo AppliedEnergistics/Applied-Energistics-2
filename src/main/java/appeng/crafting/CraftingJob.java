@@ -61,7 +61,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	private final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<>();
 	private final Object monitor = new Object();
-	private final Stopwatch watch = Stopwatch.createUnstarted();
+	private final Stopwatch tickSpreadingWatch = Stopwatch.createUnstarted();
+	private final Stopwatch craftingTreeWatch = Stopwatch.createUnstarted();
 	private CraftingTreeNode tree;
 	private final IAEItemStack output;
 	private boolean simulate = false;
@@ -150,7 +151,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				TickHandler.INSTANCE.registerCraftingSimulation( this.world, this );
 				this.handlePausing();
 
-				final Stopwatch timer = Stopwatch.createStarted();
+				craftingTreeWatch.start();
 
 				final MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
 				craftingInventory.ignore( this.output );
@@ -165,9 +166,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 					AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
 				}
 
-				this.logCraftingJob( "real", timer );
-				// if ( mode == Actionable.MODULATE )
-				// craftingInventory.moveItemsToStorage( storage );
+				craftingTreeWatch.stop();
+				this.logCraftingJob( "real", craftingTreeWatch );
 			}
 			catch( final CraftBranchFailure e )
 			{
@@ -177,7 +177,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				{
 					if( actionSrc.player().isPresent() )
 					{
-						final Stopwatch timer = Stopwatch.createStarted();
+						craftingTreeWatch.reset().start();
 						final MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
 						craftingInventory.ignore( this.output );
 
@@ -193,7 +193,13 @@ public class CraftingJob implements Runnable, ICraftingJob
 							AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
 						}
 
-						this.logCraftingJob( "simulate", timer );
+						craftingTreeWatch.stop();
+						this.logCraftingJob( "simulate", craftingTreeWatch );
+					}
+					else
+					{
+						craftingTreeWatch.stop();
+						this.logCraftingJob( "real", craftingTreeWatch );
 					}
 				}
 				catch( final CraftBranchFailure e1 )
@@ -240,10 +246,11 @@ public class CraftingJob implements Runnable, ICraftingJob
 			this.incTime = 0;
 			synchronized ( this.monitor )
 			{
-				if( this.watch.elapsed( TimeUnit.MICROSECONDS ) > this.time )
+				if( this.tickSpreadingWatch.elapsed( TimeUnit.MICROSECONDS ) > this.time )
 				{
 					this.running = false;
-					this.watch.stop();
+					this.craftingTreeWatch.stop();
+					this.tickSpreadingWatch.stop();
 					this.monitor.notify();
 				}
 
@@ -337,8 +344,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 			}
 			if( !this.actionSrc.player().isPresent() )
 			{
-				this.watch.reset();
-				this.watch.start();
+				this.tickSpreadingWatch.reset();
+				this.tickSpreadingWatch.start();
 				this.monitor.notify();
 			}
 			this.running = true;
