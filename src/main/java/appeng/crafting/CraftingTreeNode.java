@@ -88,6 +88,35 @@ public class CraftingTreeNode
 		}
 	}
 
+	public CraftingTreeNode( final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat, final CraftingTreeProcess par, final int slot, final int depth, boolean available )
+	{
+		this.what = wat;
+		this.parent = par;
+		this.slot = slot;
+		this.world = job.getWorld();
+		this.job = job;
+		this.sim = false;
+
+		this.canEmit = cc.canEmitFor( this.what );
+
+		if( this.canEmit )
+		{
+			return; // if you can emit for something, you can't make it with patterns.
+		}
+
+		if( !available )
+		{
+			for( final ICraftingPatternDetails details : cc.getCraftingFor( this.what, this.parent == null ? null : this.parent.details, slot, this.world ) )// in
+			// order.
+			{
+				if( this.parent == null || this.parent.notRecursive( details ) )
+				{
+					this.nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1 ) );
+				}
+			}
+		}
+	}
+
 	boolean notRecursive( final ICraftingPatternDetails details )
 	{
 		IAEItemStack[] o = details.getCondensedOutputs();
@@ -124,31 +153,8 @@ public class CraftingTreeNode
 		final List<IAEItemStack> thingsUsed = new ArrayList<>();
 
 		this.what.setStackSize( l );
-		IAEItemStack available = inv.extractItems( this.what, Actionable.MODULATE, src );
 
-		if( available != null )
-		{
-			if( !this.exhausted )
-			{
-				final IAEItemStack is = this.job.checkUse( available );
-
-				if( is != null )
-				{
-					thingsUsed.add( is.copy() );
-					this.used.add( is );
-				}
-			}
-
-			this.bytes += available.getStackSize();
-			l -= available.getStackSize();
-
-			if( l == 0 )
-			{
-				return available;
-			}
-		}
-
-		else if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )
+		if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )
 		{
 			final Collection<IAEItemStack> itemList;
 			final IItemList<IAEItemStack> inventoryList = inv.getItemList();
@@ -177,12 +183,12 @@ public class CraftingTreeNode
 
 			for( IAEItemStack fuzz : itemList )
 			{
-				if( this.parent.details.isValidItemForSlot( this.getSlot(), fuzz.copy().setStackSize( 1 ).createItemStack(), this.world ) )
+				if( this.parent.details.isValidItemForSlot( this.getSlot(), fuzz.copy().getCachedItemStack( 1 ), this.world ) )
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( l );
 
-					available = inv.extractItems( fuzz, Actionable.MODULATE, src );
+					final IAEItemStack available = inv.extractItems( fuzz, Actionable.MODULATE, src );
 
 					if( available != null )
 					{
@@ -205,6 +211,32 @@ public class CraftingTreeNode
 							return available;
 						}
 					}
+				}
+			}
+		}
+		else
+		{
+			final IAEItemStack available = inv.extractItems( this.what, Actionable.MODULATE, src );
+
+			if( available != null )
+			{
+				if( !this.exhausted )
+				{
+					final IAEItemStack is = this.job.checkUse( available );
+
+					if( is != null )
+					{
+						thingsUsed.add( is.copy() );
+						this.used.add( is );
+					}
+				}
+
+				this.bytes += available.getStackSize();
+				l -= available.getStackSize();
+
+				if( l == 0 )
+				{
+					return available;
 				}
 			}
 		}
@@ -234,7 +266,7 @@ public class CraftingTreeNode
 
 				madeWhat.setStackSize( l );
 
-				available = inv.extractItems( madeWhat, Actionable.MODULATE, src );
+				final IAEItemStack available = inv.extractItems( madeWhat, Actionable.MODULATE, src );
 
 				if( available != null )
 				{
@@ -264,7 +296,7 @@ public class CraftingTreeNode
 						pro.request( subInv, 1, src );
 
 						this.what.setStackSize( l );
-						available = subInv.extractItems( this.what, Actionable.MODULATE, src );
+						final IAEItemStack available = subInv.extractItems( this.what, Actionable.MODULATE, src );
 
 						if( available != null )
 						{

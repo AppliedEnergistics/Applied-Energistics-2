@@ -50,16 +50,19 @@ import appeng.hooks.TickHandler;
 
 public class CraftingJob implements Runnable, ICraftingJob
 {
-	private static final String LOG_CRAFTING_JOB = "CraftingJob (%s) issued by %s requesting [%s] using %s bytes took %s ms";
+	private static final String LOG_CRAFTING_JOB = "CraftingJob (%s) issued by %s requesting [%s] using %s bytes took %s us";
 	private static final String LOG_MACHINE_SOURCE_DETAILS = "Machine[object=%s, %s]";
 
 	private final MECraftingInventory original;
 	private final World world;
 	private final IItemList<IAEItemStack> crafting = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> usedWhileBuilding = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+
 	private final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<>();
 	private final Object monitor = new Object();
-	private final Stopwatch watch = Stopwatch.createUnstarted();
+	private final Stopwatch tickSpreadingWatch = Stopwatch.createUnstarted();
+	private final Stopwatch craftingTreeWatch = Stopwatch.createUnstarted();
 	private CraftingTreeNode tree;
 	private final IAEItemStack output;
 	private boolean simulate = false;
@@ -86,8 +89,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.callback = callback;
 		final ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
 		final IStorageGrid sg = grid.getCache( IStorageGrid.class );
-		this.original = new MECraftingInventory( sg
-				.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), actionSrc, false, false, false );
+		this.original = new MECraftingInventory( sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), actionSrc, false, false, false );
 
 		this.setTree( this.getCraftingTree( cc, what ) );
 		this.availableCheck = null;
@@ -101,6 +103,16 @@ public class CraftingJob implements Runnable, ICraftingJob
 	void refund( final IAEItemStack o )
 	{
 		this.availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
+	}
+
+	public IItemList<IAEItemStack> getUsedWhileBuilding()
+	{
+		return usedWhileBuilding;
+	}
+
+	public IAEItemStack getOriginal( IAEItemStack request )
+	{
+		return original.getItemList().findPrecise( request );
 	}
 
 	IAEItemStack checkUse( final IAEItemStack available )
@@ -139,7 +151,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				TickHandler.INSTANCE.registerCraftingSimulation( this.world, this );
 				this.handlePausing();
 
-				final Stopwatch timer = Stopwatch.createStarted();
+				craftingTreeWatch.start();
 
 				final MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
 				craftingInventory.ignore( this.output );
@@ -154,9 +166,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 					AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
 				}
 
-				this.logCraftingJob( "real", timer );
-				// if ( mode == Actionable.MODULATE )
-				// craftingInventory.moveItemsToStorage( storage );
+				craftingTreeWatch.stop();
+				this.logCraftingJob( "real", craftingTreeWatch );
 			}
 			catch( final CraftBranchFailure e )
 			{
@@ -164,23 +175,32 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 				try
 				{
-					final Stopwatch timer = Stopwatch.createStarted();
-					final MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
-					craftingInventory.ignore( this.output );
-
-					this.availableCheck = new MECraftingInventory( this.original, false, false, false );
-
-					this.getTree().setSimulate();
-					this.getTree().request( craftingInventory, this.output.getStackSize(), this.actionSrc );
-					this.getTree().dive( this );
-
-					for( final String s : this.opsAndMultiplier.keySet() )
+					if( actionSrc.player().isPresent() )
 					{
-						final TwoIntegers ti = this.opsAndMultiplier.get( s );
-						AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
-					}
+						craftingTreeWatch.reset().start();
+						final MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
+						craftingInventory.ignore( this.output );
 
-					this.logCraftingJob( "simulate", timer );
+						this.availableCheck = new MECraftingInventory( this.original, false, false, false );
+
+						this.getTree().setSimulate();
+						this.getTree().request( craftingInventory, this.output.getStackSize(), this.actionSrc );
+						this.getTree().dive( this );
+
+						for( final String s : this.opsAndMultiplier.keySet() )
+						{
+							final TwoIntegers ti = this.opsAndMultiplier.get( s );
+							AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
+						}
+
+						craftingTreeWatch.stop();
+						this.logCraftingJob( "simulate", craftingTreeWatch );
+					}
+					else
+					{
+						craftingTreeWatch.stop();
+						this.logCraftingJob( "real", craftingTreeWatch );
+					}
 				}
 				catch( final CraftBranchFailure e1 )
 				{
@@ -226,10 +246,11 @@ public class CraftingJob implements Runnable, ICraftingJob
 			this.incTime = 0;
 			synchronized ( this.monitor )
 			{
-				if( this.watch.elapsed( TimeUnit.MICROSECONDS ) > this.time )
+				if( this.tickSpreadingWatch.elapsed( TimeUnit.MICROSECONDS ) > this.time )
 				{
 					this.running = false;
-					this.watch.stop();
+					this.craftingTreeWatch.stop();
+					this.tickSpreadingWatch.stop();
 					this.monitor.notify();
 				}
 
@@ -263,7 +284,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		this.availableCheck = null;
 
-		synchronized( this.monitor )
+		synchronized ( this.monitor )
 		{
 			this.running = false;
 			this.done = true;
@@ -311,7 +332,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	/**
 	 * @return true if this needs more simulation
 	 */
-	public boolean simulateFor(final int milli)
+	public boolean simulateFor( final int milli )
 	{
 		this.time = milli;
 
@@ -323,8 +344,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 			}
 			if( !this.actionSrc.player().isPresent() )
 			{
-				this.watch.reset();
-				this.watch.start();
+				this.tickSpreadingWatch.reset();
+				this.tickSpreadingWatch.start();
 				this.monitor.notify();
 			}
 			this.running = true;
@@ -353,7 +374,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		if( AELog.isCraftingLogEnabled() )
 		{
 			final String itemToOutput = this.output.toString();
-			final long elapsedTime = timer.elapsed( TimeUnit.MILLISECONDS );
+			final long elapsedTime = timer.elapsed( TimeUnit.MICROSECONDS );
 			final String actionSource;
 
 			if( this.actionSrc.player().isPresent() )

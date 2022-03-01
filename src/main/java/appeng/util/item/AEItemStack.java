@@ -57,7 +57,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	private String displayName;
 	@SideOnly( Side.CLIENT )
 	private List<String> tooltip;
-	private WeakReference<ItemStack> cachedItemStack;
+	private ItemStack cachedItemStack;
 
 	private AEItemStack( final AEItemStack is )
 	{
@@ -66,6 +66,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.setCountRequestable( is.getCountRequestable() );
 		this.sharedStack = is.sharedStack;
 		this.oreReference = is.oreReference;
+		this.cachedItemStack = is.cachedItemStack;
 	}
 
 	private AEItemStack( final AESharedItemStack is, long size )
@@ -282,7 +283,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		ItemStack currentCached = null;
 		if( this.cachedItemStack != null )
 		{
-			currentCached = this.cachedItemStack.get();
+			currentCached = this.cachedItemStack;
 		}
 
 		ItemStack itemStack;
@@ -304,7 +305,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public void setCachedItemStack( ItemStack itemStack )
 	{
-		this.cachedItemStack = new WeakReference<>( itemStack );
+		this.cachedItemStack = itemStack;
 	}
 
 	@Override

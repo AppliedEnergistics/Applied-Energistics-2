@@ -19,10 +19,12 @@
 package appeng.crafting;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -40,6 +42,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
+import org.apache.commons.lang3.tuple.Pair;
 
 
 public class CraftingTreeProcess
@@ -48,7 +51,7 @@ public class CraftingTreeProcess
 	private final CraftingTreeNode parent;
 	final ICraftingPatternDetails details;
 	private final CraftingJob job;
-	private final Map<CraftingTreeNode, Long> nodes = new HashMap<>();
+	private final Object2LongArrayMap<CraftingTreeNode> nodes = new Object2LongArrayMap<>();
 	private final int depth;
 	boolean possible = true;
 	private World world;
@@ -70,32 +73,15 @@ public class CraftingTreeProcess
 		{
 			final IAEItemStack[] list = details.getInputs();
 
-			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
-			final IAEItemStack[] is = details.getInputs();
-			for( int x = 0; x < ic.getSizeInventory(); x++ )
-			{
-				ic.setInventorySlotContents( x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack() );
-			}
-
-			for( int x = 0; x < ic.getSizeInventory(); x++ )
-			{
-				final ItemStack g = ic.getStackInSlot( x );
-				if( !g.isEmpty() && g.getCount() > 1 )
-				{
-					this.fullSimulation = true;
-				}
-			}
-
 			for( final IAEItemStack part : details.getCondensedInputs() )
 			{
-				final ItemStack g = part.createItemStack();
-
 				boolean isAnInput = false;
 				for( final IAEItemStack a : details.getCondensedOutputs() )
 				{
-					if( !g.isEmpty() && a != null && a.equals( g ) )
+					if( a != null && a.equals( part ) )
 					{
 						isAnInput = true;
+						break;
 					}
 				}
 
@@ -104,22 +90,30 @@ public class CraftingTreeProcess
 					this.limitQty = true;
 				}
 
-				if( g.getItem().hasContainerItem( g ) )
+				if( part.getItem().hasContainerItem( part.getDefinition() ) )
 				{
 					this.limitQty = this.containerItems = true;
+					break;
 				}
 			}
 
-			final boolean complicated = false;
-
-			if( this.containerItems || complicated )
+			if( this.containerItems )
 			{
 				for( int x = 0; x < list.length; x++ )
 				{
 					final IAEItemStack part = list[x];
 					if( part != null )
 					{
-						this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+						job.getUsedWhileBuilding().addStorage( part );
+						IAEItemStack used = job.getUsedWhileBuilding().findPrecise( part );
+						if( job.getOriginal( part ) != null && used.getStackSize() <= job.getOriginal( part ).getStackSize() )
+						{
+							this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1, true ), part.getStackSize() );
+						}
+						else
+						{
+							this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+						}
 					}
 				}
 			}
@@ -133,8 +127,17 @@ public class CraftingTreeProcess
 						final IAEItemStack comparePart = list[x];
 						if( part != null && part.equals( comparePart ) )
 						{
-							// use the first slot...
-							this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+							job.getUsedWhileBuilding().addStorage( part );
+							IAEItemStack used = job.getUsedWhileBuilding().findPrecise( part );
+							if( job.getOriginal( part ) != null && used.getStackSize() <= job.getOriginal( part ).getStackSize() )
+							{
+								this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1, true ), part.getStackSize() );
+							}
+							else
+							{
+								// use the first slot...
+								this.nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+							}
 							break;
 						}
 					}
@@ -145,14 +148,13 @@ public class CraftingTreeProcess
 		{
 			for( final IAEItemStack part : details.getCondensedInputs() )
 			{
-				final ItemStack g = part.createItemStack();
-
 				boolean isAnInput = false;
 				for( final IAEItemStack a : details.getCondensedOutputs() )
 				{
-					if( !g.isEmpty() && a != null && a.equals( g ) )
+					if( a != null && a.equals( part ) )
 					{
 						isAnInput = true;
+						break;
 					}
 				}
 
@@ -190,7 +192,7 @@ public class CraftingTreeProcess
 		{
 			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 
-			for( final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet() )
+			for( final Entry<CraftingTreeNode, Long> entry : this.nodes.object2LongEntrySet() )
 			{
 				final IAEItemStack item = entry.getKey().getStack( entry.getValue() );
 				final IAEItemStack stack = entry.getKey().request( inv, item.getStackSize(), src );
@@ -214,7 +216,7 @@ public class CraftingTreeProcess
 		else
 		{
 			// request and remove inputs...
-			for( final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet() )
+			for( final Entry<CraftingTreeNode, Long> entry : this.nodes.object2LongEntrySet() )
 			{
 				final IAEItemStack item = entry.getKey().getStack( entry.getValue() );
 				final IAEItemStack stack = entry.getKey().request( inv, item.getStackSize() * i, src );
@@ -247,9 +249,9 @@ public class CraftingTreeProcess
 	void dive( final CraftingJob job )
 	{
 		job.addTask( this.getAmountCrafted( this.parent.getStack( 1 ) ), this.crafts, this.details, this.depth );
-		for( final CraftingTreeNode pro : this.nodes.keySet() )
+		for( final Entry<CraftingTreeNode, Long> entry : this.nodes.object2LongEntrySet() )
 		{
-			pro.dive( job );
+			entry.getKey().dive( job );
 		}
 
 		job.addBytes( this.crafts * 8 + this.bytes );
@@ -286,9 +288,9 @@ public class CraftingTreeProcess
 		this.crafts = 0;
 		this.bytes = 0;
 
-		for( final CraftingTreeNode pro : this.nodes.keySet() )
+		for( final Entry<CraftingTreeNode, Long> entry : this.nodes.object2LongEntrySet() )
 		{
-			pro.setSimulate();
+			entry.getKey().setSimulate();
 		}
 	}
 
@@ -296,9 +298,9 @@ public class CraftingTreeProcess
 	{
 		craftingCPUCluster.addCrafting( this.details, this.crafts );
 
-		for( final CraftingTreeNode pro : this.nodes.keySet() )
+		for( final Entry<CraftingTreeNode, Long> entry : this.nodes.object2LongEntrySet() )
 		{
-			pro.setJob( storage, craftingCPUCluster, src );
+			entry.getKey().setJob( storage, craftingCPUCluster, src );
 		}
 	}
 
@@ -311,9 +313,9 @@ public class CraftingTreeProcess
 			plan.addRequestable( i );
 		}
 
-		for( final CraftingTreeNode pro : this.nodes.keySet() )
+		for( final Entry<CraftingTreeNode, Long> entry : this.nodes.object2LongEntrySet() )
 		{
-			pro.getPlan( plan );
+			entry.getKey().getPlan( plan );
 		}
 	}
 }

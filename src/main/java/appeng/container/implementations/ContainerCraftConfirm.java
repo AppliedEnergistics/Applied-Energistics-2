@@ -150,6 +150,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 				if( ccr.getCpu() == c )
 				{
 					found = true;
+					break;
 				}
 			}
 
