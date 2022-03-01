@@ -167,7 +167,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				}
 
 				craftingTreeWatch.stop();
-				this.logCraftingJob( "real", craftingTreeWatch );
+				this.logCraftingJob( "real, success", craftingTreeWatch );
 			}
 			catch( final CraftBranchFailure e )
 			{
@@ -199,7 +199,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 					else
 					{
 						craftingTreeWatch.stop();
-						this.logCraftingJob( "real", craftingTreeWatch );
+						this.logCraftingJob( "real, failed", craftingTreeWatch );
 					}
 				}
 				catch( final CraftBranchFailure e1 )
@@ -266,12 +266,13 @@ public class CraftingJob implements Runnable, ICraftingJob
 					AELog.craftingDebug( "crafting job now active" );
 				}
 			}
-
-			if( Thread.interrupted() )
-			{
-				throw new InterruptedException();
-			}
 		}
+		
+		if( Thread.interrupted() )
+		{
+			throw new InterruptedException();
+		}
+
 		this.incTime++;
 	}
 
