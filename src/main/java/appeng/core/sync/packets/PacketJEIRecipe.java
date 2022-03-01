@@ -298,19 +298,17 @@ public class PacketJEIRecipe extends AppEngPacket
 
 			con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
 
-			if( this.output != null && ( ( con instanceof ContainerPatternTerm && !( (ContainerPatternTerm) con ).isCraftingMode() ) || con instanceof ContainerExpandedProcessingPatternTerm ) )
-			{
-				IItemHandler outputSlots = cct.getInventoryByName( "output" );
-
-				for( int i = 0; i < this.output.size(); ++i )
-				{
-					if( this.output.get( i ) == null )
-					{
-						continue;
-					}
-					ItemHandlerUtil.setStackInSlot( outputSlots, i, this.output.get( i ) );
-				}
-
+			if( this.output != null && ( ( con instanceof ContainerPatternTerm && !( (ContainerPatternTerm) con ).isCraftingMode() ) || con instanceof ContainerExpandedProcessingPatternTerm ) ) {
+                IItemHandler outputSlots = cct.getInventoryByName("output");
+                for (int i = 0; i < outputSlots.getSlots(); ++i) {
+                    ItemHandlerUtil.setStackInSlot(outputSlots, i, ItemStack.EMPTY);
+                }
+                for (int i = 0; i < this.output.size() && i < outputSlots.getSlots(); ++i) {
+                    if (this.output.get(i) == null || this.output.get(i) == ItemStack.EMPTY) {
+                        continue;
+                    }
+                    ItemHandlerUtil.setStackInSlot(outputSlots, i, this.output.get(i));
+                }
 			}
 		}
 	}
