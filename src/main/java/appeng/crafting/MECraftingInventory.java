@@ -320,10 +320,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 						}
 					}
 					failed = true;
-					if( !src.player().isPresent() )
-					{
-						break;
-					}
 				}
 			}
 		}
