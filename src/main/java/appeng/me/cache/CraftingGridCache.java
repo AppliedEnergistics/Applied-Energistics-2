@@ -411,27 +411,6 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		{
 			details.add( medium );
 		}
-
-		if( !updatePatterns )
-		{
-			List<IAEItemStack> newCraftables = new ArrayList<>();
-
-			ObjectSet<ICraftingPatternDetails> b = new ObjectRBTreeSet<>( COMPARATOR );
-			ImmutableList<ICraftingPatternDetails> a = this.craftableItems.get( api.getCondensedOutputs()[0] );
-			if( a != null )
-			{
-				b.addAll( this.craftableItems.get( api.getOutputs()[0] ) );
-			}
-			b.add( api );
-
-			for( IAEItemStack stack : api.getCondensedOutputs() )
-			{
-				IAEItemStack i = stack.copy().reset().setCraftable( true );
-				this.craftableItems.put( i, ImmutableList.copyOf( b ) );
-				newCraftables.add( i );
-			}
-			this.storageGrid.postCraftablesChanges( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), newCraftables, new BaseActionSource() );
-		}
 	}
 
 	@Override

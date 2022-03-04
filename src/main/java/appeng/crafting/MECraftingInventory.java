@@ -28,7 +28,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.me.helpers.PlayerSource;
 import appeng.util.inv.ItemListIgnoreCrafting;
 import net.minecraft.util.text.TextComponentString;
 
@@ -312,11 +311,11 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 					{
 						if( result == null )
 						{
-							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getItem().getItemStackDisplayName( extra.getDefinition() ) + " available but could not extract anything" ), false );
+							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getDisplayName() + " available but could not extract anything" ), false );
 						}
 						else
 						{
-							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getItem().getItemStackDisplayName( extra.getDefinition() ) + " available but could only extract " + result.getStackSize() ), false );
+							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getDisplayName() + " available but could only extract " + result.getStackSize() ), false );
 						}
 					}
 					failed = true;

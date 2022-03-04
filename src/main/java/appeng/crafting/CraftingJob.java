@@ -22,6 +22,7 @@ package appeng.crafting;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import appeng.me.cache.GridStorageCache;
 import com.google.common.base.Stopwatch;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,6 +59,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	private final IItemList<IAEItemStack> crafting = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final IItemList<IAEItemStack> usedWhileBuilding = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> uniques = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	private final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<>();
 	private final Object monitor = new Object();
@@ -87,9 +89,12 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.actionSrc = actionSrc;
 
 		this.callback = callback;
+
 		final ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
-		final IStorageGrid sg = grid.getCache( IStorageGrid.class );
-		this.original = new MECraftingInventory( sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), actionSrc, false, false, false );
+		final GridStorageCache sg = grid.getCache( IStorageGrid.class );
+		Stopwatch stopwatch = Stopwatch.createStarted();
+		this.original = new MECraftingInventory( sg.getExtractableList() );
+		AELog.info( "CraftingJob: original inventory took " + stopwatch.elapsed( TimeUnit.MICROSECONDS ) + "us" );
 
 		this.setTree( this.getCraftingTree( cc, what ) );
 		this.availableCheck = null;
@@ -110,14 +115,19 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return usedWhileBuilding;
 	}
 
-	public IAEItemStack getOriginal( IAEItemStack request )
+	public IItemList<IAEItemStack> getUniques()
 	{
-		return original.getItemList().findPrecise( request );
+		return uniques;
 	}
 
 	IAEItemStack checkUse( final IAEItemStack available )
 	{
 		return this.availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
+	}
+
+	IAEItemStack checkAvailable( final IAEItemStack available )
+	{
+		return this.original.extractItems( available.copy().setStackSize( Long.MAX_VALUE ), Actionable.SIMULATE, this.actionSrc );
 	}
 
 	public void writeToNBT( final NBTTagCompound out )
@@ -267,7 +277,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				}
 			}
 		}
-		
+
 		if( Thread.interrupted() )
 		{
 			throw new InterruptedException();

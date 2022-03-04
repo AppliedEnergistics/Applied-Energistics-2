@@ -239,7 +239,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		// also stop accepting items when the job is complete, i.e. to prevent re-insertion when pushing out
 		// items during storeItems
-		if (input == null || isComplete) {
+		if( input == null || isComplete )
+		{
 			return input;
 		}
 
@@ -375,7 +376,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			final ImmutableList<IAEItemStack> single = ImmutableList.of( diff.copy() );
 
-			while( i.hasNext() )
+			while ( i.hasNext() )
 			{
 				final Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> o = i.next();
 				final IMEMonitorHandlerReceiver<IAEItemStack> receiver = o.getKey();
@@ -495,15 +496,14 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return null;
 	}
 
-	private boolean canCraft(final ICraftingPatternDetails details, final IAEItemStack[] condensedInputs)
+	private boolean canCraft( final ICraftingPatternDetails details, final IAEItemStack[] condensedInputs )
 	{
 		if( !details.isCraftable() )
 		{
 			// Processing patterns are relatively easy
-			for ( IAEItemStack input : condensedInputs )
+			for( IAEItemStack input : condensedInputs )
 			{
-				final IAEItemStack ais = this.inventory.extractItems( input.copy(), Actionable.SIMULATE,
-						this.machineSrc );
+				final IAEItemStack ais = this.inventory.extractItems( input.copy(), Actionable.SIMULATE, this.machineSrc );
 
 				if( ais == null || ais.getStackSize() < input.getStackSize() )
 				{
@@ -516,7 +516,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			// When substitutions are allowed, we have to keep track of which items we've reserved
 			IAEItemStack[] inputs = details.getInputs();
 			Map<IAEItemStack, Integer> consumedCount = new HashMap<>();
-			for ( int i = 0; i < inputs.length; i++ )
+			for( int i = 0; i < inputs.length; i++ )
 			{
 				List<IAEItemStack> substitutes = details.getSubstituteInputs( i );
 				if( substitutes.isEmpty() )
@@ -525,9 +525,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				}
 
 				boolean found = false;
-				for ( IAEItemStack substitute : substitutes )
+				for( IAEItemStack substitute : substitutes )
 				{
-					for ( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( substitute, FuzzyMode.IGNORE_ALL ) )
+					for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( substitute, FuzzyMode.IGNORE_ALL ) )
 					{
 						int alreadyConsumed = consumedCount.getOrDefault( fuzz, 0 );
 						if( fuzz.getStackSize() - alreadyConsumed <= 0 )
@@ -537,8 +537,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 						fuzz = fuzz.copy();
 						fuzz.setStackSize( 1 ); // We're iterating over non condensed inputs which means there's 1 of each needed
-						final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE,
-								this.machineSrc );
+						final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
 
 						if( ais != null && ais.getStackSize() > 0 )
 						{
@@ -565,11 +564,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			// When no substitutions can occur, we can simply check that all items are accounted since
 			// each type of item should only occur once
-			for ( IAEItemStack g : condensedInputs )
+			for( IAEItemStack g : condensedInputs )
 			{
 				boolean found = false;
 
-				for ( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ) )
+				for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ) )
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( g.getStackSize() );
@@ -675,8 +674,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			{
 				this.somethingChanged = false;
 				this.executeCrafting( eg, cc );
-			}
-			while( this.somethingChanged && this.remainingOperations > 0 );
+			} while ( this.somethingChanged && this.remainingOperations > 0 );
 		}
 		this.usedOps[2] = this.usedOps[1];
 		this.usedOps[1] = this.usedOps[0];
@@ -692,7 +690,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		final Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 
-		while( i.hasNext() )
+		while ( i.hasNext() )
 		{
 			final Entry<ICraftingPatternDetails, TaskProgress> e = i.next();
 
@@ -708,12 +706,12 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			{
 				InventoryCrafting ic = null;
 
-				if (!visitedMediums.containsKey( details ) || visitedMediums.get( details ).isEmpty())
+				if( !visitedMediums.containsKey( details ) || visitedMediums.get( details ).isEmpty() )
 				{
-					visitedMediums.put( details, new ArrayDeque<>( cc.getMediums( details ).stream().filter( Objects::nonNull ).collect( Collectors.toList()) ) );
+					visitedMediums.put( details, new ArrayDeque<>( cc.getMediums( details ).stream().filter( Objects::nonNull ).collect( Collectors.toList() ) ) );
 				}
 
-				while (!visitedMediums.get( details ).isEmpty())
+				while ( !visitedMediums.get( details ).isEmpty() )
 				{
 
 					ICraftingMedium m = visitedMediums.get( details ).poll();
@@ -773,52 +771,58 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 											{
 												itemList.addAll( this.inventory.getItemList().findFuzzy( stack, FuzzyMode.IGNORE_ALL ) );
 											}
-										} else {
-											itemList = new ArrayList<>(1);
+										}
+										else
+										{
+											itemList = new ArrayList<>( 1 );
 
-											final IAEItemStack item = this.inventory.getItemList()
-													.findPrecise(input[x]);
+											final IAEItemStack item = this.inventory.getItemList().findPrecise( input[x] );
 
-											if (item != null) {
-												itemList.add(item);
+											if( item != null )
+											{
+												itemList.add( item );
 											}
 										}
 
-										for (IAEItemStack fuzz : itemList) {
+										for( IAEItemStack fuzz : itemList )
+										{
 											fuzz = fuzz.copy();
-											fuzz.setStackSize(input[x].getStackSize());
+											fuzz.setStackSize( input[x].getStackSize() );
 
-											if (details.isValidItemForSlot(x, fuzz.createItemStack(),
-													this.getWorld())) {
-												final IAEItemStack ais = this.inventory.extractItems(fuzz,
-														Actionable.MODULATE, this.machineSrc);
-												final ItemStack is = ais == null ? ItemStack.EMPTY
-														: ais.createItemStack();
+											if( details.isValidItemForSlot( x, fuzz.createItemStack(), this.getWorld() ) )
+											{
+												final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.MODULATE, this.machineSrc );
+												final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
-												if (!is.isEmpty()) {
-													this.postChange(AEItemStack.fromItemStack(is), this.machineSrc);
-													ic.setInventorySlotContents(x, is);
+												if( !is.isEmpty() )
+												{
+													this.postChange( AEItemStack.fromItemStack( is ), this.machineSrc );
+													ic.setInventorySlotContents( x, is );
 													found = true;
 													break;
 												}
 											}
 										}
-									} else {
-										final IAEItemStack ais = this.inventory.extractItems(input[x].copy(),
-												Actionable.MODULATE, this.machineSrc);
+									}
+									else
+									{
+										final IAEItemStack ais = this.inventory.extractItems( input[x].copy(), Actionable.MODULATE, this.machineSrc );
 										final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
-										if (!is.isEmpty()) {
-											this.postChange(input[x], this.machineSrc);
-											ic.setInventorySlotContents(x, is);
-											if (is.getCount() == input[x].getStackSize()) {
+										if( !is.isEmpty() )
+										{
+											this.postChange( input[x], this.machineSrc );
+											ic.setInventorySlotContents( x, is );
+											if( is.getCount() == input[x].getStackSize() )
+											{
 												found = true;
 												continue;
 											}
 										}
 									}
 
-									if (!found) {
+									if( !found )
+									{
 										break;
 									}
 								}
@@ -902,7 +906,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void storeItems()
 	{
-		Preconditions.checkState(isComplete, "CPU should be complete to prevent re-insertion when dumping items");
+		Preconditions.checkState( isComplete, "CPU should be complete to prevent re-insertion when dumping items" );
 		final IGrid g = this.getGrid();
 
 		if( g == null )
@@ -1016,8 +1020,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	public boolean isBusy()
 	{
 
-		this.tasks.entrySet().removeIf(
-				taskProgressEntry -> taskProgressEntry.getValue().value <= 0 );
+		this.tasks.entrySet().removeIf( taskProgressEntry -> taskProgressEntry.getValue().value <= 0 );
 
 		if( !this.waitingFor.isEmpty() || !this.tasks.isEmpty() )
 		{
@@ -1075,8 +1078,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		final int hash = System.identityHashCode( this );
 		final int hmm = this.finalOutput == null ? 0 : this.finalOutput.hashCode();
 
-		return Long.toString( now, Character.MAX_RADIX ) + '-' + Integer.toString( hash, Character.MAX_RADIX ) + '-' + Integer.toString( hmm,
-				Character.MAX_RADIX );
+		return Long.toString( now, Character.MAX_RADIX ) + '-' + Integer.toString( hash, Character.MAX_RADIX ) + '-' + Integer.toString( hmm, Character.MAX_RADIX );
 	}
 
 	private NBTTagCompound generateLinkData( final String craftingID, final boolean standalone, final boolean req )
@@ -1103,7 +1105,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void getListOfItem( final IItemList<IAEItemStack> list, final CraftingItemList whichList )
 	{
-		switch( whichList )
+		switch ( whichList )
 		{
 			case ACTIVE:
 				for( final IAEItemStack ais : this.waitingFor )
@@ -1174,7 +1176,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		IAEItemStack is;
 
-		switch( storage2 )
+		switch ( storage2 )
 		{
 			case STORAGE:
 				is = this.inventory.getItemList().findPrecise( what );

@@ -464,14 +464,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 		try
 		{
-			if( removed )
-			{
-				this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
-			}
-			else if( newPattern )
-			{
-				this.provideCrafting( (ICraftingProviderHelper) this.gridProxy.getCrafting() );
-			}
+		    this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
 		}
 		catch( GridAccessException e )
 		{

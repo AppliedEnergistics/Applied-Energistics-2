@@ -26,6 +26,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.crafting.MECraftingInventory;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
@@ -68,6 +70,7 @@ public class GridStorageCache implements IStorageGrid
 	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<>();
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
+	private MECraftingInventory localCache = null;
 	private int localDepth;
 
 	public GridStorageCache( final IGrid g )
@@ -82,6 +85,7 @@ public class GridStorageCache implements IStorageGrid
 	@Override
 	public void onUpdateTick()
 	{
+		this.localCache = null;
 		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.onTick() );
 	}
 
@@ -169,6 +173,15 @@ public class GridStorageCache implements IStorageGrid
 		return (IMEMonitor<T>) this.storageMonitors.get( channel );
 	}
 
+	public MECraftingInventory getExtractableList()
+	{
+		if( localCache == null )
+		{
+			localCache = new MECraftingInventory( getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), new BaseActionSource(), false, false, false );
+		}
+		return localCache;
+	}
+
 	private CellChangeTracker addCellProvider( final ICellProvider cc, final CellChangeTracker tracker )
 	{
 		if( this.inactiveCellProviders.contains( cc ) )
@@ -198,8 +211,7 @@ public class GridStorageCache implements IStorageGrid
 
 			final IActionSource actionSrc = cc instanceof IActionHost ? new MachineSource( (IActionHost) cc ) : new BaseActionSource();
 
-			this.storageMonitors.forEach( ( channel, monitor ) ->
-			{
+			this.storageMonitors.forEach( ( channel, monitor ) -> {
 				for( final IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( channel ) )
 				{
 					tracker.postChanges( channel, -1, h, actionSrc );

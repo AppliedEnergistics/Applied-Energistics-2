@@ -23,14 +23,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import appeng.api.config.FuzzyMode;
 import com.google.common.collect.Lists;
-
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.IActionSource;
@@ -81,100 +80,32 @@ public class CraftingTreeNode
 		for( final ICraftingPatternDetails details : cc.getCraftingFor( this.what, this.parent == null ? null : this.parent.details, slot, this.world ) )// in
 		// order.
 		{
-			if( this.parent == null || this.parent.notRecursive( details ) )
+			if( this.parent == null || this.parent.notRecursive() )
 			{
 				this.nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1 ) );
 			}
 		}
 	}
 
-	public CraftingTreeNode( final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat, final CraftingTreeProcess par, final int slot, final int depth, boolean available )
-	{
-		this.what = wat;
-		this.parent = par;
-		this.slot = slot;
-		this.world = job.getWorld();
-		this.job = job;
-		this.sim = false;
-
-		this.canEmit = cc.canEmitFor( this.what );
-
-		if( this.canEmit )
-		{
-			return; // if you can emit for something, you can't make it with patterns.
-		}
-
-		if( !available )
-		{
-			for( final ICraftingPatternDetails details : cc.getCraftingFor( this.what, this.parent == null ? null : this.parent.details, slot, this.world ) )// in
-			// order.
-			{
-				if( this.parent == null || this.parent.notRecursive( details ) )
-				{
-					this.nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1 ) );
-				}
-			}
-		}
-	}
-
-	boolean notRecursive( final ICraftingPatternDetails details )
-	{
-		IAEItemStack[] o = details.getCondensedOutputs();
-
-		for( final IAEItemStack i : o )
-		{
-			if( i.equals( this.what ) )
-			{
-				return false;
-			}
-		}
-
-		o = details.getCondensedInputs();
-
-		for( final IAEItemStack i : o )
-		{
-			if( i.equals( this.what ) )
-			{
-				return false;
-			}
-		}
-
-		if( this.parent == null )
-		{
-			return true;
-		}
-
-		return this.parent.notRecursive( details );
-	}
-
 	IAEItemStack request( final MECraftingInventory inv, long l, final IActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
 		this.job.handlePausing();
+
+		final IItemList<IAEItemStack> inventoryList = inv.getItemList();
 		final List<IAEItemStack> thingsUsed = new ArrayList<>();
 
 		this.what.setStackSize( l );
-
 		if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )
 		{
-			final Collection<IAEItemStack> itemList;
-			final IItemList<IAEItemStack> inventoryList = inv.getItemList();
+			Collection<IAEItemStack> itemList = new ArrayList<>();
 
-			if( this.parent.details.canSubstitute() )
+			if( this.parent.getContainerItems() != null && !this.parent.getContainerItems().findFuzzy( this.what, FuzzyMode.IGNORE_ALL ).isEmpty() )
 			{
-				final List<IAEItemStack> substitutes = this.parent.details.getSubstituteInputs( this.slot );
-				itemList = new ArrayList<>( substitutes.size() );
-
-				for( IAEItemStack stack : substitutes )
-				{
-					itemList.addAll( inventoryList.findFuzzy( stack, FuzzyMode.IGNORE_ALL ) );
-				}
+				itemList = inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL );
 			}
 			else
 			{
-				itemList = Lists.newArrayList();
-
 				final IAEItemStack item = inventoryList.findPrecise( this.what );
-
 				if( item != null )
 				{
 					itemList.add( item );
@@ -343,6 +274,11 @@ public class CraftingTreeNode
 		}
 
 		throw new CraftBranchFailure( this.what, l );
+	}
+
+	boolean notRecursive()
+	{
+		return this.parent == null || job.getUniques().findPrecise( this.what ) == null;
 	}
 
 	void dive( final CraftingJob job )
