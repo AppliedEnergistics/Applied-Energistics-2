@@ -92,9 +92,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		final ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
 		final GridStorageCache sg = grid.getCache( IStorageGrid.class );
-		Stopwatch stopwatch = Stopwatch.createStarted();
 		this.original = new MECraftingInventory( sg.getExtractableList() );
-		AELog.info( "CraftingJob: original inventory took " + stopwatch.elapsed( TimeUnit.MICROSECONDS ) + "us" );
 
 		this.setTree( this.getCraftingTree( cc, what ) );
 		this.availableCheck = null;
