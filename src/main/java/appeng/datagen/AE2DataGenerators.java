@@ -18,7 +18,6 @@
 
 package appeng.datagen;
 
-import appeng.datagen.providers.tags.BiomeTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -38,6 +37,7 @@ import appeng.datagen.providers.recipes.EntropyRecipes;
 import appeng.datagen.providers.recipes.InscriberRecipes;
 import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
 import appeng.datagen.providers.recipes.SmeltingRecipes;
+import appeng.datagen.providers.tags.BiomeTagsProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.FluidTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;

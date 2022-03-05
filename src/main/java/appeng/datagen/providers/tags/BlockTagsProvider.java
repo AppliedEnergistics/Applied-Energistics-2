@@ -18,11 +18,10 @@
 
 package appeng.datagen.providers.tags;
 
-import appeng.api.ids.AETags;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
@@ -32,9 +31,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import appeng.api.ids.AETags;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.BlockDefinition;
+import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider implements IAE2DataProvider {
     public BlockTagsProvider(DataGenerator generator) {
