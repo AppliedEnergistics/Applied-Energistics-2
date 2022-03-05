@@ -18,6 +18,7 @@
 
 package appeng.datagen;
 
+import appeng.datagen.providers.tags.BiomeTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -55,6 +56,7 @@ public class AE2DataGenerators {
         generator.addProvider(blockTagsProvider);
         generator.addProvider(new ItemTagsProvider(generator, blockTagsProvider));
         generator.addProvider(new FluidTagsProvider(generator));
+        generator.addProvider(new BiomeTagsProvider(generator));
 
         // Models
         generator.addProvider(new BlockModelProvider(generator, existingFileHelper));

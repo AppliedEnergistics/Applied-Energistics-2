@@ -18,11 +18,11 @@
 
 package appeng.datagen.providers.tags;
 
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import appeng.api.ids.AETags;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.BlockDefinition;
+import appeng.datagen.providers.IAE2DataProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
@@ -32,11 +32,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-import appeng.api.ids.AETags;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
-import appeng.datagen.providers.IAE2DataProvider;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider implements IAE2DataProvider {
     public BlockTagsProvider(DataGenerator generator) {
@@ -166,12 +164,6 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
 
     private TagsProvider.TagAppender<Block> tag(String name) {
         return tag(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(name)));
-    }
-
-    @Override
-    protected Path getPath(ResourceLocation id) {
-        return this.generator.getOutputFolder()
-                .resolve("data/" + id.getNamespace() + "/tags/blocks/" + id.getPath() + ".json");
     }
 
     @Override
