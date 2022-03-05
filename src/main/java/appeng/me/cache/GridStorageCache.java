@@ -19,15 +19,12 @@
 package appeng.me.cache;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.crafting.MECraftingInventory;
+import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IPriorityHost;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
@@ -57,6 +54,8 @@ import appeng.me.helpers.GenericInterestManager;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 
 public class GridStorageCache implements IStorageGrid
@@ -71,6 +70,7 @@ public class GridStorageCache implements IStorageGrid
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
 	private MECraftingInventory localCache = null;
+	private final Int2ObjectMap<MECraftingInventory> extractableItemPriorityMap = new Int2ObjectOpenHashMap<>();
 	private int localDepth;
 
 	public GridStorageCache( final IGrid g )
@@ -86,6 +86,7 @@ public class GridStorageCache implements IStorageGrid
 	public void onUpdateTick()
 	{
 		this.localCache = null;
+		this.extractableItemPriorityMap.clear();
 		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.onTick() );
 	}
 
@@ -175,6 +176,19 @@ public class GridStorageCache implements IStorageGrid
 
 	public MECraftingInventory getExtractableList( IActionSource src )
 	{
+		if( src instanceof MachineSource )
+		{
+			if( src.machine().isPresent() )
+			{
+				IActionHost machine = src.machine().get();
+				if( machine instanceof IInterfaceHost )
+				{
+					extractableItemPriorityMap.putIfAbsent( ( (IPriorityHost) machine ).getPriority(), new MECraftingInventory( getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), src, false, false, false ) );
+					return extractableItemPriorityMap.get( ( (IPriorityHost) machine ).getPriority() );
+				}
+			}
+		}
+
 		if( localCache == null )
 		{
 			localCache = new MECraftingInventory( getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), src, false, false, false );
