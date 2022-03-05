@@ -5,13 +5,15 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
@@ -43,9 +45,9 @@ public class ItemPickupStrategy implements PickupStrategy {
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
 
-    private static final Tag<Block> BLOCK_BLACKLIST = TagRegistry.block(TAG_BLACKLIST);
+    private static final TagKey<Block> BLOCK_BLACKLIST = TagKey.create(Registry.BLOCK_REGISTRY, TAG_BLACKLIST);
 
-    private static final Tag<Item> ITEM_BLACKLIST = TagRegistry.item(TAG_BLACKLIST);
+    private static final TagKey<Item> ITEM_BLACKLIST = TagKey.create(Registry.ITEM_REGISTRY, TAG_BLACKLIST);
 
     private final ServerLevel level;
     private final BlockPos pos;
@@ -340,11 +342,11 @@ public class ItemPickupStrategy implements PickupStrategy {
     }
 
     public static boolean isBlockBlacklisted(Block b) {
-        return BLOCK_BLACKLIST.contains(b);
+        return b.builtInRegistryHolder().is(BLOCK_BLACKLIST);
     }
 
     public static boolean isItemBlacklisted(Item i) {
-        return ITEM_BLACKLIST.contains(i);
+        return i.builtInRegistryHolder().is(ITEM_BLACKLIST);
     }
 
     record HarvestTool(ItemStack item, boolean fallback) {

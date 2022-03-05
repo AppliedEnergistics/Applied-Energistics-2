@@ -194,7 +194,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     public static boolean isMetalIngot(ItemStack i) {
-        return AETags.METAL_INGOTS.contains(i.getItem());
+        return i.getItem().builtInRegistryHolder().is(AETags.METAL_INGOTS);
     }
 
     private boolean isAllowEdit() {

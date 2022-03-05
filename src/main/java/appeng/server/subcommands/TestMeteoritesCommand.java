@@ -33,6 +33,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
@@ -104,7 +105,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                 chunksChecked++;
                 ChunkPos cp = new ChunkPos(cx, cz);
                 BlockPos p = new BlockPos(cp.getMinBlockX(), 0, cp.getMinBlockZ());
-                BlockPos nearest = generator.findNearestMapFeature(level, MeteoriteStructure.INSTANCE, p, 0, false);
+                var nearest = generator.findNearestMapFeature(level, HolderSet.direct(MeteoriteStructure.CONFIGURED_INSTANCE), p, 0, false);
                 if (nearest != null) {
                     ChunkAccess chunk = level.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
                     // The actual relevant information is in the structure piece
@@ -175,7 +176,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             msg.append(getClickablePosition(level, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            String biomeId = level.getBiomeName(pos).map(bk -> bk.location().toString()).orElse("unknown");
+            String biomeId = level.getBiome(pos).unwrapKey().map(bk -> bk.location().toString()).orElse("unknown");
             Component tooltip = new TextComponent(settings + "\nBiome: ").copy()
                     .append(biomeId);
             msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
@@ -201,7 +202,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(ChunkAccess chunk) {
-        StructureStart<?> start = chunk.getStartForFeature(MeteoriteStructure.INSTANCE);
+        var start = chunk.getStartForFeature(MeteoriteStructure.CONFIGURED_INSTANCE.value());
 
         if (start != null && start.getPieces().size() > 0
                 && start.getPieces().get(0) instanceof MeteoriteStructurePiece) {

@@ -18,17 +18,14 @@
 
 package appeng.spatial;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
+import appeng.core.definitions.AEBlocks;
 import com.mojang.serialization.Codec;
-
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.RegistryLookupCodec;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
@@ -40,12 +37,17 @@ import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.GenerationStep.Carving;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 
-import appeng.core.definitions.AEBlocks;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * Chunk generator the spatial storage level.
@@ -63,9 +65,10 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
      * If it was not the same object, then the Object->ID lookup would fail since it uses an identity hashmap
      * internally.
      */
-    public static final Codec<SpatialStorageChunkGenerator> CODEC = RegistryLookupCodec
-            .create(Registry.BIOME_REGISTRY)
-            .xmap(SpatialStorageChunkGenerator::new, SpatialStorageChunkGenerator::getBiomeRegistry).stable().codec();
+    public static final Codec<SpatialStorageChunkGenerator> CODEC = RecordCodecBuilder
+            .create(instance -> commonCodec(instance)
+                    .and(RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY).forGetter(source -> source.biomeRegistry))
+                    .apply(instance, instance.stable(FlatLevelSource::new)));
 
     private final Registry<Biome> biomeRegistry;
 
@@ -73,8 +76,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     private final BlockState defaultBlockState;
 
-    public SpatialStorageChunkGenerator(Registry<Biome> biomeRegistry) {
-        super(createBiomeSource(biomeRegistry), createSettings());
+    public SpatialStorageChunkGenerator(Registry<StructureSet> structureSets, Registry<Biome> biomeRegistry) {
+        super(structureSets, Optional.of(HolderSet.direct()), createBiomeSource(biomeRegistry));
         this.defaultBlockState = AEBlocks.MATRIX_FRAME.block().defaultBlockState();
         this.biomeRegistry = biomeRegistry;
 
@@ -91,15 +94,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     private static FixedBiomeSource createBiomeSource(Registry<Biome> biomeRegistry) {
-        return new FixedBiomeSource(biomeRegistry.getOrThrow(SpatialStorageDimensionIds.BIOME_KEY));
-    }
-
-    public Registry<Biome> getBiomeRegistry() {
-        return biomeRegistry;
-    }
-
-    private static StructureSettings createSettings() {
-        return new StructureSettings(Optional.empty(), Collections.emptyMap());
+        return new FixedBiomeSource(biomeRegistry.getHolderOrThrow(SpatialStorageDimensionIds.BIOME_KEY));
     }
 
     @Override
@@ -114,12 +109,12 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     @Override
     public Climate.Sampler climateSampler() {
-        return (i, j, k) -> Climate.target(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        return Climate.empty();
     }
 
     @Override
     public void buildSurface(WorldGenRegion region, StructureFeatureManager structureFeatureManager,
-            ChunkAccess chunk) {
+                             ChunkAccess chunk) {
         this.fillChunk(chunk);
         chunk.setUnsaved(false);
     }
@@ -152,7 +147,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     @Override
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
-            StructureFeatureManager structureFeatureManager, ChunkAccess chunk) {
+                                                        StructureFeatureManager structureFeatureManager, ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
@@ -167,8 +162,12 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
+    public void addDebugScreenInfo(List<String> list, BlockPos pos) {
+    }
+
+    @Override
     public void applyCarvers(WorldGenRegion worldGenRegion, long l, BiomeManager biomeManager,
-            StructureFeatureManager structureFeatureManager, ChunkAccess chunkAccess, Carving carving) {
+                             StructureFeatureManager structureFeatureManager, ChunkAccess chunkAccess, Carving carving) {
     }
 
     @Override

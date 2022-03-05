@@ -23,9 +23,9 @@
 
 package appeng.api.ids;
 
-import net.fabricmc.fabric.api.tag.TagFactory;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -44,48 +44,48 @@ public final class AETags {
      * <p/>
      * To blacklist block entities from being moved, you need to add the hosting block to this tag.
      */
-    public static final Tag.Named<Block> SPATIAL_BLACKLIST = blockTag("ae2:blacklisted/spatial");
+    public static final TagKey<Block> SPATIAL_BLACKLIST = blockTag("ae2:blacklisted/spatial");
 
     /**
      * Contains blocks that are blacklisted from being picked up by an item annihilation plane.
      */
-    public static final Tag.Named<Block> ANNIHILATION_PLANE_BLOCK_BLACKLIST = blockTag(
+    public static final TagKey<Block> ANNIHILATION_PLANE_BLOCK_BLACKLIST = blockTag(
             "ae2:blacklisted/annihilation_plane");
 
     /**
      * Contains items that are blacklisted from being picked up by an item annihilation plane.
      */
-    public static final Tag.Named<Item> ANNIHILATION_PLANE_ITEM_BLACKLIST = itemTag(
+    public static final TagKey<Item> ANNIHILATION_PLANE_ITEM_BLACKLIST = itemTag(
             "ae2:blacklisted/annihilation_plane");
 
     /**
      * Contains items that are blacklisted from being picked up by a fluid annihilation plane.
      */
-    public static final Tag.Named<Fluid> ANNIHILATION_PLANE_FLUID_BLACKLIST = fluidTag(
+    public static final TagKey<Fluid> ANNIHILATION_PLANE_FLUID_BLACKLIST = fluidTag(
             "ae2:blacklisted/annihilation_plane");
 
     /**
      * Used by the quartz knife to decide which ingots can be crafted into nameplates, as well as the crafting recipe
      * for cable anchors.
      */
-    public static Tag.Named<Item> METAL_INGOTS = itemTag("ae2:metal_ingots");
+    public static TagKey<Item> METAL_INGOTS = itemTag("ae2:metal_ingots");
 
     /**
      * Block tag used to explicitly whitelist blocks for use in facades, even if they don't meet the general criteria
      * for being used in facades.
      */
-    public static final Tag.Named<Block> FACADE_BLOCK_WHITELIST = blockTag("ae2:whitelisted/facades");
+    public static final TagKey<Block> FACADE_BLOCK_WHITELIST = blockTag("ae2:whitelisted/facades");
 
-    private static Tag.Named<Item> itemTag(String name) {
-        return TagFactory.ITEM.create(new ResourceLocation(name));
+    private static TagKey<Item> itemTag(String name) {
+        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(name));
     }
 
-    private static Tag.Named<Fluid> fluidTag(String name) {
-        return TagFactory.FLUID.create(new ResourceLocation(name));
+    private static TagKey<Fluid> fluidTag(String name) {
+        return TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(name));
     }
 
-    private static Tag.Named<Block> blockTag(String name) {
-        return TagFactory.BLOCK.create(new ResourceLocation(name));
+    private static TagKey<Block> blockTag(String name) {
+        return TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(name));
     }
 
 }

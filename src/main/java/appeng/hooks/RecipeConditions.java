@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.SerializationTags;
+import net.minecraft.tags.TagKey;
 
 /**
  * Our own scrappy recipe condition system.
@@ -25,8 +25,8 @@ public class RecipeConditions {
             var tagId = new ResourceLocation(hasTagCondition.getAsString());
 
             // Need to take it from here because the tag container might not have been updated yet
-            var tag = SerializationTags.getInstance().getOrEmpty(Registry.ITEM_REGISTRY).getTag(tagId);
-            if (tag == null || tag.getValues().isEmpty()) {
+            var tag = TagKey.create(Registry.ITEM_REGISTRY, tagId);
+            if (!Registry.ITEM.isKnownTagName(tag)) {
                 return false;
             }
         }

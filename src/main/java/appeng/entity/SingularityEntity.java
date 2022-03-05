@@ -77,8 +77,8 @@ public final class SingularityEntity extends AEBaseItemEntity {
                 if (e instanceof ItemEntity) {
                     final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
-                        var matches = ConventionTags.ENDER_PEARL_DUST.contains(other.getItem())
-                                || ConventionTags.ENDER_PEARL.contains(other.getItem());
+                        var matches = other.is(ConventionTags.ENDER_PEARL_DUST)
+                                || other.is(ConventionTags.ENDER_PEARL);
 
                         if (matches) {
                             while (item.getCount() > 0 && other.getCount() > 0) {

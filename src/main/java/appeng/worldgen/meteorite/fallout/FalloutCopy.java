@@ -22,6 +22,7 @@ import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -40,7 +41,7 @@ public class FalloutCopy extends Fallout {
         super(putter, skyStone, random);
         this.putter = putter;
         var biome = level.getBiome(pos);
-        this.block = switch (biome.getBiomeCategory()) {
+        this.block = switch (Biome.getBiomeCategory(biome)) {
             case MESA -> Blocks.TERRACOTTA.defaultBlockState();
             case ICY -> Blocks.SNOW_BLOCK.defaultBlockState();
             case BEACH, DESERT -> Blocks.SAND.defaultBlockState();

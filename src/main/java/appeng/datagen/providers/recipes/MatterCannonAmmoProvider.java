@@ -20,11 +20,11 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
@@ -127,7 +127,7 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
     private void registerAmmoTag(Consumer<FinishedRecipe> consumer, String id, ResourceLocation tag, float weight) {
         consumer.accept(new MatterCannonAmmo(
                 AppEng.makeId("matter_cannon/" + id),
-                (Tag.Named<Item>) TagRegistry.item(tag),
+                (TagKey<Item>) TagRegistry.item(tag),
                 null,
                 weight));
     }

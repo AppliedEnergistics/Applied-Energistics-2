@@ -21,8 +21,8 @@ extendable method net/minecraft/world/entity/item/ItemEntity setUnderwaterMoveme
 
 # For structure registration
 accessible field net/minecraft/world/level/levelgen/feature/StructureFeature STEP Ljava/util/Map;
-accessible method net/minecraft/data/worldgen/StructureFeatures register (Ljava/lang/String;Lnet/minecraft/world/level/levelgen/feature/ConfiguredStructureFeature;)Lnet/minecraft/world/level/levelgen/feature/ConfiguredStructureFeature;
-accessible method net/minecraft/world/level/levelgen/feature/StructurePieceType setPieceId (Lnet/minecraft/world/level/levelgen/feature/StructurePieceType$ContextlessType;Ljava/lang/String;)Lnet/minecraft/world/level/levelgen/feature/StructurePieceType;
+accessible method net/minecraft/data/worldgen/StructureFeatures register (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/levelgen/feature/ConfiguredStructureFeature;)Lnet/minecraft/core/Holder;
+accessible method net/minecraft/world/level/levelgen/structure/pieces/StructurePieceType setPieceId (Lnet/minecraft/world/level/levelgen/structure/pieces/StructurePieceType$ContextlessType;Ljava/lang/String;)Lnet/minecraft/world/level/levelgen/structure/pieces/StructurePieceType;
 
 # features
 accessible method net/minecraft/data/worldgen/placement/OrePlacements commonOrePlacement (ILnet/minecraft/world/level/levelgen/placement/PlacementModifier;)Ljava/util/List;

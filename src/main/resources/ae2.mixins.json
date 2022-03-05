@@ -7,7 +7,6 @@
     "spatial.DimensionTypeMixin",
     "spatial.DimensionOptionMixin",
     "spatial.FixupDimensionsMixin",
-    "structure.StructureSettingsMixin",
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin",
     "DynamicLadderMixin",

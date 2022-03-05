@@ -27,13 +27,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import appeng.recipes.mattercannon.MatterCannonAmmoSerializer;
 
-record MatterCannonAmmo(ResourceLocation id, Tag.Named<Item> tag, Item item, float weight) implements FinishedRecipe {
+record MatterCannonAmmo(ResourceLocation id, TagKey<Item> tag, Item item, float weight) implements FinishedRecipe {
 
     public void serializeRecipeData(JsonObject json) {
         JsonArray conditions = new JsonArray();

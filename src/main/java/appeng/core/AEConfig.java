@@ -30,8 +30,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import appeng.util.IVariantConversion;
 import com.google.common.base.Strings;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.config.CondenserOutput;
@@ -54,6 +56,8 @@ import appeng.core.config.StringListOption;
 import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
 
 public final class AEConfig {
 
@@ -157,6 +161,9 @@ public final class AEConfig {
 
     // Tunnels
     public static final double TUNNEL_POWER_LOSS = 0.05;
+
+    @Nullable
+    private TagKey<Fluid> improvedFluidTagKey;
 
     private void syncClientConfig() {
         this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
@@ -338,8 +345,14 @@ public final class AEConfig {
     }
 
     @Nullable
-    public String getImprovedFluidTag() {
-        return Strings.emptyToNull(COMMON.improvedFluidTag.get());
+    public TagKey<Fluid> getImprovedFluidTag() {
+        if (improvedFluidTagKey == null) {
+            var tagName = Strings.emptyToNull(COMMON.improvedFluidTag.get());
+            if (tagName != null) {
+                improvedFluidTagKey = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(tagName));
+            }
+        }
+        return improvedFluidTagKey;
     }
 
     public float getImprovedFluidMultiplier() {

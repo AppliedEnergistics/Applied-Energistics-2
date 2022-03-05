@@ -18,37 +18,42 @@
 
 package appeng.worldgen.meteorite;
 
-import java.util.Random;
-import java.util.Set;
-
+import appeng.core.AppEng;
+import appeng.worldgen.meteorite.fallout.Fallout;
 import com.google.common.math.StatsAccumulator;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.StructureFeatures;
+import net.minecraft.data.worldgen.StructureSets;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 
-import appeng.core.AppEng;
-import appeng.worldgen.meteorite.fallout.Fallout;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguration> {
 
-    public static final StructureFeatureConfiguration PLACEMENT_CONFIG = new StructureFeatureConfiguration(32, 8,
-            124895654);
-
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
+
+    public static final ResourceKey<StructureSet> STRUCTURE_SET_KEY = ResourceKey.create(Registry.STRUCTURE_SET_REGISTRY, ID);
 
     public static final ResourceKey<ConfiguredStructureFeature<?, ?>> KEY = ResourceKey
             .create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, ID);
@@ -56,8 +61,9 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
     public static final StructureFeature<NoneFeatureConfiguration> INSTANCE = new MeteoriteStructure(
             NoneFeatureConfiguration.CODEC);
 
-    public static final ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> CONFIGURED_INSTANCE = INSTANCE
-            .configured(NoneFeatureConfiguration.INSTANCE);
+    public static final TagKey<Biome> BIOME_TAG_KEY = TagKey.create(Registry.BIOME_REGISTRY, AppEng.makeId("spawns_meteorites"));
+
+    public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_INSTANCE;
 
     public MeteoriteStructure(Codec<NoneFeatureConfiguration> configCodec) {
         super(configCodec,
@@ -75,7 +81,7 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
     }
 
     private static void generatePieces(StructurePiecesBuilder piecesBuilder,
-            PieceGenerator.Context<NoneFeatureConfiguration> context) {
+                                       PieceGenerator.Context<NoneFeatureConfiguration> context) {
 
         var chunkPos = context.chunkPos();
         var random = context.random();
@@ -87,11 +93,11 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
         final float meteoriteRadius = random.nextFloat() * 6.0f + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
-        final Set<Biome> t2 = generator.getBiomeSource().getBiomesWithin(centerX, generator.getSeaLevel(), centerZ, 0,
+        var t2 = generator.getBiomeSource().getBiomesWithin(centerX, generator.getSeaLevel(), centerZ, 0,
                 generator.climateSampler());
-        final Biome spawnBiome = t2.stream().findFirst().orElseThrow();
+        var spawnBiome = t2.stream().findFirst().orElseThrow();
 
-        final boolean isOcean = spawnBiome.getBiomeCategory() == Biome.BiomeCategory.OCEAN;
+        final boolean isOcean = Biome.getBiomeCategory(spawnBiome) == Biome.BiomeCategory.OCEAN;
         final Heightmap.Types heightmapType = isOcean ? Heightmap.Types.OCEAN_FLOOR_WG
                 : Heightmap.Types.WORLD_SURFACE_WG;
 
@@ -167,11 +173,12 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
         return false;
     }
 
-    private static CraterType determineCraterType(Biome biome, Random random) {
+    private static CraterType determineCraterType(Holder<Biome> biomeHolder, Random random) {
         // The temperature thresholds below are taken from older Vanilla code
         // (temperature categories)
+        var biome = biomeHolder.value();
         final float temp = biome.getBaseTemperature();
-        final Biome.BiomeCategory category = biome.getBiomeCategory();
+        final Biome.BiomeCategory category = Biome.getBiomeCategory(biomeHolder);
 
         // No craters in oceans
         if (category == Biome.BiomeCategory.OCEAN) {
