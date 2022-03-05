@@ -360,10 +360,6 @@ public final class AEConfig {
         return CLIENT.debugGuiOverlays.get();
     }
 
-    public boolean isGenerateMeteorites() {
-        return COMMON.generateMeteorites.get();
-    }
-
     public boolean isSpawnPressesInMeteoritesEnabled() {
         return COMMON.spawnPressesInMeteorites.get();
     }
@@ -524,7 +520,6 @@ public final class AEConfig {
         public final StringListOption quartzOresBiomeBlacklist;
 
         // Meteors
-        public final BooleanOption generateMeteorites;
         public final BooleanOption spawnPressesInMeteorites;
 
         // Wireless
@@ -616,7 +611,6 @@ public final class AEConfig {
 
             ConfigSection worldGen = root.subsection("worldGen");
 
-            this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
 
             this.generateQuartzOre = worldGen.addBoolean("generateQuartzOre", true);
