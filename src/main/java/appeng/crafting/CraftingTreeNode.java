@@ -199,11 +199,6 @@ public class CraftingTreeNode
 
 				final IAEItemStack available = inv.extractItems( madeWhat, Actionable.MODULATE, src );
 
-				for( IAEItemStack i : pro.getReturnedContainers() )
-				{
-					inv.injectItems( i, Actionable.MODULATE, src );
-				}
-
 				if( available != null )
 				{
 					this.bytes += available.getStackSize();
@@ -233,11 +228,6 @@ public class CraftingTreeNode
 
 						this.what.setStackSize( l );
 						final IAEItemStack available = subInv.extractItems( this.what, Actionable.MODULATE, src );
-
-						for( IAEItemStack i : pro.getReturnedContainers() )
-						{
-							inv.injectItems( i, Actionable.MODULATE, src );
-						}
 
 						if( available != null )
 						{

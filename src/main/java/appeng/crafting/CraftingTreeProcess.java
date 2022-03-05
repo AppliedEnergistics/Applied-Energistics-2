@@ -311,6 +311,12 @@ public class CraftingTreeProcess
 			}
 		}
 
+		if( containerItems != null) {
+			for (IAEItemStack i : containerItemsList) {
+				inv.injectItems(i, Actionable.MODULATE, src);
+			}
+		}
+
 		// assume its possible.
 
 		// add crafting results..
@@ -321,15 +327,6 @@ public class CraftingTreeProcess
 			inv.injectItems( o, Actionable.MODULATE, src );
 		}
 		this.crafts += amountOfTimes;
-	}
-
-	public List<IAEItemStack> getReturnedContainers()
-	{
-		if( containerItemsList == null )
-		{
-			return Collections.emptyList();
-		}
-		return containerItemsList;
 	}
 
 	void dive( final CraftingJob job )
