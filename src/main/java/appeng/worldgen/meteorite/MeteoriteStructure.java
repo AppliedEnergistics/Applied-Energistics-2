@@ -18,15 +18,14 @@
 
 package appeng.worldgen.meteorite;
 
-import appeng.core.AppEng;
-import appeng.worldgen.meteorite.fallout.Fallout;
+import java.util.Random;
+
 import com.google.common.math.StatsAccumulator;
 import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.StructureFeatures;
-import net.minecraft.data.worldgen.StructureSets;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -34,7 +33,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -42,18 +40,16 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
-import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import appeng.core.AppEng;
+import appeng.worldgen.meteorite.fallout.Fallout;
 
 public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguration> {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
 
-    public static final ResourceKey<StructureSet> STRUCTURE_SET_KEY = ResourceKey.create(Registry.STRUCTURE_SET_REGISTRY, ID);
+    public static final ResourceKey<StructureSet> STRUCTURE_SET_KEY = ResourceKey
+            .create(Registry.STRUCTURE_SET_REGISTRY, ID);
 
     public static final ResourceKey<ConfiguredStructureFeature<?, ?>> KEY = ResourceKey
             .create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, ID);
@@ -61,7 +57,8 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
     public static final StructureFeature<NoneFeatureConfiguration> INSTANCE = new MeteoriteStructure(
             NoneFeatureConfiguration.CODEC);
 
-    public static final TagKey<Biome> BIOME_TAG_KEY = TagKey.create(Registry.BIOME_REGISTRY, AppEng.makeId("spawns_meteorites"));
+    public static final TagKey<Biome> BIOME_TAG_KEY = TagKey.create(Registry.BIOME_REGISTRY,
+            AppEng.makeId("has_meteorites"));
 
     public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_INSTANCE;
 
@@ -81,7 +78,7 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
     }
 
     private static void generatePieces(StructurePiecesBuilder piecesBuilder,
-                                       PieceGenerator.Context<NoneFeatureConfiguration> context) {
+            PieceGenerator.Context<NoneFeatureConfiguration> context) {
 
         var chunkPos = context.chunkPos();
         var random = context.random();

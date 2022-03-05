@@ -12,11 +12,11 @@ import java.util.function.Consumer;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
-import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;

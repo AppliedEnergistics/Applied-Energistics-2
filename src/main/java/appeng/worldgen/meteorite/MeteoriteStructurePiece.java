@@ -28,10 +28,10 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 
 import appeng.server.services.compass.CompassService;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
-import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 

@@ -14,10 +14,11 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.worldgen.biome.Biomes;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,6 +63,7 @@ public class WaterBlockRenderer implements Renderer {
                 BlockPos.ZERO,
                 fakeWorld,
                 builder,
+                waterBlock,
                 waterBlock.getFluidState());
         if (builder.building()) {
             tesselator.end();
@@ -127,7 +129,7 @@ public class WaterBlockRenderer implements Renderer {
 
         @Override
         public int getBlockTint(BlockPos blockPos, ColorResolver colorResolver) {
-            return colorResolver.getColor(Biomes.THE_VOID, 0, 0);
+            return colorResolver.getColor(BuiltinRegistries.BIOME.getOrThrow(Biomes.THE_VOID), 0, 0);
         }
 
         @Nullable

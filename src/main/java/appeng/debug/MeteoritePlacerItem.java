@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -124,7 +125,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         placer.place();
 
         player.sendMessage(new TextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + level.getBiome(pos).getBiomeCategory()), Util.NIL_UUID);
+                + " biomeCategory=" + Biome.getBiomeCategory(level.getBiome(pos))), Util.NIL_UUID);
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this

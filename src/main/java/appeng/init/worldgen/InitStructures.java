@@ -18,8 +18,8 @@
 
 package appeng.init.worldgen;
 
-import appeng.worldgen.meteorite.MeteoriteStructure;
-import appeng.worldgen.meteorite.MeteoriteStructurePiece;
+import java.util.List;
+
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.data.worldgen.StructureSets;
@@ -31,7 +31,8 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 
-import java.util.List;
+import appeng.worldgen.meteorite.MeteoriteStructure;
+import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
 public final class InitStructures {
 
@@ -41,20 +42,19 @@ public final class InitStructures {
     public static void init(Registry<StructureFeature<?>> registry) {
         MeteoriteStructurePiece.register();
 
-        registerStructure(registry, MeteoriteStructure.ID, MeteoriteStructure.INSTANCE, Decoration.TOP_LAYER_MODIFICATION);
+        registerStructure(registry, MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
+                Decoration.TOP_LAYER_MODIFICATION);
 
         MeteoriteStructure.CONFIGURED_INSTANCE = StructureFeatures.register(
                 MeteoriteStructure.KEY,
-                MeteoriteStructure.INSTANCE.configured(NoneFeatureConfiguration.INSTANCE, MeteoriteStructure.BIOME_TAG_KEY)
-        );
+                MeteoriteStructure.INSTANCE.configured(NoneFeatureConfiguration.INSTANCE,
+                        MeteoriteStructure.BIOME_TAG_KEY));
 
         StructureSets.register(
                 MeteoriteStructure.STRUCTURE_SET_KEY,
                 new StructureSet(
                         List.of(StructureSet.entry(MeteoriteStructure.CONFIGURED_INSTANCE)),
-                        new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)
-                )
-        );
+                        new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)));
     }
 
     // This mirrors the Vanilla registration method for structures, but uses the

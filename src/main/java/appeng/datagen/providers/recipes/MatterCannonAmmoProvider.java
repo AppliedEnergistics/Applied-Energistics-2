@@ -20,12 +20,11 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.core.AppEng;
@@ -66,8 +65,8 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
         registerAmmoTag(consumer, "nuggets/titanium", new ResourceLocation("c:titanium_nuggets"), 47.867f);
         registerAmmoTag(consumer, "nuggets/vanadium", new ResourceLocation("c:vanadium_nuggets"), 50.9415f);
         registerAmmoTag(consumer, "nuggets/manganese", new ResourceLocation("c:manganese_nuggets"), 54.938f);
-        registerAmmoTag(consumer, "nuggets/iron", ConventionTags.IRON_NUGGET.getName(), 55.845f);
-        registerAmmoTag(consumer, "nuggets/gold", ConventionTags.GOLD_NUGGET.getName(), 196.96655f);
+        registerAmmoTag(consumer, "nuggets/iron", ConventionTags.IRON_NUGGET.location(), 55.845f);
+        registerAmmoTag(consumer, "nuggets/gold", ConventionTags.GOLD_NUGGET.location(), 196.96655f);
         registerAmmoTag(consumer, "nuggets/nickel", new ResourceLocation("c:nickel_nuggets"), 58.6934f);
         registerAmmoTag(consumer, "nuggets/cobalt", new ResourceLocation("c:cobalt_nuggets"), 58.9332f);
         registerAmmoTag(consumer, "nuggets/copper", new ResourceLocation("c:copper_nuggets"), 63.546f);
@@ -127,7 +126,7 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
     private void registerAmmoTag(Consumer<FinishedRecipe> consumer, String id, ResourceLocation tag, float weight) {
         consumer.accept(new MatterCannonAmmo(
                 AppEng.makeId("matter_cannon/" + id),
-                (TagKey<Item>) TagRegistry.item(tag),
+                TagKey.create(Registry.ITEM_REGISTRY, tag),
                 null,
                 weight));
     }

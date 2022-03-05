@@ -26,7 +26,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -40,7 +39,7 @@ record MatterCannonAmmo(ResourceLocation id, TagKey<Item> tag, Item item, float 
         JsonArray conditions = new JsonArray();
         if (tag != null) {
             json.add("ammo", Ingredient.of(tag).toJson());
-            json.addProperty("ae2:has_tag", tag.getName().toString());
+            json.addProperty("ae2:has_tag", tag.location().toString());
         } else if (item != null) {
             json.add("ammo", Ingredient.of(item).toJson());
             json.addProperty("ae2:has_item", Registry.ITEM.getKey(item).toString());

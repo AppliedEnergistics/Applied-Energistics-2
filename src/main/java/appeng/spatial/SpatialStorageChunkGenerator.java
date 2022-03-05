@@ -18,9 +18,15 @@
 
 package appeng.spatial;
 
-import appeng.core.definitions.AEBlocks;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.HolderSet;
@@ -37,17 +43,12 @@ import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.GenerationStep.Carving;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import appeng.core.definitions.AEBlocks;
 
 /**
  * Chunk generator the spatial storage level.
@@ -67,8 +68,9 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
      */
     public static final Codec<SpatialStorageChunkGenerator> CODEC = RecordCodecBuilder
             .create(instance -> commonCodec(instance)
-                    .and(RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY).forGetter(source -> source.biomeRegistry))
-                    .apply(instance, instance.stable(FlatLevelSource::new)));
+                    .and(RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY)
+                            .forGetter(source -> source.biomeRegistry))
+                    .apply(instance, instance.stable(SpatialStorageChunkGenerator::new)));
 
     private final Registry<Biome> biomeRegistry;
 
@@ -114,7 +116,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     @Override
     public void buildSurface(WorldGenRegion region, StructureFeatureManager structureFeatureManager,
-                             ChunkAccess chunk) {
+            ChunkAccess chunk) {
         this.fillChunk(chunk);
         chunk.setUnsaved(false);
     }
@@ -147,7 +149,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     @Override
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
-                                                        StructureFeatureManager structureFeatureManager, ChunkAccess chunk) {
+            StructureFeatureManager structureFeatureManager, ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
@@ -167,7 +169,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
 
     @Override
     public void applyCarvers(WorldGenRegion worldGenRegion, long l, BiomeManager biomeManager,
-                             StructureFeatureManager structureFeatureManager, ChunkAccess chunkAccess, Carving carving) {
+            StructureFeatureManager structureFeatureManager, ChunkAccess chunkAccess, Carving carving) {
     }
 
     @Override

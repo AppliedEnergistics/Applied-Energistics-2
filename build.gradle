@@ -60,7 +60,7 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 

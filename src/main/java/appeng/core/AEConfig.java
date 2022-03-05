@@ -30,11 +30,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import appeng.util.IVariantConversion;
 import com.google.common.base.Strings;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
@@ -56,8 +57,6 @@ import appeng.core.config.StringListOption;
 import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.material.Fluid;
 
 public final class AEConfig {
 
@@ -208,8 +207,6 @@ public final class AEConfig {
 
         AEWorldGenInternal.setConfigBlacklists(
                 COMMON.quartzOresBiomeBlacklist.get().stream().map(ResourceLocation::new)
-                        .collect(Collectors.toList()),
-                COMMON.meteoriteBiomeBlacklist.get().stream().map(ResourceLocation::new)
                         .collect(Collectors.toList()));
 
         AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
@@ -529,7 +526,6 @@ public final class AEConfig {
         // Meteors
         public final BooleanOption generateMeteorites;
         public final BooleanOption spawnPressesInMeteorites;
-        public final StringListOption meteoriteBiomeBlacklist;
 
         // Wireless
         public final DoubleOption wirelessBaseCost;
@@ -621,8 +617,6 @@ public final class AEConfig {
             ConfigSection worldGen = root.subsection("worldGen");
 
             this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
-            this.meteoriteBiomeBlacklist = worldGen.addStringList("meteoriteBiomeBlacklist", new ArrayList<>(),
-                    "Biome IDs in which meteorites should NOT be generated (i.e. minecraft:plains).");
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
 
             this.generateQuartzOre = worldGen.addBoolean("generateQuartzOre", true);
