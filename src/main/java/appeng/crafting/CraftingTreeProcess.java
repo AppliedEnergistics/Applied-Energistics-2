@@ -19,11 +19,16 @@
 package appeng.crafting;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.item.AEItemStack;
 import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -51,6 +56,7 @@ public class CraftingTreeProcess
 	private long crafts = 0;
 	private IItemList<IAEItemStack> containerItems;
 	private boolean limitQty;
+	private List<IAEItemStack> containerItemsList;
 	private long bytes = 0;
 
 	public CraftingTreeProcess( final ICraftingGrid cc, final CraftingJob job, final ICraftingPatternDetails details, final CraftingTreeNode craftingTreeNode, final int depth )
@@ -70,6 +76,7 @@ public class CraftingTreeProcess
 				if( containerItems == null )
 				{
 					containerItems = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+					containerItemsList = new ArrayList<>();
 				}
 				containerItems.add( part );
 				this.limitQty = true;
@@ -240,8 +247,9 @@ public class CraftingTreeProcess
 						part = part.copy();
 						// use the first slot...
 						this.nodes.put( new CraftingTreeNode( cc, job, part, this, x, depth + 1 ), wantedSize );
+						wantedSize = 0;
 					}
-					if( !isPartContainer || wantedSize == 0 )
+					if( !isPartContainer && wantedSize == 0 )
 					{
 						break;
 					}
@@ -298,7 +306,7 @@ public class CraftingTreeProcess
 				if( o != null )
 				{
 					this.bytes++;
-					inv.injectItems( o, Actionable.MODULATE, src );
+					containerItemsList.add( o );
 				}
 			}
 		}
@@ -313,6 +321,15 @@ public class CraftingTreeProcess
 			inv.injectItems( o, Actionable.MODULATE, src );
 		}
 		this.crafts += amountOfTimes;
+	}
+
+	public List<IAEItemStack> getReturnedContainers()
+	{
+		if( containerItemsList == null )
+		{
+			return Collections.emptyList();
+		}
+		return containerItemsList;
 	}
 
 	void dive( final CraftingJob job )

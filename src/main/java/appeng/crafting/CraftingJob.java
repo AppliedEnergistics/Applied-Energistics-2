@@ -92,7 +92,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		final ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
 		final GridStorageCache sg = grid.getCache( IStorageGrid.class );
-		this.original = new MECraftingInventory( sg.getExtractableList() );
+		this.original = new MECraftingInventory( sg.getExtractableList( actionSrc ) );
 
 		this.setTree( this.getCraftingTree( cc, what ) );
 		this.availableCheck = null;

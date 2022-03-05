@@ -173,11 +173,11 @@ public class GridStorageCache implements IStorageGrid
 		return (IMEMonitor<T>) this.storageMonitors.get( channel );
 	}
 
-	public MECraftingInventory getExtractableList()
+	public MECraftingInventory getExtractableList( IActionSource src )
 	{
 		if( localCache == null )
 		{
-			localCache = new MECraftingInventory( getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), new BaseActionSource(), false, false, false );
+			localCache = new MECraftingInventory( getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), src, false, false, false );
 		}
 		return localCache;
 	}
