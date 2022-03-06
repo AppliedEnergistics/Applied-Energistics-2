@@ -319,7 +319,6 @@
   "gui.tooltips.ae2.FZPercent_25": "損傷值達25%時分離",
   "gui.tooltips.ae2.FZPercent_50": "損傷值達50%時分離",
   "gui.tooltips.ae2.FZPercent_75": "損傷值達75%時分離",
-  "gui.tooltips.ae2.FZPercent_99": "損傷值達99%時分離",
   "gui.tooltips.ae2.FilterMode": "搜尋過濾模式",
   "gui.tooltips.ae2.FilterModeClear": "每次打開時清除。",
   "gui.tooltips.ae2.FilterModeKeep": "回復上次的搜尋過濾。",

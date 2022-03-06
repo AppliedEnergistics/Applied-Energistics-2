@@ -301,7 +301,6 @@
   "gui.tooltips.ae2.FZPercent_25": "Fördela skada vid 25 %%",
   "gui.tooltips.ae2.FZPercent_50": "Fördela skada vid 50 %%",
   "gui.tooltips.ae2.FZPercent_75": "Fördela skada vid 75 %%",
-  "gui.tooltips.ae2.FZPercent_99": "Fördela skada vid 99 %%",
   "gui.tooltips.ae2.FilterMode": "Sökfiltersläge",
   "gui.tooltips.ae2.FilterModeClear": "Rensa vid varje öppning.",
   "gui.tooltips.ae2.FilterModeKeep": "Återställ föregående sökfilter.",

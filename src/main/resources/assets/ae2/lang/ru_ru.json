@@ -366,7 +366,6 @@
   "gui.tooltips.ae2.FZPercent_25": "Разделить урон на 25%",
   "gui.tooltips.ae2.FZPercent_50": "Разделить урон на 50%",
   "gui.tooltips.ae2.FZPercent_75": "Разделить урон на 75%",
-  "gui.tooltips.ae2.FZPercent_99": "Разделить урон на 99%",
   "gui.tooltips.ae2.FilterMode": "Режим фильтра поиска",
   "gui.tooltips.ae2.FilterModeClear": "Очищать при каждом открытии.",
   "gui.tooltips.ae2.FilterModeKeep": "Возобновить предыдущий фильтр поиска.",
