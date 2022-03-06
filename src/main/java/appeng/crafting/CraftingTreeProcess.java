@@ -296,8 +296,7 @@ public class CraftingTreeProcess
 		// request and remove inputs...
 		for( final Entry<CraftingTreeNode, Long> entry : this.nodes.object2LongEntrySet() )
 		{
-			final IAEItemStack craftableStack = entry.getKey().getStack( entry.getValue() );
-			final IAEItemStack stack = entry.getKey().request( inv, craftableStack.getStackSize() * amountOfTimes, src );
+			final IAEItemStack stack = entry.getKey().request( inv, entry.getValue() * amountOfTimes, src );
 
 			if( containerItems != null && !this.containerItems.findFuzzy( stack, FuzzyMode.IGNORE_ALL ).isEmpty() )
 			{
@@ -311,9 +310,11 @@ public class CraftingTreeProcess
 			}
 		}
 
-		if( containerItems != null) {
-			for (IAEItemStack i : containerItemsList) {
-				inv.injectItems(i, Actionable.MODULATE, src);
+		if( containerItems != null )
+		{
+			for( IAEItemStack i : containerItemsList )
+			{
+				inv.injectItems( i, Actionable.MODULATE, src );
 			}
 		}
 
