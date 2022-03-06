@@ -414,7 +414,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 					}
 				}
 
-				if( notInserted == null )
+				if( notInserted == null || notInserted.getStackSize() == 0 )
 				{
 					if( !player.inventory.addItemStackToInventory( fh.getContainer() ) )
 					{
