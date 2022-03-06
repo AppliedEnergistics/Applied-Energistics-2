@@ -291,7 +291,6 @@
   "gui.tooltips.ae2.FZPercent_25": "スプリットダメージ 25%",
   "gui.tooltips.ae2.FZPercent_50": "スプリットダメージ 50%",
   "gui.tooltips.ae2.FZPercent_75": "スプリットダメージ 75%",
-  "gui.tooltips.ae2.FZPercent_99": "スプリットダメージ 99%",
   "gui.tooltips.ae2.FilterMode": "検索フィルターモード",
   "gui.tooltips.ae2.FilterModeClear": "開いたときに消去します。",
   "gui.tooltips.ae2.FilterModeKeep": "以前の検索フィルターを復元します。",

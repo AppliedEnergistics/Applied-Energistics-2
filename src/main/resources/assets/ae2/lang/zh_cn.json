@@ -407,7 +407,6 @@
   "gui.tooltips.ae2.FZPercent_25": "以25%为界区分耐久",
   "gui.tooltips.ae2.FZPercent_50": "以50%为界区分耐久",
   "gui.tooltips.ae2.FZPercent_75": "以75%为界区分耐久",
-  "gui.tooltips.ae2.FZPercent_99": "以100%为界区分耐久",
   "gui.tooltips.ae2.FilterMode": "搜索框模式",
   "gui.tooltips.ae2.FilterModeClear": "在每次打开时清空搜索框",
   "gui.tooltips.ae2.FilterModeKeep": "保留上一次的搜索内容",

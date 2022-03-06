@@ -334,7 +334,6 @@
   "gui.tooltips.ae2.FZPercent_25": "분할 손상도 25%",
   "gui.tooltips.ae2.FZPercent_50": "분할 손상도 50%",
   "gui.tooltips.ae2.FZPercent_75": "분할 손상도 75%",
-  "gui.tooltips.ae2.FZPercent_99": "분할 손상도 99%",
   "gui.tooltips.ae2.FilterMode": "검색 필터 모드",
   "gui.tooltips.ae2.FilterModeClear": "열때마다 초기화 합니다.",
   "gui.tooltips.ae2.FilterModeKeep": "이전 검색 필터를 복원합니다.",
