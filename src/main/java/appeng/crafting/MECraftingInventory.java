@@ -138,7 +138,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		this.localCache = new ItemListIgnoreCrafting<>( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 		for( final IAEItemStack is : target.getStorageList() )
 		{
-			this.localCache.add( target.extractItems( is, Actionable.SIMULATE, src ) );
+			this.localCache.add( target.extractItems( is.copy().setStackSize( Long.MAX_VALUE ), Actionable.SIMULATE, src ) );
 		}
 
 		this.par = null;

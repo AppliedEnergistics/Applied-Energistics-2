@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 
 import appeng.api.config.FuzzyMode;
-import com.google.common.collect.Lists;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
@@ -53,13 +52,13 @@ public class CraftingTreeNode
 	private final IAEItemStack what;
 	// what are the crafting patterns for this?
 	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<>();
+	private final ICraftingGrid cc;
+	private final int depth;
 	private int bytes = 0;
 	private boolean canEmit = false;
 	private long missing = 0;
 	private long howManyEmitted = 0;
 	private boolean exhausted = false;
-
-	private boolean sim;
 
 	public CraftingTreeNode( final ICraftingGrid cc, final CraftingJob job, final IAEItemStack wat, final CraftingTreeProcess par, final int slot, final int depth )
 	{
@@ -68,9 +67,18 @@ public class CraftingTreeNode
 		this.slot = slot;
 		this.world = job.getWorld();
 		this.job = job;
-		this.sim = false;
+		this.cc = cc;
+		this.depth = depth;
 
 		this.canEmit = cc.canEmitFor( this.what );
+	}
+
+	public void addNode()
+	{
+		if( !nodes.isEmpty() )
+		{
+			return;
+		}
 
 		if( this.canEmit )
 		{
@@ -89,19 +97,42 @@ public class CraftingTreeNode
 
 	IAEItemStack request( final MECraftingInventory inv, long l, final IActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
+		addNode();
 		this.job.handlePausing();
+		if( this.canEmit )
+		{
+			final IAEItemStack wat = this.what.copy();
+			wat.setStackSize( l );
+
+			this.howManyEmitted = wat.getStackSize();
+			this.bytes += wat.getStackSize();
+
+			return wat;
+		}
 
 		final IItemList<IAEItemStack> inventoryList = inv.getItemList();
 		final List<IAEItemStack> thingsUsed = new ArrayList<>();
 
 		this.what.setStackSize( l );
+
 		if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )
 		{
 			Collection<IAEItemStack> itemList = new ArrayList<>();
 
-			if( this.parent.getContainerItems() != null && !this.parent.getContainerItems().findFuzzy( this.what, FuzzyMode.IGNORE_ALL ).isEmpty() )
+			if( this.what.getItem().hasContainerItem( this.what.getDefinition() ) )
 			{
-				itemList = inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL );
+				itemList.addAll( inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL ) );
+
+				if( this.parent.details.canSubstitute() )
+				{
+					for( IAEItemStack is : inventoryList )
+					{
+						if( is.fuzzyComparison( this.what, FuzzyMode.IGNORE_ALL ) )
+						{
+							itemList.add( is );
+						}
+					}
+				}
 			}
 			else
 			{
@@ -109,6 +140,10 @@ public class CraftingTreeNode
 				if( item != null )
 				{
 					itemList.add( item );
+				}
+				if( this.parent.details.canSubstitute() )
+				{
+					itemList.addAll( inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL ) );
 				}
 			}
 
@@ -172,17 +207,6 @@ public class CraftingTreeNode
 			}
 		}
 
-		if( this.canEmit )
-		{
-			final IAEItemStack wat = this.what.copy();
-			wat.setStackSize( l );
-
-			this.howManyEmitted = wat.getStackSize();
-			this.bytes += wat.getStackSize();
-
-			return wat;
-		}
-
 		this.exhausted = true;
 
 		if( this.nodes.size() == 1 )
@@ -192,11 +216,9 @@ public class CraftingTreeNode
 			while ( pro.possible && l > 0 )
 			{
 				final IAEItemStack madeWhat = pro.getAmountCrafted( this.what );
-
 				pro.request( inv, pro.getTimes( l, madeWhat.getStackSize() ), src );
 
 				madeWhat.setStackSize( l );
-
 				final IAEItemStack available = inv.extractItems( madeWhat, Actionable.MODULATE, src );
 
 				if( available != null )
@@ -257,10 +279,10 @@ public class CraftingTreeNode
 			}
 		}
 
-		if( this.sim )
+		if( job.isSimulation() )
 		{
-			this.missing += l;
 			this.bytes += l;
+			this.missing += l;
 			final IAEItemStack rv = this.what.copy();
 			rv.setStackSize( l );
 			return rv;
@@ -306,7 +328,6 @@ public class CraftingTreeNode
 
 	void setSimulate()
 	{
-		this.sim = true;
 		this.missing = 0;
 		this.bytes = 0;
 		this.used.resetStatus();

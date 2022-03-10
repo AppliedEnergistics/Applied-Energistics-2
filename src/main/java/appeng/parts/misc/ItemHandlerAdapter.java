@@ -19,7 +19,6 @@
 package appeng.parts.misc;
 
 
-import javax.annotation.Nullable;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -147,43 +146,64 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 
 			ItemStack extracted;
-			int stackSizeCurrentSlot = stackInInventorySlot.getCount();
-			int remainingCurrentSlot = Math.min( remainingSize, stackSizeCurrentSlot );
 
-			// We have to loop here because according to the docs, the handler shouldn't return a stack with size >
-			// maxSize, even if we request more. So even if it returns a valid stack, it might have more stuff.
-			do
+			if( !simulate )
 			{
-				extracted = this.itemHandler.extractItem( i, remainingCurrentSlot, simulate );
+				int stackSizeCurrentSlot = stackInInventorySlot.getCount();
+				int remainingCurrentSlot = Math.min( remainingSize, stackSizeCurrentSlot );
+
+				// We have to loop here because according to the docs, the handler shouldn't return a stack with size >
+				// maxSize, even if we request more. So even if it returns a valid stack, it might have more stuff.
+
+				do
+				{
+					extracted = this.itemHandler.extractItem( i, remainingCurrentSlot, false );
+
+					if( !extracted.isEmpty() )
+					{
+						if( extracted.getCount() > remainingCurrentSlot )
+						{
+							// Something broke. It should never return more than we requested...
+							// We're going to silently eat the remainder
+							AELog.warn( "Mod that provided item handler %s is broken. Returned %s items while only requesting %d.", this.itemHandler.getClass().getName(), extracted.toString(), remainingCurrentSlot );
+							extracted.setCount( remainingCurrentSlot );
+						}
+
+						// We're just gonna use the first stack we get our hands on as the template for the rest.
+						// In case some stupid itemhandler (aka forge) returns an internal state we have to do a second
+						// expensive copy again.
+						if( gathered.isEmpty() )
+						{
+							gathered = extracted;
+						}
+						else
+						{
+							gathered.grow( extracted.getCount() );
+						}
+						remainingCurrentSlot -= extracted.getCount();
+					}
+				} while ( !extracted.isEmpty() && remainingCurrentSlot > 0 );
+
+				remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
+			}
+			else
+			{
+				extracted = this.itemHandler.extractItem( i, remainingSize, true );
 
 				if( !extracted.isEmpty() )
 				{
-					if( extracted.getCount() > remainingCurrentSlot )
-					{
-						// Something broke. It should never return more than we requested...
-						// We're going to silently eat the remainder
-						AELog.warn( "Mod that provided item handler %s is broken. Returned %s items while only requesting %d.", this.itemHandler.getClass().getName(), extracted.toString(), remainingCurrentSlot );
-						extracted.setCount( remainingCurrentSlot );
-					}
-
-					// We're just gonna use the first stack we get our hands on as the template for the rest.
-					// In case some stupid itemhandler (aka forge) returns an internal state we have to do a second
-					// expensive copy again.
+					extracted.setCount( Math.min( stackInInventorySlot.getCount(), remainingSize ) );
 					if( gathered.isEmpty() )
 					{
-						gathered = extracted.copy();
+						gathered = extracted;
 					}
 					else
 					{
 						gathered.grow( extracted.getCount() );
 					}
-					remainingCurrentSlot -= extracted.getCount();
+					remainingSize -= extracted.getCount();
 				}
-			} while ( !extracted.isEmpty() && remainingCurrentSlot > 0 );
-
-			remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
-
-			// Done?
+			}
 			if( remainingSize <= 0 )
 			{
 				break;

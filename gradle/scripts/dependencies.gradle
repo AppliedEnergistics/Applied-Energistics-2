@@ -97,6 +97,8 @@ dependencies {
     compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
     compileOnly "team.chisel.ctm:CTM:${ctm_version}"
     compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2-r152.16:api"
+    deobfCompile "net.sengir.forestry:forestry_${minecraft_version}:$forestry_version"
+
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"

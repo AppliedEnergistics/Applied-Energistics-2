@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.primitives.Ints;
+import gregtech.common.items.MetaTool;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -370,20 +371,44 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 	private boolean fuzzyItemStackComparison( ItemStack a, ItemStack b, FuzzyMode mode )
 	{
-		if( a.getItem() == b.getItem() && a.getItem().isDamageable() )
+		if( a.getItem() == b.getItem() && ( a.getItem().isDamageable() || a.getItem() instanceof MetaTool ) )
 		{
 			if( mode == FuzzyMode.IGNORE_ALL )
 			{
-				return true;
+				if( a.getItem().isDamageable() )
+				{
+					return true;
+				}
+				else if( a.getItem() instanceof MetaTool )
+				{
+					return a.getItemDamage() == b.getItemDamage();
+				}
 			}
 			else if( mode == FuzzyMode.PERCENT_99 )
 			{
-				return a.getItemDamage() > 1 == b.getItemDamage() > 1;
+				if( a.getItem().isDamageable() )
+				{
+					return a.getItemDamage() > 1 == b.getItemDamage() > 1;
+				}
+				else if( a.getItem() instanceof MetaTool )
+				{
+					return ( (MetaTool) a.getItem() ).getItemDamage( a ) == ( (MetaTool) b.getItem() ).getItemDamage( b );
+				}
 			}
 			else
 			{
-				final float percentDamageOfA = (float) a.getItemDamage() / a.getMaxDamage();
-				final float percentDamageOfB = (float) b.getItemDamage() / b.getMaxDamage();
+				float percentDamageOfA = 0;
+				float percentDamageOfB = 0;
+				if( a.getItem().isDamageable() )
+				{
+					percentDamageOfA = (float) a.getItemDamage() / a.getMaxDamage();
+					percentDamageOfB = (float) b.getItemDamage() / b.getMaxDamage();
+				}
+				else if( a.getItem() instanceof MetaTool )
+				{
+					percentDamageOfA = (float) ( (MetaTool) a.getItem() ).getItemDamage( a ) / ( (MetaTool) a.getItem() ).getMaxItemDamage( a );
+					percentDamageOfB = (float) ( (MetaTool) b.getItem() ).getItemDamage( b ) / ( (MetaTool) b.getItem() ).getMaxItemDamage( b );
+				}
 
 				return percentDamageOfA > mode.breakPoint == percentDamageOfB > mode.breakPoint;
 			}

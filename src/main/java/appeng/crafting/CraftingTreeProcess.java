@@ -20,15 +20,13 @@ package appeng.crafting;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
 import appeng.api.config.FuzzyMode;
+import appeng.me.cache.CraftingGridCache;
 import appeng.util.item.AEItemStack;
 import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -52,11 +50,11 @@ public class CraftingTreeProcess
 	private final CraftingJob job;
 	private final Object2LongArrayMap<CraftingTreeNode> nodes = new Object2LongArrayMap<>();
 	private final int depth;
+	private final ICraftingGrid cc;
+	private final World world;
 	boolean possible = true;
 	private long crafts = 0;
-	private IItemList<IAEItemStack> containerItems;
 	private boolean limitQty;
-	private List<IAEItemStack> containerItemsList;
 	private long bytes = 0;
 
 	public CraftingTreeProcess( final ICraftingGrid cc, final CraftingJob job, final ICraftingPatternDetails details, final CraftingTreeNode craftingTreeNode, final int depth )
@@ -65,20 +63,22 @@ public class CraftingTreeProcess
 		this.details = details;
 		this.job = job;
 		this.depth = depth;
-		final World world = job.getWorld();
+		this.cc = cc;
+		this.world = job.getWorld();
+	}
 
+	public void addProcess()
+	{
+		if( !nodes.isEmpty() )
+		{
+			return;
+		}
 		final IAEItemStack[] list = details.getInputs();
 
 		for( final IAEItemStack part : details.getCondensedInputs() )
 		{
 			if( part.getItem().hasContainerItem( part.getDefinition() ) )
 			{
-				if( containerItems == null )
-				{
-					containerItems = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-					containerItemsList = new ArrayList<>();
-				}
-				containerItems.add( part );
 				this.limitQty = true;
 				//break;
 			}
@@ -96,12 +96,32 @@ public class CraftingTreeProcess
 				if( part.equals( comparePart ) )
 				{
 					boolean isPartContainer = false;
-					if( containerItems != null && !containerItems.findFuzzy( list[x], FuzzyMode.IGNORE_ALL ).isEmpty() )
+					if( part.getItem().hasContainerItem( part.getDefinition() ) )
 					{
 						part = list[x];
 						isPartContainer = true;
 					}
 					long wantedSize = part.getStackSize();
+
+					if( isPartContainer && wantedSize > 0 )
+					{
+						if( details.canSubstitute() && cc.getCraftingFor( part, details, x, world ).isEmpty() )
+						{
+							IItemList<IAEItemStack> aa = ( (CraftingGridCache) cc ).getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+							for( IAEItemStack is : aa )
+							{
+								if( is.fuzzyComparison( part, FuzzyMode.IGNORE_ALL ) )
+								{
+									wantedSize -= 1;
+									this.nodes.put( new CraftingTreeNode( cc, job, is.copy().setStackSize( 1 ), this, x, depth + 1 ), 1 );
+									if( wantedSize == 0 )
+									{
+										break;
+									}
+								}
+							}
+						}
+					}
 
 					if( !isPartContainer )
 					{
@@ -270,11 +290,6 @@ public class CraftingTreeProcess
 		}
 	}
 
-	IItemList<IAEItemStack> getContainerItems()
-	{
-		return this.containerItems;
-	}
-
 	boolean notRecursive()
 	{
 		return this.parent == null || this.parent.notRecursive();
@@ -291,28 +306,34 @@ public class CraftingTreeProcess
 
 	void request( final MECraftingInventory inv, final long amountOfTimes, final IActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
+		addProcess();
 		this.job.handlePausing();
+		List<IAEItemStack> containerItems = null;
 
 		// request and remove inputs...
 		for( final Entry<CraftingTreeNode, Long> entry : this.nodes.object2LongEntrySet() )
 		{
 			final IAEItemStack stack = entry.getKey().request( inv, entry.getValue() * amountOfTimes, src );
 
-			if( containerItems != null && !this.containerItems.findFuzzy( stack, FuzzyMode.IGNORE_ALL ).isEmpty() )
+			if( stack.getItem().hasContainerItem( stack.getDefinition() ) )
 			{
 				final ItemStack is = Platform.getContainerItem( stack.createItemStack() );
 				final IAEItemStack o = AEItemStack.fromItemStack( is );
 				if( o != null )
 				{
+					if( containerItems == null )
+					{
+						containerItems = new ArrayList<>();
+					}
 					this.bytes++;
-					containerItemsList.add( o );
+					containerItems.add( o );
 				}
 			}
 		}
 
 		if( containerItems != null )
 		{
-			for( IAEItemStack i : containerItemsList )
+			for( IAEItemStack i : containerItems )
 			{
 				inv.injectItems( i, Actionable.MODULATE, src );
 			}

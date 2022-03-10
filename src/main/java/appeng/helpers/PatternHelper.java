@@ -21,6 +21,7 @@ package appeng.helpers;
 
 import java.util.*;
 
+import gregtech.common.items.MetaTool;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -247,7 +248,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		final TestStatus result = this.getStatus( slotIndex, i );
 
-		switch( result )
+		switch ( result )
 		{
 			case ACCEPT:
 				return true;
@@ -266,9 +267,11 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		this.testFrame.setInventorySlotContents( slotIndex, i );
 
 		// If we cannot substitute, the items must match exactly
-		if (!canSubstitute && slotIndex < inputs.length) {
-			if (!inputs[slotIndex].isSameType(i)) {
-				this.markItemAs(slotIndex, i, TestStatus.DECLINE);
+		if( ( !( i.getItem().isDamageable() || i.getItem() instanceof MetaTool ) && !canSubstitute ) && slotIndex < inputs.length )
+		{
+			if( !inputs[slotIndex].isSameType( i ) )
+			{
+				this.markItemAs( slotIndex, i, TestStatus.DECLINE );
 				return false;
 			}
 		}
@@ -326,23 +329,26 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public List<IAEItemStack> getSubstituteInputs(int slot) {
-		if (this.inputs[slot] == null) {
+	public List<IAEItemStack> getSubstituteInputs( int slot )
+	{
+		if( this.inputs[slot] == null )
+		{
 			return Collections.emptyList();
 		}
 
-		return this.substituteInputs.computeIfAbsent(slot, value -> {
-			ItemStack[] matchingStacks = getRecipeIngredient(slot).getMatchingStacks();
-			List<IAEItemStack> itemList = new ArrayList<>(matchingStacks.length + 1);
-			for (ItemStack matchingStack : matchingStacks) {
-				itemList.add(AEItemStack.fromItemStack(matchingStack));
+		return this.substituteInputs.computeIfAbsent( slot, value -> {
+			ItemStack[] matchingStacks = getRecipeIngredient( slot ).getMatchingStacks();
+			List<IAEItemStack> itemList = new ArrayList<>( matchingStacks.length + 1 );
+			for( ItemStack matchingStack : matchingStacks )
+			{
+				itemList.add( AEItemStack.fromItemStack( matchingStack ) );
 			}
 
 			// Ensure that the specific item put in by the user is at the beginning,
 			// so that it takes precedence over substitutions
-			itemList.add(0, this.inputs[slot]);
+			itemList.add( 0, this.inputs[slot] );
 			return itemList;
-		});
+		} );
 	}
 
 	/**
@@ -352,31 +358,40 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	 * ingredient list will be condensed to the actual recipe's grid size. In addition, in our 3x3 grid, the user can
 	 * shift the actual recipe input to the right and down.
 	 */
-	private Ingredient getRecipeIngredient(int slot) {
+	private Ingredient getRecipeIngredient( int slot )
+	{
 
-		if (standardRecipe instanceof IShapedRecipe ) {
+		if( standardRecipe instanceof IShapedRecipe )
+		{
 			IShapedRecipe shapedRecipe = (IShapedRecipe) standardRecipe;
 
-			return getShapedRecipeIngredient(slot, shapedRecipe.getRecipeWidth());
-		} else {
-			return getShapelessRecipeIngredient(slot);
+			return getShapedRecipeIngredient( slot, shapedRecipe.getRecipeWidth() );
+		}
+		else
+		{
+			return getShapelessRecipeIngredient( slot );
 		}
 	}
 
-	private Ingredient getShapedRecipeIngredient(int slot, int recipeWidth) {
+	private Ingredient getShapedRecipeIngredient( int slot, int recipeWidth )
+	{
 		// Compute the offset of the user's input vs. crafting grid origin
 		// Which is >0 if they have empty rows above or to the left of their input
 		int topOffset = 0;
-		if (inputs[0] == null && inputs[1] == null && inputs[2] == null) {
+		if( inputs[0] == null && inputs[1] == null && inputs[2] == null )
+		{
 			topOffset++; // First row is fully empty
-			if (inputs[3] == null && inputs[4] == null && inputs[5] == null) {
+			if( inputs[3] == null && inputs[4] == null && inputs[5] == null )
+			{
 				topOffset++; // Second row is fully empty
 			}
 		}
 		int leftOffset = 0;
-		if (inputs[0] == null && inputs[3] == null && inputs[6] == null) {
+		if( inputs[0] == null && inputs[3] == null && inputs[6] == null )
+		{
 			leftOffset++; // First column is fully empty
-			if (inputs[1] == null && inputs[4] == null && inputs[7] == null) {
+			if( inputs[1] == null && inputs[4] == null && inputs[7] == null )
+			{
 				leftOffset++; // Second column is fully empty
 			}
 		}
@@ -390,32 +405,37 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
 
-		if (ingredientIndex < 0 || ingredientIndex > ingredients.size()) {
+		if( ingredientIndex < 0 || ingredientIndex > ingredients.size() )
+		{
 			return Ingredient.EMPTY;
 		}
 
-		return ingredients.get(ingredientIndex);
+		return ingredients.get( ingredientIndex );
 	}
 
-	private Ingredient getShapelessRecipeIngredient(int slot) {
+	private Ingredient getShapelessRecipeIngredient( int slot )
+	{
 		// We map the list of *filled* sparse inputs to the shapeless (ergo unordered)
 		// ingredients. While these do not actually correspond to each other,
 		// since both lists have the same length, the mapping is at least stable.
 		int ingredientIndex = 0;
-		for (int i = 0; i < slot; i++) {
-			if (inputs[i] != null) {
+		for( int i = 0; i < slot; i++ )
+		{
+			if( inputs[i] != null )
+			{
 				ingredientIndex++;
 			}
 		}
 
 		NonNullList<Ingredient> ingredients = standardRecipe.getIngredients();
-		if (ingredientIndex < ingredients.size()) {
-			return ingredients.get(ingredientIndex);
+		if( ingredientIndex < ingredients.size() )
+		{
+			return ingredients.get( ingredientIndex );
 		}
 
 		return Ingredient.EMPTY;
 	}
-	
+
 	@Override
 	public ItemStack getOutput( final InventoryCrafting craftingInv, final World w )
 	{
@@ -517,7 +537,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 	private enum TestStatus
 	{
-		ACCEPT, DECLINE, TEST
+		ACCEPT,
+		DECLINE,
+		TEST
 	}
 
 	private static final class TestLookup
