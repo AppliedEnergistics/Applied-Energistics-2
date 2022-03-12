@@ -922,6 +922,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					{
 						changed = true;
 						inputStack.setCount( Ints.saturatedCast( acquired.getStackSize() ) );
+						itemStack.setCachedItemStack( null );
 						final ItemStack issue = adaptor.addItems( inputStack );
 						if( !issue.isEmpty() )
 						{
