@@ -909,10 +909,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					changed = true;
 					throw new GridAccessException();
 				}
-				else
-				{
-					itemStack.setCachedItemStack( inputStack );
-				}
 
 				IAEItemStack storedStack = this.gridProxy.getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().findPrecise( itemStack );
 				if( storedStack != null )
@@ -930,8 +926,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 					else if( storedStack.isCraftable() )
 					{
-						changed = this.handleCrafting( x, adaptor, itemStack ) || changed;
+                        itemStack.setCachedItemStack(inputStack);
+                        changed = this.handleCrafting( x, adaptor, itemStack ) || changed;
 					}
+					if (acquired == null) {
+                        itemStack.setCachedItemStack(inputStack);
+                    }
 				}
 			}
 			// else wtf?

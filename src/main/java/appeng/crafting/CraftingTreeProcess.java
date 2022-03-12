@@ -305,6 +305,7 @@ public class CraftingTreeProcess
 						containerItems = new ArrayList<>();
 					}
 					this.bytes++;
+					o.setCachedItemStack( is );
 					containerItems.add( o );
 				}
 			}

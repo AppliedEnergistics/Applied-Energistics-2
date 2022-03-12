@@ -285,6 +285,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if( this.cachedItemStack != null )
 		{
 			currentCached = this.cachedItemStack;
+            this.cachedItemStack = null;
 		}
 
 		ItemStack itemStack;
