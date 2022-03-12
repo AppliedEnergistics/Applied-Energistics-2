@@ -52,11 +52,13 @@ public class NonBlockingItems
 
 						if( ModItemMeta[0].equals( "gregtech" ) )
 						{
+							boolean found = false;
 							for( MetaItem<?> metaItem : MetaItem.getMetaItems() )
 							{
 								MetaItem<?>.MetaValueItem metaItem2 = metaItem.getItem( ModItemMeta[1] );
 								if( metaItem.getItem( ModItemMeta[1] ) != null )
 								{
+									found = true;
 									ItemStack itemStack = metaItem2.getStackForm();
 									NON_BLOCKING_MAP.get( modid ).putIfAbsent( itemStack.getItem(), new IntOpenHashSet() );
 									NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) -> {
@@ -75,12 +77,11 @@ public class NonBlockingItems
 											return intSet;
 										} );
 									}
-									else
-									{
-										AELog.error( "Item not found on nonBlocking config: " + s );
-									}
 								}
-								break;
+							}
+							if( !found )
+							{
+								AELog.error( "Item not found on nonBlocking config: " + s );
 							}
 						}
 						else if( ModItemMeta[0].equals( "ore" ) )
