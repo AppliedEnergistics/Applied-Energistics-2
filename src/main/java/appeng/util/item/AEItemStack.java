@@ -279,31 +279,19 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public ItemStack getCachedItemStack( long stackSize )
-	{
-		ItemStack currentCached = null;
-		if( this.cachedItemStack != null )
-		{
-			currentCached = this.cachedItemStack;
+	public ItemStack getCachedItemStack( long stackSize ) {
+        if (this.cachedItemStack != null) {
+            ItemStack currentCached = this.cachedItemStack;
             this.cachedItemStack = null;
-		}
+            currentCached.setCount(Ints.saturatedCast(stackSize));
+            return currentCached;
+        }
 
-		ItemStack itemStack;
+        ItemStack itemStack = this.createItemStack();
+        itemStack.setCount(Ints.saturatedCast(stackSize));
 
-		if( currentCached != null )
-		{
-			// Cache is suitable, just update the count
-			itemStack = currentCached;
-			currentCached.setCount( Ints.saturatedCast( stackSize ) );
-		}
-		else
-		{
-			// We need a new stack :-(
-			itemStack = this.createItemStack();
-			itemStack.setCount( Ints.saturatedCast( stackSize ) );
-		}
-		return itemStack;
-	}
+        return itemStack;
+    }
 
 	@Override
 	public void setCachedItemStack( ItemStack itemStack )
