@@ -147,52 +147,41 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 			ItemStack extracted;
 
-			if( !simulate )
+			int stackSizeCurrentSlot = stackInInventorySlot.getCount();
+			int remainingCurrentSlot = Math.min( remainingSize, stackSizeCurrentSlot );
+
+			// We have to loop here because according to the docs, the handler shouldn't return a stack with size >
+			// maxSize, even if we request more. So even if it returns a valid stack, it might have more stuff.
+			do
 			{
-				int stackSizeCurrentSlot = stackInInventorySlot.getCount();
-				int remainingCurrentSlot = Math.min( remainingSize, stackSizeCurrentSlot );
-
-				// We have to loop here because according to the docs, the handler shouldn't return a stack with size >
-				// maxSize, even if we request more. So even if it returns a valid stack, it might have more stuff.
-
-				do
-				{
-					extracted = this.itemHandler.extractItem( i, remainingCurrentSlot, false );
-
-					if( !extracted.isEmpty() )
-					{
-						if( extracted.getCount() > remainingCurrentSlot )
-						{
-							// Something broke. It should never return more than we requested...
-							// We're going to silently eat the remainder
-							AELog.warn( "Mod that provided item handler %s is broken. Returned %s items while only requesting %d.", this.itemHandler.getClass().getName(), extracted.toString(), remainingCurrentSlot );
-							extracted.setCount( remainingCurrentSlot );
-						}
-
-						// We're just gonna use the first stack we get our hands on as the template for the rest.
-						// In case some stupid itemhandler (aka forge) returns an internal state we have to do a second
-						// expensive copy again.
-						if( gathered.isEmpty() )
-						{
-							gathered = extracted;
-						}
-						else
-						{
-							gathered.grow( extracted.getCount() );
-						}
-						remainingCurrentSlot -= extracted.getCount();
-					}
-				} while ( !extracted.isEmpty() && remainingCurrentSlot > 0 );
-
-				remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
-			}
-			else
-			{
-				extracted = this.itemHandler.extractItem( i, remainingSize, true );
-
+				extracted = this.itemHandler.extractItem( i, remainingCurrentSlot, simulate );
 				if( !extracted.isEmpty() )
 				{
-					extracted.setCount( Math.min( stackInInventorySlot.getCount(), remainingSize ) );
+					// In order to guard against broken IItemHandler implementations, we'll try to guess if the returned
+					// stack (especially in simulate mode) is the same that was returned by getStackInSlot. This is
+					// obviously not a precise science, but it would catch the previous Forge bug:
+					// https://github.com/MinecraftForge/MinecraftForge/pull/6580
+					if( extracted == stackInInventorySlot )
+					{
+						extracted = extracted.copy();
+					}
+
+					if( extracted.getCount() > remainingCurrentSlot )
+					{
+						// Something broke. It should never return more than we requested...
+						// We're going to silently eat the remainder
+						AELog.warn( "Mod that provided item handler %s is broken. Returned %s items while only requesting %d.", this.itemHandler.getClass().getName(), extracted.toString(), remainingCurrentSlot );
+						extracted.setCount( remainingCurrentSlot );
+					}
+
+					// Heuristic for simulation: looping in case of simulations is pointless, since the state of the
+					// underlying inventory does not change after a simulated extraction. To still support inventories
+					// that report stacks that are larger than maxStackSize, we use this heuristic
+					if( simulate && extracted.getCount() == extracted.getMaxStackSize() && remainingCurrentSlot > extracted.getMaxStackSize() )
+					{
+						extracted.setCount( remainingCurrentSlot );
+					}
+
 					if( gathered.isEmpty() )
 					{
 						gathered = extracted;
@@ -201,9 +190,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					{
 						gathered.grow( extracted.getCount() );
 					}
-					remainingSize -= extracted.getCount();
+					remainingCurrentSlot -= extracted.getCount();
 				}
-			}
+			} while ( !simulate && !extracted.isEmpty() && remainingCurrentSlot > 0 );
+
+			remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
 			if( remainingSize <= 0 )
 			{
 				break;

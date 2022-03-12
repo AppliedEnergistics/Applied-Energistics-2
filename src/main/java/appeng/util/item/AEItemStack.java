@@ -299,6 +299,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		{
 			// We need a new stack :-(
 			itemStack = this.createItemStack();
+			itemStack.setCount( Ints.saturatedCast( stackSize ) );
 		}
 		return itemStack;
 	}

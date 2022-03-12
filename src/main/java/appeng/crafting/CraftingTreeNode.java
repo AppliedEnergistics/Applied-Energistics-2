@@ -88,7 +88,7 @@ public class CraftingTreeNode
 		for( final ICraftingPatternDetails details : cc.getCraftingFor( this.what, this.parent == null ? null : this.parent.details, slot, this.world ) )// in
 		// order.
 		{
-			if( this.parent == null || this.parent.notRecursive() )
+			if( this.parent == null || notRecursive( details ) && this.parent.details != details )
 			{
 				this.nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1 ) );
 			}
@@ -119,7 +119,7 @@ public class CraftingTreeNode
 		{
 			Collection<IAEItemStack> itemList = new ArrayList<>();
 
-			if( this.what.getItem().hasContainerItem( this.what.getDefinition() ) )
+			if( this.what.getItem().hasContainerItem( this.what.getDefinition() ) || this.what.getItem().isDamageable() )
 			{
 				itemList.addAll( inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL ) );
 
@@ -298,9 +298,17 @@ public class CraftingTreeNode
 		throw new CraftBranchFailure( this.what, l );
 	}
 
-	boolean notRecursive()
+	boolean notRecursive( ICraftingPatternDetails details )
 	{
-		return this.parent == null || job.getUniques().findPrecise( this.what ) == null;
+		if( this.parent == null )
+		{
+			return true;
+		}
+		if( this.parent.details == details )
+		{
+			return false;
+		}
+		return this.parent.notRecursive( details );
 	}
 
 	void dive( final CraftingJob job )

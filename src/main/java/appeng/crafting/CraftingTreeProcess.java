@@ -24,19 +24,16 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import appeng.api.config.FuzzyMode;
-import appeng.me.cache.CraftingGridCache;
 import appeng.util.item.AEItemStack;
 import com.google.common.collect.ImmutableCollection;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -75,14 +72,18 @@ public class CraftingTreeProcess
 		}
 		final IAEItemStack[] list = details.getInputs();
 
-		for( final IAEItemStack part : details.getCondensedInputs() )
+		for( final IAEItemStack part : details.getCondensedOutputs() )
 		{
-			if( part.getItem().hasContainerItem( part.getDefinition() ) )
+			for( final IAEItemStack o : details.getCondensedInputs() )
 			{
-				this.limitQty = true;
-				//break;
+				if( part.equals( o ) )
+				{
+					this.limitQty = true;
+					break;
+				}
 			}
 		}
+		
 		// this is minor different then below, this slot uses the pattern, but kinda fudges it.
 		for( IAEItemStack part : details.getCondensedInputs() )
 		{
@@ -99,21 +100,57 @@ public class CraftingTreeProcess
 					if( part.getItem().hasContainerItem( part.getDefinition() ) )
 					{
 						part = list[x];
+						this.limitQty = true;
 						isPartContainer = true;
 					}
-					long wantedSize = part.getStackSize();
 
-					if( isPartContainer && wantedSize > 0 )
+					long wantedSize = part.getStackSize();
+					IAEItemStack found;
+					IAEItemStack used;
+					long remaining = 0;
+					long requestAmount = 0;
+
+					if( wantedSize > 0 )
 					{
-						if( details.canSubstitute() && cc.getCraftingFor( part, details, x, world ).isEmpty() )
+						if( details.canSubstitute() )
 						{
-							IItemList<IAEItemStack> aa = ( (CraftingGridCache) cc ).getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
-							for( IAEItemStack is : aa )
+							for( IAEItemStack subs : details.getSubstituteInputs( x ) )
 							{
-								if( is.fuzzyComparison( part, FuzzyMode.IGNORE_ALL ) )
+								found = job.checkAvailable( subs );
+
+								if( found != null )
 								{
-									wantedSize -= 1;
-									this.nodes.put( new CraftingTreeNode( cc, job, is.copy().setStackSize( 1 ), this, x, depth + 1 ), 1 );
+									used = job.getUsedWhileBuilding().findPrecise( subs );
+									remaining = found.getStackSize();
+									if( used != null )
+									{
+										if( used.getStackSize() >= found.getStackSize() )
+										{
+											remaining = 0;
+										}
+										else
+										{
+											remaining -= used.getStackSize();
+										}
+									}
+								}
+
+								if( remaining > 0 )
+								{
+									if( remaining >= wantedSize )
+									{
+										requestAmount = wantedSize;
+										wantedSize = 0;
+										//we have the items
+									}
+									else
+									{
+										requestAmount = remaining;
+										wantedSize -= remaining;
+									}
+									subs = subs.copy().setStackSize( requestAmount );
+									job.getUsedWhileBuilding().addStorage( subs );
+									this.nodes.put( new CraftingTreeNode( cc, job, subs, this, x, depth + 1 ), requestAmount );
 									if( wantedSize == 0 )
 									{
 										break;
@@ -121,144 +158,98 @@ public class CraftingTreeProcess
 								}
 							}
 						}
-					}
-
-					if( !isPartContainer )
-					{
-						IAEItemStack found = job.checkAvailable( part );
-						IAEItemStack used;
-						long requestAmount;
-
-						long remaining = 0;
-						if( found != null )
+						else
 						{
-							used = job.getUsedWhileBuilding().findPrecise( part );
-							remaining = found.getStackSize();
-							if( used != null )
+							found = job.checkAvailable( part );
+
+							if( found != null )
 							{
-								if( used.getStackSize() >= found.getStackSize() )
+								used = job.getUsedWhileBuilding().findPrecise( part );
+								remaining = found.getStackSize();
+								if( used != null )
 								{
-									remaining = 0;
+									if( used.getStackSize() >= found.getStackSize() )
+									{
+										remaining = 0;
+									}
+									else
+									{
+										remaining -= used.getStackSize();
+									}
+								}
+							}
+
+							if( remaining > 0 )
+							{
+								if( remaining >= wantedSize )
+								{
+									requestAmount = wantedSize;
+									wantedSize = 0;
+									//we have the items
 								}
 								else
 								{
-									remaining -= used.getStackSize();
+									requestAmount = remaining;
+									wantedSize -= remaining;
 								}
+								part = part.copy().setStackSize( requestAmount );
+								job.getUsedWhileBuilding().addStorage( part );
+								this.nodes.put( new CraftingTreeNode( cc, job, part, this, x, depth + 1 ), requestAmount );
 							}
-						}
-
-						if( remaining > 0 )
-						{
-							if( remaining >= wantedSize )
-							{
-								requestAmount = wantedSize;
-								wantedSize = 0;
-								//we have the items
-							}
-							else
-							{
-								requestAmount = remaining;
-								wantedSize -= remaining;
-							}
-							part = part.copy().setStackSize( requestAmount );
-							job.getUsedWhileBuilding().addStorage( part );
-							this.nodes.put( new CraftingTreeNode( cc, job, part, this, x, depth + 1 ), requestAmount );
 							if( wantedSize == 0 )
 							{
 								break;
 							}
 						}
-						if( wantedSize > 0 )
+
+						if( details.canSubstitute() && cc.getCraftingFor( part, details, x, world ).isEmpty() )
 						{
-							if( details.canSubstitute() && cc.getCraftingFor( part, details, x, world ).isEmpty() )
+							for( IAEItemStack subs : details.getSubstituteInputs( x ) )
 							{
-								//try to extract substitutes
-								for( IAEItemStack subs : details.getSubstituteInputs( x ) )
+								if( subs.fuzzyComparison( part, FuzzyMode.IGNORE_ALL ) )
 								{
-									if( subs.equals( part ) )
-									{
-										continue;
-									}
-									found = job.checkAvailable( subs );
-									remaining = 0;
-
-									if( found != null )
-									{
-										used = job.getUsedWhileBuilding().findPrecise( subs );
-										remaining = found.getStackSize();
-										if( used != null )
-										{
-											if( used.getStackSize() >= found.getStackSize() )
-											{
-												remaining = 0;
-											}
-											else
-											{
-												remaining -= used.getStackSize();
-											}
-										}
-									}
-
-									if( remaining > 0 )
-									{
-										if( remaining >= wantedSize )
-										{
-											requestAmount = wantedSize;
-											wantedSize = 0;
-											//we have the items
-										}
-										else
-										{
-											requestAmount = remaining;
-											wantedSize -= remaining;
-										}
-										subs = subs.copy().setStackSize( requestAmount );
-										job.getUsedWhileBuilding().addStorage( subs );
-										this.nodes.put( new CraftingTreeNode( cc, job, subs, this, x, depth + 1 ), requestAmount );
-									}
+									wantedSize -= 1;
+									this.nodes.put( new CraftingTreeNode( cc, job, subs.copy().setStackSize( 1 ), this, x, depth + 1 ), 1 );
 									if( wantedSize == 0 )
 									{
 										break;
 									}
 								}
-								if( wantedSize > 0 )
+							}
+							//try to order the crafting of a substitute
+							ICraftingPatternDetails prioritizedPattern = null;
+							IAEItemStack prioritizedIAE = null;
+							for( IAEItemStack subs : details.getSubstituteInputs( x ) )
+							{
+								if( subs.equals( part ) )
 								{
-									//try to order the crafting of a substitute
-									ICraftingPatternDetails prioritizedPattern = null;
-									IAEItemStack prioritizedIAE = null;
-									for( IAEItemStack subs : details.getSubstituteInputs( x ) )
-									{
-										if( subs.equals( part ) )
-										{
-											continue;
-										}
-										ImmutableCollection<ICraftingPatternDetails> detailCollection = cc.getCraftingFor( subs, details, x, world );
-
-										for( ICraftingPatternDetails sp : detailCollection )
-										{
-											if( prioritizedPattern == null )
-											{
-												prioritizedPattern = sp;
-												prioritizedIAE = subs;
-											}
-											else
-											{
-												if( sp.getPriority() > prioritizedPattern.getPriority() )
-												{
-													prioritizedPattern = sp;
-													prioritizedIAE = subs;
-												}
-											}
-											this.nodes.put( new CraftingTreeNode( cc, job, prioritizedIAE.copy(), this, x, depth + 1 ), wantedSize );
-											wantedSize = 0;
-											break;
-										}
-									}
-									if( wantedSize == 0 )
-									{
-										break;
-									}
+									continue;
 								}
+								ImmutableCollection<ICraftingPatternDetails> detailCollection = cc.getCraftingFor( subs, details, x, world );
+
+								for( ICraftingPatternDetails sp : detailCollection )
+								{
+									if( prioritizedPattern == null )
+									{
+										prioritizedPattern = sp;
+										prioritizedIAE = subs;
+									}
+									else
+									{
+										if( sp.getPriority() > prioritizedPattern.getPriority() )
+										{
+											prioritizedPattern = sp;
+											prioritizedIAE = subs;
+										}
+									}
+									this.nodes.put( new CraftingTreeNode( cc, job, prioritizedIAE.copy(), this, x, depth + 1 ), wantedSize );
+									wantedSize = 0;
+									break;
+								}
+							}
+							if( wantedSize == 0 )
+							{
+								break;
 							}
 						}
 					}
@@ -276,23 +267,11 @@ public class CraftingTreeProcess
 				}
 			}
 		}
-
-		for( final IAEItemStack part : details.getCondensedOutputs() )
-		{
-			for( final IAEItemStack o : details.getCondensedInputs() )
-			{
-				if( part.equals( o ) )
-				{
-					this.limitQty = true;
-					break;
-				}
-			}
-		}
 	}
 
-	boolean notRecursive()
+	boolean notRecursive( ICraftingPatternDetails details )
 	{
-		return this.parent == null || this.parent.notRecursive();
+		return this.parent == null || this.parent.notRecursive( details );
 	}
 
 	long getTimes( final long remaining, final long stackSize )
