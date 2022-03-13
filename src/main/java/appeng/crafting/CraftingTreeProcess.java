@@ -83,7 +83,7 @@ public class CraftingTreeProcess
 				}
 			}
 		}
-		
+
 		// this is minor different then below, this slot uses the pattern, but kinda fudges it.
 		for( IAEItemStack part : details.getCondensedInputs() )
 		{
@@ -196,12 +196,10 @@ public class CraftingTreeProcess
 								job.getUsedWhileBuilding().addStorage( part );
 								this.nodes.put( new CraftingTreeNode( cc, job, part, this, x, depth + 1 ), requestAmount );
 							}
-							if( wantedSize == 0 )
-							{
-								break;
-							}
 						}
-
+					}
+					if( wantedSize > 0 )
+					{
 						if( details.canSubstitute() && cc.getCraftingFor( part, details, x, world ).isEmpty() )
 						{
 							for( IAEItemStack subs : details.getSubstituteInputs( x ) )
@@ -239,17 +237,15 @@ public class CraftingTreeProcess
 										if( sp.getPriority() > prioritizedPattern.getPriority() )
 										{
 											prioritizedPattern = sp;
-											prioritizedIAE = subs;
 										}
 									}
+								}
+								if( prioritizedIAE != null )
+								{
 									this.nodes.put( new CraftingTreeNode( cc, job, prioritizedIAE.copy(), this, x, depth + 1 ), wantedSize );
 									wantedSize = 0;
 									break;
 								}
-							}
-							if( wantedSize == 0 )
-							{
-								break;
 							}
 						}
 					}
