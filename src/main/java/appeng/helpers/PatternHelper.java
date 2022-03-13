@@ -267,7 +267,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		this.testFrame.setInventorySlotContents( slotIndex, i );
 
 		// If we cannot substitute, the items must match exactly
-		if( ( !( i.getItem().isDamageable() || i.getItem() instanceof MetaTool ) && !canSubstitute ) && slotIndex < inputs.length )
+		if( ( !( i.getItem().isDamageable() || Platform.isModLoaded( "gregtech" ) && i.getItem() instanceof MetaTool ) && !canSubstitute ) && slotIndex < inputs.length )
 		{
 			if( !inputs[slotIndex].isSameType( i ) )
 			{

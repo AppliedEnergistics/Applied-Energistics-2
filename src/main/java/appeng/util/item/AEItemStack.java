@@ -279,19 +279,21 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public ItemStack getCachedItemStack( long stackSize ) {
-        if (this.cachedItemStack != null) {
-            ItemStack currentCached = this.cachedItemStack;
-            this.cachedItemStack = null;
-            currentCached.setCount(Ints.saturatedCast(stackSize));
-            return currentCached;
-        }
+	public ItemStack getCachedItemStack( long stackSize )
+	{
+		if( this.cachedItemStack != null )
+		{
+			ItemStack currentCached = this.cachedItemStack;
+			this.cachedItemStack = null;
+			currentCached.setCount( Ints.saturatedCast( stackSize ) );
+			return currentCached;
+		}
 
-        ItemStack itemStack = this.createItemStack();
-        itemStack.setCount(Ints.saturatedCast(stackSize));
+		ItemStack itemStack = this.createItemStack();
+		itemStack.setCount( Ints.saturatedCast( stackSize ) );
 
-        return itemStack;
-    }
+		return itemStack;
+	}
 
 	@Override
 	public void setCachedItemStack( ItemStack itemStack )
@@ -361,7 +363,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 	private boolean fuzzyItemStackComparison( ItemStack a, ItemStack b, FuzzyMode mode )
 	{
-		if( a.getItem() == b.getItem() && ( a.getItem().isDamageable() || a.getItem() instanceof MetaTool ) )
+		if( a.getItem() == b.getItem() && ( a.getItem().isDamageable() || Platform.isModLoaded( "gregtech" ) && a.getItem() instanceof MetaTool ) )
 		{
 			if( mode == FuzzyMode.IGNORE_ALL )
 			{
@@ -369,7 +371,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 				{
 					return true;
 				}
-				else if( a.getItem() instanceof MetaTool )
+				else if( Platform.isModLoaded( "gregtech" ) && a.getItem() instanceof MetaTool )
 				{
 					return a.getItemDamage() == b.getItemDamage();
 				}
@@ -380,7 +382,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 				{
 					return a.getItemDamage() > 1 == b.getItemDamage() > 1;
 				}
-				else if( a.getItem() instanceof MetaTool )
+				else if( Platform.isModLoaded( "gregtech" ) && a.getItem() instanceof MetaTool )
 				{
 					return ( (MetaTool) a.getItem() ).getItemDamage( a ) == ( (MetaTool) b.getItem() ).getItemDamage( b );
 				}
@@ -394,7 +396,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 					percentDamageOfA = (float) a.getItemDamage() / a.getMaxDamage();
 					percentDamageOfB = (float) b.getItemDamage() / b.getMaxDamage();
 				}
-				else if( a.getItem() instanceof MetaTool )
+				else if( Platform.isModLoaded( "gregtech" ) && a.getItem() instanceof MetaTool )
 				{
 					percentDamageOfA = (float) ( (MetaTool) a.getItem() ).getItemDamage( a ) / ( (MetaTool) a.getItem() ).getMaxItemDamage( a );
 					percentDamageOfB = (float) ( (MetaTool) b.getItem() ).getItemDamage( b ) / ( (MetaTool) b.getItem() ).getMaxItemDamage( b );

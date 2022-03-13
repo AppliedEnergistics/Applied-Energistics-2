@@ -175,7 +175,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 
 	private ItemVariantList makeRecordMap( Item item )
 	{
-		if( item.isDamageable() || item instanceof MetaTool )
+		if( item.isDamageable() || ( Platform.isModLoaded( "gregtech" ) && item instanceof MetaTool ) )
 		{
 			return new FuzzyItemVariantList();
 		}

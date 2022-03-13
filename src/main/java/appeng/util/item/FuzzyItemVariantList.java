@@ -25,9 +25,7 @@ import java.util.Map;
 import appeng.util.Platform;
 import com.google.common.base.Preconditions;
 
-import gregtech.api.items.toolitem.ToolMetaItem;
 import gregtech.common.items.MetaTool;
-import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import net.minecraft.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
@@ -167,22 +165,23 @@ class FuzzyItemVariantList extends ItemVariantList
 	 */
 	static ItemDamageBound makeLowerBound( final ItemStack stack, final FuzzyMode fuzzy )
 	{
-		Preconditions.checkState( stack.getItem().isDamageable() || stack.getItem() instanceof MetaTool, "Item#isDamageable() has to be true" );
+		Preconditions.checkState( stack.getItem().isDamageable() || ( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool ), "Item#isDamageable() has to be true" );
 
 		int damage;
+		int maxDamage;
+		if( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool )
+		{
+			maxDamage = ( (MetaTool) stack.getItem() ).getMaxItemDamage( stack );
+			damage = ( (MetaTool) stack.getItem() ).getItemDamage( stack );
+		}
+		else
+		{
+			maxDamage = stack.getMaxDamage();
+			damage = stack.getItemDamage();
+		}
+
 		if( fuzzy == FuzzyMode.IGNORE_ALL )
 		{
-			int maxDamage;
-			if( stack.getItem() instanceof MetaTool )
-			{
-				maxDamage = ( (MetaTool) stack.getItem() ).getMaxItemDamage( stack );
-				damage = ( (MetaTool) stack.getItem() ).getItemDamage( stack );
-			}
-			else
-			{
-				maxDamage = stack.getMaxDamage();
-				damage = stack.getItemDamage();
-			}
 			if( maxDamage != 0 )
 			{
 				damage = maxDamage;
@@ -190,8 +189,8 @@ class FuzzyItemVariantList extends ItemVariantList
 		}
 		else
 		{
-			final int breakpoint = fuzzy.calculateBreakPoint( stack.getItem().isDamageable() ? stack.getMaxDamage() : ( (MetaTool) stack.getItem() ).getMaxItemDamage( stack ) );
-			damage = stack.getItem().isDamageable() ? stack.getItemDamage() : ( (MetaTool) stack.getItem() ).getItemDamage( stack ) <= breakpoint ? breakpoint : stack.getItem().isDamageable() ? stack.getMaxDamage() : ( (MetaTool) stack.getItem() ).getMaxItemDamage( stack );
+			final int breakpoint = fuzzy.calculateBreakPoint( maxDamage );
+			damage = damage <= breakpoint ? breakpoint : maxDamage;
 		}
 
 		return new ItemDamageBound( damage );
@@ -203,7 +202,7 @@ class FuzzyItemVariantList extends ItemVariantList
 	 */
 	static ItemDamageBound makeUpperBound( final ItemStack stack, final FuzzyMode fuzzy )
 	{
-		Preconditions.checkState( stack.getItem().isDamageable() || stack.getItem() instanceof MetaTool, "Item#isDamageable() has to be true" );
+		Preconditions.checkState( stack.getItem().isDamageable() || ( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool ), "Item#isDamageable() has to be true" );
 
 		int damage;
 		if( fuzzy == FuzzyMode.IGNORE_ALL )
@@ -212,8 +211,20 @@ class FuzzyItemVariantList extends ItemVariantList
 		}
 		else
 		{
-			final int breakpoint = fuzzy.calculateBreakPoint( stack.getItem().isDamageable() ? stack.getMaxDamage() : ( (MetaTool) stack.getItem() ).getMaxItemDamage( stack ) );
-			damage = stack.getItem().isDamageable() ? stack.getItemDamage() : ( (MetaTool) stack.getItem() ).getItemDamage( stack ) <= breakpoint ? MIN_DAMAGE_VALUE : breakpoint;
+			int maxDamage;
+			if( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool )
+			{
+				maxDamage = ( (MetaTool) stack.getItem() ).getMaxItemDamage( stack );
+				damage = ( (MetaTool) stack.getItem() ).getItemDamage( stack );
+			}
+			else
+			{
+				maxDamage = stack.getMaxDamage();
+				damage = stack.getItemDamage();
+			}
+
+			final int breakpoint = fuzzy.calculateBreakPoint( maxDamage );
+			damage = damage <= breakpoint ? MIN_DAMAGE_VALUE : breakpoint;
 		}
 
 		return new ItemDamageBound( damage );
