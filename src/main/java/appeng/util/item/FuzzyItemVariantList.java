@@ -25,7 +25,7 @@ import java.util.Map;
 import appeng.util.Platform;
 import com.google.common.base.Preconditions;
 
-import gregtech.common.items.MetaTool;
+import gregtech.api.items.IToolItem;
 import net.minecraft.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
@@ -165,14 +165,14 @@ class FuzzyItemVariantList extends ItemVariantList
 	 */
 	static ItemDamageBound makeLowerBound( final ItemStack stack, final FuzzyMode fuzzy )
 	{
-		Preconditions.checkState( stack.getItem().isDamageable() || ( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool ), "Item#isDamageable() has to be true" );
+		Preconditions.checkState( stack.getItem().isDamageable() || ( Platform.isGTDamageableItem( stack.getItem() ) ), "Item#isDamageable() has to be true" );
 
 		int damage;
 		int maxDamage;
-		if( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool )
+		if( Platform.isGTDamageableItem( stack.getItem() ) )
 		{
-			maxDamage = ( (MetaTool) stack.getItem() ).getMaxItemDamage( stack );
-			damage = ( (MetaTool) stack.getItem() ).getItemDamage( stack );
+			maxDamage = ( (IToolItem) stack.getItem() ).getMaxItemDamage( stack );
+			damage = ( (IToolItem) stack.getItem() ).getItemDamage( stack );
 		}
 		else
 		{
@@ -202,7 +202,7 @@ class FuzzyItemVariantList extends ItemVariantList
 	 */
 	static ItemDamageBound makeUpperBound( final ItemStack stack, final FuzzyMode fuzzy )
 	{
-		Preconditions.checkState( stack.getItem().isDamageable() || ( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool ), "Item#isDamageable() has to be true" );
+		Preconditions.checkState( stack.getItem().isDamageable() || ( Platform.isGTDamageableItem( stack.getItem() ) ), "Item#isDamageable() has to be true" );
 
 		int damage;
 		if( fuzzy == FuzzyMode.IGNORE_ALL )
@@ -212,10 +212,10 @@ class FuzzyItemVariantList extends ItemVariantList
 		else
 		{
 			int maxDamage;
-			if( Platform.isModLoaded( "gregtech" ) && stack.getItem() instanceof MetaTool )
+			if( Platform.isGTDamageableItem( stack.getItem() ) )
 			{
-				maxDamage = ( (MetaTool) stack.getItem() ).getMaxItemDamage( stack );
-				damage = ( (MetaTool) stack.getItem() ).getItemDamage( stack );
+				maxDamage = ( (IToolItem) stack.getItem() ).getMaxItemDamage( stack );
+				damage = ( (IToolItem) stack.getItem() ).getItemDamage( stack );
 			}
 			else
 			{

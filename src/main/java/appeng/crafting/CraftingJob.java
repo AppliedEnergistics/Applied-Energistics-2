@@ -58,7 +58,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 	private final World world;
 	private final IItemList<IAEItemStack> crafting = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-	private final IItemList<IAEItemStack> usedWhileBuilding = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	private final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<>();
 	private final Object monitor = new Object();
@@ -92,7 +91,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		this.cc = grid.getCache( ICraftingGrid.class );
 		final GridStorageCache sg = grid.getCache( IStorageGrid.class );
-		this.original = new MECraftingInventory( sg.getExtractableList( actionSrc ) );
+		this.original = sg.getExtractableList( actionSrc );
 
 		this.setTree( this.getCraftingTree( cc, what ) );
 		this.availableCheck = null;
@@ -108,11 +107,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
 	}
 
-	public IItemList<IAEItemStack> getUsedWhileBuilding()
-	{
-		return usedWhileBuilding;
-	}
-
 	IAEItemStack checkUse( final IAEItemStack available )
 	{
 		return this.availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
@@ -120,12 +114,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	IAEItemStack checkAvailable( final IAEItemStack available )
 	{
-		return this.original.extractItems( available.copy().setStackSize( Long.MAX_VALUE ), Actionable.SIMULATE, this.actionSrc );
-	}
-
-	public void writeToNBT( final NBTTagCompound out )
-	{
-
+		return this.availableCheck.extractItems( available, Actionable.SIMULATE, this.actionSrc );
 	}
 
 	void addTask( IAEItemStack what, final long crafts, final ICraftingPatternDetails details, final int depth )

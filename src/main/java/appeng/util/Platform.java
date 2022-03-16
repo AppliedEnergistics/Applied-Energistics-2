@@ -36,6 +36,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+import gregtech.api.items.IToolItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -73,6 +74,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -134,6 +136,7 @@ import appeng.util.prioritylist.IPartitionList;
  * @version rv2
  * @since rv0
  */
+@Optional.Interface( iface = "gregtech.api.items.IToolItem", modid = "gregtech" )
 public class Platform
 {
 
@@ -176,9 +179,8 @@ public class Platform
 	/**
 	 * This displays the value for encoded longs ( double *100 )
 	 *
-	 * @param n to be formatted long value
+	 * @param n      to be formatted long value
 	 * @param isRate if true it adds a /t to the formatted string
-	 *
 	 * @return formatted long value
 	 */
 	public static String formatPowerLong( final long n, final boolean isRate )
@@ -188,12 +190,14 @@ public class Platform
 		final PowerUnits displayUnits = AEConfig.instance().selectedPowerUnit();
 		p = PowerUnits.AE.convertTo( displayUnits, p );
 
-		final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
+		final String[] preFixes = {
+				"k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y"
+		};
 		String unitName = displayUnits.name();
 
 		String level = "";
 		int offset = 0;
-		while( p > 1000 && offset < preFixes.length )
+		while ( p > 1000 && offset < preFixes.length )
 		{
 			p /= 1000;
 			level = preFixes[offset];
@@ -210,7 +214,7 @@ public class Platform
 		final int west_y = forward.zOffset * up.xOffset - forward.xOffset * up.zOffset;
 		final int west_z = forward.xOffset * up.yOffset - forward.yOffset * up.xOffset;
 
-		switch( west_x + west_y * 2 + west_z * 3 )
+		switch ( west_x + west_y * 2 + west_z * 3 )
 		{
 			case 1:
 				return AEPartLocation.EAST;
@@ -237,7 +241,7 @@ public class Platform
 		final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
 		final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
 
-		switch( west_x + west_y * 2 + west_z * 3 )
+		switch ( west_x + west_y * 2 + west_z * 3 )
 		{
 			case 1:
 				return EnumFacing.EAST;
@@ -271,8 +275,7 @@ public class Platform
 			{
 				ce = nextEnum( ce );
 			}
-		}
-		while( !validOptions.contains( ce ) || isNotValidSetting( ce ) );
+		} while ( !validOptions.contains( ce ) || isNotValidSetting( ce ) );
 
 		return ce;
 	}
@@ -446,7 +449,7 @@ public class Platform
 	{
 		if( upAndDown )
 		{
-			switch( dir )
+			switch ( dir )
 			{
 				case NORTH:
 					return AEPartLocation.SOUTH;
@@ -466,7 +469,7 @@ public class Platform
 		}
 		else
 		{
-			switch( dir )
+			switch ( dir )
 			{
 				case UP:
 					return AEPartLocation.DOWN;
@@ -519,8 +522,7 @@ public class Platform
 						final double offset_x = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_y = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_z = ( getRandomInt() % 32 - 16 ) / 82;
-						final EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i
-								.copy() );
+						final EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy() );
 						w.spawnEntity( ei );
 					}
 				}
@@ -592,8 +594,7 @@ public class Platform
 
 		try
 		{
-			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft
-					.getMinecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getMinecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
 			return itemStack.getTooltip( Minecraft.getMinecraft().player, tooltipFlag );
 		}
 		catch( final Exception errB )
@@ -764,7 +765,7 @@ public class Platform
 
 	public static int MC2MEColor( final int color )
 	{
-		switch( color )
+		switch ( color )
 		{
 			case 4: // "blue"
 				return 0;
@@ -842,10 +843,10 @@ public class Platform
 			return forward;
 		}
 
-		switch( forward )
+		switch ( forward )
 		{
 			case DOWN:
-				switch( axis )
+				switch ( axis )
 				{
 					case DOWN:
 						return forward;
@@ -864,7 +865,7 @@ public class Platform
 				}
 				break;
 			case UP:
-				switch( axis )
+				switch ( axis )
 				{
 					case NORTH:
 						return AEPartLocation.WEST;
@@ -879,7 +880,7 @@ public class Platform
 				}
 				break;
 			case NORTH:
-				switch( axis )
+				switch ( axis )
 				{
 					case UP:
 						return AEPartLocation.WEST;
@@ -894,7 +895,7 @@ public class Platform
 				}
 				break;
 			case SOUTH:
-				switch( axis )
+				switch ( axis )
 				{
 					case UP:
 						return AEPartLocation.EAST;
@@ -909,7 +910,7 @@ public class Platform
 				}
 				break;
 			case EAST:
-				switch( axis )
+				switch ( axis )
 				{
 					case UP:
 						return AEPartLocation.NORTH;
@@ -923,7 +924,7 @@ public class Platform
 						break;
 				}
 			case WEST:
-				switch( axis )
+				switch ( axis )
 				{
 					case UP:
 						return AEPartLocation.SOUTH;
@@ -944,10 +945,10 @@ public class Platform
 
 	public static EnumFacing rotateAround( final EnumFacing forward, final EnumFacing axis )
 	{
-		switch( forward )
+		switch ( forward )
 		{
 			case DOWN:
-				switch( axis )
+				switch ( axis )
 				{
 					case DOWN:
 						return forward;
@@ -966,7 +967,7 @@ public class Platform
 				}
 				break;
 			case UP:
-				switch( axis )
+				switch ( axis )
 				{
 					case NORTH:
 						return EnumFacing.WEST;
@@ -981,7 +982,7 @@ public class Platform
 				}
 				break;
 			case NORTH:
-				switch( axis )
+				switch ( axis )
 				{
 					case UP:
 						return EnumFacing.WEST;
@@ -996,7 +997,7 @@ public class Platform
 				}
 				break;
 			case SOUTH:
-				switch( axis )
+				switch ( axis )
 				{
 					case UP:
 						return EnumFacing.EAST;
@@ -1011,7 +1012,7 @@ public class Platform
 				}
 				break;
 			case EAST:
-				switch( axis )
+				switch ( axis )
 				{
 					case UP:
 						return EnumFacing.NORTH;
@@ -1025,7 +1026,7 @@ public class Platform
 						break;
 				}
 			case WEST:
-				switch( axis )
+				switch ( axis )
 				{
 					case UP:
 						return EnumFacing.SOUTH;
@@ -1101,9 +1102,7 @@ public class Platform
 
 		final Vec3d vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
 
-		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.x, vec31.x ), Math.min( vec3.y, vec31.y ), Math.min( vec3.z,
-				vec31.z ), Math.max( vec3.x, vec31.x ), Math.max( vec3.y, vec31.y ), Math.max( vec3.z, vec31.z ) ).grow(
-						16, 16, 16 );
+		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.x, vec31.x ), Math.min( vec3.y, vec31.y ), Math.min( vec3.z, vec31.z ), Math.max( vec3.x, vec31.x ), Math.max( vec3.y, vec31.y ), Math.max( vec3.z, vec31.z ) ).grow( 16, 16, 16 );
 
 		Entity entity = null;
 		double closest = 9999999.0D;
@@ -1249,12 +1248,11 @@ public class Platform
 					final T leftover = input.copy();
 					final T split = input.copy();
 
-					leftover.decStackSize(itemToAdd);
-					split.setStackSize(itemToAdd);
-					leftover.add(cell.injectItems(split, Actionable.MODULATE, src));
+					leftover.decStackSize( itemToAdd );
+					split.setStackSize( itemToAdd );
+					leftover.add( cell.injectItems( split, Actionable.MODULATE, src ) );
 
-					src.player().ifPresent( player ->
-					{
+					src.player().ifPresent( player -> {
 						final long diff = original - leftover.getStackSize();
 						Stats.ItemsInserted.addToPlayer( player, (int) diff );
 					} );
@@ -1264,8 +1262,7 @@ public class Platform
 
 				final T ret = cell.injectItems( input, Actionable.MODULATE, src );
 
-				src.player().ifPresent( player ->
-				{
+				src.player().ifPresent( player -> {
 					final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
 					Stats.ItemsInserted.addToPlayer( player, (int) diff );
 				} );
@@ -1282,7 +1279,7 @@ public class Platform
 		return input;
 	}
 
-	@SuppressWarnings( { "rawtypes", "unchecked" } )
+	@SuppressWarnings( {"rawtypes", "unchecked"} )
 	public static void postChanges( final IStorageGrid gs, final ItemStack removed, final ItemStack added, final IActionSource src )
 	{
 		for( final IStorageChannel<?> chan : AEApi.instance().storage().storageChannels() )
@@ -1361,8 +1358,7 @@ public class Platform
 			final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString() : "notInWorld";
 			final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString() : "notInWorld";
 
-			AELog.info( "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]",
-					a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(), b.getPlayerID(), locationB );
+			AELog.info( "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]", a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(), b.getPlayerID(), locationB );
 		}
 
 		// can't do that son...
@@ -1423,7 +1419,7 @@ public class Platform
 		float yaw = 0.0f;
 		// player.yOffset = 1.8f;
 
-		switch( side )
+		switch ( side )
 		{
 			case DOWN:
 				pitch = 90.0f;
@@ -1513,16 +1509,14 @@ public class Platform
 				}
 			}
 
-			final boolean checkFuzzy = ae_req.getOre().isPresent() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate
-					.hasTagCompound() || providedTemplate.isItemStackDamageable();
+			final boolean checkFuzzy = ae_req.getOre().isPresent() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate.hasTagCompound() || providedTemplate.isItemStackDamageable();
 
 			if( items != null && checkFuzzy )
 			{
 				for( final IAEItemStack x : items )
 				{
 					final ItemStack sh = x.getDefinition();
-					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !ItemStack.areItemsEqual( sh,
-							output ) )
+					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !ItemStack.areItemsEqual( sh, output ) )
 					{ // Platform.isSameItemType( sh, providedTemplate )
 						final ItemStack cp = sh.copy();
 						cp.setCount( 1 );
@@ -1680,5 +1674,10 @@ public class Platform
 		isPurified |= materials.purifiedNetherQuartzCrystal().isSameAs( what );
 
 		return isPurified;
+	}
+
+	public static boolean isGTDamageableItem( Item item )
+	{
+		return ( isModLoaded( "gregtech" ) && item instanceof IToolItem );
 	}
 }

@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import appeng.container.slot.*;
+import appeng.util.Platform;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -159,7 +160,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 
 		final List<Slot> slots = this.getInventorySlots();
 		final Iterator<Slot> i = slots.iterator();
-		while( i.hasNext() )
+		while ( i.hasNext() )
 		{
 			if( i.next() instanceof SlotME )
 			{
@@ -208,13 +209,17 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			}
 		}
 		GlStateManager.enableDepth();
-		bookmarkedJEIghostItem(mouseX,mouseY);
+		if( Platform.isModLoaded( "jei" ) )
+		{
+			bookmarkedJEIghostItem( mouseX, mouseY );
+		}
 		GlStateManager.disableDepth();
 	}
 
-	void bookmarkedJEIghostItem(final int mouseX, final int mouseY) {
-
-		if (!isJeiGhostItem)
+	@Optional.Method( modid = "jei" )
+	void bookmarkedJEIghostItem( final int mouseX, final int mouseY )
+	{
+		if( !isJeiGhostItem )
 		{
 			bookmarkedIngredient = runtime.getBookmarkOverlay().getIngredientUnderMouse();
 		}
@@ -248,7 +253,9 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			}
 		}
 	}
-	private void drawTargets(int mouseX, int mouseY) {
+
+	private void drawTargets( int mouseX, int mouseY )
+	{
 		GlStateManager.disableLighting();
 		for( IGhostIngredientHandler.Target target : hoveredIngredientTargets )
 		{
@@ -377,17 +384,13 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 					final AppEngSlot aeSlot = (AppEngSlot) slot;
 					if( aeSlot.isSlotEnabled() )
 					{
-						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
-								18,
-								18 );
+						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18, 18 );
 					}
 					else
 					{
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 0.4F );
 						GlStateManager.enableBlend();
-						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
-								18,
-								18 );
+						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18, 18 );
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 					}
 				}
@@ -506,7 +509,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	{
 		final EntityPlayer player = Minecraft.getMinecraft().player;
 
-		if( this.isJeiGhostItem && isDraggingJeiGhostItem)
+		if( this.isJeiGhostItem && isDraggingJeiGhostItem )
 		{
 			for( IGhostIngredientHandler.Target target : hoveredIngredientTargets )
 			{
@@ -759,7 +762,8 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			this.disableShiftClick = false;
 		}
 
-		if (clickType == ClickType.PICKUP && isJeiGhostItem && !isDraggingJeiGhostItem) {
+		if( clickType == ClickType.PICKUP && isJeiGhostItem && !isDraggingJeiGhostItem )
+		{
 			this.isDraggingJeiGhostItem = true;
 			return;
 		}
@@ -879,7 +883,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			if( stack != ItemStack.EMPTY )
 			{
 				InventoryAction direction = wheel > 0 ? InventoryAction.PLACE_SINGLE : InventoryAction.PICKUP_SINGLE;
-				final PacketInventoryAction p = new PacketInventoryAction( direction , slot.slotNumber , 0);
+				final PacketInventoryAction p = new PacketInventoryAction( direction, slot.slotNumber, 0 );
 				NetworkHandler.instance().sendToServer( p );
 			}
 		}
@@ -1032,27 +1036,11 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 							final float f1 = 0.00390625F;
 							final float f = 0.00390625F;
 							final float par6 = 16;
-							vb.pos( par1 + 0, par2 + par6, this.zLevel )
-									.tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 )
-									.color( 1.0f, 1.0f, 1.0f,
-											aes.getOpacityOfIcon() )
-									.endVertex();
+							vb.pos( par1 + 0, par2 + par6, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
 							final float par5 = 16;
-							vb.pos( par1 + par5, par2 + par6, this.zLevel )
-									.tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 )
-									.color( 1.0f, 1.0f, 1.0f,
-											aes.getOpacityOfIcon() )
-									.endVertex();
-							vb.pos( par1 + par5, par2 + 0, this.zLevel )
-									.tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 )
-									.color( 1.0f, 1.0f, 1.0f,
-											aes.getOpacityOfIcon() )
-									.endVertex();
-							vb.pos( par1 + 0, par2 + 0, this.zLevel )
-									.tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 )
-									.color( 1.0f, 1.0f, 1.0f,
-											aes.getOpacityOfIcon() )
-									.endVertex();
+							vb.pos( par1 + par5, par2 + par6, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
 							tessellator.draw();
 
 						}
@@ -1066,8 +1054,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				{
 					if( ( (AppEngSlot) s ).getIsValid() == hasCalculatedValidness.NotAvailable )
 					{
-						boolean isValid = s.isItemValid(
-								is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled || s instanceof SlotInaccessible || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
+						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled || s instanceof SlotInaccessible || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
 						if( isValid && s instanceof SlotRestrictedInput )
 						{
 							try

@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import appeng.api.config.FuzzyMode;
+import appeng.util.Platform;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
@@ -36,8 +37,10 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import net.minecraftforge.fml.common.Optional;
 
 
+@Optional.Interface( iface = "gregtech.api.items.IToolItem", modid = "gregtech" )
 public class CraftingTreeNode
 {
 
@@ -119,7 +122,7 @@ public class CraftingTreeNode
 		{
 			Collection<IAEItemStack> itemList = new ArrayList<>();
 
-			if( this.what.getItem().hasContainerItem( this.what.getDefinition() ) || this.what.getItem().isDamageable() )
+			if( this.what.getItem().isDamageable() || Platform.isGTDamageableItem( this.what.getItem() ) )
 			{
 				itemList.addAll( inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL ) );
 

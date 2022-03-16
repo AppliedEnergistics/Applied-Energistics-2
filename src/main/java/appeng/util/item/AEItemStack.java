@@ -18,7 +18,6 @@
 
 package appeng.util.item;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.primitives.Ints;
-import gregtech.common.items.MetaTool;
+import gregtech.api.items.IToolItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -45,7 +44,7 @@ import appeng.core.Api;
 import appeng.util.Platform;
 
 
-public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack
+public class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack
 {
 	private static final String NBT_STACKSIZE = "Cnt";
 	private static final String NBT_REQUESTABLE = "Req";
@@ -363,7 +362,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 	private boolean fuzzyItemStackComparison( ItemStack a, ItemStack b, FuzzyMode mode )
 	{
-		if( a.getItem() == b.getItem() && ( a.getItem().isDamageable() || Platform.isModLoaded( "gregtech" ) && a.getItem() instanceof MetaTool ) )
+		if( a.getItem() == b.getItem() && ( a.getItem().isDamageable() || Platform.isGTDamageableItem( a.getItem() ) ) )
 		{
 			if( mode == FuzzyMode.IGNORE_ALL )
 			{
@@ -371,7 +370,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 				{
 					return true;
 				}
-				else if( Platform.isModLoaded( "gregtech" ) && a.getItem() instanceof MetaTool )
+				else if( Platform.isGTDamageableItem( a.getItem() ) )
 				{
 					return a.getItemDamage() == b.getItemDamage();
 				}
@@ -382,9 +381,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 				{
 					return a.getItemDamage() > 1 == b.getItemDamage() > 1;
 				}
-				else if( Platform.isModLoaded( "gregtech" ) && a.getItem() instanceof MetaTool )
+				else if( Platform.isGTDamageableItem( a.getItem() ) )
 				{
-					return ( (MetaTool) a.getItem() ).getItemDamage( a ) == ( (MetaTool) b.getItem() ).getItemDamage( b );
+					return ( (IToolItem) a.getItem() ).getItemDamage( a ) == ( (IToolItem) b.getItem() ).getItemDamage( b );
 				}
 			}
 			else
@@ -396,10 +395,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 					percentDamageOfA = (float) a.getItemDamage() / a.getMaxDamage();
 					percentDamageOfB = (float) b.getItemDamage() / b.getMaxDamage();
 				}
-				else if( Platform.isModLoaded( "gregtech" ) && a.getItem() instanceof MetaTool )
+				else if( Platform.isGTDamageableItem( a.getItem() ) )
 				{
-					percentDamageOfA = (float) ( (MetaTool) a.getItem() ).getItemDamage( a ) / ( (MetaTool) a.getItem() ).getMaxItemDamage( a );
-					percentDamageOfB = (float) ( (MetaTool) b.getItem() ).getItemDamage( b ) / ( (MetaTool) b.getItem() ).getMaxItemDamage( b );
+					percentDamageOfA = (float) ( (IToolItem) a.getItem() ).getItemDamage( a ) / ( (IToolItem) a.getItem() ).getMaxItemDamage( a );
+					percentDamageOfB = (float) ( (IToolItem) b.getItem() ).getItemDamage( b ) / ( (IToolItem) b.getItem() ).getMaxItemDamage( b );
 				}
 
 				return percentDamageOfA > mode.breakPoint == percentDamageOfB > mode.breakPoint;
@@ -408,4 +407,5 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		return false;
 	}
+
 }

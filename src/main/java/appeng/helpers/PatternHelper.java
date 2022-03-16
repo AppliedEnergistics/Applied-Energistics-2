@@ -21,7 +21,6 @@ package appeng.helpers;
 
 import java.util.*;
 
-import gregtech.common.items.MetaTool;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,6 +40,7 @@ import appeng.container.ContainerNull;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraftforge.fml.common.Optional;
 
 
 public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper>
@@ -267,7 +267,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		this.testFrame.setInventorySlotContents( slotIndex, i );
 
 		// If we cannot substitute, the items must match exactly
-		if( ( !( i.getItem().isDamageable() || Platform.isModLoaded( "gregtech" ) && i.getItem() instanceof MetaTool ) && !canSubstitute ) && slotIndex < inputs.length )
+		if( ( !( i.getItem().isDamageable() || Platform.isGTDamageableItem( i.getItem() ) ) && !canSubstitute ) && slotIndex < inputs.length )
 		{
 			if( !inputs[slotIndex].isSameType( i ) )
 			{

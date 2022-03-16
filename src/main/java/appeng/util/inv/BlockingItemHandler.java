@@ -1,20 +1,12 @@
 package appeng.util.inv;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 import appeng.helpers.NonBlockingItems;
-import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
-import gregtech.common.items.MetaTool;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.Collection;
 import java.util.Iterator;
 
 

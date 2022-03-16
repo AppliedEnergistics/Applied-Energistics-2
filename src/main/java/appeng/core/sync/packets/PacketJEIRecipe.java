@@ -30,7 +30,6 @@ import java.util.List;
 import appeng.api.config.FuzzyMode;
 import appeng.container.implementations.ContainerExpandedProcessingPatternTerm;
 import appeng.container.implementations.ContainerPatternTerm;
-import gregtech.common.items.MetaTool;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -41,6 +40,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -175,7 +175,8 @@ public class PacketJEIRecipe extends AppEngPacket
 			{
 				ItemStack currentItem = craftMatrix.getStackInSlot( x );
 
-				if (x >= this.recipe.size()) {
+				if( x >= this.recipe.size() )
+				{
 					currentItem = ItemStack.EMPTY;
 				}
 
@@ -228,7 +229,7 @@ public class PacketJEIRecipe extends AppEngPacket
 									out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
 									if( out == null )
 									{
-										if( request.getItem().isDamageable() || ( Platform.isModLoaded( "gregtech" ) && request.getItem() instanceof MetaTool ) )
+										if( request.getItem().isDamageable() || Platform.isGTDamageableItem( request.getItem() ) )
 										{
 											Collection<IAEItemStack> outList = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().findFuzzy( request, FuzzyMode.IGNORE_ALL );
 											for( IAEItemStack is : outList )
@@ -261,7 +262,7 @@ public class PacketJEIRecipe extends AppEngPacket
 
 								if( out != null )
 								{
-									if (!cct.useRealItems())
+									if( !cct.useRealItems() )
 									{
 										out.setStackSize( recipe.get( x )[y].getCount() );
 									}
@@ -285,7 +286,7 @@ public class PacketJEIRecipe extends AppEngPacket
 							}
 						}
 					}
-					if (!cct.useRealItems())
+					if( !cct.useRealItems() )
 					{
 						if( currentItem.isEmpty() && recipe.size() > x && this.recipe.get( x ) != null )
 						{
@@ -298,25 +299,28 @@ public class PacketJEIRecipe extends AppEngPacket
 
 			con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
 
-			if( this.output != null && ( ( con instanceof ContainerPatternTerm && !( (ContainerPatternTerm) con ).isCraftingMode() ) || con instanceof ContainerExpandedProcessingPatternTerm ) ) {
-                IItemHandler outputSlots = cct.getInventoryByName("output");
-                for (int i = 0; i < outputSlots.getSlots(); ++i) {
-                    ItemHandlerUtil.setStackInSlot(outputSlots, i, ItemStack.EMPTY);
-                }
-                for (int i = 0; i < this.output.size() && i < outputSlots.getSlots(); ++i) {
-                    if (this.output.get(i) == null || this.output.get(i) == ItemStack.EMPTY) {
-                        continue;
-                    }
-                    ItemHandlerUtil.setStackInSlot(outputSlots, i, this.output.get(i));
-                }
+			if( this.output != null && ( ( con instanceof ContainerPatternTerm && !( (ContainerPatternTerm) con ).isCraftingMode() ) || con instanceof ContainerExpandedProcessingPatternTerm ) )
+			{
+				IItemHandler outputSlots = cct.getInventoryByName( "output" );
+				for( int i = 0; i < outputSlots.getSlots(); ++i )
+				{
+					ItemHandlerUtil.setStackInSlot( outputSlots, i, ItemStack.EMPTY );
+				}
+				for( int i = 0; i < this.output.size() && i < outputSlots.getSlots(); ++i )
+				{
+					if( this.output.get( i ) == null || this.output.get( i ) == ItemStack.EMPTY )
+					{
+						continue;
+					}
+					ItemHandlerUtil.setStackInSlot( outputSlots, i, this.output.get( i ) );
+				}
 			}
 		}
 	}
 
 	/**
-	 * 
 	 * @param slot
-	 * @param is itemstack
+	 * @param is   itemstack
 	 * @return is if it can be used, else EMPTY
 	 */
 	private ItemStack canUseInSlot( int slot, ItemStack is )
