@@ -160,10 +160,23 @@ public final class GridHelper {
      * @param b to be connected gridnode
      */
     public static IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnectionException {
+        return createGridConnection(a, b, null);
+    }
+
+    /**
+     * Create a direct connection between two {@link IGridNode} with a specified direction.
+     * <p>
+     * This will be considered as having a distance of 1, regardless of the location of both nodes.
+     *
+     * @param a to be connected gridnode
+     * @param b to be connected gridnode
+     * @param direction of the connection
+     */
+    public static IGridConnection createGridConnection(IGridNode a, IGridNode b, Direction direction) throws FailedConnectionException {
         Objects.requireNonNull(a);
         Objects.requireNonNull(b);
 
-        return GridConnection.create(a, b, null);
+        return GridConnection.create(a, b, direction);
     }
 
 }
