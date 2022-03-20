@@ -170,7 +170,7 @@ public final class GridHelper {
      *
      * @param a to be connected gridnode
      * @param b to be connected gridnode
-     * @param direction of the connection
+     * @param direction of the connection from a to b
      */
     public static IGridConnection createGridConnection(IGridNode a, IGridNode b, Direction direction) throws FailedConnectionException {
         Objects.requireNonNull(a);
