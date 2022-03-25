@@ -19,15 +19,58 @@
 package appeng.helpers;
 
 
-import java.util.*;
-
-import javax.annotation.Nullable;
-
-import appeng.util.inv.BlockingInventoryAdaptor;
-import appeng.util.*;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
+import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.tiles.ICraftingMachine;
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.networking.crafting.ICraftingProviderHelper;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.events.MENetworkCraftingPatternChange;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPart;
+import appeng.api.storage.*;
+import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
+import appeng.capabilities.Capabilities;
+import appeng.core.settings.TickRates;
+import appeng.me.GridAccessException;
+import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.MachineSource;
+import appeng.me.storage.MEMonitorIInventory;
+import appeng.me.storage.MEMonitorPassThrough;
+import appeng.me.storage.NullInventory;
+import appeng.parts.automation.StackUpgradeInventory;
+import appeng.parts.automation.UpgradeInventory;
+import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
+import appeng.util.InventoryAdaptor;
+import appeng.util.Platform;
 import appeng.util.inv.*;
+import appeng.util.item.AEItemStack;
 import com.google.common.collect.ImmutableSet;
-
 import com.google.common.primitives.Ints;
 import de.ellpeck.actuallyadditions.api.tile.IPhantomTile;
 import gregtech.api.block.machines.BlockMachine;
@@ -52,56 +95,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
-import appeng.api.implementations.ICraftingPatternItem;
-import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.tiles.ICraftingMachine;
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.events.MENetworkCraftingPatternChange;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPart;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.channels.IFluidStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.api.util.IConfigManager;
-import appeng.capabilities.Capabilities;
-import appeng.core.settings.TickRates;
-import appeng.me.GridAccessException;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.MachineSource;
-import appeng.me.storage.MEMonitorIInventory;
-import appeng.me.storage.MEMonitorPassThrough;
-import appeng.me.storage.NullInventory;
-import appeng.parts.automation.StackUpgradeInventory;
-import appeng.parts.automation.UpgradeInventory;
-import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.item.AEItemStack;
+import javax.annotation.Nullable;
+import java.util.*;
 
 import static gregtech.api.block.machines.BlockMachine.getMetaTileEntity;
 
@@ -113,9 +108,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	public static final int NUMBER_OF_PATTERN_SLOTS = 36;
 
 	private static final Collection<Block> BAD_BLOCKS = new HashSet<>( 100 );
-	private final IAEItemStack[] requireWork = {
-			null, null, null, null, null, null, null, null, null
-	};
+	private final IAEItemStack[] requireWork = {null, null, null, null, null, null, null, null, null};
 	private final MultiCraftingTracker craftingTracker;
 	private final AENetworkProxy gridProxy;
 	private final IInterfaceHost iHost;
@@ -128,13 +121,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 	private final UpgradeInventory upgrades;
+	private final Accessor accessor = new Accessor();
 	private boolean hasConfig = false;
 	private int priority;
 	private List<ICraftingPatternDetails> craftingList = null;
 	private List<ItemStack> waitingToSend = null;
 	private IMEInventory<IAEItemStack> destination;
 	private int isWorking = -1;
-	private final Accessor accessor = new Accessor();
 	private EnumSet<EnumFacing> visitedFaces = EnumSet.noneOf( EnumFacing.class );
 	private EnumMap<EnumFacing, List<ItemStack>> waitingToSendFacing = new EnumMap<>( EnumFacing.class );
 	private boolean resetConfigCache = true;
@@ -158,6 +151,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.items.setChangeSource( actionSource );
 
 		this.interfaceRequestSource = new InterfaceRequestSource( this.iHost );
+	}
+
+	private static boolean invIsCustomBlocking( BlockingInventoryAdaptor inv )
+	{
+		return ( inv.containsBlockingItems() );
 	}
 
 	@Override
@@ -281,6 +279,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		final NBTTagCompound waitingListSided = data.getCompoundTag( "sidedWaitList" );
 
 		for( EnumFacing s : EnumFacing.values() )
+		{
 			if( waitingListSided.hasKey( s.name() ) )
 			{
 				NBTTagList w = waitingListSided.getTagList( s.name(), 10 );
@@ -294,6 +293,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 				}
 			}
+		}
 
 		this.craftingTracker.readFromNBT( data );
 
@@ -464,7 +464,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 		try
 		{
-		    this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
+			this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
 		}
 		catch( GridAccessException e )
 		{
@@ -926,12 +926,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 					else if( storedStack.isCraftable() )
 					{
-                        itemStack.setCachedItemStack(inputStack);
-                        changed = this.handleCrafting( x, adaptor, itemStack ) || changed;
+						itemStack.setCachedItemStack( inputStack );
+						changed = this.handleCrafting( x, adaptor, itemStack ) || changed;
 					}
-					if (acquired == null) {
-                        itemStack.setCachedItemStack(inputStack);
-                    }
+					if( acquired == null )
+					{
+						itemStack.setCachedItemStack( inputStack );
+					}
 				}
 			}
 			// else wtf?
@@ -1104,11 +1105,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return ( inv.containsItems() );
 	}
 
-	private static boolean invIsCustomBlocking( BlockingInventoryAdaptor inv )
-	{
-		return ( inv.containsBlockingItems() );
-	}
-
 	@Override
 	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
 	{
@@ -1158,38 +1154,38 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				}
 			}
 
-			final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
-			if( ad != null )
+			if( this.isBlocking() )
 			{
-				if( this.isBlocking() )
+				IPhantomTile phantomTE;
+				if( Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
 				{
-					IPhantomTile phantomTE;
-					if( Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
+					phantomTE = ( (IPhantomTile) te );
+					if( phantomTE.hasBoundPosition() )
 					{
-						phantomTE = ( (IPhantomTile) te );
-						if( phantomTE.hasBoundPosition() )
+						TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
+						if( NonBlockingItems.INSTANCE.getMap().containsKey( phantom.getBlockType().getRegistryName().getResourceDomain() ) )
 						{
-							TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
-							if( NonBlockingItems.INSTANCE.getMap().containsKey( phantom.getBlockType().getRegistryName().getResourceDomain() ) )
+							if( isCustomInvBlocking( phantom, s ) )
 							{
-								if( isCustomInvBlocking( phantom, s ) )
-								{
-									visitedFaces.remove( s );
-									continue;
-								}
+								visitedFaces.remove( s );
+								continue;
 							}
 						}
 					}
-					else if( NonBlockingItems.INSTANCE.getMap().containsKey( te.getBlockType().getRegistryName().getResourceDomain() ) )
+				}
+				else if( NonBlockingItems.INSTANCE.getMap().containsKey( te.getBlockType().getRegistryName().getResourceDomain() ) )
+				{
+					if( isCustomInvBlocking( te, s ) )
 					{
-						if( isCustomInvBlocking( te, s ) )
-						{
-							visitedFaces.remove( s );
-							continue;
-						}
+						visitedFaces.remove( s );
+						continue;
 					}
+				}
 
-					else if( invIsBlocked( ad ) )
+				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+				if( ad != null )
+				{
+					if( invIsBlocked( ad ) )
 					{
 						visitedFaces.remove( s );
 						continue;
@@ -1239,39 +1235,40 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 				IPhantomTile phantomTE;
 
-				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
-				if( ad != null )
+				if( Loader.isModLoaded( "actuallyadditions" ) && Loader.isModLoaded( "gregtech" ) && te instanceof IPhantomTile )
 				{
-					if( Loader.isModLoaded( "actuallyadditions" ) && Loader.isModLoaded( "gregtech" ) && te instanceof IPhantomTile )
+					phantomTE = ( (IPhantomTile) te );
+					if( phantomTE.hasBoundPosition() )
 					{
-						phantomTE = ( (IPhantomTile) te );
-						if( phantomTE.hasBoundPosition() )
+						TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
+						if( NonBlockingItems.INSTANCE.getMap().containsKey( phantom.getBlockType().getRegistryName().getResourceDomain() ) )
 						{
-							TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
-							if( NonBlockingItems.INSTANCE.getMap().containsKey( phantom.getBlockType().getRegistryName().getResourceDomain() ) )
+							if( !isCustomInvBlocking( phantom, s ) )
 							{
-								if( !isCustomInvBlocking( phantom, s ) )
-								{
-									allAreBusy = false;
-									break;
-								}
+								allAreBusy = false;
+								break;
 							}
 						}
 					}
-
-					else if( NonBlockingItems.INSTANCE.getMap().containsKey( te.getBlockType().getRegistryName().getResourceDomain() ) )
+				}
+				else if( NonBlockingItems.INSTANCE.getMap().containsKey( te.getBlockType().getRegistryName().getResourceDomain() ) )
+				{
+					if( !isCustomInvBlocking( te, s ) )
 					{
-						if( !isCustomInvBlocking( te, s ) )
+						allAreBusy = false;
+						break;
+					}
+				}
+				else
+				{
+					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+					if( ad != null )
+					{
+						if( !invIsBlocked( ad ) )
 						{
 							allAreBusy = false;
 							break;
 						}
-					}
-
-					else if( !invIsBlocked( ad ) )
-					{
-						allAreBusy = false;
-						break;
 					}
 				}
 			}
@@ -1597,6 +1594,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	}
 
+
 	private class InterfaceRequestContext implements Comparable<Integer>
 	{
 
@@ -1606,6 +1604,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return Integer.compare( DualityInterface.this.priority, o );
 		}
 	}
+
 
 	private class InterfaceInventory extends MEMonitorIInventory
 	{
@@ -1643,6 +1642,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return super.extractItems( request, type, src );
 		}
 	}
+
 
 	private class Accessor implements IStorageMonitorableAccessor
 	{
