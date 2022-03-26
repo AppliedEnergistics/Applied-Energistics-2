@@ -47,7 +47,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.IStorageMonitorableAccessor;
@@ -533,8 +532,9 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
         for (int i = 0; i < this.storage.size(); i++) {
             var stack = storage.getStack(i);
-            if (stack != null && stack.what() instanceof AEItemKey itemKey) {
-                drops.add(itemKey.toStack((int) stack.amount()));
+
+            if (stack != null) {
+                stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity());
             }
         }
     }

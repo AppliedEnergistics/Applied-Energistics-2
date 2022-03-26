@@ -1,5 +1,7 @@
 package appeng.api.stacks;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Contract;
@@ -10,6 +12,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.FuzzyMode;
 import appeng.core.AELog;
@@ -199,7 +202,7 @@ public abstract class AEKey {
 
     /**
      * Checks if the given stack has the same key as this.
-     * 
+     *
      * @return False if stack is null, otherwise true iff the stacks key is equal to this.
      */
     @Contract("null -> false")
@@ -220,7 +223,7 @@ public abstract class AEKey {
 
     /**
      * Wraps a key in an ItemStack that can be unwrapped into a key later.
-     * 
+     *
      * @see GenericStack#wrapInItemStack(AEKey, long) use this instead
      */
     @Deprecated(forRemoval = true)
@@ -239,4 +242,13 @@ public abstract class AEKey {
     }
 
     public abstract Component getDisplayName();
+
+    /**
+     * Adds the drops if the container holding this key is broken, such as an interface holding stacks
+     *
+     * @param amount      Amount to drop
+     * @param drops       Drop list to append to, in case of {@link ItemStack} drops
+     * @param blockEntity Container which was holding these stacks
+     */
+    public abstract void addDrops(long amount, List<ItemStack> drops, BlockEntity blockEntity);
 }

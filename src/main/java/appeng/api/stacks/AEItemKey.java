@@ -1,5 +1,6 @@
 package appeng.api.stacks;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
@@ -201,6 +203,15 @@ public final class AEItemKey extends AEKey {
     @Override
     public Component getDisplayName() {
         return toStack().getHoverName();
+    }
+
+    @Override
+    public void addDrops(long amount, List<ItemStack> drops, BlockEntity blockEntity) {
+        while (amount > 0) {
+            var taken = Math.min(amount, item.getMaxStackSize());
+            amount -= taken;
+            drops.add(toStack((int) taken));
+        }
     }
 
     /**

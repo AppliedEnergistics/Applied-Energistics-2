@@ -18,10 +18,7 @@
 
 package appeng.blockentity.crafting;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 import com.google.common.collect.Iterators;
 
@@ -30,17 +27,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
@@ -258,24 +254,16 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                         this.cluster + " does not contain any kind of blocks, which were destroyed.");
             }
 
+            // Drop stacks
+            var stacks = new ArrayList<ItemStack>();
+
             for (var entry : inv.list) {
-                // Drop items, void other types of stacks (fluids...).
-                if (entry.getKey() instanceof AEItemKey itemKey) {
-                    var maxPerDrop = itemKey.getItem().getMaxStackSize();
-                    while (true) {
-                        var extracted = (int) inv.extract(itemKey, maxPerDrop, Actionable.MODULATE);
-                        if (extracted == 0) {
-                            break;
-                        }
-
-                        var pos = places.poll();
-                        places.add(pos);
-
-                        var stack = itemKey.toStack(extracted);
-                        Platform.spawnDrops(this.level, pos, Collections.singletonList(stack));
-                    }
-                }
+                entry.getKey().addDrops(entry.getLongValue(), stacks, this);
             }
+
+            var pos = places.poll();
+            places.add(pos);
+            Platform.spawnDrops(this.level, pos, stacks);
 
             this.cluster.destroy();
         }
