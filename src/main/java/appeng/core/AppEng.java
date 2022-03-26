@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import appeng.helpers.NonBlockingItems;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -237,6 +238,8 @@ public final class AppEng
 
 		AppEng.proxy.postInit();
 		AEConfig.instance().save();
+
+		NonBlockingItems.INSTANCE.init();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
 		NetworkHandler.init( "AE2" );

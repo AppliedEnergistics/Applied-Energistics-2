@@ -61,7 +61,8 @@ public class NonBlockingItems
 									found = true;
 									ItemStack itemStack = metaItem2.getStackForm();
 									NON_BLOCKING_MAP.get( modid ).putIfAbsent( itemStack.getItem(), new IntOpenHashSet() );
-									NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) -> {
+									NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) ->
+									{
 										intSet.add( itemStack.getItemDamage() );
 										return intSet;
 									} );
@@ -72,7 +73,8 @@ public class NonBlockingItems
 									if( !itemStack.isEmpty() )
 									{
 										NON_BLOCKING_MAP.get( modid ).putIfAbsent( itemStack.getItem(), new IntOpenHashSet() );
-										NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) -> {
+										NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) ->
+										{
 											intSet.add( itemStack.getItemDamage() );
 											return intSet;
 										} );
@@ -86,13 +88,15 @@ public class NonBlockingItems
 						}
 						else if( ModItemMeta[0].equals( "ore" ) )
 						{
-							OreDictionary.getOres( ModItemMeta[1] ).forEach( itemStack -> {
-								NON_BLOCKING_MAP.get( modid ).putIfAbsent( itemStack.getItem(), new IntOpenHashSet() );
-								NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) -> {
-									intSet.add( itemStack.getItemDamage() );
-									return intSet;
-								} );
-							} );
+							OreDictionary.getOres( ModItemMeta[1] ).forEach( itemStack ->
+							                                                 {
+								                                                 NON_BLOCKING_MAP.get( modid ).putIfAbsent( itemStack.getItem(), new IntOpenHashSet() );
+								                                                 NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) ->
+								                                                 {
+									                                                 intSet.add( itemStack.getItemDamage() );
+									                                                 return intSet;
+								                                                 } );
+							                                                 } );
 						}
 						else
 						{
@@ -100,7 +104,8 @@ public class NonBlockingItems
 							if( !itemStack.isEmpty() )
 							{
 								NON_BLOCKING_MAP.get( modid ).putIfAbsent( itemStack.getItem(), new IntOpenHashSet() );
-								NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) -> {
+								NON_BLOCKING_MAP.get( modid ).computeIfPresent( itemStack.getItem(), ( item, intSet ) ->
+								{
 									intSet.add( itemStack.getItemDamage() );
 									return intSet;
 								} );
@@ -119,5 +124,9 @@ public class NonBlockingItems
 	public Map<String, Object2ObjectOpenHashMap<Item, IntSet>> getMap()
 	{
 		return NON_BLOCKING_MAP;
+	}
+
+	public void init()
+	{
 	}
 }

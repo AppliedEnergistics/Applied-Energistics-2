@@ -1154,38 +1154,37 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				}
 			}
 
-			if( this.isBlocking() )
+			InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+			if( ad != null )
 			{
-				IPhantomTile phantomTE;
-				if( Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
+				if( this.isBlocking() )
 				{
-					phantomTE = ( (IPhantomTile) te );
-					if( phantomTE.hasBoundPosition() )
+					IPhantomTile phantomTE;
+					if( Loader.isModLoaded( "actuallyadditions" ) && te instanceof IPhantomTile )
 					{
-						TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
-						if( NonBlockingItems.INSTANCE.getMap().containsKey( phantom.getBlockType().getRegistryName().getResourceDomain() ) )
+						phantomTE = ( (IPhantomTile) te );
+						if( phantomTE.hasBoundPosition() )
 						{
-							if( isCustomInvBlocking( phantom, s ) )
+							TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
+							if( NonBlockingItems.INSTANCE.getMap().containsKey( w.getBlockState( phantomTE.getBoundPosition() ).getBlock().getRegistryName().getResourceDomain() ) )
 							{
-								visitedFaces.remove( s );
-								continue;
+								if( isCustomInvBlocking( phantom, s ) )
+								{
+									visitedFaces.remove( s );
+									continue;
+								}
 							}
 						}
 					}
-				}
-				else if( NonBlockingItems.INSTANCE.getMap().containsKey( te.getBlockType().getRegistryName().getResourceDomain() ) )
-				{
-					if( isCustomInvBlocking( te, s ) )
+					else if( NonBlockingItems.INSTANCE.getMap().containsKey( w.getBlockState( tile.getPos().offset( s ) ).getBlock().getRegistryName().getResourceDomain() ) )
 					{
-						visitedFaces.remove( s );
-						continue;
+						if( isCustomInvBlocking( te, s ) )
+						{
+							visitedFaces.remove( s );
+							continue;
+						}
 					}
-				}
-
-				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
-				if( ad != null )
-				{
-					if( invIsBlocked( ad ) )
+					else if( invIsBlocked( ad ) )
 					{
 						visitedFaces.remove( s );
 						continue;
@@ -1235,34 +1234,34 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 				IPhantomTile phantomTE;
 
-				if( Loader.isModLoaded( "actuallyadditions" ) && Loader.isModLoaded( "gregtech" ) && te instanceof IPhantomTile )
+				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+				if( ad != null )
 				{
-					phantomTE = ( (IPhantomTile) te );
-					if( phantomTE.hasBoundPosition() )
+					if( Loader.isModLoaded( "actuallyadditions" ) && Loader.isModLoaded( "gregtech" ) && te instanceof IPhantomTile )
 					{
-						TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
-						if( NonBlockingItems.INSTANCE.getMap().containsKey( phantom.getBlockType().getRegistryName().getResourceDomain() ) )
+						phantomTE = ( (IPhantomTile) te );
+						if( phantomTE.hasBoundPosition() )
 						{
-							if( !isCustomInvBlocking( phantom, s ) )
+							TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
+							if( NonBlockingItems.INSTANCE.getMap().containsKey( w.getBlockState( phantomTE.getBoundPosition() ).getBlock().getRegistryName().getResourceDomain() ) )
 							{
-								allAreBusy = false;
-								break;
+								if( !isCustomInvBlocking( phantom, s ) )
+								{
+									allAreBusy = false;
+									break;
+								}
 							}
 						}
 					}
-				}
-				else if( NonBlockingItems.INSTANCE.getMap().containsKey( te.getBlockType().getRegistryName().getResourceDomain() ) )
-				{
-					if( !isCustomInvBlocking( te, s ) )
+					else if( NonBlockingItems.INSTANCE.getMap().containsKey( w.getBlockState( tile.getPos().offset( s ) ).getBlock().getRegistryName().getResourceDomain() ) )
 					{
-						allAreBusy = false;
-						break;
+						if( !isCustomInvBlocking( te, s ) )
+						{
+							allAreBusy = false;
+							break;
+						}
 					}
-				}
-				else
-				{
-					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
-					if( ad != null )
+					else
 					{
 						if( !invIsBlocked( ad ) )
 						{
