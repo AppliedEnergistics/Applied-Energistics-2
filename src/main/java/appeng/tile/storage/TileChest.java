@@ -128,7 +128,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 	public TileChest()
 	{
-		this.setInternalMaxPower( PowerMultiplier.CONFIG.multiply( 40 ) );
+		this.setInternalMaxPower( PowerMultiplier.CONFIG.multiply( 128 ) );
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.config.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		this.config.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
@@ -541,7 +541,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			if( this.cellHandler != null && this.cellHandler.getChannel() == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 			{
 				final IAEItemStack returns = Platform.poweredInsert( this, this.cellHandler,
-						AEItemStack.fromItemStack( this.inputInventory.getStackInSlot( 0 ) ), this.mySrc );
+				                                                     AEItemStack.fromItemStack( this.inputInventory.getStackInSlot( 0 ) ), this.mySrc );
 
 				if( returns == null )
 				{
@@ -698,7 +698,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 				{
 					TileChest.this.getProxy().getStorage().postAlterationOfStoredItems( this.chan, change, TileChest.this.mySrc );
 				}
-			} catch ( final GridAccessException e )
+			}
+			catch( final GridAccessException e )
 			{
 				// :(
 			}
@@ -738,11 +739,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 				return input;
 			}
 			T injected = super.injectItems( input, mode, src );
-			if (mode == Actionable.MODULATE && ( injected == null || injected.getStackSize() != input.getStackSize() ))
+			if( mode == Actionable.MODULATE && ( injected == null || injected.getStackSize() != input.getStackSize() ) )
 			{
-				if( TileChest.this.getProxy().isActive() && this.getInternalHandler().getCellInv() != null )
+				if( TileChest.this.isPowered() && this.getInternalHandler().getCellInv() != null )
 				{
-					TileChest.this.cellHandler.postChangesToListeners(Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( injected == null ? 0 : injected.getStackSize() ) ) ), TileChest.this.mySrc  );
+					TileChest.this.cellHandler.postChangesToListeners( Collections.singletonList( input.copy().setStackSize( input.getStackSize() - ( injected == null ? 0 : injected.getStackSize() ) ) ), TileChest.this.mySrc );
 				}
 			}
 			return injected;
@@ -792,9 +793,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			T extracted = super.extractItems( request, mode, src );
 			if( mode == Actionable.MODULATE && extracted != null )
 			{
-				if( TileChest.this.getProxy().isActive() && this.getInternalHandler().getCellInv() != null )
+				if( TileChest.this.isPowered() && this.getInternalHandler().getCellInv() != null )
 				{
-					TileChest.this.cellHandler.postChangesToListeners(Collections.singletonList( request.copy().setStackSize( -extracted.getStackSize() ) ), TileChest.this.mySrc  );
+					TileChest.this.cellHandler.postChangesToListeners( Collections.singletonList( request.copy().setStackSize( -extracted.getStackSize() ) ), TileChest.this.mySrc );
 				}
 			}
 			return extracted;
@@ -848,7 +849,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 	private class FluidHandler implements IFluidHandler
 	{
-		private final IFluidTankProperties[] TANK_PROPS = new IFluidTankProperties[] { new FluidTankProperties( null, Fluid.BUCKET_VOLUME ) };
+		private final IFluidTankProperties[] TANK_PROPS = new IFluidTankProperties[]{new FluidTankProperties( null, Fluid.BUCKET_VOLUME )};
 
 		@Override
 		public int fill( final FluidStack resource, final boolean doFill )
@@ -858,7 +859,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 					.getChannel() == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 			{
 				final IAEFluidStack results = Platform.poweredInsert( TileChest.this, TileChest.this.cellHandler, AEFluidStack.fromFluidStack( resource ),
-						TileChest.this.mySrc, doFill ? Actionable.MODULATE : Actionable.SIMULATE );
+				                                                      TileChest.this.mySrc, doFill ? Actionable.MODULATE : Actionable.SIMULATE );
 
 				if( results == null )
 				{
