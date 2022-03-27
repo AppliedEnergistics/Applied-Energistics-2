@@ -24,6 +24,8 @@ import java.util.Queue;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -125,8 +127,6 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
 
     /**
      * Filling needs to be deferred as the tags might not be populated at construction time.
-     *
-     * @return
      */
     private Set<Block> getCommonBlocks() {
         if (COMMON_BLOCKS.isEmpty()) {
@@ -143,9 +143,9 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
             COMMON_BLOCKS.add(Blocks.WATER);
             COMMON_BLOCKS.add(Blocks.LAVA);
 
-            COMMON_BLOCKS.addAll(BlockTags.LEAVES.getValues());
-            COMMON_BLOCKS.addAll(BlockTags.SAND.getValues());
-            COMMON_BLOCKS.addAll(BlockTags.LOGS.getValues());
+            COMMON_BLOCKS.addAll(Registry.BLOCK.getOrCreateTag(BlockTags.LEAVES).stream().map(Holder::value).toList());
+            COMMON_BLOCKS.addAll(Registry.BLOCK.getOrCreateTag(BlockTags.SAND).stream().map(Holder::value).toList());
+            COMMON_BLOCKS.addAll(Registry.BLOCK.getOrCreateTag(BlockTags.LOGS).stream().map(Holder::value).toList());
         }
 
         return COMMON_BLOCKS;

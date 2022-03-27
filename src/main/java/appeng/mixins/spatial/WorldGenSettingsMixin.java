@@ -16,20 +16,28 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.api.features;
+package appeng.mixins.spatial;
 
-import java.util.List;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
 
 /**
- * Internal access to non-public API of {@link AEWorldGen}.
+ * This Mixin hides the screen that warns users about experimental features being used due to AE2s spatial dimension
+ * triggering this waring.
  */
-public class AEWorldGenInternal {
+@Mixin(WorldGenSettings.class)
+public class WorldGenSettingsMixin {
 
-    public static void setConfigBlacklists(
-            List<ResourceLocation> quartzBiomeBlacklist) {
-        AEWorldGen.setConfigBlacklists(quartzBiomeBlacklist);
+    /**
+     * Remove the experimental world settings warning.
+     */
+    @Inject(method = "stable", at = @At(value = "HEAD"), cancellable = true)
+    private void stable(CallbackInfoReturnable<Boolean> cri) {
+        cri.setReturnValue(true);
     }
 
 }

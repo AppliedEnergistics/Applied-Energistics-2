@@ -121,7 +121,7 @@ public class CachedPlane {
 
                         // If the block entities containing block is blacklisted, it will be skipped
                         // automatically later, so we have to avoid removing it here
-                        if (AETags.SPATIAL_BLACKLIST.contains(blockEntity.getBlockState().getBlock())) {
+                        if (blockEntity.getBlockState().is(AETags.SPATIAL_BLACKLIST)) {
                             continue;
                         }
 
@@ -326,7 +326,7 @@ public class CachedPlane {
         }
 
         // FIXME check if this makes any sense at all to send changes to players asap
-        level.getChunkSource().tick(() -> false);
+        level.getChunkSource().tick(() -> false, false);
     }
 
     List<WorldCoord> getUpdates() {
@@ -356,7 +356,7 @@ public class CachedPlane {
 
         private boolean doNotSkip(int y) {
             var blockState = getSection(y).getBlockState(this.x, SectionPos.sectionRelative(y), this.z);
-            if (AETags.SPATIAL_BLACKLIST.contains(blockState.getBlock())) {
+            if (blockState.is(AETags.SPATIAL_BLACKLIST)) {
                 return false;
             }
 

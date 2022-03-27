@@ -29,7 +29,6 @@ import appeng.api.features.AEWorldGen;
 import appeng.api.features.AEWorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.worldgen.meteorite.MeteoriteStructure;
 
 public final class InitBiomeModifications {
 
@@ -37,12 +36,6 @@ public final class InitBiomeModifications {
     }
 
     public static void init() {
-        if (AEConfig.instance().isGenerateMeteorites()) {
-            BiomeModifications.addStructure(
-                    shouldGenerateIn(AEWorldGenType.METEORITES),
-                    MeteoriteStructure.KEY);
-        }
-
         if (AEConfig.instance().isGenerateQuartzOre()) {
             BiomeModifications.addFeature(
                     shouldGenerateIn(AEWorldGenType.CERTUS_QUARTZ),
@@ -58,7 +51,7 @@ public final class InitBiomeModifications {
         return context -> {
             var id = context.getBiomeKey().location();
 
-            var category = context.getBiome().getBiomeCategory();
+            var category = Biome.getBiomeCategory(context.getBiomeRegistryEntry());
             if (category == Biome.BiomeCategory.THEEND || category == Biome.BiomeCategory.NETHER
                     || category == Biome.BiomeCategory.NONE) {
                 AELog.debug("Not generating %s in %s because it's of category %s", type, id, category);

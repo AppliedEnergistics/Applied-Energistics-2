@@ -21,6 +21,7 @@ package appeng.worldgen.meteorite.fallout;
 import java.util.Random;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
@@ -39,8 +40,8 @@ public class Fallout {
         this.random = random;
     }
 
-    public static FalloutMode fromBiome(Biome biome) {
-        return switch (biome.getBiomeCategory()) {
+    public static FalloutMode fromBiome(Holder<Biome> biome) {
+        return switch (Biome.getBiomeCategory(biome)) {
             case MESA -> FalloutMode.TERRACOTTA;
             case DESERT, BEACH -> FalloutMode.SAND;
             case ICY -> FalloutMode.ICE_SNOW;

@@ -239,7 +239,7 @@ public class ReiPlugin implements REIClientPlugin {
             addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.getTranslationKey());
         }
 
-        if (AEConfig.instance().isGenerateMeteorites() && AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
+        if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());
             addDescription(registry, AEItems.CALCULATION_PROCESSOR_PRESS,
                     GuiText.inWorldCraftingPresses.getTranslationKey());

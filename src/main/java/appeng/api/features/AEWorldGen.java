@@ -78,12 +78,9 @@ public final class AEWorldGen {
      * This is used by AE2 to set the biome blacklist from AE2's own configuration file.
      */
     synchronized static void setConfigBlacklists(
-            List<ResourceLocation> quartzBiomeBlacklist,
-            List<ResourceLocation> meteoriteBiomeBlacklist) {
+            List<ResourceLocation> quartzBiomeBlacklist) {
         settings.get(AEWorldGenType.CERTUS_QUARTZ).configBiomeBlacklist.clear();
         settings.get(AEWorldGenType.CERTUS_QUARTZ).configBiomeBlacklist.addAll(quartzBiomeBlacklist);
-        settings.get(AEWorldGenType.METEORITES).configBiomeBlacklist.clear();
-        settings.get(AEWorldGenType.METEORITES).configBiomeBlacklist.addAll(meteoriteBiomeBlacklist);
     }
 
     private static class TypeSet {

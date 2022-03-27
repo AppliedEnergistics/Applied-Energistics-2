@@ -33,6 +33,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
@@ -45,10 +46,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 
 import appeng.server.ISubCommand;
 import appeng.worldgen.meteorite.MeteoriteStructure;
@@ -94,7 +94,10 @@ public class TestMeteoritesCommand implements ISubCommand {
 
         ChunkPos center = new ChunkPos(centerBlock);
 
-        ChunkGenerator generator = level.getChunkSource().getGenerator();
+        var generator = level.getChunkSource().getGenerator();
+
+        var feature = level.registryAccess().ownedRegistryOrThrow(
+                Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).get(MeteoriteStructure.KEY);
 
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();
@@ -102,16 +105,17 @@ public class TestMeteoritesCommand implements ISubCommand {
         for (int cx = center.x - radius; cx <= center.x + radius; cx++) {
             for (int cz = center.z - radius; cz <= center.z + radius; cz++) {
                 chunksChecked++;
-                ChunkPos cp = new ChunkPos(cx, cz);
-                BlockPos p = new BlockPos(cp.getMinBlockX(), 0, cp.getMinBlockZ());
-                BlockPos nearest = generator.findNearestMapFeature(level, MeteoriteStructure.INSTANCE, p, 0, false);
-                if (nearest != null) {
-                    ChunkAccess chunk = level.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
-                    // The actual relevant information is in the structure piece
-                    MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk);
-                    if (piece != null) {
-                        found.add(piece.getSettings());
-                    }
+
+                if (!generator.hasFeatureChunkInRange(MeteoriteStructure.STRUCTURE_SET_KEY, level.getSeed(), cx, cz,
+                        0)) {
+                    continue;
+                }
+
+                var chunk = level.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
+                // The actual relevant information is in the structure piece
+                MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk, feature);
+                if (piece != null) {
+                    found.add(piece.getSettings());
                 }
             }
         }
@@ -152,7 +156,7 @@ public class TestMeteoritesCommand implements ISubCommand {
 
             if (force && settings.getFallout() == null) {
                 ChunkAccess chunk = level.getChunk(pos);
-                MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk);
+                MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk, feature);
                 if (piece == null) {
                     state = "removed";
                 } else {
@@ -175,7 +179,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             msg.append(getClickablePosition(level, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            String biomeId = level.getBiomeName(pos).map(bk -> bk.location().toString()).orElse("unknown");
+            String biomeId = level.getBiome(pos).unwrapKey().map(bk -> bk.location().toString()).orElse("unknown");
             Component tooltip = new TextComponent(settings + "\nBiome: ").copy()
                     .append(biomeId);
             msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
@@ -200,8 +204,9 @@ public class TestMeteoritesCommand implements ISubCommand {
                 .withStyle(style -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, tpCommand)));
     }
 
-    private static MeteoriteStructurePiece getMeteoritePieceFromChunk(ChunkAccess chunk) {
-        StructureStart<?> start = chunk.getStartForFeature(MeteoriteStructure.INSTANCE);
+    private static MeteoriteStructurePiece getMeteoritePieceFromChunk(ChunkAccess chunk,
+            ConfiguredStructureFeature<?, ?> feature) {
+        var start = chunk.getStartForFeature(feature);
 
         if (start != null && start.getPieces().size() > 0
                 && start.getPieces().get(0) instanceof MeteoriteStructurePiece) {

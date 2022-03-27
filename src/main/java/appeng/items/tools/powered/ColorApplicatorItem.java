@@ -39,7 +39,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -92,7 +92,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     private static final double POWER_PER_USE = 100;
 
-    private static final Map<Tag.Named<Item>, AEColor> TAG_TO_COLOR = AEColor.VALID_COLORS.stream()
+    private static final Map<TagKey<Item>, AEColor> TAG_TO_COLOR = AEColor.VALID_COLORS.stream()
             .collect(Collectors.toMap(
                     aeColor -> ConventionTags.dye(aeColor.dye),
                     Function.identity()));
@@ -291,7 +291,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
 
         for (var entry : TAG_TO_COLOR.entrySet()) {
-            if (entry.getKey().contains(paintBall)) {
+            if (paintBall.builtInRegistryHolder().is(entry.getKey())) {
                 return entry.getValue();
             }
         }

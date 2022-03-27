@@ -32,7 +32,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
@@ -158,6 +161,9 @@ public final class AEConfig {
     // Tunnels
     public static final double TUNNEL_POWER_LOSS = 0.05;
 
+    @Nullable
+    private TagKey<Fluid> improvedFluidTagKey;
+
     private void syncClientConfig() {
         this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
         this.enableEffects = CLIENT.enableEffects.get();
@@ -201,8 +207,6 @@ public final class AEConfig {
 
         AEWorldGenInternal.setConfigBlacklists(
                 COMMON.quartzOresBiomeBlacklist.get().stream().map(ResourceLocation::new)
-                        .collect(Collectors.toList()),
-                COMMON.meteoriteBiomeBlacklist.get().stream().map(ResourceLocation::new)
                         .collect(Collectors.toList()));
 
         AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
@@ -338,8 +342,14 @@ public final class AEConfig {
     }
 
     @Nullable
-    public String getImprovedFluidTag() {
-        return Strings.emptyToNull(COMMON.improvedFluidTag.get());
+    public TagKey<Fluid> getImprovedFluidTag() {
+        if (improvedFluidTagKey == null) {
+            var tagName = Strings.emptyToNull(COMMON.improvedFluidTag.get());
+            if (tagName != null) {
+                improvedFluidTagKey = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(tagName));
+            }
+        }
+        return improvedFluidTagKey;
     }
 
     public float getImprovedFluidMultiplier() {
@@ -348,10 +358,6 @@ public final class AEConfig {
 
     public boolean isShowDebugGuiOverlays() {
         return CLIENT.debugGuiOverlays.get();
-    }
-
-    public boolean isGenerateMeteorites() {
-        return COMMON.generateMeteorites.get();
     }
 
     public boolean isSpawnPressesInMeteoritesEnabled() {
@@ -514,9 +520,7 @@ public final class AEConfig {
         public final StringListOption quartzOresBiomeBlacklist;
 
         // Meteors
-        public final BooleanOption generateMeteorites;
         public final BooleanOption spawnPressesInMeteorites;
-        public final StringListOption meteoriteBiomeBlacklist;
 
         // Wireless
         public final DoubleOption wirelessBaseCost;
@@ -607,9 +611,6 @@ public final class AEConfig {
 
             ConfigSection worldGen = root.subsection("worldGen");
 
-            this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
-            this.meteoriteBiomeBlacklist = worldGen.addStringList("meteoriteBiomeBlacklist", new ArrayList<>(),
-                    "Biome IDs in which meteorites should NOT be generated (i.e. minecraft:plains).");
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
 
             this.generateQuartzOre = worldGen.addBoolean("generateQuartzOre", true);

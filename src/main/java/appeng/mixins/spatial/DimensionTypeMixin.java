@@ -45,7 +45,7 @@ import appeng.spatial.SpatialStorageDimensionIds;
 public class DimensionTypeMixin {
 
     @Inject(method = "registerBuiltin", at = @At("TAIL"))
-    private static void addRegistryDefaults(RegistryAccess registryAccess, CallbackInfoReturnable<?> cir) {
+    private static void addRegistryDefaults(RegistryAccess.Writable registryAccess, CallbackInfoReturnable<?> cir) {
         var dimensionType = DimensionType.create(
                 OptionalLong.of(12000), // fixedTime
                 false, // hasSkylight
@@ -61,11 +61,11 @@ public class DimensionTypeMixin {
                 SpatialStorageChunkGenerator.MIN_Y, // minY
                 SpatialStorageChunkGenerator.HEIGHT, // height
                 SpatialStorageChunkGenerator.HEIGHT, // logicalHeight
-                BlockTags.INFINIBURN_OVERWORLD.getName(), // infiniburn
+                BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, // effectsLocation
                 1.0f // ambientLight
         );
-        var dimensionTypes = registryAccess.ownedRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+        var dimensionTypes = registryAccess.ownedWritableRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
         Registry.register(dimensionTypes, SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(), dimensionType);
     }
 
@@ -73,17 +73,18 @@ public class DimensionTypeMixin {
      * Insert our custom dimension into the initial registry. <em>This is what will ultimately lead to the creation of a
      * new World.</em>
      */
-    @Inject(method = "defaultDimensions", at = @At("RETURN"))
-    private static void buildDimensionRegistry(RegistryAccess registryAccess, long seed,
+    @Inject(method = "defaultDimensions(Lnet/minecraft/core/RegistryAccess;JZ)Lnet/minecraft/core/Registry;", at = @At("RETURN"))
+    private static void buildDimensionRegistry(RegistryAccess registryAccess, long seed, boolean b,
             CallbackInfoReturnable<MappedRegistry<LevelStem>> cir) {
         MappedRegistry<LevelStem> simpleregistry = cir.getReturnValue();
 
         var dimensionTypes = registryAccess.ownedRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+        var structureSets = registryAccess.ownedRegistryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
         var biomes = registryAccess.ownedRegistryOrThrow(Registry.BIOME_REGISTRY);
 
         simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID,
-                new LevelStem(() -> dimensionTypes.getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
-                        new SpatialStorageChunkGenerator(biomes)),
+                new LevelStem(dimensionTypes.getHolderOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
+                        new SpatialStorageChunkGenerator(structureSets, biomes)),
                 Lifecycle.stable());
 
     }

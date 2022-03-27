@@ -50,7 +50,7 @@ public final class InteractionUtil {
      */
     public static boolean canWrenchDisassemble(ItemStack tool) {
         // TODO FABRIC 117 Currently Fabric cannot dynamically distinguish tools / tool actions
-        return ConventionTags.WRENCH.contains(tool.getItem());
+        return tool.is(ConventionTags.WRENCH);
     }
 
     /**
@@ -63,7 +63,7 @@ public final class InteractionUtil {
             return false;
         }
 
-        return ConventionTags.WRENCH.contains(tool.getItem());
+        return tool.is(ConventionTags.WRENCH);
     }
 
     /**

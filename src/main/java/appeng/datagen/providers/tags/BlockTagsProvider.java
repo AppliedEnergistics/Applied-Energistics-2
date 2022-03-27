@@ -18,17 +18,16 @@
 
 package appeng.datagen.providers.tags;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.fabricmc.fabric.api.tag.TagFactory;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -126,7 +125,7 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
     };
 
     private void addEffectiveTools() {
-        Map<BlockDefinition<?>, List<Tag.Named<Block>>> specialTags = new HashMap<>();
+        Map<BlockDefinition<?>, List<TagKey<Block>>> specialTags = new HashMap<>();
         for (var skyStoneBlock : SKY_STONE_BLOCKS) {
             specialTags.put(skyStoneBlock, List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL));
         }
@@ -165,13 +164,7 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
     }
 
     private TagsProvider.TagAppender<Block> tag(String name) {
-        return tag(TagFactory.BLOCK.create(new ResourceLocation(name)));
-    }
-
-    @Override
-    protected Path getPath(ResourceLocation id) {
-        return this.generator.getOutputFolder()
-                .resolve("data/" + id.getNamespace() + "/tags/blocks/" + id.getPath() + ".json");
+        return tag(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(name)));
     }
 
     @Override

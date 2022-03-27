@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -190,7 +191,7 @@ public final class TestPlots {
             var cellInv = StorageCells.getCellInventory(cellItem, null);
             var r = new Random();
             for (var i = 0; i < 100; i++) {
-                var item = Registry.ITEM.getRandom(r);
+                var item = Registry.ITEM.getRandom(r).map(Holder::value).get();
                 if (cellInv.insert(AEItemKey.of(item), 64, Actionable.MODULATE, new BaseActionSource()) == 0) {
                     break;
                 }
@@ -206,7 +207,7 @@ public final class TestPlots {
             var cellInv = StorageCells.getCellInventory(cellItem, null);
             var r = new Random();
             for (var i = 0; i < 100; i++) {
-                var fluid = Registry.FLUID.getRandom(r);
+                var fluid = Registry.FLUID.getRandom(r).map(Holder::value).get();
                 if (fluid.isSame(Fluids.EMPTY) || !fluid.isSource(fluid.defaultFluidState())) {
                     continue;
                 }

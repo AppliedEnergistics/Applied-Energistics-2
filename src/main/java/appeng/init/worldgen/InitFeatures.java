@@ -20,14 +20,17 @@ package appeng.init.worldgen;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;
@@ -50,15 +53,15 @@ public final class InitFeatures {
                         AEBlocks.DEEPSLATE_QUARTZ_ORE.block().defaultBlockState()));
 
         // Tell Minecraft about our configured quartz ore feature
-        var configuredQuartz = Registry.register(
+        var configuredQuartz = BuiltinRegistries.register(
                 BuiltinRegistries.CONFIGURED_FEATURE,
                 WorldgenIds.QUARTZ_ORE_KEY,
-                Feature.ORE
-                        .configured(new OreConfiguration(targetList, AEConfig.instance().getQuartzOresPerCluster())));
-        Registry.register(
+                new ConfiguredFeature<>(Feature.ORE,
+                        new OreConfiguration(targetList, AEConfig.instance().getQuartzOresPerCluster())));
+        BuiltinRegistries.register(
                 BuiltinRegistries.PLACED_FEATURE,
                 WorldgenIds.PLACED_QUARTZ_ORE_KEY,
-                configuredQuartz.placed(
+                new PlacedFeature(Holder.hackyErase(configuredQuartz),
                         OrePlacements.commonOrePlacement(
                                 AEConfig.instance().getQuartzOresClusterAmount(),
                                 HeightRangePlacement.triangle(VerticalAnchor.absolute(-34),

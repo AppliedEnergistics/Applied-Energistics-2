@@ -151,7 +151,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         BlockState blockState = block.defaultBlockState();
 
         final boolean areBlockEntitiesEnabled = AEConfig.instance().isBlockEntityFacadesEnabled();
-        final boolean isWhiteListed = AETags.FACADE_BLOCK_WHITELIST.contains(block);
+        final boolean isWhiteListed = block.builtInRegistryHolder().is(AETags.FACADE_BLOCK_WHITELIST);
         final boolean isModel = blockState.getRenderShape() == RenderShape.MODEL;
 
         final BlockState defaultState = block.defaultBlockState();

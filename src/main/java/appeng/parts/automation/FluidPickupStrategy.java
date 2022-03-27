@@ -102,7 +102,7 @@ public class FluidPickupStrategy implements PickupStrategy {
     }
 
     private boolean isFluidBlacklisted(Fluid fluid) {
-        return AETags.ANNIHILATION_PLANE_FLUID_BLACKLIST.contains(fluid);
+        return fluid.builtInRegistryHolder().is(AETags.ANNIHILATION_PLANE_FLUID_BLACKLIST);
     }
 
     /**

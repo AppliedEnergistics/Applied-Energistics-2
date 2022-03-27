@@ -37,6 +37,7 @@ import appeng.datagen.providers.recipes.EntropyRecipes;
 import appeng.datagen.providers.recipes.InscriberRecipes;
 import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
 import appeng.datagen.providers.recipes.SmeltingRecipes;
+import appeng.datagen.providers.tags.BiomeTagsProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.FluidTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
@@ -55,6 +56,7 @@ public class AE2DataGenerators {
         generator.addProvider(blockTagsProvider);
         generator.addProvider(new ItemTagsProvider(generator, blockTagsProvider));
         generator.addProvider(new FluidTagsProvider(generator));
+        generator.addProvider(new BiomeTagsProvider(generator));
 
         // Models
         generator.addProvider(new BlockModelProvider(generator, existingFileHelper));

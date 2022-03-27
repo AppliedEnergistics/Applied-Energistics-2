@@ -20,11 +20,12 @@ package appeng.datagen.providers.tags;
 
 import java.nio.file.Path;
 
-import net.fabricmc.fabric.api.tag.TagFactory;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 
@@ -91,8 +92,8 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.NETHER_QUARTZ_KNIFE.asItem());
 
         tag(AETags.METAL_INGOTS)
-                .addOptionalTag(ConventionTags.IRON_INGOT.getName())
-                .addOptionalTag(ConventionTags.GOLD_INGOT.getName())
+                .addOptionalTag(ConventionTags.IRON_INGOT.location())
+                .addOptionalTag(ConventionTags.GOLD_INGOT.location())
                 .addOptionalTag(new ResourceLocation("c:copper_ingots"))
                 .addOptionalTag(new ResourceLocation("c:tin_ingots"))
                 .addOptionalTag(new ResourceLocation("c:brass_ingots"))
@@ -150,7 +151,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(Items.GOLD_INGOT);
 
         tag(ConventionTags.GOLD_ORE)
-                .addOptionalTag(ItemTags.GOLD_ORES.getName());
+                .addOptionalTag(ItemTags.GOLD_ORES.location());
 
         tag(ConventionTags.IRON_NUGGET)
                 .add(Items.IRON_NUGGET);
@@ -159,7 +160,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(Items.IRON_INGOT);
 
         tag(ConventionTags.IRON_ORE)
-                .addOptional(ItemTags.IRON_ORES.getName());
+                .addOptional(ItemTags.IRON_ORES.location());
 
         tag(ConventionTags.DIAMOND)
                 .add(Items.DIAMOND);
@@ -249,7 +250,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     }
 
     private void mirrorBlockTag(ResourceLocation tagName) {
-        copy(TagFactory.BLOCK.create(tagName), TagFactory.ITEM.create(tagName));
+        copy(TagKey.create(Registry.BLOCK_REGISTRY, tagName), TagKey.create(Registry.ITEM_REGISTRY, tagName));
     }
 
     @Override

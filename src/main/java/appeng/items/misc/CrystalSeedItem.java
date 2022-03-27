@@ -29,10 +29,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -43,7 +41,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.core.AEConfig;
@@ -106,10 +103,9 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
     public float getMultiplier(BlockState state, @Nullable Level level, @Nullable BlockPos pos) {
 
         // Check for the improved fluid tag and return the improved multiplier
-        String improvedFluidTagName = AEConfig.instance().getImprovedFluidTag();
-        if (improvedFluidTagName != null) {
-            Tag<Fluid> tag = FluidTags.getAllTags().getTag(new ResourceLocation(improvedFluidTagName));
-            if (tag != null && state.getFluidState().is(tag)) {
+        var improvedFluidTag = AEConfig.instance().getImprovedFluidTag();
+        if (improvedFluidTag != null) {
+            if (state.getFluidState().is(improvedFluidTag)) {
                 return AEConfig.instance().getImprovedFluidMultiplier();
             }
         }

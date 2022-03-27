@@ -5,9 +5,8 @@
   "compatibilityLevel": "JAVA_11",
   "mixins": [
     "spatial.DimensionTypeMixin",
-    "spatial.DimensionOptionMixin",
+    "spatial.WorldGenSettingsMixin",
     "spatial.FixupDimensionsMixin",
-    "structure.StructureSettingsMixin",
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin",
     "DynamicLadderMixin",

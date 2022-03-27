@@ -18,12 +18,18 @@
 
 package appeng.init.worldgen;
 
-import java.util.Locale;
+import java.util.List;
 
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.StructureFeatures;
+import net.minecraft.data.worldgen.StructureSets;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
@@ -36,25 +42,30 @@ public final class InitStructures {
     public static void init(Registry<StructureFeature<?>> registry) {
         MeteoriteStructurePiece.register();
 
-        // Registering into the registry alone is INSUFFICIENT!
-        // There's a bidirectional map in the Structure class itself primarily for the
-        // purposes of NBT serialization
-        registerStructure(registry, MeteoriteStructure.ID.toString(), MeteoriteStructure.INSTANCE,
+        registerStructure(registry, MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
                 Decoration.TOP_LAYER_MODIFICATION);
 
-        StructureFeatures.register(MeteoriteStructure.ID.toString(),
-                MeteoriteStructure.CONFIGURED_INSTANCE);
+        MeteoriteStructure.CONFIGURED_INSTANCE = StructureFeatures.register(
+                MeteoriteStructure.KEY,
+                MeteoriteStructure.INSTANCE.configured(NoneFeatureConfiguration.INSTANCE,
+                        MeteoriteStructure.BIOME_TAG_KEY));
+
+        StructureSets.register(
+                MeteoriteStructure.STRUCTURE_SET_KEY,
+                new StructureSet(
+                        List.of(StructureSet.entry(MeteoriteStructure.CONFIGURED_INSTANCE)),
+                        new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)));
     }
 
     // This mirrors the Vanilla registration method for structures, but uses the
     // Forge registry instead
-    private static <F extends StructureFeature<?>> void registerStructure(Registry<StructureFeature<?>> registry,
-            String name,
+    private static <F extends StructureFeature<?>> void registerStructure(
+            Registry<StructureFeature<?>> registry,
+            ResourceLocation id,
             F structure,
             Decoration stage) {
-        StructureFeature.STRUCTURES_REGISTRY.put(name.toLowerCase(Locale.ROOT), structure);
         StructureFeature.STEP.put(structure, stage);
-        Registry.register(registry, name.toLowerCase(Locale.ROOT), structure);
+        Registry.register(registry, id, structure);
     }
 
 }

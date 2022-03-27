@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import net.fabricmc.fabric.api.tag.TagFactory;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -43,92 +43,92 @@ public final class ConventionTags {
     private ConventionTags() {
     }
 
-    public static Tag.Named<Item> SILICON = tag("c:silicon");
+    public static TagKey<Item> SILICON = tag("c:silicon");
 
     // Includes purified versions of certus/nether and the natural ones
-    public static Tag.Named<Item> ALL_QUARTZ = tag("ae2:all_quartz");
+    public static TagKey<Item> ALL_QUARTZ = tag("ae2:all_quartz");
     // Includes both certus/nether quartz dust
-    public static Tag.Named<Item> ALL_QUARTZ_DUST = tag("ae2:all_quartz_dust");
+    public static TagKey<Item> ALL_QUARTZ_DUST = tag("ae2:all_quartz_dust");
 
     // Includes charged, synthetic/purified and natural certus quartz
-    public static Tag.Named<Item> ALL_CERTUS_QUARTZ = tag("ae2:all_certus_quartz");
-    public static Tag.Named<Item> CERTUS_QUARTZ = tag("c:certus_quartz");
-    public static Tag.Named<Item> CERTUS_QUARTZ_ORE = tag("c:certus_quartz_ores");
-    public static Tag.Named<Block> CERTUS_QUARTZ_ORE_BLOCK = blockTag("c:certus_quartz_ores");
-    public static Tag.Named<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag("c:certus_quartz_blocks");
-    public static Tag.Named<Item> CERTUS_QUARTZ_DUST = tag("c:certus_quartz_dusts");
+    public static TagKey<Item> ALL_CERTUS_QUARTZ = tag("ae2:all_certus_quartz");
+    public static TagKey<Item> CERTUS_QUARTZ = tag("c:certus_quartz");
+    public static TagKey<Item> CERTUS_QUARTZ_ORE = tag("c:certus_quartz_ores");
+    public static TagKey<Block> CERTUS_QUARTZ_ORE_BLOCK = blockTag("c:certus_quartz_ores");
+    public static TagKey<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag("c:certus_quartz_blocks");
+    public static TagKey<Item> CERTUS_QUARTZ_DUST = tag("c:certus_quartz_dusts");
 
     // Includes synthetic/purified
-    public static Tag.Named<Item> ALL_NETHER_QUARTZ = tag("ae2:all_nether_quartz");
-    public static Tag.Named<Item> NETHER_QUARTZ = tag("c:quartz");
-    public static Tag.Named<Item> NETHER_QUARTZ_ORE = tag("c:quartz_ores");
+    public static TagKey<Item> ALL_NETHER_QUARTZ = tag("ae2:all_nether_quartz");
+    public static TagKey<Item> NETHER_QUARTZ = tag("c:quartz");
+    public static TagKey<Item> NETHER_QUARTZ_ORE = tag("c:quartz_ores");
 
     // Includes synthetic/purified
-    public static Tag.Named<Item> ALL_FLUIX = tag("ae2:all_fluix");
-    public static Tag.Named<Item> FLUIX_DUST = tag("c:fluix_dusts");
-    public static Tag.Named<Item> FLUIX_CRYSTAL = tag("c:fluix");
+    public static TagKey<Item> ALL_FLUIX = tag("ae2:all_fluix");
+    public static TagKey<Item> FLUIX_DUST = tag("c:fluix_dusts");
+    public static TagKey<Item> FLUIX_CRYSTAL = tag("c:fluix");
 
-    public static Tag.Named<Item> COPPER_INGOT = tag("c:copper_ingots");
+    public static TagKey<Item> COPPER_INGOT = tag("c:copper_ingots");
 
-    public static Tag.Named<Item> GOLD_NUGGET = tag("c:gold_nuggets");
-    public static Tag.Named<Item> GOLD_INGOT = tag("c:gold_ingots");
-    public static Tag.Named<Item> GOLD_ORE = tag("c:gold_ores");
+    public static TagKey<Item> GOLD_NUGGET = tag("c:gold_nuggets");
+    public static TagKey<Item> GOLD_INGOT = tag("c:gold_ingots");
+    public static TagKey<Item> GOLD_ORE = tag("c:gold_ores");
 
-    public static Tag.Named<Item> IRON_NUGGET = tag("c:iron_nuggets");
-    public static Tag.Named<Item> IRON_INGOT = tag("c:iron_ingots");
-    public static Tag.Named<Item> IRON_ORE = tag("c:iron_ores");
+    public static TagKey<Item> IRON_NUGGET = tag("c:iron_nuggets");
+    public static TagKey<Item> IRON_INGOT = tag("c:iron_ingots");
+    public static TagKey<Item> IRON_ORE = tag("c:iron_ores");
 
-    public static Tag.Named<Item> DIAMOND = tag("c:diamonds");
-    public static Tag.Named<Item> REDSTONE = tag("c:redstone_dusts");
-    public static Tag.Named<Item> GLOWSTONE = tag("c:glowstone_dusts");
+    public static TagKey<Item> DIAMOND = tag("c:diamonds");
+    public static TagKey<Item> REDSTONE = tag("c:redstone_dusts");
+    public static TagKey<Item> GLOWSTONE = tag("c:glowstone_dusts");
 
-    public static Tag.Named<Item> ENDER_PEARL = tag("c:ender_pearls");
-    public static Tag.Named<Item> ENDER_PEARL_DUST = tag("c:ender_pearl_dusts");
-    public static Tag.Named<Item> WHEAT_CROP = tag("c:wheat_crops");
+    public static TagKey<Item> ENDER_PEARL = tag("c:ender_pearls");
+    public static TagKey<Item> ENDER_PEARL_DUST = tag("c:ender_pearl_dusts");
+    public static TagKey<Item> WHEAT_CROP = tag("c:wheat_crops");
 
-    public static Tag.Named<Item> WOOD_STICK = tag("c:wooden_rods");
-    public static Tag.Named<Item> CHEST = tag("c:wooden_chests");
+    public static TagKey<Item> WOOD_STICK = tag("c:wooden_rods");
+    public static TagKey<Item> CHEST = tag("c:wooden_chests");
 
-    public static Tag.Named<Item> STONE = tag("c:stone");
-    public static Tag.Named<Item> COBBLESTONE = tag("c:cobblestone");
-    public static Tag.Named<Item> GLASS = tag("c:glass");
+    public static TagKey<Item> STONE = tag("c:stone");
+    public static TagKey<Item> COBBLESTONE = tag("c:cobblestone");
+    public static TagKey<Item> GLASS = tag("c:glass");
 
-    public static Tag.Named<Item> GLASS_CABLE = tag("ae2:glass_cable");
-    public static Tag.Named<Item> SMART_CABLE = tag("ae2:smart_cable");
-    public static Tag.Named<Item> COVERED_CABLE = tag("ae2:covered_cable");
-    public static Tag.Named<Item> COVERED_DENSE_CABLE = tag("ae2:covered_dense_cable");
-    public static Tag.Named<Item> SMART_DENSE_CABLE = tag("ae2:smart_dense_cable");
-    public static Tag.Named<Item> ILLUMINATED_PANEL = tag("ae2:illuminated_panel");
-    public static Tag.Named<Item> INTERFACE = tag("ae2:interface");
-    public static Tag.Named<Item> PATTERN_PROVIDER = tag("ae2:pattern_provider");
-    public static Tag.Named<Item> QUARTZ_WRENCH = tag("ae2:quartz_wrench");
-    public static Tag.Named<Item> QUARTZ_KNIFE = tag("ae2:knife");
-    public static Tag.Named<Item> PAINT_BALLS = tag("ae2:paint_balls");
+    public static TagKey<Item> GLASS_CABLE = tag("ae2:glass_cable");
+    public static TagKey<Item> SMART_CABLE = tag("ae2:smart_cable");
+    public static TagKey<Item> COVERED_CABLE = tag("ae2:covered_cable");
+    public static TagKey<Item> COVERED_DENSE_CABLE = tag("ae2:covered_dense_cable");
+    public static TagKey<Item> SMART_DENSE_CABLE = tag("ae2:smart_dense_cable");
+    public static TagKey<Item> ILLUMINATED_PANEL = tag("ae2:illuminated_panel");
+    public static TagKey<Item> INTERFACE = tag("ae2:interface");
+    public static TagKey<Item> PATTERN_PROVIDER = tag("ae2:pattern_provider");
+    public static TagKey<Item> QUARTZ_WRENCH = tag("ae2:quartz_wrench");
+    public static TagKey<Item> QUARTZ_KNIFE = tag("ae2:knife");
+    public static TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
 
     /**
      * Used to identify items that act as wrenches.
      */
-    public static final Tag.Named<Item> WRENCH = tag("c:wrenches");
+    public static final TagKey<Item> WRENCH = tag("c:wrenches");
 
-    public static final Map<DyeColor, Tag.Named<Item>> DYES = Arrays.stream(DyeColor.values())
+    public static final Map<DyeColor, TagKey<Item>> DYES = Arrays.stream(DyeColor.values())
             .collect(Collectors.toMap(
                     Function.identity(),
                     dye -> tag("c:" + dye.getSerializedName() + "_dye")));
 
-    public static final Tag.Named<Block> STAINED_GLASS_BLOCK = blockTag("c:stained_glass");
+    public static final TagKey<Block> STAINED_GLASS_BLOCK = blockTag("c:stained_glass");
 
-    public static final Tag.Named<Block> TERRACOTTA_BLOCK = blockTag("c:terracotta");
+    public static final TagKey<Block> TERRACOTTA_BLOCK = blockTag("c:terracotta");
 
-    public static Tag.Named<Item> dye(DyeColor color) {
+    public static TagKey<Item> dye(DyeColor color) {
         return DYES.get(color);
     }
 
-    private static Tag.Named<Item> tag(String name) {
-        return TagFactory.ITEM.create(new ResourceLocation(name));
+    private static TagKey<Item> tag(String name) {
+        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(name));
     }
 
-    private static Tag.Named<Block> blockTag(String name) {
-        return TagFactory.BLOCK.create(new ResourceLocation(name));
+    private static TagKey<Block> blockTag(String name) {
+        return TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(name));
     }
 
 }
