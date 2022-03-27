@@ -37,6 +37,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import gregtech.api.items.IToolItem;
+import ic2.api.item.IC2Items;
+import ic2.api.item.ICustomDamageItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -137,6 +139,7 @@ import appeng.util.prioritylist.IPartitionList;
  * @since rv0
  */
 @Optional.Interface( iface = "gregtech.api.items.IToolItem", modid = "gregtech" )
+@Optional.Interface( iface = "ic2.api.item.ICustomDamageItem", modid = "IC2" )
 public class Platform
 {
 
@@ -1252,20 +1255,22 @@ public class Platform
 					split.setStackSize( itemToAdd );
 					leftover.add( cell.injectItems( split, Actionable.MODULATE, src ) );
 
-					src.player().ifPresent( player -> {
-						final long diff = original - leftover.getStackSize();
-						Stats.ItemsInserted.addToPlayer( player, (int) diff );
-					} );
+					src.player().ifPresent( player ->
+					                        {
+						                        final long diff = original - leftover.getStackSize();
+						                        Stats.ItemsInserted.addToPlayer( player, (int) diff );
+					                        } );
 
 					return leftover;
 				}
 
 				final T ret = cell.injectItems( input, Actionable.MODULATE, src );
 
-				src.player().ifPresent( player -> {
-					final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
-					Stats.ItemsInserted.addToPlayer( player, (int) diff );
-				} );
+				src.player().ifPresent( player ->
+				                        {
+					                        final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
+					                        Stats.ItemsInserted.addToPlayer( player, (int) diff );
+				                        } );
 
 				return ret;
 			}
@@ -1679,5 +1684,10 @@ public class Platform
 	public static boolean isGTDamageableItem( Item item )
 	{
 		return ( isModLoaded( "gregtech" ) && item instanceof IToolItem );
+	}
+
+	public static boolean isIC2DamageableItem( Item item )
+	{
+		return ( isModLoaded( "IC2" ) && item instanceof ICustomDamageItem );
 	}
 }

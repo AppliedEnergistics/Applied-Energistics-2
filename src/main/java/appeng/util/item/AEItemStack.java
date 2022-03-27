@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.primitives.Ints;
 import gregtech.api.items.IToolItem;
+import ic2.api.item.ICustomDamageItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -377,20 +378,29 @@ public class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack
 			}
 			else if( mode == FuzzyMode.PERCENT_99 )
 			{
-				if( a.getItem().isDamageable() )
+				if( Platform.isIC2DamageableItem( a.getItem() ) )
+				{
+					return ( (ICustomDamageItem) a.getItem() ).getCustomDamage( a ) > 1 == ( (ICustomDamageItem) b.getItem() ).getCustomDamage( b ) > 1;
+				}
+				else if( a.getItem().isDamageable() )
 				{
 					return a.getItemDamage() > 1 == b.getItemDamage() > 1;
 				}
 				else if( Platform.isGTDamageableItem( a.getItem() ) )
 				{
-					return ( (IToolItem) a.getItem() ).getItemDamage( a ) == ( (IToolItem) b.getItem() ).getItemDamage( b );
+					return ( (IToolItem) a.getItem() ).getItemDamage( a ) > 1 == ( (IToolItem) b.getItem() ).getItemDamage( b ) > 1;
 				}
 			}
 			else
 			{
 				float percentDamageOfA = 0;
 				float percentDamageOfB = 0;
-				if( a.getItem().isDamageable() )
+				if( Platform.isIC2DamageableItem( a.getItem() ) )
+				{
+					percentDamageOfA = (float) ( (ICustomDamageItem) a.getItem() ).getCustomDamage( a ) / ( (ICustomDamageItem) a.getItem() ).getMaxCustomDamage( a );
+					percentDamageOfB = (float) ( (ICustomDamageItem) b.getItem() ).getCustomDamage( b ) / ( (ICustomDamageItem) b.getItem() ).getMaxCustomDamage( b );
+				}
+				else if( a.getItem().isDamageable() )
 				{
 					percentDamageOfA = (float) a.getItemDamage() / a.getMaxDamage();
 					percentDamageOfB = (float) b.getItemDamage() / b.getMaxDamage();
