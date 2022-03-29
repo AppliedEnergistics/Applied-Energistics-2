@@ -43,7 +43,6 @@ import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
-import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -228,42 +227,16 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     public void breakCluster() {
         if (this.cluster != null) {
             this.cluster.cancel();
-            final ListCraftingInventory inv = this.cluster.craftingLogic.getInventory();
-
-            final LinkedList<BlockPos> places = new LinkedList<>();
-
-            final Iterator<CraftingBlockEntity> i = this.cluster.getBlockEntities();
-            while (i.hasNext()) {
-                final CraftingBlockEntity h = i.next();
-                if (h == this) {
-                    places.add(worldPosition);
-                } else {
-                    for (Direction d : Direction.values()) {
-                        BlockPos p = h.worldPosition.relative(d);
-                        if (this.level.isEmptyBlock(p)) {
-                            places.add(p);
-                        }
-                    }
-                }
-            }
-
-            Collections.shuffle(places);
-
-            if (places.isEmpty()) {
-                throw new IllegalStateException(
-                        this.cluster + " does not contain any kind of blocks, which were destroyed.");
-            }
+            var inv = this.cluster.craftingLogic.getInventory();
 
             // Drop stacks
             var stacks = new ArrayList<ItemStack>();
 
             for (var entry : inv.list) {
-                entry.getKey().addDrops(entry.getLongValue(), stacks, this.level, this.getBlockPos());
+                entry.getKey().addDrops(entry.getLongValue(), stacks, this.level, this.worldPosition);
             }
 
-            var pos = places.poll();
-            places.add(pos);
-            Platform.spawnDrops(this.level, pos, stacks);
+            Platform.spawnDrops(this.level, worldPosition, stacks);
 
             this.cluster.destroy();
         }
