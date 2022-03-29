@@ -209,6 +209,11 @@ public final class AEItemKey extends AEKey {
     @Override
     public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         while (amount > 0) {
+            if (drops.size() > 1000) {
+                AELog.warn("Tried dropping an excessive amount of items, ignoring %s %ss", amount, item);
+                break;
+            }
+
             var taken = Math.min(amount, item.getMaxStackSize());
             amount -= taken;
             drops.add(toStack((int) taken));
