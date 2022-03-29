@@ -245,7 +245,8 @@ public abstract class AEKey {
     public abstract Component getDisplayName();
 
     /**
-     * Adds the drops if the container holding this key is broken, such as an interface holding stacks
+     * Adds the drops if the container holding this key is broken, such as an interface holding stacks. Item stacks
+     * should be placed in the list and not spawned directly into the world
      *
      * @param amount Amount to drop
      * @param drops  Drop list to append to, in case of {@link ItemStack} drops
