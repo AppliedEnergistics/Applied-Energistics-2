@@ -18,7 +18,9 @@
 
 package appeng.blockentity.crafting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.Iterator;
 
 import com.google.common.collect.Iterators;
 
@@ -230,13 +232,33 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
             var inv = this.cluster.craftingLogic.getInventory();
 
             // Drop stacks
-            var stacks = new ArrayList<ItemStack>();
+            var places = new ArrayList<BlockPos>();
 
-            for (var entry : inv.list) {
-                entry.getKey().addDrops(entry.getLongValue(), stacks, this.level, this.worldPosition);
+            for (var blockEntity : (Iterable<CraftingBlockEntity>) this.cluster::getBlockEntities) {
+                if (this == blockEntity) {
+                    places.add(worldPosition);
+                } else {
+                    for (var d : Direction.values()) {
+                        var p = blockEntity.worldPosition.relative(d);
+
+                        if (this.level.isEmptyBlock(p)) {
+                            places.add(p);
+                        }
+                    }
+                }
             }
 
-            Platform.spawnDrops(this.level, worldPosition, stacks);
+            if (places.isEmpty()) {
+                throw new IllegalStateException(
+                        this.cluster + " does not contain any kind of blocks, which were destroyed.");
+            }
+
+            for (var entry : inv.list) {
+                var position = places.get(Platform.getRandomInt() % places.size());
+                var stacks = new ArrayList<ItemStack>();
+                entry.getKey().addDrops(entry.getLongValue(), stacks, this.level, position);
+                Platform.spawnDrops(this.level, position, stacks);
+            }
 
             this.cluster.destroy();
         }
