@@ -60,7 +60,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
@@ -353,12 +352,11 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         }
 
         for (var stack : this.sendList) {
-            if (stack.what() instanceof AEItemKey itemKey) {
-                drops.add(itemKey.toStack((int) stack.amount()));
-            }
+            stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
+                    this.host.getBlockEntity().getBlockPos());
         }
 
-        this.returnInv.addDrops(drops);
+        this.returnInv.addDrops(drops, this.host.getBlockEntity().getLevel(), this.host.getBlockEntity().getBlockPos());
     }
 
     public PatternProviderReturnInventory getReturnInv() {

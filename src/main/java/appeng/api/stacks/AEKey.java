@@ -1,15 +1,19 @@
 package appeng.api.stacks;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Contract;
 
 import net.minecraft.ResourceLocationException;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
 import appeng.core.AELog;
@@ -199,7 +203,7 @@ public abstract class AEKey {
 
     /**
      * Checks if the given stack has the same key as this.
-     * 
+     *
      * @return False if stack is null, otherwise true iff the stacks key is equal to this.
      */
     @Contract("null -> false")
@@ -220,7 +224,7 @@ public abstract class AEKey {
 
     /**
      * Wraps a key in an ItemStack that can be unwrapped into a key later.
-     * 
+     *
      * @see GenericStack#wrapInItemStack(AEKey, long) use this instead
      */
     @Deprecated(forRemoval = true)
@@ -239,4 +243,15 @@ public abstract class AEKey {
     }
 
     public abstract Component getDisplayName();
+
+    /**
+     * Adds the drops if the container holding this key is broken, such as an interface holding stacks. Item stacks
+     * should be placed in the list and not spawned directly into the world
+     *
+     * @param amount Amount to drop
+     * @param drops  Drop list to append to, in case of {@link ItemStack} drops
+     * @param level  World where the stacks were being held
+     * @param pos    Position where the stacks were being held
+     */
+    public abstract void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos);
 }

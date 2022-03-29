@@ -18,10 +18,9 @@
 
 package appeng.blockentity.crafting;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import com.google.common.collect.Iterators;
 
@@ -30,24 +29,22 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
-import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -232,18 +229,18 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     public void breakCluster() {
         if (this.cluster != null) {
             this.cluster.cancel();
-            final ListCraftingInventory inv = this.cluster.craftingLogic.getInventory();
+            var inv = this.cluster.craftingLogic.getInventory();
 
-            final LinkedList<BlockPos> places = new LinkedList<>();
+            // Drop stacks
+            var places = new ArrayList<BlockPos>();
 
-            final Iterator<CraftingBlockEntity> i = this.cluster.getBlockEntities();
-            while (i.hasNext()) {
-                final CraftingBlockEntity h = i.next();
-                if (h == this) {
+            for (var blockEntity : (Iterable<CraftingBlockEntity>) this.cluster::getBlockEntities) {
+                if (this == blockEntity) {
                     places.add(worldPosition);
                 } else {
-                    for (Direction d : Direction.values()) {
-                        BlockPos p = h.worldPosition.relative(d);
+                    for (var d : Direction.values()) {
+                        var p = blockEntity.worldPosition.relative(d);
+
                         if (this.level.isEmptyBlock(p)) {
                             places.add(p);
                         }
@@ -251,30 +248,16 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                 }
             }
 
-            Collections.shuffle(places);
-
             if (places.isEmpty()) {
                 throw new IllegalStateException(
                         this.cluster + " does not contain any kind of blocks, which were destroyed.");
             }
 
             for (var entry : inv.list) {
-                // Drop items, void other types of stacks (fluids...).
-                if (entry.getKey() instanceof AEItemKey itemKey) {
-                    var maxPerDrop = itemKey.getItem().getMaxStackSize();
-                    while (true) {
-                        var extracted = (int) inv.extract(itemKey, maxPerDrop, Actionable.MODULATE);
-                        if (extracted == 0) {
-                            break;
-                        }
-
-                        var pos = places.poll();
-                        places.add(pos);
-
-                        var stack = itemKey.toStack(extracted);
-                        Platform.spawnDrops(this.level, pos, Collections.singletonList(stack));
-                    }
-                }
+                var position = places.get(Platform.getRandomInt() % places.size());
+                var stacks = new ArrayList<ItemStack>();
+                entry.getKey().addDrops(entry.getLongValue(), stacks, this.level, position);
+                Platform.spawnDrops(this.level, position, stacks);
             }
 
             this.cluster.destroy();

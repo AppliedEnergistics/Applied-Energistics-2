@@ -20,11 +20,12 @@ package appeng.helpers.iface;
 
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.externalstorage.GenericStackInv;
@@ -85,10 +86,10 @@ public class PatternProviderReturnInventory extends GenericStackInv {
         return didSomething;
     }
 
-    public void addDrops(List<ItemStack> drops) {
+    public void addDrops(List<ItemStack> drops, Level level, BlockPos pos) {
         for (var stack : stacks) {
-            if (stack != null && stack.what() instanceof AEItemKey itemKey) {
-                drops.add(itemKey.toStack((int) Math.min(Integer.MAX_VALUE, stack.amount())));
+            if (stack != null) {
+                stack.what().addDrops(stack.amount(), drops, level, pos);
             }
         }
     }
