@@ -52,6 +52,7 @@ public class AECraftingPattern implements IAEPatternDetails {
     public final boolean canSubstituteFluids;
     private final CraftingRecipe recipe;
     private final CraftingContainer testFrame;
+    private final CraftingContainer specialRecipeTestFrame;
     private final GenericStack[] sparseInputs;
     private final int[] sparseToCompressed = new int[9];
     private final Input[] inputs;
@@ -81,6 +82,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
         // Build frame and find output
         this.testFrame = new CraftingContainer(new NullMenu(), 3, 3);
+        this.specialRecipeTestFrame = new CraftingContainer(new NullMenu(), 3, 3);
         for (int i = 0; i < 9; ++i) {
             if (sparseInputs[i] != null) {
                 var itemKey = (AEItemKey) sparseInputs[i].what();
@@ -302,6 +304,29 @@ public class AECraftingPattern implements IAEPatternDetails {
     }
 
     public ItemStack getOutput(CraftingContainer craftingContainer, Level level) {
+        if (canSubstitute && recipe.isSpecial()) {
+            // For special recipes, we need to test the recipe with assemble, unfortunately, since the output might
+            // depend on the inputs in a way that can't be detected by changing one input at the time.
+            specialRecipeTestFrame.clearContent();
+
+            for (int x = 0; x < craftingContainer.getContainerSize(); ++x) {
+                ItemStack item = craftingContainer.getItem(x);
+                var stack = GenericStack.unwrapItemStack(item);
+                if (stack != null) {
+                    // If we receive a pure fluid stack, we convert it to the appropriate container item
+                    // If it matches the allowable input
+                    var validFluid = getValidFluid(x);
+                    if (validFluid != null && validFluid.equals(stack)) {
+                        specialRecipeTestFrame.setItem(x, ((AEItemKey) sparseInputs[x].what()).toStack());
+                        continue;
+                    }
+                }
+                specialRecipeTestFrame.setItem(x, item.copy());
+            }
+
+            return recipe.assemble(specialRecipeTestFrame);
+        }
+
         for (int x = 0; x < craftingContainer.getContainerSize(); x++) {
             ItemStack item = craftingContainer.getItem(x);
             var stack = GenericStack.unwrapItemStack(item);
