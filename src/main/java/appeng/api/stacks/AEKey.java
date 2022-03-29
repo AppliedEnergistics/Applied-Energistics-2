@@ -7,12 +7,13 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
 
 import net.minecraft.ResourceLocationException;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
 import appeng.core.AELog;
@@ -246,9 +247,10 @@ public abstract class AEKey {
     /**
      * Adds the drops if the container holding this key is broken, such as an interface holding stacks
      *
-     * @param amount      Amount to drop
-     * @param drops       Drop list to append to, in case of {@link ItemStack} drops
-     * @param blockEntity Container which was holding these stacks
+     * @param amount Amount to drop
+     * @param drops  Drop list to append to, in case of {@link ItemStack} drops
+     * @param level  World where the stacks were being held
+     * @param pos    Position where the stacks were being held
      */
-    public abstract void addDrops(long amount, List<ItemStack> drops, BlockEntity blockEntity);
+    public abstract void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos);
 }

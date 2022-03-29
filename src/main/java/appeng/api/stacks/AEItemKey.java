@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
@@ -206,7 +207,7 @@ public final class AEItemKey extends AEKey {
     }
 
     @Override
-    public void addDrops(long amount, List<ItemStack> drops, BlockEntity blockEntity) {
+    public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         while (amount > 0) {
             var taken = Math.min(amount, item.getMaxStackSize());
             amount -= taken;

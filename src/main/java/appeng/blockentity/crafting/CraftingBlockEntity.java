@@ -258,7 +258,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
             var stacks = new ArrayList<ItemStack>();
 
             for (var entry : inv.list) {
-                entry.getKey().addDrops(entry.getLongValue(), stacks, this);
+                entry.getKey().addDrops(entry.getLongValue(), stacks, this.level, this.getBlockPos());
             }
 
             var pos = places.poll();

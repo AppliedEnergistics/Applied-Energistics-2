@@ -534,7 +534,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             var stack = storage.getStack(i);
 
             if (stack != null) {
-                stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity());
+                stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
+                        this.host.getBlockEntity().getBlockPos());
             }
         }
     }

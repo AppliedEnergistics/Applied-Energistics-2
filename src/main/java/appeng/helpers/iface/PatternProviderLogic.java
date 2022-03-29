@@ -352,10 +352,11 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         }
 
         for (var stack : this.sendList) {
-            stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity());
+            stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
+                    this.host.getBlockEntity().getBlockPos());
         }
 
-        this.returnInv.addDrops(drops, this.host.getBlockEntity());
+        this.returnInv.addDrops(drops, this.host.getBlockEntity().getLevel(), this.host.getBlockEntity().getBlockPos());
     }
 
     public PatternProviderReturnInventory getReturnInv() {

@@ -7,13 +7,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.storage.AEKeyFilter;
@@ -134,7 +135,7 @@ public final class AEFluidKey extends AEKey {
     }
 
     @Override
-    public void addDrops(long amount, List<ItemStack> drops, BlockEntity blockEntity) {
+    public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         // Fluids are voided
     }
 
