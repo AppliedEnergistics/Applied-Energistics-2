@@ -14,12 +14,14 @@ import com.google.common.collect.Sets;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -44,8 +46,10 @@ import appeng.api.parts.PartHelper;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.StorageCells;
 import appeng.api.util.AEColor;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
@@ -59,6 +63,7 @@ import appeng.items.tools.powered.MatterCannonItem;
 import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.service.PathingService;
+import appeng.menu.NullMenu;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.util.CraftingRecipeUtil;
 
@@ -90,6 +95,7 @@ public final class TestPlots {
             .put(AppEng.makeId("p2p_energy"), P2PTestPlots::energy)
             .put(AppEng.makeId("p2p_light"), P2PTestPlots::light)
             .put(AppEng.makeId("import_from_cauldron"), TestPlots::importLavaFromCauldron)
+            .put(AppEng.makeId("tool_repair_recipe"), TestPlots::toolRepairRecipe)
             .build();
 
     private TestPlots() {
@@ -835,6 +841,64 @@ public final class TestPlots {
                         "Less than a bucket stored");
                 helper.check(tank.getStorage().variant.getFluid() == Fluids.LAVA,
                         "Something other than lava stored");
+            });
+        });
+    }
+
+    /**
+     * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6104. Ensures that
+     * repairing tools properly checks for damage values.
+     */
+    public static void toolRepairRecipe(PlotBuilder plot) {
+        var undamaged = AEItemKey.of(Items.DIAMOND_PICKAXE);
+        var maxDamage = undamaged.getFuzzySearchMaxValue();
+        var damaged = Util.make(() -> {
+            var is = undamaged.toStack();
+            is.setDamageValue(maxDamage - 1);
+            return AEItemKey.of(is);
+        });
+        var correctResult = Util.make(() -> {
+            var is = undamaged.toStack();
+            var usesLeft = 2 + maxDamage * 5 / 100;
+            is.setDamageValue(maxDamage - usesLeft);
+            return AEItemKey.of(is);
+        });
+
+        plot.creativeEnergyCell("0 0 0");
+        var molecularAssemblerPos = new BlockPos(0, 1, 0);
+        plot.blockEntity(molecularAssemblerPos, AEBlocks.MOLECULAR_ASSEMBLER, molecularAssembler -> {
+            // Get repair recipe
+            var craftingContainer = new CraftingContainer(new NullMenu(), 3, 3);
+            craftingContainer.setItem(0, undamaged.toStack());
+            craftingContainer.setItem(1, undamaged.toStack());
+            var level = molecularAssembler.getLevel();
+            var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingContainer, level).get();
+
+            // Encode pattern
+            var sparseInputs = new ItemStack[9];
+            sparseInputs[0] = undamaged.toStack();
+            sparseInputs[1] = undamaged.toStack();
+            for (int i = 2; i < 9; ++i)
+                sparseInputs[i] = ItemStack.EMPTY;
+            var encodedPattern = PatternDetailsHelper.encodeCraftingPattern(recipe, sparseInputs, undamaged.toStack(),
+                    true, false);
+            var patternDetails = PatternDetailsHelper.decodePattern(encodedPattern, level);
+
+            // Push it to the assembler
+            var table = new KeyCounter[] { new KeyCounter() };
+            table[0].add(damaged, 2);
+            molecularAssembler.pushPattern(patternDetails, table, Direction.UP);
+        });
+
+        plot.test(helper -> {
+            helper.runAfterDelay(40, () -> {
+                var molecularAssembler = (MolecularAssemblerBlockEntity) helper.getBlockEntity(molecularAssemblerPos);
+                var outputItem = molecularAssembler.getInternalInventory().getStackInSlot(9);
+                if (correctResult.matches(outputItem)) {
+                    helper.succeed();
+                } else if (undamaged.matches(outputItem)) {
+                    helper.fail("created undamaged item");
+                }
             });
         });
     }
