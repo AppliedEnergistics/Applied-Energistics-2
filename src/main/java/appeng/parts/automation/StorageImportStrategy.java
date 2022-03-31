@@ -103,8 +103,12 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
 
             if (inserted < extractableAmount) {
                 // Be nice and try to give the overflow back
-                AELog.warn("Extracted %dx%s from adjacent storage and voided it because network refused insert",
-                        extractableAmount - inserted, extractable);
+                long leftover = extractableAmount - inserted;
+                leftover -= adjacentStorage.insert(conversion.getVariant(extractable), leftover, tx);
+                if (leftover > 0) {
+                    AELog.warn("Extracted %dx%s from adjacent storage and voided it because network refused insert",
+                            leftover, extractable);
+                }
             }
 
             var opsUsed = Math.max(1, inserted / conversion.getKeyType().getAmountPerOperation());
