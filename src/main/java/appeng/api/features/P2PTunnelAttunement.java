@@ -25,6 +25,7 @@ package appeng.api.features;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +39,7 @@ import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.minecraft.core.Registry;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -55,6 +57,7 @@ public final class P2PTunnelAttunement {
     private static final int INITIAL_CAPACITY = 40;
 
     static final Map<Item, Item> tunnels = new HashMap<>(INITIAL_CAPACITY);
+    static final Map<TagKey<Item>, Item> tagTunnels = new IdentityHashMap<>(INITIAL_CAPACITY);
     static final Map<String, Item> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
     static final List<ApiAttunement<?>> apiAttunements = new ArrayList<>();
 
@@ -104,6 +107,17 @@ public final class P2PTunnelAttunement {
         Objects.requireNonNull(triggerItem, "trigger.asItem()");
         Preconditions.checkArgument(triggerItem != Items.AIR, "trigger shouldn't be air!");
         tunnels.put(triggerItem, validateTunnelPartItem(tunnelPart));
+    }
+
+    /**
+     * Allows third parties to register items in a tag as potential attunements for AE's P2P Tunnels
+     *
+     * @param trigger    The tag which triggers attunement
+     * @param tunnelPart The P2P-tunnel part item.
+     */
+    public synchronized static void addItemByTag(TagKey<Item> trigger, ItemLike tunnelPart) {
+        Objects.requireNonNull(trigger, "trigger");
+        tagTunnels.put(trigger, validateTunnelPartItem(tunnelPart));
     }
 
     /**
@@ -166,6 +180,14 @@ public final class P2PTunnelAttunement {
         var tunnelItem = tunnels.get(trigger.getItem());
         if (tunnelItem != null) {
             return new ItemStack(tunnelItem);
+        }
+
+        // Tags second
+        for (var tag : trigger.getTags().toList()) {
+            var tagTunnelItem = tagTunnels.get(tag);
+            if (tagTunnelItem != null) {
+                return new ItemStack(tagTunnelItem);
+            }
         }
 
         // Check provided APIs
