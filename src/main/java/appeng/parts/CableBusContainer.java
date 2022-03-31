@@ -576,7 +576,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     public AECableType getCableConnectionType(Direction dir) {
         final IPart part = this.getPart(dir);
 
-        if (part != null && part.getExternalFacingNode() != null) {
+        if (part != null) {
             return part.getExternalCableConnectionType();
         }
 
