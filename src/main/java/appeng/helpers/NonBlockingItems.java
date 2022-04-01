@@ -2,6 +2,7 @@ package appeng.helpers;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.util.Platform;
 import gregtech.api.items.metaitem.MetaItem;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -50,7 +51,7 @@ public class NonBlockingItems
 							continue;
 						}
 
-						if( ModItemMeta[0].equals( "gregtech" ) )
+						if( ModItemMeta[0].equals( "gregtech" ) && Platform.isModLoaded( "gregtech" ) )
 						{
 							boolean found = false;
 							for( MetaItem<?> metaItem : MetaItem.getMetaItems() )
