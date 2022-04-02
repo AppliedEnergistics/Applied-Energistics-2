@@ -21,15 +21,16 @@ package appeng.integration.modules.waila;
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import mcp.mobius.waila.api.IBlockAccessor;
+import mcp.mobius.waila.api.BlockAccessor;
 import mcp.mobius.waila.api.IComponentProvider;
-import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerDataProvider;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
 
 import appeng.integration.modules.waila.tile.ChargerDataProvider;
 import appeng.integration.modules.waila.tile.CraftingMonitorDataProvider;
@@ -63,16 +64,22 @@ public final class BlockEntityDataProvider implements IComponentProvider, IServe
     }
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        // Removes the built-in Forge-Energy progressbar
+        tooltip.remove(new ResourceLocation("minecraft:fe"));
+        // Removes the built-in Forge fluid bars, because usually we have 6 tanks...
+        tooltip.remove(new ResourceLocation("minecraft:fluid"));
+
         for (var provider : providers) {
-            provider.appendBody(tooltip, accessor, config);
+            provider.appendTooltip(tooltip, accessor, config);
         }
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity) {
+    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity,
+            boolean showDetails) {
         for (var provider : providers) {
-            provider.appendServerData(tag, player, level, blockEntity);
+            provider.appendServerData(tag, player, level, blockEntity, showDetails);
         }
     }
 

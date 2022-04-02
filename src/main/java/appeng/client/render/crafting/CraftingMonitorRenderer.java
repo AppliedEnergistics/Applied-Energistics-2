@@ -20,12 +20,12 @@ package appeng.client.render.crafting;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.client.render.BlockEntityRenderHelper;
@@ -33,7 +33,7 @@ import appeng.client.render.BlockEntityRenderHelper;
 /**
  * Renders the item currently being crafted
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class CraftingMonitorRenderer implements BlockEntityRenderer<CraftingMonitorBlockEntity> {
 
     public CraftingMonitorRenderer(BlockEntityRendererProvider.Context context) {

@@ -18,23 +18,13 @@
 
 package appeng.items;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.item.v1.FabricItem;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
-public abstract class AEBaseItem extends Item implements FabricItem {
+public abstract class AEBaseItem extends Item {
 
     public AEBaseItem(Item.Properties properties) {
-        super(properties);
-    }
-
-    @Nullable
-    public ResourceLocation getRegistryName() {
-        var id = Registry.ITEM.getKey(this);
-        return id != Registry.ITEM.getDefaultKey() ? id : null;
+        super(properties.setNoRepair());
     }
 
     @Override
@@ -42,4 +32,10 @@ public abstract class AEBaseItem extends Item implements FabricItem {
         String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
         return this.getClass().getSimpleName() + "[" + regName + "]";
     }
+
+    @Override
+    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
+        return false;
+    }
+
 }

@@ -32,6 +32,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
@@ -158,6 +160,15 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             return EnumSet.allOf(Direction.class);
         }
         return EnumSet.of(this.getForward());
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+        var lo = logic.getCapability(cap);
+        if (lo.isPresent()) {
+            return lo;
+        }
+        return super.getCapability(cap, side);
     }
 
     public boolean isOmniDirectional() {
