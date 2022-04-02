@@ -30,6 +30,14 @@ public class StackInteractions {
         strategies.putIfAbsent(type, strategy);
     }
 
+    public static boolean isTypeSupported(AEKeyType type) {
+        return strategies.getMap().containsKey(type);
+    }
+
+    public static boolean isKeySupported(@Nullable AEKey key) {
+        return key != null && isTypeSupported(key.getType());
+    }
+
     @Nullable
     public static GenericStack getContainedStack(ItemStack stack) {
         if (stack.isEmpty()) {

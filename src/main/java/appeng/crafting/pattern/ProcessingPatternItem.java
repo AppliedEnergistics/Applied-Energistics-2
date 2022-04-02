@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AELog;
 
@@ -47,22 +46,9 @@ public class ProcessingPatternItem extends EncodedPatternItem {
         }
         Objects.requireNonNull(sparseOutputs[0],
                 "The first (primary) output must be non-null.");
-        checkItemsOrFluids(sparseInputs);
-        checkItemsOrFluids(sparseOutputs);
 
         var stack = new ItemStack(this);
         ProcessingPatternEncoding.encodeProcessingPattern(stack.getOrCreateTag(), sparseInputs, sparseOutputs);
         return stack;
-    }
-
-    private static void checkItemsOrFluids(GenericStack[] stacks) {
-        for (var stack : stacks) {
-            if (stack != null) {
-                if (stack.what().getType() != AEKeyType.items()
-                        && stack.what().getType() != AEKeyType.fluids()) {
-                    throw new IllegalArgumentException("Unsupported storage channel: " + stack.what().getType());
-                }
-            }
-        }
     }
 }
