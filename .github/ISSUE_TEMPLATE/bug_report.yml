@@ -43,8 +43,8 @@ body:
       label: Which minecraft version are you using?
       options:
         - 1.18
-        - 1.17
-        - 1.16
+        - 1.17 - UNSUPPORTED
+        - 1.16 - MOSTLY UNSUPPORTED
         - 1.15 - UNSUPPORTED
         - 1.12 - UNSUPPORTED
         - 1.10 - UNSUPPORTED
