@@ -65,7 +65,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         super.onReady();
         final int value = this.level.getBlockState(this.worldPosition).getValue(EnergyCellBlock.ENERGY_STORAGE);
         this.currentMeta = (byte) value;
-        this.changePowerLevel();
+        this.updateStateForPowerLevel();
     }
 
     /**
@@ -78,7 +78,10 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         return Mth.clamp(factor, 0, EnergyCellBlock.MAX_FULLNESS);
     }
 
-    private void changePowerLevel() {
+    /**
+     * Updates the block state of this cell so that it matches the power level.
+     */
+    private void updateStateForPowerLevel() {
         if (this.notLoaded() || this.isRemoved()) {
             return;
         }
@@ -91,6 +94,11 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
                     this.level.getBlockState(this.worldPosition).setValue(EnergyCellBlock.ENERGY_STORAGE,
                             storageLevel));
         }
+    }
+
+    private void onAmountChanged() {
+        setChanged();
+        updateStateForPowerLevel();
     }
 
     @Override
@@ -150,11 +158,11 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
             amt = this.internalCurrentPower - this.getInternalMaxPower();
             this.internalCurrentPower = this.getInternalMaxPower();
 
-            this.changePowerLevel();
+            this.onAmountChanged();
             return amt;
         }
 
-        this.changePowerLevel();
+        this.onAmountChanged();
         return 0;
     }
 
@@ -206,14 +214,14 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         if (this.internalCurrentPower > amt) {
             this.internalCurrentPower -= amt;
 
-            this.changePowerLevel();
+            this.onAmountChanged();
             return amt;
         }
 
         amt = this.internalCurrentPower;
         this.internalCurrentPower = 0;
 
-        this.changePowerLevel();
+        this.onAmountChanged();
         return amt;
     }
 
