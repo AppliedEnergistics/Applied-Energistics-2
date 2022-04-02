@@ -18,23 +18,20 @@
 
 package appeng.core.sync;
 
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.NetworkDirection;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.core.sync.network.NetworkHandler;
 
 public abstract class BasePacket {
-
-    // KEEP THIS SHORT. It's serialized as a string!
-    public static final ResourceLocation CHANNEL = new ResourceLocation("ae2:m");
 
     private FriendlyByteBuf p;
 
@@ -57,7 +54,7 @@ public abstract class BasePacket {
         this.p = data;
     }
 
-    public Packet<?> toPacket(PacketFlow direction) {
+    public Packet<?> toPacket(NetworkDirection direction) {
         if (this.p.array().length > 2 * 1024 * 1024) // 2k walking room :)
         {
             throw new IllegalArgumentException(
@@ -68,10 +65,6 @@ public abstract class BasePacket {
             AELog.info(this.getClass().getName() + " : " + p.readableBytes());
         }
 
-        if (direction == PacketFlow.SERVERBOUND) {
-            return ClientSidePacketRegistry.INSTANCE.toPacket(CHANNEL, this.p);
-        } else {
-            return ServerSidePacketRegistry.INSTANCE.toPacket(CHANNEL, this.p);
-        }
+        return direction.buildPacket(Pair.of(p, 0), NetworkHandler.instance().getChannel()).getThis();
     }
 }
