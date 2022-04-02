@@ -71,7 +71,6 @@ import appeng.crafting.CraftingEvent;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.menu.NullMenu;
-import appeng.util.CraftingRemainders;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -434,8 +433,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
                 this.pushOut(output.copy());
 
+                var craftingRemainders = this.myPlan.getRemainingItems(this.craftingInv);
+
                 for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
-                    this.gridInv.setItemDirect(x, CraftingRemainders.getRemainder(this.craftingInv.getItem(x)));
+                    this.gridInv.setItemDirect(x, craftingRemainders.get(x));
                 }
 
                 if (this.patternInv.isEmpty()) {

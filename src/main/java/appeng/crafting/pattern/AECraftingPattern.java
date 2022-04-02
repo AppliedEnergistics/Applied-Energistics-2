@@ -346,6 +346,10 @@ public class AECraftingPattern implements IAEPatternDetails {
         return output;
     }
 
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
+        return this.recipe.getRemainingItems(container);
+    }
+
     private GenericStack getItemOrFluidInput(int slot, GenericStack item) {
         if (!(item.what() instanceof AEItemKey itemKey)) {
             return item;
