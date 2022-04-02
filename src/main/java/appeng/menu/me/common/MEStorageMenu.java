@@ -55,7 +55,6 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -458,7 +457,7 @@ public class MEStorageMenu extends AEBaseMenu
             return;
         }
 
-        if (action == InventoryAction.PICKUP_OR_SET_DOWN && AEFluidKey.is(clickedKey)) {
+        if (action == InventoryAction.PICKUP_OR_SET_DOWN && StackInteractions.isKeySupported(clickedKey)) {
             action = InventoryAction.FILL_ITEM;
         }
 

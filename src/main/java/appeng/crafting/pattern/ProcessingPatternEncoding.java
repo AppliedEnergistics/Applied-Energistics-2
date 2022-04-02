@@ -26,7 +26,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
-import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 
 /**
@@ -59,10 +58,6 @@ class ProcessingPatternEncoding {
             var stack = GenericStack.readTag(entry);
             if (stack == null) {
                 throw new IllegalArgumentException("Pattern references missing stack: " + entry);
-            }
-            if (stack.what().getType() != AEKeyType.items()
-                    && stack.what().getType() != AEKeyType.fluids()) {
-                throw new IllegalArgumentException("Only items and fluids are supported in AE2 patterns.");
             }
             result[x] = stack;
         }
