@@ -174,12 +174,6 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    public final AECableType getExternalCableConnectionType() {
-        // TODO: previously this was only in the fluid level emitter, check this visual change as well
-        return AECableType.SMART;
-    }
-
-    @Override
     public final void onSettingChanged(IConfigManager manager, Setting<?> setting) {
         this.configureWatchers();
     }

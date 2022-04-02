@@ -232,8 +232,8 @@ public interface IPart extends ICustomCableConnection {
     }
 
     /**
-     * If {@link #getExternalFacingNode()} returns a non-null node, this method controls the cable type that is returned
-     * for {@link appeng.api.networking.IInWorldGridNodeHost#getCableConnectionType(Direction)} by the part host for the
+     * This method controls the cable type that is returned for
+     * {@link appeng.api.networking.IInWorldGridNodeHost#getCableConnectionType(Direction)} by the part host for the
      * side this part is on.
      */
     default AECableType getExternalCableConnectionType() {
