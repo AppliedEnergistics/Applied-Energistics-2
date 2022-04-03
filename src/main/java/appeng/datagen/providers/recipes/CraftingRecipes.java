@@ -1362,6 +1362,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_dusts/redstone", has(ConventionTags.REDSTONE))
                 .save(consumer, AppEng.makeId("network/cables/dense_smart_fluix"));
         ShapelessRecipeBuilder.shapeless(AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT))
+                .requires(AEParts.SMART_CABLE.item(AEColor.TRANSPARENT))
+                .requires(AEParts.SMART_CABLE.item(AEColor.TRANSPARENT))
+                .requires(AEParts.SMART_CABLE.item(AEColor.TRANSPARENT))
+                .requires(AEParts.SMART_CABLE.item(AEColor.TRANSPARENT))
+                .unlockedBy("has_fluix_smart_cable", has(AEParts.SMART_CABLE.item(AEColor.TRANSPARENT)))
+                .save(consumer, AppEng.makeId("network/cables/dense_smart_from_smart"));
+        ShapelessRecipeBuilder.shapeless(AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT))
                 .requires(ConventionTags.SMART_DENSE_CABLE)
                 .requires(Items.WATER_BUCKET)
                 .unlockedBy("has_smart_dense_cable", has(ConventionTags.SMART_DENSE_CABLE))
