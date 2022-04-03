@@ -60,7 +60,6 @@ public class AppEngSlot extends Slot {
      * Caches if the item stack currently contained in this slot is "valid" or not for UI purposes.
      */
     private Boolean validState = null;
-    private boolean rendering = false;
 
     public AppEngSlot(InternalInventory inv, int invSlot) {
         super(EMPTY_INVENTORY, invSlot, 0, 0);
@@ -108,13 +107,6 @@ public class AppEngSlot extends Slot {
 
         if (this.slot >= this.inventory.size()) {
             return ItemStack.EMPTY;
-        }
-
-        // Some slots may want to display a different stack in the GUI, which we solve by
-        // returning getDisplayStack() during rendering, which a slot can override.
-        if (this.rendering) {
-            this.rendering = false;
-            return this.getDisplayStack();
         }
 
         return this.inventory.getStackInSlot(this.invSlot);
@@ -232,14 +224,6 @@ public class AppEngSlot extends Slot {
 
     public void setIcon(Icon icon) {
         this.icon = icon;
-    }
-
-    /**
-     * Indicate that this slot is currently being rendered, which is used to provide a slot with the ability to return a
-     * different stack for rendering purposes by overriding {@link #getDisplayStack()}.
-     */
-    public void setRendering(boolean rendering) {
-        this.rendering = rendering;
     }
 
     public boolean isDraggable() {
