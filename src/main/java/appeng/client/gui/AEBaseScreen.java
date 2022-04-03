@@ -740,14 +740,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             fill(poseStack, s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
         }
 
-        // Makes it so the first call to s.getStack will return getDisplayStack instead, the finally is there
-        // just for making absolutely sure the flag gets reset (it should be reset inside of getStack)
-        s.setRendering(true);
-        try {
-            super.renderSlot(poseStack, s);
-        } finally {
-            s.setRendering(false);
-        }
+        super.renderSlot(poseStack, s);
     }
 
     public void bindTexture(String file) {
